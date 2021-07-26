@@ -8,6 +8,7 @@
 #include "../keyboardProcessor/keyboardprocessor.h"
 #include <QQmlContext>
 #include "../uiBackend/uibackend.h"
+#include "../ssConroller/sscontroller.h"
 
 class Core : public QObject
 {
@@ -25,6 +26,7 @@ private:
     HWND m_ssStatsHwnd;
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
+    SsController* m_ssController;
 
 };
 

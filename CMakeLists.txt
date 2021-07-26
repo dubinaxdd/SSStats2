@@ -37,6 +37,8 @@ set(PROJECT_SOURCES
         dev/keyboardProcessor/keyboardprocessor.cpp
         dev/uiBackend/uibackend.h
         dev/uiBackend/uibackend.cpp
+        dev/ssConroller/sscontroller.h
+        dev/ssConroller/sscontroller.cpp
         qml.qrc
         resources.qrc
        # ${TS_FILES}

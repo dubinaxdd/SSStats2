@@ -6,10 +6,11 @@ Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
     , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_uiBackend(new UiBackend(context))
+    , m_ssController(new SsController(this))
 {
     context->setContextProperty("_uiBackend", m_uiBackend);
-
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection );
 }
 
 
