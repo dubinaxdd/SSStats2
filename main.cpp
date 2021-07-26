@@ -90,9 +90,30 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if(KeyboardDelay == 2)
         KeyboardDelay = 0;
 
-    //qDebug()<<"key: " << cKey.vkCode << " " << QString::fromUtf16((`ushort*)buffer) << " " << QString::fromUtf16((ushort*)lpszName);
+    qDebug()<<"key: " << cKey.vkCode << " " << QString::fromUtf16((ushort*)buffer) << " " << QString::fromUtf16((ushort*)lpszName);
 
-    return CallNextHookEx(keyboardHook, nCode, wParam, lParam);
+    //Тут фильтруем кнопки которые блокировать не надо,типа CTRL ALT DEL
+    bool isPriorityKey = false;
+    if(cKey.vkCode == 192  ||
+        cKey.vkCode == 27  ||
+        cKey.vkCode == 9   ||
+        cKey.vkCode == 20  ||
+        cKey.vkCode == 160 ||
+        cKey.vkCode == 162 ||
+        cKey.vkCode == 91  ||
+        cKey.vkCode == 164 ||
+        cKey.vkCode == 165 ||
+        cKey.vkCode == 163 ||
+        cKey.vkCode == 161 ||
+        cKey.vkCode == 13  ||
+        cKey.vkCode == 46 )
+    {
+        isPriorityKey = true;
+    }
+
+    //qDebug() << cKey.vkCode;
+
+    return core->ssController()->getInputBlocked() && !isPriorityKey ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
 }
 
 

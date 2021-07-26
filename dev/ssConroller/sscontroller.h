@@ -11,6 +11,8 @@ class SsController : public QObject
 public:
     explicit SsController(QObject *parent = nullptr);
 
+    bool getInputBlocked() const;
+
 public slots:
     void blockInput(bool block);
     void delayBlockInputTimerTimout();

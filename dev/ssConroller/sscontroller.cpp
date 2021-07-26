@@ -41,3 +41,8 @@ void SsController::delayBlockInputTimerTimout()
     if (m_soulstormHwnd)
         EnableWindow(m_soulstormHwnd, !inputBlocked);
 }
+
+bool SsController::getInputBlocked() const
+{
+    return inputBlocked;
+}

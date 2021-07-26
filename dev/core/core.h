@@ -18,6 +18,8 @@ public:
     bool event(QEvent *event) override;
     void startTopmost();
 
+    SsController *ssController() const;
+
 private slots:
     void topmostTimerTimout();
 

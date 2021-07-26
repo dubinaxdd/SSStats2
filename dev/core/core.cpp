@@ -27,6 +27,11 @@ void Core::topmostTimerTimout()
     }
 }
 
+SsController *Core::ssController() const
+{
+    return m_ssController;
+}
+
 bool Core::event(QEvent *event)
 {
     if (event->type() == QEvent::KeyPress && m_keyboardProcessor)
