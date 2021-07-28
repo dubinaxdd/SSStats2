@@ -99,7 +99,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     if(KeyboardDelay == 2)
         KeyboardDelay = 0;
 
-    qDebug()<<"key: " << cKey.vkCode << " " << QString::fromUtf16((ushort*)buffer) << " " << QString::fromUtf16((ushort*)lpszName);
+    //qDebug()<<"key: " << cKey.vkCode << " " << QString::fromUtf16((ushort*)buffer) << " " << QString::fromUtf16((ushort*)lpszName);
 
     //Тут фильтруем кнопки которые блокировать не надо,типа CTRL ALT DEL
     bool isPriorityKey = false;
@@ -122,7 +122,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     //qDebug() << cKey.vkCode;
 
-    bool inputBlock = (core->ssController()->getInputBlocked() && !isPriorityKey) || !core->uiBackend()->getShowClient();
+    bool inputBlock = core->ssController()->getInputBlocked() && !isPriorityKey;
 
     return inputBlock ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
 }
