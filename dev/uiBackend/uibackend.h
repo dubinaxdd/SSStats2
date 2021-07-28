@@ -17,6 +17,7 @@ public:
     explicit UiBackend(QObject *parent = nullptr);
 
     bool expand() const;
+    bool getShowClient();
     void setExpand(bool newExpand);
     void mousePressEvent (QPoint mousePosition);
     int mousePositionX();
@@ -29,11 +30,17 @@ signals:
 
 public slots:
     void expandKeyPressed();
-    void showClient(bool show);
+    void receiveSsMaximized(bool maximized);
+    void receiveSsLounched(bool lounched);
+
+private:
+    void showClient();
 
 private:
     bool m_expand = false;
     QPoint m_mousePosition;
+    bool m_ssMaximized = false;
+    bool m_ssLounched = false;
     bool m_showClient = false;
 
 };

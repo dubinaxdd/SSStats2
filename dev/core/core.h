@@ -20,6 +20,8 @@ public:
 
     SsController *ssController() const;
 
+    UiBackend *uiBackend() const;
+
 private slots:
     void topmostTimerTimout();
 

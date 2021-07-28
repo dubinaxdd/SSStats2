@@ -22,6 +22,7 @@ private slots:
 
 signals:
     void ssLounched(bool lounched);
+    void ssMaximized(bool maximized);
 
 private:
     HWND m_soulstormHwnd;
@@ -31,6 +32,7 @@ private:
 
     bool inputBlocked;
     bool m_ssLounched = false;
+    bool m_ssMaximized = false;
 
 
 };

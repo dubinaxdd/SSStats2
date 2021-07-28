@@ -29,22 +29,31 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
     {
         case WM_LBUTTONDOWN:
         {
-            QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::LeftButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
-            QGuiApplication::postEvent(core, event);
+            if (core->uiBackend()->getShowClient())
+            {
+                QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::LeftButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
+                QGuiApplication::postEvent(core, event);
+            }
             break;
         }
 
         case WM_RBUTTONDOWN:
         {
-            QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::RightButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
-            QGuiApplication::postEvent(core, event);
+            if (core->uiBackend()->getShowClient())
+            {
+                QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::RightButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
+                QGuiApplication::postEvent(core, event);
+            }
             break;
 
         }
 
         case WM_MOUSEMOVE:{
-            QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(),Qt::MouseButtons(), Qt::KeyboardModifiers() );
-            QGuiApplication::postEvent(core, event);
+            if (core->uiBackend()->getShowClient())
+            {
+                QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(),Qt::MouseButtons(), Qt::KeyboardModifiers() );
+                QGuiApplication::postEvent(core, event);
+            }
             break;
 
         }
@@ -79,7 +88,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     buffer[4] = L'\0';
 
-    if(KeyboardDelay == 0)
+    if(KeyboardDelay == 0 && core->uiBackend()->getShowClient())
     {
         QEvent *event = new QKeyEvent(QEvent::KeyPress, cKey.vkCode, Qt::NoModifier, 0);
         //core->event(event);
@@ -113,7 +122,9 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     //qDebug() << cKey.vkCode;
 
-    return core->ssController()->getInputBlocked() && !isPriorityKey ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
+    bool inputBlock = (core->ssController()->getInputBlocked() && !isPriorityKey) || !core->uiBackend()->getShowClient();
+
+    return inputBlock ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
 }
 
 

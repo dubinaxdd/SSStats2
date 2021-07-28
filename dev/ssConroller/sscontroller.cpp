@@ -42,16 +42,6 @@ void SsController::checkSS()
 
     m_soulstormHwnd = FindWindowW(NULL, lps);
 
-
-  /*  if (m_soulstormHwnd == NULL)
-    {
-
-    }
-    else
-    {
-        return;
-    }*/
-
     if (m_soulstormHwnd)
     {
         if(!m_ssLounched)
@@ -62,7 +52,24 @@ void SsController::checkSS()
         }
         else
         {
-            //qDebug() << "INFO: Soulstorm window accepted";
+            if( IsIconic(m_soulstormHwnd))
+            {
+                if(m_ssMaximized)
+                {
+                    m_ssMaximized = false;
+                    emit ssMaximized(m_ssMaximized);
+                    qDebug() << "INFO: Soulstorm minimized";
+                }
+            }
+            else
+            {
+                if(!m_ssMaximized)
+                {
+                    m_ssMaximized = true;
+                    emit ssMaximized(m_ssMaximized);
+                    qDebug() << "INFO: Soulstorm not minimized";
+                }
+            }
         }
     }
     else
