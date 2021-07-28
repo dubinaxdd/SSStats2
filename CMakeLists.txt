@@ -39,6 +39,8 @@ set(PROJECT_SOURCES
         dev/uiBackend/uibackend.cpp
         dev/ssConroller/sscontroller.h
         dev/ssConroller/sscontroller.cpp
+        dev/ssConroller/gameInfoReader/gameinforeader.h
+        dev/ssConroller/gameInfoReader/gameinforeader.cpp
         qml.qrc
         resources.qrc
        # ${TS_FILES}

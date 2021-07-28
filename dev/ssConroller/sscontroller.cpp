@@ -1,6 +1,9 @@
 #include "sscontroller.h"
 #include <QTextCodec>
 #include <QDebug>
+#include <QGuiApplication>
+#include <QFile>
+#include <QSettings>
 
 SsController::SsController(QObject *parent) : QObject(parent)
 {
@@ -8,6 +11,11 @@ SsController::SsController(QObject *parent) : QObject(parent)
     m_delayBlockInputTimer->setSingleShot(true);
 
     QObject::connect(m_delayBlockInputTimer, &QTimer::timeout, this, &SsController::delayBlockInputTimerTimout, Qt::QueuedConnection);
+
+    m_ssPath = getSsPathFromRegistry();
+    qDebug() << "INFO: Worked with Soulstorm from: " << m_ssPath;
+    m_gameInfoReader = new GameInfoReader(m_ssPath,this);
+
 
     m_ssLounchControllTimer = new QTimer(this);
     m_ssLounchControllTimer->setInterval(1000);
@@ -67,7 +75,7 @@ void SsController::checkSS()
                 {
                     m_ssMaximized = true;
                     emit ssMaximized(m_ssMaximized);
-                    qDebug() << "INFO: Soulstorm not minimized";
+                    qDebug() << "INFO: Soulstorm fullscreen";
                 }
             }
         }
@@ -87,6 +95,30 @@ void SsController::checkSS()
     }
 
 
+}
+
+QString SsController::getSsPathFromRegistry()
+{
+    QString path = QCoreApplication::applicationDirPath();
+    if(QFile::exists(path+"/Soulstorm.exe"))
+        return path;
+
+    QSettings thq("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War - Soulstorm", QSettings::NativeFormat);
+    path = thq.value("installlocation", "").toString();
+
+    if(path.isEmpty())
+    {
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War - Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+    }
+
+    if(path.isEmpty())
+    {
+        QSettings steam("HKEY_CURRENT_USER\\SOFTWARE\\Valve\\Steam", QSettings::NativeFormat);
+        path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
+    }
+
+    return path;
 }
 
 bool SsController::getInputBlocked() const

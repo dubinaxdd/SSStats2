@@ -25,7 +25,7 @@ Window {
 
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
 
-            console.log(xMousePos, xMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY);
+            //console.log(xMousePos, xMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY);
 
             //Рнопка "Развернуть оверлей"
             if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangleX &&

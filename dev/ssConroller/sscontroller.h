@@ -4,6 +4,7 @@
 #include <QObject>
 #include "Windows.h"
 #include <QTimer>
+#include "gameInfoReader/gameinforeader.h"
 
 class SsController : public QObject
 {
@@ -25,14 +26,19 @@ signals:
     void ssMaximized(bool maximized);
 
 private:
+    QString getSsPathFromRegistry();
+
+private:
     HWND m_soulstormHwnd;
     QTimer* m_delayBlockInputTimer;
-
     QTimer* m_ssLounchControllTimer;
+    QString m_ssPath;
 
     bool inputBlocked;
     bool m_ssLounched = false;
     bool m_ssMaximized = false;
+
+    GameInfoReader* m_gameInfoReader;
 
 
 };
