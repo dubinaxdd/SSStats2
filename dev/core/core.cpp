@@ -11,6 +11,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     context->setContextProperty("_uiBackend", m_uiBackend);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection );
+    QObject::connect(m_ssController, &SsController::ssLounched, m_uiBackend, &UiBackend::showClient, Qt::QueuedConnection );
 }
 
 

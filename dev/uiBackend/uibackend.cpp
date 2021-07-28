@@ -10,6 +10,12 @@ void UiBackend::expandKeyPressed()
     setExpand(!m_expand);
 }
 
+void UiBackend::showClient(bool show)
+{
+    m_showClient = show;
+    emit sendShowClient(m_showClient);
+}
+
 bool UiBackend::expand() const
 {
     return m_expand;

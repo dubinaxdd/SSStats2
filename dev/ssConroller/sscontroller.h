@@ -17,12 +17,20 @@ public slots:
     void blockInput(bool block);
     void delayBlockInputTimerTimout();
 
+private slots:
+    void checkSS();
+
 signals:
+    void ssLounched(bool lounched);
 
 private:
     HWND m_soulstormHwnd;
     QTimer* m_delayBlockInputTimer;
+
+    QTimer* m_ssLounchControllTimer;
+
     bool inputBlocked;
+    bool m_ssLounched = false;
 
 
 };
