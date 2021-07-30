@@ -1,5 +1,8 @@
 #include "core.h"
 #include "QDebug"
+#include "QFile"
+#include "QSettings"
+#include "../ssConroller/gameInfoReader/gameinforeader.h"
 
 
 Core::Core(QQmlContext *context, QObject* parent)
@@ -9,10 +12,18 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_ssController(new SsController(this))
 {
     context->setContextProperty("_uiBackend", m_uiBackend);
+
+    m_topmostTimer = new QTimer();
+    m_topmostTimer->setInterval(100);
+    connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
+
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection );
     QObject::connect(m_ssController, &SsController::ssLounched, m_uiBackend, &UiBackend::receiveSsLounched, Qt::QueuedConnection );
     QObject::connect(m_ssController, &SsController::ssMaximized, m_uiBackend, &UiBackend::receiveSsMaximized, Qt::QueuedConnection );
+    QObject::connect(m_ssController, &SsController::ssMaximized, this, &Core::ssMaximized, Qt::DirectConnection );
+
+    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameInitialized, this, &Core::gameInitialized, Qt::DirectConnection );
 
 }
 
@@ -27,6 +38,67 @@ void Core::topmostTimerTimout()
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
     if (m_ssStatsHwnd){
         BringWindowToTop(m_ssStatsHwnd);
+    }
+}
+
+
+void Core::ssMaximized(bool maximized)
+{
+
+
+    if (maximized)
+    {
+        //m_widthInGame =  GetSystemMetrics(SM_CXSCREEN);
+        //m_heightInGame = GetSystemMetrics(SM_CYSCREEN);
+
+        int width =  GetSystemMetrics(SM_CXSCREEN);
+        int height = GetSystemMetrics(SM_CYSCREEN);
+
+        m_widthInGame = width;
+        m_heightInGame = height;
+
+       /* DEVMODE devmode;
+        devmode.dmPelsWidth = width;
+        devmode.dmPelsHeight = height;
+        devmode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+        devmode.dmSize = sizeof(DEVMODE);
+
+        long result = ChangeDisplaySettings(&devmode, 0);*/
+
+       // SetWindowLongA(m_ssStatsHwnd, 0, result);
+
+        SetWindowPos(m_ssStatsHwnd, HWND_TOP, 0, 0, width, height, m_defaultWindowLong );
+        //m_uiBackend->setWindowRect(width, height);
+        m_uiBackend->setWindowTopmost(true);
+        m_topmostTimer->start();
+    }
+    else
+    {
+       /* DEVMODE devmode;
+        devmode.dmPelsWidth = m_defaultWidth;
+        devmode.dmPelsHeight = m_defaultHeight;
+        devmode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+        devmode.dmSize = sizeof(DEVMODE);
+
+        long result = ChangeDisplaySettings(&devmode, 0);*/
+       // SetWindowLongA(m_ssStatsHwnd, 0, result);
+
+        //SetWindowLongA(m_ssStatsHwnd, 0, m_defaultWindowLong);
+
+        m_topmostTimer->stop();
+        SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0, 0, m_defaultWidth, m_defaultHeight, m_defaultWindowLong );
+        //m_uiBackend->setWindowRect(m_defaultWidth, m_defaultHeight);
+        m_uiBackend->setWindowTopmost(false);
+
+    }
+}
+
+void Core::gameInitialized()
+{
+
+    if(m_ssController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
+    {
+        ssMaximized(true);
     }
 }
 
@@ -61,7 +133,7 @@ bool Core::event(QEvent *event)
 
 }
 
-void Core::startTopmost()
+void Core::grubStatsWindow()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString s = codec->toUnicode("SSStats2");
@@ -69,8 +141,10 @@ void Core::startTopmost()
 
     m_ssStatsHwnd = FindWindowW(NULL, lps);
 
-    m_topmostTimer = new QTimer();
-    m_topmostTimer->setInterval(100);
-    connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
-    m_topmostTimer->start();
+    m_defaultWidth = GetSystemMetrics(SM_CXSCREEN);
+    m_defaultHeight = GetSystemMetrics(SM_CYSCREEN);
+
+    m_defaultWindowLong = GetWindowLong(m_ssStatsHwnd, GWL_EXSTYLE);
+
+    m_uiBackend->setWindowTopmost(false);
 }

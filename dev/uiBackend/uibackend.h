@@ -12,6 +12,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool showClient MEMBER m_showClient NOTIFY sendShowClient)
     Q_PROPERTY(int mousePositionX READ mousePositionX)
     Q_PROPERTY(int mousePositionY READ mousePositionY)
+    Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
+
 
 public:
     explicit UiBackend(QObject *parent = nullptr);
@@ -22,16 +24,20 @@ public:
     void mousePressEvent (QPoint mousePosition);
     int mousePositionX();
     int mousePositionY();
+    void setWindowTopmost(bool topmost);
+    bool getWindowTopmost();
 
 signals:
     void sendExpand(bool);
     void sendMousePress();
     void sendShowClient(bool);
+    void windowTopmostChanged();
 
 public slots:
     void expandKeyPressed();
     void receiveSsMaximized(bool maximized);
     void receiveSsLounched(bool lounched);
+
 
 private:
     void showClient();
@@ -43,6 +49,7 @@ private:
     bool m_ssLounched = false;
     bool m_showClient = false;
 
+    bool m_windowTopmost = false;
 };
 
 #endif // UIBACKEND_H

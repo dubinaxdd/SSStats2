@@ -9,14 +9,18 @@ class GameInfoReader : public QObject
     Q_OBJECT
 public:
     explicit GameInfoReader(QString sspath, QObject *parent = nullptr);
+    void ssWindowClosed();
+    bool getGameInitialized();
 
 private slots:
     void readGameInfo();
     void readGameParametresAfterStop();
 
+
 signals:
     void gameStoped();
     void gameStarted();
+    void gameInitialized();
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -27,6 +31,7 @@ private:
     bool m_gamePlayback = false;
     bool m_gameLoad = false;
     bool m_scrimishMission = false;
+    bool m_ssInitialized = false;
 
 };
 

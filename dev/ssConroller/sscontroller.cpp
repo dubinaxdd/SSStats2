@@ -64,18 +64,25 @@ void SsController::checkSS()
             {
                 if(m_ssMaximized)
                 {
-                    m_ssMaximized = false;
-                    emit ssMaximized(m_ssMaximized);
-                    qDebug() << "INFO: Soulstorm minimized";
+                    if (m_gameInfoReader->getGameInitialized())
+                    {
+                        m_ssMaximized = false;
+                        emit ssMaximized(m_ssMaximized);
+                        qDebug() << "INFO: Soulstorm minimized";
+                    }
+
                 }
             }
             else
             {
                 if(!m_ssMaximized)
                 {
-                    m_ssMaximized = true;
-                    emit ssMaximized(m_ssMaximized);
-                    qDebug() << "INFO: Soulstorm fullscreen";
+                    if (m_gameInfoReader->getGameInitialized())
+                    {
+                        m_ssMaximized = true;
+                        emit ssMaximized(m_ssMaximized);
+                        qDebug() << "INFO: Soulstorm fullscreen";
+                    }
                 }
             }
         }
@@ -84,8 +91,11 @@ void SsController::checkSS()
     {
         if(m_ssLounched)
         {
+            m_ssMaximized = false;
+            emit ssMaximized(m_ssMaximized);
             m_ssLounched = false;
             emit ssLounched(m_ssLounched);
+            m_gameInfoReader->ssWindowClosed();
             qDebug() << "WARNING: Soulstorm window closed";
         }
         else
@@ -119,6 +129,21 @@ QString SsController::getSsPathFromRegistry()
     }
 
     return path;
+}
+
+GameInfoReader *SsController::gameInfoReader() const
+{
+    return m_gameInfoReader;
+}
+
+const QString &SsController::ssPath() const
+{
+    return m_ssPath;
+}
+
+bool SsController::getSsMaximized()
+{
+    return m_ssMaximized;
 }
 
 bool SsController::getInputBlocked() const

@@ -16,7 +16,7 @@ class Core : public QObject
 public:
     Core(QQmlContext *context, QObject* parent = nullptr);
     bool event(QEvent *event) override;
-    void startTopmost();
+    void grubStatsWindow();
 
     SsController *ssController() const;
 
@@ -24,13 +24,24 @@ public:
 
 private slots:
     void topmostTimerTimout();
+    void ssMaximized(bool maximized);
+    void gameInitialized();
+
 
 private:
     QTimer* m_topmostTimer;
+
     HWND m_ssStatsHwnd;
+    LONG m_defaultWindowLong;
+
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
+
+    int m_defaultWidth;
+    int m_defaultHeight;
+    int m_widthInGame;
+    int m_heightInGame;
 
 };
 

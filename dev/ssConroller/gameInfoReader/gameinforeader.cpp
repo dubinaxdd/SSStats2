@@ -29,6 +29,30 @@ void GameInfoReader::readGameInfo()
         {
             QString line = fileLines.at(counter-1);
 
+            ///Проверка на выключение соулсторма
+            if(line.contains("GAME -- Shutdown quit"))
+            {
+                m_gameStoped = true;
+                m_gameStarted = false;
+                m_gamePlayback = false;
+                m_gameLoad = false;
+                m_ssInitialized = false;
+                break;
+
+            }
+
+            ///Проверка на окончание инициализации соулсторма
+            if(line.contains("MOD -- Initializing Mod"))
+            {
+                if(!m_ssInitialized)
+                {
+                    m_ssInitialized = true;
+                    emit gameInitialized();
+                }
+                break;
+            }
+
+            ///Проверка на окончание игры
             if(line.contains("APP -- Game Stop"))
             {
                 if (!m_gameStoped)
@@ -46,12 +70,14 @@ void GameInfoReader::readGameInfo()
                     m_gameStarted = false;
                     m_gamePlayback = false;
                     m_gameLoad = false;
+                    m_ssInitialized = true;
 
                     qDebug() << "INFO: Game Stoped";
                 }
                 break;
             }
 
+            ///Проверка на старт игры
             if (line.contains("APP -- Game Start"))
             {
                 //Что бы точно понять норм игра это или долбаный реплей чекаем ближайшие строки
@@ -60,6 +86,8 @@ void GameInfoReader::readGameInfo()
                 while (checkCounter!=0 && checkCounter != (counter - 10))
                 {
                     QString checkLine = fileLines.at(checkCounter-1);
+
+                    ///Проверка на реплей
                     if(checkLine.contains("APP -- Game Playback"))
                     {
                         if (!m_gamePlayback)
@@ -68,11 +96,13 @@ void GameInfoReader::readGameInfo()
                             m_gameStarted = false;
                             m_gamePlayback = true;
                             m_gameLoad = false;
+                            m_ssInitialized = true;
                             qDebug() << "INFO: Game Playback";
                             break;
                         }
                     }
 
+                    ///Проверка на загруженную игру
                     if (checkLine.contains("APP -- Game Load"))
                     {
                         if (!m_gameLoad)
@@ -81,6 +111,7 @@ void GameInfoReader::readGameInfo()
                             m_gameStarted = false;
                             m_gamePlayback = false;
                             m_gameLoad = true;
+                            m_ssInitialized = true;
                             qDebug() << "INFO: Game Load";
                             break;
                         }
@@ -95,6 +126,7 @@ void GameInfoReader::readGameInfo()
                     m_gameStarted = true;
                     m_gamePlayback = false;
                     m_gameLoad = false;
+                    m_ssInitialized = true;
 
                     emit gameStarted();
                     qDebug() << "INFO: Game Started";
@@ -109,4 +141,15 @@ void GameInfoReader::readGameInfo()
 void GameInfoReader::readGameParametresAfterStop()
 {
     qDebug() << "INFO: Read played game settings";
+}
+
+void GameInfoReader::ssWindowClosed()
+{
+    m_ssInitialized = false;
+    m_gameStoped = true;
+}
+
+bool GameInfoReader::getGameInitialized()
+{
+    return m_ssInitialized;
 }

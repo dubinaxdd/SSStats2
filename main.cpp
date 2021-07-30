@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
-    core->startTopmost();
+    core->grubStatsWindow();
 
     mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
     if (mouseHook == NULL) {

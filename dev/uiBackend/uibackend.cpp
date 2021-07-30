@@ -61,3 +61,14 @@ int UiBackend::mousePositionY()
 {
     return m_mousePosition.y();
 }
+
+void UiBackend::setWindowTopmost(bool topmost)
+{
+    m_windowTopmost = topmost;
+    emit windowTopmostChanged();
+}
+
+bool UiBackend::getWindowTopmost()
+{
+    return m_windowTopmost;
+}

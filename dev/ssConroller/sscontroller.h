@@ -14,6 +14,11 @@ public:
 
     bool getInputBlocked() const;
 
+    const QString &ssPath() const;
+    bool getSsMaximized();
+
+    GameInfoReader *gameInfoReader() const;
+
 public slots:
     void blockInput(bool block);
     void delayBlockInputTimerTimout();
