@@ -19,12 +19,17 @@ public:
 
     GameInfoReader *gameInfoReader() const;
 
+    bool ssWindowed() const;
+
+    HWND soulstormHwnd() const;
+
 public slots:
     void blockInput(bool block);
     void delayBlockInputTimerTimout();
 
 private slots:
     void checkSS();
+    void gameInitialized();
 
 signals:
     void ssLounched(bool lounched);
@@ -32,6 +37,7 @@ signals:
 
 private:
     QString getSsPathFromRegistry();
+    void parseSsSettings();
 
 private:
     HWND m_soulstormHwnd;
@@ -42,6 +48,7 @@ private:
     bool inputBlocked;
     bool m_ssLounched = false;
     bool m_ssMaximized = false;
+    bool m_ssWindowed = false;
 
     GameInfoReader* m_gameInfoReader;
 

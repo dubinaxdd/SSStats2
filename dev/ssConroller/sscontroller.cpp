@@ -16,6 +16,7 @@ SsController::SsController(QObject *parent) : QObject(parent)
     qDebug() << "INFO: Worked with Soulstorm from: " << m_ssPath;
     m_gameInfoReader = new GameInfoReader(m_ssPath,this);
 
+    QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
 
     m_ssLounchControllTimer = new QTimer(this);
     m_ssLounchControllTimer->setInterval(1000);
@@ -54,6 +55,7 @@ void SsController::checkSS()
     {
         if(!m_ssLounched)
         {
+            parseSsSettings();
             m_ssLounched = true;
             emit ssLounched(m_ssLounched);
             qDebug() << "INFO: Soulstorm window opened";
@@ -107,6 +109,11 @@ void SsController::checkSS()
 
 }
 
+void SsController::gameInitialized()
+{
+    parseSsSettings();
+}
+
 QString SsController::getSsPathFromRegistry()
 {
     QString path = QCoreApplication::applicationDirPath();
@@ -129,6 +136,27 @@ QString SsController::getSsPathFromRegistry()
     }
 
     return path;
+}
+
+void SsController::parseSsSettings()
+{
+    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+    int windowed = ssSettings->value("global/screenwindowed", 0).toInt();
+    m_ssWindowed = windowed;
+
+    qDebug() << "INFO: Windowed mode = " << m_ssWindowed;
+
+    delete ssSettings;
+}
+
+HWND SsController::soulstormHwnd() const
+{
+    return m_soulstormHwnd;
+}
+
+bool SsController::ssWindowed() const
+{
+    return m_ssWindowed;
 }
 
 GameInfoReader *SsController::gameInfoReader() const

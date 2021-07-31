@@ -36,8 +36,31 @@ void Core::topmostTimerTimout()
     //установка флага Qt::WindowStaysOnTopHint на кородкое время выводет икно повер сса
     //Соответственно затираем флаг и выставлем заного по таймеру.
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
-    if (m_ssStatsHwnd){
-        BringWindowToTop(m_ssStatsHwnd);
+
+    if (m_ssController->gameInfoReader()->getGameInitialized())
+    {
+        if (m_ssStatsHwnd){
+            if (m_ssController->ssWindowed())
+            {
+                RECT ssRect;
+                if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+                {
+
+                    if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
+                    {
+                        m_ssRect = ssRect;
+                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
+                    }
+
+                    LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
+                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    m_uiBackend->setWindowedMode();
+
+                }
+            }
+
+            BringWindowToTop(m_ssStatsHwnd);
+        }
     }
 }
 
@@ -48,47 +71,49 @@ void Core::ssMaximized(bool maximized)
 
     if (maximized)
     {
-        //m_widthInGame =  GetSystemMetrics(SM_CXSCREEN);
-        //m_heightInGame = GetSystemMetrics(SM_CYSCREEN);
-
         int width =  GetSystemMetrics(SM_CXSCREEN);
         int height = GetSystemMetrics(SM_CYSCREEN);
 
         m_widthInGame = width;
         m_heightInGame = height;
 
-       /* DEVMODE devmode;
-        devmode.dmPelsWidth = width;
-        devmode.dmPelsHeight = height;
-        devmode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
-        devmode.dmSize = sizeof(DEVMODE);
+        if (!m_ssController->ssWindowed())
+        {
+            SetWindowPos(m_ssStatsHwnd, HWND_TOP, 0, 0, width, height, m_defaultWindowLong );
+            m_uiBackend->setWindowTopmost(true);
+            m_topmostTimer->start();
+        }
+        else
+        {
+            RECT ssRect;
+            if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+            {
+                if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
+                {
+                    m_ssRect = ssRect;
+                    SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
 
-        long result = ChangeDisplaySettings(&devmode, 0);*/
-
-       // SetWindowLongA(m_ssStatsHwnd, 0, result);
-
-        SetWindowPos(m_ssStatsHwnd, HWND_TOP, 0, 0, width, height, m_defaultWindowLong );
-        //m_uiBackend->setWindowRect(width, height);
-        m_uiBackend->setWindowTopmost(true);
-        m_topmostTimer->start();
+                    LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
+                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    m_uiBackend->setWindowedMode();
+                }
+            }
+            m_topmostTimer->start();
+        }
     }
     else
     {
-       /* DEVMODE devmode;
-        devmode.dmPelsWidth = m_defaultWidth;
-        devmode.dmPelsHeight = m_defaultHeight;
-        devmode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
-        devmode.dmSize = sizeof(DEVMODE);
-
-        long result = ChangeDisplaySettings(&devmode, 0);*/
-       // SetWindowLongA(m_ssStatsHwnd, 0, result);
-
-        //SetWindowLongA(m_ssStatsHwnd, 0, m_defaultWindowLong);
-
-        m_topmostTimer->stop();
-        SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0, 0, m_defaultWidth, m_defaultHeight, m_defaultWindowLong );
-        //m_uiBackend->setWindowRect(m_defaultWidth, m_defaultHeight);
-        m_uiBackend->setWindowTopmost(false);
+        if (!m_ssController->ssWindowed())
+        {
+            SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0, 0, m_defaultWidth, m_defaultHeight, m_defaultWindowLong );
+            //m_topmostTimer->stop();
+            m_uiBackend->setWindowTopmost(false);
+        }
+        else
+        {
+            //m_topmostTimer->stop();
+            m_uiBackend->setWindowTopmost(false);
+        }
 
     }
 }
@@ -147,4 +172,6 @@ void Core::grubStatsWindow()
     m_defaultWindowLong = GetWindowLong(m_ssStatsHwnd, GWL_EXSTYLE);
 
     m_uiBackend->setWindowTopmost(false);
+
+    //m_topmostTimer->start();
 }

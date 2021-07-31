@@ -33,6 +33,7 @@ private:
 
     HWND m_ssStatsHwnd;
     LONG m_defaultWindowLong;
+    RECT m_ssRect;
 
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;

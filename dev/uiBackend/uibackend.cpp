@@ -72,3 +72,8 @@ bool UiBackend::getWindowTopmost()
 {
     return m_windowTopmost;
 }
+
+void UiBackend::setWindowedMode()
+{
+    emit windowedModeSeted();
+}

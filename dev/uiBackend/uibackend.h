@@ -26,12 +26,14 @@ public:
     int mousePositionY();
     void setWindowTopmost(bool topmost);
     bool getWindowTopmost();
+    void setWindowedMode();
 
 signals:
     void sendExpand(bool);
     void sendMousePress();
     void sendShowClient(bool);
     void windowTopmostChanged();
+    void windowedModeSeted();
 
 public slots:
     void expandKeyPressed();
