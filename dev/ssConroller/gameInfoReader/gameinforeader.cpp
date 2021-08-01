@@ -32,6 +32,7 @@ void GameInfoReader::readGameInfo()
             ///Проверка на выключение соулсторма
             if(line.contains("GAME -- Shutdown quit"))
             {
+                //qDebug() << "INFO: SS Shutdown quit";
                 m_gameStoped = true;
                 m_gameStarted = false;
                 m_gamePlayback = false;
@@ -46,6 +47,7 @@ void GameInfoReader::readGameInfo()
             {
                 if(!m_ssInitialized)
                 {
+                    qDebug() << "INFO: SS Initialized";
                     m_ssInitialized = true;
                     emit gameInitialized();
                 }

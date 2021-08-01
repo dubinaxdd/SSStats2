@@ -25,7 +25,6 @@ public:
 
 public slots:
     void blockInput(bool block);
-    void delayBlockInputTimerTimout();
 
 private slots:
     void checkSS();
@@ -40,12 +39,11 @@ private:
     void parseSsSettings();
 
 private:
-    HWND m_soulstormHwnd;
-    QTimer* m_delayBlockInputTimer;
+    HWND m_soulstormHwnd = NULL;
     QTimer* m_ssLounchControllTimer;
     QString m_ssPath;
 
-    bool inputBlocked;
+    bool inputBlocked = false;
     bool m_ssLounched = false;
     bool m_ssMaximized = false;
     bool m_ssWindowed = false;

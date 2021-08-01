@@ -14,7 +14,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
-    m_topmostTimer->setInterval(100);
+    m_topmostTimer->setInterval(500);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
@@ -24,6 +24,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::ssMaximized, this, &Core::ssMaximized, Qt::DirectConnection );
 
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameInitialized, this, &Core::gameInitialized, Qt::DirectConnection );
+
+    QObject::connect(m_ssController, &SsController::ssLounched, this, &Core::ssLounched, Qt::QueuedConnection );
 
 }
 
@@ -67,8 +69,6 @@ void Core::topmostTimerTimout()
 
 void Core::ssMaximized(bool maximized)
 {
-
-
     if (maximized)
     {
         int width =  GetSystemMetrics(SM_CXSCREEN);
@@ -121,10 +121,18 @@ void Core::ssMaximized(bool maximized)
 void Core::gameInitialized()
 {
 
+    m_topmostTimer->start();
+
     if(m_ssController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
     {
         ssMaximized(true);
     }
+}
+
+void Core::ssLounched(bool ssShutDowned)
+{
+    if (!ssShutDowned)
+        m_topmostTimer->stop();
 }
 
 UiBackend *Core::uiBackend() const
