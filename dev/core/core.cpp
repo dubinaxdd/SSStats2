@@ -121,10 +121,14 @@ void Core::gameInitialized()
     }
 }
 
-void Core::ssLounched(bool ssShutDowned)
+void Core::ssLounched(bool ssLounched)
 {
-    if (!ssShutDowned)
+    if (!ssLounched)
+    {
         m_topmostTimer->stop();
+        SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+        m_uiBackend->setWindowTopmost(false);
+    }
 }
 
 UiBackend *Core::uiBackend() const
