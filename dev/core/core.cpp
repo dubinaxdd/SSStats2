@@ -42,8 +42,8 @@ void Core::topmostTimerTimout()
     if (m_ssController->gameInfoReader()->getGameInitialized())
     {
         if (m_ssStatsHwnd){
-            if (m_ssController->ssWindowed())
-            {
+           // if (m_ssController->ssWindowed())
+           // {
                 RECT ssRect;
                 if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
                 {
@@ -56,10 +56,13 @@ void Core::topmostTimerTimout()
 
                     LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
-                    m_uiBackend->setWindowedMode();
+
+                    if (m_ssController->ssWindowed())
+                        m_uiBackend->setWindowedMode();
+
 
                 }
-            }
+           // }
 
             BringWindowToTop(m_ssStatsHwnd);
         }
