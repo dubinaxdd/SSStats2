@@ -79,9 +79,13 @@ void Core::ssMaximized(bool maximized)
 
         if (!m_ssController->ssWindowed())
         {
-            SetWindowPos(m_ssStatsHwnd, HWND_TOP, 0, 0, width, height, m_defaultWindowLong );
-            m_uiBackend->setWindowTopmost(true);
-            m_topmostTimer->start();
+            RECT ssRect;
+            if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+            {
+                m_ssRect = ssRect;
+                MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
+                m_uiBackend->setWindowTopmost(true);
+            }
         }
         else
         {
@@ -98,23 +102,11 @@ void Core::ssMaximized(bool maximized)
                     m_uiBackend->setWindowedMode();
                 }
             }
-            m_topmostTimer->start();
         }
     }
     else
     {
-        if (!m_ssController->ssWindowed())
-        {
-            SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0, 0, m_defaultWidth, m_defaultHeight, m_defaultWindowLong );
-            //m_topmostTimer->stop();
-            m_uiBackend->setWindowTopmost(false);
-        }
-        else
-        {
-            //m_topmostTimer->stop();
-            m_uiBackend->setWindowTopmost(false);
-        }
-
+        m_uiBackend->setWindowTopmost(false);
     }
 }
 
@@ -180,6 +172,4 @@ void Core::grubStatsWindow()
     m_defaultWindowLong = GetWindowLong(m_ssStatsHwnd, GWL_EXSTYLE);
 
     m_uiBackend->setWindowTopmost(false);
-
-    //m_topmostTimer->start();
 }

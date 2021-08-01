@@ -18,7 +18,7 @@ SsController::SsController(QObject *parent) : QObject(parent)
     m_ssLounchControllTimer = new QTimer(this);
     m_ssLounchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
     QObject::connect(m_ssLounchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
-    m_ssLounchControllTimer->start();
+    //m_ssLounchControllTimer->start();
 }
 
 void SsController::blockInput(bool block)
@@ -74,6 +74,7 @@ void SsController::checkSS()
     {
         if(m_ssLounched)                                    ///<Если игра была перед этим запущена
         {
+
             m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
             m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
