@@ -173,7 +173,7 @@ void Core::grubStatsWindow()
     m_defaultWidth = GetSystemMetrics(SM_CXSCREEN);
     m_defaultHeight = GetSystemMetrics(SM_CYSCREEN);
 
-    m_defaultWindowLong = GetWindowLong(m_ssStatsHwnd, GWL_EXSTYLE);
-
+    m_defaultWindowLong = GetWindowLongPtr(m_ssStatsHwnd, GWL_EXSTYLE);
+    SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
     m_uiBackend->setWindowTopmost(false);
 }
