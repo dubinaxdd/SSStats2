@@ -29,6 +29,7 @@ public slots:
 private slots:
     void checkSS();
     void gameInitialized();
+    void ssShutdown();
 
 signals:
     void ssLounched(bool lounched);

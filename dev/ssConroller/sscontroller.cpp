@@ -14,11 +14,12 @@ SsController::SsController(QObject *parent) : QObject(parent)
     m_gameInfoReader = new GameInfoReader(m_ssPath,this);
 
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
+
 
     m_ssLounchControllTimer = new QTimer(this);
     m_ssLounchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
     QObject::connect(m_ssLounchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
-    //m_ssLounchControllTimer->start();
 }
 
 void SsController::blockInput(bool block)
@@ -98,6 +99,12 @@ void SsController::gameInitialized()
     m_ssLounchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
 }
 
+void SsController::ssShutdown()
+{
+
+
+}
+
 QString SsController::getSsPathFromRegistry()
 {
     QString path = QCoreApplication::applicationDirPath();
@@ -124,6 +131,7 @@ QString SsController::getSsPathFromRegistry()
 
 void SsController::parseSsSettings()
 {
+
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     int windowed = ssSettings->value("global/screenwindowed", 0).toInt();
 
