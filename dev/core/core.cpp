@@ -22,10 +22,10 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::ssLounched, m_uiBackend, &UiBackend::receiveSsLounched, Qt::QueuedConnection );
     QObject::connect(m_ssController, &SsController::ssMaximized, m_uiBackend, &UiBackend::receiveSsMaximized, Qt::QueuedConnection );
     QObject::connect(m_ssController, &SsController::ssMaximized, this, &Core::ssMaximized, Qt::DirectConnection );
-
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameInitialized, this, &Core::gameInitialized, Qt::DirectConnection );
-
     QObject::connect(m_ssController, &SsController::ssLounched, this, &Core::ssLounched, Qt::QueuedConnection );
+    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStarted, m_uiBackend, &UiBackend::gameStarted, Qt::QueuedConnection );
+    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStoped, m_uiBackend, &UiBackend::gameStoped, Qt::QueuedConnection );
 
 }
 

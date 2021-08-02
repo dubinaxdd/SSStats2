@@ -24,6 +24,18 @@ void UiBackend::receiveSsLounched(bool lounched)
     showClient();
 }
 
+void UiBackend::gameStarted()
+{
+    m_gamePanelVisible = true;
+    emit gamePanelVisibleChanged(m_gamePanelVisible);
+}
+
+void UiBackend::gameStoped()
+{
+     m_gamePanelVisible = false;
+    emit gamePanelVisibleChanged(m_gamePanelVisible);
+}
+
 void UiBackend::showClient()
 {
     m_showClient = m_ssLounched && m_ssMaximized;

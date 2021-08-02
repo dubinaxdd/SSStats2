@@ -51,14 +51,7 @@ void GameInfoReader::readGameInfo()
             ///Проверка на окончание инициализации соулсторма
             if(line.contains("MOD -- Initializing Mod"))
             {
-                if(!m_ssInitialized)
-                {
-                    qDebug() << "INFO: SS Initialized";
-                    m_ssInitialized = true;
-                    m_ssShutdowned = false;
-                    emit gameInitialized();
-
-                }
+                checkGameInitialize();
                 break;
             }
 
@@ -71,7 +64,6 @@ void GameInfoReader::readGameInfo()
                     {
                         m_gameStoped = true;
                         m_gameStarted = false;
-
                         emit gameStoped();
                         readGameParametresAfterStop();
                     }
@@ -80,13 +72,27 @@ void GameInfoReader::readGameInfo()
                     m_gameStarted = false;
                     m_gamePlayback = false;
                     m_gameLoad = false;
-                    m_ssInitialized = true;
+                    checkGameInitialize();
                     m_ssShutdowned = false;
 
                     qDebug() << "INFO: Game Stoped";
                 }
                 break;
             }
+
+            ///Проверка на старт миссии игры
+            if (line.contains("GAME -- Starting mission"))
+            {
+               /* if (!m_gameStoped)
+                {
+                    checkGameInitialize();
+                    m_ssShutdowned = false;
+                    emit gameStarted();
+                    qDebug() << "INFO: Game Started";
+                }
+                break;*/
+            }
+
 
             ///Проверка на старт игры
             if (line.contains("APP -- Game Start"))
@@ -107,7 +113,7 @@ void GameInfoReader::readGameInfo()
                             m_gameStarted = false;
                             m_gamePlayback = true;
                             m_gameLoad = false;
-                            m_ssInitialized = true;
+                            checkGameInitialize();
                             m_ssShutdowned = false;
                             qDebug() << "INFO: Game Playback";   
                         }
@@ -123,7 +129,7 @@ void GameInfoReader::readGameInfo()
                             m_gameStarted = false;
                             m_gamePlayback = false;
                             m_gameLoad = true;
-                            m_ssInitialized = true;
+                            checkGameInitialize();
                             m_ssShutdowned = false;
                             qDebug() << "INFO: Game Load";
                         }
@@ -139,7 +145,7 @@ void GameInfoReader::readGameInfo()
                     m_gameStarted = true;
                     m_gamePlayback = false;
                     m_gameLoad = false;
-                    m_ssInitialized = true;
+                    checkGameInitialize();
                     m_ssShutdowned = false;
                     emit gameStarted();
                     qDebug() << "INFO: Game Started";
@@ -166,4 +172,16 @@ void GameInfoReader::ssWindowClosed()
 bool GameInfoReader::getGameInitialized()
 {
     return m_ssInitialized;
+}
+
+void GameInfoReader::checkGameInitialize()
+{
+    if(!m_ssInitialized)
+    {
+        qDebug() << "INFO: SS Initialized";
+        m_ssInitialized = true;
+        m_ssShutdowned = false;
+        emit gameInitialized();
+
+    }
 }

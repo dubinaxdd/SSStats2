@@ -7,8 +7,10 @@ Rectangle {
     id: headerRectangle
     width: 260
     height: 60
+    color: "#333333"
     Layout.minimumWidth: 260
     Layout.minimumHeight: 60
+    visible: !_uiBackend.gamePanelVisible
 
     property int expandButtonRectangleX : expandButtonRectangle.x
     property int expandButtonRectangleY : expandButtonRectangle.y

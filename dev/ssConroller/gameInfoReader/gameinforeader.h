@@ -11,6 +11,8 @@ public:
     explicit GameInfoReader(QString sspath, QObject *parent = nullptr);
     void ssWindowClosed();
     bool getGameInitialized();
+    void checkGameInitialize();
+
 
 private slots:
     void readGameInfo();
@@ -27,7 +29,7 @@ private:
     QTimer* m_gameInfoReadTimer;
     QString m_ssPath;
 
-    bool m_gameStoped = true;
+    bool m_gameStoped = false;
     bool m_gameStarted = false;
     bool m_gamePlayback = false;
     bool m_gameLoad = false;

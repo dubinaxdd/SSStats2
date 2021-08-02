@@ -13,6 +13,7 @@ class UiBackend : public QObject
     Q_PROPERTY(int mousePositionX READ mousePositionX)
     Q_PROPERTY(int mousePositionY READ mousePositionY)
     Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
+    Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
 
 
 public:
@@ -34,11 +35,15 @@ signals:
     void sendShowClient(bool);
     void windowTopmostChanged();
     void windowedModeSeted();
+    void gamePanelVisibleChanged(bool);
 
 public slots:
     void expandKeyPressed();
     void receiveSsMaximized(bool maximized);
     void receiveSsLounched(bool lounched);
+
+    void gameStarted();
+    void gameStoped();
 
 
 private:
@@ -50,6 +55,7 @@ private:
     bool m_ssMaximized = false;
     bool m_ssLounched = false;
     bool m_showClient = false;
+    bool m_gamePanelVisible = false;
 
     bool m_windowTopmost = false;
 };

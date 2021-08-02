@@ -62,6 +62,11 @@ Window {
             visible: _uiBackend.expand
         }
 
+        GamePanel {
+            id: gamePanel
+            anchors.fill: parent
+        }
+
         ColumnLayout {
             id: columnLayout
             anchors.fill: parent
@@ -161,6 +166,7 @@ Window {
 
             }
         }
+
 
     }
 }

@@ -4,5 +4,6 @@
         <file>resources/qml/StatsHeader.qml</file>
         <file>resources/qml/FullOverlay.qml</file>
         <file>resources/qml/PlyerStatistic.qml</file>
+        <file>resources/qml/GamePanel.qml</file>
     </qresource>
 </RCC>
