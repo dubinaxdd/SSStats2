@@ -24,6 +24,7 @@ signals:
     void gameStarted();
     void gameInitialized();
     void ssShutdown();
+    void startingMission();
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -36,6 +37,7 @@ private:
     bool m_scrimishMission = false;
     bool m_ssInitialized = false;
     bool m_ssShutdowned = true;
+    bool m_missionStarted = false;
 
 };
 

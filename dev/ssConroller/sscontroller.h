@@ -30,6 +30,7 @@ private slots:
     void checkSS();
     void gameInitialized();
     void ssShutdown();
+    void readTestStats();
 
 signals:
     void ssLounched(bool lounched);
@@ -43,6 +44,8 @@ private:
     HWND m_soulstormHwnd = NULL;
     QTimer* m_ssLounchControllTimer;
     QString m_ssPath;
+
+    QString currentProfile;
 
     bool inputBlocked = false;
     bool m_ssLounched = false;

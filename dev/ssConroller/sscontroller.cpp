@@ -4,6 +4,8 @@
 #include <QGuiApplication>
 #include <QFile>
 #include <QSettings>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 #define CHECK_SS_TIMER_INTERVAL 100  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
@@ -15,6 +17,8 @@ SsController::SsController(QObject *parent) : QObject(parent)
 
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
+
 
 
     m_ssLounchControllTimer = new QTimer(this);
@@ -105,6 +109,49 @@ void SsController::ssShutdown()
 
 }
 
+void SsController::readTestStats()
+{
+    QString statsPath = m_ssPath + "\\Profiles\\" + currentProfile + "\\teststats.lua";
+    qDebug() << "INFO: teststats.lua path: " << statsPath;
+
+    QFile file(statsPath);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+    if(!file.isReadable())
+        return;
+
+    // в начале файла лежат байты из-за этого корневой ключ может не читаться
+    int k=0;
+    while(file.read(1)!="G")
+        k++;
+    file.seek(k);
+
+    //QByteArray testStats = file.readAll();
+
+    QTextStream textStream(&file);
+    QStringList fileLines = textStream.readAll().split("\r");
+
+    file.close();
+
+    for(int i = 0; i < fileLines.size(); i++ )
+    {
+        if (fileLines[i].contains("PName")){
+
+            QString name = fileLines[i].right(fileLines[i].length() - 12);
+            name = name.left(name.length() - 2);
+            qDebug() << name;
+        }
+
+        if (fileLines[i].contains("PRace")){
+
+            QString race = fileLines[i].right(fileLines[i].length() - 12);
+            race = race.left(race.length() - 2);
+            qDebug() << race;
+        }
+    }
+}
+
 QString SsController::getSsPathFromRegistry()
 {
     QString path = QCoreApplication::applicationDirPath();
@@ -133,14 +180,11 @@ void SsController::parseSsSettings()
 {
 
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
-    int windowed = ssSettings->value("global/screenwindowed", 0).toInt();
+    m_ssWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
+    currentProfile = ssSettings->value("global/playerprofile","profile").toString();
 
-    if(m_ssWindowed != windowed && m_ssWindowed == true)
-    {
 
-    }
-    m_ssWindowed = windowed;
-
+    qDebug() << "INFO: Current profile: " << currentProfile;
     qDebug() << "INFO: Windowed mode = " << m_ssWindowed;
 
 

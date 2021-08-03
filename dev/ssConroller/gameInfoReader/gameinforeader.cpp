@@ -72,8 +72,10 @@ void GameInfoReader::readGameInfo()
                     m_gameStarted = false;
                     m_gamePlayback = false;
                     m_gameLoad = false;
+
                     checkGameInitialize();
                     m_ssShutdowned = false;
+                    m_missionStarted = false;
 
                     qDebug() << "INFO: Game Stoped";
                 }
@@ -83,14 +85,14 @@ void GameInfoReader::readGameInfo()
             ///Проверка на старт миссии игры
             if (line.contains("GAME -- Starting mission"))
             {
-               /* if (!m_gameStoped)
+                if(!m_missionStarted)
                 {
+                    m_missionStarted = true;
                     checkGameInitialize();
-                    m_ssShutdowned = false;
-                    emit gameStarted();
-                    qDebug() << "INFO: Game Started";
+                    emit startingMission();
+                    qDebug() << "INFO: Starting mission";
                 }
-                break;*/
+                break;
             }
 
 

@@ -59,8 +59,6 @@ void Core::topmostTimerTimout()
 
                     //if (m_ssController->ssWindowed())
                         m_uiBackend->setWindowedMode();
-
-
                 }
            }
 
@@ -88,7 +86,9 @@ void Core::ssMaximized(bool maximized)
                 m_ssRect = ssRect;
                 MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
                 m_uiBackend->setWindowTopmost(true);
+
             }
+            m_topmostTimer->start();
         }
         else
         {
@@ -106,9 +106,13 @@ void Core::ssMaximized(bool maximized)
                 }
             }
         }
+
+        m_topmostTimer->start();
     }
     else
     {
+        m_topmostTimer->stop();
+        SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
         m_uiBackend->setWindowTopmost(false);
     }
 }
