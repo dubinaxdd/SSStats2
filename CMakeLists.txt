@@ -41,6 +41,7 @@ set(PROJECT_SOURCES
         dev/ssConroller/sscontroller.cpp
         dev/ssConroller/gameInfoReader/gameinforeader.h
         dev/ssConroller/gameInfoReader/gameinforeader.cpp
+        dev/baseTypes/baseTypes.h
         qml.qrc
         resources.qrc
        # ${TS_FILES}

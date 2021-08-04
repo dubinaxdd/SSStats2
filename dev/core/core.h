@@ -28,6 +28,8 @@ private slots:
     void gameInitialized();
     void ssLounched(bool ssLounched);
 
+private:
+    void registerTypes();
 
 private:
     QTimer* m_topmostTimer;

@@ -210,54 +210,70 @@ Rectangle {
                             anchors.fill: parent
 
                             Label {
-                                id: label6
-                                text: qsTr("Computer1 - Orks")
+                                id: player0RaceLabel
+                                text: _uiBackend.player0Race
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
+                                visible: _uiBackend.player0Race !== "";
                             }
 
                             Label {
-                                id: label7
-                                text: qsTr("Computer2 - Orks")
+                                id: player1RaceLabel
+                                text: _uiBackend.player1Race
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
+                                visible: _uiBackend.player1Race !== "";
                             }
 
                             Label {
-                                id: label8
-                                text: qsTr("Computer3 - Orks")
+                                id: player2RaceLabel
+                                text: _uiBackend.player2Race
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillWidth: true
+                                visible: _uiBackend.player2Race !== "";
                             }
 
                             Label {
-                                id: label9
-                                text: qsTr("Computer4 - Orks")
+                                id: player3RaceLabel
+                                text: _uiBackend.player3Race
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillWidth: true
+                                visible: _uiBackend.player3Race !== "";
                             }
 
                             Label {
-                                id: label10
-                                text: qsTr("Computer5 - Orks")
+                                id: player4RaceLabel
+                                text: _uiBackend.player4Race
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillWidth: true
+                                visible: _uiBackend.player4Race !== "";
                             }
 
                             Label {
-                                id: label11
-                                text: qsTr("Computer6 - Orks")
+                                id: player5RaceLabel
+                                text: _uiBackend.player5Race
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillWidth: true
+                                visible: _uiBackend.player5Race !== "";
                             }
 
                             Label {
-                                id: label12
-                                text: qsTr("Computer7 - Orks")
+                                id: player6RaceLabel
+                                text: _uiBackend.player6Race
                                 horizontalAlignment: Text.AlignHCenter
                                 Layout.fillWidth: true
+                                visible: _uiBackend.player6Race !== "";
+                            }
+
+                            Label {
+                                id: player7RaceLabel
+                                text: _uiBackend.player7Race
+                                horizontalAlignment: Text.AlignHCenter
+                                Layout.fillWidth: true
+                                Layout.fillHeight: false
+                                visible: _uiBackend.player7Race !== "";
                             }
                         }
                     }

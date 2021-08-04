@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QPoint>
+#include "../baseTypes/baseTypes.h"
 
 class UiBackend : public QObject
 {
@@ -14,6 +15,15 @@ class UiBackend : public QObject
     Q_PROPERTY(int mousePositionY READ mousePositionY)
     Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
     Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
+
+    Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player2Race MEMBER m_player2Race NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player3Race MEMBER m_player3Race NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player4Race MEMBER m_player4Race NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player5Race MEMBER m_player5Race NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player6Race MEMBER m_player6Race NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player7Race MEMBER m_player7Race NOTIFY playerTestStatsUpdate)
 
 
 public:
@@ -36,11 +46,13 @@ signals:
     void windowTopmostChanged();
     void windowedModeSeted();
     void gamePanelVisibleChanged(bool);
+    void playerTestStatsUpdate();
 
 public slots:
     void expandKeyPressed();
     void receiveSsMaximized(bool maximized);
     void receiveSsLounched(bool lounched);
+    void receivePlayersTestStats(QVector<PlayerStats> testStats);
 
     void gameStarted();
     void gameStoped();
@@ -48,6 +60,7 @@ public slots:
 
 private:
     void showClient();
+    void replaceRaceKeyword(QString *raceString);
 
 private:
     bool m_expand = false;
@@ -58,6 +71,15 @@ private:
     bool m_gamePanelVisible = false;
 
     bool m_windowTopmost = false;
+
+    QString m_player0Race = "";
+    QString m_player1Race = "";
+    QString m_player2Race = "";
+    QString m_player3Race = "";
+    QString m_player4Race = "";
+    QString m_player5Race = "";
+    QString m_player6Race = "";
+    QString m_player7Race = "";
 };
 
 #endif // UIBACKEND_H

@@ -3,6 +3,7 @@
 #include "QFile"
 #include "QSettings"
 #include "../ssConroller/gameInfoReader/gameinforeader.h"
+#include "../baseTypes/baseTypes.h"
 
 
 Core::Core(QQmlContext *context, QObject* parent)
@@ -11,6 +12,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_uiBackend(new UiBackend(context))
     , m_ssController(new SsController(this))
 {
+    registerTypes();
+
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
@@ -26,6 +29,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::ssLounched, this, &Core::ssLounched, Qt::QueuedConnection );
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStarted, m_uiBackend, &UiBackend::gameStarted, Qt::QueuedConnection );
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStoped, m_uiBackend, &UiBackend::gameStoped, Qt::QueuedConnection );
+    QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend, &UiBackend::receivePlayersTestStats, Qt::QueuedConnection );
 
 }
 
@@ -136,6 +140,11 @@ void Core::ssLounched(bool ssLounched)
         SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
         m_uiBackend->setWindowTopmost(false);
     }
+}
+
+void Core::registerTypes()
+{
+    qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
 }
 
 UiBackend *Core::uiBackend() const

@@ -6,6 +6,7 @@
 #include <QSettings>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QStringList>
 
 #define CHECK_SS_TIMER_INTERVAL 100  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
@@ -134,22 +135,52 @@ void SsController::readTestStats()
 
     file.close();
 
+    QStringList playerNames;
+    QStringList playerRaces;
+    QStringList playerTeam;
+
     for(int i = 0; i < fileLines.size(); i++ )
     {
         if (fileLines[i].contains("PName")){
 
             QString name = fileLines[i].right(fileLines[i].length() - 12);
             name = name.left(name.length() - 2);
-            qDebug() << name;
+            playerNames.append(name);
         }
 
         if (fileLines[i].contains("PRace")){
 
             QString race = fileLines[i].right(fileLines[i].length() - 12);
             race = race.left(race.length() - 2);
-            qDebug() << race;
+            playerRaces.append(race);
         }
+
+
+        if (fileLines[i].contains("PTeam")){
+
+            QString team = fileLines[i].right(fileLines[i].length() - 11);
+            team = team.left(team.length() - 1);
+            playerTeam.append(team);
+        }
+
+
     }
+
+    QVector<PlayerStats> playerStats;
+
+    playerStats.resize(8);
+
+    for(int i = 0; i < playerNames.count(); i++ )
+        playerStats[i].name = playerNames.at(i);
+
+    for(int i = 0; i < playerRaces.count(); i++ )
+        playerStats[i].race = playerRaces.at(i);
+
+    for(int i = 0; i < playerTeam.count(); i++ )
+        playerStats[i].team = playerTeam.at(i);
+
+    emit sendPlayersTestStats(playerStats);
+
 }
 
 QString SsController::getSsPathFromRegistry()

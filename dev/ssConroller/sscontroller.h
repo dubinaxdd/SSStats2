@@ -5,6 +5,8 @@
 #include "Windows.h"
 #include <QTimer>
 #include "gameInfoReader/gameinforeader.h"
+#include "../baseTypes/baseTypes.h"
+#include <QVector>
 
 class SsController : public QObject
 {
@@ -35,6 +37,7 @@ private slots:
 signals:
     void ssLounched(bool lounched);
     void ssMaximized(bool maximized);
+    void sendPlayersTestStats(QVector<PlayerStats> testStats);
 
 private:
     QString getSsPathFromRegistry();
