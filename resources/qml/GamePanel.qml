@@ -183,9 +183,10 @@ Rectangle {
                 id: playerRacesRectangle
                 width: 200
                 height: 200
-                color: "#00000000"
-                Layout.fillHeight: true
+                Layout.fillHeight: false
                 Layout.fillWidth: true
+                visible: _uiBackend.racePanelVisible
+                color: "#00000000"
 
                 ColumnLayout {
                     id: columnLayout1
@@ -395,17 +396,22 @@ Rectangle {
                         id: rectangle7
                         width: 200
                         height: 200
+                        color: "#00000000"
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
-
-
-
-
                 }
-
             }
 
+            Rectangle {
+                id: rectangle10
+                width: 200
+                height: 200
+                opacity: 1
+                color: "#00000000"
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+            }
         }
     }
 

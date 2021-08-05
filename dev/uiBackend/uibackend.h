@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QPoint>
 #include "../baseTypes/baseTypes.h"
+#include "QTimer"
 
 class UiBackend : public QObject
 {
@@ -15,6 +16,7 @@ class UiBackend : public QObject
     Q_PROPERTY(int mousePositionY READ mousePositionY)
     Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
     Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
+    Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisible NOTIFY racePanelVisibleChanged)
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
     Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
@@ -55,6 +57,7 @@ signals:
     void windowTopmostChanged();
     void windowedModeSeted();
     void gamePanelVisibleChanged(bool);
+    void racePanelVisibleChanged(bool);
     void playerTestStatsUpdate();
 
 public slots:
@@ -66,6 +69,8 @@ public slots:
     void gameStarted();
     void gameStoped();
 
+private slots:
+    void racePanelVisibleTimerTimeot();
 
 private:
     void showClient();
@@ -73,12 +78,16 @@ private:
     QString chooseColorForPlayer(int team);
 
 private:
+    QTimer* racePanelVisibleTimer;
+
+
     bool m_expand = false;
     QPoint m_mousePosition;
     bool m_ssMaximized = false;
     bool m_ssLounched = false;
     bool m_showClient = false;
     bool m_gamePanelVisible = false;
+    bool m_racePanelVisible = false;
 
     bool m_windowTopmost = false;
 

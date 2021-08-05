@@ -2,6 +2,11 @@
 
 UiBackend::UiBackend(QObject *parent) : QObject(parent)
 {
+    racePanelVisibleTimer = new QTimer(this);
+    racePanelVisibleTimer->setInterval(20000);
+    racePanelVisibleTimer->setSingleShot(true);
+
+    QObject::connect(racePanelVisibleTimer, &QTimer::timeout, this, &UiBackend::racePanelVisibleTimerTimeot, Qt::QueuedConnection);
 
 }
 
@@ -26,6 +31,14 @@ void UiBackend::receiveSsLounched(bool lounched)
 
 void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
 {
+    racePanelVisibleTimer->start();
+
+    m_gamePanelVisible = true;
+    emit gamePanelVisibleChanged(m_gamePanelVisible);
+
+    m_racePanelVisible = true;
+    emit racePanelVisibleChanged(m_racePanelVisible);
+
     if(testStats.count() < 8)
         return;
 
@@ -77,8 +90,7 @@ void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
 
 void UiBackend::gameStarted()
 {
-    m_gamePanelVisible = true;
-    emit gamePanelVisibleChanged(m_gamePanelVisible);
+
 }
 
 void UiBackend::gameStoped()
@@ -96,6 +108,15 @@ void UiBackend::gameStoped()
 
     m_gamePanelVisible = false;
     emit gamePanelVisibleChanged(m_gamePanelVisible);
+
+    m_racePanelVisible = false;
+    emit racePanelVisibleChanged(m_racePanelVisible);
+}
+
+void UiBackend::racePanelVisibleTimerTimeot()
+{
+    m_racePanelVisible = false;
+    emit racePanelVisibleChanged(m_racePanelVisible);
 }
 
 void UiBackend::showClient()
@@ -159,8 +180,6 @@ void UiBackend::replaceRaceKeyword(QString *raceString)
         raceString->replace("eldar_race", "Eldar");
         return;
     }
-
-
 }
 
 QString UiBackend::chooseColorForPlayer(int team)
