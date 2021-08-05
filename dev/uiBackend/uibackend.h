@@ -19,6 +19,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
     Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
     Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisible NOTIFY racePanelVisibleChanged)
+    Q_PROPERTY(bool headerPanelVisible MEMBER m_headerPanelVisible NOTIFY headerPanelVisibleChanged)
     Q_PROPERTY(bool ssWindowed MEMBER m_ssWindowed NOTIFY ssWindowedModeChanged)
     Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
     Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
@@ -67,6 +68,7 @@ signals:
     void windowedModeSeted();
     void gamePanelVisibleChanged(bool);
     void racePanelVisibleChanged(bool);
+    void headerPanelVisibleChanged(bool);
     void playerTestStatsUpdate();
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
@@ -79,6 +81,7 @@ public slots:
 
     void gameStarted();
     void gameStoped();
+    void startingMission();
 
 private slots:
     void racePanelVisibleTimerTimeot();
@@ -99,6 +102,7 @@ private:
     bool m_showClient = false;
     bool m_gamePanelVisible = false;
     bool m_racePanelVisible = false;
+    bool m_headerPanelVisible = true;
 
     bool m_windowTopmost = false;
     bool m_ssWindowed = false;
@@ -108,6 +112,9 @@ private:
 
     int m_ssWindowPositionX = 0;
     int m_ssWindowPositionY = 0;
+
+    bool m_gameStarted = false;
+    bool m_missionStarted = false;
 
     QString m_player0Race = "";
     QString m_player1Race = "";

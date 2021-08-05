@@ -91,11 +91,14 @@ void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
 
 void UiBackend::gameStarted()
 {
-
+    m_gameStarted = true;
 }
 
 void UiBackend::gameStoped()
 {
+    m_gameStarted = false;
+    m_missionStarted = false;
+
     m_player0Race = "";
     m_player1Race = "";
     m_player2Race = "";
@@ -112,6 +115,14 @@ void UiBackend::gameStoped()
 
     m_racePanelVisible = false;
     emit racePanelVisibleChanged(m_racePanelVisible);
+
+    m_headerPanelVisible = true;
+    emit headerPanelVisibleChanged(m_headerPanelVisible);
+}
+
+void UiBackend::startingMission()
+{
+    m_missionStarted = true;
 }
 
 void UiBackend::racePanelVisibleTimerTimeot()
@@ -228,6 +239,25 @@ void UiBackend::setExpand(bool newExpand)
 {
     m_expand = newExpand;
     emit sendExpand(m_expand);
+
+    qDebug() << m_gameStarted;
+
+    if (m_missionStarted)
+    {
+        if (m_expand)
+        {
+            m_gamePanelVisible = false;
+            m_headerPanelVisible = true;
+        }
+        else
+        {
+            m_gamePanelVisible = true;
+            m_headerPanelVisible = false;
+        }
+
+        emit gamePanelVisibleChanged(m_gamePanelVisible);
+        emit headerPanelVisibleChanged(m_headerPanelVisible);
+    }
 }
 
 void UiBackend::mousePressEvent(QPoint mousePosition)

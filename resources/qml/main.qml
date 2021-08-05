@@ -59,8 +59,42 @@ Window {
                     yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangleY + statsHeader.expandButtonRectangleHeight)
             {
                 _uiBackend.expandKeyPressed();
+
+               // if (_uiBackend.gamePanelVisible)
+               // {
+                 //   gamePanel.visible =_uiBackend.gamePanelVisible;
+                    //statsHeader.visible = false;
+                //}
+            }
+
+            //Кнопка "Развернуть оверлей в игровой панели"
+            if (xMousePos >= gamePanel.x + gamePanel.expandButtonRectangleX &&
+                    xMousePos <= gamePanel.x + gamePanel.expandButtonRectangleX + gamePanel.expandButtonRectangleWidth &&
+                    yMousePos >= gamePanel.y + gamePanel.expandButtonRectangleY &&
+                    yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangleHeight)
+            {
+                //if (gamePanel.visible)
+                //{
+                    _uiBackend.expandKeyPressed();
+                    //gamePanel.visible = false;
+                    //statsHeader.visible = true;
+                //}
             }
         }
+
+       /* function onSendExpand(expand){
+            if(expand)
+            {
+                //_uiBackend.expandKeyPressed();
+                gamePanel.visible = false;
+                statsHeader.visible = true;
+            }
+            else
+            {
+                gamePanel.visible = true;
+                statsHeader.visible = false;
+            }
+        }*/
 
         function onWindowTopmostChanged(){
             if (_uiBackend.topmost)

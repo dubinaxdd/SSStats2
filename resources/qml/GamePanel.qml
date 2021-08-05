@@ -8,6 +8,11 @@ Rectangle {
     anchors.fill: parent
     visible: _uiBackend.gamePanelVisible
 
+    property int expandButtonRectangleX : expandButtonRectangle.x + gamePanelRectangle.x
+    property int expandButtonRectangleY : expandButtonRectangle.y + gamePanelRectangle.y
+    property int expandButtonRectangleWidth : expandButtonRectangle.width
+    property int expandButtonRectangleHeight : expandButtonRectangle.height
+
 
     function chooseColor(string)
     {
@@ -16,7 +21,7 @@ Rectangle {
     }
 
     Rectangle {
-        id: rectangle9
+        id: gamePanelRectangle
         width: 550
         height: 200
         color: "#00000000"
