@@ -201,6 +201,9 @@ QString UiBackend::chooseColorForPlayer(int team)
 void UiBackend::setSsWindowed(bool newSsWindowed)
 {
     m_ssWindowed = newSsWindowed;
+
+    if(m_ssWindowed)
+        emit windowedModeSeted();
 }
 
 bool UiBackend::expand() const
@@ -244,11 +247,6 @@ void UiBackend::setWindowTopmost(bool topmost)
 bool UiBackend::getWindowTopmost()
 {
     return m_windowTopmost;
-}
-
-void UiBackend::setWindowedMode()
-{
-    emit windowedModeSeted();
 }
 
 void UiBackend::setMouseArea(int width, int height)

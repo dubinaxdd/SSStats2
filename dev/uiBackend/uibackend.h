@@ -53,7 +53,6 @@ public:
     int mousePositionY();
     void setWindowTopmost(bool topmost);
     bool getWindowTopmost();
-    void setWindowedMode();
     void setMouseArea(int width, int height);
 
     void setSsWindowed(bool newSsWindowed);

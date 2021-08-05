@@ -62,7 +62,9 @@ void Core::topmostTimerTimout()
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
 
                     //if (m_ssController->ssWindowed())
-                        m_uiBackend->setWindowedMode();
+                        //m_uiBackend->setWindowedMode();
+
+                    m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
                 }
            }
 
@@ -114,7 +116,7 @@ void Core::ssMaximized(bool maximized)
 
                     LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
-                    m_uiBackend->setWindowedMode();
+                    //m_uiBackend->setWindowedMode();
                 }
             }
             m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
@@ -128,6 +130,8 @@ void Core::ssMaximized(bool maximized)
         SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
         m_uiBackend->setWindowTopmost(false);
     }
+
+    m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
 }
 
 void Core::gameInitialized()
