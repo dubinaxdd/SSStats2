@@ -56,15 +56,16 @@ void Core::topmostTimerTimout()
                     {
                         m_ssRect = ssRect;
                         SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
+
+                        m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                     }
 
                     LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
 
-                    //if (m_ssController->ssWindowed())
-                        //m_uiBackend->setWindowedMode();
-
                     m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
+
+
                 }
            }
 
@@ -91,11 +92,6 @@ void Core::ssMaximized(bool maximized)
             RECT ssRect;
             if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
             {
-                /*if(width > ssRect.right - ssRect.left || height > ssRect.bottom - ssRect.top)
-                    m_uiBackend->setMouseArea(width, height);
-                else
-                    m_uiBackend->setMouseArea(width > ssRect.right - ssRect.left, height > ssRect.bottom - ssRect.top);*/
-
                 m_ssRect = ssRect;
                 //MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
                 SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
@@ -117,6 +113,8 @@ void Core::ssMaximized(bool maximized)
                     LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
                     //m_uiBackend->setWindowedMode();
+
+                    m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                 }
             }
             m_uiBackend->setSsWindowed(m_ssController->ssWindowed());

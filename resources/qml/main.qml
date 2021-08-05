@@ -41,9 +41,16 @@ Window {
                 yMousePos = yMousePos/2;
             }
 
+            if(_uiBackend.ssWindowed)
+            {
+                xMousePos = xMousePos - _uiBackend.ssWindowPositionX;
+                yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
+            }
+
+
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
 
-            console.log(_uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
+            //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
             //Кнопка "Развернуть оверлей"
             if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangleX &&

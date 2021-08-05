@@ -206,6 +206,14 @@ void UiBackend::setSsWindowed(bool newSsWindowed)
         emit windowedModeSeted();
 }
 
+void UiBackend::setSsWindowPosition(int x, int y)
+{
+    m_ssWindowPositionX = x;
+    m_ssWindowPositionY = y;
+
+    emit ssWindowPositionChanged();
+}
+
 bool UiBackend::expand() const
 {
     return m_expand;

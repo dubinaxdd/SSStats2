@@ -20,7 +20,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
     Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisible NOTIFY racePanelVisibleChanged)
     Q_PROPERTY(bool ssWindowed MEMBER m_ssWindowed NOTIFY ssWindowedModeChanged)
-
+    Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
+    Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
 
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
@@ -56,6 +57,7 @@ public:
     void setMouseArea(int width, int height);
 
     void setSsWindowed(bool newSsWindowed);
+    void setSsWindowPosition(int x, int y);
 
 signals:
     void sendExpand(bool);
@@ -67,6 +69,7 @@ signals:
     void racePanelVisibleChanged(bool);
     void playerTestStatsUpdate();
     void ssWindowedModeChanged();
+    void ssWindowPositionChanged();
 
 public slots:
     void expandKeyPressed();
@@ -102,6 +105,9 @@ private:
 
     int m_mouseAreaWidth;
     int m_mouseAreaHeight;
+
+    int m_ssWindowPositionX = 0;
+    int m_ssWindowPositionY = 0;
 
     QString m_player0Race = "";
     QString m_player1Race = "";
