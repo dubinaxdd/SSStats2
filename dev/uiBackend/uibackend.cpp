@@ -240,8 +240,6 @@ void UiBackend::setExpand(bool newExpand)
     m_expand = newExpand;
     emit sendExpand(m_expand);
 
-    qDebug() << m_gameStarted;
-
     if (m_missionStarted)
     {
         if (m_expand)
