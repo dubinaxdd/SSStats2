@@ -25,6 +25,15 @@ class UiBackend : public QObject
     Q_PROPERTY(QString player6Race MEMBER m_player6Race NOTIFY playerTestStatsUpdate)
     Q_PROPERTY(QString player7Race MEMBER m_player7Race NOTIFY playerTestStatsUpdate)
 
+    Q_PROPERTY(QString player0Color MEMBER m_player0Color NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player1Color MEMBER m_player1Color NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player2Color MEMBER m_player2Color NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player3Color MEMBER m_player3Color NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player4Color MEMBER m_player4Color NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player5Color MEMBER m_player5Color NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player6Color MEMBER m_player6Color NOTIFY playerTestStatsUpdate)
+    Q_PROPERTY(QString player7Color MEMBER m_player7Color NOTIFY playerTestStatsUpdate)
+
 
 public:
     explicit UiBackend(QObject *parent = nullptr);
@@ -61,6 +70,7 @@ public slots:
 private:
     void showClient();
     void replaceRaceKeyword(QString *raceString);
+    QString chooseColorForPlayer(int team);
 
 private:
     bool m_expand = false;
@@ -80,6 +90,16 @@ private:
     QString m_player5Race = "";
     QString m_player6Race = "";
     QString m_player7Race = "";
+
+
+    QString m_player0Color = "";
+    QString m_player1Color = "";
+    QString m_player2Color = "";
+    QString m_player3Color = "";
+    QString m_player4Color = "";
+    QString m_player5Color = "";
+    QString m_player6Color = "";
+    QString m_player7Color = "";
 };
 
 #endif // UIBACKEND_H
