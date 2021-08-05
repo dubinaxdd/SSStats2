@@ -1,4 +1,5 @@
 #include "uibackend.h"
+#include "QDebug"
 
 UiBackend::UiBackend(QObject *parent) : QObject(parent)
 {
@@ -197,6 +198,11 @@ QString UiBackend::chooseColorForPlayer(int team)
     }
 }
 
+void UiBackend::setSsWindowed(bool newSsWindowed)
+{
+    m_ssWindowed = newSsWindowed;
+}
+
 bool UiBackend::expand() const
 {
     return m_expand;
@@ -243,4 +249,10 @@ bool UiBackend::getWindowTopmost()
 void UiBackend::setWindowedMode()
 {
     emit windowedModeSeted();
+}
+
+void UiBackend::setMouseArea(int width, int height)
+{
+    m_mouseAreaWidth = width;
+    m_mouseAreaHeight = height;
 }

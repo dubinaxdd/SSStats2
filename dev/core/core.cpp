@@ -82,17 +82,25 @@ void Core::ssMaximized(bool maximized)
         m_widthInGame = width;
         m_heightInGame = height;
 
+        m_uiBackend->setMouseArea(width, height);
+
         if (!m_ssController->ssWindowed())
         {
             RECT ssRect;
             if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
             {
-                m_ssRect = ssRect;
-                MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
-                m_uiBackend->setWindowTopmost(true);
+                /*if(width > ssRect.right - ssRect.left || height > ssRect.bottom - ssRect.top)
+                    m_uiBackend->setMouseArea(width, height);
+                else
+                    m_uiBackend->setMouseArea(width > ssRect.right - ssRect.left, height > ssRect.bottom - ssRect.top);*/
 
+                m_ssRect = ssRect;
+                //MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
+                SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
+                m_uiBackend->setWindowTopmost(true);
             }
             m_topmostTimer->start();
+            m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
         }
         else
         {
@@ -109,6 +117,7 @@ void Core::ssMaximized(bool maximized)
                     m_uiBackend->setWindowedMode();
                 }
             }
+            m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
         }
 
         m_topmostTimer->start();

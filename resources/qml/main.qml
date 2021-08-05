@@ -20,12 +20,32 @@ Window {
         function onSendMousePress(){
             var xMousePos = _uiBackend.mousePositionX;
             var yMousePos = _uiBackend.mousePositionY;
+            var mouseAreaWidth = _uiBackend.mouseAreaWidth;
+            var mouseAreaHeight = _uiBackend.mouseAreaHeight;
+
+            //Костыль для работы с 4k мониторами, не спрашивайте почему так, все равно не скажу. Просто сс не может работать в большем разрешении чем 1920/1080
+
+            if (!_uiBackend.ssWindowed && mouseAreaWidth !== 0 && mouseAreaHeight !== 0 && window.width >= 1920 && window.height >= 1080)
+            {
+                if (window.width !== mouseAreaWidth && window.height !== mouseAreaHeight)
+                {
+                    xMousePos = (window.width * xMousePos) / mouseAreaWidth;
+                    yMousePos = (window.height * yMousePos) / mouseAreaHeight;
+                }
+            }
+
+            //Это тоже кусок костыля, только для оконного режима игры
+            if( _uiBackend.ssWindowed && mouseAreaWidth > 1920 && mouseAreaHeight > 1080)
+            {
+                xMousePos = xMousePos/2;
+                yMousePos = yMousePos/2;
+            }
 
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
 
-            //console.log(xMousePos, xMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY);
+            console.log(_uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
-            //Рнопка "Развернуть оверлей"
+            //Кнопка "Развернуть оверлей"
             if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangleX &&
                     xMousePos <= columnLayout3.x + statsHeader.expandButtonRectangleX + statsHeader.expandButtonRectangleWidth &&
                     yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangleY &&
@@ -37,7 +57,7 @@ Window {
 
         function onWindowTopmostChanged(){
             if (_uiBackend.topmost)
-                window.flags =  Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput | Qt.WindowFullScreen | Qt.WA_TranslucentBackground | Qt.WA_MSWindowsUseDirect3D | Qt.WA_ShowWithoutActivating
+                window.flags =  Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground | Qt.WA_MSWindowsUseDirect3D | Qt.WA_ShowWithoutActivating
             else
                 window.flags =  Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground | Qt.WA_MSWindowsUseDirect3D | Qt.WA_ShowWithoutActivating | Qt.WA_WState_Hidden
         }

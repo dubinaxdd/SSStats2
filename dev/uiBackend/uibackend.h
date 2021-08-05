@@ -14,9 +14,14 @@ class UiBackend : public QObject
     Q_PROPERTY(bool showClient MEMBER m_showClient NOTIFY sendShowClient)
     Q_PROPERTY(int mousePositionX READ mousePositionX)
     Q_PROPERTY(int mousePositionY READ mousePositionY)
+    Q_PROPERTY(int mouseAreaWidth MEMBER m_mouseAreaWidth)
+    Q_PROPERTY(int mouseAreaHeight MEMBER m_mouseAreaHeight)
     Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
     Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
     Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisible NOTIFY racePanelVisibleChanged)
+    Q_PROPERTY(bool ssWindowed MEMBER m_ssWindowed NOTIFY ssWindowedModeChanged)
+
+
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
     Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
@@ -49,6 +54,9 @@ public:
     void setWindowTopmost(bool topmost);
     bool getWindowTopmost();
     void setWindowedMode();
+    void setMouseArea(int width, int height);
+
+    void setSsWindowed(bool newSsWindowed);
 
 signals:
     void sendExpand(bool);
@@ -59,6 +67,7 @@ signals:
     void gamePanelVisibleChanged(bool);
     void racePanelVisibleChanged(bool);
     void playerTestStatsUpdate();
+    void ssWindowedModeChanged();
 
 public slots:
     void expandKeyPressed();
@@ -90,6 +99,10 @@ private:
     bool m_racePanelVisible = false;
 
     bool m_windowTopmost = false;
+    bool m_ssWindowed = false;
+
+    int m_mouseAreaWidth;
+    int m_mouseAreaHeight;
 
     QString m_player0Race = "";
     QString m_player1Race = "";

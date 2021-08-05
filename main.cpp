@@ -58,6 +58,7 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
         }
     }
+
     return CallNextHookEx(mouseHook, nCode, wParam, lParam);
 }
 
