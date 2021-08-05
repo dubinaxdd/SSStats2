@@ -207,6 +207,7 @@ QString UiBackend::chooseColorForPlayer(int team)
         case 6 : return "#b300e6d9";
         case 7 : return "#b3f97dfd";
     }
+    return "";
 }
 
 void UiBackend::setSsWindowed(bool newSsWindowed)
