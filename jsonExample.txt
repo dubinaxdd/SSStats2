@@ -1,0 +1,29 @@
+"{
+	\"response\":
+	{
+		\"players\":
+		[
+			{
+				\"steamid\":\"76561198041477216\",
+				\"communityvisibilitystate\":3,
+				\"profilestate\":1,
+				\"personaname\":\"Починка на коленке\",
+				\"profileurl\":\"https://steamcommunity.com/profiles/76561198041477216/\",
+				\"avatar\":\"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/f6/f6438f4abc7872b907c316cc1902d5346150a071.jpg\",
+				\"avatarmedium\":\"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/f6/f6438f4abc7872b907c316cc1902d5346150a071_medium.jpg\",
+				\"avatarfull\":\"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/f6/f6438f4abc7872b907c316cc1902d5346150a071_full.jpg\",
+				\"avatarhash\":\"f6438f4abc7872b907c316cc1902d5346150a071\",
+				\"personastate\":1,
+				\"realname\":\"женька\",
+				\"primaryclanid\":\"103582791432844551\",
+				\"timecreated\":1304508081,
+				\"personastateflags\":0,
+				\"gameextrainfo\":\"Warhammer 40,000: Dawn of War - Soulstorm\",
+				\"gameid\":\"9450\",
+				\"loccountrycode\":\"RU\",
+				\"locstatecode\":\"13\",
+				\"loccityid\":42262
+			}
+		]
+	}
+}"

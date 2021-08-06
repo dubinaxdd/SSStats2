@@ -42,6 +42,9 @@ set(PROJECT_SOURCES
         dev/ssConroller/gameInfoReader/gameinforeader.h
         dev/ssConroller/gameInfoReader/gameinforeader.cpp
         dev/baseTypes/baseTypes.h
+        dev/ssConroller/statsCollector/statscollector.h
+        dev/ssConroller/statsCollector/statscollector.cpp
+        defines.h
         qml.qrc
         resources.qrc
        # ${TS_FILES}

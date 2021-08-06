@@ -16,6 +16,11 @@ SsController::SsController(QObject *parent) : QObject(parent)
     qDebug() << "INFO: Worked with Soulstorm from: " << m_ssPath;
     m_gameInfoReader = new GameInfoReader(m_ssPath,this);
 
+    m_steamPath = getSteamPathFromRegistry();
+
+    m_statsCollector = new StatsCollector(m_steamPath, this);
+
+
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
@@ -102,6 +107,7 @@ void SsController::gameInitialized()
 {
     parseSsSettings();
     m_ssLounchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
+    m_statsCollector->parseCurrentPlayerSteamId();
 }
 
 void SsController::ssShutdown()
@@ -205,6 +211,21 @@ QString SsController::getSsPathFromRegistry()
     }
 
     return path;
+}
+
+QString SsController::getSteamPathFromRegistry()
+{
+    QSettings settings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam\\", QSettings::NativeFormat);
+
+    QString steam_path =  settings.value("InstallPath").toString();
+    if(steam_path.isEmpty())
+    {
+        QSettings settings_second("HKEY_CURRENT_USER\\Software\\Valve\\Steam", QSettings::NativeFormat);
+        steam_path = settings_second.value("SteamPath").toString();
+    }
+    qDebug() << "INFO: Steam path:" << steam_path;
+
+    return steam_path;
 }
 
 void SsController::parseSsSettings()

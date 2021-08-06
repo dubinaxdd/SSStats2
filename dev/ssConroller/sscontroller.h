@@ -7,6 +7,7 @@
 #include "gameInfoReader/gameinforeader.h"
 #include "../baseTypes/baseTypes.h"
 #include <QVector>
+#include "statsCollector/statscollector.h"
 
 class SsController : public QObject
 {
@@ -41,12 +42,15 @@ signals:
 
 private:
     QString getSsPathFromRegistry();
+    QString getSteamPathFromRegistry();
     void parseSsSettings();
+
 
 private:
     HWND m_soulstormHwnd = NULL;
     QTimer* m_ssLounchControllTimer;
     QString m_ssPath;
+    QString m_steamPath;
 
     QString currentProfile;
 
@@ -56,6 +60,7 @@ private:
     bool m_ssWindowed = false;
 
     GameInfoReader* m_gameInfoReader;
+    StatsCollector* m_statsCollector;
 
 
 };

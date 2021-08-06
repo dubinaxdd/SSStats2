@@ -59,12 +59,6 @@ Window {
                     yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangleY + statsHeader.expandButtonRectangleHeight)
             {
                 _uiBackend.expandKeyPressed();
-
-               // if (_uiBackend.gamePanelVisible)
-               // {
-                 //   gamePanel.visible =_uiBackend.gamePanelVisible;
-                    //statsHeader.visible = false;
-                //}
             }
 
             //Кнопка "Развернуть оверлей в игровой панели"
@@ -73,28 +67,9 @@ Window {
                     yMousePos >= gamePanel.y + gamePanel.expandButtonRectangleY &&
                     yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangleHeight)
             {
-                //if (gamePanel.visible)
-                //{
-                    _uiBackend.expandKeyPressed();
-                    //gamePanel.visible = false;
-                    //statsHeader.visible = true;
-                //}
+                _uiBackend.expandKeyPressed();
             }
         }
-
-       /* function onSendExpand(expand){
-            if(expand)
-            {
-                //_uiBackend.expandKeyPressed();
-                gamePanel.visible = false;
-                statsHeader.visible = true;
-            }
-            else
-            {
-                gamePanel.visible = true;
-                statsHeader.visible = false;
-            }
-        }*/
 
         function onWindowTopmostChanged(){
             if (_uiBackend.topmost)
@@ -166,52 +141,10 @@ Window {
                         Layout.fillHeight: true
                     }
 
-                    Rectangle {
-                        id: rectangle1
-                        width: 200
-                        height: 200
-                        color: "#ffffff"
-                        Layout.maximumHeight: 100
-                        Layout.maximumWidth: 200
-                        Layout.fillWidth: false
-                        Layout.fillHeight: true
-                        //anchors.horizontalCenter: parent.horizontalCenter
+                    PlayerStatistic
+                    {
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
 
-                        ColumnLayout {
-                            id: columnLayout4
-                            anchors.left: parent.left
-                            anchors.right: parent.right
-                            anchors.top: parent.top
-                            anchors.bottom: parent.bottom
-                            anchors.bottomMargin: 0
-
-                            Label {
-                                id: label1
-                                text: qsTr("TranspersonalPsy")
-                                Layout.fillHeight: false
-                            }
-
-                            Label {
-                                id: label2
-                                text: qsTr("MMR 100500")
-                                Layout.fillHeight: false
-                            }
-
-                            Label {
-                                id: label4
-                                text: qsTr("Games Played 250000")
-                            }
-
-                            Label {
-                                id: label5
-                                text: qsTr("Win rate 100%")
-                            }
-
-                            Label {
-                                id: label6
-                                text: qsTr("APM 450")
-                            }
-                        }
                     }
 
                     Rectangle {
