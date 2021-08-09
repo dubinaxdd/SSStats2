@@ -25,7 +25,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");
 
-    //qDebug() << m_steamPath+"\\config\\loginusers.vdf";
+    qDebug() << "INFO: loginusers path: " +  m_steamPath+"\\config\\loginusers.vdf";
 
 
     if(file.open(QIODevice::ReadOnly))

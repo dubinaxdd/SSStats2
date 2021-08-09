@@ -116,12 +116,13 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
         cKey.vkCode == 163 ||
         cKey.vkCode == 161 ||
         cKey.vkCode == 13  ||
+        cKey.vkCode == 44  ||
         cKey.vkCode == 46 )
     {
         isPriorityKey = true;
     }
 
-    //qDebug() << cKey.vkCode;
+    qDebug() << cKey.vkCode;
 
     bool inputBlock = core->ssController()->getInputBlocked() && !isPriorityKey;
 
