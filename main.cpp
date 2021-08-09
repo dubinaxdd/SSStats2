@@ -122,7 +122,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
         isPriorityKey = true;
     }
 
-    qDebug() << cKey.vkCode;
+    //qDebug() << cKey.vkCode;
 
     bool inputBlock = core->ssController()->getInputBlocked() && !isPriorityKey;
 
