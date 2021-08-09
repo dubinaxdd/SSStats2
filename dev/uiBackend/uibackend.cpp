@@ -92,6 +92,9 @@ void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
 void UiBackend::gameStarted()
 {
     m_gameStarted = true;
+
+    m_headerPanelVisible = false;
+    emit headerPanelVisibleChanged(m_headerPanelVisible);
 }
 
 void UiBackend::gameStoped()

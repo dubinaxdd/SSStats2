@@ -77,6 +77,8 @@ void GameInfoReader::readGameInfo()
                     m_ssShutdowned = false;
                     m_missionStarted = false;
 
+                    emit gameStoped();
+
                     qDebug() << "INFO: Game Stoped";
                 }
                 break;
