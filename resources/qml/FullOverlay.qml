@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtGraphicalEffects 1.15
 
 Rectangle {
     id: fullOverlayRectangle
@@ -13,6 +14,20 @@ Rectangle {
     Layout.fillWidth: true
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     Layout.fillHeight: true
+
+    property int buttonSettingsX : settingsButtonRectangle.x
+    property int buttonSettingsY : settingsButtonRectangle.y
+    property int buttonSettingsWidth : settingsButtonRectangle.width
+    property int buttonSettingsHeight : settingsButtonRectangle.height
+
+    property int buttonInfoX : settingsInfoRectangle.x
+    property int buttonInfoY : settingsInfoRectangle.y
+    property int buttonInfoWidth : settingsInfoRectangle.width
+    property int buttonInfoHeight : settingsInfoRectangle.height
+
+    Connections{
+        target: _uiBackend
+    }
 
     ColumnLayout {
         id: columnLayout
@@ -39,6 +54,70 @@ Rectangle {
             Layout.maximumHeight: 60
             Layout.maximumWidth: 26099
             Layout.fillHeight: false
+
+            Rectangle {
+                id: settingsButtonRectangle
+                width: 140
+                color: _uiBackend.buttonSettingsPressedState ? "#ff080808" : "#00ffffff"
+                anchors.left: parent.left
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.topMargin: 0
+                anchors.bottomMargin: 0
+                anchors.leftMargin: 0
+
+                Text {
+                    id: buttonSettingsLabel
+                    color: _uiBackend.buttonSettingsHoverState ? "#ffffff" : "#999999"
+                    opacity: 1
+                    visible: true
+                    text: qsTr("Настройки")
+                    anchors.fill: parent
+                    font.pointSize: 14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    layer.enabled: true
+                    layer.effect: DropShadow {
+                        verticalOffset: 2
+                        color: "#00000064"
+                        radius: 1
+                        samples: 3
+                    }
+                }
+            }
+
+            Rectangle {
+                id: settingsInfoRectangle
+                width: 140
+                color: _uiBackend.buttonInfoPressedState ? "#ff080808" : "#00ffffff"
+                anchors.left: settingsButtonRectangle.right
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.leftMargin: 0
+                anchors.bottomMargin: 0
+                anchors.topMargin: 0
+
+                Text {
+                    id: buttonInfoLabel
+                    color: _uiBackend.buttonInfoHoverState ? "#ffffff" : "#999999"
+                    opacity: 1
+                    visible: true
+                    text: qsTr("Информация")
+                    anchors.fill: parent
+                    font.pointSize: 14
+                    horizontalAlignment: Text.AlignHCenter
+                    verticalAlignment: Text.AlignVCenter
+
+                    layer.enabled: true
+                    layer.effect: DropShadow {
+                        verticalOffset: 2
+                        color: "#00000064"
+                        radius: 1
+                        samples: 3
+                    }
+                }
+            }
         }
 
         Rectangle {
@@ -46,10 +125,23 @@ Rectangle {
             width: 200
             height: 200
             opacity: 1
-            color: "#ffffff"
-            Layout.margins: 60
+            color: "#f9f9f9"
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.rightMargin: 10
+            Layout.bottomMargin: 10
+            Layout.leftMargin: 10
+            Layout.topMargin: 10
+            Layout.preferredHeight: 0
+            Layout.preferredWidth: 0
             Layout.fillWidth: true
             Layout.fillHeight: true
+
+            InfoWindow {
+                id: infoWindow
+                visible: _uiBackend.buttonInfoPressedState
+                anchors.fill: parent
+            }
+
         }
     }
 }

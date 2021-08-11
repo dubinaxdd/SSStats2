@@ -10,6 +10,10 @@ class UiBackend : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool buttonSettingsHoverState MEMBER m_buttonSettingsHoverState NOTIFY sendButtonSettingsHoverState)
+    Q_PROPERTY(bool buttonInfoHoverState MEMBER m_buttonInfoHoverState NOTIFY sendButtonInfoHoverState)
+    Q_PROPERTY(bool buttonSettingsPressedState MEMBER m_buttonSettingsPressedState NOTIFY sendButtonSettingsPressed)
+    Q_PROPERTY(bool buttonInfoPressedState MEMBER m_buttonInfoPressedState NOTIFY sendButtonInfoPressed)
     Q_PROPERTY(bool expand MEMBER m_expand NOTIFY sendExpand)
     Q_PROPERTY(bool showClient MEMBER m_showClient NOTIFY sendShowClient)
     Q_PROPERTY(int mousePositionX READ mousePositionX)
@@ -47,10 +51,20 @@ class UiBackend : public QObject
 public:
     explicit UiBackend(QObject *parent = nullptr);
 
+    //Функции кнопок меню
+    bool buttonSettingsHoverState() const;
+    bool buttonInfoHoverState() const;
+    bool buttonSettingsPressedState() const;
+    bool buttonInfoPressedState() const;
     bool expand() const;
     bool getShowClient();
+    void setButtonSettingsHoverState(bool state);
+    void setButtonInfoHoverState(bool state);
+    void setButtonSettingsPressedState(bool state);
+    void setButtonInfoPressedState(bool state);
     void setExpand(bool newExpand);
     void mousePressEvent (QPoint mousePosition);
+    void mouseMoveEvent (QPoint mousePosition);
     int mousePositionX();
     int mousePositionY();
     void setWindowTopmost(bool topmost);
@@ -61,8 +75,13 @@ public:
     void setSsWindowPosition(int x, int y);
 
 signals:
+    void sendButtonSettingsHoverState(bool);
+    void sendButtonInfoHoverState(bool);
+    void sendButtonSettingsPressed(bool);
+    void sendButtonInfoPressed(bool);
     void sendExpand(bool);
     void sendMousePress();
+    void sendMouseMove();
     void sendShowClient(bool);
     void windowTopmostChanged();
     void windowedModeSeted();
@@ -74,6 +93,10 @@ signals:
     void ssWindowPositionChanged();
 
 public slots:
+    void buttonSettingsHoverStateChanged(bool state);
+    void buttonInfoHoverStateChanged(bool state);
+    void buttonSettingsPressed();
+    void buttonInfoPressed();
     void expandKeyPressed();
     void receiveSsMaximized(bool maximized);
     void receiveSsLounched(bool lounched);
@@ -94,8 +117,13 @@ private:
 private:
     QTimer* racePanelVisibleTimer;
 
-
+    //Состояние кнопок и окна
+    bool m_buttonSettingsHoverState = false;
+    bool m_buttonInfoHoverState = false;
+    bool m_buttonSettingsPressedState  = false;
+    bool m_buttonInfoPressedState  = false;
     bool m_expand = false;
+
     QPoint m_mousePosition;
     bool m_ssMaximized = false;
     bool m_ssLounched = false;

@@ -49,7 +49,6 @@ Window {
 
 
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
-
             //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
             //Кнопка "Развернуть оверлей"
@@ -68,6 +67,80 @@ Window {
                     yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangleHeight)
             {
                 _uiBackend.expandKeyPressed();
+            }
+
+            //Кнопка "Настройки" - отобразить окно с настройками
+            if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettingsX &&
+                    xMousePos <= fullOverlay.x + fullOverlay.buttonSettingsX + fullOverlay.buttonSettingsWidth &&
+                    yMousePos >= fullOverlay.y + fullOverlay.buttonSettingsY &&
+                    yMousePos <= fullOverlay.y + fullOverlay.buttonSettingsY + fullOverlay.buttonSettingsHeight)
+            {
+                _uiBackend.buttonSettingsPressed();
+            }
+
+            //Кнопка "Информация" - отобразить окно с информацией
+            if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfoX &&
+                    xMousePos <= fullOverlay.x + fullOverlay.buttonInfoX + fullOverlay.buttonInfoWidth &&
+                    yMousePos >= fullOverlay.y + fullOverlay.buttonInfoY &&
+                    yMousePos <= fullOverlay.y + fullOverlay.buttonInfoY + fullOverlay.buttonInfoHeight)
+            {
+                _uiBackend.buttonInfoPressed();
+            }
+        }
+
+        function onSendMouseMove(){
+            var xMousePos = _uiBackend.mousePositionX;
+            var yMousePos = _uiBackend.mousePositionY;
+            var mouseAreaWidth = _uiBackend.mouseAreaWidth;
+            var mouseAreaHeight = _uiBackend.mouseAreaHeight;
+
+            //Костыль для работы с 4k мониторами, не спрашивайте почему так, все равно не скажу. Просто сс не может работать в большем разрешении чем 1920/1080
+
+            if (!_uiBackend.ssWindowed && mouseAreaWidth !== 0 && mouseAreaHeight !== 0 && window.width >= 1920 && window.height >= 1080)
+            {
+                if (window.width !== mouseAreaWidth && window.height !== mouseAreaHeight)
+                {
+                    xMousePos = (window.width * xMousePos) / mouseAreaWidth;
+                    yMousePos = (window.height * yMousePos) / mouseAreaHeight;
+                }
+            }
+
+            //Это тоже кусок костыля, только для оконного режима игры
+            if ( _uiBackend.ssWindowed && mouseAreaWidth > 1920 && mouseAreaHeight > 1080)
+            {
+                xMousePos = xMousePos/2;
+                yMousePos = yMousePos/2;
+            }
+
+            if (_uiBackend.ssWindowed)
+            {
+                xMousePos = xMousePos - _uiBackend.ssWindowPositionX;
+                yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
+            }
+
+            //Отлавливаем все координаты курсора при перемещении
+            //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, fullOverlay.x + fullOverlay.buttonSettingsX, fullOverlay.y + fullOverlay.buttonSettingsY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
+
+            //Кнопка "Настройки"
+            if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettingsX &&
+                    xMousePos <= fullOverlay.x + fullOverlay.buttonSettingsX + fullOverlay.buttonSettingsWidth &&
+                    yMousePos >= fullOverlay.y + fullOverlay.buttonSettingsY &&
+                    yMousePos <= fullOverlay.y + fullOverlay.buttonSettingsY + fullOverlay.buttonSettingsHeight)
+            {
+                _uiBackend.buttonSettingsHoverStateChanged(true); // Попали в область кнопки "Настройки"
+            } else {
+                _uiBackend.buttonSettingsHoverStateChanged(false);
+            }
+
+            //Кнопка "Информация"
+            if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfoX &&
+                    xMousePos <= fullOverlay.x + fullOverlay.buttonInfoX + fullOverlay.buttonInfoWidth &&
+                    yMousePos >= fullOverlay.y + fullOverlay.buttonInfoY &&
+                    yMousePos <= fullOverlay.y + fullOverlay.buttonInfoY + fullOverlay.buttonInfoHeight)
+            {
+                _uiBackend.buttonInfoHoverStateChanged(true); // Попали в область кнопки "Информация"
+            } else {
+                _uiBackend.buttonInfoHoverStateChanged(false);
             }
         }
 

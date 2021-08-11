@@ -69,8 +69,7 @@ void Core::topmostTimerTimout()
 
                 }
            }
-
-            BringWindowToTop(m_ssStatsHwnd);
+           BringWindowToTop(m_ssStatsHwnd);
         }
     }
 }
@@ -182,6 +181,13 @@ bool Core::event(QEvent *event)
      {
          QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
          m_uiBackend->mousePressEvent(mouseEvent->pos());
+         return true;
+     }
+
+     if (event->type() == QEvent::MouseMove)
+     {
+         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
+         m_uiBackend->mouseMoveEvent(mouseEvent->pos());
          return true;
      }
 

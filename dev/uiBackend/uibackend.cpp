@@ -11,6 +11,26 @@ UiBackend::UiBackend(QObject *parent) : QObject(parent)
 
 }
 
+void UiBackend::buttonSettingsHoverStateChanged(bool state)
+{
+    setButtonSettingsHoverState(state);
+}
+
+void UiBackend::buttonInfoHoverStateChanged(bool state)
+{
+    setButtonInfoHoverState(state);
+}
+
+void UiBackend::buttonSettingsPressed()
+{
+    setButtonSettingsPressedState(!m_buttonSettingsPressedState);
+}
+
+void UiBackend::buttonInfoPressed()
+{
+    setButtonInfoPressedState(!m_buttonInfoPressedState);
+}
+
 void UiBackend::expandKeyPressed()
 {
     setExpand(!m_expand);
@@ -229,14 +249,58 @@ void UiBackend::setSsWindowPosition(int x, int y)
     emit ssWindowPositionChanged();
 }
 
+bool UiBackend::getShowClient()
+{
+    return m_showClient;
+}
+
+bool UiBackend::buttonSettingsPressedState() const //infoShow
+{
+    return m_buttonSettingsPressedState;
+}
+
+bool UiBackend::buttonInfoPressedState() const //infoShow
+{
+    return m_buttonInfoPressedState;
+}
+
 bool UiBackend::expand() const
 {
     return m_expand;
 }
 
-bool UiBackend::getShowClient()
+bool UiBackend::buttonSettingsHoverState() const
 {
-    return m_showClient;
+    return m_buttonSettingsHoverState;
+}
+
+bool UiBackend::buttonInfoHoverState() const
+{
+    return m_buttonInfoHoverState;
+}
+
+void UiBackend::setButtonSettingsHoverState(bool state)
+{
+    m_buttonSettingsHoverState = state;
+    emit sendButtonSettingsHoverState(m_buttonSettingsHoverState);
+}
+
+void UiBackend::setButtonInfoHoverState(bool state)
+{
+    m_buttonInfoHoverState = state;
+    emit sendButtonInfoHoverState(m_buttonInfoHoverState);
+}
+
+void UiBackend::setButtonSettingsPressedState(bool state)
+{
+    m_buttonSettingsPressedState = state;
+    emit sendButtonSettingsPressed(m_buttonSettingsPressedState);
+}
+
+void UiBackend::setButtonInfoPressedState(bool state)
+{
+    m_buttonInfoPressedState = state;
+    emit sendButtonInfoPressed(m_buttonInfoPressedState);
 }
 
 void UiBackend::setExpand(bool newExpand)
@@ -266,6 +330,12 @@ void UiBackend::mousePressEvent(QPoint mousePosition)
 {
     m_mousePosition = mousePosition;
     emit sendMousePress();
+}
+
+void UiBackend::mouseMoveEvent(QPoint mousePosition)
+{
+    m_mousePosition = mousePosition;
+    emit sendMouseMove();
 }
 
 int UiBackend::mousePositionX()
