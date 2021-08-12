@@ -48,10 +48,12 @@ Window {
             }
 
 
+            // ### КЛИК КУРСОРОМ (ГЛОБАЛЬНО) ###
+
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
             //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
-            //Кнопка "Развернуть оверлей"
+            // Кнопка "Развернуть оверлей"
             if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangleX &&
                     xMousePos <= columnLayout3.x + statsHeader.expandButtonRectangleX + statsHeader.expandButtonRectangleWidth &&
                     yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangleY &&
@@ -60,7 +62,7 @@ Window {
                 _uiBackend.expandKeyPressed();
             }
 
-            //Кнопка "Развернуть оверлей в игровой панели"
+            // Кнопка "Развернуть оверлей в игровой панели"
             if (xMousePos >= gamePanel.x + gamePanel.expandButtonRectangleX &&
                     xMousePos <= gamePanel.x + gamePanel.expandButtonRectangleX + gamePanel.expandButtonRectangleWidth &&
                     yMousePos >= gamePanel.y + gamePanel.expandButtonRectangleY &&
@@ -69,7 +71,7 @@ Window {
                 _uiBackend.expandKeyPressed();
             }
 
-            //Кнопка "Настройки" - отобразить окно с настройками
+            // Кнопка "Настройки" - отобразить окно с настройками
             if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettingsX &&
                     xMousePos <= fullOverlay.x + fullOverlay.buttonSettingsX + fullOverlay.buttonSettingsWidth &&
                     yMousePos >= fullOverlay.y + fullOverlay.buttonSettingsY &&
@@ -78,7 +80,7 @@ Window {
                 _uiBackend.buttonSettingsPressed();
             }
 
-            //Кнопка "Информация" - отобразить окно с информацией
+            // Кнопка "Информация" - отобразить окно с информацией
             if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfoX &&
                     xMousePos <= fullOverlay.x + fullOverlay.buttonInfoX + fullOverlay.buttonInfoWidth &&
                     yMousePos >= fullOverlay.y + fullOverlay.buttonInfoY &&
@@ -86,15 +88,26 @@ Window {
             {
                 _uiBackend.buttonInfoPressed();
             }
+
+            // Переключатель "No Fog"
+            if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX &&
+                    xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX + fullOverlay.settingsWindow.noFogSwitchWidth &&
+                    yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY &&
+                    yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY + fullOverlay.settingsWindow.noFogSwitchHeight)
+            {
+                //console.log("No Fog Switch Pressed: ", xMousePos, yMousePos);
+                _uiBackend.switchNoFogPressed();
+            }
         }
 
+        // ### ПЕРЕМЕЩЕНИЕ КУРСОРА (ГЛОБАЛЬНО) ###
         function onSendMouseMove(){
             var xMousePos = _uiBackend.mousePositionX;
             var yMousePos = _uiBackend.mousePositionY;
             var mouseAreaWidth = _uiBackend.mouseAreaWidth;
             var mouseAreaHeight = _uiBackend.mouseAreaHeight;
 
-            //Костыль для работы с 4k мониторами, не спрашивайте почему так, все равно не скажу. Просто сс не может работать в большем разрешении чем 1920/1080
+            // Костыль для работы с 4k мониторами, не спрашивайте почему так, все равно не скажу. Просто сс не может работать в большем разрешении чем 1920/1080
 
             if (!_uiBackend.ssWindowed && mouseAreaWidth !== 0 && mouseAreaHeight !== 0 && window.width >= 1920 && window.height >= 1080)
             {
@@ -105,7 +118,7 @@ Window {
                 }
             }
 
-            //Это тоже кусок костыля, только для оконного режима игры
+            // Это тоже кусок костыля, только для оконного режима игры
             if ( _uiBackend.ssWindowed && mouseAreaWidth > 1920 && mouseAreaHeight > 1080)
             {
                 xMousePos = xMousePos/2;
@@ -118,10 +131,10 @@ Window {
                 yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
             }
 
-            //Отлавливаем все координаты курсора при перемещении
+            // Отлавливаем все координаты курсора при перемещении
             //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, fullOverlay.x + fullOverlay.buttonSettingsX, fullOverlay.y + fullOverlay.buttonSettingsY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
-            //Кнопка "Настройки"
+            // Кнопка "Настройки"
             if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettingsX &&
                     xMousePos <= fullOverlay.x + fullOverlay.buttonSettingsX + fullOverlay.buttonSettingsWidth &&
                     yMousePos >= fullOverlay.y + fullOverlay.buttonSettingsY &&
@@ -132,7 +145,7 @@ Window {
                 _uiBackend.buttonSettingsHoverStateChanged(false);
             }
 
-            //Кнопка "Информация"
+            // Кнопка "Информация"
             if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfoX &&
                     xMousePos <= fullOverlay.x + fullOverlay.buttonInfoX + fullOverlay.buttonInfoWidth &&
                     yMousePos >= fullOverlay.y + fullOverlay.buttonInfoY &&
@@ -141,6 +154,18 @@ Window {
                 _uiBackend.buttonInfoHoverStateChanged(true); // Попали в область кнопки "Информация"
             } else {
                 _uiBackend.buttonInfoHoverStateChanged(false);
+            }
+
+            // Переключатель "No Fog"
+            if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX &&
+                    xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX + fullOverlay.settingsWindow.noFogSwitchWidth &&
+                    yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY &&
+                    yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY + fullOverlay.settingsWindow.noFogSwitchHeight)
+            {
+                //console.log("No Fog Switch Hovered: ", xMousePos, yMousePos);
+                _uiBackend.switchNoFogHoverStateChanged(true); // Попали в область переключателя "No Fog"
+            } else {
+                _uiBackend.switchNoFogHoverStateChanged(false);
             }
         }
 

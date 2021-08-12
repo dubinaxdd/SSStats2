@@ -21,6 +21,11 @@ void UiBackend::buttonInfoHoverStateChanged(bool state)
     setButtonInfoHoverState(state);
 }
 
+void UiBackend::switchNoFogHoverStateChanged(bool state)
+{
+    setSwitchNoFogHoverState(state);
+}
+
 void UiBackend::buttonSettingsPressed()
 {
     setButtonSettingsPressedState(!m_buttonSettingsPressedState);
@@ -29,6 +34,11 @@ void UiBackend::buttonSettingsPressed()
 void UiBackend::buttonInfoPressed()
 {
     setButtonInfoPressedState(!m_buttonInfoPressedState);
+}
+
+void UiBackend::switchNoFogPressed()
+{
+    setSwitchNoFogPressedState(!m_switchNoFogPressedState);
 }
 
 void UiBackend::expandKeyPressed()
@@ -221,14 +231,14 @@ QString UiBackend::chooseColorForPlayer(int team)
 {
     switch (team)
     {
-        case 0 : return "#b3ea0000";
-        case 1 : return "#b30469ee";
-        case 2 : return "#b3dacfcf";
-        case 3 : return "#b3f6f200";
-        case 4 : return "#b30dff1e";
-        case 5 : return "#b3f71df4";
-        case 6 : return "#b300e6d9";
-        case 7 : return "#b3f97dfd";
+    case 0 : return "#b3ea0000";
+    case 1 : return "#b30469ee";
+    case 2 : return "#b3dacfcf";
+    case 3 : return "#b3f6f200";
+    case 4 : return "#b30dff1e";
+    case 5 : return "#b3f71df4";
+    case 6 : return "#b300e6d9";
+    case 7 : return "#b3f97dfd";
     }
     return "";
 }
@@ -248,6 +258,8 @@ void UiBackend::setSsWindowPosition(int x, int y)
 
     emit ssWindowPositionChanged();
 }
+
+// ### GET раздел (частично) ###
 
 bool UiBackend::getShowClient()
 {
@@ -279,28 +291,87 @@ bool UiBackend::buttonInfoHoverState() const
     return m_buttonInfoHoverState;
 }
 
+bool UiBackend::switchNoFogHoverState() const
+{
+    return m_switchNoFogHoverState;
+}
+
+bool UiBackend::switchNoFogPressedState() const //infoShow
+{
+    return m_switchNoFogPressedState;
+}
+
+// ### SET раздел (частично) ###
+
 void UiBackend::setButtonSettingsHoverState(bool state)
 {
-    m_buttonSettingsHoverState = state;
-    emit sendButtonSettingsHoverState(m_buttonSettingsHoverState);
+    if (m_expand)
+    {
+        m_buttonSettingsHoverState = state;
+        emit sendButtonSettingsHoverState(m_buttonSettingsHoverState);
+    }
 }
 
 void UiBackend::setButtonInfoHoverState(bool state)
 {
-    m_buttonInfoHoverState = state;
-    emit sendButtonInfoHoverState(m_buttonInfoHoverState);
+    if (m_expand)
+    {
+        m_buttonInfoHoverState = state;
+        emit sendButtonInfoHoverState(m_buttonInfoHoverState);
+    }
+}
+
+void UiBackend::setSwitchNoFogHoverState(bool state)
+{
+    //qDebug() << "setSwitchNoFogHoverState = " << state;
+    //qDebug() << "m_buttonSettingsPressedState = " << m_buttonSettingsPressedState;
+    if (m_buttonSettingsPressedState)
+    {
+        m_switchNoFogHoverState = state;
+        emit sendSwitchNoFogHoverState(m_switchNoFogHoverState);
+    }
 }
 
 void UiBackend::setButtonSettingsPressedState(bool state)
 {
-    m_buttonSettingsPressedState = state;
-    emit sendButtonSettingsPressed(m_buttonSettingsPressedState);
+    if (m_expand)
+    {
+        m_buttonSettingsPressedState = state;
+        emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
+        if (m_buttonSettingsPressedState)
+        {
+            m_buttonInfoPressedState = false;
+            emit sendButtonInfoPressedState(m_buttonInfoPressedState);
+        }
+    }
 }
 
 void UiBackend::setButtonInfoPressedState(bool state)
 {
-    m_buttonInfoPressedState = state;
-    emit sendButtonInfoPressed(m_buttonInfoPressedState);
+    if (m_expand)
+    {
+        m_buttonInfoPressedState = state;
+        emit sendButtonInfoPressedState(m_buttonInfoPressedState);
+        if (m_buttonInfoPressedState)
+        {
+            m_buttonSettingsPressedState = false;
+            emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
+        }
+    }
+}
+
+void UiBackend::setSwitchNoFogPressedState(bool state)
+{
+    if (m_buttonSettingsPressedState)
+    {
+        setNoFogState(state);
+    }
+}
+
+void UiBackend::setNoFogState(bool state) // Это слот, для вызова инициализатором настроек извне и в обход меню настроек GUI
+{
+        m_switchNoFogPressedState = state;
+        emit sendSwitchNoFogPressedState(m_switchNoFogPressedState);
 }
 
 void UiBackend::setExpand(bool newExpand)
@@ -319,10 +390,25 @@ void UiBackend::setExpand(bool newExpand)
         {
             m_gamePanelVisible = true;
             m_headerPanelVisible = false;
+
+            // Кнопки меню
+            m_buttonInfoPressedState = false;
+            m_buttonSettingsPressedState = false;
+            emit sendButtonInfoPressedState(m_buttonInfoPressedState);
+            emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
         }
 
         emit gamePanelVisibleChanged(m_gamePanelVisible);
         emit headerPanelVisibleChanged(m_headerPanelVisible);
+    }
+
+    if (!m_expand)
+    {
+        // Деактивируем открытые формы
+        m_buttonInfoPressedState = false;
+        m_buttonSettingsPressedState = false;
+        emit sendButtonInfoPressedState(m_buttonInfoPressedState);
+        emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
     }
 }
 

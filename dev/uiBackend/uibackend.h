@@ -11,9 +11,11 @@ class UiBackend : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool buttonSettingsHoverState MEMBER m_buttonSettingsHoverState NOTIFY sendButtonSettingsHoverState)
+    Q_PROPERTY(bool buttonSettingsPressedState MEMBER m_buttonSettingsPressedState NOTIFY sendButtonSettingsPressedState)
     Q_PROPERTY(bool buttonInfoHoverState MEMBER m_buttonInfoHoverState NOTIFY sendButtonInfoHoverState)
-    Q_PROPERTY(bool buttonSettingsPressedState MEMBER m_buttonSettingsPressedState NOTIFY sendButtonSettingsPressed)
-    Q_PROPERTY(bool buttonInfoPressedState MEMBER m_buttonInfoPressedState NOTIFY sendButtonInfoPressed)
+    Q_PROPERTY(bool buttonInfoPressedState MEMBER m_buttonInfoPressedState NOTIFY sendButtonInfoPressedState)
+    Q_PROPERTY(bool switchNoFogHoverState MEMBER m_switchNoFogHoverState NOTIFY sendSwitchNoFogHoverState)
+    Q_PROPERTY(bool switchNoFogPressedState MEMBER m_switchNoFogPressedState NOTIFY sendSwitchNoFogPressedState)
     Q_PROPERTY(bool expand MEMBER m_expand NOTIFY sendExpand)
     Q_PROPERTY(bool showClient MEMBER m_showClient NOTIFY sendShowClient)
     Q_PROPERTY(int mousePositionX READ mousePositionX)
@@ -53,16 +55,25 @@ public:
 
     //Функции кнопок меню
     bool buttonSettingsHoverState() const;
-    bool buttonInfoHoverState() const;
     bool buttonSettingsPressedState() const;
+    bool buttonInfoHoverState() const;
     bool buttonInfoPressedState() const;
+    bool switchNoFogHoverState() const;
+    bool switchNoFogPressedState() const;
+
     bool expand() const;
+
     bool getShowClient();
+
     void setButtonSettingsHoverState(bool state);
-    void setButtonInfoHoverState(bool state);
     void setButtonSettingsPressedState(bool state);
+    void setButtonInfoHoverState(bool state);
     void setButtonInfoPressedState(bool state);
+    void setSwitchNoFogHoverState(bool state);
+    void setSwitchNoFogPressedState(bool state);
+
     void setExpand(bool newExpand);
+
     void mousePressEvent (QPoint mousePosition);
     void mouseMoveEvent (QPoint mousePosition);
     int mousePositionX();
@@ -76,12 +87,17 @@ public:
 
 signals:
     void sendButtonSettingsHoverState(bool);
+    void sendButtonSettingsPressedState(bool);
     void sendButtonInfoHoverState(bool);
-    void sendButtonSettingsPressed(bool);
-    void sendButtonInfoPressed(bool);
+    void sendButtonInfoPressedState(bool);
+    void sendSwitchNoFogHoverState(bool);
+    void sendSwitchNoFogPressedState(bool);
+
     void sendExpand(bool);
+
     void sendMousePress();
     void sendMouseMove();
+
     void sendShowClient(bool);
     void windowTopmostChanged();
     void windowedModeSeted();
@@ -94,10 +110,15 @@ signals:
 
 public slots:
     void buttonSettingsHoverStateChanged(bool state);
-    void buttonInfoHoverStateChanged(bool state);
     void buttonSettingsPressed();
+    void buttonInfoHoverStateChanged(bool state);
     void buttonInfoPressed();
+    void switchNoFogHoverStateChanged(bool state);
+    void switchNoFogPressed();
+    void setNoFogState(bool state);
+
     void expandKeyPressed();
+
     void receiveSsMaximized(bool maximized);
     void receiveSsLounched(bool lounched);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
@@ -119,9 +140,12 @@ private:
 
     //Состояние кнопок и окна
     bool m_buttonSettingsHoverState = false;
-    bool m_buttonInfoHoverState = false;
     bool m_buttonSettingsPressedState  = false;
+    bool m_buttonInfoHoverState = false;
     bool m_buttonInfoPressedState  = false;
+    bool m_switchNoFogHoverState = false;
+    bool m_switchNoFogPressedState = false;
+
     bool m_expand = false;
 
     QPoint m_mousePosition;

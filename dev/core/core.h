@@ -9,6 +9,7 @@
 #include <QQmlContext>
 #include "../uiBackend/uibackend.h"
 #include "../ssConroller/sscontroller.h"
+#include "../settingsController/settingscontroller.h"
 
 class Core : public QObject
 {
@@ -19,6 +20,7 @@ public:
     void grubStatsWindow();
 
     SsController *ssController() const;
+    SettingsController *settingsController() const;
 
     UiBackend *uiBackend() const;
 
@@ -41,6 +43,7 @@ private:
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
+    SettingsController* m_settingsController;
 
     int m_defaultWidth;
     int m_defaultHeight;

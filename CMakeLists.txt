@@ -44,6 +44,8 @@ set(PROJECT_SOURCES
         dev/baseTypes/baseTypes.h
         dev/ssConroller/statsCollector/statscollector.h
         dev/ssConroller/statsCollector/statscollector.cpp
+        dev/settingsController/settingscontroller.h
+        dev/settingsController/settingscontroller.cpp
         defines.h
         qml.qrc
         resources.qrc

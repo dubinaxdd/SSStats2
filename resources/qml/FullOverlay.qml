@@ -14,16 +14,18 @@ Rectangle {
     Layout.fillWidth: true
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     Layout.fillHeight: true
+    property Rectangle mainContentContainerRectangle : mainContentContainerRectangle
+    property SettingsWindow settingsWindow : settingsWindow
 
-    property int buttonSettingsX : settingsButtonRectangle.x
-    property int buttonSettingsY : settingsButtonRectangle.y
-    property int buttonSettingsWidth : settingsButtonRectangle.width
-    property int buttonSettingsHeight : settingsButtonRectangle.height
+    property int buttonSettingsX : buttonSettingsRectangle.x
+    property int buttonSettingsY : buttonSettingsRectangle.y
+    property int buttonSettingsWidth : buttonSettingsRectangle.width
+    property int buttonSettingsHeight : buttonSettingsRectangle.height
 
-    property int buttonInfoX : settingsInfoRectangle.x
-    property int buttonInfoY : settingsInfoRectangle.y
-    property int buttonInfoWidth : settingsInfoRectangle.width
-    property int buttonInfoHeight : settingsInfoRectangle.height
+    property int buttonInfoX : buttonInfoRectangle.x
+    property int buttonInfoY : buttonInfoRectangle.y
+    property int buttonInfoWidth : buttonInfoRectangle.width
+    property int buttonInfoHeight : buttonInfoRectangle.height
 
     Connections{
         target: _uiBackend
@@ -37,6 +39,7 @@ Rectangle {
             id: fullOverlayHeader
             width: 260
             height: 60
+            color: "#333333"
             Layout.fillWidth: true
             Layout.minimumWidth: 260
             Layout.minimumHeight: 60
@@ -56,7 +59,7 @@ Rectangle {
             Layout.fillHeight: false
 
             Rectangle {
-                id: settingsButtonRectangle
+                id: buttonSettingsRectangle
                 width: 140
                 color: _uiBackend.buttonSettingsPressedState ? "#ff080808" : "#00ffffff"
                 anchors.left: parent.left
@@ -88,10 +91,10 @@ Rectangle {
             }
 
             Rectangle {
-                id: settingsInfoRectangle
+                id: buttonInfoRectangle
                 width: 140
                 color: _uiBackend.buttonInfoPressedState ? "#ff080808" : "#00ffffff"
-                anchors.left: settingsButtonRectangle.right
+                anchors.left: buttonSettingsRectangle.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.leftMargin: 0
@@ -121,7 +124,7 @@ Rectangle {
         }
 
         Rectangle {
-            id: rectangle
+            id: mainContentContainerRectangle
             width: 200
             height: 200
             opacity: 1
@@ -136,12 +139,17 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
+            SettingsWindow {
+                id: settingsWindow
+                visible: _uiBackend.buttonSettingsPressedState
+                anchors.fill: parent
+            }
+
             InfoWindow {
                 id: infoWindow
                 visible: _uiBackend.buttonInfoPressedState
                 anchors.fill: parent
             }
-
         }
     }
 }
