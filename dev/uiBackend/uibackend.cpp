@@ -38,7 +38,7 @@ void UiBackend::buttonInfoPressed()
 
 void UiBackend::switchNoFogPressed()
 {
-    setSwitchNoFogPressedState(!m_switchNoFogPressedState);
+    setSwitchNoFogState(!m_switchNoFogState);
 }
 
 void UiBackend::expandKeyPressed()
@@ -296,9 +296,9 @@ bool UiBackend::switchNoFogHoverState() const
     return m_switchNoFogHoverState;
 }
 
-bool UiBackend::switchNoFogPressedState() const //infoShow
+bool UiBackend::switchNoFogState() const //infoShow
 {
-    return m_switchNoFogPressedState;
+    return m_switchNoFogState;
 }
 
 // ### SET раздел (частично) ###
@@ -360,18 +360,18 @@ void UiBackend::setButtonInfoPressedState(bool state)
     }
 }
 
-void UiBackend::setSwitchNoFogPressedState(bool state)
+void UiBackend::setSwitchNoFogState(bool state)
 {
     if (m_buttonSettingsPressedState)
     {
-        setNoFogState(state);
+        onNoFogStateChanged(state);
     }
 }
 
-void UiBackend::setNoFogState(bool state) // Это слот, для вызова инициализатором настроек извне и в обход меню настроек GUI
+void UiBackend::onNoFogStateChanged(bool state) // Это слот, для вызова инициализатором настроек извне и в обход меню настроек GUI
 {
-        m_switchNoFogPressedState = state;
-        emit sendSwitchNoFogPressedState(m_switchNoFogPressedState);
+        m_switchNoFogState = state;
+        emit switchNoFogStateChanged(m_switchNoFogState);
 }
 
 void UiBackend::setExpand(bool newExpand)

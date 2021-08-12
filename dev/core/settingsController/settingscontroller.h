@@ -13,8 +13,9 @@ public:
     void initializeSettings();
 signals:
     void noFogStateInitialized(bool);
+    void noFogStateChanged(bool);
 public slots:
-    void setNoFogState(bool state);
+    void onSwitchNoFogStateChanged(bool state);
 
 private:
     QSettings *ss_stats_settings;

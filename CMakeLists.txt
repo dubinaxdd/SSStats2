@@ -41,11 +41,13 @@ set(PROJECT_SOURCES
         dev/ssConroller/sscontroller.cpp
         dev/ssConroller/gameInfoReader/gameinforeader.h
         dev/ssConroller/gameInfoReader/gameinforeader.cpp
+        dev/ssConroller/memoryController/memorycontroller.h
+        dev/ssConroller/memoryController/memorycontroller.cpp
         dev/baseTypes/baseTypes.h
         dev/ssConroller/statsCollector/statscollector.h
         dev/ssConroller/statsCollector/statscollector.cpp
-        dev/settingsController/settingscontroller.h
-        dev/settingsController/settingscontroller.cpp
+        dev/core/settingsController/settingscontroller.h
+        dev/core/settingsController/settingscontroller.cpp
         defines.h
         qml.qrc
         resources.qrc

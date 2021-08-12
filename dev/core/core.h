@@ -7,9 +7,10 @@
 #include "Windows.h"
 #include "../keyboardProcessor/keyboardprocessor.h"
 #include <QQmlContext>
+#include "../core/settingsController/settingscontroller.h"
 #include "../uiBackend/uibackend.h"
 #include "../ssConroller/sscontroller.h"
-#include "../settingsController/settingscontroller.h"
+#include "../ssConroller/memoryController/memorycontroller.h"
 
 class Core : public QObject
 {
@@ -41,9 +42,10 @@ private:
     RECT m_ssRect;
 
     KeyboardProcessor* m_keyboardProcessor;
+    SettingsController* m_settingsController;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
-    SettingsController* m_settingsController;
+    MemoryController* m_memoryController;
 
     int m_defaultWidth;
     int m_defaultHeight;

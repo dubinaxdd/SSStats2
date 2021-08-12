@@ -65,7 +65,7 @@ Rectangle {
                 text: qsTr("Убрать туман (размытие) игрового пространства при отдалении")
                 font.pointSize: 10
                 opacity: _uiBackend.switchNoFogHoverState ? 1.0 : 0.8
-                checked: _uiBackend.switchNoFogPressedState
+                checked: _uiBackend.switchNoFogState
 
             }
         }

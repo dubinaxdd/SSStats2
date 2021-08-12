@@ -15,7 +15,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool buttonInfoHoverState MEMBER m_buttonInfoHoverState NOTIFY sendButtonInfoHoverState)
     Q_PROPERTY(bool buttonInfoPressedState MEMBER m_buttonInfoPressedState NOTIFY sendButtonInfoPressedState)
     Q_PROPERTY(bool switchNoFogHoverState MEMBER m_switchNoFogHoverState NOTIFY sendSwitchNoFogHoverState)
-    Q_PROPERTY(bool switchNoFogPressedState MEMBER m_switchNoFogPressedState NOTIFY sendSwitchNoFogPressedState)
+    Q_PROPERTY(bool switchNoFogState MEMBER m_switchNoFogState NOTIFY switchNoFogStateChanged)
     Q_PROPERTY(bool expand MEMBER m_expand NOTIFY sendExpand)
     Q_PROPERTY(bool showClient MEMBER m_showClient NOTIFY sendShowClient)
     Q_PROPERTY(int mousePositionX READ mousePositionX)
@@ -59,7 +59,7 @@ public:
     bool buttonInfoHoverState() const;
     bool buttonInfoPressedState() const;
     bool switchNoFogHoverState() const;
-    bool switchNoFogPressedState() const;
+    bool switchNoFogState() const;
 
     bool expand() const;
 
@@ -70,7 +70,7 @@ public:
     void setButtonInfoHoverState(bool state);
     void setButtonInfoPressedState(bool state);
     void setSwitchNoFogHoverState(bool state);
-    void setSwitchNoFogPressedState(bool state);
+    void setSwitchNoFogState(bool state);
 
     void setExpand(bool newExpand);
 
@@ -91,7 +91,7 @@ signals:
     void sendButtonInfoHoverState(bool);
     void sendButtonInfoPressedState(bool);
     void sendSwitchNoFogHoverState(bool);
-    void sendSwitchNoFogPressedState(bool);
+    void switchNoFogStateChanged(bool);
 
     void sendExpand(bool);
 
@@ -115,7 +115,7 @@ public slots:
     void buttonInfoPressed();
     void switchNoFogHoverStateChanged(bool state);
     void switchNoFogPressed();
-    void setNoFogState(bool state);
+    void onNoFogStateChanged(bool state);
 
     void expandKeyPressed();
 
@@ -144,7 +144,7 @@ private:
     bool m_buttonInfoHoverState = false;
     bool m_buttonInfoPressedState  = false;
     bool m_switchNoFogHoverState = false;
-    bool m_switchNoFogPressedState = false;
+    bool m_switchNoFogState = false;
 
     bool m_expand = false;
 

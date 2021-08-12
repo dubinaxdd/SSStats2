@@ -8,9 +8,11 @@
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
     , m_keyboardProcessor(new KeyboardProcessor(this))
+    , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(context))
     , m_ssController(new SsController(this))
-    , m_settingsController(new SettingsController(this))
+    , m_memoryController(new MemoryController(this))
+
 {
     registerTypes();
 
@@ -32,7 +34,10 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::startingMission, m_uiBackend, &UiBackend::startingMission, Qt::QueuedConnection );
     QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend, &UiBackend::receivePlayersTestStats, Qt::QueuedConnection );
 
-    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::setNoFogState, Qt::DirectConnection ); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
+    QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::DirectConnection ); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
+    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::DirectConnection ); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
+    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::DirectConnection ); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
+    QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::DirectConnection ); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
 
 }
 
