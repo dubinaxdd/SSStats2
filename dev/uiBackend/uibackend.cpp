@@ -53,9 +53,9 @@ void UiBackend::receiveSsMaximized(bool maximized)
     showClient();
 }
 
-void UiBackend::receiveSsLounched(bool lounched)
+void UiBackend::onSsLaunchStateChanged(bool state)
 {
-    m_ssLounched = lounched;
+    m_ssLounchState = state;
     setExpand(false);
     showClient();
 }
@@ -119,7 +119,7 @@ void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
     emit playerTestStatsUpdate();
 }
 
-void UiBackend::gameStarted()
+void UiBackend::onGameStarted()
 {
     m_gameStarted = true;
 
@@ -127,7 +127,7 @@ void UiBackend::gameStarted()
     emit headerPanelVisibleChanged(m_headerPanelVisible);
 }
 
-void UiBackend::gameStoped()
+void UiBackend::onGameStopped()
 {
     m_gameStarted = false;
     m_missionStarted = false;
@@ -153,7 +153,7 @@ void UiBackend::gameStoped()
     emit headerPanelVisibleChanged(m_headerPanelVisible);
 }
 
-void UiBackend::startingMission()
+void UiBackend::onStartingMission()
 {
     m_missionStarted = true;
 }
@@ -166,7 +166,7 @@ void UiBackend::racePanelVisibleTimerTimeot()
 
 void UiBackend::showClient()
 {
-    m_showClient = m_ssLounched && m_ssMaximized;
+    m_showClient = m_ssLounchState && m_ssMaximized;
     emit sendShowClient(m_showClient);
 }
 

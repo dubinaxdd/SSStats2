@@ -29,7 +29,7 @@ private slots:
     void topmostTimerTimout();
     void ssMaximized(bool maximized);
     void gameInitialized();
-    void ssLounched(bool ssLounched);
+    void ssLaunched(bool ssLaunched);
 
 private:
     void registerTypes();

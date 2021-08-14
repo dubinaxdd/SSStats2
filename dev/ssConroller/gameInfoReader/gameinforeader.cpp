@@ -64,7 +64,7 @@ void GameInfoReader::readGameInfo()
                     {
                         m_gameStoped = true;
                         m_gameStarted = false;
-                        emit gameStoped();
+                        emit gameStopped();
                         readGameParametresAfterStop();
                     }
 
@@ -77,7 +77,7 @@ void GameInfoReader::readGameInfo()
                     m_ssShutdowned = false;
                     m_missionStarted = false;
 
-                    emit gameStoped();
+                    emit gameStopped();
 
                     qDebug() << "INFO: Game Stoped";
                 }

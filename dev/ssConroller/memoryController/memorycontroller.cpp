@@ -22,9 +22,17 @@ MemoryController::MemoryController(QObject *parent) : QObject(parent)
 
 }
 
+void MemoryController::onSsLaunchStateChanged(bool state)
+{
+    m_ssLaunchState = state;
+    if(!m_ssLaunchState) { // Если процесс выключался, то сбрасываем текущие значения установленных инъекций памяти на стандартные
+        currentNoFog = false;
+    }
+}
+
 void MemoryController::onNoFogStateChanged(bool state)
 {
-    qDebug() << "Мы попали в функцию MemoryController'a для изменения памяти DoW.";
+    qDebug() << "Мы попали в функцию MemoryController'a для изменения памяти DoW";
 
     targetNoFog = state;
 
@@ -34,7 +42,7 @@ void MemoryController::onNoFogStateChanged(bool state)
     LPCWSTR lps = (LPCWSTR)ss.utf16();
 
     m_soulstormHwnd = FindWindowW(NULL, lps);
-    if(m_soulstormHwnd==nullptr) return;
+    if(m_soulstormHwnd==nullptr) return; // Процесс DoW не обнаружен
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);

@@ -120,12 +120,12 @@ public slots:
     void expandKeyPressed();
 
     void receiveSsMaximized(bool maximized);
-    void receiveSsLounched(bool lounched);
+    void onSsLaunchStateChanged(bool state);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
 
-    void gameStarted();
-    void gameStoped();
-    void startingMission();
+    void onGameStarted();
+    void onGameStopped();
+    void onStartingMission();
 
 private slots:
     void racePanelVisibleTimerTimeot();
@@ -150,7 +150,7 @@ private:
 
     QPoint m_mousePosition;
     bool m_ssMaximized = false;
-    bool m_ssLounched = false;
+    bool m_ssLounchState = false;
     bool m_showClient = false;
     bool m_gamePanelVisible = false;
     bool m_racePanelVisible = false;

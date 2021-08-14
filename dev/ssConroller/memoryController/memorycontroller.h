@@ -15,13 +15,15 @@ public:
 
 public slots:
     void onNoFogStateChanged(bool state);
+    void onSsLaunchStateChanged(bool state);
 signals:
 
 private:
+    bool m_ssLaunchState = false;
     HWND m_soulstormHwnd = NULL;
-    bool targetNoFog;
-    bool currentNoFog;
-    bool force = false; // применить изменения изменения принудительно
+    bool targetNoFog = false;
+    bool currentNoFog = false;
+    bool force = false; // применить изменения принудительно
 };
 
 #endif // MEMORYCONTROLLER_H
