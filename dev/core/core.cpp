@@ -31,6 +31,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStoped, m_uiBackend, &UiBackend::gameStoped, Qt::QueuedConnection );
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::startingMission, m_uiBackend, &UiBackend::startingMission, Qt::QueuedConnection );
     QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend, &UiBackend::receivePlayersTestStats, Qt::QueuedConnection );
+    QObject::connect(m_ssController->statsCollector(), &StatsCollector::sendServerPlayrStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveServerPlayerStats, Qt::QueuedConnection );
+
 
 }
 
@@ -157,6 +159,7 @@ void Core::ssLounched(bool ssLounched)
 void Core::registerTypes()
 {
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
+    qRegisterMetaType<ServerPlayrStats>("ServerPlayrStats");
 }
 
 UiBackend *Core::uiBackend() const

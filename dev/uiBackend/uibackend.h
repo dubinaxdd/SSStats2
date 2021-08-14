@@ -6,6 +6,8 @@
 #include "../baseTypes/baseTypes.h"
 #include "QTimer"
 
+#include "statisticPanel/statisticpanel.h"
+
 class UiBackend : public QObject
 {
     Q_OBJECT
@@ -23,6 +25,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool ssWindowed MEMBER m_ssWindowed NOTIFY ssWindowedModeChanged)
     Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
     Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
+
+    Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
 
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
@@ -60,6 +64,8 @@ public:
     void setSsWindowed(bool newSsWindowed);
     void setSsWindowPosition(int x, int y);
 
+    StatisticPanel *statisticPanel() const;
+
 signals:
     void sendExpand(bool);
     void sendMousePress();
@@ -72,6 +78,7 @@ signals:
     void playerTestStatsUpdate();
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
+    void statisticPanelInitialized();
 
 public slots:
     void expandKeyPressed();
@@ -93,6 +100,8 @@ private:
 
 private:
     QTimer* racePanelVisibleTimer;
+
+    StatisticPanel* m_statisticPanel;
 
 
     bool m_expand = false;

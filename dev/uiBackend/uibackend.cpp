@@ -1,8 +1,12 @@
 #include "uibackend.h"
 #include "QDebug"
 
-UiBackend::UiBackend(QObject *parent) : QObject(parent)
+UiBackend::UiBackend(QObject *parent)
+    : QObject(parent)
+    , m_statisticPanel(new StatisticPanel(this))
 {
+    emit statisticPanelInitialized();
+
     racePanelVisibleTimer = new QTimer(this);
     racePanelVisibleTimer->setInterval(20000);
     racePanelVisibleTimer->setSingleShot(true);
@@ -211,6 +215,11 @@ QString UiBackend::chooseColorForPlayer(int team)
         case 7 : return "#b3f97dfd";
     }
     return "";
+}
+
+StatisticPanel *UiBackend::statisticPanel() const
+{
+    return m_statisticPanel;
 }
 
 void UiBackend::setSsWindowed(bool newSsWindowed)

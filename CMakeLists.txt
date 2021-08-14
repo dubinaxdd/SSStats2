@@ -44,6 +44,8 @@ set(PROJECT_SOURCES
         dev/baseTypes/baseTypes.h
         dev/ssConroller/statsCollector/statscollector.h
         dev/ssConroller/statsCollector/statscollector.cpp
+        dev/uiBackend/statisticPanel/statisticpanel.h
+        dev/uiBackend/statisticPanel/statisticpanel.cpp
         defines.h
         qml.qrc
         resources.qrc

@@ -6,6 +6,7 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 #define SERVER_ADDRESS "http://207.154.238.90"
 //#define SERVER_ADDRESS "https://dowstats.ru/"
@@ -79,13 +80,16 @@ void StatsCollector::parseCurrentPlayerSteamId()
 void StatsCollector::getPlayrStatsFromServer(QString steamId)
 {
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + steamId + "&version="+SERVER_VERSION+"&sender_sid="+ steamId +"&")));
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receivePlayrStatsFromServer(reply);
+    QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+        receivePlayrStatsFromServer(reply, steamId);
     });
 }
 
 void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 {
+    if (!currentPlayerSteamId.isEmpty())
+        return;
+
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -107,6 +111,8 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 
     steamId = player.value("steamid", "").toString();
 
+    currentPlayerSteamId = steamId;
+
 
     // если игрок на данном аккаунте сейчас играет, и игра Soulstorm, то добавим его в список
     // после этого можно так же прерывать цикл, так как нужный игрок найден
@@ -124,12 +130,36 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     // return true;
 }
 
-void StatsCollector::receivePlayrStatsFromServer(QNetworkReply *reply)
+void StatsCollector::receivePlayrStatsFromServer(QNetworkReply *reply, QString steamId)
 {
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-    qDebug() << jsonDoc;
+    if (!jsonDoc.isArray())
+        return;
+
+    QJsonArray jsonArray = jsonDoc.array();
+
+    for(int i = 0; i < jsonArray.count(); i++)
+    {
+        ServerPlayrStats playerInfo;
+
+        playerInfo.apm = jsonArray.at(i)["apm"].toInt();
+        playerInfo.gamesCount = jsonArray.at(i)["gamesCount"].toInt();
+        playerInfo.mmr = jsonArray.at(i)["mmr"].toInt();
+        playerInfo.mmr1v1 = jsonArray.at(i)["mmr1v1"].toInt();
+        playerInfo.name = jsonArray.at(i)["name"].toString();
+        playerInfo.race = jsonArray.at(i)["race"].toInt();
+        playerInfo.winRate = jsonArray.at(i)["winRate"].toInt();
+        playerInfo.winsCount = jsonArray.at(i)["winsCount"].toInt();
+
+        if (currentPlayerSteamId == steamId)
+            playerInfo.isCurrentPlayer = true;
+        else
+            playerInfo.isCurrentPlayer = false;
+
+        emit sendServerPlayrStats(std::move(playerInfo));
+    }
 
     reply->deleteLater();
 }
