@@ -243,6 +243,11 @@ void SsController::parseSsSettings()
     delete ssSettings;
 }
 
+StatsCollector *SsController::statsCollector() const
+{
+    return m_statsCollector;
+}
+
 HWND SsController::soulstormHwnd() const
 {
     return m_soulstormHwnd;

@@ -6,18 +6,17 @@
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
+
+#define SERVER_ADDRESS "http://207.154.238.90"
+//#define SERVER_ADDRESS "https://dowstats.ru/"
+#define SERVER_VERSION "108"
 
 StatsCollector::StatsCollector(QString steamPath, QObject *parent)
     : QObject(parent)
     , m_steamPath(steamPath)
 {
     m_networkManager = new QNetworkAccessManager(this);
-    //connect(manager, SIGNAL(finished(QNetworkReply*)),
-    //        this, SLOT(replyFinished(QNetworkReply*)));
-
-    QObject::connect(m_networkManager, &QNetworkAccessManager::finished, this, &StatsCollector::receiveManagerReply, Qt::QueuedConnection);
-
-
 }
 
 
@@ -33,7 +32,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
         QTextStream textStream(&file);
         QStringList fileLines = textStream.readAll().split("\n");
 
-        qDebug() << fileLines;
+        //qDebug() << fileLines;
 
         file.close();
 
@@ -69,41 +68,100 @@ void StatsCollector::parseCurrentPlayerSteamId()
 
         for(int i = 0; i < steamIDs.count(); i++)
         {
-            m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + steamIDs.at(i) + "&format=json")));
-            qDebug() << steamIDs.at(i);
+            QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + steamIDs.at(i) + "&format=json")));
+            QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+                receiveSteamInfoReply(reply);
+            });
+            //qDebug() << steamIDs.at(i);
         }
     }
 }
 
-void StatsCollector::receiveManagerReply(QNetworkReply *reply)
+void StatsCollector::getPlayrStatsFromServer(QString steamId)
 {
+    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + steamId + "&version="+SERVER_VERSION+"&sender_sid="+ steamId +"&")));
+    QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+        receivePlayrStatsFromServer(reply, steamId);
+    });
+}
+
+void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
+{
+    if (!currentPlayerSteamId.isEmpty())
+        return;
+
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-    QVariantMap player_info = jsonDoc.object().toVariantMap();
-    QVariantMap response = player_info.value("response", QVariantMap()).toMap();
+    //qDebug() << jsonDoc;
+
+    QVariantMap playerInfo = jsonDoc.object().toVariantMap();
+    QVariantMap response = playerInfo.value("response", QVariantMap()).toMap();
     QVariantList players = response.value("players", QVariantList()).toList();
     QVariantMap player = players.value(0, QVariantMap()).toMap();
 
-    QString player_name;
-    QString sender_name;
+    QString playerName;
+    QString senderName;
     QString steamId;
 
-    player_name = player.value("personaname", "").toString();
+    playerName = player.value("personaname", "").toString();
 
-    if(!player_name.isEmpty())
-        sender_name = player_name;
+    if(!playerName.isEmpty())
+        senderName = playerName;
 
     steamId = player.value("steamid", "").toString();
+
+    currentPlayerSteamId = steamId;
+
 
     // если игрок на данном аккаунте сейчас играет, и игра Soulstorm, то добавим его в список
     // после этого можно так же прерывать цикл, так как нужный игрок найден
     if(player.value("personastate", 0).toInt()==1 && player.value("gameid", 0).toInt()==9450)
-        qDebug() << "INFO: Player" << player_name << "is online";
+        qDebug() << "INFO: Player" << playerName << "is online";
     else
-        qDebug() << "INFO: Player" << player_name << "is offline";
-    qDebug() << "INFO: Player's nickname and Steam ID associated with Soulstorm:" << sender_name << steamId;
+        qDebug() << "INFO: Player" << playerName << "is offline";
 
-     //register_player(sender_name, sender_steamID, true);
-      // return true;
+    qDebug() << "INFO: Player's nickname and Steam ID associated with Soulstorm:" << senderName << steamId;
+
+    getPlayrStatsFromServer(steamId);
+
+    reply->deleteLater();
+     //register_player(senderName, sender_steamID, true);
+    // return true;
 }
+
+void StatsCollector::receivePlayrStatsFromServer(QNetworkReply *reply, QString steamId)
+{
+    QByteArray replyByteArray = reply->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    if (!jsonDoc.isArray())
+        return;
+
+    QJsonArray jsonArray = jsonDoc.array();
+
+    for(int i = 0; i < jsonArray.count(); i++)
+    {
+        ServerPlayrStats playerInfo;
+
+        playerInfo.apm = jsonArray.at(i)["apm"].toInt();
+        playerInfo.gamesCount = jsonArray.at(i)["gamesCount"].toInt();
+        playerInfo.mmr = jsonArray.at(i)["mmr"].toInt();
+        playerInfo.mmr1v1 = jsonArray.at(i)["mmr1v1"].toInt();
+        playerInfo.name = jsonArray.at(i)["name"].toString();
+        playerInfo.race = jsonArray.at(i)["race"].toInt();
+        playerInfo.winRate = jsonArray.at(i)["winRate"].toInt();
+        playerInfo.winsCount = jsonArray.at(i)["winsCount"].toInt();
+
+        if (currentPlayerSteamId == steamId)
+            playerInfo.isCurrentPlayer = true;
+        else
+            playerInfo.isCurrentPlayer = false;
+
+        emit sendServerPlayrStats(std::move(playerInfo));
+    }
+
+    reply->deleteLater();
+}
+
+

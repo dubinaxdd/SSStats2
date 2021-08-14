@@ -297,8 +297,10 @@ Window {
 
                     PlayerStatistic
                     {
+                        Layout.fillHeight: false
+                        Layout.fillWidth: false
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-
+                        model: _uiBackend.statisticPanel
                     }
 
                     Rectangle {

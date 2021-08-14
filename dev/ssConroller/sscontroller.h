@@ -26,6 +26,8 @@ public:
 
     HWND soulstormHwnd() const;
 
+    StatsCollector *statsCollector() const;
+
 public slots:
     void blockInput(bool block);
 
