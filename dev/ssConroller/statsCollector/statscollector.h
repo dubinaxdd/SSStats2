@@ -11,13 +11,15 @@ public:
     explicit StatsCollector(QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
+    void getPlayrStatsFromServer(QString steamId);
 
 
 signals:
 
 
 private slots:
-    void receiveManagerReply(QNetworkReply* reply);
+    void receiveSteamInfoReply(QNetworkReply* reply);
+    void receivePlayrStatsFromServer(QNetworkReply* reply);
 
 private:
     QString m_steamPath;
