@@ -46,13 +46,10 @@ set(PROJECT_SOURCES
         dev/baseTypes/baseTypes.h
         dev/ssConroller/statsCollector/statscollector.h
         dev/ssConroller/statsCollector/statscollector.cpp
-<<<<<<< HEAD
         dev/core/settingsController/settingscontroller.h
         dev/core/settingsController/settingscontroller.cpp
-=======
         dev/uiBackend/statisticPanel/statisticpanel.h
         dev/uiBackend/statisticPanel/statisticpanel.cpp
->>>>>>> a1f3ff7dc2fb013feae140cd11f1c54ba872e85d
         defines.h
         qml.qrc
         resources.qrc

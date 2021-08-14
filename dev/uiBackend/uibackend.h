@@ -117,13 +117,8 @@ private:
 
 private:
     QTimer* racePanelVisibleTimer;
-
-<<<<<<< HEAD
-=======
     StatisticPanel* m_statisticPanel;
 
-
->>>>>>> a1f3ff7dc2fb013feae140cd11f1c54ba872e85d
     bool m_expand = false;
 
     QPoint m_mousePosition;
