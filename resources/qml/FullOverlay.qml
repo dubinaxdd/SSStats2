@@ -14,18 +14,12 @@ Rectangle {
     Layout.fillWidth: true
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     Layout.fillHeight: true
+
+    property Rectangle buttonInfo: buttonInfoRectangle
+    property Rectangle buttonSettings : buttonSettingsRectangle
+
     property Rectangle mainContentContainerRectangle : mainContentContainerRectangle
     property SettingsWindow settingsWindow : settingsWindow
-
-    property int buttonSettingsX : buttonSettingsRectangle.x
-    property int buttonSettingsY : buttonSettingsRectangle.y
-    property int buttonSettingsWidth : buttonSettingsRectangle.width
-    property int buttonSettingsHeight : buttonSettingsRectangle.height
-
-    property int buttonInfoX : buttonInfoRectangle.x
-    property int buttonInfoY : buttonInfoRectangle.y
-    property int buttonInfoWidth : buttonInfoRectangle.width
-    property int buttonInfoHeight : buttonInfoRectangle.height
 
     Connections{
         target: _uiBackend
@@ -59,22 +53,26 @@ Rectangle {
             Layout.fillHeight: false
 
             Rectangle {
-                id: buttonSettingsRectangle
+                id: buttonInfoRectangle
+
+                property bool hoverState : false
+                property bool pressedState : false
+
                 width: 140
-                color: _uiBackend.buttonSettingsPressedState ? "#ff080808" : "#00ffffff"
+                color: pressedState ? "#ff080808" : "#00ffffff"
                 anchors.left: parent.left
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.topMargin: 0
-                anchors.bottomMargin: 0
                 anchors.leftMargin: 0
+                anchors.bottomMargin: 0
+                anchors.topMargin: 0
 
                 Text {
-                    id: buttonSettingsLabel
-                    color: _uiBackend.buttonSettingsHoverState ? "#ffffff" : "#999999"
+                    id: buttonInfoLabel
+                    color: parent.hoverState ? "#ffffff" : "#999999"
                     opacity: 1
                     visible: true
-                    text: qsTr("Настройки")
+                    text: qsTr("Information")
                     anchors.fill: parent
                     font.pointSize: 14
                     horizontalAlignment: Text.AlignHCenter
@@ -91,22 +89,26 @@ Rectangle {
             }
 
             Rectangle {
-                id: buttonInfoRectangle
+                id: buttonSettingsRectangle
+
+                property bool hoverState : false
+                property bool pressedState : false
+
                 width: 140
-                color: _uiBackend.buttonInfoPressedState ? "#ff080808" : "#00ffffff"
-                anchors.left: buttonSettingsRectangle.right
+                color: pressedState ? "#ff080808" : "#00ffffff"
+                anchors.left: buttonInfoRectangle.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                anchors.leftMargin: 0
-                anchors.bottomMargin: 0
                 anchors.topMargin: 0
+                anchors.bottomMargin: 0
+                anchors.leftMargin: 0
 
                 Text {
-                    id: buttonInfoLabel
-                    color: _uiBackend.buttonInfoHoverState ? "#ffffff" : "#999999"
+                    id: buttonSettingsLabel
+                    color: parent.hoverState ? "#ffffff" : "#999999"
                     opacity: 1
                     visible: true
-                    text: qsTr("Информация")
+                    text: qsTr("Settings")
                     anchors.fill: parent
                     font.pointSize: 14
                     horizontalAlignment: Text.AlignHCenter
@@ -141,13 +143,13 @@ Rectangle {
 
             SettingsWindow {
                 id: settingsWindow
-                visible: _uiBackend.buttonSettingsPressedState
+                visible: buttonSettingsRectangle.pressedState
                 anchors.fill: parent
             }
 
             InfoWindow {
                 id: infoWindow
-                visible: _uiBackend.buttonInfoPressedState
+                visible: buttonInfoRectangle.pressedState
                 anchors.fill: parent
             }
         }

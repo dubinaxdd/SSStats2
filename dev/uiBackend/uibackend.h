@@ -10,12 +10,6 @@ class UiBackend : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(bool buttonSettingsHoverState MEMBER m_buttonSettingsHoverState NOTIFY sendButtonSettingsHoverState)
-    Q_PROPERTY(bool buttonSettingsPressedState MEMBER m_buttonSettingsPressedState NOTIFY sendButtonSettingsPressedState)
-    Q_PROPERTY(bool buttonInfoHoverState MEMBER m_buttonInfoHoverState NOTIFY sendButtonInfoHoverState)
-    Q_PROPERTY(bool buttonInfoPressedState MEMBER m_buttonInfoPressedState NOTIFY sendButtonInfoPressedState)
-    Q_PROPERTY(bool switchNoFogHoverState MEMBER m_switchNoFogHoverState NOTIFY sendSwitchNoFogHoverState)
-    Q_PROPERTY(bool switchNoFogState MEMBER m_switchNoFogState NOTIFY switchNoFogStateChanged)
     Q_PROPERTY(bool expand MEMBER m_expand NOTIFY sendExpand)
     Q_PROPERTY(bool showClient MEMBER m_showClient NOTIFY sendShowClient)
     Q_PROPERTY(int mousePositionX READ mousePositionX)
@@ -23,9 +17,6 @@ class UiBackend : public QObject
     Q_PROPERTY(int mouseAreaWidth MEMBER m_mouseAreaWidth)
     Q_PROPERTY(int mouseAreaHeight MEMBER m_mouseAreaHeight)
     Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
-    Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
-    Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisible NOTIFY racePanelVisibleChanged)
-    Q_PROPERTY(bool headerPanelVisible MEMBER m_headerPanelVisible NOTIFY headerPanelVisibleChanged)
     Q_PROPERTY(bool ssWindowed MEMBER m_ssWindowed NOTIFY ssWindowedModeChanged)
     Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
     Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
@@ -53,24 +44,13 @@ class UiBackend : public QObject
 public:
     explicit UiBackend(QObject *parent = nullptr);
 
-    //Функции кнопок меню
-    bool buttonSettingsHoverState() const;
-    bool buttonSettingsPressedState() const;
-    bool buttonInfoHoverState() const;
-    bool buttonInfoPressedState() const;
-    bool switchNoFogHoverState() const;
     bool switchNoFogState() const;
 
     bool expand() const;
 
     bool getShowClient();
 
-    void setButtonSettingsHoverState(bool state);
-    void setButtonSettingsPressedState(bool state);
-    void setButtonInfoHoverState(bool state);
-    void setButtonInfoPressedState(bool state);
-    void setSwitchNoFogHoverState(bool state);
-    void setSwitchNoFogState(bool state);
+    void setNoFogState(bool state);
 
     void setExpand(bool newExpand);
 
@@ -86,12 +66,9 @@ public:
     void setSsWindowPosition(int x, int y);
 
 signals:
-    void sendButtonSettingsHoverState(bool);
-    void sendButtonSettingsPressedState(bool);
-    void sendButtonInfoHoverState(bool);
-    void sendButtonInfoPressedState(bool);
     void sendSwitchNoFogHoverState(bool);
     void switchNoFogStateChanged(bool);
+    void noFogStateChanged(bool);
 
     void sendExpand(bool);
 
@@ -109,13 +86,9 @@ signals:
     void ssWindowPositionChanged();
 
 public slots:
-    void buttonSettingsHoverStateChanged(bool state);
-    void buttonSettingsPressed();
-    void buttonInfoHoverStateChanged(bool state);
-    void buttonInfoPressed();
-    void switchNoFogHoverStateChanged(bool state);
-    void switchNoFogPressed();
+
     void onNoFogStateChanged(bool state);
+    void onSwitchNoFogStateChanged(bool state);
 
     void expandKeyPressed();
 
@@ -138,23 +111,12 @@ private:
 private:
     QTimer* racePanelVisibleTimer;
 
-    //Состояние кнопок и окна
-    bool m_buttonSettingsHoverState = false;
-    bool m_buttonSettingsPressedState  = false;
-    bool m_buttonInfoHoverState = false;
-    bool m_buttonInfoPressedState  = false;
-    bool m_switchNoFogHoverState = false;
-    bool m_switchNoFogState = false;
-
     bool m_expand = false;
 
     QPoint m_mousePosition;
     bool m_ssMaximized = false;
-    bool m_ssLounchState = false;
+    bool m_ssLaunchState = false;
     bool m_showClient = false;
-    bool m_gamePanelVisible = false;
-    bool m_racePanelVisible = false;
-    bool m_headerPanelVisible = true;
 
     bool m_windowTopmost = false;
     bool m_ssWindowed = false;

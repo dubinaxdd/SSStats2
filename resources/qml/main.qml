@@ -16,6 +16,26 @@ Window {
 
     Connections{
         target: _uiBackend
+        function onGamePanelVisibleChanged(state){
+            gamePanel.visible = state;
+        }
+
+        function onRacePanelVisibleChanged(state){
+            gamePanel.racePanel.visible = state;
+        }
+
+        function onHeaderPanelVisibleChanged(state){
+            statsHeader.visible = state;
+        }
+
+        function onNoFogStateChanged(state){
+            fullOverlay.settingsWindow.noFogSwitch.checkedState = state;
+        }
+
+        function onSendExpand(state){
+            statsHeader.expandButtonRectangle.pressedState = state;
+            gamePanel.expandButtonRectangle.pressedState =  state;
+        }
 
         function onSendMousePress(){
             var xMousePos = _uiBackend.mousePositionX;
@@ -54,49 +74,69 @@ Window {
             //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
             // Кнопка "Развернуть оверлей"
-            if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangleX &&
-                    xMousePos <= columnLayout3.x + statsHeader.expandButtonRectangleX + statsHeader.expandButtonRectangleWidth &&
-                    yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangleY &&
-                    yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangleY + statsHeader.expandButtonRectangleHeight)
+            if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangle.x &&
+                    xMousePos <= columnLayout3.x + statsHeader.expandButtonRectangle.x + statsHeader.expandButtonRectangle.width &&
+                    yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangle.y &&
+                    yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangle.y + statsHeader.expandButtonRectangle.height)
             {
+                statsHeader.expandButtonRectangle.pressedState = !statsHeader.expandButtonRectangle.pressedState;
+                //console.log("expand pressed state: ", statsHeader.expandButtonRectangle.pressedState);
                 _uiBackend.expandKeyPressed();
             }
 
             // Кнопка "Развернуть оверлей в игровой панели"
             if (xMousePos >= gamePanel.x + gamePanel.expandButtonRectangleX &&
-                    xMousePos <= gamePanel.x + gamePanel.expandButtonRectangleX + gamePanel.expandButtonRectangleWidth &&
+                    xMousePos <= gamePanel.x + gamePanel.expandButtonRectangleX + gamePanel.expandButtonRectangle.width &&
                     yMousePos >= gamePanel.y + gamePanel.expandButtonRectangleY &&
-                    yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangleHeight)
+                    yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangle.height)
             {
+                gamePanel.expandButtonRectangle.pressedState = !gamePanel.expandButtonRectangle.pressedState;
                 _uiBackend.expandKeyPressed();
             }
 
-            // Кнопка "Настройки" - отобразить окно с настройками
-            if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettingsX &&
-                    xMousePos <= fullOverlay.x + fullOverlay.buttonSettingsX + fullOverlay.buttonSettingsWidth &&
-                    yMousePos >= fullOverlay.y + fullOverlay.buttonSettingsY &&
-                    yMousePos <= fullOverlay.y + fullOverlay.buttonSettingsY + fullOverlay.buttonSettingsHeight)
-            {
-                _uiBackend.buttonSettingsPressed();
-            }
+            if(_uiBackend.expand){
+                // Кнопка "Настройки" - отобразить окно с настройками
+                if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettings.x &&
+                        xMousePos <= fullOverlay.x + fullOverlay.buttonSettings.x + fullOverlay.buttonSettings.width &&
+                        yMousePos >= fullOverlay.y + fullOverlay.buttonSettings.y &&
+                        yMousePos <= fullOverlay.y + fullOverlay.buttonSettings.y + fullOverlay.buttonSettings.height)
+                {
+                    fullOverlay.buttonInfo.pressedState = false;
+                    fullOverlay.buttonSettings.pressedState = !fullOverlay.buttonSettings.pressedState;
+                }
 
-            // Кнопка "Информация" - отобразить окно с информацией
-            if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfoX &&
-                    xMousePos <= fullOverlay.x + fullOverlay.buttonInfoX + fullOverlay.buttonInfoWidth &&
-                    yMousePos >= fullOverlay.y + fullOverlay.buttonInfoY &&
-                    yMousePos <= fullOverlay.y + fullOverlay.buttonInfoY + fullOverlay.buttonInfoHeight)
-            {
-                _uiBackend.buttonInfoPressed();
-            }
+                // Кнопка "Информация" - отобразить окно с информацией
+                if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfo.x &&
+                        xMousePos <= fullOverlay.x + fullOverlay.buttonInfo.x + fullOverlay.buttonInfo.width &&
+                        yMousePos >= fullOverlay.y + fullOverlay.buttonInfo.y &&
+                        yMousePos <= fullOverlay.y + fullOverlay.buttonInfo.y + fullOverlay.buttonInfo.height)
+                {
+                    fullOverlay.buttonSettings.pressedState = false;
+                    fullOverlay.buttonInfo.pressedState = !fullOverlay.buttonInfo.pressedState;
+                }
 
-            // Переключатель "No Fog"
-            if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX &&
-                    xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX + fullOverlay.settingsWindow.noFogSwitchWidth &&
-                    yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY &&
-                    yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY + fullOverlay.settingsWindow.noFogSwitchHeight)
-            {
-                //console.log("No Fog Switch Pressed: ", xMousePos, yMousePos);
-                _uiBackend.switchNoFogPressed();
+                if(fullOverlay.buttonSettings.pressedState){
+                    // Переключатель "No Fog"
+                    if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.noFogSwitch.x &&
+                            xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.noFogSwitch.x + fullOverlay.settingsWindow.noFogSwitch.width &&
+                            yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.noFogSwitch.y &&
+                            yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.noFogSwitch.y + fullOverlay.settingsWindow.noFogSwitch.height)
+                    {
+                        //console.log("No Fog Switch Pressed: ", xMousePos, yMousePos);
+                        fullOverlay.settingsWindow.noFogSwitch.checkedState = !fullOverlay.settingsWindow.noFogSwitch.checkedState;
+                        _uiBackend.onSwitchNoFogStateChanged(fullOverlay.settingsWindow.noFogSwitch.checkedState);
+                    }
+
+                    // Переключатель "Test Switch"
+                    if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x &&
+                            xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x + fullOverlay.settingsWindow.testSwitch.width &&
+                            yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y &&
+                            yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y + fullOverlay.settingsWindow.testSwitch.height)
+                    {
+                        //console.log("Test Switch Pressed: ", xMousePos, yMousePos);
+                        fullOverlay.settingsWindow.testSwitch.checkedState = !fullOverlay.settingsWindow.testSwitch.checkedState;
+                    }
+                }
             }
         }
 
@@ -132,40 +172,56 @@ Window {
             }
 
             // Отлавливаем все координаты курсора при перемещении
-            //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, fullOverlay.x + fullOverlay.buttonSettingsX, fullOverlay.y + fullOverlay.buttonSettingsY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
+            //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, fullOverlay.x + fullOverlay.buttonSettings.x, fullOverlay.y + fullOverlay.buttonSettings.y, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
-            // Кнопка "Настройки"
-            if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettingsX &&
-                    xMousePos <= fullOverlay.x + fullOverlay.buttonSettingsX + fullOverlay.buttonSettingsWidth &&
-                    yMousePos >= fullOverlay.y + fullOverlay.buttonSettingsY &&
-                    yMousePos <= fullOverlay.y + fullOverlay.buttonSettingsY + fullOverlay.buttonSettingsHeight)
-            {
-                _uiBackend.buttonSettingsHoverStateChanged(true); // Попали в область кнопки "Настройки"
-            } else {
-                _uiBackend.buttonSettingsHoverStateChanged(false);
-            }
+            if(_uiBackend.expand){
+                // Кнопка "Настройки"
+                if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettings.x &&
+                        xMousePos <= fullOverlay.x + fullOverlay.buttonSettings.x + fullOverlay.buttonSettings.width &&
+                        yMousePos >= fullOverlay.y + fullOverlay.buttonSettings.y &&
+                        yMousePos <= fullOverlay.y + fullOverlay.buttonSettings.y + fullOverlay.buttonSettings.height)
+                {
+                    fullOverlay.buttonSettings.hoverState = true;
+                } else {
+                    fullOverlay.buttonSettings.hoverState = false;
+                }
 
-            // Кнопка "Информация"
-            if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfoX &&
-                    xMousePos <= fullOverlay.x + fullOverlay.buttonInfoX + fullOverlay.buttonInfoWidth &&
-                    yMousePos >= fullOverlay.y + fullOverlay.buttonInfoY &&
-                    yMousePos <= fullOverlay.y + fullOverlay.buttonInfoY + fullOverlay.buttonInfoHeight)
-            {
-                _uiBackend.buttonInfoHoverStateChanged(true); // Попали в область кнопки "Информация"
-            } else {
-                _uiBackend.buttonInfoHoverStateChanged(false);
-            }
+                // Кнопка "Информация"
+                if (xMousePos >= fullOverlay.x + fullOverlay.buttonInfo.x &&
+                        xMousePos <= fullOverlay.x + fullOverlay.buttonInfo.x + fullOverlay.buttonInfo.width &&
+                        yMousePos >= fullOverlay.y + fullOverlay.buttonInfo.y &&
+                        yMousePos <= fullOverlay.y + fullOverlay.buttonInfo.y + fullOverlay.buttonInfo.height)
+                {
+                    fullOverlay.buttonInfo.hoverState = true;
+                } else {
+                    fullOverlay.buttonInfo.hoverState = false;
+                }
 
-            // Переключатель "No Fog"
-            if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX &&
-                    xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.noFogSwitchX + fullOverlay.settingsWindow.noFogSwitchWidth &&
-                    yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY &&
-                    yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.noFogSwitchY + fullOverlay.settingsWindow.noFogSwitchHeight)
-            {
-                //console.log("No Fog Switch Hovered: ", xMousePos, yMousePos);
-                _uiBackend.switchNoFogHoverStateChanged(true); // Попали в область переключателя "No Fog"
-            } else {
-                _uiBackend.switchNoFogHoverStateChanged(false);
+                if(fullOverlay.buttonSettings.pressedState){
+                    // Переключатель "No Fog"
+                    if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.noFogSwitch.x &&
+                            xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.noFogSwitch.x + fullOverlay.settingsWindow.noFogSwitch.width &&
+                            yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.noFogSwitch.y &&
+                            yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.noFogSwitch.y + fullOverlay.settingsWindow.noFogSwitch.height)
+                    {
+                        //console.log("No Fog Switch Hovered: ", xMousePos, yMousePos);
+                        fullOverlay.settingsWindow.noFogSwitch.hoverState = true;
+                    } else {
+                        fullOverlay.settingsWindow.noFogSwitch.hoverState = false;
+                    }
+
+                    // Переключатель "Test Switch"
+                    if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x &&
+                            xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x + fullOverlay.settingsWindow.testSwitch.width &&
+                            yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y &&
+                            yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y + fullOverlay.settingsWindow.testSwitch.height)
+                    {
+                        //console.log("Test Switch Hovered: ", xMousePos, yMousePos);
+                        fullOverlay.settingsWindow.testSwitch.hoverState = true;
+                    } else {
+                        fullOverlay.settingsWindow.testSwitch.hoverState = false;
+                    }
+                }
             }
         }
 

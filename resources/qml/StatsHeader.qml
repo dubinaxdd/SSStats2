@@ -10,12 +10,9 @@ Rectangle {
     color: "#333333"
     Layout.minimumWidth: 260
     Layout.minimumHeight: 60
-    visible: _uiBackend.headerPanelVisible
 
-    property int expandButtonRectangleX : expandButtonRectangle.x
-    property int expandButtonRectangleY : expandButtonRectangle.y
-    property int expandButtonRectangleWidth : expandButtonRectangle.width
-    property int expandButtonRectangleHeight : expandButtonRectangle.height
+    property Rectangle expandButtonRectangle : expandButtonRectangle
+
     //function getObj() { return obj }
 
     gradient: Gradient {
@@ -94,6 +91,32 @@ Rectangle {
 
         Rectangle {
             id: expandButtonRectangle
+
+            property bool pressedState: false
+            property Gradient grLight: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#337ab7"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#265a88"
+                }
+            }
+
+            property Gradient grDark: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#1a3c8a"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#122b63"
+                }
+            }
+
             width: 200
             height: 200
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
@@ -108,17 +131,7 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
 
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: "#337ab7"
-                }
-
-                GradientStop {
-                    position: 1
-                    color: "#265a88"
-                }
-            }
+            gradient: pressedState ? grDark : grLight
 
             BorderImage {
                 id: borderImage

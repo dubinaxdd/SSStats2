@@ -15,10 +15,10 @@ Rectangle {
     transformOrigin: Item.BottomRight
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
 
-    property int noFogSwitchX : settingsFlow.x + noFogSwitch.x
-    property int noFogSwitchY : settingsFlow.y + noFogSwitch.y
-    property int noFogSwitchWidth : noFogSwitch.width
-    property int noFogSwitchHeight : noFogSwitch.height
+    property Column settingsColumn : settingsColumn
+    property Switch noFogSwitch : noFogSwitch
+    property Switch testSwitch : testSwitch
+
 
     Connections{
         target: _uiBackend
@@ -40,8 +40,8 @@ Rectangle {
         anchors.rightMargin: 0
     }
 
-    Flow {
-        id: settingsFlow
+    Column {
+        id: settingsColumn
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: settingsLabel.bottom
@@ -51,29 +51,39 @@ Rectangle {
         anchors.bottomMargin: 10
         anchors.topMargin: 10
 
-        Rectangle {
-            id: tempRectangle
-            width: 455
-            height: 40
-            opacity: 1
-            color: "#f9f9f9"
-            border.color: "#e17f7f"
-            border.width: 1
+        Switch {
+            id: noFogSwitch
 
-            Switch {
-                id: noFogSwitch
-                text: qsTr("Убрать туман (размытие) игрового пространства при отдалении")
-                font.pointSize: 10
-                opacity: _uiBackend.switchNoFogHoverState ? 1.0 : 0.8
-                checked: _uiBackend.switchNoFogState
+            property bool hoverState : false
+            property bool checkedState : false
 
-            }
+            text: qsTr("Remove fog (aka No Fog) of the game space when moving away")
+            font.pointSize: 10
+            opacity: hoverState ? 1.0 : 0.8
+            checked: checkedState
+
+        }
+
+        Switch {
+            id: testSwitch
+
+            property bool hoverState : false
+            property bool checkedState : false
+
+            text: qsTr("Test switch")
+            anchors.topMargin: 0
+            font.pointSize: 10
+            opacity: hoverState ? 1.0 : 0.8
+            checked: checkedState
+
         }
     }
+
+
 }
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+    D{i:0;autoSize:true;height:480;width:640}D{i:3}
 }
 ##^##*/

@@ -37,10 +37,10 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_settingsController, &SettingsController::onSsLaunchStateChanged, Qt::QueuedConnection);
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::DirectConnection); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
-    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::DirectConnection); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
-    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::DirectConnection); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
-    QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::DirectConnection); // Не уверен в том какой тип подключения СИГНАЛ-СЛОТ тут нужен
+    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
 
 }
 

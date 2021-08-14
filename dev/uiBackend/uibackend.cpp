@@ -11,36 +11,6 @@ UiBackend::UiBackend(QObject *parent) : QObject(parent)
 
 }
 
-void UiBackend::buttonSettingsHoverStateChanged(bool state)
-{
-    setButtonSettingsHoverState(state);
-}
-
-void UiBackend::buttonInfoHoverStateChanged(bool state)
-{
-    setButtonInfoHoverState(state);
-}
-
-void UiBackend::switchNoFogHoverStateChanged(bool state)
-{
-    setSwitchNoFogHoverState(state);
-}
-
-void UiBackend::buttonSettingsPressed()
-{
-    setButtonSettingsPressedState(!m_buttonSettingsPressedState);
-}
-
-void UiBackend::buttonInfoPressed()
-{
-    setButtonInfoPressedState(!m_buttonInfoPressedState);
-}
-
-void UiBackend::switchNoFogPressed()
-{
-    setSwitchNoFogState(!m_switchNoFogState);
-}
-
 void UiBackend::expandKeyPressed()
 {
     setExpand(!m_expand);
@@ -55,7 +25,7 @@ void UiBackend::receiveSsMaximized(bool maximized)
 
 void UiBackend::onSsLaunchStateChanged(bool state)
 {
-    m_ssLounchState = state;
+    m_ssLaunchState = state;
     setExpand(false);
     showClient();
 }
@@ -64,11 +34,9 @@ void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
 {
     racePanelVisibleTimer->start();
 
-    m_gamePanelVisible = true;
-    emit gamePanelVisibleChanged(m_gamePanelVisible);
+    emit gamePanelVisibleChanged(true);
 
-    m_racePanelVisible = true;
-    emit racePanelVisibleChanged(m_racePanelVisible);
+    emit racePanelVisibleChanged(true);
 
     if(testStats.count() < 8)
         return;
@@ -123,8 +91,7 @@ void UiBackend::onGameStarted()
 {
     m_gameStarted = true;
 
-    m_headerPanelVisible = false;
-    emit headerPanelVisibleChanged(m_headerPanelVisible);
+    emit headerPanelVisibleChanged(false);
 }
 
 void UiBackend::onGameStopped()
@@ -143,14 +110,9 @@ void UiBackend::onGameStopped()
 
     emit playerTestStatsUpdate();
 
-    m_gamePanelVisible = false;
-    emit gamePanelVisibleChanged(m_gamePanelVisible);
-
-    m_racePanelVisible = false;
-    emit racePanelVisibleChanged(m_racePanelVisible);
-
-    m_headerPanelVisible = true;
-    emit headerPanelVisibleChanged(m_headerPanelVisible);
+    emit gamePanelVisibleChanged(false);
+    emit racePanelVisibleChanged(false);
+    emit headerPanelVisibleChanged(true);
 }
 
 void UiBackend::onStartingMission()
@@ -160,13 +122,12 @@ void UiBackend::onStartingMission()
 
 void UiBackend::racePanelVisibleTimerTimeot()
 {
-    m_racePanelVisible = false;
-    emit racePanelVisibleChanged(m_racePanelVisible);
+    emit racePanelVisibleChanged(false);
 }
 
 void UiBackend::showClient()
 {
-    m_showClient = m_ssLounchState && m_ssMaximized;
+    m_showClient = m_ssLaunchState && m_ssMaximized;
     emit sendShowClient(m_showClient);
 }
 
@@ -266,112 +227,19 @@ bool UiBackend::getShowClient()
     return m_showClient;
 }
 
-bool UiBackend::buttonSettingsPressedState() const //infoShow
-{
-    return m_buttonSettingsPressedState;
-}
-
-bool UiBackend::buttonInfoPressedState() const //infoShow
-{
-    return m_buttonInfoPressedState;
-}
-
 bool UiBackend::expand() const
 {
     return m_expand;
 }
 
-bool UiBackend::buttonSettingsHoverState() const
+void UiBackend::onNoFogStateChanged(bool state)
 {
-    return m_buttonSettingsHoverState;
+        emit noFogStateChanged(state); // Отправка значения No Fog в QML
 }
 
-bool UiBackend::buttonInfoHoverState() const
+void UiBackend::onSwitchNoFogStateChanged(bool state) // Это слот, для вызова инициализатором настроек извне и в обход меню настроек GUI
 {
-    return m_buttonInfoHoverState;
-}
-
-bool UiBackend::switchNoFogHoverState() const
-{
-    return m_switchNoFogHoverState;
-}
-
-bool UiBackend::switchNoFogState() const //infoShow
-{
-    return m_switchNoFogState;
-}
-
-// ### SET раздел (частично) ###
-
-void UiBackend::setButtonSettingsHoverState(bool state)
-{
-    if (m_expand)
-    {
-        m_buttonSettingsHoverState = state;
-        emit sendButtonSettingsHoverState(m_buttonSettingsHoverState);
-    }
-}
-
-void UiBackend::setButtonInfoHoverState(bool state)
-{
-    if (m_expand)
-    {
-        m_buttonInfoHoverState = state;
-        emit sendButtonInfoHoverState(m_buttonInfoHoverState);
-    }
-}
-
-void UiBackend::setSwitchNoFogHoverState(bool state)
-{
-    //qDebug() << "setSwitchNoFogHoverState = " << state;
-    //qDebug() << "m_buttonSettingsPressedState = " << m_buttonSettingsPressedState;
-    if (m_buttonSettingsPressedState)
-    {
-        m_switchNoFogHoverState = state;
-        emit sendSwitchNoFogHoverState(m_switchNoFogHoverState);
-    }
-}
-
-void UiBackend::setButtonSettingsPressedState(bool state)
-{
-    if (m_expand)
-    {
-        m_buttonSettingsPressedState = state;
-        emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
-        if (m_buttonSettingsPressedState)
-        {
-            m_buttonInfoPressedState = false;
-            emit sendButtonInfoPressedState(m_buttonInfoPressedState);
-        }
-    }
-}
-
-void UiBackend::setButtonInfoPressedState(bool state)
-{
-    if (m_expand)
-    {
-        m_buttonInfoPressedState = state;
-        emit sendButtonInfoPressedState(m_buttonInfoPressedState);
-        if (m_buttonInfoPressedState)
-        {
-            m_buttonSettingsPressedState = false;
-            emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
-        }
-    }
-}
-
-void UiBackend::setSwitchNoFogState(bool state)
-{
-    if (m_buttonSettingsPressedState)
-    {
-        onNoFogStateChanged(state);
-    }
-}
-
-void UiBackend::onNoFogStateChanged(bool state) // Это слот, для вызова инициализатором настроек извне и в обход меню настроек GUI
-{
-        m_switchNoFogState = state;
-        emit switchNoFogStateChanged(m_switchNoFogState);
+        emit switchNoFogStateChanged(state);
 }
 
 void UiBackend::setExpand(bool newExpand)
@@ -383,32 +251,14 @@ void UiBackend::setExpand(bool newExpand)
     {
         if (m_expand)
         {
-            m_gamePanelVisible = false;
-            m_headerPanelVisible = true;
+            emit gamePanelVisibleChanged(false);
+            emit headerPanelVisibleChanged(true);
         }
         else
         {
-            m_gamePanelVisible = true;
-            m_headerPanelVisible = false;
-
-            // Кнопки меню
-            m_buttonInfoPressedState = false;
-            m_buttonSettingsPressedState = false;
-            emit sendButtonInfoPressedState(m_buttonInfoPressedState);
-            emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
+            emit gamePanelVisibleChanged(true);
+            emit headerPanelVisibleChanged(false);
         }
-
-        emit gamePanelVisibleChanged(m_gamePanelVisible);
-        emit headerPanelVisibleChanged(m_headerPanelVisible);
-    }
-
-    if (!m_expand)
-    {
-        // Деактивируем открытые формы
-        m_buttonInfoPressedState = false;
-        m_buttonSettingsPressedState = false;
-        emit sendButtonInfoPressedState(m_buttonInfoPressedState);
-        emit sendButtonSettingsPressedState(m_buttonSettingsPressedState);
     }
 }
 
