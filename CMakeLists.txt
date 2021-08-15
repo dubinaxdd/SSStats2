@@ -41,6 +41,8 @@ set(PROJECT_SOURCES
         dev/ssConroller/sscontroller.cpp
         dev/ssConroller/gameInfoReader/gameinforeader.h
         dev/ssConroller/gameInfoReader/gameinforeader.cpp
+        dev/ssConroller/gameInfoReader/playerssteamscanner.h
+        dev/ssConroller/gameInfoReader/playerssteamscanner.cpp
         dev/baseTypes/baseTypes.h
         dev/ssConroller/statsCollector/statscollector.h
         dev/ssConroller/statsCollector/statscollector.cpp

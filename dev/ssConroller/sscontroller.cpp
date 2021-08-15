@@ -9,6 +9,7 @@
 #include <QStringList>
 
 #define CHECK_SS_TIMER_INTERVAL 100  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
+#define SCAN_STEAM_PLAYERS_INTERVAL 2000
 
 SsController::SsController(QObject *parent) : QObject(parent)
 {
@@ -19,6 +20,13 @@ SsController::SsController(QObject *parent) : QObject(parent)
     m_steamPath = getSteamPathFromRegistry();
 
     m_statsCollector = new StatsCollector(m_steamPath, this);
+
+    m_playersSteamScanner = new PlayersSteamScanner();
+
+    m_ssSteamPlayersScanTimer = new QTimer(this);
+    m_ssSteamPlayersScanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
+    m_ssSteamPlayersScanTimer->start();
+    QObject::connect(m_ssSteamPlayersScanTimer, &QTimer::timeout, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
 
 
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);

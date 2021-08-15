@@ -22,6 +22,7 @@ private slots:
 private:
     QString m_steamPath;
     bool m_currentPlayerAccepted;
+    QMap<QString, QString> AllPlayersInfo;
 
     QNetworkAccessManager *m_networkManager;
 
