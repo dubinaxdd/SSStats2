@@ -6,6 +6,7 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
+    visible: false
 
     property Rectangle racePanel : playerRacesRectangle
     property Rectangle expandButtonRectangle : expandButtonRectangle

@@ -13,6 +13,8 @@ class MemoryController : public QObject
 public:
     explicit MemoryController(QObject *parent = nullptr);
 
+    void setSoulstormHwnd(HWND newSoulstormHwnd);
+
 public slots:
     void onNoFogStateChanged(bool state);
     void onSsLaunchStateChanged(bool state);

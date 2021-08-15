@@ -25,9 +25,14 @@ MemoryController::MemoryController(QObject *parent) : QObject(parent)
 void MemoryController::onSsLaunchStateChanged(bool state)
 {
     m_ssLaunchState = state;
-    if(!m_ssLaunchState) { // Если процесс выключался, то сбрасываем текущие значения установленных инъекций памяти на стандартные
+
+    if(!m_ssLaunchState)  // Если процесс выключался, то сбрасываем текущие значения установленных инъекций памяти на стандартные
         currentNoFog = false;
-    }
+}
+
+void MemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
+{
+    m_soulstormHwnd = newSoulstormHwnd;
 }
 
 void MemoryController::onNoFogStateChanged(bool state)
@@ -36,13 +41,7 @@ void MemoryController::onNoFogStateChanged(bool state)
 
     targetNoFog = state;
 
-    // получаем HANDLE процесса игры
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
-    LPCWSTR lps = (LPCWSTR)ss.utf16();
-
-    m_soulstormHwnd = FindWindowW(NULL, lps);
-    if(m_soulstormHwnd==nullptr) return; // Процесс DoW не обнаружен
+    if(m_soulstormHwnd == nullptr) return; // Процесс DoW не обнаружен
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
