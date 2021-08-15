@@ -3,7 +3,8 @@
 
 UiBackend::UiBackend(QObject *parent)
     : QObject(parent)
-    , m_statisticPanel(new StatisticPanel(this))
+    , m_imageProvider(new ImageProvider(this))
+    , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
 {
     emit statisticPanelInitialized();
 
@@ -215,6 +216,11 @@ QString UiBackend::chooseColorForPlayer(int team)
         case 7 : return "#b3f97dfd";
     }
     return "";
+}
+
+ImageProvider *UiBackend::imageProvider() const
+{
+    return m_imageProvider;
 }
 
 StatisticPanel *UiBackend::statisticPanel() const

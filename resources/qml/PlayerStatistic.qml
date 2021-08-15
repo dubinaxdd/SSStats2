@@ -13,7 +13,6 @@ Rectangle {
     Layout.maximumWidth: 200
     Layout.fillWidth: false
     Layout.fillHeight: true
-    //anchors.horizontalCenter: parent.horizontalCenter
 
     property var model
 
@@ -35,15 +34,33 @@ Rectangle {
             Layout.fillWidth: true
 
             Image {
-                id: image
+                id: avatarImage
+                cache: false
                 x: 137
                 y: 0
                 width: 60
                 height: 60
                 anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/qtquickplugin/images/template_image.png"
+
+                source: "image://ImageProvider/currentPlayerAvatarMedium"
                 anchors.horizontalCenter: parent.horizontalCenter
                 fillMode: Image.PreserveAspectFit
+
+                //Костыль для перезагрузки картинки, рил так на формух делают
+                function reload() {
+                    var oldSource = avatarImage.source;
+                    avatarImage.source = "";
+                    avatarImage.source = oldSource;
+                }
+
+                Connections {
+                    target: model
+
+                    function onCurrentPlayerStatsChanged()
+                    {
+                        avatarImage.reload();
+                    }
+                }
             }
         }
 
@@ -97,7 +114,7 @@ Rectangle {
 
             Label {
                 id: label5
-                text: "Win rate: " + model.currentPlayerWinRate
+                text: "Win rate: " + model.currentPlayerWinRate + "%"
                 font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true

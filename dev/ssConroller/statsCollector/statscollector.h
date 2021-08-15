@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include "../../baseTypes/baseTypes.h"
+#include <QImage>
 
 class StatsCollector : public QObject
 {
@@ -12,24 +13,26 @@ public:
     explicit StatsCollector(QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
-    void getPlayrStatsFromServer(QString steamId);
+    void getPlayerStatsFromServer(ServerPlayrStats* playerInfo);
+    void getPlayerMediumAvatar(QString url, ServerPlayrStats *playerInfo);
 
 
-signals:
+signals:                           
     void sendServerPlayrStats(ServerPlayrStats serverPlayrStats);
 
 
 private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);
-    void receivePlayrStatsFromServer(QNetworkReply* reply, QString steamId);
+    void receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayrStats* playerInfo);
+    void receivePlayerMediumAvatar(QNetworkReply* reply, ServerPlayrStats *playerInfo);
 
 private:
     QString m_steamPath;
     bool m_currentPlayerAccepted;
 
-    QString currentPlayerSteamId = "";
-
     QNetworkAccessManager *m_networkManager;
+
+    ServerPlayrStats m_currentPlayerStats;
 
 };
 

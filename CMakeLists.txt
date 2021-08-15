@@ -24,8 +24,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #    endif()
 #endif()
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network REQUIRED)
 
 #set(TS_FILES SSStats2_en_GB.ts)
 
@@ -46,11 +46,15 @@ set(PROJECT_SOURCES
         dev/ssConroller/statsCollector/statscollector.cpp
         dev/uiBackend/statisticPanel/statisticpanel.h
         dev/uiBackend/statisticPanel/statisticpanel.cpp
+        dev/uiBackend/imageProvider/imageprovider.h
+        dev/uiBackend/imageProvider/imageprovider.cpp
         defines.h
         qml.qrc
         resources.qrc
        # ${TS_FILES}
 )
+
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SSStats2
@@ -73,10 +77,22 @@ else()
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
+
+#set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x86")
+
+find_package(OpenSSL)
+if (OPENSSL_FOUND)
+    message (STATUS "OPENSSL found")
+    message (STATUS "OpenSSL INclude directories:" OPENSSL_INCLUDE_DIR)
+else()
+message (FATAL_ERROR "OpenSSL Not found.")
+    endif()
+
+
 target_compile_definitions(SSStats2
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
 target_link_libraries(SSStats2
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::QuickControls2)
+  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::QuickControls2 Qt${QT_VERSION_MAJOR}::Network OpenSSL::SSL OpenSSL::Crypto)
 
 
 set_target_properties(SSStats2 PROPERTIES

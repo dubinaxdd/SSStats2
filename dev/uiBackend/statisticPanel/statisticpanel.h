@@ -3,6 +3,8 @@
 
 #include "../../baseTypes/baseTypes.h"
 #include <QObject>
+#include <QImage>
+#include "../imageProvider/imageprovider.h"
 
 class StatisticPanel : public QObject
 {
@@ -17,19 +19,18 @@ class StatisticPanel : public QObject
     Q_PROPERTY(QString currentPlayerWinRate MEMBER m_currentPlayerWinRate NOTIFY currentPlayerStatsChanged)
     Q_PROPERTY(QString currentPlayerWinsCount MEMBER m_currentPlayerWinsCount NOTIFY currentPlayerStatsChanged)
 
-
-
 public:
-    explicit StatisticPanel(QObject *parent = nullptr);
+    explicit StatisticPanel(ImageProvider *imageProvider, QObject *parent = nullptr);
 
 signals:
     void currentPlayerStatsChanged();
 
-
 public slots:
-    void receiveServerPlayerStats(ServerPlayrStats serverPlayrStats);
+    void receiveServerPlayerStats(ServerPlayrStats serverPlayerStats);
 
 private:
+
+    ImageProvider *m_imageProvider;
 
     QString m_currentPlayerApm;
     QString m_currentPlayerGamesCount;

@@ -3,6 +3,7 @@
 
 
 #include <QString>
+#include <QImage>
 
 struct PlayerStats
 {
@@ -13,6 +14,7 @@ struct PlayerStats
 
 struct ServerPlayrStats
 {
+    QString steamId;
     int apm;
     int gamesCount;
     int mmr;
@@ -21,7 +23,10 @@ struct ServerPlayrStats
     int race;
     int winRate;
     int winsCount;
-    bool isCurrentPlayer;
+    QImage avatar;
+    bool isCurrentPlayer = false;
+    bool avatarAvailable = false;
+    bool statsAvailable = false;
 };
 
 #endif // BASETYPES_H

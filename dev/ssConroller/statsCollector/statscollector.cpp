@@ -8,6 +8,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+
 #define SERVER_ADDRESS "http://207.154.238.90"
 //#define SERVER_ADDRESS "https://dowstats.ru/"
 #define SERVER_VERSION "108"
@@ -17,6 +18,8 @@ StatsCollector::StatsCollector(QString steamPath, QObject *parent)
     , m_steamPath(steamPath)
 {
     m_networkManager = new QNetworkAccessManager(this);
+
+    qDebug() << "INFO: OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 
 
@@ -31,8 +34,6 @@ void StatsCollector::parseCurrentPlayerSteamId()
     {
         QTextStream textStream(&file);
         QStringList fileLines = textStream.readAll().split("\n");
-
-        //qDebug() << fileLines;
 
         file.close();
 
@@ -72,24 +73,28 @@ void StatsCollector::parseCurrentPlayerSteamId()
             QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
                 receiveSteamInfoReply(reply);
             });
-            //qDebug() << steamIDs.at(i);
         }
     }
 }
 
-void StatsCollector::getPlayrStatsFromServer(QString steamId)
+void StatsCollector::getPlayerStatsFromServer(ServerPlayrStats *playerInfo)
 {
-    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + steamId + "&version="+SERVER_VERSION+"&sender_sid="+ steamId +"&")));
+    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+SERVER_VERSION+"&sender_sid="+ playerInfo->steamId +"&")));
     QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
-        receivePlayrStatsFromServer(reply, steamId);
+        receivePlayerStatsFromServer(reply, playerInfo);
+    });
+}
+
+void StatsCollector::getPlayerMediumAvatar(QString url, ServerPlayrStats *playerInfo)
+{
+    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(url)));
+    QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+        receivePlayerMediumAvatar(reply, playerInfo);
     });
 }
 
 void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 {
-    if (!currentPlayerSteamId.isEmpty())
-        return;
-
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -103,34 +108,43 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     QString playerName;
     QString senderName;
     QString steamId;
+    QString avatarUrl;
 
     playerName = player.value("personaname", "").toString();
+    avatarUrl = player.value("avatarmedium", "").toString();
 
     if(!playerName.isEmpty())
         senderName = playerName;
 
     steamId = player.value("steamid", "").toString();
 
-    currentPlayerSteamId = steamId;
-
-
     // если игрок на данном аккаунте сейчас играет, и игра Soulstorm, то добавим его в список
     // после этого можно так же прерывать цикл, так как нужный игрок найден
     if(player.value("personastate", 0).toInt()==1 && player.value("gameid", 0).toInt()==9450)
+    {
         qDebug() << "INFO: Player" << playerName << "is online";
+        m_currentPlayerAccepted = true;
+    }
     else
+    {
         qDebug() << "INFO: Player" << playerName << "is offline";
+        m_currentPlayerAccepted = false;
+    }
 
     qDebug() << "INFO: Player's nickname and Steam ID associated with Soulstorm:" << senderName << steamId;
 
-    getPlayrStatsFromServer(steamId);
+    m_currentPlayerStats.steamId = steamId;
+    m_currentPlayerStats.isCurrentPlayer = true;
+
+    getPlayerStatsFromServer(&m_currentPlayerStats);
+    getPlayerMediumAvatar(avatarUrl, &m_currentPlayerStats);
 
     reply->deleteLater();
      //register_player(senderName, sender_steamID, true);
     // return true;
 }
 
-void StatsCollector::receivePlayrStatsFromServer(QNetworkReply *reply, QString steamId)
+void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayrStats* playerInfo)
 {
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
@@ -142,26 +156,39 @@ void StatsCollector::receivePlayrStatsFromServer(QNetworkReply *reply, QString s
 
     for(int i = 0; i < jsonArray.count(); i++)
     {
-        ServerPlayrStats playerInfo;
+        playerInfo->apm = jsonArray.at(i)["apm"].toInt();
+        playerInfo->gamesCount = jsonArray.at(i)["gamesCount"].toInt();
+        playerInfo->mmr = jsonArray.at(i)["mmr"].toInt();
+        playerInfo->mmr1v1 = jsonArray.at(i)["mmr1v1"].toInt();
+        playerInfo->name = jsonArray.at(i)["name"].toString();
+        playerInfo->race = jsonArray.at(i)["race"].toInt();
+        playerInfo->winRate = jsonArray.at(i)["winRate"].toInt();
+        playerInfo->winsCount = jsonArray.at(i)["winsCount"].toInt();
 
-        playerInfo.apm = jsonArray.at(i)["apm"].toInt();
-        playerInfo.gamesCount = jsonArray.at(i)["gamesCount"].toInt();
-        playerInfo.mmr = jsonArray.at(i)["mmr"].toInt();
-        playerInfo.mmr1v1 = jsonArray.at(i)["mmr1v1"].toInt();
-        playerInfo.name = jsonArray.at(i)["name"].toString();
-        playerInfo.race = jsonArray.at(i)["race"].toInt();
-        playerInfo.winRate = jsonArray.at(i)["winRate"].toInt();
-        playerInfo.winsCount = jsonArray.at(i)["winsCount"].toInt();
+        playerInfo->statsAvailable = true;
 
-        if (currentPlayerSteamId == steamId)
-            playerInfo.isCurrentPlayer = true;
-        else
-            playerInfo.isCurrentPlayer = false;
-
-        emit sendServerPlayrStats(std::move(playerInfo));
+        if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
+            emit sendServerPlayrStats(*playerInfo);
     }
 
     reply->deleteLater();
+}
+
+void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, ServerPlayrStats* playerInfo)
+{
+    QByteArray replyByteArray = reply->readAll();
+
+    QImage avatarMedium = QImage::fromData(replyByteArray);
+
+
+    if (avatarMedium.isNull())
+        return;
+
+    playerInfo->avatarAvailable = true;
+    playerInfo->avatar = avatarMedium;
+
+    if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
+        emit sendServerPlayrStats(*playerInfo);
 }
 
 
