@@ -6,6 +6,7 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
+    visible: false
 
     property Rectangle racePanel : playerRacesRectangle
     property Rectangle expandButtonRectangle : expandButtonRectangle
@@ -168,9 +169,24 @@ Rectangle {
 
                     Rectangle {
                         id: expandButtonRectangle
-                        property bool pressedState: false
+
+                        property bool howeredState: false
 
                         property Gradient grLight: Gradient {
+                            GradientStop {
+                                position: 0
+                                color: "#428bca"
+                            }
+
+                            GradientStop {
+                                position: 1
+                                color: "#265a88"
+                            }
+
+
+                        }
+
+                        property Gradient grDark: Gradient {
                             GradientStop {
                                 position: 0
                                 color: "#337ab7"
@@ -178,21 +194,11 @@ Rectangle {
 
                             GradientStop {
                                 position: 1
-                                color: "#265a88"
+                                color: "#245580"
+
                             }
                         }
 
-                        property Gradient grDark: Gradient {
-                            GradientStop {
-                                position: 0
-                                color: "#1a3c8a"
-                            }
-
-                            GradientStop {
-                                position: 1
-                                color: "#122b63"
-                            }
-                        }
 
                         width: 200
                         height: 200
@@ -202,7 +208,7 @@ Rectangle {
                         Layout.fillWidth: false
                         Layout.fillHeight: true
 
-                        gradient: pressedState ? grDark : grLight
+                        gradient: howeredState ? grDark : grLight
 
                         BorderImage {
                             id: borderImage

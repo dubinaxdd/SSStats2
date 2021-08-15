@@ -10,7 +10,9 @@
 
 #define CHECK_SS_TIMER_INTERVAL 100  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
-SsController::SsController(QObject *parent) : QObject(parent)
+SsController::SsController(QObject *parent)
+    : QObject(parent)
+    , m_memoryController(new MemoryController(this))
 {
     m_ssPath = getSsPathFromRegistry();
     qDebug() << "INFO: Worked with Soulstorm from: " << m_ssPath;
@@ -20,12 +22,10 @@ SsController::SsController(QObject *parent) : QObject(parent)
 
     m_statsCollector = new StatsCollector(m_steamPath, this);
 
-
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
-
-
+    QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
     m_ssLaunchControllTimer = new QTimer(this);
     m_ssLaunchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
@@ -52,6 +52,8 @@ void SsController::checkSS()
 
     if (m_soulstormHwnd)                                ///<Если игра запущена
     {
+        m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
+
         if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
         {
             parseSsSettings();                                  ///<Считываем настройки соулсторма
@@ -241,6 +243,11 @@ void SsController::parseSsSettings()
 
 
     delete ssSettings;
+}
+
+MemoryController *SsController::memoryController() const
+{
+    return m_memoryController;
 }
 
 StatsCollector *SsController::statsCollector() const

@@ -11,7 +11,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(context))
     , m_ssController(new SsController(this))
-    , m_memoryController(new MemoryController(this))
+
 
 {
     registerTypes();
@@ -35,12 +35,12 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend, &UiBackend::receivePlayersTestStats, Qt::QueuedConnection);
 
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_settingsController, &SettingsController::onSsLaunchStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
+
 
     QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
     QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_memoryController, &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
     QObject::connect(m_ssController->statsCollector(), &StatsCollector::sendServerPlayrStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveServerPlayerStats, Qt::QueuedConnection );
 }
 

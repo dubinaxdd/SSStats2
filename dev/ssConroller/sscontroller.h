@@ -8,6 +8,7 @@
 #include "../baseTypes/baseTypes.h"
 #include <QVector>
 #include "statsCollector/statscollector.h"
+#include "memoryController/memorycontroller.h"
 
 class SsController : public QObject
 {
@@ -27,6 +28,8 @@ public:
     HWND soulstormHwnd() const;
 
     StatsCollector *statsCollector() const;
+
+    MemoryController *memoryController() const;
 
 public slots:
     void blockInput(bool block);
@@ -63,6 +66,7 @@ private:
 
     GameInfoReader* m_gameInfoReader;
     StatsCollector* m_statsCollector;
+    MemoryController* m_memoryController;
 
 
 };
