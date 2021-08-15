@@ -14,6 +14,11 @@ Window {
     color: "#00000000"
     visibility: Window.Maximized
 
+    property var xMousePos
+    property var yMousePos
+    property var mouseAreaWidth
+    property var mouseAreaHeight
+
     Connections{
         target: _uiBackend
         function onGamePanelVisibleChanged(state){
@@ -33,38 +38,6 @@ Window {
         }
 
         function onSendMousePress(){
-            var xMousePos = _uiBackend.mousePositionX;
-            var yMousePos = _uiBackend.mousePositionY;
-            var mouseAreaWidth = _uiBackend.mouseAreaWidth;
-            var mouseAreaHeight = _uiBackend.mouseAreaHeight;
-
-            //Костыль для работы с 4k мониторами, не спрашивайте почему так, все равно не скажу. Просто сс не может работать в большем разрешении чем 1920/1080
-
-            if (!_uiBackend.ssWindowed && mouseAreaWidth !== 0 && mouseAreaHeight !== 0 && window.width >= 1920 && window.height >= 1080)
-            {
-                if (window.width !== mouseAreaWidth && window.height !== mouseAreaHeight)
-                {
-                    xMousePos = (window.width * xMousePos) / mouseAreaWidth;
-                    yMousePos = (window.height * yMousePos) / mouseAreaHeight;
-                }
-            }
-
-            //Это тоже кусок костыля, только для оконного режима игры
-            if( _uiBackend.ssWindowed && mouseAreaWidth > 1920 && mouseAreaHeight > 1080)
-            {
-                xMousePos = xMousePos/2;
-                yMousePos = yMousePos/2;
-            }
-
-            if(_uiBackend.ssWindowed)
-            {
-                xMousePos = xMousePos - _uiBackend.ssWindowPositionX;
-                yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
-            }
-
-
-            // ### КЛИК КУРСОРОМ (ГЛОБАЛЬНО) ###
-
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
             //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
@@ -134,12 +107,11 @@ Window {
             }
         }
 
-        // ### ПЕРЕМЕЩЕНИЕ КУРСОРА (ГЛОБАЛЬНО) ###
         function onSendMouseMove(){
-            var xMousePos = _uiBackend.mousePositionX;
-            var yMousePos = _uiBackend.mousePositionY;
-            var mouseAreaWidth = _uiBackend.mouseAreaWidth;
-            var mouseAreaHeight = _uiBackend.mouseAreaHeight;
+            xMousePos = _uiBackend.mousePositionX;
+            yMousePos = _uiBackend.mousePositionY;
+            mouseAreaWidth = _uiBackend.mouseAreaWidth;
+            mouseAreaHeight = _uiBackend.mouseAreaHeight;
 
             // Костыль для работы с 4k мониторами, не спрашивайте почему так, все равно не скажу. Просто сс не может работать в большем разрешении чем 1920/1080
 
@@ -344,7 +316,5 @@ Window {
 
             }
         }
-
-
     }
 }
