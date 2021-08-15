@@ -32,11 +32,6 @@ Window {
             fullOverlay.settingsWindow.noFogSwitch.checkedState = state;
         }
 
-        function onSendExpand(state){
-            statsHeader.expandButtonRectangle.pressedState = state;
-            gamePanel.expandButtonRectangle.pressedState =  state;
-        }
-
         function onSendMousePress(){
             var xMousePos = _uiBackend.mousePositionX;
             var yMousePos = _uiBackend.mousePositionY;
@@ -79,9 +74,8 @@ Window {
                     yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangle.y &&
                     yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangle.y + statsHeader.expandButtonRectangle.height)
             {
-                statsHeader.expandButtonRectangle.pressedState = !statsHeader.expandButtonRectangle.pressedState;
-                //console.log("expand pressed state: ", statsHeader.expandButtonRectangle.pressedState);
                 _uiBackend.expandKeyPressed();
+                statsHeader.expandButtonRectangle.howeredState = true;
             }
 
             // Кнопка "Развернуть оверлей в игровой панели"
@@ -90,7 +84,7 @@ Window {
                     yMousePos >= gamePanel.y + gamePanel.expandButtonRectangleY &&
                     yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangle.height)
             {
-                gamePanel.expandButtonRectangle.pressedState = !gamePanel.expandButtonRectangle.pressedState;
+                statsHeader.expandButtonRectangle.howeredState = true;
                 _uiBackend.expandKeyPressed();
             }
 
@@ -173,6 +167,40 @@ Window {
 
             // Отлавливаем все координаты курсора при перемещении
             //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, fullOverlay.x + fullOverlay.buttonSettings.x, fullOverlay.y + fullOverlay.buttonSettings.y, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
+
+
+            // Кнопка "Развернуть оверлей"
+            if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangle.x &&
+                    xMousePos <= columnLayout3.x + statsHeader.expandButtonRectangle.x + statsHeader.expandButtonRectangle.width &&
+                    yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangle.y &&
+                    yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangle.y + statsHeader.expandButtonRectangle.height)
+            {
+                if(!statsHeader.expandButtonRectangle.howeredState)
+                    statsHeader.expandButtonRectangle.howeredState = true;
+            }
+            else
+            {
+                if(statsHeader.expandButtonRectangle.howeredState)
+                    statsHeader.expandButtonRectangle.howeredState = false;
+            }
+
+
+            // Кнопка "Развернуть оверлей в игровой панели"
+            if (xMousePos >= gamePanel.x + gamePanel.expandButtonRectangleX &&
+                    xMousePos <= gamePanel.x + gamePanel.expandButtonRectangleX + gamePanel.expandButtonRectangle.width &&
+                    yMousePos >= gamePanel.y + gamePanel.expandButtonRectangleY &&
+                    yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangle.height)
+
+            {
+
+                if(!gamePanel.expandButtonRectangle.howeredState)
+                    gamePanel.expandButtonRectangle.howeredState = true;
+            }
+            else
+            {
+                if(gamePanel.expandButtonRectangle.howeredState)
+                    gamePanel.expandButtonRectangle.howeredState = false;
+            }
 
             if(_uiBackend.expand){
                 // Кнопка "Настройки"
