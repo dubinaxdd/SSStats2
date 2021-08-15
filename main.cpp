@@ -155,6 +155,8 @@ int main(int argc, char *argv[])
 
     core = new Core(context, &app);
 
+    engine.addImageProvider("ImageProvider",core->uiBackend()->imageProvider());
+
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
         if (!obj && url == objUrl)

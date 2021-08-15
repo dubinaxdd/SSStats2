@@ -7,6 +7,7 @@
 #include "QTimer"
 
 #include "statisticPanel/statisticpanel.h"
+#include "imageProvider/imageprovider.h"
 
 class UiBackend : public QObject
 {
@@ -71,6 +72,8 @@ public:
 
     StatisticPanel *statisticPanel() const;
 
+    ImageProvider *imageProvider() const;
+
 signals:
     void sendSwitchNoFogHoverState(bool);
     void switchNoFogStateChanged(bool);
@@ -116,6 +119,8 @@ private:
     QString chooseColorForPlayer(int team);
 
 private:
+    ImageProvider* m_imageProvider;
+
     QTimer* racePanelVisibleTimer;
     StatisticPanel* m_statisticPanel;
 
