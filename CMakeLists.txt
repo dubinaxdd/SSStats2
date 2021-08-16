@@ -33,6 +33,8 @@ set(PROJECT_SOURCES
         main.cpp
         dev/core/core.h
         dev/core/core.cpp
+        dev/core/settingsController/settingscontroller.h
+        dev/core/settingsController/settingscontroller.cpp
         dev/keyboardProcessor/keyboardprocessor.h
         dev/keyboardProcessor/keyboardprocessor.cpp
         dev/uiBackend/uibackend.h
@@ -43,15 +45,15 @@ set(PROJECT_SOURCES
         dev/ssConroller/gameInfoReader/gameinforeader.cpp
         dev/ssConroller/memoryController/memorycontroller.h
         dev/ssConroller/memoryController/memorycontroller.cpp
-        dev/baseTypes/baseTypes.h
         dev/ssConroller/statsCollector/statscollector.h
         dev/ssConroller/statsCollector/statscollector.cpp
-        dev/core/settingsController/settingscontroller.h
-        dev/core/settingsController/settingscontroller.cpp
+        dev/ssConroller/apmMeter/apmmeter.h
+        dev/ssConroller/apmMeter/apmmeter.cpp
         dev/uiBackend/statisticPanel/statisticpanel.h
         dev/uiBackend/statisticPanel/statisticpanel.cpp
         dev/uiBackend/imageProvider/imageprovider.h
         dev/uiBackend/imageProvider/imageprovider.cpp
+        dev/baseTypes/baseTypes.h
         defines.h
         qml.qrc
         resources.qrc
