@@ -16,6 +16,11 @@ Rectangle {
     property int expandButtonRectangleWidth : expandButtonRectangle.width
     property int expandButtonRectangleHeight : expandButtonRectangle.height
 
+    property var model
+
+    Connections {
+        target: model
+    }
 
     function chooseColor(string)
     {
@@ -98,9 +103,9 @@ Rectangle {
                     }
 
                     Label {
-                        id: label1
+                        id: currentApmCountLabel
                         color: "#ffffff"
-                        text: qsTr("450")
+                        text: model.currentApm
                         font.pointSize: 12
                     }
 
@@ -125,9 +130,9 @@ Rectangle {
                     }
 
                     Label {
-                        id: label3
+                        id: averageApmCountLabel
                         color: "#ffffff"
-                        text: qsTr("450")
+                        text: model.averageApm
                         font.pointSize: 12
                     }
 

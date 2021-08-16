@@ -55,7 +55,7 @@ private:
 private:
     HWND m_soulstormHwnd = NULL;
 
-    QTimer* m_ssLounchControllTimer;
+    QTimer* m_ssLaunchControllTimer;
     QTimer* m_ssSteamPlayersScanTimer;
     
     QString m_ssPath;

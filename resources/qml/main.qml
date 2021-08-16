@@ -254,6 +254,7 @@ Window {
 
         GamePanel {
             id: gamePanel
+            model: _uiBackend.gamePanel
             anchors.fill: parent
         }
 

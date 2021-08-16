@@ -53,6 +53,8 @@ set(PROJECT_SOURCES
         dev/ssConroller/apmMeter/apmmeter.cpp
         dev/uiBackend/statisticPanel/statisticpanel.h
         dev/uiBackend/statisticPanel/statisticpanel.cpp
+        dev/uiBackend/gamePanel/gamepanel.h
+        dev/uiBackend/gamePanel/gamepanel.cpp
         dev/uiBackend/imageProvider/imageprovider.h
         dev/uiBackend/imageProvider/imageprovider.cpp
         dev/baseTypes/baseTypes.h

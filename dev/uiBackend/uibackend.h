@@ -6,6 +6,7 @@
 #include "../baseTypes/baseTypes.h"
 #include "QTimer"
 
+#include "gamePanel/gamepanel.h"
 #include "statisticPanel/statisticpanel.h"
 #include "imageProvider/imageprovider.h"
 
@@ -24,6 +25,7 @@ class UiBackend : public QObject
     Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
     Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
 
+    Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel NOTIFY gamePanelInitialized)
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
 
 
@@ -70,6 +72,8 @@ public:
     void setSsWindowed(bool newSsWindowed);
     void setSsWindowPosition(int x, int y);
 
+
+    GamePanel *gamePanel() const;
     StatisticPanel *statisticPanel() const;
 
     ImageProvider *imageProvider() const;
@@ -93,6 +97,7 @@ signals:
     void playerTestStatsUpdate();
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
+    void gamePanelInitialized();
     void statisticPanelInitialized();
 
 public slots:
@@ -122,6 +127,7 @@ private:
     ImageProvider* m_imageProvider;
 
     QTimer* racePanelVisibleTimer;
+    GamePanel* m_gamePanel;
     StatisticPanel* m_statisticPanel;
 
     bool m_expand = false;

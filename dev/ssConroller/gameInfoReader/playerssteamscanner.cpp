@@ -18,7 +18,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     qDebug() << "Start scanning steam addresses";
     HWND hWnd = FindWindow(nullptr, "Dawn of War: Soulstorm");
     DWORD PID;
-    if(hWnd==nullptr){
+    if(hWnd==nullptr) {
         qDebug() << "Could not find soulstorm process" << GetLastError();
         return;
     }
@@ -27,14 +27,14 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION |
-                                       PROCESS_VM_READ, FALSE, PID);
+                                  PROCESS_VM_READ, FALSE, PID);
     if(hProcess==nullptr){
         qDebug() << "Could not open process" << GetLastError();
         return;
     }
 
     int size = 0;
-//    if(!useOldSIDSearch){
+    //    if(!useOldSIDSearch){
     QByteArray buffer(2000000, 0);
     sidsAddr[0] = (PVOID)0x155740B6;
     sidsAddr[1] = (PVOID)0x156B2DF6;
@@ -47,7 +47,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         PVOID readAddr = sidsAddr[k];
         SIZE_T bytesRead = 0;
 
-        // если функция вернула не ноль, то продолжим цикл
+        // Если функция вернула не ноль, то продолжим цикл
         if(!ReadProcessMemory(hProcess, readAddr, buffer.data(), 2000000, &bytesRead)){
             if(GetLastError()!=299)
                 qDebug() << "Could not read process memory" << readAddr << GetLastError();
@@ -64,18 +64,18 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             if (!match)continue;
             int nickPos = i + 56;
             if (buffer.at(nickPos) < 50 &&
-                buffer.at(nickPos) > 0 &&
-                buffer.at(nickPos + 1) == 0 &&
-                buffer.at(nickPos + 2) == 0 &&
-                buffer.at(nickPos + 3) == 0 &&
-                buffer.at(nickPos - 1) == 0 &&
-                buffer.at(nickPos - 2) == 0 &&
-                buffer.at(nickPos - 3) == 0 &&
-                buffer.at(nickPos - 4) == 0 &&
-                buffer.at(nickPos+4+buffer.at(nickPos)*2)   == 0 &&
-                buffer.at(nickPos+4+buffer.at(nickPos)*2+1) == 0 &&
-                buffer.at(nickPos+4+buffer.at(nickPos)*2+2) == 0 &&
-                buffer.at(nickPos+4+buffer.at(nickPos)*2+3) == 0) {
+                    buffer.at(nickPos) > 0 &&
+                    buffer.at(nickPos + 1) == 0 &&
+                    buffer.at(nickPos + 2) == 0 &&
+                    buffer.at(nickPos + 3) == 0 &&
+                    buffer.at(nickPos - 1) == 0 &&
+                    buffer.at(nickPos - 2) == 0 &&
+                    buffer.at(nickPos - 3) == 0 &&
+                    buffer.at(nickPos - 4) == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2)   == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2+1) == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2+2) == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2+3) == 0) {
                 QString steamIdStr = QString::fromUtf16((ushort*)buffer.mid(i + 18, 34).data()).left(17);
                 if(!steamIdStr.contains(QRegExp("^[0-9]{17}$")))
                     continue;

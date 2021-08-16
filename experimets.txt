@@ -1,3 +1,5 @@
+   // CODE 1 =======================
+   // Код по нажатию клавиши Ctrl изменяет прозрачность окна приложения для событий мышки
    if(cKey.vkCode == 44) {
         QTextCodec *codec = QTextCodec::codecForName("UTF-8");
         QString s = codec->toUnicode("SSStats2");
@@ -7,3 +9,30 @@
         LONG styles = GetWindowLong(hwnd, GWL_EXSTYLE);
         SetWindowLong (hwnd, GWL_EXSTYLE, styles & ~WS_EX_TRANSPARENT);
     }
+	// CODE 1 =======================
+	
+	// CODE 2 =======================
+	// Код проверяет флаги в структуре KBDLLHOOKSTRUCT и определяет была ли клавиша нажата или отжата
+    quint8 temp_flags = cKey.flags;
+    qDebug() << "FLAGS: " << temp_flags; // Байт флагов, 8 бит отвечает за флаг статуса действия 0 - DOWN, 1 - UP (в памяти это выглядит как 1000 0000 - клавишу ОТПУСТИЛИ, в x10 это  = 128, 0000 0000 - клавишу НАЖАЛИ, в x10 это  = 0)
+    quint8 temp_uns_byte = 128;
+    quint8 up_down_flag = temp_flags & temp_uns_byte; // Операция побитового И. XXXX XXXX & 1000 0000 = ?000 0000
+    qDebug() << "DOWN/UP FLAG (0 - DOWN, 1 - UP): " << up_down_flag;
+    if(up_down_flag == 0){
+        qDebug() << "KEY DOWN";
+    }
+    if(up_down_flag == 128){
+        qDebug() << "KEY UP";
+    }
+    // CODE 2 =======================
+	
+	// CODE 3 =======================
+	// То же что и CODE 2, но проверка идет через тип wParam
+    if (WM_KEYDOWN == wParam) {
+        qDebug() << "WM_KEYDOWN " + QString::fromUtf16((ushort*) lpszName);
+    }
+
+    if (WM_KEYUP == wParam) {
+        qDebug() << "WM_KEYUP " + QString::fromUtf16((ushort*) lpszName);
+    }
+    // CODE 3 =======================

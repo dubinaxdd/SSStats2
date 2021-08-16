@@ -4,8 +4,10 @@
 UiBackend::UiBackend(QObject *parent)
     : QObject(parent)
     , m_imageProvider(new ImageProvider(this))
+    , m_gamePanel(new GamePanel(this))
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
 {
+    emit gamePanelInitialized();
     emit statisticPanelInitialized();
 
     racePanelVisibleTimer = new QTimer(this);
@@ -212,6 +214,11 @@ QString UiBackend::chooseColorForPlayer(int team)
 ImageProvider *UiBackend::imageProvider() const
 {
     return m_imageProvider;
+}
+
+GamePanel *UiBackend::gamePanel() const
+{
+    return m_gamePanel;
 }
 
 StatisticPanel *UiBackend::statisticPanel() const

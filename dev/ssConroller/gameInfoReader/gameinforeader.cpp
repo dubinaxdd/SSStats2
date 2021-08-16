@@ -39,7 +39,7 @@ void GameInfoReader::readGameInfo()
                     m_gameStoped = true;
                     m_gameStarted = false;
                     m_gamePlayback = false;
-                    m_gameLoad = false;
+                    m_gameLoaded = false;
                     m_ssInitialized = false;
                     m_ssShutdowned = true;
                     emit ssShutdown();
@@ -71,7 +71,7 @@ void GameInfoReader::readGameInfo()
                     m_gameStoped = true;
                     m_gameStarted = false;
                     m_gamePlayback = false;
-                    m_gameLoad = false;
+                    m_gameLoaded = false;
 
                     checkGameInitialize();
                     m_ssShutdowned = false;
@@ -116,7 +116,7 @@ void GameInfoReader::readGameInfo()
                             m_gameStoped = false;
                             m_gameStarted = false;
                             m_gamePlayback = true;
-                            m_gameLoad = false;
+                            m_gameLoaded = false;
                             checkGameInitialize();
                             m_ssShutdowned = false;
                             qDebug() << "INFO: Game Playback";   
@@ -127,13 +127,14 @@ void GameInfoReader::readGameInfo()
                     ///Проверка на загруженную игру
                     if (checkLine.contains("APP -- Game Load"))
                     {
-                        if (!m_gameLoad)
+                        if (!m_gameLoaded)
                         {
                             m_gameStoped = false;
                             m_gameStarted = false;
                             m_gamePlayback = false;
-                            m_gameLoad = true;
+                            m_gameLoaded = true;
                             checkGameInitialize();
+                            emit gameLoaded();
                             m_ssShutdowned = false;
                             qDebug() << "INFO: Game Load";
                         }
@@ -143,12 +144,12 @@ void GameInfoReader::readGameInfo()
                     checkCounter--;
                 }
 
-                if (!m_gameLoad && !m_gamePlayback && !m_gameStarted)
+                if (!m_gameLoaded && !m_gamePlayback && !m_gameStarted)
                 {
                     m_gameStoped = false;
                     m_gameStarted = true;
                     m_gamePlayback = false;
-                    m_gameLoad = false;
+                    m_gameLoaded = false;
                     checkGameInitialize();
                     m_ssShutdowned = false;
                     emit gameStarted();

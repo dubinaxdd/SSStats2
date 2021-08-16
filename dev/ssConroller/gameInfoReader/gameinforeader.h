@@ -20,8 +20,9 @@ private slots:
 
 
 signals:
-    void gameStopped();
     void gameStarted();
+    void gameStopped();
+    void gameLoaded();
     void gameInitialized();
     void ssShutdown();
     void startingMission();
@@ -33,7 +34,7 @@ private:
     bool m_gameStoped = false;
     bool m_gameStarted = false;
     bool m_gamePlayback = false;
-    bool m_gameLoad = false;
+    bool m_gameLoaded = false;
     bool m_scrimishMission = false;
     bool m_ssInitialized = false;
     bool m_ssShutdowned = true;

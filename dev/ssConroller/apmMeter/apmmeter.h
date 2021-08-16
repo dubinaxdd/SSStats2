@@ -28,18 +28,23 @@ public slots:
     void onKeyPressEvent (QKeyEvent *event);
     void onMousePressEvent (QPoint mousePosition);
 
-    void start();
-    void stop();
+    void onGameStarted();
+    void onGameStopped();
 
 signals:
-    void currentApmAnalysed(quint64);
-    void averageApmAnalysed(quint64);
+    void currentApmCalculated(quint64);
+    void averageApmCalculated(quint64);
 
 private slots:
-    void analyseAPM();
+    void calculateAPM();
+
 private:
+    bool started = false;
 
     quint64 start_time = 0;
+
+    quint64	current_tick_mouse_actions_count;
+    quint64	current_tick_keys_actions_count;
 
     quint64	full_actions_count;
 
@@ -49,7 +54,6 @@ private:
     QTimer *measureTickTimer;
 
 //    QVector<APMFrame> actionsArray;
-
 };
 
 #endif // APMMETER_H
