@@ -5,6 +5,7 @@
 #include "Windows.h"
 #include <QTimer>
 #include "gameInfoReader/gameinforeader.h"
+#include "gameInfoReader/playerssteamscanner.h"
 #include "../baseTypes/baseTypes.h"
 #include <QVector>
 #include "statsCollector/statscollector.h"
@@ -53,7 +54,10 @@ private:
 
 private:
     HWND m_soulstormHwnd = NULL;
-    QTimer* m_ssLaunchControllTimer;
+
+    QTimer* m_ssLounchControllTimer;
+    QTimer* m_ssSteamPlayersScanTimer;
+    
     QString m_ssPath;
     QString m_steamPath;
 
@@ -65,6 +69,8 @@ private:
     bool m_ssWindowed = false;
 
     GameInfoReader* m_gameInfoReader;
+    PlayersSteamScanner* m_playersSteamScanner;
+
     StatsCollector* m_statsCollector;
     MemoryController* m_memoryController;
 
