@@ -54,6 +54,8 @@ void APMMeter::calculateAPM()
     ticksActionsArray.append(joint_tick_actions_count);
     full_actions_count += joint_tick_actions_count;
 
+    if(ticksActionsArray.size() > TICKS_FOR_ANALYSE) ticksActionsArray.removeFirst(); // Сохраняем в массиве только последние TICKS_FOR_ANALYSE тиков
+
     // RESET CURRENT TICK ACTIONS
     current_tick_mouse_actions_count = 0;
     current_tick_keys_actions_count = 0;
@@ -68,7 +70,7 @@ void APMMeter::calculateAPM()
         actions_sum += *i;
 
         ++analysed_ticks;
-        if(analysed_ticks == TICKS_FOR_ANALYSE) break; // Мы взяли из массива последние TICKS_FOR_ANALYSE тиков по MEASURE_TICK_LENGTH времени
+//        if(analysed_ticks == TICKS_FOR_ANALYSE) break; // Мы взяли из массива последние TICKS_FOR_ANALYSE тиков по MEASURE_TICK_LENGTH времени
     }
 
     quint64 current_analyse_duration = analysed_ticks * MEASURE_TICK_LENGTH;
