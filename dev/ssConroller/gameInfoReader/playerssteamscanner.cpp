@@ -15,11 +15,11 @@ using namespace std;
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
     AllPlayersInfo.clear();
-    qDebug() << "Start scanning steam addresses";
+   // qDebug() << "Start scanning steam addresses";
     HWND hWnd = FindWindow(nullptr, "Dawn of War: Soulstorm");
     DWORD PID;
-    if(hWnd==nullptr) {
-        qDebug() << "Could not find soulstorm process" << GetLastError();
+    if(hWnd==nullptr){
+        //qDebug() << "Could not find soulstorm process" << GetLastError();
         return;
     }
     GetWindowThreadProcessId(hWnd, &PID);
@@ -29,7 +29,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION |
                                   PROCESS_VM_READ, FALSE, PID);
     if(hProcess==nullptr){
-        qDebug() << "Could not open process" << GetLastError();
+        //qDebug() << "Could not open process" << GetLastError();
         return;
     }
 
@@ -50,7 +50,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         // Если функция вернула не ноль, то продолжим цикл
         if(!ReadProcessMemory(hProcess, readAddr, buffer.data(), 2000000, &bytesRead)){
             if(GetLastError()!=299)
-                qDebug() << "Could not read process memory" << readAddr << GetLastError();
+                //qDebug() << "Could not read process memory" << readAddr << GetLastError();
             continue;
         }
         // qDebug() << i << "address of steam IDs:" << readAddr;
