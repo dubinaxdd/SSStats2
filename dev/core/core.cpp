@@ -1,7 +1,6 @@
 #include "core.h"
 #include "QDebug"
 #include "QFile"
-#include "QSettings"
 #include "../ssConroller/gameInfoReader/gameinforeader.h"
 #include "../baseTypes/baseTypes.h"
 
@@ -9,8 +8,11 @@
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
     , m_keyboardProcessor(new KeyboardProcessor(this))
+    , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(context))
     , m_ssController(new SsController(this))
+
+
 {
     registerTypes();
 
@@ -21,19 +23,26 @@ Core::Core(QQmlContext *context, QObject* parent)
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection );
-    QObject::connect(m_ssController, &SsController::ssLounched, m_uiBackend, &UiBackend::receiveSsLounched, Qt::QueuedConnection );
-    QObject::connect(m_ssController, &SsController::ssMaximized, m_uiBackend, &UiBackend::receiveSsMaximized, Qt::QueuedConnection );
-    QObject::connect(m_ssController, &SsController::ssMaximized, this, &Core::ssMaximized, Qt::DirectConnection );
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameInitialized, this, &Core::gameInitialized, Qt::DirectConnection );
-    QObject::connect(m_ssController, &SsController::ssLounched, this, &Core::ssLounched, Qt::QueuedConnection );
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStarted, m_uiBackend, &UiBackend::gameStarted, Qt::QueuedConnection );
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStoped, m_uiBackend, &UiBackend::gameStoped, Qt::QueuedConnection );
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::startingMission, m_uiBackend, &UiBackend::startingMission, Qt::QueuedConnection );
-    QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend, &UiBackend::receivePlayersTestStats, Qt::QueuedConnection );
+    QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_uiBackend, &UiBackend::onSsLaunchStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::ssMaximized, m_uiBackend, &UiBackend::receiveSsMaximized, Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::ssMaximized, this, &Core::ssMaximized, Qt::DirectConnection);
+    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameInitialized, this, &Core::gameInitialized, Qt::DirectConnection);
+    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, this, &Core::ssLaunched, Qt::QueuedConnection );
+    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStarted, m_uiBackend, &UiBackend::onGameStarted, Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStopped, m_uiBackend, &UiBackend::onGameStopped, Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::startingMission, m_uiBackend, &UiBackend::onStartingMission, Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend, &UiBackend::receivePlayersTestStats, Qt::QueuedConnection);
 
+    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_settingsController, &SettingsController::onSsLaunchStateChanged, Qt::QueuedConnection);
+
+
+    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_ssController->statsCollector(), &StatsCollector::sendServerPlayrStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveServerPlayerStats, Qt::QueuedConnection );
 }
-
 
 void Core::topmostTimerTimout()
 {
@@ -69,8 +78,7 @@ void Core::topmostTimerTimout()
 
                 }
            }
-
-            BringWindowToTop(m_ssStatsHwnd);
+           BringWindowToTop(m_ssStatsHwnd);
         }
     }
 }
@@ -144,9 +152,9 @@ void Core::gameInitialized()
     }
 }
 
-void Core::ssLounched(bool ssLounched)
+void Core::ssLaunched(bool ssLaunched)
 {
-    if (!ssLounched)
+    if (!ssLaunched)
     {
         m_topmostTimer->stop();
         SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
@@ -157,6 +165,7 @@ void Core::ssLounched(bool ssLounched)
 void Core::registerTypes()
 {
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
+    qRegisterMetaType<ServerPlayrStats>("ServerPlayrStats");
 }
 
 UiBackend *Core::uiBackend() const
@@ -167,6 +176,11 @@ UiBackend *Core::uiBackend() const
 SsController *Core::ssController() const
 {
     return m_ssController;
+}
+
+SettingsController *Core::settingsController() const
+{
+    return m_settingsController;
 }
 
 bool Core::event(QEvent *event)
@@ -182,6 +196,13 @@ bool Core::event(QEvent *event)
      {
          QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
          m_uiBackend->mousePressEvent(mouseEvent->pos());
+         return true;
+     }
+
+     if (event->type() == QEvent::MouseMove)
+     {
+         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
+         m_uiBackend->mouseMoveEvent(mouseEvent->pos());
          return true;
      }
 

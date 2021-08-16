@@ -6,6 +6,9 @@
 #include "../baseTypes/baseTypes.h"
 #include "QTimer"
 
+#include "statisticPanel/statisticpanel.h"
+#include "imageProvider/imageprovider.h"
+
 class UiBackend : public QObject
 {
     Q_OBJECT
@@ -17,12 +20,11 @@ class UiBackend : public QObject
     Q_PROPERTY(int mouseAreaWidth MEMBER m_mouseAreaWidth)
     Q_PROPERTY(int mouseAreaHeight MEMBER m_mouseAreaHeight)
     Q_PROPERTY(bool topmost READ getWindowTopmost WRITE setWindowTopmost)
-    Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
-    Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisible NOTIFY racePanelVisibleChanged)
-    Q_PROPERTY(bool headerPanelVisible MEMBER m_headerPanelVisible NOTIFY headerPanelVisibleChanged)
     Q_PROPERTY(bool ssWindowed MEMBER m_ssWindowed NOTIFY ssWindowedModeChanged)
     Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
     Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
+
+    Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
 
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
@@ -47,10 +49,18 @@ class UiBackend : public QObject
 public:
     explicit UiBackend(QObject *parent = nullptr);
 
+    bool switchNoFogState() const;
+
     bool expand() const;
+
     bool getShowClient();
+
+    void setNoFogState(bool state);
+
     void setExpand(bool newExpand);
+
     void mousePressEvent (QPoint mousePosition);
+    void mouseMoveEvent (QPoint mousePosition);
     int mousePositionX();
     int mousePositionY();
     void setWindowTopmost(bool topmost);
@@ -60,9 +70,20 @@ public:
     void setSsWindowed(bool newSsWindowed);
     void setSsWindowPosition(int x, int y);
 
+    StatisticPanel *statisticPanel() const;
+
+    ImageProvider *imageProvider() const;
+
 signals:
+    void sendSwitchNoFogHoverState(bool);
+    void switchNoFogStateChanged(bool);
+    void noFogStateChanged(bool);
+
     void sendExpand(bool);
+
     void sendMousePress();
+    void sendMouseMove();
+
     void sendShowClient(bool);
     void windowTopmostChanged();
     void windowedModeSeted();
@@ -72,16 +93,22 @@ signals:
     void playerTestStatsUpdate();
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
+    void statisticPanelInitialized();
 
 public slots:
+
+    void onNoFogStateChanged(bool state);
+    void onSwitchNoFogStateChanged(bool state);
+
     void expandKeyPressed();
+
     void receiveSsMaximized(bool maximized);
-    void receiveSsLounched(bool lounched);
+    void onSsLaunchStateChanged(bool state);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
 
-    void gameStarted();
-    void gameStoped();
-    void startingMission();
+    void onGameStarted();
+    void onGameStopped();
+    void onStartingMission();
 
 private slots:
     void racePanelVisibleTimerTimeot();
@@ -92,17 +119,17 @@ private:
     QString chooseColorForPlayer(int team);
 
 private:
-    QTimer* racePanelVisibleTimer;
+    ImageProvider* m_imageProvider;
 
+    QTimer* racePanelVisibleTimer;
+    StatisticPanel* m_statisticPanel;
 
     bool m_expand = false;
+
     QPoint m_mousePosition;
     bool m_ssMaximized = false;
-    bool m_ssLounched = false;
+    bool m_ssLaunchState = false;
     bool m_showClient = false;
-    bool m_gamePanelVisible = false;
-    bool m_racePanelVisible = false;
-    bool m_headerPanelVisible = true;
 
     bool m_windowTopmost = false;
     bool m_ssWindowed = false;

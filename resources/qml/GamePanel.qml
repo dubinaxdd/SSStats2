@@ -6,7 +6,10 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
-    visible: _uiBackend.gamePanelVisible
+    visible: false
+
+    property Rectangle racePanel : playerRacesRectangle
+    property Rectangle expandButtonRectangle : expandButtonRectangle
 
     property int expandButtonRectangleX : expandButtonRectangle.x + gamePanelRectangle.x
     property int expandButtonRectangleY : expandButtonRectangle.y + gamePanelRectangle.y
@@ -166,6 +169,37 @@ Rectangle {
 
                     Rectangle {
                         id: expandButtonRectangle
+
+                        property bool howeredState: false
+
+                        property Gradient grLight: Gradient {
+                            GradientStop {
+                                position: 0
+                                color: "#428bca"
+                            }
+
+                            GradientStop {
+                                position: 1
+                                color: "#265a88"
+                            }
+
+
+                        }
+
+                        property Gradient grDark: Gradient {
+                            GradientStop {
+                                position: 0
+                                color: "#337ab7"
+                            }
+
+                            GradientStop {
+                                position: 1
+                                color: "#245580"
+
+                            }
+                        }
+
+
                         width: 200
                         height: 200
                         color: "#ffffff"
@@ -174,18 +208,7 @@ Rectangle {
                         Layout.fillWidth: false
                         Layout.fillHeight: true
 
-
-                        gradient: Gradient {
-                            GradientStop {
-                                position: 0
-                                color: "#337ab7"
-                            }
-
-                            GradientStop {
-                                position: 1
-                                color: "#265a88"
-                            }
-                        }
+                        gradient: howeredState ? grDark : grLight
 
                         BorderImage {
                             id: borderImage
@@ -202,7 +225,6 @@ Rectangle {
                 height: 200
                 Layout.fillHeight: false
                 Layout.fillWidth: true
-                visible: _uiBackend.racePanelVisible
                 color: "#00000000"
 
                 ColumnLayout {

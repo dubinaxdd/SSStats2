@@ -1,8 +1,13 @@
 #include "uibackend.h"
 #include "QDebug"
 
-UiBackend::UiBackend(QObject *parent) : QObject(parent)
+UiBackend::UiBackend(QObject *parent)
+    : QObject(parent)
+    , m_imageProvider(new ImageProvider(this))
+    , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
 {
+    emit statisticPanelInitialized();
+
     racePanelVisibleTimer = new QTimer(this);
     racePanelVisibleTimer->setInterval(20000);
     racePanelVisibleTimer->setSingleShot(true);
@@ -23,9 +28,9 @@ void UiBackend::receiveSsMaximized(bool maximized)
     showClient();
 }
 
-void UiBackend::receiveSsLounched(bool lounched)
+void UiBackend::onSsLaunchStateChanged(bool state)
 {
-    m_ssLounched = lounched;
+    m_ssLaunchState = state;
     setExpand(false);
     showClient();
 }
@@ -34,11 +39,9 @@ void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
 {
     racePanelVisibleTimer->start();
 
-    m_gamePanelVisible = true;
-    emit gamePanelVisibleChanged(m_gamePanelVisible);
+    emit gamePanelVisibleChanged(true);
 
-    m_racePanelVisible = true;
-    emit racePanelVisibleChanged(m_racePanelVisible);
+    emit racePanelVisibleChanged(true);
 
     if(testStats.count() < 8)
         return;
@@ -89,15 +92,14 @@ void UiBackend::receivePlayersTestStats(QVector<PlayerStats> testStats)
     emit playerTestStatsUpdate();
 }
 
-void UiBackend::gameStarted()
+void UiBackend::onGameStarted()
 {
     m_gameStarted = true;
 
-    m_headerPanelVisible = false;
-    emit headerPanelVisibleChanged(m_headerPanelVisible);
+    emit headerPanelVisibleChanged(false);
 }
 
-void UiBackend::gameStoped()
+void UiBackend::onGameStopped()
 {
     m_gameStarted = false;
     m_missionStarted = false;
@@ -113,30 +115,24 @@ void UiBackend::gameStoped()
 
     emit playerTestStatsUpdate();
 
-    m_gamePanelVisible = false;
-    emit gamePanelVisibleChanged(m_gamePanelVisible);
-
-    m_racePanelVisible = false;
-    emit racePanelVisibleChanged(m_racePanelVisible);
-
-    m_headerPanelVisible = true;
-    emit headerPanelVisibleChanged(m_headerPanelVisible);
+    emit gamePanelVisibleChanged(false);
+    emit racePanelVisibleChanged(false);
+    emit headerPanelVisibleChanged(true);
 }
 
-void UiBackend::startingMission()
+void UiBackend::onStartingMission()
 {
     m_missionStarted = true;
 }
 
 void UiBackend::racePanelVisibleTimerTimeot()
 {
-    m_racePanelVisible = false;
-    emit racePanelVisibleChanged(m_racePanelVisible);
+    emit racePanelVisibleChanged(false);
 }
 
 void UiBackend::showClient()
 {
-    m_showClient = m_ssLounched && m_ssMaximized;
+    m_showClient = m_ssLaunchState && m_ssMaximized;
     emit sendShowClient(m_showClient);
 }
 
@@ -201,16 +197,26 @@ QString UiBackend::chooseColorForPlayer(int team)
 {
     switch (team)
     {
-        case 0 : return "#b3ea0000";
-        case 1 : return "#b30469ee";
-        case 2 : return "#b3dacfcf";
-        case 3 : return "#b3f6f200";
-        case 4 : return "#b30dff1e";
-        case 5 : return "#b3f71df4";
-        case 6 : return "#b300e6d9";
-        case 7 : return "#b3f97dfd";
+    case 0 : return "#b3ea0000";
+    case 1 : return "#b30469ee";
+    case 2 : return "#b3dacfcf";
+    case 3 : return "#b3f6f200";
+    case 4 : return "#b30dff1e";
+    case 5 : return "#b3f71df4";
+    case 6 : return "#b300e6d9";
+    case 7 : return "#b3f97dfd";
     }
     return "";
+}
+
+ImageProvider *UiBackend::imageProvider() const
+{
+    return m_imageProvider;
+}
+
+StatisticPanel *UiBackend::statisticPanel() const
+{
+    return m_statisticPanel;
 }
 
 void UiBackend::setSsWindowed(bool newSsWindowed)
@@ -229,14 +235,26 @@ void UiBackend::setSsWindowPosition(int x, int y)
     emit ssWindowPositionChanged();
 }
 
+// ### GET раздел (частично) ###
+
+bool UiBackend::getShowClient()
+{
+    return m_showClient;
+}
+
 bool UiBackend::expand() const
 {
     return m_expand;
 }
 
-bool UiBackend::getShowClient()
+void UiBackend::onNoFogStateChanged(bool state)
 {
-    return m_showClient;
+        emit noFogStateChanged(state); // Отправка значения No Fog в QML
+}
+
+void UiBackend::onSwitchNoFogStateChanged(bool state) // Это слот, для вызова инициализатором настроек извне и в обход меню настроек GUI
+{
+        emit switchNoFogStateChanged(state);
 }
 
 void UiBackend::setExpand(bool newExpand)
@@ -248,17 +266,14 @@ void UiBackend::setExpand(bool newExpand)
     {
         if (m_expand)
         {
-            m_gamePanelVisible = false;
-            m_headerPanelVisible = true;
+            emit gamePanelVisibleChanged(false);
+            emit headerPanelVisibleChanged(true);
         }
         else
         {
-            m_gamePanelVisible = true;
-            m_headerPanelVisible = false;
+            emit gamePanelVisibleChanged(true);
+            emit headerPanelVisibleChanged(false);
         }
-
-        emit gamePanelVisibleChanged(m_gamePanelVisible);
-        emit headerPanelVisibleChanged(m_headerPanelVisible);
     }
 }
 
@@ -266,6 +281,12 @@ void UiBackend::mousePressEvent(QPoint mousePosition)
 {
     m_mousePosition = mousePosition;
     emit sendMousePress();
+}
+
+void UiBackend::mouseMoveEvent(QPoint mousePosition)
+{
+    m_mousePosition = mousePosition;
+    emit sendMouseMove();
 }
 
 int UiBackend::mousePositionX()

@@ -11,7 +11,9 @@
 #define CHECK_SS_TIMER_INTERVAL 100  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 #define SCAN_STEAM_PLAYERS_INTERVAL 2000
 
-SsController::SsController(QObject *parent) : QObject(parent)
+SsController::SsController(QObject *parent)
+    : QObject(parent)
+    , m_memoryController(new MemoryController(this))
 {
     m_ssPath = getSsPathFromRegistry();
     qDebug() << "INFO: Worked with Soulstorm from: " << m_ssPath;
@@ -28,16 +30,14 @@ SsController::SsController(QObject *parent) : QObject(parent)
     m_ssSteamPlayersScanTimer->start();
     QObject::connect(m_ssSteamPlayersScanTimer, &QTimer::timeout, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
 
-
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
+    QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-
-
-    m_ssLounchControllTimer = new QTimer(this);
-    m_ssLounchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
-    QObject::connect(m_ssLounchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
+    m_ssLaunchControllTimer = new QTimer(this);
+    m_ssLaunchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
+    QObject::connect(m_ssLaunchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
 }
 
 void SsController::blockInput(bool block)
@@ -60,11 +60,13 @@ void SsController::checkSS()
 
     if (m_soulstormHwnd)                                ///<Если игра запущена
     {
-        if(!m_ssLounched)                                   ///<Если перед этим игра не была запущена
+        m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
+
+        if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
         {
             parseSsSettings();                                  ///<Считываем настройки соулсторма
-            m_ssLounched = true;                                ///<Устанавливаем запущенное состояние
-            emit ssLounched(m_ssLounched);                      ///<Отправляем сигнал о запуске игры
+            m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
+            emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
             qDebug() << "INFO: Soulstorm window opened";
         }
         else                                                ///<Если перед этим игра уже была запущена
@@ -91,17 +93,17 @@ void SsController::checkSS()
     }
     else                                                ///<Если игра не запущена
     {
-        if(m_ssLounched)                                    ///<Если игра была перед этим запущена
+        if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
         {
 
             m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
             m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
-            m_ssLounched = false;                               ///<Устанавливаем выключенное состояние
-            emit ssLounched(m_ssLounched);                      ///<Отправляем сигнал о том что сс выключен
+            m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
+            emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
             m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
             m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
-            m_ssLounchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
+            m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
             qDebug() << "WARNING: Soulstorm window closed";
         }
         else
@@ -114,7 +116,7 @@ void SsController::checkSS()
 void SsController::gameInitialized()
 {
     parseSsSettings();
-    m_ssLounchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
+    m_ssLaunchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
     m_statsCollector->parseCurrentPlayerSteamId();
 }
 
@@ -249,6 +251,16 @@ void SsController::parseSsSettings()
 
 
     delete ssSettings;
+}
+
+MemoryController *SsController::memoryController() const
+{
+    return m_memoryController;
+}
+
+StatsCollector *SsController::statsCollector() const
+{
+    return m_statsCollector;
 }
 
 HWND SsController::soulstormHwnd() const

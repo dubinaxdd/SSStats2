@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
+#include "../../baseTypes/baseTypes.h"
+#include <QImage>
 
 class StatsCollector : public QObject
 {
@@ -11,13 +13,18 @@ public:
     explicit StatsCollector(QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
+    void getPlayerStatsFromServer(ServerPlayrStats* playerInfo);
+    void getPlayerMediumAvatar(QString url, ServerPlayrStats *playerInfo);
 
 
-signals:
+signals:                           
+    void sendServerPlayrStats(ServerPlayrStats serverPlayrStats);
 
 
 private slots:
-    void receiveManagerReply(QNetworkReply* reply);
+    void receiveSteamInfoReply(QNetworkReply* reply);
+    void receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayrStats* playerInfo);
+    void receivePlayerMediumAvatar(QNetworkReply* reply, ServerPlayrStats *playerInfo);
 
 private:
     QString m_steamPath;
@@ -25,6 +32,8 @@ private:
     QMap<QString, QString> AllPlayersInfo;
 
     QNetworkAccessManager *m_networkManager;
+
+    ServerPlayrStats m_currentPlayerStats;
 
 };
 

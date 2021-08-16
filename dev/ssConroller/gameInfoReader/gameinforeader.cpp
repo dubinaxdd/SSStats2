@@ -11,7 +11,7 @@ GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
 
 {
     m_gameInfoReadTimer = new QTimer();
-    m_gameInfoReadTimer->setInterval(/*1000*/GAME_INFO_READER_TIMER_INTERVAL);
+    m_gameInfoReadTimer->setInterval(GAME_INFO_READER_TIMER_INTERVAL);
     QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &GameInfoReader::readGameInfo, Qt::QueuedConnection );
     m_gameInfoReadTimer->start();
 }
@@ -64,7 +64,7 @@ void GameInfoReader::readGameInfo()
                     {
                         m_gameStoped = true;
                         m_gameStarted = false;
-                        emit gameStoped();
+                        emit gameStopped();
                         readGameParametresAfterStop();
                     }
 
@@ -77,7 +77,7 @@ void GameInfoReader::readGameInfo()
                     m_ssShutdowned = false;
                     m_missionStarted = false;
 
-                    emit gameStoped();
+                    emit gameStopped();
 
                     qDebug() << "INFO: Game Stoped";
                 }

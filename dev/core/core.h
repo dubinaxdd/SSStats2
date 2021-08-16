@@ -7,6 +7,7 @@
 #include "Windows.h"
 #include "../keyboardProcessor/keyboardprocessor.h"
 #include <QQmlContext>
+#include "../core/settingsController/settingscontroller.h"
 #include "../uiBackend/uibackend.h"
 #include "../ssConroller/sscontroller.h"
 
@@ -19,6 +20,7 @@ public:
     void grubStatsWindow();
 
     SsController *ssController() const;
+    SettingsController *settingsController() const;
 
     UiBackend *uiBackend() const;
 
@@ -26,7 +28,7 @@ private slots:
     void topmostTimerTimout();
     void ssMaximized(bool maximized);
     void gameInitialized();
-    void ssLounched(bool ssLounched);
+    void ssLaunched(bool ssLaunched);
 
 private:
     void registerTypes();
@@ -39,6 +41,7 @@ private:
     RECT m_ssRect;
 
     KeyboardProcessor* m_keyboardProcessor;
+    SettingsController* m_settingsController;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
 

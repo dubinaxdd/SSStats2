@@ -20,7 +20,7 @@ private slots:
 
 
 signals:
-    void gameStoped();
+    void gameStopped();
     void gameStarted();
     void gameInitialized();
     void ssShutdown();

@@ -1,0 +1,9 @@
+   if(cKey.vkCode == 44) {
+        QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+        QString s = codec->toUnicode("SSStats2");
+        LPCWSTR lps = (LPCWSTR)s.utf16();
+
+        HWND hwnd = FindWindowW(NULL, lps);
+        LONG styles = GetWindowLong(hwnd, GWL_EXSTYLE);
+        SetWindowLong (hwnd, GWL_EXSTYLE, styles & ~WS_EX_TRANSPARENT);
+    }

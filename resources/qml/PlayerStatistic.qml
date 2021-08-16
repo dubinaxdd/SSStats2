@@ -5,15 +5,16 @@ import QtQuick.Layouts 1.12
 Rectangle {
 
     id: rectangle1
-    width: 250
-    height: 120
+    width: 280
+    height: 130
     color: "#ffffff"
     radius: 10
     Layout.maximumHeight: 100
     Layout.maximumWidth: 200
     Layout.fillWidth: false
     Layout.fillHeight: true
-    //anchors.horizontalCenter: parent.horizontalCenter
+
+    property var model
 
     RowLayout {
         id: rowLayout
@@ -33,20 +34,39 @@ Rectangle {
             Layout.fillWidth: true
 
             Image {
-                id: image
+                id: avatarImage
+                cache: false
                 x: 137
                 y: 0
                 width: 60
                 height: 60
                 anchors.verticalCenter: parent.verticalCenter
-                source: "qrc:/qtquickplugin/images/template_image.png"
+
+                source: "image://ImageProvider/currentPlayerAvatarMedium"
                 anchors.horizontalCenter: parent.horizontalCenter
                 fillMode: Image.PreserveAspectFit
+
+                //Костыль для перезагрузки картинки, рил так на формух делают
+                function reload() {
+                    var oldSource = avatarImage.source;
+                    avatarImage.source = "";
+                    avatarImage.source = oldSource;
+                }
+
+                Connections {
+                    target: model
+
+                    function onCurrentPlayerStatsChanged()
+                    {
+                        avatarImage.reload();
+                    }
+                }
             }
         }
 
         ColumnLayout {
             id: columnLayout4
+            spacing: 0
             Layout.margins: 5
             Layout.fillHeight: true
             Layout.fillWidth: true
@@ -54,7 +74,7 @@ Rectangle {
 
             Label {
                 id: label1
-                text: qsTr("TranspersonalPsy")
+                text:model.currentPlayerName
                 font.pointSize: 12
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -62,44 +82,48 @@ Rectangle {
 
             Label {
                 id: label2
-                text: qsTr("MMR: 100500")
-                font.pointSize: 6
+                text: "MMR: " + model.currentPlayerMmr
+                font.pointSize: 8
                 Layout.fillWidth: true
                 Layout.fillHeight: true
             }
 
             Label {
                 id: label
-                text: qsTr("Solo MMR: 200500")
-                font.pointSize: 6
+                text: "Solo MMR: " + model.currentPlayerMmr1v1
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                font.pointSize: 8
             }
 
             Label {
                 id: label4
-                text: qsTr("Games Played 250000")
-                font.pointSize: 6
+                text: "Games played: " + model.currentPlayerGamesCount
+                font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
 
             Label {
                 id: label3
-                text: qsTr("Ladder position: 1")
-                font.pointSize: 6
+                text: "Race: " + model.currentPlayerRace
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+                font.pointSize: 8
             }
 
             Label {
                 id: label5
-                text: qsTr("Win rate: 100%")
-                font.pointSize: 6
+                text: "Win rate: " + model.currentPlayerWinRate + "%"
+                font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
 
             Label {
                 id: label6
-                text: qsTr("APM: 450")
-                font.pointSize: 6
+                text: "APM: " + model.currentPlayerApm
+                font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }

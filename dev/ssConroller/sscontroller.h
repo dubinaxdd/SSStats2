@@ -9,6 +9,7 @@
 #include "../baseTypes/baseTypes.h"
 #include <QVector>
 #include "statsCollector/statscollector.h"
+#include "memoryController/memorycontroller.h"
 
 class SsController : public QObject
 {
@@ -27,6 +28,10 @@ public:
 
     HWND soulstormHwnd() const;
 
+    StatsCollector *statsCollector() const;
+
+    MemoryController *memoryController() const;
+
 public slots:
     void blockInput(bool block);
 
@@ -37,7 +42,7 @@ private slots:
     void readTestStats();
 
 signals:
-    void ssLounched(bool lounched);
+    void ssLaunchStateChanged(bool lounched);
     void ssMaximized(bool maximized);
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
 
@@ -49,15 +54,17 @@ private:
 
 private:
     HWND m_soulstormHwnd = NULL;
+
     QTimer* m_ssLounchControllTimer;
     QTimer* m_ssSteamPlayersScanTimer;
+    
     QString m_ssPath;
     QString m_steamPath;
 
     QString currentProfile;
 
     bool inputBlocked = false;
-    bool m_ssLounched = false;
+    bool m_ssLounchState = false;
     bool m_ssMaximized = false;
     bool m_ssWindowed = false;
 
@@ -65,6 +72,7 @@ private:
     PlayersSteamScanner* m_playersSteamScanner;
 
     StatsCollector* m_statsCollector;
+    MemoryController* m_memoryController;
 
 
 };
