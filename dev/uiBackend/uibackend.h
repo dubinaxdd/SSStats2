@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QPoint>
-#include "../baseTypes/baseTypes.h"
 #include "QTimer"
 
 #include "gamePanel/gamepanel.h"
@@ -27,25 +26,6 @@ class UiBackend : public QObject
 
     Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel NOTIFY gamePanelInitialized)
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
-
-
-    Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player2Race MEMBER m_player2Race NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player3Race MEMBER m_player3Race NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player4Race MEMBER m_player4Race NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player5Race MEMBER m_player5Race NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player6Race MEMBER m_player6Race NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player7Race MEMBER m_player7Race NOTIFY playerTestStatsUpdate)
-
-    Q_PROPERTY(QString player0Color MEMBER m_player0Color NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player1Color MEMBER m_player1Color NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player2Color MEMBER m_player2Color NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player3Color MEMBER m_player3Color NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player4Color MEMBER m_player4Color NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player5Color MEMBER m_player5Color NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player6Color MEMBER m_player6Color NOTIFY playerTestStatsUpdate)
-    Q_PROPERTY(QString player7Color MEMBER m_player7Color NOTIFY playerTestStatsUpdate)
 
 
 public:
@@ -91,10 +71,9 @@ signals:
     void sendShowClient(bool);
     void windowTopmostChanged();
     void windowedModeSeted();
-    void gamePanelVisibleChanged(bool);
-    void racePanelVisibleChanged(bool);
+
     void headerPanelVisibleChanged(bool);
-    void playerTestStatsUpdate();
+
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
     void gamePanelInitialized();
@@ -109,24 +88,17 @@ public slots:
 
     void receiveSsMaximized(bool maximized);
     void onSsLaunchStateChanged(bool state);
-    void receivePlayersTestStats(QVector<PlayerStats> testStats);
+
 
     void onGameStarted();
     void onGameStopped();
     void onStartingMission();
 
-private slots:
-    void racePanelVisibleTimerTimeot();
-
 private:
     void showClient();
-    void replaceRaceKeyword(QString *raceString);
-    QString chooseColorForPlayer(int team);
 
 private:
     ImageProvider* m_imageProvider;
-
-    QTimer* racePanelVisibleTimer;
     GamePanel* m_gamePanel;
     StatisticPanel* m_statisticPanel;
 
@@ -149,24 +121,7 @@ private:
     bool m_gameStarted = false;
     bool m_missionStarted = false;
 
-    QString m_player0Race = "";
-    QString m_player1Race = "";
-    QString m_player2Race = "";
-    QString m_player3Race = "";
-    QString m_player4Race = "";
-    QString m_player5Race = "";
-    QString m_player6Race = "";
-    QString m_player7Race = "";
 
-
-    QString m_player0Color = "";
-    QString m_player1Color = "";
-    QString m_player2Color = "";
-    QString m_player3Color = "";
-    QString m_player4Color = "";
-    QString m_player5Color = "";
-    QString m_player6Color = "";
-    QString m_player7Color = "";
 };
 
 #endif // UIBACKEND_H

@@ -6,7 +6,7 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
-    visible: false
+    visible: model.gamePanelVisible
 
     property Rectangle racePanel : playerRacesRectangle
     property Rectangle expandButtonRectangle : expandButtonRectangle
@@ -17,10 +17,6 @@ Rectangle {
     property int expandButtonRectangleHeight : expandButtonRectangle.height
 
     property var model
-
-    Connections {
-        target: model
-    }
 
     function chooseColor(string)
     {
@@ -231,6 +227,7 @@ Rectangle {
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 color: "#00000000"
+                visible: model.racePanelVisible
 
                 ColumnLayout {
                     id: columnLayout1
@@ -256,21 +253,21 @@ Rectangle {
                                 width: 200
                                 height: 20
                                 opacity: 1
-                                color: _uiBackend.player0Color
+                                color: model.player0Color
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: _uiBackend.player0Race !== "";
+                                visible: model.player0Race !== "";
 
                                 Label {
                                     id: player0RaceLabel
                                     height: 20
-                                    text: _uiBackend.player0Race
+                                    text: model.player0Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillHeight: false
                                     Layout.fillWidth: true
-                                    visible: _uiBackend.player0Race !== "";
+                                    visible: model.player0Race !== "";
                                     color: "#ffffff"
                                 }
                             }
@@ -279,21 +276,21 @@ Rectangle {
                                 id: player1Rectangle
                                 width: 200
                                 height: 20
-                                color: _uiBackend.player1Color
+                                color: model.player1Color
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: _uiBackend.player1Race !== "";
+                                visible: model.player1Race !== "";
 
                                 Label {
                                     id: player1RaceLabel
                                     height: 20
-                                    text: _uiBackend.player1Race
+                                    text: model.player1Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillHeight: false
                                     Layout.fillWidth: true
-                                    visible: _uiBackend.player1Race !== "";
+                                    visible: model.player1Race !== "";
                                     color: "#ffffff"
                                 }
                             }
@@ -302,19 +299,19 @@ Rectangle {
                                 id: player2Rectangle
                                 width: 200
                                 height: 20
-                                color: _uiBackend.player2Color
+                                color: model.player2Color
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: _uiBackend.player2Race !== "";
+                                visible: model.player2Race !== "";
 
                                 Label {
                                     id: player2RaceLabel
-                                    text: _uiBackend.player2Race
+                                    text: model.player2Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillWidth: true
-                                    visible: _uiBackend.player2Race !== "";
+                                    visible: model.player2Race !== "";
                                     color: "#ffffff"
                                 }
                             }
@@ -323,19 +320,19 @@ Rectangle {
                                 id: player3Rectangle
                                 width: 200
                                 height: 20
-                                color: _uiBackend.player3Color
+                                color: model.player3Color
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: _uiBackend.player3Race !== "";
+                                visible: model.player3Race !== "";
 
                                 Label {
                                     id: player3RaceLabel
-                                    text: _uiBackend.player3Race
+                                    text: model.player3Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillWidth: true
-                                    visible: _uiBackend.player3Race !== "";
+                                    visible: model.player3Race !== "";
                                     color: "#ffffff"
                                 }
                             }
@@ -344,19 +341,19 @@ Rectangle {
                                 id: player4Rectangle
                                 width: 200
                                 height: 200
-                                color: _uiBackend.player4Color
+                                color: model.player4Color
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: _uiBackend.player4Race !== "";
+                                visible: model.player4Race !== "";
 
                                 Label {
                                     id: player4RaceLabel
-                                    text: _uiBackend.player4Race
+                                    text: model.player4Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillWidth: true
-                                    visible: _uiBackend.player4Race !== "";
+                                    visible: model.player4Race !== "";
                                     color: "#ffffff"
                                 }
                             }
@@ -365,19 +362,19 @@ Rectangle {
                                 id: player5Rectangle
                                 width: 200
                                 height: 200
-                                color: _uiBackend.player5Color
+                                color: model.player5Color
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: _uiBackend.player5Race !== "";
+                                visible: model.player5Race !== "";
 
                                 Label {
                                     id: player5RaceLabel
-                                    text: _uiBackend.player5Race
+                                    text: model.player5Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillWidth: true
-                                    visible: _uiBackend.player5Race !== "";
+                                    visible: model.player5Race !== "";
                                     color: "#ffffff"
                                 }
                             }
@@ -386,19 +383,19 @@ Rectangle {
                                 id: player6Rectangle
                                 width: 200
                                 height: 200
-                                color: _uiBackend.player6Color
+                                color: model.player6Color
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: _uiBackend.player6Race !== "";
+                                visible: model.player6Race !== "";
 
                                 Label {
                                     id: player6RaceLabel
-                                    text: _uiBackend.player6Race
+                                    text: model.player6Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillWidth: true
-                                    visible: _uiBackend.player6Race !== "";
+                                    visible: model.player6Race !== "";
                                     color: "#ffffff"
                                 }
                             }
@@ -407,20 +404,20 @@ Rectangle {
                                 id: player7Rectangle
                                 width: 200
                                 height: 200
-                                color: _uiBackend.player7Color
+                                color: model.player7Color
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: _uiBackend.player7Race !== "";
+                                visible: model.player7Race !== "";
 
                                 Label {
                                     id: player7RaceLabel
-                                    text: _uiBackend.player7Race
+                                    text: model.player7Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
                                     Layout.fillWidth: true
                                     Layout.fillHeight: false
-                                    visible: _uiBackend.player7Race !== "";
+                                    visible: model.player7Race !== "";
                                     color: "#ffffff"
                                 }
                             }

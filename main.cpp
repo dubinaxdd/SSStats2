@@ -30,36 +30,36 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     switch( wParam )
     {
-    case WM_LBUTTONDOWN:
-    {
-        if (core->uiBackend()->getShowClient())
+        case WM_LBUTTONDOWN:
         {
-            QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::LeftButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
-            QGuiApplication::postEvent(core, event);
+            if (core->uiBackend()->getShowClient())
+            {
+                QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::LeftButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
+                QGuiApplication::postEvent(core, event);
+            }
+            break;
         }
-        break;
-    }
 
-    case WM_RBUTTONDOWN:
-    {
-        if (core->uiBackend()->getShowClient())
+        case WM_RBUTTONDOWN:
         {
-            QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::RightButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
-            QGuiApplication::postEvent(core, event);
+            if (core->uiBackend()->getShowClient())
+            {
+                QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y),Qt::MouseButton::RightButton,Qt::MouseButtons(), Qt::KeyboardModifiers() );
+                QGuiApplication::postEvent(core, event);
+            }
+            break;
+
         }
-        break;
 
-    }
+        case WM_MOUSEMOVE:{
+            if (core->uiBackend()->getShowClient())
+            {
+                QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(),Qt::MouseButtons(), Qt::KeyboardModifiers() );
+                QGuiApplication::postEvent(core, event);
+            }
+            break;
 
-    case WM_MOUSEMOVE:{
-        if (core->uiBackend()->getShowClient())
-        {
-            QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(),Qt::MouseButtons(), Qt::KeyboardModifiers() );
-            QGuiApplication::postEvent(core, event);
         }
-        break;
-
-    }
     }
 
     return CallNextHookEx(mouseHook, nCode, wParam, lParam);

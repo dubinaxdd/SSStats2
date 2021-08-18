@@ -21,13 +21,6 @@ Window {
 
     Connections{
         target: _uiBackend
-        function onGamePanelVisibleChanged(state){
-            gamePanel.visible = state;
-        }
-
-        function onRacePanelVisibleChanged(state){
-            gamePanel.racePanel.visible = state;
-        }
 
         function onHeaderPanelVisibleChanged(state){
             statsHeader.visible = state;

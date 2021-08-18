@@ -31,7 +31,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStarted, m_uiBackend, &UiBackend::onGameStarted, Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStopped, m_uiBackend, &UiBackend::onGameStopped, Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::startingMission, m_uiBackend, &UiBackend::onStartingMission, Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend, &UiBackend::receivePlayersTestStats, Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend->gamePanel(), &GamePanel::receivePlayersTestStats, Qt::QueuedConnection);
 
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_settingsController, &SettingsController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
