@@ -10,7 +10,6 @@
 #include "../core/settingsController/settingscontroller.h"
 #include "../uiBackend/uibackend.h"
 #include "../ssConroller/sscontroller.h"
-#include "../ssConroller/apmMeter/apmmeter.h"
 
 class Core : public QObject
 {
@@ -45,7 +44,7 @@ private:
     SettingsController* m_settingsController;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
-    APMMeter* m_apmMeter;
+
 
     int m_defaultWidth;
     int m_defaultHeight;

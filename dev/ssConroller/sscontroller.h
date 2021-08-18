@@ -10,6 +10,7 @@
 #include <QVector>
 #include "statsCollector/statscollector.h"
 #include "memoryController/memorycontroller.h"
+#include "apmMeter/apmmeter.h"
 
 class SsController : public QObject
 {
@@ -31,6 +32,8 @@ public:
     StatsCollector *statsCollector() const;
 
     MemoryController *memoryController() const;
+
+    APMMeter *apmMeter() const;
 
 public slots:
     void blockInput(bool block);
@@ -69,8 +72,9 @@ private:
     bool m_ssWindowed = false;
 
     GameInfoReader* m_gameInfoReader;
-    PlayersSteamScanner* m_playersSteamScanner;
+    //PlayersSteamScanner* m_playersSteamScanner;
 
+    APMMeter* m_apmMeter;
     StatsCollector* m_statsCollector;
     MemoryController* m_memoryController;
 

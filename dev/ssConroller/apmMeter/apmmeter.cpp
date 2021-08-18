@@ -11,7 +11,7 @@ void APMMeter::onKeyPressEvent(QKeyEvent *event)
 {
     if(started) {
         ++current_tick_keys_actions_count;
-        qDebug() << "keyPress: key =" << event->key();
+       // qDebug() << "keyPress: key =" << event->key();
     }
 }
 
@@ -19,13 +19,13 @@ void APMMeter::onMousePressEvent(QPoint mousePosition)
 {
     if(started) {
         ++current_tick_mouse_actions_count;
-        qDebug() << "mousePress: x =" << mousePosition.x() << " y=" << mousePosition.y();
+        //qDebug() << "mousePress: x =" << mousePosition.x() << " y=" << mousePosition.y();
     }
 }
 
 void APMMeter::onGameStarted()
 {
-    qDebug() << "Game STARTED. APM analyse started.";
+    //qDebug() << "Game STARTED. APM analyse started.";
     started = true;
 
     // RESET ALL APM DATA
@@ -41,7 +41,7 @@ void APMMeter::onGameStarted()
 
 void APMMeter::onGameStopped()
 {
-    qDebug() << "Game STOPPED. APM analyse stopped.";
+    //qDebug() << "Game STOPPED. APM analyse stopped.";
     started = false;
 
     measureTickTimer->stop();

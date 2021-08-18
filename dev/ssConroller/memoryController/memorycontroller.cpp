@@ -37,7 +37,7 @@ void MemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
 
 void MemoryController::onNoFogStateChanged(bool state)
 {
-    qDebug() << "Мы попали в функцию MemoryController'a для изменения памяти DoW";
+    qDebug() << "INFO: Fog activated" <<  state;
 
     targetNoFog = state;
 
@@ -45,7 +45,6 @@ void MemoryController::onNoFogStateChanged(bool state)
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
-    qDebug() << "PID = " << PID;
     HANDLE hProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, 0, PID);
     if(hProcess==nullptr){
         qDebug() << "Could not open process" << GetLastError();

@@ -14,6 +14,7 @@
 SsController::SsController(QObject *parent)
     : QObject(parent)
     , m_memoryController(new MemoryController(this))
+    , m_apmMeter(new APMMeter(this))
 {
     m_ssPath = getSsPathFromRegistry();
     qDebug() << "INFO: Worked with Soulstorm from: " << m_ssPath;
@@ -23,12 +24,12 @@ SsController::SsController(QObject *parent)
 
     m_statsCollector = new StatsCollector(m_steamPath, this);
 
-    m_playersSteamScanner = new PlayersSteamScanner();
+   // m_playersSteamScanner = new PlayersSteamScanner();
 
     m_ssSteamPlayersScanTimer = new QTimer(this);
     m_ssSteamPlayersScanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
     m_ssSteamPlayersScanTimer->start();
-    QObject::connect(m_ssSteamPlayersScanTimer, &QTimer::timeout, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
+   // QObject::connect(m_ssSteamPlayersScanTimer, &QTimer::timeout, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
 
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
@@ -251,6 +252,11 @@ void SsController::parseSsSettings()
 
 
     delete ssSettings;
+}
+
+APMMeter *SsController::apmMeter() const
+{
+    return m_apmMeter;
 }
 
 MemoryController *SsController::memoryController() const
