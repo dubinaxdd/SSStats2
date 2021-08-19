@@ -31,7 +31,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 exec_program(
       "git"
       ${CMAKE_CURRENT_SOURCE_DIR}
-      ARGS "rev-list --count HEAD"
+      ARGS "rev-list --count main"
       OUTPUT_VARIABLE REL
 )
 configure_file( "${CMAKE_SOURCE_DIR}/version.h.template" "${CMAKE_SOURCE_DIR}/version.h" )
