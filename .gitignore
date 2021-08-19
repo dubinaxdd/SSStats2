@@ -10,6 +10,7 @@
 *.dll
 *.dylib
 defines.h
+version.h
 
 # Qt-es
 object_script.*.Release

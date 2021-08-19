@@ -24,6 +24,8 @@ class UiBackend : public QObject
     Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
     Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
 
+    Q_PROPERTY(QString ssStatsVersion MEMBER m_ssStatsVersion NOTIFY statsHeaderInitialized)
+
     Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel NOTIFY gamePanelInitialized)
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
 
@@ -76,8 +78,10 @@ signals:
 
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
+
     void gamePanelInitialized();
     void statisticPanelInitialized();
+    void statsHeaderInitialized();
 
 public slots:
 
@@ -101,6 +105,8 @@ private:
     ImageProvider* m_imageProvider;
     GamePanel* m_gamePanel;
     StatisticPanel* m_statisticPanel;
+
+    QString m_ssStatsVersion;
 
     bool m_expand = false;
 

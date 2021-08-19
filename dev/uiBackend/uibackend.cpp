@@ -1,5 +1,6 @@
 #include "uibackend.h"
 #include "QDebug"
+#include "../../version.h"
 
 UiBackend::UiBackend(QObject *parent)
     : QObject(parent)
@@ -7,8 +8,15 @@ UiBackend::UiBackend(QObject *parent)
     , m_gamePanel(new GamePanel(this))
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
 {
+    m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
+    m_ssStatsVersion.append(".");
+    m_ssStatsVersion.append(PROJECT_VERSION_MINOR);
+    m_ssStatsVersion.append(".");
+    m_ssStatsVersion.append(GIT_REL);
+
     emit gamePanelInitialized();
     emit statisticPanelInitialized();
+    emit statsHeaderInitialized();
 }
 
 void UiBackend::expandKeyPressed()

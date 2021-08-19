@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
+cmake_policy(SET CMP0048 NEW)
 
 project(SSStats2 VERSION 0.1 LANGUAGES CXX)
+
+#set(PROJECT_VERSION_MAJOR "0")
+#set(PROJECT_VERSION_MINOR "1")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -23,6 +27,15 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 #            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libssl.so)
 #    endif()
 #endif()
+
+exec_program(
+      "git"
+      ${CMAKE_CURRENT_SOURCE_DIR}
+      ARGS "rev-list --count HEAD"
+      OUTPUT_VARIABLE REL
+)
+configure_file( "${CMAKE_SOURCE_DIR}/version.h.template" "${CMAKE_SOURCE_DIR}/version.h" )
+
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network REQUIRED)

@@ -82,9 +82,9 @@ Rectangle {
             }
 
             Label {
-                id: label3
+                id: versionLabel
                 color: "#999999"
-                text: qsTr("v 0.1")
+                text: "v" + _uiBackend.ssStatsVersion
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             }
         }
