@@ -16,6 +16,7 @@ class Core : public QObject
     Q_OBJECT
 public:
     Core(QQmlContext *context, QObject* parent = nullptr);
+
     bool event(QEvent *event) override;
     void grubStatsWindow();
 
@@ -44,7 +45,6 @@ private:
     SettingsController* m_settingsController;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
-
 
     int m_defaultWidth;
     int m_defaultHeight;

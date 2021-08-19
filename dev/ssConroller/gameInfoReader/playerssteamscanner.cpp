@@ -12,6 +12,12 @@
 using namespace std;
 
 
+PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
+    : QObject(parent)
+{
+
+}
+
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
     AllPlayersInfo.clear();

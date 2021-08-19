@@ -10,6 +10,8 @@ class PlayersSteamScanner : public QObject
 {
     Q_OBJECT
 public:
+    explicit PlayersSteamScanner(QObject *parent = nullptr);
+
     QMap<QString, QString> AllPlayersInfo;
     void refreshSteamPlayersInfo();
 private:

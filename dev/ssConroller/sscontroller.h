@@ -11,12 +11,14 @@
 #include "statsCollector/statscollector.h"
 #include "memoryController/memorycontroller.h"
 #include "apmMeter/apmmeter.h"
+#include <QThread>
 
 class SsController : public QObject
 {
     Q_OBJECT
 public:
     explicit SsController(QObject *parent = nullptr);
+    ~SsController();
 
     bool getInputBlocked() const;
 
@@ -72,7 +74,9 @@ private:
     bool m_ssWindowed = false;
 
     GameInfoReader* m_gameInfoReader;
-    //PlayersSteamScanner* m_playersSteamScanner;
+    PlayersSteamScanner* m_playersSteamScanner;
+
+    QThread m_playersSteamScannerThread;
 
     APMMeter* m_apmMeter;
     StatsCollector* m_statsCollector;
