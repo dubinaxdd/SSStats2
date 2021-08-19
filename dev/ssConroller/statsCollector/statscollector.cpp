@@ -76,7 +76,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
     }
 }
 
-void StatsCollector::getPlayerStatsFromServer(ServerPlayrStats *playerInfo)
+void StatsCollector::getPlayerStatsFromServer(ServerPlayerStats *playerInfo)
 {
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+SERVER_VERSION+"&sender_sid="+ playerInfo->steamId +"&")));
     QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
@@ -84,7 +84,7 @@ void StatsCollector::getPlayerStatsFromServer(ServerPlayrStats *playerInfo)
     });
 }
 
-void StatsCollector::getPlayerMediumAvatar(QString url, ServerPlayrStats *playerInfo)
+void StatsCollector::getPlayerMediumAvatar(QString url, ServerPlayerStats *playerInfo)
 {
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(url)));
     QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
@@ -143,7 +143,7 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     // return true;
 }
 
-void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayrStats* playerInfo)
+void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayerStats *playerInfo)
 {
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
@@ -173,7 +173,7 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPl
     reply->deleteLater();
 }
 
-void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, ServerPlayrStats* playerInfo)
+void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, ServerPlayerStats* playerInfo)
 {
     QByteArray replyByteArray = reply->readAll();
 

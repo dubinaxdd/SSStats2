@@ -13,18 +13,18 @@ public:
     explicit StatsCollector(QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
-    void getPlayerStatsFromServer(ServerPlayrStats* playerInfo);
-    void getPlayerMediumAvatar(QString url, ServerPlayrStats *playerInfo);
+    void getPlayerStatsFromServer(ServerPlayerStats* playerInfo);
+    void getPlayerMediumAvatar(QString url, ServerPlayerStats *playerInfo);
 
 
 signals:                           
-    void sendServerPlayrStats(ServerPlayrStats serverPlayrStats);
+    void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
 
 
 private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);
-    void receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayrStats* playerInfo);
-    void receivePlayerMediumAvatar(QNetworkReply* reply, ServerPlayrStats *playerInfo);
+    void receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayerStats* playerInfo);
+    void receivePlayerMediumAvatar(QNetworkReply* reply, ServerPlayerStats *playerInfo);
 
 private:
     QString m_steamPath;
@@ -33,7 +33,7 @@ private:
 
     QNetworkAccessManager *m_networkManager;
 
-    ServerPlayrStats m_currentPlayerStats;
+    ServerPlayerStats m_currentPlayerStats;
 
 };
 

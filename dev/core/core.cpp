@@ -171,7 +171,7 @@ void Core::ssLaunched(bool ssLaunched)
 void Core::registerTypes()
 {
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
-    qRegisterMetaType<ServerPlayrStats>("ServerPlayrStats");
+    qRegisterMetaType<ServerPlayerStats>("ServerPlayrStats");
 }
 
 UiBackend *Core::uiBackend() const

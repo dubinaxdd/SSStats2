@@ -12,7 +12,7 @@ struct PlayerStats
     QString team = "";
 };
 
-struct ServerPlayrStats
+struct ServerPlayerStats
 {
     QString steamId;
     int apm;
