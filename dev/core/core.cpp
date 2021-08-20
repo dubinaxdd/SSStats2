@@ -21,36 +21,38 @@ Core::Core(QQmlContext *context, QObject* parent)
     m_topmostTimer->setInterval(500);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
-    QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_uiBackend, &UiBackend::onSsLaunchStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::ssMaximized, m_uiBackend, &UiBackend::receiveSsMaximized, Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::ssMaximized, this, &Core::ssMaximized, Qt::DirectConnection);
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameInitialized, this, &Core::gameInitialized, Qt::DirectConnection);
-    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, this, &Core::ssLaunched, Qt::QueuedConnection );
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStarted, m_uiBackend, &UiBackend::onGameStarted, Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStopped, m_uiBackend, &UiBackend::onGameStopped, Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::startingMission, m_uiBackend, &UiBackend::onStartingMission, Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::sendPlayersTestStats, m_uiBackend->gamePanel(), &GamePanel::receivePlayersTestStats, Qt::QueuedConnection);
 
-    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged, m_settingsController, &SettingsController::onSsLaunchStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
+    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   this,                       &Core::ssLaunched,                              Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_uiBackend,                &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::ssMaximized,            m_uiBackend,                &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::sendPlayersTestStats,   m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,            Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_settingsController,       &SettingsController::onSsLaunchStateChanged,    Qt::QueuedConnection);
+
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameInitialized,       this,                       &Core::gameInitialized,         Qt::DirectConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStarted,           m_uiBackend,                &UiBackend::onGameStarted,      Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_uiBackend,                &UiBackend::onGameStopped,      Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_uiBackend,                &UiBackend::onStartingMission,  Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStarted,           m_ssController->apmMeter(), &APMMeter::onGameStarted,       Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameLoaded,            m_ssController->apmMeter(), &APMMeter::onGameStarted,       Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_ssController->apmMeter(), &APMMeter::onGameStopped,       Qt::QueuedConnection);
+
+    QObject::connect(m_ssController->apmMeter(),        &APMMeter::currentApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onCurrentApmChanged,            Qt::QueuedConnection);
+    QObject::connect(m_ssController->apmMeter(),        &APMMeter::averageApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onAverageApmChanged,            Qt::QueuedConnection);
+
+    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendServerPlayrStats,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,  Qt::QueuedConnection);
+
+    QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
+
+    QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
+
+    QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::QueuedConnection);
 
     QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::QueuedConnection);
     QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
     QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_ssController->statsCollector(), &StatsCollector::sendServerPlayrStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveServerPlayerStats, Qt::QueuedConnection);
-
-    // Связка Старт-Стоп анализатора APM
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStarted, m_ssController->apmMeter(), &APMMeter::onGameStarted, Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameLoaded, m_ssController->apmMeter(), &APMMeter::onGameStarted, Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::gameStopped, m_ssController->apmMeter(), &APMMeter::onGameStopped, Qt::QueuedConnection);
-
-    QObject::connect(m_ssController->apmMeter(), &APMMeter::currentApmCalculated, m_uiBackend->gamePanel(), &GamePanel::onCurrentApmChanged, Qt::QueuedConnection);
-    QObject::connect(m_ssController->apmMeter(), &APMMeter::averageApmCalculated, m_uiBackend->gamePanel(), &GamePanel::onAverageApmChanged, Qt::QueuedConnection);
-
-    QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
     QObject::connect(HookManager::instance(), &HookManager::keyEvent, this, &Core::onKeyEvent, Qt::QueuedConnection);
     QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
 }
@@ -92,6 +94,7 @@ void Core::topmostTimerTimout()
             BringWindowToTop(m_ssStatsHwnd);
         }
     }
+
 }
 
 
@@ -140,6 +143,7 @@ void Core::ssMaximized(bool maximized)
             m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
         }
 
+
         m_topmostTimer->start();
     }
     else
@@ -154,7 +158,6 @@ void Core::ssMaximized(bool maximized)
 
 void Core::gameInitialized()
 {
-
     m_topmostTimer->start();
 
     if(m_ssController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
@@ -176,7 +179,7 @@ void Core::ssLaunched(bool ssLaunched)
 void Core::registerTypes()
 {
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
-    qRegisterMetaType<ServerPlayrStats>("ServerPlayrStats");
+    qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
 }
 
 UiBackend *Core::uiBackend() const

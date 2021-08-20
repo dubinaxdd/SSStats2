@@ -24,12 +24,16 @@ SsController::SsController(QObject *parent)
 
     m_statsCollector = new StatsCollector(m_steamPath, this);
 
-   // m_playersSteamScanner = new PlayersSteamScanner();
+   // m_playersSteamScanner = new PlayersSteamScanner(/*this*/);
+
+   // m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
+
 
     m_ssSteamPlayersScanTimer = new QTimer(this);
     m_ssSteamPlayersScanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
     m_ssSteamPlayersScanTimer->start();
-   // QObject::connect(m_ssSteamPlayersScanTimer, &QTimer::timeout, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
+
+    // QObject::connect(m_ssSteamPlayersScanTimer, &QTimer::timeout, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
 
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
@@ -39,6 +43,14 @@ SsController::SsController(QObject *parent)
     m_ssLaunchControllTimer = new QTimer(this);
     m_ssLaunchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
     QObject::connect(m_ssLaunchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
+
+   // m_playersSteamScannerThread.start();
+}
+
+SsController::~SsController()
+{
+  //  m_playersSteamScannerThread.quit();
+   // m_playersSteamScannerThread.wait();
 }
 
 void SsController::blockInput(bool state)

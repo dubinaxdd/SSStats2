@@ -8,7 +8,7 @@ StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
 
 }
 
-void StatisticPanel::receiveServerPlayerStats(ServerPlayrStats serverPlayerStats)
+void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)
 {
     if (serverPlayerStats.isCurrentPlayer)
     {

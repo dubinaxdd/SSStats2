@@ -26,7 +26,7 @@ signals:
     void currentPlayerStatsChanged();
 
 public slots:
-    void receiveServerPlayerStats(ServerPlayrStats serverPlayerStats);
+    void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
 
 private:
 
