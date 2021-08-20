@@ -5,8 +5,6 @@
 #include <QObject>
 #include <QCoreApplication>
 #include <QMap>
-#include <QTimer>
-#include <windows.h>
 
 class PlayersSteamScanner : public QObject
 {
@@ -14,19 +12,10 @@ class PlayersSteamScanner : public QObject
 public:
     explicit PlayersSteamScanner(QObject *parent = nullptr);
 
-    void setSoulstormHwnd(HWND newSoulstormHwnd);
-
-signals:
-    void sendSteamPlayersInfoMap(QMap<QString, QString> infoMap);
-
-private slots:
+    QMap<QString, QString> AllPlayersInfo;
     void refreshSteamPlayersInfo();
-
 private:
     unsigned char steamHeader[18] =  { 0x18, 0x0, 0x0, 0x0, 0x2F, 0x0, 0x73, 0x0, 0x74, 0x0, 0x65, 0x0, 0x61, 0x0, 0x6D, 0x0, 0x2F, 0x0 };
     void* sidsAddr[20];
-
-    QTimer *m_scanTimer;
-    HWND m_soulstormHwnd = NULL;
 };
 #endif // PLAYERSSTEAMSCANNER_H
