@@ -12,6 +12,7 @@
 #include "memoryController/memorycontroller.h"
 #include "apmMeter/apmmeter.h"
 #include <QThread>
+#include <QMutex>
 
 class SsController : public QObject
 {
@@ -46,6 +47,8 @@ private slots:
     void ssShutdown();
     void readTestStats();
 
+    void receivePlayrStemids(QMap<QString, QString> infoMap);
+
 signals:
     void ssLaunchStateChanged(bool lounched);
     void ssMaximized(bool maximized);
@@ -77,6 +80,7 @@ private:
     PlayersSteamScanner* m_playersSteamScanner;
 
     QThread m_playersSteamScannerThread;
+    QMutex m_playersSteamScannerMutex;
 
     APMMeter* m_apmMeter;
     StatsCollector* m_statsCollector;
