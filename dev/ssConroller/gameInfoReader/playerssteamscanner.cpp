@@ -44,12 +44,25 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     QMap<QString, QString> allPlayersInfo;
 
+<<<<<<< HEAD
     allPlayersInfo.insert("asdasd", "baneblade");
+=======
+    //allPlayersInfo.insert("asdasd", "baneblade");
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
 
     int size = 0;
 
     QByteArray buffer(2000000, 0);
     //QByteArray buffer(30400, 0);
+<<<<<<< HEAD
+=======
+    //QByteArray buffer(34200, 0);
+
+    //CloseNetSession
+//00 00 00 00 00 8B BA 0D 00 00 00 00 00 D4 CA 00 00 FF FF FF FF 05 0A 00 00 00 0F 00 00 00 43 6C 6F 73 65 4E 65 74 53 65 73 73 69 6F 6E 00 00 00 22
+
+    //30 байт до строки CloseNetSession от конуа никнейма
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
 
     sidsAddr[0] = (PVOID)0x155740B6;
     sidsAddr[1] = (PVOID)0x156B2DF6;
@@ -57,14 +70,40 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     sidsAddr[3] = (PVOID)0x155B6A0E;
     sidsAddr[4] = (PVOID)0x15671A2E;
     sidsAddr[5] = (PVOID)0x155FE566;
+<<<<<<< HEAD
 
     for(int k=0; k < 6; ++k)
+=======
+    //новые
+    //sidsAddr[6] = (PVOID)0x1A40879D;
+
+    sidsAddr[6] = (PVOID)0x1AA3AD8A; //этот вродеб получше робит
+    sidsAddr[7] = (PVOID)0x1A882BCE;
+
+    //sidsAddr[7] = (PVOID)0x1AA6792F;
+    //sidsAddr[9] = (PVOID)0x1A8851F6;
+    //sidsAddr[7] = (PVOID)0x1A3DF8BA;
+    //sidsAddr[7] = (PVOID)0x1AA36430; //Этот вроде всех находит но не забывает предыдущие найденные
+
+
+//0xCE 0xE7 0x99 0x6A 0x11 0x51 0xEA 0x08
+
+    //76561198041477216
+
+    for(int k=0; k < 8; ++k)
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
     {
         PVOID readAddr = sidsAddr[k];
         SIZE_T bytesRead = 0;
 
+        allPlayersInfo.clear();
+
         // Если функция вернула не ноль, то продолжим цикл
+<<<<<<< HEAD
         if(!ReadProcessMemory(hProcess, readAddr, buffer.data(), /*30400*/2000000, &bytesRead))
+=======
+        if(!ReadProcessMemory(hProcess, readAddr, buffer.data(), /*34200*//*30400*/2000000, &bytesRead))
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
         {
             if(GetLastError()!=299)
             {
@@ -83,12 +122,20 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 {
 
                     match = false;
+<<<<<<< HEAD
                     qDebug() << "FALSE" << j;
+=======
+                    //qDebug() << "FALSE" << j;
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
                     break;
                 }
                 else
                 {
+<<<<<<< HEAD
                     qDebug() << "TRUE" << j;
+=======
+                    //qDebug() << "TRUE" << j;
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
                     match = true;
                 }
             }
@@ -115,7 +162,11 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                     buffer.at(nickPos+4+buffer.at(nickPos)*2+3) == 0)
             {
 
+<<<<<<< HEAD
                 qDebug() << "BANEBLADE";
+=======
+               // qDebug() << "BANEBLADE";
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
 
                 QString steamIdStr = QString::fromUtf16((ushort*)buffer.mid(i + 18, 34).data()).left(17);
 
@@ -125,14 +176,27 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 //*    PlayersInfo.append(steamIdStr);
                 QString nick = QString::fromUtf16((ushort*)buffer.mid(nickPos + 4, buffer.at(nickPos) * 2).data()).left(buffer.at(nickPos));
 
+<<<<<<< HEAD
                 if(!allPlayersInfo.contains(steamIdStr)){
                     qDebug() << "Player found:" << nick << QString("http://steamcommunity.com/profiles/"+steamIdStr) << "at address" << k;
                     allPlayersInfo.insert(steamIdStr, nick);
+=======
+
+
+                if(!allPlayersInfo.contains(steamIdStr)){
+                    qDebug() << "Player found:" << nick << QString("http://steamcommunity.com/profiles/"+steamIdStr) << "at address" << k;
+                    allPlayersInfo.insert(steamIdStr, nick);
+
+                    QString closeConnectionFlag = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2) + 29, 15).data(), 15);
+                    qDebug() <<   closeConnectionFlag;
+
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
                 }
                 else if(allPlayersInfo.value(steamIdStr)!=nick){
                     qDebug() << "Сейчас упаду как!";
                     allPlayersInfo[steamIdStr]=nick;
                 }
+<<<<<<< HEAD
                 qDebug() << allPlayersInfo.keys();
 
             }
@@ -142,6 +206,17 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     }
     //qDebug() << "BANEBLADE";
     qDebug() << allPlayersInfo.keys();
+=======
+                //qDebug() << allPlayersInfo.keys();
+
+            }
+            //else
+                //qDebug() << "отвали";
+        }
+    }
+    //qDebug() << "BANEBLADE";
+    //qDebug() << allPlayersInfo.keys();
+>>>>>>> 75e53f46eb89c45ecb325a3bda45f0da572ae5b9
     emit sendSteamPlayersInfoMap(allPlayersInfo);
 }
 
