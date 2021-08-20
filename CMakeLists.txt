@@ -72,6 +72,8 @@ set(PROJECT_SOURCES
         dev/uiBackend/imageProvider/imageprovider.cpp
         dev/baseTypes/baseTypes.h
         defines.h
+        dev/core/hookManager/hookmanager.h
+        dev/core/hookManager/hookmanager.cpp
         qml.qrc
         resources.qrc
        # ${TS_FILES}

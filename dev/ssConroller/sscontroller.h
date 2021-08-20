@@ -36,7 +36,7 @@ public:
     APMMeter *apmMeter() const;
 
 public slots:
-    void blockInput(bool block);
+    void blockInput(bool state);
 
 private slots:
     void checkSS();
@@ -48,6 +48,7 @@ signals:
     void ssLaunchStateChanged(bool lounched);
     void ssMaximized(bool maximized);
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
+    void inputBlockStateChanged(bool);
 
 private:
     QString getSsPathFromRegistry();

@@ -14,6 +14,7 @@
 class Core : public QObject
 {
     Q_OBJECT
+
 public:
     Core(QQmlContext *context, QObject* parent = nullptr);
     bool event(QEvent *event) override;
@@ -23,6 +24,10 @@ public:
     SettingsController *settingsController() const;
 
     UiBackend *uiBackend() const;
+
+public slots:
+    void onKeyEvent(QKeyEvent *event);
+    void onMouseEvent(QMouseEvent *event);
 
 private slots:
     void topmostTimerTimout();

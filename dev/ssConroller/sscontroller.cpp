@@ -41,12 +41,13 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_ssLaunchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
 }
 
-void SsController::blockInput(bool block)
+void SsController::blockInput(bool state)
 {
     if (m_soulstormHwnd)
     {
-        inputBlocked = block;
+        inputBlocked = state;
         EnableWindow(m_soulstormHwnd, !inputBlocked);
+        emit inputBlockStateChanged(inputBlocked);
     }
 }
 
