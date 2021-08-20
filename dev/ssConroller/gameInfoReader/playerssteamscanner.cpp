@@ -52,6 +52,11 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     //QByteArray buffer(30400, 0);
     //QByteArray buffer(34200, 0);
 
+    //CloseNetSession
+//00 00 00 00 00 8B BA 0D 00 00 00 00 00 D4 CA 00 00 FF FF FF FF 05 0A 00 00 00 0F 00 00 00 43 6C 6F 73 65 4E 65 74 53 65 73 73 69 6F 6E 00 00 00 22
+
+    //30 байт до строки CloseNetSession от конуа никнейма
+
     sidsAddr[0] = (PVOID)0x155740B6;
     sidsAddr[1] = (PVOID)0x156B2DF6;
     sidsAddr[2] = (PVOID)0x15033F16;
@@ -143,9 +148,15 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 //*    PlayersInfo.append(steamIdStr);
                 QString nick = QString::fromUtf16((ushort*)buffer.mid(nickPos + 4, buffer.at(nickPos) * 2).data()).left(buffer.at(nickPos));
 
+
+
                 if(!allPlayersInfo.contains(steamIdStr)){
                     qDebug() << "Player found:" << nick << QString("http://steamcommunity.com/profiles/"+steamIdStr) << "at address" << k;
                     allPlayersInfo.insert(steamIdStr, nick);
+
+                    QString closeConnectionFlag = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2) + 29, 15).data(), 15);
+                    qDebug() <<   closeConnectionFlag;
+
                 }
                 else if(allPlayersInfo.value(steamIdStr)!=nick){
                     qDebug() << "Сейчас упаду как!";
