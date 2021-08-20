@@ -30,3 +30,5 @@ private:
     HWND m_soulstormHwnd = NULL;
 };
 #endif // PLAYERSSTEAMSCANNER_H
+
+
