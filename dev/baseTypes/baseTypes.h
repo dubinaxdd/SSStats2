@@ -29,4 +29,11 @@ struct ServerPlayerStats
     bool statsAvailable = false;
 };
 
+struct SearchStemIdPlaerInfo
+{
+    QString steamId;
+    QString name;
+    bool closeConnection = false;
+};
+
 #endif // BASETYPES_H

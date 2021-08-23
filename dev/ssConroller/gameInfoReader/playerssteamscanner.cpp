@@ -42,7 +42,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     if(hProcess==nullptr)
         return;
 
-    QMap<QString, QString> allPlayersInfo;
+    QMap<QString, SearchStemIdPlaerInfo> allPlayersInfo;
 
     //allPlayersInfo.insert("asdasd", "baneblade");
 
@@ -75,14 +75,15 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     //sidsAddr[7] = (PVOID)0x1AA36430; //Этот вроде всех находит но не забывает предыдущие найденные
 
 
-//0xCE 0xE7 0x99 0x6A 0x11 0x51 0xEA 0x08
 
     //76561198041477216
+//5B 8C 0C 77 C6 A6 4C ED 00 00 0D 04 30 25 00 00 C8 F6 6D 09 9E
 
+   // 0x096DF488
 
-   unsigned long ptr1Count = 160116800;
-   // unsigned long ptr1Count = 0x00000000;
-    while (ptr1Count <= 0x7FFE0000)
+   //unsigned long ptr1Count = 160116800;
+    unsigned long ptr1Count = 0x00000000;
+    while (ptr1Count < 0x7FFE0000)
     {
 
         //PVOID readAddr = sidsAddr[k];
@@ -152,41 +153,70 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 //    PlayersInfo.append(steamIdStr);
                 QString nick = QString::fromUtf16((ushort*)buffer.mid(nickPos + 4, buffer.at(nickPos) * 2).data()).left(buffer.at(nickPos));
 
+                //qDebug() << "Player found:" << nick << QString("http://steamcommunity.com/profiles/"+steamIdStr) << "at address" << ptr1Count;
 
+                QString fullString = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2), 44).data(), 44);
+               // qDebug() << Qt::hex << fullString.toLocal8Bit().toHex();
+
+                QString closeConnectionFlag = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2) + 29, 15).data(), 15);
+                QString postfixFlag = QString::fromStdString(closeConnectionFlag.toLocal8Bit().toHex().toStdString());
+
+               // qDebug() << postfixFlag;
+               // qDebug() << postfixFlag.mid(2,6);
+              //  qDebug() << postfix;
+               // qDebug() << postfix2;
 
                 if(!allPlayersInfo.contains(steamIdStr)){
-                    //qDebug() << "Player found:" << nick << QString("http://steamcommunity.com/profiles/"+steamIdStr) << "at address" << ptr1Count;
 
-                    QString closeConnectionFlag = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2) + 29, 15).data(), 15);
+                    SearchStemIdPlaerInfo newPlayerInPaty;
 
-                    qDebug() << closeConnectionFlag;
+                    newPlayerInPaty.steamId = steamIdStr;
+                    newPlayerInPaty.name = nick;
 
+                    if(closeConnectionFlag == "CloseNetSession" /*|| postfixFlag == postfix || postfixFlag == postfix2*/ /*|| postfixFlag.mid(2,6) == postfix3*/)
+                        newPlayerInPaty.closeConnection = true;
 
-                    if(closeConnectionFlag != "CloseNetSession")
+                   // qDebug() << "Новый";
 
-                        allPlayersInfo.insert(steamIdStr, nick);
-                    else
-                        allPlayersInfo.remove(steamIdStr);
-
-
+                    allPlayersInfo.insert(steamIdStr, newPlayerInPaty);
 
 
                 }
-                else if(allPlayersInfo.value(steamIdStr)!=nick){
-                    //qDebug() << "Сейчас упаду как!";
-                    allPlayersInfo[steamIdStr]=nick;
-                }
-                //qDebug() << allPlayersInfo.keys();
+                else
+                {
+                    //qDebug() << "Уже есть";
 
+                    if(allPlayersInfo.value(steamIdStr).name !=nick)
+                    {
+                   //     qDebug() << "Сейчас упаду как!";
+                        allPlayersInfo[steamIdStr].name = nick;
+                    }
+
+                    if(closeConnectionFlag == "CloseNetSession" /*|| postfixFlag == postfix || postfixFlag == postfix2*/ /*|| postfixFlag.mid(2,6) == postfix3*/)
+                        allPlayersInfo[steamIdStr].closeConnection = true;
+
+                }
             }
-            //else
-                //qDebug() << "отвали";
         }
 
         ptr1Count += 30400;
     }
-    //qDebug() << "BANEBLADE";
-    qDebug() << allPlayersInfo.values();
+
+
+
+    for(int i = 0; i < allPlayersInfo.values().size(); i++)
+    {
+        if (allPlayersInfo.values().at(i).closeConnection)
+        {
+            qDebug() << allPlayersInfo.values().at(i).name;
+            allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
+        }
+    }
+
+    qDebug() << "==============================================================";
+    for(int i = 0; i < allPlayersInfo.values().size(); i++)
+        qDebug() << allPlayersInfo.values().at(i).name;
+
     emit sendSteamPlayersInfoMap(allPlayersInfo);
 }
 
