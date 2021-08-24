@@ -24,12 +24,6 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
-
-   // qDebug() << "Start scanning steam addresses";
-    //HWND hWnd = FindWindow(nullptr, "Dawn of War: Soulstorm");
-
-
-
     if(!m_soulstormHwnd)
         return;
 
@@ -44,55 +38,20 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     QMap<QString, SearchStemIdPlaerInfo> allPlayersInfo;
 
-    //allPlayersInfo.insert("asdasd", "baneblade");
-
     int size = 0;
 
     QByteArray buffer(30400, 0);
-    //QByteArray buffer(30400, 0);
-    //QByteArray buffer(34200, 0);
 
-    //CloseNetSession
-//00 00 00 00 00 8B BA 0D 00 00 00 00 00 D4 CA 00 00 FF FF FF FF 05 0A 00 00 00 0F 00 00 00 43 6C 6F 73 65 4E 65 74 53 65 73 73 69 6F 6E 00 00 00 22
-
-    //30 байт до строки CloseNetSession от конуа никнейма
-
-    //sidsAddr[0] = (PVOID)0x155740B6;
-    //sidsAddr[1] = (PVOID)0x156B2DF6;
-   // sidsAddr[2] = (PVOID)0x15033F16;
-    //sidsAddr[3] = (PVOID)0x155B6A0E;
-    //sidsAddr[4] = (PVOID)0x15671A2E;
-   // sidsAddr[5] = (PVOID)0x155FE566;
-    //новые
-    //sidsAddr[6] = (PVOID)0x1A40879D;
-
-   // sidsAddr[6] = (PVOID)0x1AA3AD8A; //этот вродеб получше робит
-   // sidsAddr[7] = (PVOID)0x1A882BCE;
-
-    //sidsAddr[7] = (PVOID)0x1AA6792F;
-    //sidsAddr[9] = (PVOID)0x1A8851F6;
-    //sidsAddr[7] = (PVOID)0x1A3DF8BA;
-    //sidsAddr[7] = (PVOID)0x1AA36430; //Этот вроде всех находит но не забывает предыдущие найденные
-
-
-
-    //76561198041477216
-//5B 8C 0C 77 C6 A6 4C ED 00 00 0D 04 30 25 00 00 C8 F6 6D 09 9E
-
-   // 0x096DF488
 
    //unsigned long ptr1Count = 160116800;
     unsigned long ptr1Count = 0x00000000;
-    while (ptr1Count < 0x7FFE0000)
+    while (ptr1Count < 200000000/*0x7FFE0000*/)
     {
 
-        //PVOID readAddr = sidsAddr[k];
         SIZE_T bytesRead = 0;
 
-       // allPlayersInfo.clear();
-
         // Если функция вернула не ноль, то продолжим цикл
-        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count/*readAddr*/, buffer.data(), 30400 , &bytesRead))
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count/*readAddr*/, buffer.data(), /*512*/30400 , &bytesRead))
         {
             if(GetLastError()!=299)
             {
@@ -100,7 +59,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 continue;
             }
         }
-         //qDebug() << k << "address of steam IDs:" << readAddr;
+
         for (int i = 0; i < static_cast<int>(bytesRead - 200); i++)
         {
             bool match = false;
@@ -111,20 +70,16 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 {
 
                     match = false;
-                    //qDebug() << "FALSE" << j;
                     break;
                 }
                 else
-                {
-                    //qDebug() << "TRUE" << j;
                     match = true;
-                }
+
             }
 
             if (!match)
                 continue;
 
-            //qDebug() << "BANEBLADE";
 
             int nickPos = i + 56;
 
@@ -143,28 +98,21 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                     buffer.at(nickPos+4+buffer.at(nickPos)*2+3) == 0)
             {
 
-               // qDebug() << "BANEBLADE";
-
                 QString steamIdStr = QString::fromUtf16((ushort*)buffer.mid(i + 18, 34).data()).left(17);
 
                 if(!steamIdStr.contains(QRegExp("^[0-9]{17}$")))
                     continue;
-                //if(get_stats&&!PlayersInfo.contains(steamIdStr))
-                //    PlayersInfo.append(steamIdStr);
+
                 QString nick = QString::fromUtf16((ushort*)buffer.mid(nickPos + 4, buffer.at(nickPos) * 2).data()).left(buffer.at(nickPos));
 
                 //qDebug() << "Player found:" << nick << QString("http://steamcommunity.com/profiles/"+steamIdStr) << "at address" << ptr1Count;
 
-                QString fullString = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2), 44).data(), 44);
-               // qDebug() << Qt::hex << fullString.toLocal8Bit().toHex();
+                QString fullString = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2), 100).data(), 100);
+                //qDebug() << Qt::hex << fullString.toLocal8Bit().toHex();
 
                 QString closeConnectionFlag = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2) + 29, 15).data(), 15);
                 QString postfixFlag = QString::fromStdString(closeConnectionFlag.toLocal8Bit().toHex().toStdString());
 
-               // qDebug() << postfixFlag;
-               // qDebug() << postfixFlag.mid(2,6);
-              //  qDebug() << postfix;
-               // qDebug() << postfix2;
 
                 if(!allPlayersInfo.contains(steamIdStr)){
 
@@ -173,31 +121,34 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                     newPlayerInPaty.steamId = steamIdStr;
                     newPlayerInPaty.name = nick;
 
-                    if(closeConnectionFlag == "CloseNetSession" /*|| postfixFlag == postfix || postfixFlag == postfix2*/ /*|| postfixFlag.mid(2,6) == postfix3*/)
+                    if(closeConnectionFlag == "CloseNetSession")
                         newPlayerInPaty.closeConnection = true;
-
-                   // qDebug() << "Новый";
 
                     allPlayersInfo.insert(steamIdStr, newPlayerInPaty);
 
 
+                    if (allPlayersInfo.count() == 1)
+                    {
+                        QString playersCount = QString::fromUtf8((char*)buffer.mid(i - 62, 1).data(), 1);
+                        qDebug() << Qt::hex << playersCount.toLocal8Bit().toHex();
+                    }
                 }
                 else
                 {
-                    //qDebug() << "Уже есть";
-
                     if(allPlayersInfo.value(steamIdStr).name !=nick)
                     {
                    //     qDebug() << "Сейчас упаду как!";
                         allPlayersInfo[steamIdStr].name = nick;
                     }
 
-                    if(closeConnectionFlag == "CloseNetSession" /*|| postfixFlag == postfix || postfixFlag == postfix2*/ /*|| postfixFlag.mid(2,6) == postfix3*/)
+                    if(closeConnectionFlag == "CloseNetSession")
                         allPlayersInfo[steamIdStr].closeConnection = true;
-
                 }
             }
         }
+
+        if (allPlayersInfo.count() != 0)
+            break;
 
         ptr1Count += 30400;
     }

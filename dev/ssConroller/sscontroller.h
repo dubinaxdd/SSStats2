@@ -5,7 +5,7 @@
 #include "Windows.h"
 #include <QTimer>
 #include "gameInfoReader/gameinforeader.h"
-#include "gameInfoReader/playerssteamscanner.h"
+#include "playerSteamScanner/playerssteamscanner.h"
 #include "../baseTypes/baseTypes.h"
 #include <QVector>
 #include "statsCollector/statscollector.h"
