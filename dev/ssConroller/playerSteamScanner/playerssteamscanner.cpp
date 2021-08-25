@@ -40,7 +40,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     int size = 0;
 
-    int playersCount = 0;
+    int playersCount = -1;
 
     QByteArray buffer(/*30400*/100000, 0);
 
@@ -72,7 +72,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             for (int y = 0; y < static_cast<int>(sizeof(patyBlockHeader)); y++)
             {
                 if (y == 1) //Потому что блять 0x8C нихера не ищется
-                    y++;
+                    y += 2;
 
                 if (buffer.at(x + y) != patyBlockHeader[y])
                 {
@@ -119,6 +119,40 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             if (!match)
                 continue;
 
+            //Ищем постфикс байта с количеством игроков
+            if (allPlayersInfo.count() == 0)
+            {
+
+                for (int k = i - 100; k < i; k++)
+                {
+                    bool match2 = false;
+
+                    for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
+                    {
+                        if (buffer.at(k + t) != playresCountPostfix[t])
+                        {
+                            match2= false;
+                            break;
+                        }
+                        else
+                            match2 = true;
+
+                    }
+
+                    if (match2)
+                    {
+                        //Дергаем байт с количеством игроков
+                        playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
+                        qDebug() << Qt::hex << ptr1Count + k - 1;
+                        qDebug() << playersCount;
+                        break;
+                    }
+                    else
+                        playersCount = 0;
+                }
+            }
+
+
             int nickPos = i + 56;
 
             if (buffer.at(nickPos) < 50 &&
@@ -145,11 +179,11 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
                 //qDebug() << "Player found:" << nick << QString("http://steamcommunity.com/profiles/"+steamIdStr) << "at address" << ptr1Count;
 
-                QString fullString = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2), 100).data(), 100);
+                //QString fullString = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2), 100).data(), 100);
                 //qDebug() << Qt::hex << fullString.toLocal8Bit().toHex();
 
                 QString closeConnectionFlag = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2) + 29, 15).data(), 15);
-                QString postfixFlag = QString::fromStdString(closeConnectionFlag.toLocal8Bit().toHex().toStdString());
+                //QString postfixFlag = QString::fromStdString(closeConnectionFlag.toLocal8Bit().toHex().toStdString());
 
 
                 if(!allPlayersInfo.contains(steamIdStr)){
@@ -165,36 +199,6 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                         newPlayerInPaty.closeConnection = true;
 
                     allPlayersInfo.insert(steamIdStr, newPlayerInPaty);
-
-
-                    if (allPlayersInfo.count() == 1)
-                    {
-                        //Ищем постфикс байта с количеством игроков
-                        for (int k = i - 150; k < static_cast<int>(bytesRead - 200); k++)
-                        {
-                            bool match2 = false;
-
-                            for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
-                            {
-                                if (buffer.at(k + t) != playresCountPostfix[t])
-                                {
-                                    match2= false;
-                                    break;
-                                }
-                                else
-                                    match2 = true;
-
-                            }
-
-                            if (match2)
-                            {
-                                //Дергаем байт с количеством игроков
-                                playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
-                                //qDebug() << playersCount;
-                                break;
-                            }
-                        }
-                    }
                 }
                 else
                 {
@@ -210,9 +214,13 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
-        if (allPlayersInfo.count() > 0)
+        if (allPlayersInfo.count() > 0 && playersCount > 0 && playersCount <= 8)
+        {
             break;
+        }
 
+        playersCount = 0;
+        allPlayersInfo.clear();
         ptr1Count += 30400;
     }
 
@@ -222,14 +230,14 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     {
         if (allPlayersInfo.values().at(i).closeConnection || allPlayersInfo.values().at(i).position >= playersCount)
         {
-            //qDebug() << allPlayersInfo.values().at(i).name;
+            qDebug() << allPlayersInfo.values().at(i).name;
             allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
         }
     }
 
-    //qDebug() << "==============================================================";
-    //for(int i = 0; i < allPlayersInfo.values().size(); i++)
-    //    qDebug() << allPlayersInfo.values().at(i).name;
+    qDebug() << "==============================================================";
+    for(int i = 0; i < allPlayersInfo.values().size(); i++)
+        qDebug() << allPlayersInfo.values().at(i).name;
 
 
     emit sendSteamPlayersInfoMap(allPlayersInfo.values());
