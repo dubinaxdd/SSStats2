@@ -5,6 +5,7 @@
 #include <QNetworkAccessManager>
 #include "../../baseTypes/baseTypes.h"
 #include <QImage>
+#include <QSharedPointer>
 
 class StatsCollector : public QObject
 {
@@ -13,8 +14,8 @@ public:
     explicit StatsCollector(QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
-    void getPlayerStatsFromServer(ServerPlayerStats* playerInfo);
-    void getPlayerMediumAvatar(QString url, ServerPlayerStats *playerInfo);
+    void getPlayerStatsFromServer(QSharedPointer<ServerPlayerStats> playerInfo);
+    void getPlayerMediumAvatar(QString url, QSharedPointer<ServerPlayerStats> playerInfo);
 
 
 
@@ -28,10 +29,10 @@ public slots:
 
 private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);
-    void receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayerStats* playerInfo);
-    void receivePlayerMediumAvatar(QNetworkReply* reply, ServerPlayerStats *playerInfo);
+    void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<ServerPlayerStats> playerInfo);
+    void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
 
-    void receivePlayerSteamData(QNetworkReply* reply, ServerPlayerStats* playerInfo);
+    void receivePlayerSteamData(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
 
 private:
     QString m_steamPath;
@@ -40,9 +41,9 @@ private:
 
     QNetworkAccessManager *m_networkManager;
 
-    ServerPlayerStats m_currentPlayerStats;
+    QSharedPointer<ServerPlayerStats> m_currentPlayerStats;
 
-    QList<ServerPlayerStats> m_playerStats;
+    QList<ServerPlayerStats*> m_playerStats;
 
 };
 
