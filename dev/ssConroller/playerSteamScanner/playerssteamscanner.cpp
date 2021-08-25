@@ -40,18 +40,18 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     int size = 0;
 
-    QByteArray buffer(30400, 0);
+    QByteArray buffer(/*30400*/100000, 0);
 
 
    //unsigned long ptr1Count = 160116800;
-    unsigned long ptr1Count = 100000000/*0x00000000*/;
-    while (ptr1Count < 200000000/*0x7FFE0000*/)
+    unsigned long ptr1Count = /*100000000*/0x00000000;
+    while (ptr1Count < /*200000000*/0x7FFE0000)
     {
 
         SIZE_T bytesRead = 0;
 
         // Если функция вернула не ноль, то продолжим цикл
-        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count/*readAddr*/, buffer.data(), /*512*/30400 , &bytesRead))
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count/*readAddr*/, buffer.data(), /*30400*/100000 , &bytesRead))
         {
             if(GetLastError()!=299)
             {
@@ -60,6 +60,49 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
+        bool patyMatch = false;
+
+        //Ищем пати блок
+        for (int x = 0; x < static_cast<int>(bytesRead - 10); x++)
+        {
+            //bool patyMatch = false;
+
+            for (int y = 0; y < static_cast<int>(sizeof(patyBlockHeader)); y++)
+            {
+                if (y == 1) //Потому что блять 0x8C нихера не ищется
+                    y++;
+
+                if (buffer.at(x + y) != patyBlockHeader[y])
+                {
+                    patyMatch = false;
+                    break;
+                }
+                else
+                {
+                    patyMatch = true;
+                }
+            }
+
+//            if (!patyMatch)
+//                continue;
+
+            if (patyMatch)
+            {
+               //qDebug() << "asdad" << patyMatch;
+               //patyMatchConfirmed = true;
+               break;
+            }
+        }
+
+        if(!patyMatch)
+        {
+            ptr1Count += 30400;
+            continue;
+        }
+
+        qDebug() << "Info: Paty blok in " << ptr1Count;
+
+        //Ищем игроков в патиблоке
         for (int i = 0; i < static_cast<int>(bytesRead - 200); i++)
         {
             bool match = false;
@@ -74,7 +117,6 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 }
                 else
                     match = true;
-
             }
 
             if (!match)
@@ -173,7 +215,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
-        if (allPlayersInfo.count() != 0)
+        if (allPlayersInfo.count() > 0)
             break;
 
         ptr1Count += 30400;
