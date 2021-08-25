@@ -17,6 +17,8 @@ public:
     void getPlayerMediumAvatar(QString url, ServerPlayerStats *playerInfo);
 
 
+
+
 signals:                           
     void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
     void sendPlayersCount(int playersCount);
@@ -28,6 +30,8 @@ private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);
     void receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayerStats* playerInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, ServerPlayerStats *playerInfo);
+
+    void receivePlayerSteamData(QNetworkReply* reply, ServerPlayerStats* playerInfo);
 
 private:
     QString m_steamPath;

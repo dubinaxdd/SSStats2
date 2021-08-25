@@ -41,9 +41,9 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
 
         m_playerStats.append(newPlayer);
 
-        QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playersInfoFromScanner.at(i).steamId + "&version="+SERVER_VERSION+"&sender_sid="+ m_currentPlayerStats.steamId +"&")));
-        QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-            receivePlayerStatsFromServer(reply, &m_playerStats.last());
+        QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playersInfoFromScanner.at(i).steamId + "&format=json")));
+        QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+            receivePlayerSteamData(reply, &m_playerStats.last());
         });
     }
 }
@@ -180,8 +180,6 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPl
 
     QJsonArray jsonArray = jsonDoc.array();
 
-    qDebug() << jsonArray;
-
     for(int i = 0; i < jsonArray.count(); i++)
     {
         playerInfo->apm = jsonArray.at(i)["apm"].toInt();
@@ -217,6 +215,29 @@ void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, ServerPlaye
 
     if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
         emit sendServerPlayrStats(*playerInfo);
+}
+
+void StatsCollector::receivePlayerSteamData(QNetworkReply *reply, ServerPlayerStats *playerInfo)
+{
+    QByteArray replyByteArray = reply->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    //qDebug() << jsonDoc;
+
+    QVariantMap info = jsonDoc.object().toVariantMap();
+    QVariantMap response = info.value("response", QVariantMap()).toMap();
+    QVariantList players = response.value("players", QVariantList()).toList();
+    QVariantMap player = players.value(0, QVariantMap()).toMap();
+
+    QString steamId;
+    QString avatarUrl;
+
+    avatarUrl = player.value("avatarmedium", "").toString();
+
+    getPlayerStatsFromServer(playerInfo);
+    getPlayerMediumAvatar(avatarUrl, playerInfo);
+
+    reply->deleteLater();
 }
 
 
