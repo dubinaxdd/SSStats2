@@ -32,6 +32,7 @@ struct ServerPlayerStats
 struct SearchStemIdPlaerInfo
 {
     QString steamId;
+    int position;
     QString name;
     bool closeConnection = false;
 };

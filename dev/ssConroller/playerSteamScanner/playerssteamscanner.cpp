@@ -40,6 +40,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     int size = 0;
 
+    int playersCount = 0;
+
     QByteArray buffer(/*30400*/100000, 0);
 
 
@@ -83,15 +85,9 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 }
             }
 
-//            if (!patyMatch)
-//                continue;
-
             if (patyMatch)
-            {
-               //qDebug() << "asdad" << patyMatch;
-               //patyMatchConfirmed = true;
                break;
-            }
+
         }
 
         if(!patyMatch)
@@ -100,7 +96,9 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             continue;
         }
 
-        qDebug() << "Info: Paty blok in " << ptr1Count;
+        //qDebug() << "Info: Paty blok in " << ptr1Count;
+
+        int playerPosition = 0;
 
         //Ищем игроков в патиблоке
         for (int i = 0; i < static_cast<int>(bytesRead - 200); i++)
@@ -111,7 +109,6 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             {
                 if (buffer.at(i + j) != steamHeader[j])
                 {
-
                     match = false;
                     break;
                 }
@@ -121,7 +118,6 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
             if (!match)
                 continue;
-
 
             int nickPos = i + 56;
 
@@ -162,6 +158,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
                     newPlayerInPaty.steamId = steamIdStr;
                     newPlayerInPaty.name = nick;
+                    newPlayerInPaty.position = playerPosition;
+                    playerPosition++;
 
                     if(closeConnectionFlag == "CloseNetSession")
                         newPlayerInPaty.closeConnection = true;
@@ -193,9 +191,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                                 qDebug() << "match";
 
                                 //Дергаем байт с количеством игроков
-                                QString playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1);
-                                qDebug() << Qt::hex << playersCount.toLocal8Bit().toHex();
-
+                                playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
+                                qDebug() << playersCount;
                                 break;
                             }
                         }
@@ -225,7 +222,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     for(int i = 0; i < allPlayersInfo.values().size(); i++)
     {
-        if (allPlayersInfo.values().at(i).closeConnection)
+        if (allPlayersInfo.values().at(i).closeConnection || allPlayersInfo.values().at(i).position >= playersCount)
         {
             //qDebug() << allPlayersInfo.values().at(i).name;
             allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
