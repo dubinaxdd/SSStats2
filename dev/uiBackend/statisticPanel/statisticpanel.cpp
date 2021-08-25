@@ -46,5 +46,45 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
 void StatisticPanel::receivePlayersCount(int playersCount)
 {
+    if (m_playersCount == playersCount)
+        return;
+    m_playersCount = playersCount;
+
+    if(m_playersCount > 1)
+        m_player2StatsVisible = true;
+    else
+        m_player2StatsVisible = false;
+
+    if(m_playersCount > 2)
+        m_player3StatsVisible = true;
+    else
+        m_player3StatsVisible = false;
+
+    if(m_playersCount > 3)
+        m_player4StatsVisible = true;
+    else
+        m_player4StatsVisible = false;
+
+    if(m_playersCount > 4)
+        m_player5StatsVisible = true;
+    else
+        m_player5StatsVisible = false;
+
+    if(m_playersCount > 5)
+        m_player6StatsVisible = true;
+    else
+        m_player6StatsVisible = false;
+
+    if(m_playersCount > 6)
+        m_player7StatsVisible = true;
+    else
+        m_player7StatsVisible = false;
+
+    if(m_playersCount > 7)
+        m_player8StatsVisible = true;
+    else
+        m_player8StatsVisible = false;
+
+    emit playersStatsChanged();
 
 }

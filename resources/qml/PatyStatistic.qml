@@ -56,6 +56,8 @@ Rectangle {
         PlayerStatistic
         {
             id:player2
+            visible: model.player2StatsVisible
+
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
             Layout.minimumWidth: 260
@@ -68,6 +70,8 @@ Rectangle {
         PlayerStatistic
         {
             id:player3
+            visible: model.player3StatsVisible
+
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
             Layout.minimumWidth: 260
@@ -80,6 +84,8 @@ Rectangle {
         PlayerStatistic
         {
             id:player4
+            visible: model.player4StatsVisible
+
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
             Layout.minimumWidth: 260
@@ -92,6 +98,8 @@ Rectangle {
         PlayerStatistic
         {
             id:player5
+            visible: model.player5StatsVisible
+
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
             Layout.minimumWidth: 260
@@ -104,6 +112,8 @@ Rectangle {
         PlayerStatistic
         {
             id:player6
+            visible: model.player6StatsVisible
+
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
             Layout.minimumWidth: 260
@@ -116,6 +126,8 @@ Rectangle {
         PlayerStatistic
         {
             id:player7
+            visible: model.player7StatsVisible
+
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
             Layout.minimumWidth: 260
@@ -129,6 +141,8 @@ Rectangle {
         PlayerStatistic
         {
             id:player8
+            visible: model.player8StatsVisible
+
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
             Layout.minimumWidth: 260
