@@ -44,7 +44,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
 
    //unsigned long ptr1Count = 160116800;
-    unsigned long ptr1Count = 0x00000000;
+    unsigned long ptr1Count = 100000000/*0x00000000*/;
     while (ptr1Count < 200000000/*0x7FFE0000*/)
     {
 
@@ -129,8 +129,34 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
                     if (allPlayersInfo.count() == 1)
                     {
-                        QString playersCount = QString::fromUtf8((char*)buffer.mid(i - 62, 1).data(), 1);
-                        qDebug() << Qt::hex << playersCount.toLocal8Bit().toHex();
+                        //Ищем постфикс байта с количеством игроков
+                        for (int k = i - 150; k < static_cast<int>(bytesRead - 200); k++)
+                        {
+                            bool match2 = false;
+
+                            for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
+                            {
+                                if (buffer.at(k + t) != playresCountPostfix[t])
+                                {
+                                    match2= false;
+                                    break;
+                                }
+                                else
+                                    match2 = true;
+
+                            }
+
+                            if (match2)
+                            {
+                                qDebug() << "match";
+
+                                //Дергаем байт с количеством игроков
+                                QString playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1);
+                                qDebug() << Qt::hex << playersCount.toLocal8Bit().toHex();
+
+                                break;
+                            }
+                        }
                     }
                 }
                 else
@@ -159,7 +185,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     {
         if (allPlayersInfo.values().at(i).closeConnection)
         {
-            qDebug() << allPlayersInfo.values().at(i).name;
+            //qDebug() << allPlayersInfo.values().at(i).name;
             allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
         }
     }
