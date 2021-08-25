@@ -45,10 +45,6 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_ssLaunchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
 
    // m_playersSteamScannerThread.start();
-    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
-
-
-    m_playersSteamScannerThread.start();
 }
 
 SsController::~SsController()

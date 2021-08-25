@@ -14,7 +14,16 @@ Rectangle {
     Layout.fillWidth: false
     Layout.fillHeight: true
 
-    property var model
+    //property var model
+    property url avatarSource
+    property string name
+    property string mmr
+    property string mmr1v1
+    property string gamesCount
+    property string race
+    property string winRate
+    property string apm
+
 
     RowLayout {
         id: rowLayout
@@ -42,25 +51,9 @@ Rectangle {
                 height: 60
                 anchors.verticalCenter: parent.verticalCenter
 
-                source: "image://ImageProvider/currentPlayerAvatarMedium"
+                source: rectangle1.avatarSource
                 anchors.horizontalCenter: parent.horizontalCenter
                 fillMode: Image.PreserveAspectFit
-
-                //Костыль для перезагрузки картинки, рил так на формух делают
-                function reload() {
-                    var oldSource = avatarImage.source;
-                    avatarImage.source = "";
-                    avatarImage.source = oldSource;
-                }
-
-                Connections {
-                    target: model
-
-                    function onCurrentPlayerStatsChanged()
-                    {
-                        avatarImage.reload();
-                    }
-                }
             }
         }
 
@@ -74,7 +67,7 @@ Rectangle {
 
             Label {
                 id: label1
-                text:model.currentPlayerName
+                text: rectangle1.name
                 font.pointSize: 12
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -82,7 +75,7 @@ Rectangle {
 
             Label {
                 id: label2
-                text: "MMR: " + model.currentPlayerMmr
+                text: "MMR: " + rectangle1.mmr
                 font.pointSize: 8
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -90,7 +83,7 @@ Rectangle {
 
             Label {
                 id: label
-                text: "Solo MMR: " + model.currentPlayerMmr1v1
+                text: "Solo MMR: " + rectangle1.mmr1v1
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 font.pointSize: 8
@@ -98,7 +91,7 @@ Rectangle {
 
             Label {
                 id: label4
-                text: "Games played: " + model.currentPlayerGamesCount
+                text: "Games played: " + rectangle1.gamesCount
                 font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -106,7 +99,7 @@ Rectangle {
 
             Label {
                 id: label3
-                text: "Race: " + model.currentPlayerRace
+                text: "Race: " + rectangle1.race
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 font.pointSize: 8
@@ -114,7 +107,7 @@ Rectangle {
 
             Label {
                 id: label5
-                text: "Win rate: " + model.currentPlayerWinRate + "%"
+                text: "Win rate: " + rectangle1.winRate + "%"
                 font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -122,16 +115,11 @@ Rectangle {
 
             Label {
                 id: label6
-                text: "APM: " + model.currentPlayerApm
+                text: "APM: " + rectangle1.apm
                 font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
-
-
         }
-
-
     }
-
 }

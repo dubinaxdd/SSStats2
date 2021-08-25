@@ -27,6 +27,15 @@ struct ServerPlayerStats
     bool isCurrentPlayer = false;
     bool avatarAvailable = false;
     bool statsAvailable = false;
+    int position = 0;
+};
+
+struct SearchStemIdPlayerInfo
+{
+    QString steamId;
+    int position;
+    QString name;
+    bool closeConnection = false;
 };
 
 #endif // BASETYPES_H

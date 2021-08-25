@@ -19,9 +19,38 @@ StatsCollector::StatsCollector(QString steamPath, QObject *parent)
 {
     m_networkManager = new QNetworkAccessManager(this);
 
+    m_currentPlayerStats = QSharedPointer<ServerPlayerStats>(new ServerPlayerStats);
+
     qDebug() << "INFO: OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 
+void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner )
+{
+    //m_playerStats.clear();
+
+    emit sendPlayersCount(playersInfoFromScanner.count());
+
+    for(int i = 0; i < playersInfoFromScanner.count(); i++)
+    {
+
+        if(playersInfoFromScanner.at(i).steamId == m_currentPlayerStats->steamId)
+            continue;
+
+        QSharedPointer <ServerPlayerStats> newPlayer(new ServerPlayerStats);
+
+
+
+        newPlayer->steamId = playersInfoFromScanner.at(i).steamId;
+        newPlayer->position = playersInfoFromScanner.at(i).position;
+
+        //m_playerStats.append(newPlayer);
+
+        QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playersInfoFromScanner.at(i).steamId + "&format=json")));
+        QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+            receivePlayerSteamData(reply, newPlayer);
+        });
+    }
+}
 
 void StatsCollector::parseCurrentPlayerSteamId()
 {
@@ -76,7 +105,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
     }
 }
 
-void StatsCollector::getPlayerStatsFromServer(ServerPlayerStats *playerInfo)
+void StatsCollector::getPlayerStatsFromServer(QSharedPointer <ServerPlayerStats> playerInfo)
 {
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+SERVER_VERSION+"&sender_sid="+ playerInfo->steamId +"&")));
     QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
@@ -84,7 +113,7 @@ void StatsCollector::getPlayerStatsFromServer(ServerPlayerStats *playerInfo)
     });
 }
 
-void StatsCollector::getPlayerMediumAvatar(QString url, ServerPlayerStats *playerInfo)
+void StatsCollector::getPlayerMediumAvatar(QString url, QSharedPointer <ServerPlayerStats> playerInfo)
 {
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(url)));
     QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
@@ -132,18 +161,18 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 
     qDebug() << "INFO: Player's nickname and Steam ID associated with Soulstorm:" << senderName << steamId;
 
-    m_currentPlayerStats.steamId = steamId;
-    m_currentPlayerStats.isCurrentPlayer = true;
+    m_currentPlayerStats->steamId = steamId;
+    m_currentPlayerStats->isCurrentPlayer = true;
 
-    getPlayerStatsFromServer(&m_currentPlayerStats);
-    getPlayerMediumAvatar(avatarUrl, &m_currentPlayerStats);
+    getPlayerStatsFromServer(m_currentPlayerStats);
+    getPlayerMediumAvatar(avatarUrl, m_currentPlayerStats);
 
     reply->deleteLater();
      //register_player(senderName, sender_steamID, true);
     // return true;
 }
 
-void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPlayerStats *playerInfo)
+void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
 {
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
@@ -152,6 +181,8 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPl
         return;
 
     QJsonArray jsonArray = jsonDoc.array();
+
+
 
     for(int i = 0; i < jsonArray.count(); i++)
     {
@@ -166,14 +197,16 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPl
 
         playerInfo->statsAvailable = true;
 
+
         if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
-            emit sendServerPlayrStats(*playerInfo);
+            emit sendServerPlayrStats(*playerInfo.data());
+
     }
 
     reply->deleteLater();
 }
 
-void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, ServerPlayerStats* playerInfo)
+void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
 {
     QByteArray replyByteArray = reply->readAll();
 
@@ -187,7 +220,32 @@ void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, ServerPlaye
     playerInfo->avatar = avatarMedium;
 
     if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
-        emit sendServerPlayrStats(*playerInfo);
+        emit sendServerPlayrStats(*playerInfo.data());
+
+    reply->deleteLater();
+}
+
+void StatsCollector::receivePlayerSteamData(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
+{
+    QByteArray replyByteArray = reply->readAll();
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    //qDebug() << jsonDoc;
+
+    QVariantMap info = jsonDoc.object().toVariantMap();
+    QVariantMap response = info.value("response", QVariantMap()).toMap();
+    QVariantList players = response.value("players", QVariantList()).toList();
+    QVariantMap player = players.value(0, QVariantMap()).toMap();
+
+    QString steamId;
+    QString avatarUrl;
+
+    avatarUrl = player.value("avatarmedium", "").toString();
+
+    getPlayerStatsFromServer(playerInfo);
+    getPlayerMediumAvatar(avatarUrl, playerInfo);
+
+    reply->deleteLater();
 }
 
 

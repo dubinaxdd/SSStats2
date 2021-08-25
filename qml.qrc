@@ -7,5 +7,6 @@
         <file>resources/qml/GamePanel.qml</file>
         <file>resources/qml/InfoWindow.qml</file>
         <file>resources/qml/SettingsWindow.qml</file>
+        <file>resources/qml/PatyStatistic.qml</file>
     </qresource>
 </RCC>

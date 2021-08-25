@@ -19,18 +19,29 @@ class StatisticPanel : public QObject
     Q_PROPERTY(QString currentPlayerWinRate MEMBER m_currentPlayerWinRate NOTIFY currentPlayerStatsChanged)
     Q_PROPERTY(QString currentPlayerWinsCount MEMBER m_currentPlayerWinsCount NOTIFY currentPlayerStatsChanged)
 
+    Q_PROPERTY(bool player2StatsVisible MEMBER m_player2StatsVisible NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player3StatsVisible MEMBER m_player3StatsVisible NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player4StatsVisible MEMBER m_player4StatsVisible NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player5StatsVisible MEMBER m_player5StatsVisible NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player6StatsVisible MEMBER m_player6StatsVisible NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player7StatsVisible MEMBER m_player7StatsVisible NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player8StatsVisible MEMBER m_player8StatsVisible NOTIFY playersStatsChanged)
+
 public:
     explicit StatisticPanel(ImageProvider *imageProvider, QObject *parent = nullptr);
 
 signals:
     void currentPlayerStatsChanged();
+    void playersStatsChanged();
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
+    void receivePlayersCount(int playersCount);
 
 private:
-
     ImageProvider *m_imageProvider;
+
+    int m_playersCount;
 
     QString m_currentPlayerApm;
     QString m_currentPlayerGamesCount;
@@ -40,6 +51,16 @@ private:
     QString m_currentPlayerRace;
     QString m_currentPlayerWinRate;
     QString m_currentPlayerWinsCount;
+
+
+    bool m_player2StatsVisible = false;
+    bool m_player3StatsVisible = false;
+    bool m_player4StatsVisible = false;
+    bool m_player5StatsVisible = false;
+    bool m_player6StatsVisible = false;
+    bool m_player7StatsVisible = false;
+    bool m_player8StatsVisible = false;
+
 };
 
 #endif // STATISTICPANEL_H
