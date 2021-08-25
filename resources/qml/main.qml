@@ -289,13 +289,21 @@ Window {
                         Layout.fillHeight: true
                     }
 
-                    PlayerStatistic
+                    PatyStatistic
                     {
                         Layout.fillHeight: false
                         Layout.fillWidth: false
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         model: _uiBackend.statisticPanel
                     }
+
+                   /* PlayerStatistic
+                    {
+                        Layout.fillHeight: false
+                        Layout.fillWidth: false
+                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                        model: _uiBackend.statisticPanel
+                    }*/
 
                     Rectangle {
                         id: rectangle2

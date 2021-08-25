@@ -11,7 +11,7 @@ StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
 void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)
 {
 
-    qDebug() << serverPlayerStats.name << serverPlayerStats.mmr << serverPlayerStats.apm;
+    //qDebug() << serverPlayerStats.name << serverPlayerStats.mmr << serverPlayerStats.apm;
 
 
     if (serverPlayerStats.isCurrentPlayer)
@@ -42,4 +42,9 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
         emit currentPlayerStatsChanged();
     }
+}
+
+void StatisticPanel::receivePlayersCount(int playersCount)
+{
+
 }

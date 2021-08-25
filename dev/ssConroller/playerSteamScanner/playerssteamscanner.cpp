@@ -29,7 +29,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
-    qDebug() << "PID = " << PID;
+    //qDebug() << "PID = " << PID;
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
@@ -188,11 +188,9 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
                             if (match2)
                             {
-                                qDebug() << "match";
-
                                 //Дергаем байт с количеством игроков
                                 playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
-                                qDebug() << playersCount;
+                                //qDebug() << playersCount;
                                 break;
                             }
                         }
@@ -229,9 +227,9 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         }
     }
 
-    qDebug() << "==============================================================";
-    for(int i = 0; i < allPlayersInfo.values().size(); i++)
-        qDebug() << allPlayersInfo.values().at(i).name;
+    //qDebug() << "==============================================================";
+    //for(int i = 0; i < allPlayersInfo.values().size(); i++)
+    //    qDebug() << allPlayersInfo.values().at(i).name;
 
 
     emit sendSteamPlayersInfoMap(allPlayersInfo.values());

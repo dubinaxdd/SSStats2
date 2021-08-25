@@ -27,9 +27,9 @@ signals:
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
+    void receivePlayersCount(int playersCount);
 
 private:
-
     ImageProvider *m_imageProvider;
 
     QString m_currentPlayerApm;
