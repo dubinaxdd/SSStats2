@@ -22,6 +22,33 @@ StatsCollector::StatsCollector(QString steamPath, QObject *parent)
     qDebug() << "INFO: OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 
+void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner )
+{
+    m_playerStats.clear();
+
+    emit sendPlayersCount(playersInfoFromScanner.count());
+
+    for(int i = 0; i < playersInfoFromScanner.count(); i++)
+    {
+
+        if(playersInfoFromScanner.at(i).steamId == m_currentPlayerStats.steamId)
+            continue;
+
+        ServerPlayerStats newPlayer;
+
+        newPlayer.steamId = playersInfoFromScanner.at(i).steamId;
+        newPlayer.position = playersInfoFromScanner.at(i).position;
+
+        m_playerStats.append(newPlayer);
+
+        QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playersInfoFromScanner.at(i).steamId + "&version="+SERVER_VERSION+"&sender_sid="+ m_currentPlayerStats.steamId +"&")));
+        QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+            receivePlayerStatsFromServer(reply, &m_playerStats.last());
+        });
+    }
+}
+
+
 
 void StatsCollector::parseCurrentPlayerSteamId()
 {
@@ -152,6 +179,8 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, ServerPl
         return;
 
     QJsonArray jsonArray = jsonDoc.array();
+
+    qDebug() << jsonArray;
 
     for(int i = 0; i < jsonArray.count(); i++)
     {

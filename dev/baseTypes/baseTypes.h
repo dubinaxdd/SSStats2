@@ -27,9 +27,10 @@ struct ServerPlayerStats
     bool isCurrentPlayer = false;
     bool avatarAvailable = false;
     bool statsAvailable = false;
+    int position = 0;
 };
 
-struct SearchStemIdPlaerInfo
+struct SearchStemIdPlayerInfo
 {
     QString steamId;
     int position;

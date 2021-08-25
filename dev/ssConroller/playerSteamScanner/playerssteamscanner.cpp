@@ -36,7 +36,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     if(hProcess==nullptr)
         return;
 
-    QMap<QString, SearchStemIdPlaerInfo> allPlayersInfo;
+    QMap<QString, SearchStemIdPlayerInfo> allPlayersInfo;
 
     int size = 0;
 
@@ -154,7 +154,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
                 if(!allPlayersInfo.contains(steamIdStr)){
 
-                    SearchStemIdPlaerInfo newPlayerInPaty;
+                    SearchStemIdPlayerInfo newPlayerInPaty;
 
                     newPlayerInPaty.steamId = steamIdStr;
                     newPlayerInPaty.name = nick;
@@ -233,7 +233,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     for(int i = 0; i < allPlayersInfo.values().size(); i++)
         qDebug() << allPlayersInfo.values().at(i).name;
 
-    emit sendSteamPlayersInfoMap(allPlayersInfo);
+
+    emit sendSteamPlayersInfoMap(allPlayersInfo.values());
 }
 
 void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)

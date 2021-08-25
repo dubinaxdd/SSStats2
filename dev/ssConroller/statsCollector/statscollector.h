@@ -19,7 +19,10 @@ public:
 
 signals:                           
     void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
+    void sendPlayersCount(int playersCount);
 
+public slots:
+    void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner );
 
 private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);
@@ -34,6 +37,8 @@ private:
     QNetworkAccessManager *m_networkManager;
 
     ServerPlayerStats m_currentPlayerStats;
+
+    QList<ServerPlayerStats> m_playerStats;
 
 };
 

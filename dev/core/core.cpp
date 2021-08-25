@@ -174,7 +174,7 @@ void Core::registerTypes()
 {
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
-    qRegisterMetaType<QMap<QString, SearchStemIdPlaerInfo>>("QMap<QString, SearchStemIdPlaerInfo>");
+    qRegisterMetaType<QList<SearchStemIdPlayerInfo>>("QList<SearchStemIdPlayerInfo>");
 }
 
 UiBackend *Core::uiBackend() const
