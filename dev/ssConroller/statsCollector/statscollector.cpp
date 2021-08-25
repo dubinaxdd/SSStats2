@@ -39,7 +39,6 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         QSharedPointer <ServerPlayerStats> newPlayer(new ServerPlayerStats);
 
 
-
         newPlayer->steamId = playersInfoFromScanner.at(i).steamId;
         newPlayer->position = playersInfoFromScanner.at(i).position;
 

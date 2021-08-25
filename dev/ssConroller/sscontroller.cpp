@@ -277,6 +277,11 @@ void SsController::parseSsSettings()
     delete ssSettings;
 }
 
+PlayersSteamScanner *SsController::playersSteamScanner() const
+{
+    return m_playersSteamScanner;
+}
+
 APMMeter *SsController::apmMeter() const
 {
     return m_apmMeter;

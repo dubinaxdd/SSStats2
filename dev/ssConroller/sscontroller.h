@@ -38,6 +38,8 @@ public:
 
     APMMeter *apmMeter() const;
 
+    PlayersSteamScanner *playersSteamScanner() const;
+
 public slots:
     void blockInput(bool block);
 
@@ -64,7 +66,7 @@ private:
     HWND m_soulstormHwnd = NULL;
 
     QTimer* m_ssLaunchControllTimer;
-    QTimer* m_ssSteamPlayersScanTimer;
+    //QTimer* m_ssSteamPlayersScanTimer;
     
     QString m_ssPath;
     QString m_steamPath;
