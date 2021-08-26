@@ -25,7 +25,7 @@ signals:
     void sendPlayersCount(int playersCount);
 
 public slots:
-    void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner );
+    void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
 
 private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);

@@ -17,6 +17,7 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
     if (serverPlayerStats.isCurrentPlayer)
     {
+        m_currentPlayerSteamId = serverPlayerStats.steamId;
         m_currentPlayerApm = QString::number(serverPlayerStats.apm);
         m_currentPlayerGamesCount = QString::number(serverPlayerStats.gamesCount);
         m_currentPlayerMmr = QString::number(serverPlayerStats.mmr);
@@ -52,7 +53,6 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
                 }
 
             }
-
         }
 
         emit playersStatsChanged();
@@ -62,6 +62,8 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
 void StatisticPanel::receivePlayersCount(int playersCount)
 {
+    //qDebug() << "asd" << playersCount;
+
     if (m_playersCount == playersCount)
         return;
     m_playersCount = playersCount;
@@ -107,6 +109,15 @@ void StatisticPanel::receivePlayersCount(int playersCount)
 
 void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo)
 {
+    for (int i = 0; i < playersInfo.count(); i++)
+    {
+        if(playersInfo.at(i).steamId == m_currentPlayerSteamId)
+        {
+            playersInfo.removeAt(i);
+            break;
+        }
+    }
+
     for (int i = 0; i < playersInfo.count() - 1; i++)
     {
         for (int j = 1; j < playersInfo.count(); j++)

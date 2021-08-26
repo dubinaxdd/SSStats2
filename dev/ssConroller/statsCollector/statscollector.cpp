@@ -24,11 +24,11 @@ StatsCollector::StatsCollector(QString steamPath, QObject *parent)
     qDebug() << "INFO: OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 
-void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner )
+void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
 {
     //m_playerStats.clear();
 
-    emit sendPlayersCount(playersInfoFromScanner.count());
+    emit sendPlayersCount(playersCount);
 
     for(int i = 0; i < playersInfoFromScanner.count(); i++)
     {

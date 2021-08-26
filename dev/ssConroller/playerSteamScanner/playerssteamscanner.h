@@ -18,7 +18,7 @@ public:
     void setSoulstormHwnd(HWND newSoulstormHwnd);
 
 signals:
-    void sendSteamPlayersInfoMap(QList<SearchStemIdPlayerInfo> playersInfo);
+    void sendSteamPlayersInfoMap(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
 
 private slots:
     void refreshSteamPlayersInfo();

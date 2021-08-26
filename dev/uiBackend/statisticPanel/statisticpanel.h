@@ -160,6 +160,7 @@ private:
 
     int m_playersCount;
 
+    QString m_currentPlayerSteamId;
     QString m_currentPlayerApm;
     QString m_currentPlayerGamesCount;
     QString m_currentPlayerMmr;

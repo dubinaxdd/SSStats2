@@ -240,7 +240,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         qDebug() << allPlayersInfo.values().at(i).name;
 
 
-    emit sendSteamPlayersInfoMap(allPlayersInfo.values());
+    emit sendSteamPlayersInfoMap(allPlayersInfo.values(), playersCount);
 }
 
 void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
