@@ -5,8 +5,7 @@ StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
     : QObject(parent)
     , m_imageProvider(imageProvider)
 {
-
-    m_playersStats.resize(8);
+    m_playersStats.resize(7);
 }
 
 void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)
@@ -66,6 +65,18 @@ void StatisticPanel::receivePlayersCount(int playersCount)
 
     if (m_playersCount == playersCount)
         return;
+/*
+    m_playersStats.clear();
+    m_playersStats.resize(7);
+
+    m_imageProvider->setPlayer2AvatarMedium(QImage());
+    m_imageProvider->setPlayer3AvatarMedium(QImage());
+    m_imageProvider->setPlayer4AvatarMedium(QImage());
+    m_imageProvider->setPlayer5AvatarMedium(QImage());
+    m_imageProvider->setPlayer6AvatarMedium(QImage());
+    m_imageProvider->setPlayer7AvatarMedium(QImage());
+    m_imageProvider->setPlayer8AvatarMedium(QImage());
+*/
     m_playersCount = playersCount;
 
     if(m_playersCount > 1)
