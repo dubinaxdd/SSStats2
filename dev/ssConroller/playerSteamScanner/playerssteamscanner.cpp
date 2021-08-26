@@ -38,9 +38,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     QMap<QString, SearchStemIdPlayerInfo> allPlayersInfo;
 
-    int size = 0;
-
-    int playersCount = -1;
+    int playersCount = 0;
 
     QByteArray buffer(/*30400*/100000, 0);
 
@@ -214,7 +212,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
-        if (allPlayersInfo.count() > 0 && playersCount > 0 && playersCount <= 8)
+        if (allPlayersInfo.count() > 0 && playersCount > 1 && playersCount <= 8)
         {
             break;
         }
@@ -228,7 +226,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     for(int i = 0; i < allPlayersInfo.values().size(); i++)
     {
-        if (allPlayersInfo.values().at(i).closeConnection || allPlayersInfo.values().at(i).position >= playersCount)
+        if (allPlayersInfo.values().at(i).closeConnection /*|| allPlayersInfo.values().at(i).position >= playersCount*/)
         {
             qDebug() << allPlayersInfo.values().at(i).name;
             allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
@@ -246,4 +244,14 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
 {
     m_soulstormHwnd = newSoulstormHwnd;
+}
+
+void PlayersSteamScanner::startScan()
+{
+    m_scanTimer->start();
+}
+
+void PlayersSteamScanner::stopScan()
+{
+    m_scanTimer->stop();
 }

@@ -39,6 +39,9 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
+    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStarted, m_playersSteamScanner, &PlayersSteamScanner::stopScan, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner, &PlayersSteamScanner::startScan, Qt::QueuedConnection);
+
     m_ssLaunchControllTimer = new QTimer(this);
     m_ssLaunchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
     QObject::connect(m_ssLaunchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);

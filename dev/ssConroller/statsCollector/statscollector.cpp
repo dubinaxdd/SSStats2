@@ -45,7 +45,7 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         //m_playerStats.append(newPlayer);
 
         QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playersInfoFromScanner.at(i).steamId + "&format=json")));
-        QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+        QObject::connect(reply, &QNetworkReply::finished, this, [=](){
             receivePlayerSteamData(reply, newPlayer);
         });
     }
@@ -107,7 +107,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
 void StatsCollector::getPlayerStatsFromServer(QSharedPointer <ServerPlayerStats> playerInfo)
 {
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+SERVER_VERSION+"&sender_sid="+ playerInfo->steamId +"&")));
-    QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerStatsFromServer(reply, playerInfo);
     });
 }
@@ -115,7 +115,7 @@ void StatsCollector::getPlayerStatsFromServer(QSharedPointer <ServerPlayerStats>
 void StatsCollector::getPlayerMediumAvatar(QString url, QSharedPointer <ServerPlayerStats> playerInfo)
 {
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(url)));
-    QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerMediumAvatar(reply, playerInfo);
     });
 }
