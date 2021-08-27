@@ -44,6 +44,8 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
 
         //m_playerStats.append(newPlayer);
 
+        registerPlayer(playersInfoFromScanner.at(i).name, playersInfoFromScanner.at(i).steamId, false);
+
         QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playersInfoFromScanner.at(i).steamId + "&format=json")));
         QObject::connect(reply, &QNetworkReply::finished, this, [=](){
             receivePlayerSteamData(reply, newPlayer);
@@ -163,12 +165,12 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     m_currentPlayerStats->steamId = steamId;
     m_currentPlayerStats->isCurrentPlayer = true;
 
+    registerPlayer(playerName, steamId, true);
+
     getPlayerStatsFromServer(m_currentPlayerStats);
     getPlayerMediumAvatar(avatarUrl, m_currentPlayerStats);
 
     reply->deleteLater();
-     //register_player(senderName, sender_steamID, true);
-    // return true;
 }
 
 void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
@@ -245,6 +247,26 @@ void StatsCollector::receivePlayerSteamData(QNetworkReply *reply, QSharedPointer
     getPlayerMediumAvatar(avatarUrl, playerInfo);
 
     reply->deleteLater();
+}
+
+void StatsCollector::registerPlayer(QString name, QString sid, bool init)
+{
+    QByteArray enc_name = QUrl::toPercentEncoding(name,""," ");
+    QString reg_url = QString::fromStdString(SERVER_ADDRESS)+"/regplayer.php?name="+enc_name+"&sid="+sid+"&version="+SERVER_VERSION+"&sender_sid="+m_currentPlayerStats->steamId+"&";
+    if( init )
+        reg_url += "init=true&";
+    else
+        reg_url += "init=false&";
+
+    reg_url += "key="+QLatin1String(SERVER_KEY)+"&";
+
+    qDebug() << reg_url;
+
+    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(reg_url)));
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        qDebug() << "INFO: Player registred";
+        reply->deleteLater();
+    });
 }
 
 

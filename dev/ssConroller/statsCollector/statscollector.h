@@ -35,6 +35,9 @@ private slots:
     void receivePlayerSteamData(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
 
 private:
+    void registerPlayer(QString name, QString sid, bool init);
+
+private:
     QString m_steamPath;
     bool m_currentPlayerAccepted;
     QMap<QString, QString> AllPlayersInfo;

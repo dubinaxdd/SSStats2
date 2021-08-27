@@ -192,7 +192,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 }
             }
 
-            if(playersCount == 0)
+            if(playersCount == 0 || playersCount > 8)
                 continue;
 
             int nickPos = i + 56;
