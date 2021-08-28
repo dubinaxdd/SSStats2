@@ -260,11 +260,11 @@ void StatsCollector::registerPlayer(QString name, QString sid, bool init)
 
     reg_url += "key="+QLatin1String(SERVER_KEY)+"&";
 
-    qDebug() << reg_url;
+    //qDebug() << reg_url;
 
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(reg_url)));
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        qDebug() << "INFO: Player registred";
+       // qDebug() << "INFO: Player registred";
         reply->deleteLater();
     });
 }

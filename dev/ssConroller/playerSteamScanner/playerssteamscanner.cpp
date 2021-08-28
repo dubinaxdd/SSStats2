@@ -142,8 +142,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                     {
                         //Дергаем байт с количеством игроков
                         playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
-                        qDebug() << Qt::hex << ptr1Count + k - 1;
-                        qDebug() << playersCount;
+                        //qDebug() << Qt::hex << ptr1Count + k - 1;
+                        //qDebug() << playersCount;
                         break;
                     }
                     else
@@ -181,8 +181,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                             {
                                 //Дергаем байт с количеством игроков
                                 playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
-                                qDebug() << Qt::hex << ptr1Count + k - 1;
-                                qDebug() << playersCount;
+                                //qDebug() << Qt::hex << ptr1Count + k - 1;
+                                //qDebug() << playersCount;
                                 break;
                             }
                         }
@@ -276,14 +276,14 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     {
         if (allPlayersInfo.values().at(i).closeConnection /*|| allPlayersInfo.values().at(i).position >= playersCount*/)
         {
-            qDebug() << allPlayersInfo.values().at(i).name;
+            //qDebug() << allPlayersInfo.values().at(i).name;
             allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
         }
     }
 
-    qDebug() << "==============================================================";
-    for(int i = 0; i < allPlayersInfo.values().size(); i++)
-        qDebug() << allPlayersInfo.values().at(i).name;
+    //qDebug() << "==============================================================";
+    //for(int i = 0; i < allPlayersInfo.values().size(); i++)
+        //qDebug() << allPlayersInfo.values().at(i).name;
 
 
     emit sendSteamPlayersInfoMap(allPlayersInfo.values(), playersCount);
