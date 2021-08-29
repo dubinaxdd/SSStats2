@@ -38,9 +38,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     QMap<QString, SearchStemIdPlayerInfo> allPlayersInfo;
 
-    int size = 0;
-
-    int playersCount = -1;
+    int playersCount = 0;
 
     QByteArray buffer(/*30400*/100000, 0);
 
@@ -53,7 +51,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         SIZE_T bytesRead = 0;
 
         // Если функция вернула не ноль, то продолжим цикл
-        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count/*readAddr*/, buffer.data(), /*30400*/100000 , &bytesRead))
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), /*30400*/100000 , &bytesRead))
         {
             if(GetLastError()!=299)
             {
@@ -67,8 +65,6 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         //Ищем пати блок
         for (int x = 0; x < static_cast<int>(bytesRead - 10); x++)
         {
-            //bool patyMatch = false;
-
             for (int y = 0; y < static_cast<int>(sizeof(patyBlockHeader)); y++)
             {
                 if (y == 1) //Потому что блять 0x8C нихера не ищется
@@ -119,13 +115,16 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             if (!match)
                 continue;
 
-            //Ищем постфикс байта с количеством игроков
+
+            bool match2 = false;
+
+            //Ищем постфикс байта с количеством игроков по первой маске
             if (allPlayersInfo.count() == 0)
             {
 
                 for (int k = i - 100; k < i; k++)
                 {
-                    bool match2 = false;
+
 
                     for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
                     {
@@ -143,15 +142,58 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                     {
                         //Дергаем байт с количеством игроков
                         playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
-                        qDebug() << Qt::hex << ptr1Count + k - 1;
-                        qDebug() << playersCount;
+                        //qDebug() << Qt::hex << ptr1Count + k - 1;
+                        //qDebug() << playersCount;
                         break;
                     }
                     else
                         playersCount = 0;
                 }
             }
+            //Ищем постфикс байта с количеством игроков по второй маске
+           if(!match2)
+            {
+                if (allPlayersInfo.count() == 0)
+                {
 
+                    for (int k = i - 100; k < i; k++)
+                    {
+                        for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix2)); t++)
+                        {
+                            if (buffer.at(k + t) != playresCountPostfix2[t])
+                            {
+                                match2= false;
+                                break;
+                            }
+                            else
+                                match2 = true;
+                        }
+
+                        if (match2)
+                        {
+                            if(buffer.at(k + sizeof(playresCountPostfix2)) == 0)
+                            {
+                                match2 = false;
+                                playersCount = 0;
+
+                            }
+                            else
+                            {
+                                //Дергаем байт с количеством игроков
+                                playersCount = QString::fromUtf8((char*)buffer.mid(k - 1, 1).data(), 1).toLocal8Bit().toHex().toInt();
+                                //qDebug() << Qt::hex << ptr1Count + k - 1;
+                                //qDebug() << playersCount;
+                                break;
+                            }
+                        }
+                        else
+                            playersCount = 0;
+                    }
+                }
+            }
+
+            if(playersCount == 0 || playersCount > 8)
+                continue;
 
             int nickPos = i + 56;
 
@@ -195,6 +237,10 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                     newPlayerInPaty.position = playerPosition;
                     playerPosition++;
 
+                    //TODO: это тоже можно использовать как фильтр
+                    //4E 6F 20 6C 6F 6E 67 65 72 20 63 6F 6E 6E 65 63 74 65 64 20 74 6F 20 68 6F 73 74 00
+                    //No longer connection to host
+
                     if(closeConnectionFlag == "CloseNetSession")
                         newPlayerInPaty.closeConnection = true;
 
@@ -214,7 +260,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
-        if (allPlayersInfo.count() > 0 && playersCount > 0 && playersCount <= 8)
+        if (allPlayersInfo.count() > 0 && playersCount > 1 && playersCount <= 8)
         {
             break;
         }
@@ -228,22 +274,32 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     for(int i = 0; i < allPlayersInfo.values().size(); i++)
     {
-        if (allPlayersInfo.values().at(i).closeConnection || allPlayersInfo.values().at(i).position >= playersCount)
+        if (allPlayersInfo.values().at(i).closeConnection /*|| allPlayersInfo.values().at(i).position >= playersCount*/)
         {
-            qDebug() << allPlayersInfo.values().at(i).name;
+            //qDebug() << allPlayersInfo.values().at(i).name;
             allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
         }
     }
 
-    qDebug() << "==============================================================";
-    for(int i = 0; i < allPlayersInfo.values().size(); i++)
-        qDebug() << allPlayersInfo.values().at(i).name;
+    //qDebug() << "==============================================================";
+    //for(int i = 0; i < allPlayersInfo.values().size(); i++)
+        //qDebug() << allPlayersInfo.values().at(i).name;
 
 
-    emit sendSteamPlayersInfoMap(allPlayersInfo.values());
+    emit sendSteamPlayersInfoMap(allPlayersInfo.values(), playersCount);
 }
 
 void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
 {
     m_soulstormHwnd = newSoulstormHwnd;
+}
+
+void PlayersSteamScanner::startScan()
+{
+    m_scanTimer->start();
+}
+
+void PlayersSteamScanner::stopScan()
+{
+    m_scanTimer->stop();
 }

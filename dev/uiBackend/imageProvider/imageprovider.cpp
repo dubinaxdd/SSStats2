@@ -16,6 +16,27 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     if(id == "currentPlayerAvatarMedium" && !m_currentPlayerAvatarMedium.isNull())
         return m_currentPlayerAvatarMedium;
 
+    if(id == "player2AvatarMedium" && !m_player2AvatarMedium.isNull())
+        return m_player2AvatarMedium;
+
+    if(id == "player3AvatarMedium" && !m_player3AvatarMedium.isNull())
+        return m_player3AvatarMedium;
+
+    if(id == "player4AvatarMedium" && !m_player4AvatarMedium.isNull())
+        return m_player4AvatarMedium;
+
+    if(id == "player5AvatarMedium" && !m_player5AvatarMedium.isNull())
+        return m_player5AvatarMedium;
+
+    if(id == "player6AvatarMedium" && !m_player6AvatarMedium.isNull())
+        return m_player6AvatarMedium;
+
+    if(id == "player7AvatarMedium" && !m_player7AvatarMedium.isNull())
+        return m_player7AvatarMedium;
+
+    if(id == "player8AvatarMedium" && !m_player8AvatarMedium.isNull())
+        return m_player8AvatarMedium;
+
     //если ничего не нашлось возвращаем черную картинку
     QImage image(60,60, QImage::Format_ARGB32);
     image.fill(QColor(0,0,0).rgba());
@@ -26,3 +47,43 @@ void ImageProvider::setCurrentPlayerAvatarMedium(QImage newCurrentPlayerAvatarMe
 {
     m_currentPlayerAvatarMedium = newCurrentPlayerAvatarMedium;
 }
+
+
+void ImageProvider::setPlayer2AvatarMedium(QImage avatarMedium)
+{
+    m_player2AvatarMedium = avatarMedium;
+}
+
+void ImageProvider::setPlayer3AvatarMedium(QImage avatarMedium)
+{
+    m_player3AvatarMedium = avatarMedium;
+}
+
+
+void ImageProvider::setPlayer4AvatarMedium(QImage avatarMedium)
+{
+    m_player4AvatarMedium = avatarMedium;
+}
+
+void ImageProvider::setPlayer5AvatarMedium(QImage avatarMedium)
+{
+    m_player5AvatarMedium = avatarMedium;
+}
+
+void ImageProvider::setPlayer6AvatarMedium(QImage avatarMedium)
+{
+    m_player6AvatarMedium = avatarMedium;
+}
+
+void ImageProvider::setPlayer7AvatarMedium(QImage avatarMedium)
+{
+    m_player7AvatarMedium = avatarMedium;
+}
+
+void ImageProvider::setPlayer8AvatarMedium(QImage avatarMedium)
+{
+    m_player8AvatarMedium = avatarMedium;
+}
+
+
+
