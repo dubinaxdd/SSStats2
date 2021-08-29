@@ -48,6 +48,8 @@ set(PROJECT_SOURCES
         dev/core/core.cpp
         dev/core/settingsController/settingscontroller.h
         dev/core/settingsController/settingscontroller.cpp
+        dev/core/hookManager/hookmanager.h
+        dev/core/hookManager/hookmanager.cpp
         dev/keyboardProcessor/keyboardprocessor.h
         dev/keyboardProcessor/keyboardprocessor.cpp
         dev/uiBackend/uibackend.h

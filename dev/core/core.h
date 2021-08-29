@@ -24,6 +24,10 @@ public:
     SettingsController *settingsController() const;
 
     UiBackend *uiBackend() const;
+	
+public slots:
+    void onKeyEvent(QKeyEvent *event);
+    void onMouseEvent(QMouseEvent *event);
 
 private slots:
     void topmostTimerTimout();

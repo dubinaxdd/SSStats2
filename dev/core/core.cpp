@@ -3,6 +3,7 @@
 #include "QFile"
 #include "../ssConroller/gameInfoReader/gameinforeader.h"
 #include "../baseTypes/baseTypes.h"
+#include "dev/core/hookManager/hookmanager.h"
 
 
 Core::Core(QQmlContext *context, QObject* parent)
@@ -51,6 +52,10 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::QueuedConnection);
     QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
     QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+
+    QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
+    QObject::connect(HookManager::instance(), &HookManager::keyEvent, this, &Core::onKeyEvent, Qt::QueuedConnection);
+    QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
 }
 
 void Core::topmostTimerTimout()
@@ -205,24 +210,53 @@ bool Core::event(QEvent *event)
         return true;
     }
 
-     if (event->type() == QEvent::MouseButtonPress)
-     {
-         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
-         m_uiBackend->mousePressEvent(mouseEvent->pos());
-         m_ssController->apmMeter()->onMousePressEvent(mouseEvent->pos());
-         return true;
-     }
+    if (event->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
+        m_uiBackend->mousePressEvent(mouseEvent->pos());
+        m_ssController->apmMeter()->onMousePressEvent(mouseEvent->pos());
+        return true;
+    }
 
-     if (event->type() == QEvent::MouseMove)
-     {
-         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
-         m_uiBackend->mouseMoveEvent(mouseEvent->pos());
-         return true;
-     }
+    if (event->type() == QEvent::MouseMove)
+    {
+        QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
+        m_uiBackend->mouseMoveEvent(mouseEvent->pos());
+        return true;
+    }
 
     QObject::event(event);
     return false;
+}
 
+void Core::onKeyEvent(QKeyEvent *event)
+{
+    if(uiBackend()->getShowClient()){
+        if (event->type() == QEvent::KeyPress && m_keyboardProcessor)
+        {
+            QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
+            m_keyboardProcessor->keyPressEvent(keyEvent);
+            m_ssController->apmMeter()->onKeyPressEvent(keyEvent);
+        }
+    }
+}
+
+void Core::onMouseEvent(QMouseEvent *event)
+{
+    if(uiBackend()->getShowClient()){
+        if (event->type() == QEvent::MouseButtonPress)
+        {
+            QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
+            m_uiBackend->mousePressEvent(mouseEvent->pos());
+            m_ssController->apmMeter()->onMousePressEvent(mouseEvent->pos());
+        }
+
+        if (event->type() == QEvent::MouseMove)
+        {
+            QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
+            m_uiBackend->mouseMoveEvent(mouseEvent->pos());
+        }
+    }
 }
 
 void Core::grubStatsWindow()

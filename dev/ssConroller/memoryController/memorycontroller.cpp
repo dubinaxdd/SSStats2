@@ -37,7 +37,7 @@ void MemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
 
 void MemoryController::onNoFogStateChanged(bool state)
 {
-    qDebug() << "INFO: Fog activated" <<  state;
+    qDebug() << "INFO: Fog state: " <<  state;
 
     targetNoFog = state;
 

@@ -58,12 +58,13 @@ SsController::~SsController()
     m_playersSteamScannerThread.wait();
 }
 
-void SsController::blockInput(bool block)
+void SsController::blockInput(bool state)
 {
     if (m_soulstormHwnd)
     {
-        inputBlocked = block;
+        inputBlocked = state;
         EnableWindow(m_soulstormHwnd, !inputBlocked);
+        emit inputBlockStateChanged(inputBlocked);
     }
 }
 
