@@ -23,6 +23,7 @@ struct ServerPlayerStats
     int race;
     int winRate;
     int winsCount;
+    bool isBanned;
     QImage avatar;
     bool isCurrentPlayer = false;
     bool avatarAvailable = false;

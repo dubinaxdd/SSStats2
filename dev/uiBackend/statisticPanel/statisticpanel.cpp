@@ -21,6 +21,7 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
         m_currentPlayerGamesCount = QString::number(serverPlayerStats.gamesCount);
         m_currentPlayerMmr = QString::number(serverPlayerStats.mmr);
         m_currentPlayerMmr1v1 = QString::number(serverPlayerStats.mmr1v1);
+        m_currentPlayerIsBanned = serverPlayerStats.isBanned;
         m_currentPlayerName = serverPlayerStats.name;
 
         m_currentPlayerRace = getRaceFromNumber(serverPlayerStats.race);
@@ -42,13 +43,34 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
                 switch (i)
                 {
-                    case 0: m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar); break;
-                    case 1: m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar); break;
-                    case 2: m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar); break;
-                    case 3: m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar); break;
-                    case 4: m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar); break;
-                    case 5: m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar); break;
-                    case 6: m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar); break;
+                    case 0:
+                        m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar);
+                        m_player2IsBanned = m_playersStats.at(i).isBanned;
+                        break;
+                    case 1:
+                        m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar);
+                        m_player3IsBanned = m_playersStats.at(i).isBanned;
+                        break;
+                    case 2:
+                        m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar);
+                        m_player4IsBanned = m_playersStats.at(i).isBanned;
+                        break;
+                    case 3:
+                        m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar);
+                        m_player5IsBanned = m_playersStats.at(i).isBanned;
+                        break;
+                    case 4:
+                        m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar);
+                        m_player6IsBanned = m_playersStats.at(i).isBanned;
+                        break;
+                    case 5:
+                        m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar);
+                        m_player7IsBanned = m_playersStats.at(i).isBanned;
+                        break;
+                    case 6:
+                        m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar);
+                        m_player8IsBanned = m_playersStats.at(i).isBanned;
+                        break;
                 }
 
             }

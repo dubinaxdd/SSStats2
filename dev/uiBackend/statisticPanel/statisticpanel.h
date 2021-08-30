@@ -10,6 +10,8 @@ class StatisticPanel : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(bool currentPlayerIsBanned MEMBER m_currentPlayerIsBanned NOTIFY currentPlayerStatsChanged)
+
     Q_PROPERTY(QString currentPlayerApm MEMBER m_currentPlayerApm NOTIFY currentPlayerStatsChanged)
     Q_PROPERTY(QString currentPlayerGamesCount MEMBER m_currentPlayerGamesCount NOTIFY currentPlayerStatsChanged)
     Q_PROPERTY(QString currentPlayerMmr MEMBER m_currentPlayerMmr NOTIFY currentPlayerStatsChanged)
@@ -26,6 +28,14 @@ class StatisticPanel : public QObject
     Q_PROPERTY(bool player6StatsVisible MEMBER m_player6StatsVisible NOTIFY playersStatsChanged)
     Q_PROPERTY(bool player7StatsVisible MEMBER m_player7StatsVisible NOTIFY playersStatsChanged)
     Q_PROPERTY(bool player8StatsVisible MEMBER m_player8StatsVisible NOTIFY playersStatsChanged)
+
+    Q_PROPERTY(bool player2IsBanned MEMBER m_player2IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player3IsBanned MEMBER m_player3IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player4IsBanned MEMBER m_player4IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player5IsBanned MEMBER m_player5IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player6IsBanned MEMBER m_player6IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player7IsBanned MEMBER m_player7IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player8IsBanned MEMBER m_player8IsBanned NOTIFY playersStatsChanged)
 
     Q_PROPERTY(QString player2Name READ getPlayer2Name NOTIFY playersStatsChanged)
     Q_PROPERTY(QString player3Name READ getPlayer3Name NOTIFY playersStatsChanged)
@@ -160,6 +170,8 @@ private:
 
     int m_playersCount;
 
+    bool m_currentPlayerIsBanned;
+
     QString m_currentPlayerSteamId;
     QString m_currentPlayerApm;
     QString m_currentPlayerGamesCount;
@@ -169,6 +181,14 @@ private:
     QString m_currentPlayerRace;
     QString m_currentPlayerWinRate;
     QString m_currentPlayerWinsCount;
+
+    bool m_player2IsBanned = false;
+    bool m_player3IsBanned = false;
+    bool m_player4IsBanned = false;
+    bool m_player5IsBanned = false;
+    bool m_player6IsBanned = false;
+    bool m_player7IsBanned = false;
+    bool m_player8IsBanned = false;
 
 
     bool m_player2StatsVisible = false;
