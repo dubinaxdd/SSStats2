@@ -8,6 +8,8 @@
 #include <QTimer>
 #include <windows.h>
 #include "../../baseTypes/baseTypes.h"
+#include <QMutex>
+
 
 class PlayersSteamScanner : public QObject
 {
@@ -17,14 +19,10 @@ public:
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
 
-
+    QTimer *scanTimer() const;
 
 signals:
     void sendSteamPlayersInfoMap(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
-
-public slots:
-    void startScan();
-    void stopScan();
 
 private slots:
     void refreshSteamPlayersInfo();
@@ -38,5 +36,6 @@ private:
 
     QTimer *m_scanTimer;
     HWND m_soulstormHwnd = NULL;
+    QMutex m_playersSteamScannerMutex;
 };
 #endif // PLAYERSSTEAMSCANNER_H

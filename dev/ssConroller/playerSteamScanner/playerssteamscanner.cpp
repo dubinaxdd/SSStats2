@@ -36,7 +36,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
-   // qDebug() << "PID = " << PID;
+    qDebug() << "PID = " << PID;
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
@@ -296,17 +296,12 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     emit sendSteamPlayersInfoMap(allPlayersInfo.values(), playersCount);
 }
 
+QTimer *PlayersSteamScanner::scanTimer() const
+{
+    return m_scanTimer;
+}
+
 void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
 {
     m_soulstormHwnd = newSoulstormHwnd;
-}
-
-void PlayersSteamScanner::startScan()
-{
-    m_scanTimer->start();
-}
-
-void PlayersSteamScanner::stopScan()
-{
-    m_scanTimer->stop();
 }

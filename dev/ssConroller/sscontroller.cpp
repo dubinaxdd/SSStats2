@@ -25,22 +25,13 @@ SsController::SsController(QObject *parent)
 
     m_playersSteamScanner = new PlayersSteamScanner(/*this*/);
 
-    m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
-
-
- //   m_ssSteamPlayersScanTimer = new QTimer(this);
- //   m_ssSteamPlayersScanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
- //   m_ssSteamPlayersScanTimer->start();
-
- //   QObject::connect(m_ssSteamPlayersScanTimer, &QTimer::timeout, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
-
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStarted, m_playersSteamScanner, &PlayersSteamScanner::stopScan, Qt::QueuedConnection);
-    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner, &PlayersSteamScanner::startScan, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
 
     m_ssLaunchControllTimer = new QTimer(this);
     m_ssLaunchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
@@ -49,6 +40,7 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
 
 
+    m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
 }
 
@@ -78,10 +70,6 @@ void SsController::checkSS()
     m_soulstormHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
 
     m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
-
-  //  m_playersSteamScannerMutex.lock();
-  //  m_playersSteamScanner->setSoulstormHwnd(m_soulstormHwnd);
-  //  m_playersSteamScannerMutex.unlock();
 
     if (m_soulstormHwnd)                                ///<Если игра запущена
     {
