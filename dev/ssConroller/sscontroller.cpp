@@ -79,9 +79,9 @@ void SsController::checkSS()
 
     m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
 
-    m_playersSteamScannerMutex.lock();
-    m_playersSteamScanner->setSoulstormHwnd(m_soulstormHwnd);
-    m_playersSteamScannerMutex.unlock();
+  //  m_playersSteamScannerMutex.lock();
+  //  m_playersSteamScanner->setSoulstormHwnd(m_soulstormHwnd);
+  //  m_playersSteamScannerMutex.unlock();
 
     if (m_soulstormHwnd)                                ///<Если игра запущена
     {

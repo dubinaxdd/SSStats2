@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <iostream>
 #include <fstream>
+#include <QTextCodec>
 
 #define SCAN_STEAM_PLAYERS_INTERVAL 2000
 
@@ -24,12 +25,18 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
+    LPCWSTR lps = (LPCWSTR)ss.utf16();
+
+    m_soulstormHwnd = FindWindowW(NULL, lps);
+
     if(!m_soulstormHwnd)
         return;
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
-    //qDebug() << "PID = " << PID;
+   // qDebug() << "PID = " << PID;
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
