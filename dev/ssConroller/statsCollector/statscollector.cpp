@@ -191,6 +191,7 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedP
         playerInfo->gamesCount = jsonArray.at(i)["gamesCount"].toInt();
         playerInfo->mmr = jsonArray.at(i)["mmr"].toInt();
         playerInfo->mmr1v1 = jsonArray.at(i)["mmr1v1"].toInt();
+        playerInfo->isBanned = jsonArray.at(i)["isBanned"].toBool();
         playerInfo->name = jsonArray.at(i)["name"].toString();
         playerInfo->race = jsonArray.at(i)["race"].toInt();
         playerInfo->winRate = jsonArray.at(i)["winRate"].toInt();

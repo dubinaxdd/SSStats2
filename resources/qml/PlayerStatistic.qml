@@ -7,7 +7,7 @@ Rectangle {
     id: rectangle1
     width: 280
     height: 130
-    color: "#ffffff"
+    color: (rectangle1.isBanned) ? "#ffa9a9" : "#ffffff"
     radius: 10
     Layout.maximumHeight: 100
     Layout.maximumWidth: 200
@@ -19,6 +19,7 @@ Rectangle {
     property string name
     property string mmr
     property string mmr1v1
+    property bool isBanned
     property string gamesCount
     property string race
     property string winRate
@@ -33,7 +34,7 @@ Rectangle {
             id: rectangle
             width: 200
             height: 200
-            color: "#ffffff"
+            color: (rectangle1.isBanned) ? "#ffa9a9" : "#ffffff"
             radius: 10
             Layout.preferredHeight: 60
             Layout.preferredWidth: 60
@@ -67,7 +68,7 @@ Rectangle {
 
             Label {
                 id: label1
-                text: rectangle1.name
+                text: (rectangle1.isBanned) ? rectangle1.name + " [BANNED]" : rectangle1.name
                 font.pointSize: 12
                 Layout.fillWidth: true
                 Layout.fillHeight: true
