@@ -10,10 +10,6 @@ StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
 
 void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)
 {
-
-    //qDebug() << serverPlayerStats.name << serverPlayerStats.mmr << serverPlayerStats.apm;
-
-
     if (serverPlayerStats.isCurrentPlayer)
     {
         m_currentPlayerSteamId = serverPlayerStats.steamId;
@@ -43,36 +39,14 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
                 switch (i)
                 {
-                    case 0:
-                        m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar);
-                        m_player2IsBanned = m_playersStats.at(i).isBanned;
-                        break;
-                    case 1:
-                        m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar);
-                        m_player3IsBanned = m_playersStats.at(i).isBanned;
-                        break;
-                    case 2:
-                        m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar);
-                        m_player4IsBanned = m_playersStats.at(i).isBanned;
-                        break;
-                    case 3:
-                        m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar);
-                        m_player5IsBanned = m_playersStats.at(i).isBanned;
-                        break;
-                    case 4:
-                        m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar);
-                        m_player6IsBanned = m_playersStats.at(i).isBanned;
-                        break;
-                    case 5:
-                        m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar);
-                        m_player7IsBanned = m_playersStats.at(i).isBanned;
-                        break;
-                    case 6:
-                        m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar);
-                        m_player8IsBanned = m_playersStats.at(i).isBanned;
-                        break;
+                    case 0: m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar); break;
+                    case 1: m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar); break;
+                    case 2: m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar); break;
+                    case 3: m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar); break;
+                    case 4: m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar); break;
+                    case 5: m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar); break;
+                    case 6: m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar); break;
                 }
-
             }
         }
 
@@ -83,22 +57,9 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
 void StatisticPanel::receivePlayersCount(int playersCount)
 {
-    //qDebug() << "asd" << playersCount;
-
     if (m_playersCount == playersCount)
         return;
-/*
-    m_playersStats.clear();
-    m_playersStats.resize(7);
 
-    m_imageProvider->setPlayer2AvatarMedium(QImage());
-    m_imageProvider->setPlayer3AvatarMedium(QImage());
-    m_imageProvider->setPlayer4AvatarMedium(QImage());
-    m_imageProvider->setPlayer5AvatarMedium(QImage());
-    m_imageProvider->setPlayer6AvatarMedium(QImage());
-    m_imageProvider->setPlayer7AvatarMedium(QImage());
-    m_imageProvider->setPlayer8AvatarMedium(QImage());
-*/
     m_playersCount = playersCount;
 
     if(m_playersCount > 1)
@@ -435,6 +396,40 @@ QString StatisticPanel::getPlayer8Apm()
     return QString::number(m_playersStats.at(6).apm);
 }
 
+bool StatisticPanel::getPlayer2IsBanned()
+{
+    return m_playersStats.at(0).isBanned;
+}
+
+bool StatisticPanel::getPlayer3IsBanned()
+{
+    return m_playersStats.at(1).isBanned;
+}
+
+bool StatisticPanel::getPlayer4IsBanned()
+{
+    return m_playersStats.at(2).isBanned;
+}
+
+bool StatisticPanel::getPlayer5IsBanned()
+{
+    return m_playersStats.at(3).isBanned;
+}
+
+bool StatisticPanel::getPlayer6IsBanned()
+{
+    return m_playersStats.at(4).isBanned;
+}
+
+bool StatisticPanel::getPlayer7IsBanned()
+{
+    return m_playersStats.at(5).isBanned;
+}
+
+bool StatisticPanel::getPlayer8IsBanned()
+{
+    return m_playersStats.at(6).isBanned;
+}
 
 
 

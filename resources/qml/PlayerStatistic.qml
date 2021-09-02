@@ -19,7 +19,7 @@ Rectangle {
     property string name
     property string mmr
     property string mmr1v1
-    property bool isBanned
+    property bool   banned
     property string gamesCount
     property string race
     property string winRate

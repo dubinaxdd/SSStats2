@@ -29,13 +29,13 @@ class StatisticPanel : public QObject
     Q_PROPERTY(bool player7StatsVisible MEMBER m_player7StatsVisible NOTIFY playersStatsChanged)
     Q_PROPERTY(bool player8StatsVisible MEMBER m_player8StatsVisible NOTIFY playersStatsChanged)
 
-    Q_PROPERTY(bool player2IsBanned MEMBER m_player2IsBanned NOTIFY playersStatsChanged)
-    Q_PROPERTY(bool player3IsBanned MEMBER m_player3IsBanned NOTIFY playersStatsChanged)
-    Q_PROPERTY(bool player4IsBanned MEMBER m_player4IsBanned NOTIFY playersStatsChanged)
-    Q_PROPERTY(bool player5IsBanned MEMBER m_player5IsBanned NOTIFY playersStatsChanged)
-    Q_PROPERTY(bool player6IsBanned MEMBER m_player6IsBanned NOTIFY playersStatsChanged)
-    Q_PROPERTY(bool player7IsBanned MEMBER m_player7IsBanned NOTIFY playersStatsChanged)
-    Q_PROPERTY(bool player8IsBanned MEMBER m_player8IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player2IsBanned READ getPlayer2IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player3IsBanned READ getPlayer3IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player4IsBanned READ getPlayer4IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player5IsBanned READ getPlayer5IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player6IsBanned READ getPlayer6IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player7IsBanned READ getPlayer7IsBanned NOTIFY playersStatsChanged)
+    Q_PROPERTY(bool player8IsBanned READ getPlayer8IsBanned NOTIFY playersStatsChanged)
 
     Q_PROPERTY(QString player2Name READ getPlayer2Name NOTIFY playersStatsChanged)
     Q_PROPERTY(QString player3Name READ getPlayer3Name NOTIFY playersStatsChanged)
@@ -163,6 +163,15 @@ private:
     QString getPlayer7Apm();
     QString getPlayer8Apm();
 
+
+    bool getPlayer2IsBanned();
+    bool getPlayer3IsBanned();
+    bool getPlayer4IsBanned();
+    bool getPlayer5IsBanned();
+    bool getPlayer6IsBanned();
+    bool getPlayer7IsBanned();
+    bool getPlayer8IsBanned();
+
     QString getRaceFromNumber(int raceNumber);
 
 private:
@@ -171,7 +180,6 @@ private:
     int m_playersCount;
 
     bool m_currentPlayerIsBanned;
-
     QString m_currentPlayerSteamId;
     QString m_currentPlayerApm;
     QString m_currentPlayerGamesCount;
@@ -181,15 +189,6 @@ private:
     QString m_currentPlayerRace;
     QString m_currentPlayerWinRate;
     QString m_currentPlayerWinsCount;
-
-    bool m_player2IsBanned = false;
-    bool m_player3IsBanned = false;
-    bool m_player4IsBanned = false;
-    bool m_player5IsBanned = false;
-    bool m_player6IsBanned = false;
-    bool m_player7IsBanned = false;
-    bool m_player8IsBanned = false;
-
 
     bool m_player2StatsVisible = false;
     bool m_player3StatsVisible = false;

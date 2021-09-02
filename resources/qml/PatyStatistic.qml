@@ -69,8 +69,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.currentPlayerIsBanned
-
+            banned: model.currentPlayerIsBanned
             avatarSource: "image://ImageProvider/currentPlayerAvatarMedium"
             name: model.currentPlayerName
             mmr: model.currentPlayerMmr
@@ -94,8 +93,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.player2IsBanned
-
+            banned: model.player2IsBanned
             avatarSource: "image://ImageProvider/player2AvatarMedium"
             name: model.player2Name
             mmr: model.player2Mmr
@@ -119,8 +117,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.player3IsBanned
-
+            banned: model.player3IsBanned
             avatarSource: "image://ImageProvider/player3AvatarMedium"
             name: model.player3Name
             mmr: model.player3Mmr
@@ -144,8 +141,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.player4IsBanned
-
+            banned: model.player4IsBanned
             avatarSource: "image://ImageProvider/player4AvatarMedium"
             name: model.player4Name
             mmr: model.player4Mmr
@@ -169,8 +165,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.player5IsBanned
-
+            banned: model.player5IsBanned
             avatarSource: "image://ImageProvider/player5AvatarMedium"
             name: model.player5Name
             mmr: model.player5Mmr
@@ -194,8 +189,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.player6IsBanned
-
+            banned: model.player6IsBanned
             avatarSource: "image://ImageProvider/player6AvatarMedium"
             name: model.player6Name
             mmr: model.player6Mmr
@@ -219,9 +213,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.player7IsBanned
-
-
+            banned: model.player7IsBanned
             avatarSource: "image://ImageProvider/player7AvatarMedium"
             name: model.player7Name
             mmr: model.player7Mmr
@@ -246,9 +238,7 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            isBanned: model.player8IsBanned
-
-
+            banned: model.player8IsBanned
             avatarSource: "image://ImageProvider/player8AvatarMedium"
             name: model.player8Name
             mmr: model.player8Mmr
