@@ -30,7 +30,7 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::loadStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
 
     m_ssLaunchControllTimer = new QTimer(this);

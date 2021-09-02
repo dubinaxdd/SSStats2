@@ -126,7 +126,7 @@ void GameInfoReader::readGameInfo()
                         {
                             m_gameCurrentState = SsGameState::playbackLoadStarted;
                             checkGameInitialize();
-                            emit playbackStarted();
+                            emit loadStarted(m_gameCurrentState);
                             qDebug() << "INFO: Playback load started";
                         }
                         break;
@@ -139,7 +139,7 @@ void GameInfoReader::readGameInfo()
                         {
                             m_gameCurrentState = SsGameState::savedGameLoadStarted;
                             checkGameInitialize();
-                            emit gameLoaded();
+                            emit loadStarted(m_gameCurrentState);
                             qDebug() << "INFO: Saved game load started";
                         }
                         break;
@@ -154,7 +154,7 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
-                    emit gameStarted();
+                    emit loadStarted(m_gameCurrentState);
                     qDebug() << "INFO: Game load started";
                 }
                 break;

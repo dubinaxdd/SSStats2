@@ -6,6 +6,7 @@
 #include <QPoint>
 #include <QTimer>
 #include <QDateTime>
+#include "../../baseTypes/baseTypes.h"
 
 #define TICKS_FOR_ANALYSE 20
 #define MEASURE_TICK_LENGTH 500 // msec
@@ -28,7 +29,7 @@ public slots:
     void onKeyPressEvent (QKeyEvent *event);
     void onMousePressEvent (QPoint mousePosition);
 
-    void onGameStarted();
+    void onGameStarted(SsGameState gameCurrentState);
     void onGameStopped();
 
 signals:

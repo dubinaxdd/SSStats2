@@ -94,7 +94,7 @@ public slots:
     void onSsLaunchStateChanged(bool state);
 
 
-    void onGameStarted();
+    void onLoadStarted();
     void onGameStopped();
     void onStartingMission();
 
@@ -124,7 +124,7 @@ private:
     int m_ssWindowPositionX = 0;
     int m_ssWindowPositionY = 0;
 
-    bool m_gameStarted = false;
+    bool m_loadStarted = false;
     bool m_missionStarted = false;
 
 

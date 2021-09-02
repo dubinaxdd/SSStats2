@@ -38,10 +38,10 @@ void UiBackend::onSsLaunchStateChanged(bool state)
     showClient();
 }
 
-void UiBackend::onGameStarted()
+void UiBackend::onLoadStarted()
 {
-    m_gameStarted = true;
-
+    m_loadStarted = true;
+    m_gamePanel->onGameStopped();
     emit headerPanelVisibleChanged(false);
 }
 
@@ -170,7 +170,7 @@ void UiBackend::setMouseArea(int width, int height)
 
 void UiBackend::onGameStopped()
 {
-    m_gameStarted = false;
+    m_loadStarted = false;
     m_missionStarted = false;
 
     m_gamePanel->onGameStopped();

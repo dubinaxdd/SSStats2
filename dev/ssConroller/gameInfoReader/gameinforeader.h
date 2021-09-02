@@ -16,20 +16,16 @@ public:
     bool getGameInitialized();
     void checkGameInitialize();
 
-
 private slots:
     void readGameInfo();
     void readGameParametresAfterStop();
 
-
 signals:
-    void gameStarted();         //Сигнал о начале загрузки игры
-    void gameStopped();         //Сигнал о завершении игры и выхода в меню
-    void gameLoaded();          //Сигнал о запуске загруженной из сохранения игры
-    void playbackStarted();     //Сигнал о начале реплея
-    void gameInitialized();     //Сигнал о инициализации игры, когда игра включилась и появилось меню
-    void ssShutdown();          //Сигнал о выключении игры
+    void loadStarted(SsGameState gameCurrentState);         //Сигнал о начале загрузки игры/реплея/сохраненки
     void startingMission(SsGameState gameCurrentState);     //Сигнал о старте миссии после загрузки
+    void gameStopped();                                     //Сигнал о завершении игры и выхода в меню
+    void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
+    void ssShutdown();                                      //Сигнал о выключении игры
 
 private:
     QTimer* m_gameInfoReadTimer;
