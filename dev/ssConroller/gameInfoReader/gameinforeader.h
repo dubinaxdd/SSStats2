@@ -3,9 +3,12 @@
 
 #include <QObject>
 #include <QTimer>
+#include "../../baseTypes/baseTypes.h"
+
+
 
 class GameInfoReader : public QObject
-{
+{ 
     Q_OBJECT
 public:
     explicit GameInfoReader(QString sspath, QObject *parent = nullptr);
@@ -20,26 +23,20 @@ private slots:
 
 
 signals:
-    void gameStarted();
-    void gameStopped();
-    void gameLoaded();
-    void gameInitialized();
-    void ssShutdown();
-    void startingMission();
+    void gameStarted();         //Сигнал о начале загрузки игры
+    void gameStopped();         //Сигнал о завершении игры и выхода в меню
+    void gameLoaded();          //Сигнал о запуске загруженной из сохранения игры
+    void playbackStarted();     //Сигнал о начале реплея
+    void gameInitialized();     //Сигнал о инициализации игры, когда игра включилась и появилось меню
+    void ssShutdown();          //Сигнал о выключении игры
+    void startingMission(SsGameState gameCurrentState);     //Сигнал о старте миссии после загрузки
 
 private:
     QTimer* m_gameInfoReadTimer;
     QString m_ssPath;
 
-    bool m_gameStoped = false;
-    bool m_gameStarted = false;
-    bool m_gamePlayback = false;
-    bool m_gameLoaded = false;
-    bool m_scrimishMission = false;
-    bool m_ssInitialized = false;
-    bool m_ssShutdowned = true;
-    bool m_missionStarted = false;
-
+    SsState m_ssCurrentState = SsState::ssShutdowned;
+    SsGameState m_gameCurrentState = SsGameState::unknown;
 };
 
 #endif // GAMEINFOREADER_H

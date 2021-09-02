@@ -34,14 +34,11 @@ void GameInfoReader::readGameInfo()
             ///Проверка на выключение соулсторма
             if(line.contains("GAME -- Shutdown quit"))
             {
-                if (!m_ssShutdowned)
+                if (m_ssCurrentState != SsState::ssShutdowned)
                 {
-                    m_gameStoped = true;
-                    m_gameStarted = false;
-                    m_gamePlayback = false;
-                    m_gameLoaded = false;
-                    m_ssInitialized = false;
-                    m_ssShutdowned = true;
+                    m_gameCurrentState = SsGameState::gameStoped;
+                    m_ssCurrentState = SsState::ssShutdowned;
+
                     emit ssShutdown();
                     qDebug() << "INFO: SS Shutdown";
                 }
@@ -58,27 +55,12 @@ void GameInfoReader::readGameInfo()
             ///Проверка на окончание игры
             if(line.contains("APP -- Game Stop"))
             {
-                if (!m_gameStoped)
+                if (m_gameCurrentState != SsGameState::gameStoped)
                 {
-                    if (m_gameStarted)
-                    {
-                        m_gameStoped = true;
-                        m_gameStarted = false;
-                        emit gameStopped();
-                        readGameParametresAfterStop();
-                    }
-
-                    m_gameStoped = true;
-                    m_gameStarted = false;
-                    m_gamePlayback = false;
-                    m_gameLoaded = false;
-
+                    m_gameCurrentState = SsGameState::gameStoped;
                     checkGameInitialize();
-                    m_ssShutdowned = false;
-                    m_missionStarted = false;
-
                     emit gameStopped();
-
+                    readGameParametresAfterStop();
                     qDebug() << "INFO: Game Stoped";
                 }
                 break;
@@ -87,18 +69,47 @@ void GameInfoReader::readGameInfo()
             ///Проверка на старт миссии игры
             if (line.contains("GAME -- Starting mission"))
             {
-                if(!m_missionStarted)
+                if(m_gameCurrentState == SsGameState::gameLoadStarted
+                   || m_gameCurrentState == SsGameState::playbackLoadStarted
+                   || m_gameCurrentState == SsGameState::savedGameLoadStarted)
                 {
-                    m_missionStarted = true;
+                    if(m_gameCurrentState == SsGameState::gameLoadStarted)
+                    {
+                        m_gameCurrentState = SsGameState::gameStarted;
+                        qDebug() << "INFO: Starting game mission";
+                    }
+                    else if (m_gameCurrentState == SsGameState::playbackLoadStarted)
+                    {
+                        m_gameCurrentState = SsGameState::playbackStarted;
+                        qDebug() << "INFO: Starting playback mission";
+                    }
+                    else if (m_gameCurrentState == SsGameState::savedGameLoadStarted)
+                    {
+                        m_gameCurrentState = SsGameState::savedGameStarted;
+                        qDebug() << "INFO: Starting saved game mission";
+                    }
+
                     checkGameInitialize();
-                    emit startingMission();
-                    qDebug() << "INFO: Starting mission";
+                    emit startingMission(m_gameCurrentState);
+
                 }
+                else if(m_gameCurrentState != SsGameState::gameStarted
+                      && m_gameCurrentState != SsGameState::playbackStarted
+                      && m_gameCurrentState != SsGameState::savedGameStarted
+                      && m_gameCurrentState != SsGameState::unknownGameStarted)
+                {
+                    m_gameCurrentState = SsGameState::unknownGameStarted;
+                    qDebug() << "INFO: Starting unknown mission";
+
+                    checkGameInitialize();
+                    emit startingMission(m_gameCurrentState);
+                }
+
                 break;
             }
 
 
-            ///Проверка на старт игры
+            ///Проверка на старт загрузки игры
             if (line.contains("APP -- Game Start"))
             {
                 //Что бы точно понять норм игра это или долбаный реплей чекаем ближайшие строки
@@ -111,15 +122,12 @@ void GameInfoReader::readGameInfo()
                     ///Проверка на реплей
                     if(checkLine.contains("APP -- Game Playback"))
                     {
-                        if (!m_gamePlayback)
+                        if (m_gameCurrentState != SsGameState::playbackLoadStarted)
                         {
-                            m_gameStoped = false;
-                            m_gameStarted = false;
-                            m_gamePlayback = true;
-                            m_gameLoaded = false;
+                            m_gameCurrentState = SsGameState::playbackLoadStarted;
                             checkGameInitialize();
-                            m_ssShutdowned = false;
-                            qDebug() << "INFO: Game Playback";   
+                            emit playbackStarted();
+                            qDebug() << "INFO: Playback load started";
                         }
                         break;
                     }
@@ -127,16 +135,12 @@ void GameInfoReader::readGameInfo()
                     ///Проверка на загруженную игру
                     if (checkLine.contains("APP -- Game Load"))
                     {
-                        if (!m_gameLoaded)
+                        if (m_gameCurrentState != SsGameState::savedGameLoadStarted)
                         {
-                            m_gameStoped = false;
-                            m_gameStarted = false;
-                            m_gamePlayback = false;
-                            m_gameLoaded = true;
+                            m_gameCurrentState = SsGameState::savedGameLoadStarted;
                             checkGameInitialize();
                             emit gameLoaded();
-                            m_ssShutdowned = false;
-                            qDebug() << "INFO: Game Load";
+                            qDebug() << "INFO: Saved game load started";
                         }
                         break;
                     }
@@ -144,16 +148,14 @@ void GameInfoReader::readGameInfo()
                     checkCounter--;
                 }
 
-                if (!m_gameLoaded && !m_gamePlayback && !m_gameStarted)
+                if (m_gameCurrentState != SsGameState::savedGameLoadStarted
+                    && m_gameCurrentState != SsGameState::playbackLoadStarted
+                    && m_gameCurrentState != SsGameState::gameLoadStarted)
                 {
-                    m_gameStoped = false;
-                    m_gameStarted = true;
-                    m_gamePlayback = false;
-                    m_gameLoaded = false;
+                    m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
-                    m_ssShutdowned = false;
                     emit gameStarted();
-                    qDebug() << "INFO: Game Started";
+                    qDebug() << "INFO: Game load started";
                 }
                 break;
             }
@@ -169,24 +171,24 @@ void GameInfoReader::readGameParametresAfterStop()
 
 void GameInfoReader::ssWindowClosed()
 {
-    m_ssInitialized = false;
-    m_gameStoped = true;
-    m_ssShutdowned = true;
+    m_gameCurrentState = SsGameState::gameStoped;
+    m_ssCurrentState = SsState::ssShutdowned;
 }
 
 bool GameInfoReader::getGameInitialized()
 {
-    return m_ssInitialized;
+    if (m_ssCurrentState == SsState::ssInitialized)
+        return true;
+    else
+        return false;
 }
 
 void GameInfoReader::checkGameInitialize()
 {
-    if(!m_ssInitialized)
+    if(m_ssCurrentState != SsState::ssInitialized)
     {
         qDebug() << "INFO: SS Initialized";
-        m_ssInitialized = true;
-        m_ssShutdowned = false;
+        m_ssCurrentState = SsState::ssInitialized;
         emit gameInitialized();
-
     }
 }

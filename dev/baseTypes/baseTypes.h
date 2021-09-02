@@ -5,6 +5,26 @@
 #include <QString>
 #include <QImage>
 
+enum SsState
+{
+    ssShutdowned = 0,           //Сс выключен
+    ssInitialized = 1,          //Сс загружен
+};
+
+
+enum SsGameState
+{
+    unknown = 0,
+    gameStoped = 1,             //Игра завершена
+    gameLoadStarted = 2,        //Начало загрузки Игры
+    playbackLoadStarted = 3,    //Начало загрузки Реплея
+    savedGameLoadStarted = 4,   //Начало загрузки сохраненной игры
+    gameStarted = 5,            //Начало игры
+    playbackStarted = 6,        //Начало реплея
+    savedGameStarted = 7,       //Начало загруженной игры
+    unknownGameStarted= 8       //Начало хрен пойми какой игры (работает когда включили статку посреди игры)
+};
+
 struct PlayerStats
 {
     QString name = "";

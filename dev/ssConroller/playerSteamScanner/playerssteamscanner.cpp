@@ -36,7 +36,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
-    qDebug() << "PID = " << PID;
+    //qDebug() << "PID = " << PID;
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
