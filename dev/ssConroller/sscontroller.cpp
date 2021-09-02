@@ -261,6 +261,8 @@ void SsController::parseSsSettings()
     m_ssWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
     currentProfile = ssSettings->value("global/playerprofile","profile").toString();
 
+    m_gameInfoReader->setCurrentProfile(currentProfile);
+
 
     qDebug() << "INFO: Current profile: " << currentProfile;
     qDebug() << "INFO: Windowed mode = " << m_ssWindowed;

@@ -16,6 +16,9 @@ public:
     bool getGameInitialized();
     void checkGameInitialize();
 
+
+    void setCurrentProfile(const QString &newCurrentProfile);
+
 private slots:
     void readGameInfo();
     void readGameParametresAfterStop();
@@ -30,6 +33,7 @@ signals:
 private:
     QTimer* m_gameInfoReadTimer;
     QString m_ssPath;
+    QString m_currentProfile;
 
     SsState m_ssCurrentState = SsState::ssShutdowned;
     SsGameState m_gameCurrentState = SsGameState::unknown;

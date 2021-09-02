@@ -30,6 +30,7 @@ struct PlayerStats
     QString name = "";
     QString race = "";
     QString team = "";
+    bool pHuman = true;
 };
 
 struct ServerPlayerStats

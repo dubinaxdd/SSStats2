@@ -57,10 +57,12 @@ void GameInfoReader::readGameInfo()
             {
                 if (m_gameCurrentState != SsGameState::gameStoped)
                 {
-                    m_gameCurrentState = SsGameState::gameStoped;
+
                     checkGameInitialize();
-                    emit gameStopped();
                     readGameParametresAfterStop();
+                    m_gameCurrentState = SsGameState::gameStoped;
+                    emit gameStopped();
+
                     qDebug() << "INFO: Game Stoped";
                 }
                 break;
@@ -166,7 +168,137 @@ void GameInfoReader::readGameInfo()
 
 void GameInfoReader::readGameParametresAfterStop()
 {
-    qDebug() << "INFO: Read played game settings";
+    if (m_gameCurrentState != SsGameState::gameStarted)
+        return;
+
+    QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
+    qDebug() << "INFO: teststats.lua path: " << statsPath;
+
+    QFile file(statsPath);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+    if(!file.isReadable())
+        return;
+
+    // в начале файла лежат байты из-за этого корневой ключ может не читаться
+    int k=0;
+    while(file.read(1)!="G")
+        k++;
+    file.seek(k);
+
+    //QByteArray testStats = file.readAll();
+
+    QTextStream textStream(&file);
+    QStringList fileLines = textStream.readAll().split("\r");
+
+    file.close();
+
+    QString winBy;
+    int teamsCount;
+    int duration;
+
+    QStringList playerNames;
+    QStringList playerRaces;
+    QStringList playerTeams;
+    QList<bool> playerHumanFlags;
+
+    for(int i = 0; i < fileLines.size(); i++ )
+    {
+        if (fileLines[i].contains("WinBy"))
+        {
+            QString temp = fileLines[i].right(fileLines[i].length() - 11);
+            winBy = temp.left(temp.length() - 2);
+        }
+
+        if (fileLines[i].contains("Teams"))
+        {
+            QString temp = fileLines[i].right(fileLines[i].length() - 10);
+            temp = temp.left(temp.length() - 1);
+            teamsCount = temp.toInt();
+        }
+
+        if (fileLines[i].contains("Duration"))
+        {
+            QString temp = fileLines[i].right(fileLines[i].length() - 13);
+            temp = temp.left(temp.length() - 1);
+            duration = temp.toInt();
+        }
+
+
+        if (fileLines[i].contains("PName"))
+        {
+            QString name = fileLines[i].right(fileLines[i].length() - 12);
+            name = name.left(name.length() - 2);
+            playerNames.append(name);
+        }
+
+        if (fileLines[i].contains("PRace"))
+        {
+            QString race = fileLines[i].right(fileLines[i].length() - 12);
+            race = race.left(race.length() - 2);
+            playerRaces.append(race);
+        }
+
+
+        if (fileLines[i].contains("PTeam"))
+        {
+            QString team = fileLines[i].right(fileLines[i].length() - 11);
+            team = team.left(team.length() - 1);
+            playerTeams.append(team);
+        }
+
+        if (fileLines[i].contains("PHuman"))
+        {
+            QString playerHumanFlag = fileLines[i].right(fileLines[i].length() - 12);
+            playerHumanFlag = playerHumanFlag.left(playerHumanFlag.length() - 1);
+            playerHumanFlags.append(playerHumanFlag.toInt());
+        }
+    }
+
+    QVector<PlayerStats> playerStats;
+
+    playerStats.resize(8);
+
+    for(int i = 0; i < playerNames.count(); i++ )
+        playerStats[i].name = playerNames.at(i);
+
+    for(int i = 0; i < playerRaces.count(); i++ )
+        playerStats[i].race = playerRaces.at(i);
+
+    for(int i = 0; i < playerTeams.count(); i++ )
+        playerStats[i].team = playerTeams.at(i);
+
+    for(int i = 0; i < playerHumanFlags.count(); i++ )
+        playerStats[i].pHuman = playerHumanFlags.at(i);
+
+
+    bool computersFinded = false;
+
+    for(int i = 0; i < playerNames.count(); i++ )
+    {
+        if (playerStats[i].pHuman == false)
+        {
+            computersFinded = true;
+            break;
+        }
+    }
+
+    //"ANNIHILATE"
+    //"STRATEGICOBJECTIVE"
+    //"CONTROLAREA"
+
+    qDebug() << "computersFinded" << computersFinded;
+    qDebug() << "teamsCount" << teamsCount;
+    qDebug() << "duration" << duration;
+    qDebug() << "winBy" << winBy;
+
+    //qDebug() << "INFO: Read played game settings";
+}
+
+void GameInfoReader::setCurrentProfile(const QString &newCurrentProfile)
+{
+    m_currentProfile = newCurrentProfile;
 }
 
 void GameInfoReader::ssWindowClosed()
