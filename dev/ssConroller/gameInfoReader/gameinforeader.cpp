@@ -288,6 +288,13 @@ void GameInfoReader::readGameParametresAfterStop()
     //"STRATEGICOBJECTIVE"
     //"CONTROLAREA"
 
+
+//    22:35:54.40   MOD -- Loading Win Condition(DATA:Scar/WinConditions/ASSASSINATE.SCAR)
+ //   22:35:54.40   MOD -- Loading Win Condition(DATA:Scar/WinConditions/ANNIHILATE.SCAR)
+ //   22:35:54.40   MOD -- Loading Win Condition(DATA:Scar/WinConditions/GAMETIMER.SCAR)
+ //   22:35:54.40   MOD -- Loading Win Condition(DATA:Scar/WinConditions/DESTROYHQ.SCAR)
+//    22:35:54.40   MOD -- Loading Win Condition(DATA:Scar/WinConditions/STRATEGICOBJECTIVE.SCAR)
+
     qDebug() << "computersFinded" << computersFinded;
     qDebug() << "teamsCount" << teamsCount;
     qDebug() << "duration" << duration;
