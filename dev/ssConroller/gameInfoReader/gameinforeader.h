@@ -30,10 +30,15 @@ signals:
     void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
     void ssShutdown();                                      //Сигнал о выключении игры
 
+
+    void sendReplayToServer();
+
 private:
     QTimer* m_gameInfoReadTimer;
     QString m_ssPath;
     QString m_currentProfile;
+
+    QVector<WinConditions> m_winCoditionsVector;
 
     SsState m_ssCurrentState = SsState::ssShutdowned;
     SsGameState m_gameCurrentState = SsGameState::unknown;

@@ -5,6 +5,18 @@
 #include <QString>
 #include <QImage>
 
+enum WinConditions
+{
+    ANNIHILATE,
+    ASSASSINATE,
+    CONTROLAREA,
+    DESTROYHQ,
+    ECONOMICVICTORY,
+    GAMETIMER,
+    STRATEGICOBJECTIVE,
+    SUDDENDEATH
+};
+
 enum SsState
 {
     ssShutdowned = 0,           //Сс выключен
