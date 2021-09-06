@@ -17,6 +17,17 @@ enum WinConditions
     SUDDENDEATH
 };
 
+enum FinalState
+{
+    unknown0 = 0,
+    inGame = 1,
+    unknown1 = 2,
+    loser = 3,
+    unknown2 = 4,
+    winner = 5,
+
+};
+
 enum SsState
 {
     ssShutdowned = 0,           //Сс выключен
@@ -42,6 +53,7 @@ struct PlayerStats
     QString name = "";
     QString race = "";
     QString team = "";
+    FinalState finalState;
     bool pHuman = true;
 };
 

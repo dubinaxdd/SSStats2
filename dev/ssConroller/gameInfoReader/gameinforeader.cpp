@@ -227,7 +227,6 @@ void GameInfoReader::readGameParametresAfterStop()
     if (m_gameCurrentState != SsGameState::gameStarted)
         return;
 
-
     bool isStdWinConditions = m_winCoditionsVector.contains( WinConditions::ANNIHILATE)
                            && m_winCoditionsVector.contains( WinConditions::CONTROLAREA)
                            && m_winCoditionsVector.contains( WinConditions::STRATEGICOBJECTIVE)
@@ -262,17 +261,27 @@ void GameInfoReader::readGameParametresAfterStop()
 
     file.close();
 
+    int playersCount;
     QString winBy;
     int teamsCount;
     int duration;
+    QString scenario;
 
     QStringList playerNames;
     QStringList playerRaces;
     QStringList playerTeams;
+    QList<int> playerFinalStates;
     QList<bool> playerHumanFlags;
 
     for(int i = 0; i < fileLines.size(); i++ )
     {
+        if (fileLines[i].contains("Players"))
+        {
+            QString temp = fileLines[i].right(fileLines[i].length() - 12);
+            temp = temp.left(temp.length() - 1);
+            playersCount = temp.toInt();
+        }
+
         if (fileLines[i].contains("WinBy"))
         {
             QString temp = fileLines[i].right(fileLines[i].length() - 11);
@@ -284,6 +293,13 @@ void GameInfoReader::readGameParametresAfterStop()
             QString temp = fileLines[i].right(fileLines[i].length() - 10);
             temp = temp.left(temp.length() - 1);
             teamsCount = temp.toInt();
+        }
+
+        if (fileLines[i].contains("PFnlState"))
+        {
+            QString temp = fileLines[i].right(fileLines[i].length() - 15);
+            temp = temp.left(temp.length() - 1);
+            playerFinalStates.append(temp.toInt());
         }
 
         if (fileLines[i].contains("Duration"))
@@ -322,11 +338,17 @@ void GameInfoReader::readGameParametresAfterStop()
             playerHumanFlag = playerHumanFlag.left(playerHumanFlag.length() - 1);
             playerHumanFlags.append(playerHumanFlag.toInt());
         }
+
+        if (fileLines[i].contains("Scenario"))
+        {
+            QString temp = fileLines[i].right(fileLines[i].length() - 14);
+            scenario = temp.left(temp.length() - 2);
+        }
     }
 
     QVector<PlayerStats> playerStats;
 
-    playerStats.resize(8);
+    playerStats.resize(playersCount);
 
     for(int i = 0; i < playerNames.count(); i++ )
         playerStats[i].name = playerNames.at(i);
@@ -340,6 +362,9 @@ void GameInfoReader::readGameParametresAfterStop()
     for(int i = 0; i < playerHumanFlags.count(); i++ )
         playerStats[i].pHuman = playerHumanFlags.at(i);
 
+    for(int i = 0; i < playerFinalStates.count(); i++ )
+        playerStats[i].finalState = static_cast<FinalState>(playerFinalStates.at(i));
+
 
     bool computersFinded = false;
 
@@ -352,10 +377,25 @@ void GameInfoReader::readGameParametresAfterStop()
         }
     }
 
+    qDebug() << "players count" << playersCount;
     qDebug() << "computersFinded" << computersFinded;
     qDebug() << "teamsCount" << teamsCount;
     qDebug() << "duration" << duration;
     qDebug() << "winBy" << winBy;
+    qDebug() << "scenario" << scenario;
+
+    for(int i = 0; i < playerStats.count(); i++)
+    {
+        qDebug() << playerStats.at(i).name;
+
+        switch (playerStats.at(i).finalState)
+        {
+            case inGame: qDebug() << "In Game"; break;
+            case winner: qDebug() << "Winner";  break;
+            case loser: qDebug() << "Looser";   break;
+            default: qDebug() << "Unknown";     break;
+        }
+    }
 
     if (computersFinded)
         return;
