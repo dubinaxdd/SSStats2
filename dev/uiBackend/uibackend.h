@@ -24,6 +24,9 @@ class UiBackend : public QObject
     Q_PROPERTY(int ssWindowPositionX MEMBER m_ssWindowPositionX NOTIFY ssWindowPositionChanged)
     Q_PROPERTY(int ssWindowPositionY MEMBER m_ssWindowPositionY NOTIFY ssWindowPositionChanged)
 
+    Q_PROPERTY(bool headerVisible MEMBER m_headerVisible NOTIFY headerPanelVisibleChanged)
+    Q_PROPERTY(bool patyStatisticVisible MEMBER m_patyStatisticVisible NOTIFY patyStatisticVisibleChanged)
+
     Q_PROPERTY(QString ssStatsVersion MEMBER m_ssStatsVersion NOTIFY statsHeaderInitialized)
 
     Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel NOTIFY gamePanelInitialized)
@@ -74,7 +77,8 @@ signals:
     void windowTopmostChanged();
     void windowedModeSeted();
 
-    void headerPanelVisibleChanged(bool);
+    void headerPanelVisibleChanged();
+    void patyStatisticVisibleChanged();
 
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
@@ -126,6 +130,9 @@ private:
 
     bool m_loadStarted = false;
     bool m_missionStarted = false;
+
+    bool m_headerVisible = true;
+    bool m_patyStatisticVisible = true;
 
 
 };

@@ -42,12 +42,23 @@ void UiBackend::onLoadStarted()
 {
     m_loadStarted = true;
     m_gamePanel->onGameStopped();
-    emit headerPanelVisibleChanged(false);
+
+    m_headerVisible = false;
+    m_patyStatisticVisible = false;
+
+    emit headerPanelVisibleChanged();
+    emit patyStatisticVisibleChanged();
 }
 
 void UiBackend::onStartingMission()
 {
     m_missionStarted = true;
+
+    m_headerVisible = false;
+    m_patyStatisticVisible = false;
+
+    emit headerPanelVisibleChanged();
+    emit patyStatisticVisibleChanged();
 }
 
 void UiBackend::showClient()
@@ -119,12 +130,14 @@ void UiBackend::setExpand(bool newExpand)
         if (m_expand)
         {
             m_gamePanel->setGamePanelVisisble(true);
-            emit headerPanelVisibleChanged(true);
+            m_headerVisible = true;
+            emit headerPanelVisibleChanged();
         }
         else
         {
             m_gamePanel->setGamePanelVisisble(true);
-            emit headerPanelVisibleChanged(false);
+            m_headerVisible = false;
+            emit headerPanelVisibleChanged();
         }
     }
 }
@@ -174,5 +187,10 @@ void UiBackend::onGameStopped()
     m_missionStarted = false;
 
     m_gamePanel->onGameStopped();
-    emit headerPanelVisibleChanged(true);
+
+    m_headerVisible = true;
+    m_patyStatisticVisible = true;
+
+    emit headerPanelVisibleChanged();
+    emit patyStatisticVisibleChanged();
 }
