@@ -24,6 +24,16 @@ void UiBackend::expandKeyPressed()
     setExpand(!m_expand);
 }
 
+void UiBackend::expandPatyStatisticButtonClick()
+{
+    m_patyStatisticVisibleButtonPressedState = !m_patyStatisticVisibleButtonPressedState;
+
+    m_statisticPanel->setExpandPatyStatistic(m_patyStatisticVisibleButtonPressedState);
+
+    m_headerVisible = !m_headerVisible;
+    emit headerPanelVisibleChanged();
+}
+
 void UiBackend::receiveSsMaximized(bool maximized)
 {
     m_ssMaximized = maximized;
@@ -131,13 +141,30 @@ void UiBackend::setExpand(bool newExpand)
         {
             m_gamePanel->setGamePanelVisisble(true);
             m_headerVisible = true;
-            emit headerPanelVisibleChanged();
+            m_patyStatisticVisible = true;
+            m_statisticPanel->setExpandPatyStatistic(false);
         }
         else
         {
             m_gamePanel->setGamePanelVisisble(true);
             m_headerVisible = false;
-            emit headerPanelVisibleChanged();
+            m_patyStatisticVisible = false;
+            m_statisticPanel->setExpandPatyStatistic(true);
+        }
+
+        emit headerPanelVisibleChanged();
+        emit patyStatisticVisibleChanged();
+    }
+    else
+    {
+        if(m_patyStatisticVisibleButtonPressedState)
+        {
+             if (m_expand)
+                m_headerVisible = true;
+             else
+                m_headerVisible = false;
+
+             emit headerPanelVisibleChanged();
         }
     }
 }
@@ -188,7 +215,18 @@ void UiBackend::onGameStopped()
 
     m_gamePanel->onGameStopped();
 
-    m_headerVisible = true;
+    if(m_patyStatisticVisibleButtonPressedState)
+    {
+        m_headerVisible = false;
+        m_statisticPanel->setExpandPatyStatistic(true);
+    }
+    else
+    {
+        m_headerVisible = true;
+        m_statisticPanel->setExpandPatyStatistic(false);
+
+    }
+
     m_patyStatisticVisible = true;
 
     emit headerPanelVisibleChanged();

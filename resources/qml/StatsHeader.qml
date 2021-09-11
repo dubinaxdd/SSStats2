@@ -104,8 +104,6 @@ Rectangle {
                     position: 1
                     color: "#265a88"
                 }
-
-
             }
 
             property Gradient grDark: Gradient {

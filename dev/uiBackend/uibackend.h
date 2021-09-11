@@ -93,6 +93,7 @@ public slots:
     void onSwitchNoFogStateChanged(bool state);
 
     void expandKeyPressed();
+    void expandPatyStatisticButtonClick();
 
     void receiveSsMaximized(bool maximized);
     void onSsLaunchStateChanged(bool state);
@@ -133,6 +134,8 @@ private:
 
     bool m_headerVisible = true;
     bool m_patyStatisticVisible = true;
+
+    bool m_patyStatisticVisibleButtonPressedState = false;
 
 
 };

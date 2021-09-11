@@ -11,6 +11,7 @@ class StatisticPanel : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool currentPlayerIsBanned MEMBER m_currentPlayerIsBanned NOTIFY currentPlayerStatsChanged)
+    Q_PROPERTY(bool expandPatyStatistic MEMBER m_expandPatyStatistic NOTIFY expandPatyStatisticChanged)
 
     Q_PROPERTY(QString currentPlayerApm MEMBER m_currentPlayerApm NOTIFY currentPlayerStatsChanged)
     Q_PROPERTY(QString currentPlayerGamesCount MEMBER m_currentPlayerGamesCount NOTIFY currentPlayerStatsChanged)
@@ -96,9 +97,12 @@ class StatisticPanel : public QObject
 public:
     explicit StatisticPanel(ImageProvider *imageProvider, QObject *parent = nullptr);
 
+    void setExpandPatyStatistic(bool newExpandPatyStatistic);
+
 signals:
     void currentPlayerStatsChanged();
     void playersStatsChanged();
+    void expandPatyStatisticChanged();
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
@@ -178,6 +182,8 @@ private:
     ImageProvider *m_imageProvider;
 
     int m_playersCount;
+
+    bool m_expandPatyStatistic;
 
     bool m_currentPlayerIsBanned;
     QString m_currentPlayerSteamId;

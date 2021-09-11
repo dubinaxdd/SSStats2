@@ -150,6 +150,12 @@ QString StatisticPanel::getRaceFromNumber(int raceNumber)
     return "";
 }
 
+void StatisticPanel::setExpandPatyStatistic(bool newExpandPatyStatistic)
+{
+    m_expandPatyStatistic = newExpandPatyStatistic;
+    emit expandPatyStatisticChanged();
+}
+
 QString StatisticPanel::getPlayer2Name()
 {
     return m_playersStats.at(0).name;

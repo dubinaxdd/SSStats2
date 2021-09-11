@@ -10,8 +10,9 @@ Rectangle {
     color: "#00000000"
     border.color: "#00000000"
 
-    //Костыль для перезагрузки картинки, рил так на формух делают
+    property Rectangle expandPatyStatisticButtonRectangle : expandPatyStatisticButtonRectangle
 
+    //Костыль для перезагрузки картинки, рил так на формух делают
     Connections {
         target: model
 
@@ -68,6 +69,7 @@ Rectangle {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
+            visible: !model.expandPatyStatistic || _uiBackend.expand
 
             banned: model.currentPlayerIsBanned
             avatarSource: "image://ImageProvider/currentPlayerAvatarMedium"
@@ -83,7 +85,7 @@ Rectangle {
         PlayerStatistic
         {
             id:player2
-            visible: model.player2StatsVisible
+            visible: model.player2StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -107,7 +109,7 @@ Rectangle {
         PlayerStatistic
         {
             id:player3
-            visible: model.player3StatsVisible
+            visible: model.player3StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -131,7 +133,7 @@ Rectangle {
         PlayerStatistic
         {
             id:player4
-            visible: model.player4StatsVisible
+            visible: model.player4StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -155,7 +157,7 @@ Rectangle {
         PlayerStatistic
         {
             id:player5
-            visible: model.player5StatsVisible
+            visible: model.player5StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -179,7 +181,7 @@ Rectangle {
         PlayerStatistic
         {
             id:player6
-            visible: model.player6StatsVisible
+            visible: model.player6StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -203,7 +205,7 @@ Rectangle {
         PlayerStatistic
         {
             id:player7
-            visible: model.player7StatsVisible
+            visible: model.player7StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -228,7 +230,7 @@ Rectangle {
         PlayerStatistic
         {
             id:player8
-            visible: model.player8StatsVisible
+            visible: model.player8StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -250,6 +252,63 @@ Rectangle {
         }
 
         Rectangle {
+            id: expandPatyStatisticButtonRectangle
+
+            property bool howeredState: false
+
+            property Gradient grLight: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#428bca"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#265a88"
+                }
+            }
+
+            property Gradient grDark: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#337ab7"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#245580"
+
+                }
+            }
+            height: 20
+
+            //color: "#337ab7"
+            radius: 5
+
+            Layout.maximumHeight: 15
+            Layout.minimumHeight: 15
+            Layout.maximumWidth: 65535
+            Layout.minimumWidth: 0
+            //text: qsTr("***")
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: !_uiBackend.expand
+
+
+            gradient: howeredState ? grDark : grLight
+
+            Image {
+                id: image
+                width: 95
+                height: 20
+                anchors.verticalCenter: parent.verticalCenter
+                source: "qrc:/images/resources/images/expandDots.png"
+                anchors.horizontalCenter: parent.horizontalCenter
+                fillMode: Image.PreserveAspectFit
+            }
+        }
+
+        Rectangle {
             id: rectangle
             width: 200
             height: 200
@@ -257,6 +316,7 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
         }
+
     }
 }
 

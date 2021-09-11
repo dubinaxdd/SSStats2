@@ -57,6 +57,16 @@ Window {
                 }
             }
 
+            // Кнопка "Свернуть колонку статистики"
+            if (xMousePos >= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x &&
+                    xMousePos <= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x + patyStatistic.expandPatyStatisticButtonRectangle.width &&
+                    yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
+                    yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
+            {
+                patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
+                _uiBackend.expandPatyStatisticButtonClick();
+            }
+
             if(_uiBackend.expand){
                 // Кнопка "Настройки" - отобразить окно с настройками
                 if (xMousePos >= fullOverlay.x + fullOverlay.buttonSettings.x &&
@@ -168,6 +178,22 @@ Window {
             {
                 if(gamePanel.expandButtonRectangle.howeredState)
                     gamePanel.expandButtonRectangle.howeredState = false;
+            }
+
+            // Кнопка "Свернуть колонку статистики"
+            if (xMousePos >= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x &&
+                    xMousePos <= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x + patyStatistic.expandPatyStatisticButtonRectangle.width &&
+                    yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
+                    yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
+            {
+
+                if(!patyStatistic.expandPatyStatisticButtonRectangle.howeredState)
+                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
+            }
+            else
+            {
+                if(patyStatistic.expandPatyStatisticButtonRectangle.howeredState)
+                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = false;
             }
 
             if(_uiBackend.expand){
@@ -295,7 +321,7 @@ Window {
 
                     PatyStatistic
                     {
-                        Layout.fillHeight: false
+                        id: patyStatistic
                         Layout.fillWidth: false
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         model: _uiBackend.statisticPanel
@@ -307,10 +333,12 @@ Window {
                         width: 200
                         height: 200
                         color: "#00000000"
+                        radius: 0
                         border.color: "#00000000"
                         Layout.fillWidth: false
                         Layout.fillHeight: true
                     }
+
                 }
 
             }
