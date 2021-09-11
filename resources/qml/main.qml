@@ -63,8 +63,11 @@ Window {
                     yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
                     yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
             {
-                patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
-                _uiBackend.expandPatyStatisticButtonClick();
+                if(!_uiBackend.gamePanel.gamePanelVisible)
+                {
+                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
+                    _uiBackend.expandPatyStatisticButtonClick();
+                }
             }
 
             if(_uiBackend.expand){
