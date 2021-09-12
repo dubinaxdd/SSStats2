@@ -57,13 +57,28 @@ Window {
                 }
             }
 
+            // Кнопка "Развернуть панель с рассами игроков"
+            if (xMousePos >= gamePanel.x + gamePanel.expandPlayerRacesButtonX &&
+                    xMousePos <= gamePanel.x + gamePanel.expandPlayerRacesButtonX + gamePanel.expandPlayerRacesButton.width &&
+                    yMousePos >= gamePanel.y + gamePanel.expandPlayerRacesButtonY &&
+                    yMousePos <= gamePanel.y + gamePanel.expandPlayerRacesButtonY + gamePanel.expandPlayerRacesButton.height)
+
+            {
+
+                if(_uiBackend.gamePanel.gamePanelVisible)
+                {
+                    gamePanel.expandPlayerRacesButton.howeredState = true;
+                    _uiBackend.gamePanel.expandPlayerRacesButtonClick();
+                }
+            }
+
             // Кнопка "Свернуть колонку статистики"
             if (xMousePos >= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x &&
                     xMousePos <= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x + patyStatistic.expandPatyStatisticButtonRectangle.width &&
                     yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
                     yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
             {
-                if(!_uiBackend.gamePanel.gamePanelVisible)
+                if(_uiBackend.gamePanel.gamePanelVisible)
                 {
                     patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
                     _uiBackend.expandPatyStatisticButtonClick();
@@ -181,6 +196,24 @@ Window {
             {
                 if(gamePanel.expandButtonRectangle.howeredState)
                     gamePanel.expandButtonRectangle.howeredState = false;
+            }
+
+
+            // Кнопка "Развернуть панель с рассами игроков"
+            if (xMousePos >= gamePanel.x + gamePanel.expandPlayerRacesButtonX &&
+                    xMousePos <= gamePanel.x + gamePanel.expandPlayerRacesButtonX + gamePanel.expandPlayerRacesButton.width &&
+                    yMousePos >= gamePanel.y + gamePanel.expandPlayerRacesButtonY &&
+                    yMousePos <= gamePanel.y + gamePanel.expandPlayerRacesButtonY + gamePanel.expandPlayerRacesButton.height)
+
+            {
+
+                if(!gamePanel.expandPlayerRacesButton.howeredState)
+                    gamePanel.expandPlayerRacesButton.howeredState = true;
+            }
+            else
+            {
+                if(gamePanel.expandPlayerRacesButton.howeredState)
+                    gamePanel.expandPlayerRacesButton.howeredState = false;
             }
 
             // Кнопка "Свернуть колонку статистики"

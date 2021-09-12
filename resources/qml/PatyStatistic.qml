@@ -280,13 +280,13 @@ Rectangle {
 
                 }
             }
-            height: 20
+            height: 10
 
             //color: "#337ab7"
             radius: 5
 
-            Layout.maximumHeight: 15
-            Layout.minimumHeight: 15
+            Layout.maximumHeight: 10
+            Layout.minimumHeight: 10
             Layout.maximumWidth: 65535
             Layout.minimumWidth: 0
             //text: qsTr("***")
@@ -300,7 +300,7 @@ Rectangle {
             Image {
                 id: image
                 width: 95
-                height: 20
+                height: 10
                 anchors.verticalCenter: parent.verticalCenter
                 source: "qrc:/images/resources/images/expandDots.png"
                 anchors.horizontalCenter: parent.horizontalCenter

@@ -16,6 +16,12 @@ Rectangle {
     property int expandButtonRectangleWidth : expandButtonRectangle.width
     property int expandButtonRectangleHeight : expandButtonRectangle.height
 
+
+    property Rectangle expandPlayerRacesButton : expandPlayerRacesButton
+
+    property int expandPlayerRacesButtonX : expandPlayerRacesButton.x + gamePanelRectangle.x + columnLayout1.x
+    property int expandPlayerRacesButtonY : expandPlayerRacesButton.y + gamePanelRectangle.y + columnLayout1.y + rectangle1.height + 5
+
     property var model
 
     function chooseColor(string)
@@ -204,6 +210,7 @@ Rectangle {
                         width: 200
                         height: 200
                         color: "#ffffff"
+                        Layout.topMargin: 0
                         Layout.maximumHeight: 40
                         Layout.maximumWidth: 40
                         Layout.fillWidth: false
@@ -227,7 +234,7 @@ Rectangle {
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 color: "#00000000"
-                visible: model.racePanelVisible
+                //visible: model.racePanelVisible
 
                 ColumnLayout {
                     id: columnLayout1
@@ -257,7 +264,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: model.player0Race !== "";
+                                visible: model.player0Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player0RaceLabel
@@ -280,7 +287,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: model.player1Race !== "";
+                                visible: model.player1Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player1RaceLabel
@@ -303,7 +310,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: model.player2Race !== "";
+                                visible: model.player2Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player2RaceLabel
@@ -324,7 +331,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player3Race !== "";
+                                visible: model.player3Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player3RaceLabel
@@ -345,7 +352,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player4Race !== "";
+                                visible: model.player4Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player4RaceLabel
@@ -366,7 +373,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player5Race !== "";
+                                visible: model.player5Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player5RaceLabel
@@ -387,7 +394,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player6Race !== "";
+                                visible: model.player6Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player6RaceLabel
@@ -400,6 +407,7 @@ Rectangle {
                                 }
                             }
 
+
                             Rectangle {
                                 id: player7Rectangle
                                 width: 200
@@ -408,7 +416,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player7Race !== "";
+                                visible: model.player7Race !== "" && model.racePanelVisible;
 
                                 Label {
                                     id: player7RaceLabel
@@ -423,6 +431,76 @@ Rectangle {
                             }
 
                             Rectangle {
+                                id: rectangle9
+                                width: 200
+                                height: 200
+                                color: "#00000000"
+                                border.color: "#00000000"
+                                Layout.maximumHeight: 3
+                                Layout.minimumHeight: 3
+                                Layout.maximumWidth: 65526
+                                Layout.minimumWidth: 0
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                visible: model.racePanelVisible;
+                            }
+
+                            Rectangle {
+                                id: expandPlayerRacesButton
+
+                                property bool howeredState: false
+
+                                property Gradient grLight: Gradient {
+                                    GradientStop {
+                                        position: 0
+                                        color: "#428bca"
+                                    }
+
+                                    GradientStop {
+                                        position: 1
+                                        color: "#265a88"
+                                    }
+                                }
+
+                                property Gradient grDark: Gradient {
+                                    GradientStop {
+                                        position: 0
+                                        color: "#337ab7"
+                                    }
+
+                                    GradientStop {
+                                        position: 1
+                                        color: "#245580"
+
+                                    }
+                                }
+                                height: 10
+                                radius: 5
+                                Layout.maximumHeight: 10
+                                Layout.minimumHeight: 10
+                                Layout.maximumWidth: 65535
+                                Layout.minimumWidth: 0
+                                //text: qsTr("***")
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                visible: !_uiBackend.expand
+                                color: "#000000"
+
+
+                                gradient: howeredState ? grDark : grLight
+
+                                Image {
+                                    id: imagebutton
+                                    width: 95
+                                    height: 10
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    source: "qrc:/images/resources/images/expandDots.png"
+                                    anchors.horizontalCenter: parent.horizontalCenter
+                                    fillMode: Image.PreserveAspectFit
+                                }
+                            }
+
+                            Rectangle {
                                 id: rectangle2
                                 width: 200
                                 height: 200
@@ -430,6 +508,7 @@ Rectangle {
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
                             }
+
                         }
                     }
 
