@@ -34,10 +34,6 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_uiBackend,                &UiBackend::onGameStopped,      Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_uiBackend,                &UiBackend::onStartingMission,  Qt::QueuedConnection);
 
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_ssController->apmMeter(), &APMMeter::onGameStarted,       Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_ssController->apmMeter(), &APMMeter::onGameStopped,       Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::loadStarted,           m_ssController->apmMeter(), &APMMeter::onGameStopped,       Qt::QueuedConnection);
-
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::currentApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onCurrentApmChanged,            Qt::QueuedConnection);
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::averageApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onAverageApmChanged,            Qt::QueuedConnection);
 
