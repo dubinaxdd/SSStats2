@@ -78,7 +78,7 @@ Window {
                     yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
                     yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
             {
-                if(_uiBackend.gamePanel.gamePanelVisible)
+                if(!_uiBackend.gamePanel.gamePanelVisible)
                 {
                     patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
                     _uiBackend.expandPatyStatisticButtonClick();
