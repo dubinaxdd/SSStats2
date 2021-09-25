@@ -250,6 +250,74 @@ void StatsCollector::receivePlayerSteamData(QNetworkReply *reply, QSharedPointer
     reply->deleteLater();
 }
 
+void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
+{
+    if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8)
+        return;
+
+    //http://207.154.238.90/connect.php?
+    //p1=Mr%20P&sid1=76561198005134194&r1=1&
+    //p2=El%20Patr%25C3%25B3n&sid2=76561197990989159&r2=3&
+    //p3=NeukenindeKeuken&sid3=76561197988617798&r3=1&w1=3&
+    //p4=Thanatos&sid4=76561199101288861&r4=4&w2=4&
+    //apm=72.8824&
+    //type=2&
+    //map=4P_DOOM_SPIRAL&
+    //gtime=340&
+    //sid=76561198005134194&
+    //mod=dxp2&
+    //winby=ANNIHILATE&
+    //version=108&
+    //key=LPzltucVp5Rd0xgs
+
+
+    QString url;
+
+    url = QString::fromStdString(SERVER_ADDRESS) + "/connect.php?";
+
+    int winnerCount = 0;
+
+    for(int i = 0; i < replayInfo.playersInfo.count(); i++)
+    {
+        url += "p" + QString::number(i) + "=" + replayInfo.playersInfo.at(i).playerName + "&";
+        url += "sid" + QString::number(i) + "=" + replayInfo.playersInfo.at(i).playerSid + "&";
+        url += "r" + QString::number(i) + "=" + QString::number(replayInfo.playersInfo.at(i).playerRace) + "&";
+
+        if (replayInfo.playersInfo.at(i).isWinner)
+        {
+            winnerCount++;
+            url += "r" + QString::number(winnerCount) + QString::number(i) + "&";
+        }
+    }
+
+    url += "apm" + QString::number(replayInfo.apm) + "&";
+    url += "type" + QString::number(replayInfo.gameType) + "&";
+    url += "map" + replayInfo.mapName + "&";
+    url += "type" + QString::number(replayInfo.gameTime) + "&";
+    url += "sid" + m_currentPlayerStats->steamId + "&";
+    url += "mod" + replayInfo.mod + "&";
+
+    QString winCondition;
+
+    switch (replayInfo.winBy)
+    {
+        case WinCondition::ANNIHILATE: winCondition = "ANNIHILATE"; break;
+        case WinCondition::CONTROLAREA: winCondition = "CONTROLAREA"; break;
+        case WinCondition::STRATEGICOBJECTIVE: winCondition = "STRATEGICOBJECTIVE"; break;
+        case WinCondition::ASSASSINATE: winCondition = "ASSASSINATE"; break;
+        case WinCondition::DESTROYHQ: winCondition = "DESTROYHQ"; break;
+        case WinCondition::ECONOMICVICTORY: winCondition = "ECONOMICVICTORY"; break;
+        case WinCondition::SUDDENDEATH: winCondition = "SUDDENDEATH"; break;
+        case WinCondition::GAMETIMER: break;
+    }
+
+    url += "winby=" + winCondition + "&";
+    url += "version=" + QString::fromStdString(SERVER_VERSION) + "&";
+    url += "key=" + QLatin1String(SERVER_KEY) + "&";
+
+    m_networkManager->post(QNetworkRequest(QUrl(url)),"");
+}
+
 void StatsCollector::registerPlayer(QString name, QString sid, bool init)
 {
     QByteArray enc_name = QUrl::toPercentEncoding(name,""," ");

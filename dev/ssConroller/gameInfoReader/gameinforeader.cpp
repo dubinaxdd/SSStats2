@@ -97,42 +97,42 @@ void GameInfoReader::readGameInfo()
                             if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
                             {
                                 if(winConditionsReadLine.contains("ANNIHILATE")){
-                                    m_winCoditionsVector.append(WinConditions::ANNIHILATE);
+                                    m_winCoditionsVector.append(WinCondition::ANNIHILATE);
                                     qDebug() << "Loaded ANNIHILATE";
                                 }
 
                                 if(winConditionsReadLine.contains("ASSASSINATE")){
-                                    m_winCoditionsVector.append(WinConditions::ASSASSINATE);
+                                    m_winCoditionsVector.append(WinCondition::ASSASSINATE);
                                     qDebug() << "Loaded ASSASSINATE";
                                 }
 
                                 if(winConditionsReadLine.contains("CONTROLAREA")){
-                                    m_winCoditionsVector.append(WinConditions::CONTROLAREA);
+                                    m_winCoditionsVector.append(WinCondition::CONTROLAREA);
                                     qDebug() << "Loaded CONTROLAREA";
                                 }
 
                                 if(winConditionsReadLine.contains("DESTROYHQ")){
-                                    m_winCoditionsVector.append(WinConditions::DESTROYHQ);
+                                    m_winCoditionsVector.append(WinCondition::DESTROYHQ);
                                     qDebug() << "Loaded DESTROYHQ";
                                 }
 
                                 if(winConditionsReadLine.contains("ECONOMICVICTORY")){
-                                    m_winCoditionsVector.append(WinConditions::ECONOMICVICTORY);
+                                    m_winCoditionsVector.append(WinCondition::ECONOMICVICTORY);
                                     qDebug() << "Loaded ECONOMICVICTORY";
                                 }
 
                                 if(winConditionsReadLine.contains("GAMETIMER")){
-                                    m_winCoditionsVector.append(WinConditions::GAMETIMER);
+                                    m_winCoditionsVector.append(WinCondition::GAMETIMER);
                                     qDebug() << "Loaded GAMETIMER";
                                 }
 
                                 if(winConditionsReadLine.contains("STRATEGICOBJECTIVE")){
-                                    m_winCoditionsVector.append(WinConditions::STRATEGICOBJECTIVE);
+                                    m_winCoditionsVector.append(WinCondition::STRATEGICOBJECTIVE);
                                     qDebug() << "Loaded STRATEGICOBJECTIVE";
                                 }
 
                                 if(winConditionsReadLine.contains("SUDDENDEATH")){
-                                    m_winCoditionsVector.append(WinConditions::SUDDENDEATH);
+                                    m_winCoditionsVector.append(WinCondition::SUDDENDEATH);
                                     qDebug() << "Loaded SUDDENDEATH";
                                 }
                             }
@@ -233,13 +233,13 @@ void GameInfoReader::readGameParametresAfterStop()
     if (m_gameCurrentState != SsGameState::gameStarted)
         return;
 
-    bool isStdWinConditions = m_winCoditionsVector.contains( WinConditions::ANNIHILATE)
-                           && m_winCoditionsVector.contains( WinConditions::CONTROLAREA)
-                           && m_winCoditionsVector.contains( WinConditions::STRATEGICOBJECTIVE)
-                           && !m_winCoditionsVector.contains( WinConditions::ASSASSINATE)
-                           && !m_winCoditionsVector.contains( WinConditions::DESTROYHQ)
-                           && !m_winCoditionsVector.contains( WinConditions::ECONOMICVICTORY)
-                           && !m_winCoditionsVector.contains( WinConditions::SUDDENDEATH);
+    bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
+                           && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
+                           && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
+                           && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
+                           && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
+                           && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
+                           && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
 
     if (!isStdWinConditions)
         return;
@@ -412,7 +412,9 @@ void GameInfoReader::readGameParametresAfterStop()
     if(duration <= 30)
         return;
 
-    emit sendReplayToServer();
+    SendingReplayInfo replayInfo;
+
+    emit sendReplayToServer(std::move(replayInfo));
 
 
     //qDebug() << "INFO: Read played game settings";

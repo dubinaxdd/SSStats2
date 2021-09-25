@@ -26,6 +26,7 @@ signals:
 
 public slots:
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
+    void sendReplayToServer(SendingReplayInfo replayInfo);
 
 private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);
@@ -33,6 +34,7 @@ private slots:
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
 
     void receivePlayerSteamData(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
+
 
 private:
     void registerPlayer(QString name, QString sid, bool init);

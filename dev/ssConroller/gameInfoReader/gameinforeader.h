@@ -32,14 +32,14 @@ signals:
     void ssShutdown();                                      //Сигнал о выключении игры
 
 
-    void sendReplayToServer();
+    void sendReplayToServer(SendingReplayInfo replayInfo);
 
 private:
     QTimer* m_gameInfoReadTimer;
     QString m_ssPath;
     QString m_currentProfile;
 
-    QVector<WinConditions> m_winCoditionsVector;
+    QVector<WinCondition> m_winCoditionsVector;
 
     SsState m_ssCurrentState = SsState::ssShutdowned;
     SsGameState m_gameCurrentState = SsGameState::unknown;

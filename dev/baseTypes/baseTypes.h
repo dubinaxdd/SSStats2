@@ -5,7 +5,7 @@
 #include <QString>
 #include <QImage>
 
-enum WinConditions
+enum WinCondition
 {
     ANNIHILATE,
     ASSASSINATE,
@@ -49,6 +49,27 @@ enum SsGameState
     gameOver = 9                //Победа какой-то команды
 };
 
+enum Race
+{
+    SpaceMarines = 0,
+    ChaosMarines = 1,
+    Orks = 2,
+    Eldar = 3,
+    ImperialGuard = 4,
+    Necrons = 5,
+    TauEmpire = 6,
+    SistersOfBattle = 7,
+    DarkEldar = 8
+};
+
+enum GameTypeForReplaySending
+{
+    GameType1x1 = 1,
+    GameType2x2 = 2,
+    GameType3x3 = 3,
+    GameType4x4 = 4
+};
+
 struct PlayerStats
 {
     QString name = "";
@@ -83,6 +104,40 @@ struct SearchStemIdPlayerInfo
     int position;
     QString name;
     bool closeConnection = false;
+};
+
+
+//p1=Mr%20P&sid1=76561198005134194&r1=1&
+//p2=El%20Patr%25C3%25B3n&sid2=76561197990989159&r2=3&
+//p3=NeukenindeKeuken&sid3=76561197988617798&r3=1&w1=3&
+//p4=Thanatos&sid4=76561199101288861&r4=4&w2=4&
+//apm=72.8824&
+//type=2&
+//map=4P_DOOM_SPIRAL&
+//gtime=340&
+//sid=76561198005134194&
+//mod=dxp2&
+//winby=ANNIHILATE&
+//version=108&
+//key=LPzltucVp5Rd0xgs
+
+struct PlayerInfoforReplaySendong
+{
+    QString playerName;
+    QString playerSid;
+    Race playerRace;
+    bool isWinner;
+};
+
+struct SendingReplayInfo
+{
+    QList<PlayerInfoforReplaySendong> playersInfo;
+    int apm;
+    GameTypeForReplaySending gameType;
+    QString mapName;
+    int gameTime;
+    QString mod;
+    WinCondition winBy;
 };
 
 #endif // BASETYPES_H

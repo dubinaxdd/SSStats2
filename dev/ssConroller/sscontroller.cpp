@@ -44,6 +44,8 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_gameInfoReader,  &GameInfoReader::gameStopped,       m_apmMeter, &APMMeter::onGameStopped,   Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader,  &GameInfoReader::loadStarted,       m_apmMeter, &APMMeter::onGameStopped,   Qt::QueuedConnection);
 
+    QObject::connect(m_gameInfoReader,  &GameInfoReader::sendReplayToServer,       m_statsCollector, &StatsCollector::sendReplayToServer,   Qt::QueuedConnection);
+
 
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
