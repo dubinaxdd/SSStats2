@@ -45,7 +45,8 @@ enum SsGameState
     gameStarted = 5,            //Начало игры
     playbackStarted = 6,        //Начало реплея
     savedGameStarted = 7,       //Начало загруженной игры
-    unknownGameStarted= 8       //Начало хрен пойми какой игры (работает когда включили статку посреди игры)
+    unknownGameStarted= 8,      //Начало хрен пойми какой игры (работает когда включили статку посреди игры)
+    gameOver = 9                //Победа какой-то команды
 };
 
 struct PlayerStats

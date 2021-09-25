@@ -26,6 +26,7 @@ private slots:
 signals:
     void loadStarted(SsGameState gameCurrentState);         //Сигнал о начале загрузки игры/реплея/сохраненки
     void startingMission(SsGameState gameCurrentState);     //Сигнал о старте миссии после загрузки
+    void gameOver();                                        //Сигнал о победе какой-то из сторон
     void gameStopped();                                     //Сигнал о завершении игры и выхода в меню
     void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
     void ssShutdown();                                      //Сигнал о выключении игры

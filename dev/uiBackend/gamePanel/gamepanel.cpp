@@ -112,6 +112,12 @@ void GamePanel::receivePlayersTestStats(QVector<PlayerStats> testStats)
     emit playerTestStatsUpdate();
 }
 
+void GamePanel::expandPlayerRacesButtonClick()
+{
+    m_racePanelVisisble = !m_racePanelVisisble;
+    emit racePanelVisibleChanged(m_racePanelVisisble);
+}
+
 void GamePanel::replaceRaceKeyword(QString *raceString)
 {
     if (raceString->contains("guard_race"))

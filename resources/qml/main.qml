@@ -22,10 +22,6 @@ Window {
     Connections{
         target: _uiBackend
 
-        function onHeaderPanelVisibleChanged(state){
-            statsHeader.visible = state;
-        }
-
         function onNoFogStateChanged(state){
             fullOverlay.settingsWindow.noFogSwitch.checkedState = state;
         }
@@ -40,8 +36,11 @@ Window {
                     yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangle.y &&
                     yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangle.y + statsHeader.expandButtonRectangle.height)
             {
-                _uiBackend.expandKeyPressed();
-                statsHeader.expandButtonRectangle.howeredState = true;
+                if(_uiBackend.headerVisible)
+                {
+                    _uiBackend.expandKeyPressed();
+                    statsHeader.expandButtonRectangle.howeredState = true;
+                }
             }
 
             // Кнопка "Развернуть оверлей в игровой панели"
@@ -50,8 +49,40 @@ Window {
                     yMousePos >= gamePanel.y + gamePanel.expandButtonRectangleY &&
                     yMousePos <= gamePanel.y + gamePanel.expandButtonRectangleY + gamePanel.expandButtonRectangle.height)
             {
-                statsHeader.expandButtonRectangle.howeredState = true;
-                _uiBackend.expandKeyPressed();
+
+                if(_uiBackend.gamePanel.gamePanelVisible)
+                {
+                    statsHeader.expandButtonRectangle.howeredState = true;
+                    _uiBackend.expandKeyPressed();
+                }
+            }
+
+            // Кнопка "Развернуть панель с рассами игроков"
+            if (xMousePos >= gamePanel.x + gamePanel.expandPlayerRacesButtonX &&
+                    xMousePos <= gamePanel.x + gamePanel.expandPlayerRacesButtonX + gamePanel.expandPlayerRacesButton.width &&
+                    yMousePos >= gamePanel.y + gamePanel.expandPlayerRacesButtonY &&
+                    yMousePos <= gamePanel.y + gamePanel.expandPlayerRacesButtonY + gamePanel.expandPlayerRacesButton.height)
+
+            {
+
+                if(_uiBackend.gamePanel.gamePanelVisible)
+                {
+                    gamePanel.expandPlayerRacesButton.howeredState = true;
+                    _uiBackend.gamePanel.expandPlayerRacesButtonClick();
+                }
+            }
+
+            // Кнопка "Свернуть колонку статистики"
+            if (xMousePos >= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x &&
+                    xMousePos <= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x + patyStatistic.expandPatyStatisticButtonRectangle.width &&
+                    yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
+                    yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
+            {
+                if(!_uiBackend.gamePanel.gamePanelVisible)
+                {
+                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
+                    _uiBackend.expandPatyStatisticButtonClick();
+                }
             }
 
             if(_uiBackend.expand){
@@ -165,6 +196,40 @@ Window {
             {
                 if(gamePanel.expandButtonRectangle.howeredState)
                     gamePanel.expandButtonRectangle.howeredState = false;
+            }
+
+
+            // Кнопка "Развернуть панель с рассами игроков"
+            if (xMousePos >= gamePanel.x + gamePanel.expandPlayerRacesButtonX &&
+                    xMousePos <= gamePanel.x + gamePanel.expandPlayerRacesButtonX + gamePanel.expandPlayerRacesButton.width &&
+                    yMousePos >= gamePanel.y + gamePanel.expandPlayerRacesButtonY &&
+                    yMousePos <= gamePanel.y + gamePanel.expandPlayerRacesButtonY + gamePanel.expandPlayerRacesButton.height)
+
+            {
+
+                if(!gamePanel.expandPlayerRacesButton.howeredState)
+                    gamePanel.expandPlayerRacesButton.howeredState = true;
+            }
+            else
+            {
+                if(gamePanel.expandPlayerRacesButton.howeredState)
+                    gamePanel.expandPlayerRacesButton.howeredState = false;
+            }
+
+            // Кнопка "Свернуть колонку статистики"
+            if (xMousePos >= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x &&
+                    xMousePos <= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x + patyStatistic.expandPatyStatisticButtonRectangle.width &&
+                    yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
+                    yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
+            {
+
+                if(!patyStatistic.expandPatyStatisticButtonRectangle.howeredState)
+                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
+            }
+            else
+            {
+                if(patyStatistic.expandPatyStatisticButtonRectangle.howeredState)
+                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = false;
             }
 
             if(_uiBackend.expand){
@@ -287,33 +352,29 @@ Window {
                         Layout.minimumWidth: 260
                         Layout.minimumHeight: 60
                         Layout.fillHeight: true
+                        visible: _uiBackend.headerVisible
                     }
 
                     PatyStatistic
                     {
-                        Layout.fillHeight: false
+                        id: patyStatistic
                         Layout.fillWidth: false
                         Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
                         model: _uiBackend.statisticPanel
+                        visible: _uiBackend.patyStatisticVisible
                     }
-
-                   /* PlayerStatistic
-                    {
-                        Layout.fillHeight: false
-                        Layout.fillWidth: false
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                        model: _uiBackend.statisticPanel
-                    }*/
 
                     Rectangle {
                         id: rectangle2
                         width: 200
                         height: 200
                         color: "#00000000"
+                        radius: 0
                         border.color: "#00000000"
                         Layout.fillWidth: false
                         Layout.fillHeight: true
                     }
+
                 }
 
             }

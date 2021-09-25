@@ -51,6 +51,7 @@ public slots:
     void onAverageApmChanged(quint64 val);
     void onGameStopped();
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
+    void expandPlayerRacesButtonClick();
 
 private slots:
     void racePanelVisibleTimerTimeout();

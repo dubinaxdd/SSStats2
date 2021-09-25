@@ -52,6 +52,12 @@ void GameInfoReader::readGameInfo()
                 break;
             }
 
+            if(line.contains("MOD -- Game Over at frame"))
+            {
+                m_gameCurrentState = SsGameState::gameOver;
+                emit gameOver();
+            }
+
             ///Проверка на окончание игры
             if(line.contains("APP -- Game Stop"))
             {

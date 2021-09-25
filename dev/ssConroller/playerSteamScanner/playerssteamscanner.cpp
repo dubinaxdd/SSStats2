@@ -67,10 +67,10 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
-        bool patyMatch = false;
+       // bool patyMatch = false;
 
         //Ищем пати блок
-        for (int x = 0; x < static_cast<int>(bytesRead - 10); x++)
+     /*   for (int x = 0; x < static_cast<int>(bytesRead - 10); x++)
         {
             for (int y = 0; y < static_cast<int>(sizeof(patyBlockHeader)); y++)
             {
@@ -97,7 +97,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         {
             ptr1Count += 30400;
             continue;
-        }
+        }*/
 
         //qDebug() << "Info: Paty blok in " << ptr1Count;
 

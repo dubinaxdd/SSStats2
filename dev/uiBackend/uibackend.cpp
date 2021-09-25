@@ -24,6 +24,16 @@ void UiBackend::expandKeyPressed()
     setExpand(!m_expand);
 }
 
+void UiBackend::expandPatyStatisticButtonClick()
+{
+    m_patyStatisticVisibleButtonPressedState = !m_patyStatisticVisibleButtonPressedState;
+
+    m_statisticPanel->setExpandPatyStatistic(m_patyStatisticVisibleButtonPressedState);
+
+    m_headerVisible = !m_headerVisible;
+    emit headerPanelVisibleChanged();
+}
+
 void UiBackend::receiveSsMaximized(bool maximized)
 {
     m_ssMaximized = maximized;
@@ -42,12 +52,23 @@ void UiBackend::onLoadStarted()
 {
     m_loadStarted = true;
     m_gamePanel->onGameStopped();
-    emit headerPanelVisibleChanged(false);
+
+    m_headerVisible = false;
+    m_patyStatisticVisible = false;
+
+    emit headerPanelVisibleChanged();
+    emit patyStatisticVisibleChanged();
 }
 
 void UiBackend::onStartingMission()
 {
     m_missionStarted = true;
+
+    m_headerVisible = false;
+    m_patyStatisticVisible = false;
+
+    emit headerPanelVisibleChanged();
+    emit patyStatisticVisibleChanged();
 }
 
 void UiBackend::showClient()
@@ -119,12 +140,31 @@ void UiBackend::setExpand(bool newExpand)
         if (m_expand)
         {
             m_gamePanel->setGamePanelVisisble(true);
-            emit headerPanelVisibleChanged(true);
+            m_headerVisible = true;
+            m_patyStatisticVisible = true;
+            m_statisticPanel->setExpandPatyStatistic(false);
         }
         else
         {
             m_gamePanel->setGamePanelVisisble(true);
-            emit headerPanelVisibleChanged(false);
+            m_headerVisible = false;
+            m_patyStatisticVisible = false;
+            m_statisticPanel->setExpandPatyStatistic(true);
+        }
+
+        emit headerPanelVisibleChanged();
+        emit patyStatisticVisibleChanged();
+    }
+    else
+    {
+        if(m_patyStatisticVisibleButtonPressedState)
+        {
+             if (m_expand)
+                m_headerVisible = true;
+             else
+                m_headerVisible = false;
+
+             emit headerPanelVisibleChanged();
         }
     }
 }
@@ -174,5 +214,21 @@ void UiBackend::onGameStopped()
     m_missionStarted = false;
 
     m_gamePanel->onGameStopped();
-    emit headerPanelVisibleChanged(true);
+
+    if(m_patyStatisticVisibleButtonPressedState)
+    {
+        m_headerVisible = false;
+        m_statisticPanel->setExpandPatyStatistic(true);
+    }
+    else
+    {
+        m_headerVisible = true;
+        m_statisticPanel->setExpandPatyStatistic(false);
+
+    }
+
+    m_patyStatisticVisible = true;
+
+    emit headerPanelVisibleChanged();
+    emit patyStatisticVisibleChanged();
 }
