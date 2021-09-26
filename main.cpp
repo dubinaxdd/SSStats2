@@ -1,5 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include "Shlwapi.h"
 
 #include <QLocale>
 #include <QTranslator>
@@ -24,6 +25,8 @@ int main(int argc, char *argv[])
             break;
         }
     }
+
+    ShellExecute(NULL, NULL, "Updater.exe", "/F", NULL, SW_SHOWNORMAL);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/resources/qml/main.qml"));
