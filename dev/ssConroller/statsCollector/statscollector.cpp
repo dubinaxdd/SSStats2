@@ -7,18 +7,19 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QBuffer>
 
 
 #define SERVER_ADDRESS "http://207.154.238.90"
 //#define SERVER_ADDRESS "https://dowstats.ru/"
 #define SERVER_VERSION "108"
 
-StatsCollector::StatsCollector(QString steamPath, QObject *parent)
+StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *parent)
     : QObject(parent)
+    , m_ssPath(ssPath)
     , m_steamPath(steamPath)
 {
     m_networkManager = new QNetworkAccessManager(this);
-
     m_currentPlayerStats = QSharedPointer<ServerPlayerStats>(new ServerPlayerStats);
 
     qDebug() << "INFO: OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
@@ -255,22 +256,6 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8)
         return;
 
-    //http://207.154.238.90/connect.php?
-    //p1=Mr%20P&sid1=76561198005134194&r1=1&
-    //p2=El%20Patr%25C3%25B3n&sid2=76561197990989159&r2=3&
-    //p3=NeukenindeKeuken&sid3=76561197988617798&r3=1&w1=3&
-    //p4=Thanatos&sid4=76561199101288861&r4=4&w2=4&
-    //apm=72.8824&
-    //type=2&
-    //map=4P_DOOM_SPIRAL&
-    //gtime=340&
-    //sid=76561198005134194&
-    //mod=dxp2&
-    //winby=ANNIHILATE&
-    //version=108&
-    //key=LPzltucVp5Rd0xgs
-
-
     QString url;
 
     url = QString::fromStdString(SERVER_ADDRESS) + "/connect.php?";
@@ -279,23 +264,23 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
     for(int i = 0; i < replayInfo.playersInfo.count(); i++)
     {
-        url += "p" + QString::number(i) + "=" + replayInfo.playersInfo.at(i).playerName + "&";
-        url += "sid" + QString::number(i) + "=" + replayInfo.playersInfo.at(i).playerSid + "&";
-        url += "r" + QString::number(i) + "=" + QString::number(replayInfo.playersInfo.at(i).playerRace) + "&";
+        url += "p" + QString::number(i+1) + "=" + replayInfo.playersInfo.at(i).playerName + "&";
+        url += "sid" + QString::number(i+1) + "=" + replayInfo.playersInfo.at(i).playerSid + "&";
+        url += "r" + QString::number(i+1) + "=" + QString::number(replayInfo.playersInfo.at(i).playerRace + 1) + "&";
 
         if (replayInfo.playersInfo.at(i).isWinner)
         {
             winnerCount++;
-            url += "r" + QString::number(winnerCount) + QString::number(i) + "&";
+            url += "w" + QString::number(winnerCount) + "=" + QString::number(i+1) + "&";
         }
     }
 
-    url += "apm" + QString::number(replayInfo.apm) + "&";
-    url += "type" + QString::number(replayInfo.gameType) + "&";
-    url += "map" + replayInfo.mapName + "&";
-    url += "type" + QString::number(replayInfo.gameTime) + "&";
-    url += "sid" + m_currentPlayerStats->steamId + "&";
-    url += "mod" + replayInfo.mod + "&";
+    url += "apm=" + QString::number(replayInfo.apm) + "&";
+    url += "type=" + QString::number(static_cast<int>(replayInfo.gameType)) + "&";
+    url += "map=" + replayInfo.mapName + "&";
+    url += "gtime=" +  QString::number(replayInfo.gameTime) + "&";
+    url += "sid=" + m_currentPlayerStats->steamId + "&";
+    url += "mod=" + replayInfo.mod + "&";
 
     QString winCondition;
 
@@ -313,10 +298,97 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
     url += "winby=" + winCondition + "&";
     url += "version=" + QString::fromStdString(SERVER_VERSION) + "&";
-    url += "key=" + QLatin1String(SERVER_KEY) + "&";
+    url += "key=" + QLatin1String(SERVER_KEY);
 
-    m_networkManager->post(QNetworkRequest(QUrl(url)),"");
+    qDebug() << "url " << url;
+
+    QString playbackPath = m_ssPath + "\\Playback\\temp.rec";
+
+    QFile file(playbackPath);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+    if(!file.isReadable())
+        return;
+
+    QByteArray playback = file.readAll();
+
+    file.close();
+
+    QNetworkRequest request = QNetworkRequest(QUrl(url));
+
+    QByteArray postData, boundary="1BEF0A57BE110FD467A";
+    //параметр 2 - файл
+    postData.append("--"+boundary+"\r\n");//разделитель
+    //имя параметра
+    postData.append("Content-Disposition: form-data; name=\"");
+    postData.append("ReplayCRC32");
+    postData.append("\"\r\n\r\n");
+    //значение параметра
+    postData.append(CRC32fromByteArray(playback).toUtf8());
+    postData.append("\r\n");
+    //параметр 2 - файл
+    postData.append("--"+boundary+"\r\n");//разделитель
+    //имя параметра
+    postData.append("Content-Disposition: form-data; name=\"file\";");
+    //имя файла
+    postData.append("filename=\"");
+    postData.append(GetRandomString().toUtf8() +".rec");
+    postData.append("\"\r\n");
+    //тип содержимого файла
+    postData.append("Content-Type: application/octet-stream\r\n");
+    //передаем в base64
+    postData.append("Content-Transfer-Encoding: binary\r\n\r\n");
+    //данные
+    postData.append(playback);
+    postData.append("\r\n");
+    //"хвост" запроса
+    postData.append("--"+boundary+"--\r\n");
+
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"multipart/form-data; boundary="+boundary);
+    request.setHeader(QNetworkRequest::ContentLengthHeader,QByteArray::number(postData.length()));
+
+    request.setRawHeader("User-Agent", "");
+
+    QNetworkReply *reply = m_networkManager->post(request, postData);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        //qDebug() << "Replay sending responce: " << reply->readAll();
+    });
 }
+
+QString StatsCollector::GetRandomString() const
+{
+   const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
+   const int randomStringLength = 12; // assuming you want random strings of 12 characters
+
+   QString randomString;
+   for(int i=0; i<randomStringLength; ++i)
+   {
+       int index = qrand() % possibleCharacters.length();
+       QChar nextChar = possibleCharacters.at(index);
+       randomString.append(nextChar);
+   }
+   return randomString;
+}
+
+QString StatsCollector::CRC32fromByteArray( const QByteArray & array )
+{
+    quint32 crc32 = 0xffffffff;
+    QByteArray buf(256, 0);
+    qint64 n;
+    QBuffer buffer;
+    buffer.setData( array );
+    if ( !buffer.open( QIODevice::ReadOnly ) )
+        return 0;
+    while( ( n = buffer.read( buf.data(), 256) ) > 0 )
+        for ( qint64 i = 0; i < n; i++ )
+            crc32 = ( crc32 >> 8 ) ^ CRC32Table[(crc32 ^ buf.at(i)) & 0xff ];
+    buffer.close();
+    crc32 ^= 0xffffffff;
+    return QString("%1").arg(crc32, 8, 16, QChar('0'));
+}
+
 
 void StatsCollector::registerPlayer(QString name, QString sid, bool init)
 {
@@ -328,8 +400,6 @@ void StatsCollector::registerPlayer(QString name, QString sid, bool init)
         reg_url += "init=false&";
 
     reg_url += "key="+QLatin1String(SERVER_KEY)+"&";
-
-    //qDebug() << reg_url;
 
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(reg_url)));
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){

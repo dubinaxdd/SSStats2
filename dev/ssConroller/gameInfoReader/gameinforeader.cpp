@@ -230,8 +230,12 @@ void GameInfoReader::readGameInfo()
 
 void GameInfoReader::readGameParametresAfterStop()
 {
-    if (m_gameCurrentState != SsGameState::gameStarted)
-        return;
+   qDebug() << "asd1";
+
+    //if (m_gameCurrentState != SsGameState::gameStarted)
+    //    return;
+
+    qDebug() << "asd2";
 
     bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                            && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
@@ -414,10 +418,49 @@ void GameInfoReader::readGameParametresAfterStop()
 
     SendingReplayInfo replayInfo;
 
+    for(int i = 0; i < playersCount; i++)
+    {
+        PlayerInfoForReplaySendong newPlayer;
+
+        newPlayer.playerName = playerStats[i].name;
+
+        newPlayer.playerSid = "";
+
+        if(i == 0 )
+            newPlayer.playerSid = "76561198137977374";
+        if(i == 1 )
+            newPlayer.playerSid = "76561198041477216";
+
+        newPlayer.playerRace = Race::SpaceMarines;
+        newPlayer.isWinner = playerStats[i].finalState == FinalState::winner;
+
+        replayInfo.playersInfo.append(newPlayer);
+    }
+
+
+    replayInfo.apm = 220;
+
+    switch (playersCount)
+    {
+        case 1: return;
+        case 2: replayInfo.gameType = GameTypeForReplaySending::GameType1x1; break;
+        case 3: return;
+        case 4: replayInfo.gameType = GameTypeForReplaySending::GameType2x2; break;
+        case 5: return;
+        case 6: replayInfo.gameType = GameTypeForReplaySending::GameType3x3; break;
+        case 7: return;
+        case 8: replayInfo.gameType = GameTypeForReplaySending::GameType4x4; break;
+    }
+
+    replayInfo.mapName = scenario;
+    replayInfo.gameTime = duration;
+    replayInfo.mod = "dxp2";
+    replayInfo.winBy = WinCondition::ANNIHILATE;
+
     emit sendReplayToServer(std::move(replayInfo));
 
 
-    //qDebug() << "INFO: Read played game settings";
+    qDebug() << "INFO: Readed played game settings";
 }
 
 void GameInfoReader::setCurrentProfile(const QString &newCurrentProfile)

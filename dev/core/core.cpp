@@ -180,6 +180,7 @@ void Core::registerTypes()
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
     qRegisterMetaType<QList<SearchStemIdPlayerInfo>>("QList<SearchStemIdPlayerInfo>");
     qRegisterMetaType<SsGameState>("SsGameState");
+    qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
 }
 
 UiBackend *Core::uiBackend() const

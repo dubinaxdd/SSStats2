@@ -11,7 +11,7 @@ class StatsCollector : public QObject
 {
     Q_OBJECT
 public:
-    explicit StatsCollector(QString steamPath, QObject *parent = nullptr);
+    explicit StatsCollector(QString ssPath, QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
     void getPlayerStatsFromServer(QSharedPointer<ServerPlayerStats> playerInfo);
@@ -38,9 +38,12 @@ private slots:
 
 private:
     void registerPlayer(QString name, QString sid, bool init);
+    QString GetRandomString() const;
+    QString CRC32fromByteArray( const QByteArray & array );
 
 private:
     QString m_steamPath;
+    QString m_ssPath;
     bool m_currentPlayerAccepted;
     QMap<QString, QString> AllPlayersInfo;
 

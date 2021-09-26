@@ -21,7 +21,7 @@ SsController::SsController(QObject *parent)
 
     m_steamPath = getSteamPathFromRegistry();
 
-    m_statsCollector = new StatsCollector(m_steamPath, this);
+    m_statsCollector = new StatsCollector(m_ssPath, m_steamPath, this);
 
     m_playersSteamScanner = new PlayersSteamScanner(/*this*/);
 
