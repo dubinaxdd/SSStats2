@@ -85,8 +85,6 @@ void Core::topmostTimerTimout()
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
 
                     m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
-
-
                 }
            }
            BringWindowToTop(m_ssStatsHwnd);

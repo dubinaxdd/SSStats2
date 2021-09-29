@@ -2,8 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
-
-
+import Qt.labs.platform 1.1
 
 Window {
     id: window
@@ -296,6 +295,19 @@ Window {
         }
     }
 
+    SystemTrayIcon {
+        id: trayIcon
+        visible: true
+        icon.source: "qrc:/icons/resources/icons/ssstats.ico"
+
+        menu: Menu {
+            MenuItem {
+                text: qsTr("Exit")
+
+                onTriggered: Qt.quit()
+            }
+        }
+    }
 
     Rectangle {
         id: windowRectangle

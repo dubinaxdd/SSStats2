@@ -7,7 +7,6 @@
 #include "dev/core/core.h"
 #include <QDebug>
 
-
 int main(int argc, char *argv[])
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
