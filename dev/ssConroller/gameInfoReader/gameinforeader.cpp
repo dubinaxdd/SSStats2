@@ -18,6 +18,9 @@ GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
 
 void GameInfoReader::readGameInfo()
 {
+    if (!m_gameLounched)
+        return;
+
     QFile file(m_ssPath+"\\warnings.log");
 
     if(file.open(QIODevice::ReadOnly))
@@ -32,13 +35,13 @@ void GameInfoReader::readGameInfo()
             QString line = fileLines.at(counter-1);
 
             ///Проверка на выключение соулсторма
-            if(line.contains("GAME -- Shutdown quit"))
+            if(line.contains("GAME -- Shutdown quit") || line.contains("MOD -- Shutting down Mod"))
             {
                 if (m_ssCurrentState != SsState::ssShutdowned)
                 {
                     m_gameCurrentState = SsGameState::gameStoped;
                     m_ssCurrentState = SsState::ssShutdowned;
-
+                    emit gameStopped();
                     emit ssShutdown();
                     qDebug() << "INFO: SS Shutdown";
                 }
@@ -463,6 +466,14 @@ void GameInfoReader::readGameParametresAfterStop()
     qDebug() << "INFO: Readed played game settings";
 }
 
+void GameInfoReader::setGameLounched(bool newGameLounched)
+{
+    m_gameLounched = newGameLounched;
+
+    if (m_gameLounched)
+        readGameInfo();
+}
+
 void GameInfoReader::setCurrentProfile(const QString &newCurrentProfile)
 {
     m_currentProfile = newCurrentProfile;
@@ -472,6 +483,9 @@ void GameInfoReader::ssWindowClosed()
 {
     m_gameCurrentState = SsGameState::gameStoped;
     m_ssCurrentState = SsState::ssShutdowned;
+    emit gameStopped();
+    emit ssShutdown();
+    qDebug() << "INFO: SS Shutdown";
 }
 
 bool GameInfoReader::getGameInitialized()

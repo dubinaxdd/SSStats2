@@ -19,6 +19,8 @@ public:
 
     void setCurrentProfile(const QString &newCurrentProfile);
 
+    void setGameLounched(bool newGameLounched);
+
 private slots:
     void readGameInfo();
     void readGameParametresAfterStop();
@@ -43,6 +45,8 @@ private:
 
     SsState m_ssCurrentState = SsState::ssShutdowned;
     SsGameState m_gameCurrentState = SsGameState::unknown;
+
+    bool m_gameLounched = false;
 };
 
 #endif // GAMEINFOREADER_H

@@ -49,6 +49,7 @@ SsController::SsController(QObject *parent)
 
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
+    m_ssLaunchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
 }
 
 SsController::~SsController()
@@ -78,7 +79,20 @@ void SsController::checkSS()
 
     m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
 
-    if (m_soulstormHwnd)                                ///<Если игра запущена
+    m_gameInfoReader->setGameLounched(m_soulstormHwnd);
+
+   //if (!m_gameInitialized)
+   //     return;
+
+   if(m_gameInitialized != m_gameInfoReader->getGameInitialized())
+       m_gameInitialized = m_gameInfoReader->getGameInitialized();
+   else
+   {
+        if (!m_gameInitialized)
+            return;
+   }
+
+    if (m_soulstormHwnd && m_gameInitialized)                                ///<Если игра запущена
     {
         if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
         {
@@ -121,7 +135,7 @@ void SsController::checkSS()
             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
             m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
             m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
-            m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
+            //m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
             qDebug() << "WARNING: Soulstorm window closed";
         }
         else
@@ -134,7 +148,7 @@ void SsController::checkSS()
 void SsController::gameInitialized()
 {
     parseSsSettings();
-    m_ssLaunchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
+
     m_statsCollector->parseCurrentPlayerSteamId();
 }
 

@@ -78,6 +78,8 @@ private:
     bool m_ssMaximized = false;
     bool m_ssWindowed = false;
 
+    bool m_gameInitialized;
+
     GameInfoReader* m_gameInfoReader;
     PlayersSteamScanner* m_playersSteamScanner;
 
