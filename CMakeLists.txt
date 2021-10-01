@@ -73,6 +73,8 @@ set(PROJECT_SOURCES
         dev/uiBackend/imageProvider/imageprovider.h
         dev/uiBackend/imageProvider/imageprovider.cpp
         dev/baseTypes/baseTypes.h
+        dev/uiBackend/statisticPanel/statisticpanelitem.h
+        dev/uiBackend/statisticPanel/statisticpanelitem.cpp
         defines.h
         qml.qrc
         resources.qrc

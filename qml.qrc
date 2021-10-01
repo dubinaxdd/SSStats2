@@ -3,10 +3,10 @@
         <file>resources/qml/main.qml</file>
         <file>resources/qml/StatsHeader.qml</file>
         <file>resources/qml/FullOverlay.qml</file>
-        <file>resources/qml/PlayerStatistic.qml</file>
+        <file>resources/qml/PlayersStatisticItem.qml</file>
         <file>resources/qml/GamePanel.qml</file>
         <file>resources/qml/InfoWindow.qml</file>
         <file>resources/qml/SettingsWindow.qml</file>
-        <file>resources/qml/PatyStatistic.qml</file>
+        <file>resources/qml/PlayersStatistic.qml</file>
     </qresource>
 </RCC>

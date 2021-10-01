@@ -10,8 +10,8 @@
 #include <QBuffer>
 
 
-#define SERVER_ADDRESS "http://207.154.238.90"
-//#define SERVER_ADDRESS "https://dowstats.ru/"
+//#define SERVER_ADDRESS "http://207.154.238.90"
+#define SERVER_ADDRESS "https://dowstats.ru/"
 #define SERVER_VERSION "108"
 
 StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *parent)

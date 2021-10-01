@@ -81,16 +81,16 @@ struct PlayerStats
 
 struct ServerPlayerStats
 {
-    QString steamId;
-    int apm;
-    int gamesCount;
-    int mmr;
-    int mmr1v1;
-    QString name;
-    int race;
-    int winRate;
-    int winsCount;
-    bool isBanned;
+    QString steamId = "";
+    int apm = 0;
+    int gamesCount = 0;
+    int mmr = 0;
+    int mmr1v1 = 0;
+    QString name = "";
+    int race = 0;
+    int winRate = 0;
+    int winsCount = 0;
+    bool isBanned = false;
     QImage avatar;
     bool isCurrentPlayer = false;
     bool avatarAvailable = false;
@@ -173,21 +173,6 @@ static const quint32 CRC32Table[256] =
     0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94,
     0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
-
-
-//p1=Mr%20P&sid1=76561198005134194&r1=1&
-//p2=El%20Patr%25C3%25B3n&sid2=76561197990989159&r2=3&
-//p3=NeukenindeKeuken&sid3=76561197988617798&r3=1&w1=3&
-//p4=Thanatos&sid4=76561199101288861&r4=4&w2=4&
-//apm=72.8824&
-//type=2&
-//map=4P_DOOM_SPIRAL&
-//gtime=340&
-//sid=76561198005134194&
-//mod=dxp2&
-//winby=ANNIHILATE&
-//version=108&
-//key=LPzltucVp5Rd0xgs
 
 struct PlayerInfoForReplaySendong
 {

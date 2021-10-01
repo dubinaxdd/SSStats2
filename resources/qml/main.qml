@@ -367,7 +367,7 @@ Window {
                         visible: _uiBackend.headerVisible
                     }
 
-                    PatyStatistic
+                    PlayersStatistic
                     {
                         id: patyStatistic
                         Layout.fillWidth: false

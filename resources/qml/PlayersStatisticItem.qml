@@ -4,27 +4,18 @@ import QtQuick.Layouts 1.12
 
 Rectangle {
 
-    id: rectangle1
+    property var itemModel
+    id: itemRectangle
     width: 280
     height: 130
-    color: (rectangle1.isBanned) ? "#ffa9a9" : "#ffffff"
+    color: (itemRectangle.itemModel.playerIsBanned) ? "#ffa9a9" : "#ffffff"
     radius: 10
     Layout.maximumHeight: 100
     Layout.maximumWidth: 200
     Layout.fillWidth: false
     Layout.fillHeight: true
 
-    //property var model
     property url avatarSource
-    property string name
-    property string mmr
-    property string mmr1v1
-    property bool   banned
-    property string gamesCount
-    property string race
-    property string winRate
-    property string apm
-
 
     RowLayout {
         id: rowLayout
@@ -34,7 +25,7 @@ Rectangle {
             id: rectangle
             width: 200
             height: 200
-            color: (rectangle1.isBanned) ? "#ffa9a9" : "#ffffff"
+            color: (itemRectangle.itemModel.playerIsBanned) ? "#ffa9a9" : "#ffffff"
             radius: 10
             Layout.preferredHeight: 60
             Layout.preferredWidth: 60
@@ -52,7 +43,7 @@ Rectangle {
                 height: 60
                 anchors.verticalCenter: parent.verticalCenter
 
-                source: rectangle1.avatarSource
+                source: itemRectangle.avatarSource
                 anchors.horizontalCenter: parent.horizontalCenter
                 fillMode: Image.PreserveAspectFit
             }
@@ -68,7 +59,7 @@ Rectangle {
 
             Label {
                 id: label1
-                text: (rectangle1.isBanned) ? rectangle1.name + " [BANNED]" : rectangle1.name
+                text: (itemRectangle.itemModel.playerIsBanned) ? itemRectangle.itemModel.playerName + " [CHEATER]" : itemRectangle.itemModel.playerName
                 font.pointSize: 12
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -76,7 +67,7 @@ Rectangle {
 
             Label {
                 id: label2
-                text: "MMR: " + rectangle1.mmr
+                text: "MMR: " + itemRectangle.itemModel.playerMmr
                 font.pointSize: 8
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -84,7 +75,7 @@ Rectangle {
 
             Label {
                 id: label
-                text: "Solo MMR: " + rectangle1.mmr1v1
+                text: "Solo MMR: " + itemRectangle.itemModel.playerMmr1v1
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 font.pointSize: 8
@@ -92,7 +83,7 @@ Rectangle {
 
             Label {
                 id: label4
-                text: "Games played: " + rectangle1.gamesCount
+                text: "Games played: " + itemRectangle.itemModel.playerGamesCount
                 font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -100,7 +91,7 @@ Rectangle {
 
             Label {
                 id: label3
-                text: "Race: " + rectangle1.race
+                text: "Race: " + itemRectangle.itemModel.playerRace
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 font.pointSize: 8
@@ -108,7 +99,7 @@ Rectangle {
 
             Label {
                 id: label5
-                text: "Win rate: " + rectangle1.winRate + "%"
+                text: "Win rate: " + itemRectangle.itemModel.playerWinRate + "%"
                 font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -116,7 +107,7 @@ Rectangle {
 
             Label {
                 id: label6
-                text: "APM: " + rectangle1.apm
+                text: "APM: " + itemRectangle.itemModel.playerApm
                 font.pointSize: 8
                 Layout.fillHeight: true
                 Layout.fillWidth: true
