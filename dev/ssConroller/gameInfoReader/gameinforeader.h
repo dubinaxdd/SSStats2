@@ -25,6 +25,10 @@ private slots:
     void readGameInfo();
     void readGameParametresAfterStop();
 
+public slots:
+    void receiveAverrageApm(int apm);
+    void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
+
 signals:
     void loadStarted(SsGameState gameCurrentState);         //Сигнал о начале загрузки игры/реплея/сохраненки
     void startingMission(SsGameState gameCurrentState);     //Сигнал о старте миссии после загрузки
@@ -46,7 +50,12 @@ private:
     SsState m_ssCurrentState = SsState::ssShutdowned;
     SsGameState m_gameCurrentState = SsGameState::unknown;
 
+    int m_lastAverrageApm;
+
     bool m_gameLounched = false;
+
+    int m_playersCountFromScanner;
+    QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
 };
 
 #endif // GAMEINFOREADER_H

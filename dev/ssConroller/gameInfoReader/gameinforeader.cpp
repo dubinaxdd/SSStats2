@@ -427,21 +427,41 @@ void GameInfoReader::readGameParametresAfterStop()
 
         newPlayer.playerName = playerStats[i].name;
 
-        newPlayer.playerSid = "";
+        for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
+        {
+            if(newPlayer.playerName == m_playersInfoFromScanner[j].name)
+            {
+                newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
+                break;
+            }
+        }
 
-        if(i == 0 )
-            newPlayer.playerSid = "76561198137977374";
-        if(i == 1 )
-            newPlayer.playerSid = "76561198041477216";
+        if (playerStats[i].race == "guard_race")
+            newPlayer.playerRace = Race::ImperialGuard;
+        if (playerStats[i].race == "tau_race")
+            newPlayer.playerRace = Race::TauEmpire;
+        if (playerStats[i].race == "ork_race")
+            newPlayer.playerRace = Race::Orks;
+        if (playerStats[i].race == "chaos_marine_race")
+            newPlayer.playerRace = Race::ChaosMarines;
+        if (playerStats[i].race == "necron_race")
+            newPlayer.playerRace = Race::Necrons;
+        if (playerStats[i].race == "space_marine_race")
+            newPlayer.playerRace = Race::SpaceMarines;
+        if (playerStats[i].race == "sisters_race")
+            newPlayer.playerRace = Race::SistersOfBattle;
+        if (playerStats[i].race == "dark_eldar_race")
+            newPlayer.playerRace = Race::DarkEldar;
+        if (playerStats[i].race == "eldar_race")
+            newPlayer.playerRace = Race::Eldar;
 
-        newPlayer.playerRace = Race::SpaceMarines;
         newPlayer.isWinner = playerStats[i].finalState == FinalState::winner;
 
         replayInfo.playersInfo.append(newPlayer);
     }
 
 
-    replayInfo.apm = 220;
+    replayInfo.apm = m_lastAverrageApm;
 
     switch (playersCount)
     {
@@ -458,12 +478,31 @@ void GameInfoReader::readGameParametresAfterStop()
     replayInfo.mapName = scenario;
     replayInfo.gameTime = duration;
     replayInfo.mod = "dxp2";
-    replayInfo.winBy = WinCondition::ANNIHILATE;
+
+    if (winBy == "ANNIHILATE")
+        replayInfo.winBy = WinCondition::ANNIHILATE;
+    if (winBy == "CONTROLAREA")
+        replayInfo.winBy = WinCondition::CONTROLAREA;
+    if (winBy == "STRATEGICOBJECTIVE")
+        replayInfo.winBy = WinCondition::STRATEGICOBJECTIVE;
 
     emit sendReplayToServer(std::move(replayInfo));
 
-
     qDebug() << "INFO: Readed played game settings";
+}
+
+void GameInfoReader::receiveAverrageApm(int apm)
+{
+    m_lastAverrageApm = apm;
+}
+
+void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
+{
+    if(m_gameCurrentState == SsGameState::gameStoped)
+    {
+        m_playersInfoFromScanner = playersInfoFromScanner;
+        m_playersCountFromScanner = playersCount;
+    }
 }
 
 void GameInfoReader::setGameLounched(bool newGameLounched)

@@ -36,6 +36,8 @@ signals:
     void currentApmCalculated(quint64);
     void averageApmCalculated(quint64);
 
+    void sendAverrageApm(int apm);
+
 private slots:
     void calculateAPM();
 
@@ -50,6 +52,9 @@ private:
     quint64	full_actions_count;
 
     quint64	tick_actions_count;
+
+    quint64 m_lastAverrageApm;
+
     QVector<quint64> ticksActionsArray; // QVector быстрее аналогичных классов типа QList и т.д.
 
     QTimer *measureTickTimer;

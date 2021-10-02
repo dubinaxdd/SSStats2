@@ -46,6 +46,9 @@ SsController::SsController(QObject *parent)
 
     QObject::connect(m_gameInfoReader,  &GameInfoReader::sendReplayToServer,       m_statsCollector, &StatsCollector::sendReplayToServer,   Qt::QueuedConnection);
 
+    QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_gameInfoReader,  &GameInfoReader::receiveAverrageApm,       Qt::QueuedConnection);
+    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+
 
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
@@ -284,10 +287,8 @@ void SsController::parseSsSettings()
 
     m_gameInfoReader->setCurrentProfile(currentProfile);
 
-
     qDebug() << "INFO: Current profile: " << currentProfile;
     qDebug() << "INFO: Windowed mode = " << m_ssWindowed;
-
 
     delete ssSettings;
 }

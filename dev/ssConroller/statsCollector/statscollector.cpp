@@ -300,8 +300,6 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "version=" + QString::fromStdString(SERVER_VERSION) + "&";
     url += "key=" + QLatin1String(SERVER_KEY);
 
-    qDebug() << "url " << url;
-
     QString playbackPath = m_ssPath + "\\Playback\\temp.rec";
 
     QFile file(playbackPath);
