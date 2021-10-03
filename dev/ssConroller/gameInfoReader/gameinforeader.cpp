@@ -364,7 +364,7 @@ void GameInfoReader::readGameParametresAfterStop()
     playerStats.resize(playersCount);
 
     for(int i = 0; i < playerNames.count(); i++ )
-        playerStats[i].name = playerNames.at(i);
+        playerStats[i].name = playerNames.at(i).toLocal8Bit();
 
     for(int i = 0; i < playerRaces.count(); i++ )
         playerStats[i].race = playerRaces.at(i);
@@ -500,7 +500,28 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
 {
     if(m_gameCurrentState == SsGameState::gameStoped)
     {
+
+        for (int i = 0; i < playersInfoFromScanner.count();i++)
+        {
+            bool playerFinded = false;
+            for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
+            {
+                if (playersInfoFromScanner[i].name == m_playersInfoFromScanner[j].name)
+                {
+                    playerFinded = true;
+                    break;
+                }
+            }
+
+            if(!playerFinded)
+            {
+                m_playersInfoFromScanner.append(playersInfoFromScanner[i]);
+                qDebug() << "INFO: finded palyer:" << m_playersInfoFromScanner.last().name;
+            }
+        }
+
         m_playersInfoFromScanner = playersInfoFromScanner;
+
         m_playersCountFromScanner = playersCount;
     }
 }

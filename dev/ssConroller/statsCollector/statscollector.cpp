@@ -125,6 +125,9 @@ void StatsCollector::getPlayerMediumAvatar(QString url, QSharedPointer <ServerPl
 
 void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 {
+    if (m_currentPlayerAccepted)
+        return;
+
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -152,12 +155,12 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     // после этого можно так же прерывать цикл, так как нужный игрок найден
     if(player.value("personastate", 0).toInt()==1 && player.value("gameid", 0).toInt()==9450)
     {
-        qDebug() << "INFO: Player" << playerName << "is online";
+        qDebug() << "INFO: Player" << senderName << "is online";
         m_currentPlayerAccepted = true;
     }
     else
     {
-        qDebug() << "INFO: Player" << playerName << "is offline";
+        qDebug() << "INFO: Player" << senderName << "is offline";
         m_currentPlayerAccepted = false;
     }
 
@@ -298,6 +301,9 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
     url += "winby=" + winCondition + "&";
     url += "version=" + QString::fromStdString(SERVER_VERSION) + "&";
+
+    qDebug() << "INFO: Replay sending url:" << url;
+
     url += "key=" + QLatin1String(SERVER_KEY);
 
     QString playbackPath = m_ssPath + "\\Playback\\temp.rec";
@@ -390,7 +396,7 @@ QString StatsCollector::CRC32fromByteArray( const QByteArray & array )
 
 void StatsCollector::registerPlayer(QString name, QString sid, bool init)
 {
-    QByteArray enc_name = QUrl::toPercentEncoding(name,""," ");
+    QByteArray enc_name = QUrl::toPercentEncoding(name.toLocal8Bit(),""," ");
     QString reg_url = QString::fromStdString(SERVER_ADDRESS)+"/regplayer.php?name="+enc_name+"&sid="+sid+"&version="+SERVER_VERSION+"&sender_sid="+m_currentPlayerStats->steamId+"&";
     if( init )
         reg_url += "init=true&";

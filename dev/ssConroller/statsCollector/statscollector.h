@@ -44,7 +44,7 @@ private:
 private:
     QString m_steamPath;
     QString m_ssPath;
-    bool m_currentPlayerAccepted;
+    bool m_currentPlayerAccepted = false;
     QMap<QString, QString> AllPlayersInfo;
 
     QNetworkAccessManager *m_networkManager;

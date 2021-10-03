@@ -223,8 +223,6 @@ void SsController::readTestStats()
             team = team.left(team.length() - 1);
             playerTeam.append(team);
         }
-
-
     }
 
     QVector<PlayerStats> playerStats;
@@ -232,7 +230,10 @@ void SsController::readTestStats()
     playerStats.resize(8);
 
     for(int i = 0; i < playerNames.count(); i++ )
-        playerStats[i].name = playerNames.at(i);
+    {
+        playerStats[i].name = playerNames.at(i).toLocal8Bit();
+        qDebug() << "INFO: Player from test stats" << playerStats[i].name;
+    }
 
     for(int i = 0; i < playerRaces.count(); i++ )
         playerStats[i].race = playerRaces.at(i);

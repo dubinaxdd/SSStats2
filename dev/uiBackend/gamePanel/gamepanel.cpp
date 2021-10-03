@@ -67,28 +67,28 @@ void GamePanel::receivePlayersTestStats(QVector<PlayerStats> testStats)
         return;
 
     if(!testStats.at(0).name.isEmpty())
-        m_player0Race = "Team " + QString::number(testStats.at(0).team.toInt() + 1) + ": " + testStats.at(0).name.toLocal8Bit() + " - " + testStats.at(0).race;
+        m_player0Race = "Team " + QString::number(testStats.at(0).team.toInt() + 1) + ": " + testStats.at(0).name/*.toLocal8Bit()*/ + " - " + testStats.at(0).race;
 
     if(!testStats.at(1).name.isEmpty())
-        m_player1Race = "Team " + QString::number(testStats.at(1).team.toInt() + 1) + ": " + testStats.at(1).name.toLocal8Bit()  + " - " + testStats.at(1).race;
+        m_player1Race = "Team " + QString::number(testStats.at(1).team.toInt() + 1) + ": " + testStats.at(1).name/*.toLocal8Bit()*/  + " - " + testStats.at(1).race;
 
     if(!testStats.at(2).name.isEmpty())
-        m_player2Race = "Team " + QString::number(testStats.at(2).team.toInt() + 1) + ": " + testStats.at(2).name.toLocal8Bit()  + " - " + testStats.at(2).race;
+        m_player2Race = "Team " + QString::number(testStats.at(2).team.toInt() + 1) + ": " + testStats.at(2).name/*.toLocal8Bit()*/  + " - " + testStats.at(2).race;
 
     if(!testStats.at(3).name.isEmpty())
-        m_player3Race = "Team " + QString::number(testStats.at(3).team.toInt() + 1) + ": " + testStats.at(3).name.toLocal8Bit()  + " - " + testStats.at(3).race;
+        m_player3Race = "Team " + QString::number(testStats.at(3).team.toInt() + 1) + ": " + testStats.at(3).name/*.toLocal8Bit()*/  + " - " + testStats.at(3).race;
 
     if(!testStats.at(4).name.isEmpty())
-        m_player4Race = "Team " + QString::number(testStats.at(4).team.toInt() + 1) + ": " + testStats.at(4).name.toLocal8Bit()  + " - " + testStats.at(4).race;
+        m_player4Race = "Team " + QString::number(testStats.at(4).team.toInt() + 1) + ": " + testStats.at(4).name/*.toLocal8Bit()*/  + " - " + testStats.at(4).race;
 
     if(!testStats.at(5).name.isEmpty())
-        m_player5Race = "Team " + QString::number(testStats.at(5).team.toInt() + 1) + ": " + testStats.at(5).name.toLocal8Bit()  + " - " + testStats.at(5).race;
+        m_player5Race = "Team " + QString::number(testStats.at(5).team.toInt() + 1) + ": " + testStats.at(5).name/*.toLocal8Bit()*/  + " - " + testStats.at(5).race;
 
     if(!testStats.at(6).name.isEmpty())
-        m_player6Race = "Team " + QString::number(testStats.at(6).team.toInt() + 1) + ": " + testStats.at(6).name.toLocal8Bit()  + " - " + testStats.at(6).race;
+        m_player6Race = "Team " + QString::number(testStats.at(6).team.toInt() + 1) + ": " + testStats.at(6).name/*.toLocal8Bit()*/  + " - " + testStats.at(6).race;
 
     if(!testStats.at(7).name.isEmpty())
-        m_player7Race = "Team " + QString::number(testStats.at(7).team.toInt() + 1) + ": " + testStats.at(7).name.toLocal8Bit()  + " - " + testStats.at(7).race;
+        m_player7Race = "Team " + QString::number(testStats.at(7).team.toInt() + 1) + ": " + testStats.at(7).name/*.toLocal8Bit()*/  + " - " + testStats.at(7).race;
 
 
     replaceRaceKeyword(&m_player0Race);

@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
 #endif
 
     QGuiApplication app(argc, argv);
+    setlocale(LC_ALL,"Russian");
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
