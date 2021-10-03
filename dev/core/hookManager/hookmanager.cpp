@@ -19,16 +19,22 @@ void UpdateKeySate(BYTE *keystate, int keycode)
 LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
     MSLLHOOKSTRUCT mKey = *((MSLLHOOKSTRUCT*)lParam);
 
+
+
     switch(wParam)
     {
     case WM_LBUTTONDOWN:
     {
+        //qDebug() << "INFO: Left click";
+
         QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
         emit HookManager::instance()->mouseEvent(event);
         break;
     }
     case WM_RBUTTONDOWN:
     {
+        //qDebug() << "INFO: Right click";
+
         QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::RightButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
         emit HookManager::instance()->mouseEvent(event);
         break;
@@ -123,15 +129,17 @@ HookManager::HookManager()
 
     mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
     //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
-    if (mouseHook == NULL) {
-        //qDebug() << "MouseHook failed";
-    }
+    if (mouseHook == NULL)
+        qDebug() << "INFO: MouseHook failed";
+    else
+        qDebug() << "INFO: MouseHook accepted";
 
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
     //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
-    if (keyboardHook == NULL) {
-        //qDebug() << "KeyboardHook failed";
-    }
+    if (keyboardHook == NULL)
+        qDebug() << "INFO: KeyboardHook failed";
+    else
+        qDebug() << "INFO: KeyboardHook accepted";
 }
 
 HookManager::~HookManager()

@@ -16,7 +16,7 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(QString  playerRace       READ getPlayerRace         NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerWinRate    READ getPlayerWinRate      NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerApm        READ getPlayerApm          NOTIFY playersStatsChanged)
-    Q_PROPERTY(bool     visible      READ getVisible            NOTIFY itemVisibleChanged)
+    Q_PROPERTY(bool     itemVisible      READ getVisible            NOTIFY itemVisibleChanged)
 
 public:
     explicit StatisticPanelItem(QObject *parent = nullptr);

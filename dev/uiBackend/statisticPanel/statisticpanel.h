@@ -50,8 +50,8 @@ private:
     StatisticPanelItem *m_curentPlayerStatsItem;
     StatisticPanelItem *m_playersStatsItems[7];
     ImageProvider *m_imageProvider;
-    int m_playersCount;
-    bool m_expandPatyStatistic;
+    int m_playersCount = 0;
+    bool m_expandPatyStatistic = false;
 };
 
 #endif // STATISTICPANEL_H
