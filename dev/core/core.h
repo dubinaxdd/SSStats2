@@ -25,9 +25,9 @@ public:
 
     UiBackend *uiBackend() const;
 	
-public slots:
-    void onKeyEvent(QKeyEvent *event);
-    void onMouseEvent(QMouseEvent *event);
+//public slots:
+//    void onKeyEvent(QKeyEvent *event);
+//    void onMouseEvent(QMouseEvent *event);
 
 private slots:
     void topmostTimerTimout();
