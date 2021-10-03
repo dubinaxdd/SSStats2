@@ -8,7 +8,7 @@
 #include <QJsonObject>
 #include <QStringList>
 
-#define CHECK_SS_TIMER_INTERVAL 100  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
+#define CHECK_SS_TIMER_INTERVAL 800  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
 SsController::SsController(QObject *parent)
     : QObject(parent)
@@ -81,11 +81,9 @@ void SsController::checkSS()
     m_soulstormHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
 
     m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
-
     m_gameInfoReader->setGameLounched(m_soulstormHwnd);
 
-   //if (!m_gameInitialized)
-   //     return;
+
 
    if(m_gameInitialized != m_gameInfoReader->getGameInitialized())
        m_gameInitialized = m_gameInfoReader->getGameInitialized();
@@ -152,6 +150,10 @@ void SsController::checkSS()
             m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
             //m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
             qDebug() << "WARNING: Soulstorm window closed";
+        }
+        else
+        {
+            qDebug() << "WARNING: Soulstorm window not accepted";
         }
     }
 }

@@ -5,7 +5,6 @@
 #include "../baseTypes/baseTypes.h"
 #include "dev/core/hookManager/hookmanager.h"
 
-
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
     , m_keyboardProcessor(new KeyboardProcessor(this))
@@ -96,6 +95,8 @@ void Core::topmostTimerTimout()
 
 void Core::ssMaximized(bool maximized)
 {
+    HookManager::instance()->reconnectHook();
+
     if (maximized)
     {
         int width =  GetSystemMetrics(SM_CXSCREEN);
@@ -154,6 +155,8 @@ void Core::ssMaximized(bool maximized)
 
 void Core::gameInitialized()
 {
+    HookManager::instance()->reconnectHook();
+
     m_topmostTimer->start();
 
     if(m_ssController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
