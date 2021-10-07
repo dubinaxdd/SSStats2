@@ -101,7 +101,7 @@ public slots:
 
     void onLoadStarted();
     void onGameStopped();
-    void onStartingMission();
+    void onStartingMission(SsGameState gameCurrentState);
 
 private:
     void showClient();

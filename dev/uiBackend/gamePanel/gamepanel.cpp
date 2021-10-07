@@ -1,19 +1,44 @@
 #include "gamepanel.h"
 #include <QDebug>
 
+#define GAME_LEAVE_TIMER_INTERVAL 1000
+
 GamePanel::GamePanel(QObject *parent) : QObject(parent)
 {
     m_racePanelVisibleTimer = new QTimer(this);
     m_racePanelVisibleTimer->setInterval(20000);
     m_racePanelVisibleTimer->setSingleShot(true);
 
+    m_gameLeaveTimer = new QTimer(this);
+    m_gameLeaveTimer->setInterval(GAME_LEAVE_TIMER_INTERVAL);
+
+
     QObject::connect(m_racePanelVisibleTimer, &QTimer::timeout, this, &GamePanel::racePanelVisibleTimerTimeout, Qt::QueuedConnection);
+    QObject::connect(m_gameLeaveTimer, &QTimer::timeout, this, &GamePanel::gameLeaveTimerTimeout, Qt::QueuedConnection);
 }
 
 void GamePanel::racePanelVisibleTimerTimeout()
 {
     m_racePanelVisisble = false;
     emit racePanelVisibleChanged(m_racePanelVisisble);
+}
+
+void GamePanel::gameLeaveTimerTimeout()
+{
+    m_gameLeaveTimeLeft--;
+
+    if(m_gameLeaveTimeLeft < -5)
+    {
+
+        m_gameLeaveTimer->stop();
+        m_gameLeaveTimerVisible = false;
+        emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+    }
+    else if (m_gameLeaveTimeLeft >= 0)
+    {
+        emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
+    }
+
 }
 
 void GamePanel::onCurrentApmChanged(quint64 val)
@@ -30,6 +55,8 @@ void GamePanel::onAverageApmChanged(quint64 val)
 
 void GamePanel::onGameStopped()
 {
+    m_gameLeaveTimer->stop();
+
     m_currentApm = QString("-");
     m_averageApm = QString("-");
     emit currentApmUpdate();
@@ -50,6 +77,22 @@ void GamePanel::onGameStopped()
     emit gamePanelVisibleChanged(m_gamePanelVisisble);
     m_racePanelVisisble = false;
     emit racePanelVisibleChanged(m_racePanelVisisble);
+}
+
+void GamePanel::onGameStarted(SsGameState gameCurrentState)
+{
+    if (gameCurrentState != SsGameState::gameStarted)
+    {
+        m_gameLeaveTimerVisible = false;
+        emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+        return;
+    }
+
+    m_gameLeaveTimeLeft = 30;
+    emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
+    m_gameLeaveTimer->start();
+    m_gameLeaveTimerVisible = true;
+    emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
 }
 
 

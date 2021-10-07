@@ -60,8 +60,11 @@ void UiBackend::onLoadStarted()
     emit patyStatisticVisibleChanged();
 }
 
-void UiBackend::onStartingMission()
+void UiBackend::onStartingMission(SsGameState gameCurrentState)
 {
+
+    m_gamePanel->onGameStarted(gameCurrentState);
+
     m_missionStarted = true;
 
     m_headerVisible = false;
