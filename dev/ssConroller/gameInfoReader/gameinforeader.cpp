@@ -57,8 +57,14 @@ void GameInfoReader::readGameInfo()
 
             if(line.contains("MOD -- Game Over at frame"))
             {
-                m_gameCurrentState = SsGameState::gameOver;
-                emit gameOver();
+                if (m_gameCurrentState != SsGameState::gameOver)
+                {
+                    m_gameCurrentState = SsGameState::gameOver;
+                    checkGameInitialize();
+                    emit startingMission(m_gameCurrentState);
+                    emit gameOver();
+                }
+                break;
             }
 
             ///Проверка на окончание игры
@@ -66,7 +72,6 @@ void GameInfoReader::readGameInfo()
             {
                 if (m_gameCurrentState != SsGameState::gameStoped)
                 {
-
                     checkGameInitialize();
                     readGameParametresAfterStop();
                     m_gameCurrentState = SsGameState::gameStoped;
@@ -163,7 +168,8 @@ void GameInfoReader::readGameInfo()
                 else if(m_gameCurrentState != SsGameState::gameStarted
                       && m_gameCurrentState != SsGameState::playbackStarted
                       && m_gameCurrentState != SsGameState::savedGameStarted
-                      && m_gameCurrentState != SsGameState::unknownGameStarted)
+                      && m_gameCurrentState != SsGameState::unknownGameStarted
+                      && m_gameCurrentState != SsGameState::gameOver)
                 {
                     m_gameCurrentState = SsGameState::unknownGameStarted;
                     qDebug() << "INFO: Starting unknown mission";
@@ -396,6 +402,7 @@ void GameInfoReader::readGameParametresAfterStop()
     qDebug() << "duration" << duration;
     qDebug() << "winBy" << winBy;
     qDebug() << "scenario" << scenario;
+    qDebug() << "apm" << m_lastAverrageApm;
 
     for(int i = 0; i < playerStats.count(); i++)
     {
@@ -462,6 +469,8 @@ void GameInfoReader::readGameParametresAfterStop()
 
 
     replayInfo.apm = m_lastAverrageApm;
+
+
 
     switch (playersCount)
     {

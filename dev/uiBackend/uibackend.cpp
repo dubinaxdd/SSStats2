@@ -74,6 +74,11 @@ void UiBackend::onStartingMission(SsGameState gameCurrentState)
     emit patyStatisticVisibleChanged();
 }
 
+void UiBackend::onGameOver()
+{
+    onStartingMission(SsGameState::gameOver);
+}
+
 void UiBackend::showClient()
 {
     m_showClient = m_ssLaunchState && m_ssMaximized;

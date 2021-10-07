@@ -78,8 +78,8 @@ private:
     bool m_gamePanelVisisble = false;
     bool m_racePanelVisisble = false;
 
-    QString m_currentApm;
-    QString m_averageApm;
+    QString m_currentApm = "-";
+    QString m_averageApm = "-";
 
     QString m_player0Race = "";
     QString m_player1Race = "";

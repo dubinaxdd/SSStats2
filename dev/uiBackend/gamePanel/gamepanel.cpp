@@ -57,10 +57,10 @@ void GamePanel::onGameStopped()
 {
     m_gameLeaveTimer->stop();
 
-    m_currentApm = QString("-");
+   /* m_currentApm = QString("-");
     m_averageApm = QString("-");
     emit currentApmUpdate();
-    emit averageApmUpdate();
+    emit averageApmUpdate();*/
 
     m_player0Race = "";
     m_player1Race = "";
@@ -81,6 +81,14 @@ void GamePanel::onGameStopped()
 
 void GamePanel::onGameStarted(SsGameState gameCurrentState)
 {
+    if (gameCurrentState == SsGameState::unknownGameStarted || gameCurrentState == SsGameState::playbackStarted)
+    {
+        m_currentApm = QString("-");
+        m_averageApm = QString("-");
+        emit currentApmUpdate();
+        emit averageApmUpdate();
+    }
+
     if (gameCurrentState != SsGameState::gameStarted)
     {
         m_gameLeaveTimerVisible = false;
