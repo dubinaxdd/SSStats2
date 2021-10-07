@@ -68,7 +68,7 @@ Rectangle {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
-            visible: model.curentPlayerStatsItem.itemVisible && (!model.expandPatyStatistic || _uiBackend.expand)
+            visible: model.curentPlayerStatsItem.itemVisible && (!model.expandPatyStatistic || _uiBackend.expand) && model.curentPlayerStatsItem.playerName !== ""
 
             itemModel: model.curentPlayerStatsItem
             avatarSource: "image://ImageProvider/currentPlayerAvatarMedium"
@@ -78,7 +78,7 @@ Rectangle {
         PlayersStatisticItem
         {
             id:player2
-            visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -96,7 +96,7 @@ Rectangle {
         PlayersStatisticItem
         {
             id:player3
-            visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -114,7 +114,7 @@ Rectangle {
         PlayersStatisticItem
         {
             id:player4
-            visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -132,7 +132,7 @@ Rectangle {
         PlayersStatisticItem
         {
             id:player5
-            visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -150,7 +150,7 @@ Rectangle {
         PlayersStatisticItem
         {
             id:player6
-            visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -168,7 +168,7 @@ Rectangle {
         PlayersStatisticItem
         {
             id:player7
-            visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -187,7 +187,7 @@ Rectangle {
         PlayersStatisticItem
         {
             id:player8
-            visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
