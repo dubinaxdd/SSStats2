@@ -507,32 +507,26 @@ void GameInfoReader::receiveAverrageApm(int apm)
 
 void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
-    if(m_gameCurrentState == SsGameState::gameStoped)
+    for (int i = 0; i < playersInfoFromScanner.count();i++)
     {
-
-        for (int i = 0; i < playersInfoFromScanner.count();i++)
+        bool playerFinded = false;
+        for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
         {
-            bool playerFinded = false;
-            for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
+            if (playersInfoFromScanner[i].name == m_playersInfoFromScanner[j].name)
             {
-                if (playersInfoFromScanner[i].name == m_playersInfoFromScanner[j].name)
-                {
-                    playerFinded = true;
-                    break;
-                }
-            }
-
-            if(!playerFinded)
-            {
-                m_playersInfoFromScanner.append(playersInfoFromScanner[i]);
-                qDebug() << "INFO: finded palyer:" << m_playersInfoFromScanner.last().name;
+                playerFinded = true;
+                break;
             }
         }
 
-        m_playersInfoFromScanner = playersInfoFromScanner;
-
-        m_playersCountFromScanner = playersCount;
+        if(!playerFinded)
+        {
+            m_playersInfoFromScanner.append(playersInfoFromScanner[i]);
+            qDebug() << "INFO: finded player:" << m_playersInfoFromScanner.last().name;
+        }
     }
+
+    m_playersCountFromScanner = playersCount;
 }
 
 void GameInfoReader::setGameLounched(bool newGameLounched)

@@ -125,17 +125,17 @@ void HookManager::reconnectHook()
 
     mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
     //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
-    if (mouseHook == NULL)
+    /*if (mouseHook == NULL)
         qDebug() << "INFO: MouseHook failed";
     else
-        qDebug() << "INFO: MouseHook accepted";
+        qDebug() << "INFO: MouseHook accepted";*/
 
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
     //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
-    if (keyboardHook == NULL)
+   /* if (keyboardHook == NULL)
         qDebug() << "INFO: KeyboardHook failed";
     else
-        qDebug() << "INFO: KeyboardHook accepted";
+        qDebug() << "INFO: KeyboardHook accepted";*/
 }
 
 void HookManager::onInputBlockStateChanged(bool state)

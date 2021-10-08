@@ -98,12 +98,15 @@ void StatisticPanel::receivePlayersCount(int playersCount)
     emit playersStatsChanged();
 }
 
-void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo)
+void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
 {
+    int needPlayersCount = playersCount;
+
     for (int i = 0; i < playersInfo.count(); i++)
     {
         if(playersInfo.at(i).steamId == m_curentPlayerStatsItem->playersStats().steamId)
         {
+            needPlayersCount--;
             playersInfo.removeAt(i);
             break;
         }
@@ -122,9 +125,15 @@ void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerIn
         }
     }
 
-    for (int i = 0; i < playersInfo.count(); i++)
+    if(needPlayersCount > 7 )
+        needPlayersCount = 7;
+
+    if(playersInfo.count() < needPlayersCount)
+        needPlayersCount = playersInfo.count();
+
+    for (int i = 0; i < needPlayersCount; i++)
     {
-        m_playersStatsItems[i]->setPlayerSteamId(playersInfo.at(i).steamId);
+            m_playersStatsItems[i]->setPlayerSteamId(playersInfo.at(i).steamId);
     }
 }
 
