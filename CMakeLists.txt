@@ -84,7 +84,7 @@ set(PROJECT_SOURCES
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(SSStats2
+    qt_add_executable(SSStats2 WIN32
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
@@ -96,7 +96,7 @@ else()
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(SSStats2
+        add_executable(SSStats2 WIN32
           ${PROJECT_SOURCES}
         )
     endif()
