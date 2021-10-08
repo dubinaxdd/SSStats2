@@ -115,7 +115,8 @@ void Core::ssMaximized(bool maximized)
             {
                 m_ssRect = ssRect;
                 //MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
-                SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
+                qDebug() << "INFO: SSRect size:" << ssRect.left << ssRect.top << ssRect.right - ssRect.left << ssRect.bottom - ssRect.top;
+                SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong);
                 m_uiBackend->setWindowTopmost(true);
             }
             m_topmostTimer->start();

@@ -107,8 +107,8 @@ void SsController::checkWindowState()
      {
          if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
          {
-             parseSsSettings();                                  ///<Считываем настройки соулсторма
              m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
+             parseSsSettings();                                  ///<Считываем настройки соулсторма
              emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
              qDebug() << "INFO: Soulstorm window opened";
 
@@ -153,11 +153,12 @@ void SsController::checkWindowState()
          {
              m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
              m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
-             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
              m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
-             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
-             m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
              m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
+             m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
+             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
+
              //m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
              qDebug() << "WARNING: Soulstorm window closed";
          }
