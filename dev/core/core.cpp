@@ -76,7 +76,7 @@ void Core::topmostTimerTimout()
                     if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                     {
                         m_ssRect = ssRect;
-                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
+                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
                         m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                     }
@@ -114,9 +114,9 @@ void Core::ssMaximized(bool maximized)
             if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
             {
                 m_ssRect = ssRect;
+
                 //MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
-                qDebug() << "INFO: SSRect size:" << ssRect.left << ssRect.top << ssRect.right - ssRect.left << ssRect.bottom - ssRect.top;
-                SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong);
+                SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
                 m_uiBackend->setWindowTopmost(true);
             }
             m_topmostTimer->start();
@@ -130,18 +130,15 @@ void Core::ssMaximized(bool maximized)
                 if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                 {
                     m_ssRect = ssRect;
-                    SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
-
+                    SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
                     LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
-                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
                     //m_uiBackend->setWindowedMode();
-
                     m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                 }
             }
             m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
         }
-
 
         m_topmostTimer->start();
     }
