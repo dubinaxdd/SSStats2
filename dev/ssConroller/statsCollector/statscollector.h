@@ -6,6 +6,7 @@
 #include "../../baseTypes/baseTypes.h"
 #include <QImage>
 #include <QSharedPointer>
+#include <QTimer>
 
 class StatsCollector : public QObject
 {
@@ -32,8 +33,9 @@ private slots:
     void receiveSteamInfoReply(QNetworkReply* reply);
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<ServerPlayerStats> playerInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
-
     void receivePlayerSteamData(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
+
+    void currentPlayerStatsRequestTimerTimeout();
 
 
 private:
@@ -42,6 +44,9 @@ private:
     QString CRC32fromByteArray( const QByteArray & array );
 
 private:
+
+    QTimer *m_currentPlayerStatsRequestTimer;
+
     QString m_steamPath;
     QString m_ssPath;
     bool m_currentPlayerAccepted = false;

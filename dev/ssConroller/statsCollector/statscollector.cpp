@@ -9,8 +9,8 @@
 #include <QJsonArray>
 #include <QBuffer>
 
-
-//#define SERVER_ADDRESS "http://207.154.238.90"
+#define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 5000
+//#define SERVER_ADDRESS "http://164.90.187.79/"
 #define SERVER_ADDRESS "https://dowstats.ru/"
 #define SERVER_VERSION "108"
 
@@ -21,6 +21,12 @@ StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *paren
 {
     m_networkManager = new QNetworkAccessManager(this);
     m_currentPlayerStats = QSharedPointer<ServerPlayerStats>(new ServerPlayerStats);
+
+    m_currentPlayerStatsRequestTimer = new QTimer(this);
+    m_currentPlayerStatsRequestTimer->setInterval(CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL);
+    connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsCollector::currentPlayerStatsRequestTimerTimeout, Qt::QueuedConnection);
+
+    m_currentPlayerStatsRequestTimer->start();
 
     qDebug() << "INFO: OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
@@ -252,6 +258,12 @@ void StatsCollector::receivePlayerSteamData(QNetworkReply *reply, QSharedPointer
     getPlayerMediumAvatar(avatarUrl, playerInfo);
 
     reply->deleteLater();
+}
+
+void StatsCollector::currentPlayerStatsRequestTimerTimeout()
+{
+    if (!m_currentPlayerStats->steamId.isEmpty())
+        getPlayerStatsFromServer(m_currentPlayerStats);
 }
 
 void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)

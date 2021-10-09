@@ -240,12 +240,8 @@ void GameInfoReader::readGameInfo()
 
 void GameInfoReader::readGameParametresAfterStop()
 {
-   qDebug() << "asd1";
-
     //if (m_gameCurrentState != SsGameState::gameStarted)
     //    return;
-
-    qDebug() << "asd2";
 
     bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                            && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
