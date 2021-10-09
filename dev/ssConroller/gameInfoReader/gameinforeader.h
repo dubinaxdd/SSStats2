@@ -41,9 +41,13 @@ signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
 private:
+    void checkCurrentMode();
+
+private:
     QTimer* m_gameInfoReadTimer;
     QString m_ssPath;
     QString m_currentProfile;
+    QString m_currentMode;
 
     QVector<WinCondition> m_winCoditionsVector;
 

@@ -55,6 +55,7 @@ void GameInfoReader::readGameInfo()
                 break;
             }
 
+
             if(line.contains("MOD -- Game Over at frame"))
             {
                 if (m_gameCurrentState != SsGameState::gameOver)
@@ -486,7 +487,7 @@ void GameInfoReader::readGameParametresAfterStop()
 
     replayInfo.mapName = scenario;
     replayInfo.gameTime = duration;
-    replayInfo.mod = "dxp2";
+    replayInfo.mod = m_currentMode;
 
     if (winBy == "ANNIHILATE")
         replayInfo.winBy = WinCondition::ANNIHILATE;
@@ -566,5 +567,42 @@ void GameInfoReader::checkGameInitialize()
         qDebug() << "INFO: SS Initialized";
         m_ssCurrentState = SsState::ssInitialized;
         emit gameInitialized();
+
+        checkCurrentMode();
+    }
+}
+
+void GameInfoReader::checkCurrentMode()
+{
+    QFile file(m_ssPath+"\\warnings.log");
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTextStream textStream(&file);
+        QStringList fileLines = textStream.readAll().split("\r");
+
+        int counter = fileLines.size();
+
+        while (counter!=0)
+        {
+            QString line = fileLines.at(counter-1);
+
+            ///Дергаем текущий мод
+            if(line.contains("MOD -- Initializing Mod"))
+            {
+                m_currentMode = line.right(line.size() - 39);
+
+                for (int i = 0; i < m_currentMode.size(); i++)
+                {
+                    if(m_currentMode.at(i) == ',')
+                        m_currentMode = m_currentMode.left(i);
+                }
+
+                qDebug() << "INFO: Current mode:" << m_currentMode;
+                break;
+            }
+
+            counter--;
+        }
     }
 }
