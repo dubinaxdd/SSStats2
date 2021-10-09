@@ -52,6 +52,7 @@ void UiBackend::onLoadStarted()
 {
     m_loadStarted = true;
     m_gamePanel->onGameStopped();
+    m_statisticPanel->setBlockUpdate(true);
 
     m_headerVisible = false;
     m_patyStatisticVisible = false;
@@ -222,6 +223,7 @@ void UiBackend::onGameStopped()
     m_missionStarted = false;
 
     m_gamePanel->onGameStopped();
+    m_statisticPanel->setBlockUpdate(false);
 
     if(m_patyStatisticVisibleButtonPressedState)
     {

@@ -129,13 +129,13 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             if (allPlayersInfo.count() == 0)
             {
 
-                if (i < 100)
-                     continue;
+               // if (i < 100)
+               //      continue;
 
                 for (int k = i - 100; k < i; k++)
                 {
-                    if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix)))
-                        break;
+                //    if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix)))
+               //         break;
 
                     for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
                     {
@@ -167,13 +167,13 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 if (allPlayersInfo.count() == 0)
                 {
 
-                    if (i < 100)
-                         continue;
+                 //   if (i < 100)
+                 //        continue;
 
                     for (int k = i - 100; k < i; k++)
                     {
-                        if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix2)))
-                            break;
+                      //  if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix2)))
+                       //     break;
 
                         for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix2)); t++)
                         {

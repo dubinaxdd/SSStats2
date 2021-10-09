@@ -25,6 +25,8 @@ public:
 
     void setExpandPatyStatistic(bool newExpandPatyStatistic);
 
+    void setBlockUpdate(bool newBlockUpdate);
+
 signals:
     void currentPlayerStatsChanged();
     void playersStatsChanged();
@@ -52,6 +54,8 @@ private:
     ImageProvider *m_imageProvider;
     int m_playersCount = 0;
     bool m_expandPatyStatistic = false;
+
+    bool m_blockUpdate = false;
 };
 
 #endif // STATISTICPANEL_H

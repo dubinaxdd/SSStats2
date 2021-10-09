@@ -15,6 +15,9 @@ StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
 
 void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)
 {
+    if (m_blockUpdate)
+        return;
+
     if (serverPlayerStats.isCurrentPlayer)
     {
 
@@ -50,6 +53,9 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
 void StatisticPanel::receivePlayersCount(int playersCount)
 {
+    if (m_blockUpdate)
+        return;
+
     if (m_playersCount == playersCount)
         return;
 
@@ -100,6 +106,9 @@ void StatisticPanel::receivePlayersCount(int playersCount)
 
 void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
 {
+    if (m_blockUpdate)
+        return;
+
     int needPlayersCount = playersCount;
 
     for (int i = 0; i < playersInfo.count(); i++)
@@ -175,6 +184,11 @@ StatisticPanelItem *StatisticPanel::getPlayer7StatsItem()
 StatisticPanelItem *StatisticPanel::getPlayer8StatsItem()
 {
     return m_playersStatsItems[6];
+}
+
+void StatisticPanel::setBlockUpdate(bool newBlockUpdate)
+{
+    m_blockUpdate = newBlockUpdate;
 }
 
 void StatisticPanel::setExpandPatyStatistic(bool newExpandPatyStatistic)
