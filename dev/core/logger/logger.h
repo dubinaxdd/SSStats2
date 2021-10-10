@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QSharedPointer>
 #include <QFile>
-#include <QTextStream>
 
 #include <QLoggingCategory>
 Q_DECLARE_LOGGING_CATEGORY(logDebug)
@@ -23,10 +22,6 @@ public:
 
 private:
     static void messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg);
-    // Smart pointer to log file
-
-
-
 };
 
 #endif // LOGGER_H

@@ -1,3 +1,7 @@
+Dubina_xdd:
 C:\Qt\5.15.2\mingw81_32\bin\windeployqt.exe C:\build\SSStats2Release\SSStats2.exe -qmldir C:\Qt\5.15.2\mingw81_32\qml -verbose=2
+
+Anibus:
+E:\Qt\5.15.2\mingw81_32\bin\windeployqt.exe C:\projects\build-SSStats2-Desktop_Qt_5_15_2_MinGW_32_bit-Release\SSStats2.exe -qmldir E:\Qt\5.15.2\mingw81_32\qml -verbose=2
 
 Если не додеплоилось пихаем папку C:\Qt\5.15.2\mingw81_32\qml\Qt\labs\platform руками так чтоб в папке с релизом была папка Qt\labs\platform

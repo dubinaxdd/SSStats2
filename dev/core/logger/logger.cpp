@@ -1,6 +1,7 @@
 #include "logger.h"
 
 #include <QDateTime>
+#include <QDebug>
 #include <QCoreApplication>
 #include <QDir>
 #include <QDebug>
@@ -26,23 +27,14 @@ Logger::~Logger()
 // The implementation of the handler
 void Logger::messageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
+
+    QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ");
+    QString logMessage = date + context.category + ": " + msg;
+
     // Open stream file writes
-    QTextStream out(m_logFile.data());
-    // Write the date of recording
-    out << QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ");
-    // By type determine to what level belongs message
-    switch (type)
-    {
-        case QtInfoMsg:      break;
-        case QtDebugMsg:     break;
-        case QtWarningMsg:   break;
-        case QtCriticalMsg:  break;
-        case QtFatalMsg:     break;
-    }
-    // Write to the output category of the message and the message itself
-    out << context.category << ": "
-        << msg << Qt::endl;
+    QTextStream fileOutput(m_logFile.data());
+    fileOutput << logMessage <<  Qt::endl;
+    fileOutput.flush();
 
-    out.flush();    // Clear the buffered data
+    QTextStream(stdout) << logMessage <<  Qt::endl;
 }
-
