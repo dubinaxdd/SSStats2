@@ -7,6 +7,7 @@
 #include <QImage>
 #include <QSharedPointer>
 #include <QTimer>
+#include "../../core/logger/logger.h"
 
 class StatsCollector : public QObject
 {

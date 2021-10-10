@@ -28,7 +28,7 @@ StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *paren
 
     m_currentPlayerStatsRequestTimer->start();
 
-    qDebug() << "INFO: OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
+    qInfo(logInfo()) << "OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
 }
 
 void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
@@ -64,7 +64,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");
 
-    qDebug() << "INFO: loginusers path: " <<  m_steamPath + "\\config\\loginusers.vdf";
+    qInfo(logInfo()) << "loginusers path: " <<  m_steamPath + "\\config\\loginusers.vdf";
 
     if(file.open(QIODevice::ReadOnly))
     {
@@ -137,8 +137,6 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-    //qDebug() << jsonDoc;
-
     QVariantMap playerInfo = jsonDoc.object().toVariantMap();
     QVariantMap response = playerInfo.value("response", QVariantMap()).toMap();
     QVariantList players = response.value("players", QVariantList()).toList();
@@ -161,16 +159,16 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     // после этого можно так же прерывать цикл, так как нужный игрок найден
     if(player.value("personastate", 0).toInt()==1 && player.value("gameid", 0).toInt()==9450)
     {
-        qDebug() << "INFO: Player" << senderName << "is online";
+        qInfo(logInfo()) << "Player" << senderName << "is online";
         m_currentPlayerAccepted = true;
     }
     else
     {
-        qDebug() << "INFO: Player" << senderName << "is offline";
+        qInfo(logInfo()) << "Player" << senderName << "is offline";
         m_currentPlayerAccepted = false;
     }
 
-    qDebug() << "INFO: Player's nickname and Steam ID associated with Soulstorm:" << senderName << steamId;
+    qInfo(logInfo()) << "Player's nickname and Steam ID associated with Soulstorm:" << senderName << steamId;
 
     m_currentPlayerStats->steamId = steamId;
     m_currentPlayerStats->isCurrentPlayer = true;
@@ -242,8 +240,6 @@ void StatsCollector::receivePlayerSteamData(QNetworkReply *reply, QSharedPointer
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-    //qDebug() << jsonDoc;
-
     QVariantMap info = jsonDoc.object().toVariantMap();
     QVariantMap response = info.value("response", QVariantMap()).toMap();
     QVariantList players = response.value("players", QVariantList()).toList();
@@ -314,7 +310,7 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "winby=" + winCondition + "&";
     url += "version=" + QString::fromStdString(SERVER_VERSION) + "&";
 
-    qDebug() << "INFO: Replay sending url:" << url;
+    qInfo(logInfo()) << "Replay sending url:" << url;
 
     url += "key=" + QLatin1String(SERVER_KEY);
 

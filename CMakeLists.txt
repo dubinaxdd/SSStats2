@@ -75,6 +75,8 @@ set(PROJECT_SOURCES
         dev/baseTypes/baseTypes.h
         dev/uiBackend/statisticPanel/statisticpanelitem.h
         dev/uiBackend/statisticPanel/statisticpanelitem.cpp
+        dev/core/logger/logger.h
+        dev/core/logger/logger.cpp
         defines.h
         qml.qrc
         resources.qrc

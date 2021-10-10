@@ -7,6 +7,7 @@
 #include <QTimer>
 #include <QDateTime>
 #include "../../baseTypes/baseTypes.h"
+#include "../../core/logger/logger.h"
 
 #define TICKS_FOR_ANALYSE 20
 #define MEASURE_TICK_LENGTH 500 // msec

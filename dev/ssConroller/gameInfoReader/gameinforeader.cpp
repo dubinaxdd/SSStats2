@@ -43,7 +43,7 @@ void GameInfoReader::readGameInfo()
                     m_ssCurrentState = SsState::ssShutdowned;
                     emit gameStopped();
                     emit ssShutdown();
-                    qDebug() << "INFO: SS Shutdown";
+                    qInfo(logInfo()) << "SS Shutdown";
                 }
                 break;
             }
@@ -78,7 +78,7 @@ void GameInfoReader::readGameInfo()
                     m_gameCurrentState = SsGameState::gameStoped;
                     emit gameStopped();
 
-                    qDebug() << "INFO: Game Stoped";
+                    qInfo(logInfo()) << "Game Stoped";
                 }
                 break;
             }
@@ -107,59 +107,59 @@ void GameInfoReader::readGameInfo()
                             {
                                 if(winConditionsReadLine.contains("ANNIHILATE")){
                                     m_winCoditionsVector.append(WinCondition::ANNIHILATE);
-                                    qDebug() << "Loaded ANNIHILATE";
+                                    qInfo(logInfo()) << "Loaded ANNIHILATE";
                                 }
 
                                 if(winConditionsReadLine.contains("ASSASSINATE")){
                                     m_winCoditionsVector.append(WinCondition::ASSASSINATE);
-                                    qDebug() << "Loaded ASSASSINATE";
+                                    qInfo(logInfo()) << "Loaded ASSASSINATE";
                                 }
 
                                 if(winConditionsReadLine.contains("CONTROLAREA")){
                                     m_winCoditionsVector.append(WinCondition::CONTROLAREA);
-                                    qDebug() << "Loaded CONTROLAREA";
+                                    qInfo(logInfo()) << "Loaded CONTROLAREA";
                                 }
 
                                 if(winConditionsReadLine.contains("DESTROYHQ")){
                                     m_winCoditionsVector.append(WinCondition::DESTROYHQ);
-                                    qDebug() << "Loaded DESTROYHQ";
+                                    qInfo(logInfo()) << "Loaded DESTROYHQ";
                                 }
 
                                 if(winConditionsReadLine.contains("ECONOMICVICTORY")){
                                     m_winCoditionsVector.append(WinCondition::ECONOMICVICTORY);
-                                    qDebug() << "Loaded ECONOMICVICTORY";
+                                    qInfo(logInfo()) << "Loaded ECONOMICVICTORY";
                                 }
 
                                 if(winConditionsReadLine.contains("GAMETIMER")){
                                     m_winCoditionsVector.append(WinCondition::GAMETIMER);
-                                    qDebug() << "Loaded GAMETIMER";
+                                    qInfo(logInfo()) << "Loaded GAMETIMER";
                                 }
 
                                 if(winConditionsReadLine.contains("STRATEGICOBJECTIVE")){
                                     m_winCoditionsVector.append(WinCondition::STRATEGICOBJECTIVE);
-                                    qDebug() << "Loaded STRATEGICOBJECTIVE";
+                                    qInfo(logInfo()) << "Loaded STRATEGICOBJECTIVE";
                                 }
 
                                 if(winConditionsReadLine.contains("SUDDENDEATH")){
                                     m_winCoditionsVector.append(WinCondition::SUDDENDEATH);
-                                    qDebug() << "Loaded SUDDENDEATH";
+                                    qInfo(logInfo()) << "Loaded SUDDENDEATH";
                                 }
                             }
 
                             winConditionsReadCounter--;
                         }
 
-                        qDebug() << "INFO: Starting game mission";
+                        qInfo(logInfo()) << "Starting game mission";
                     }
                     else if (m_gameCurrentState == SsGameState::playbackLoadStarted)
                     {
                         m_gameCurrentState = SsGameState::playbackStarted;
-                        qDebug() << "INFO: Starting playback mission";
+                        qInfo(logInfo()) << "Starting playback mission";
                     }
                     else if (m_gameCurrentState == SsGameState::savedGameLoadStarted)
                     {
                         m_gameCurrentState = SsGameState::savedGameStarted;
-                        qDebug() << "INFO: Starting saved game mission";
+                        qInfo(logInfo()) << "Starting saved game mission";
                     }
 
                     checkGameInitialize();
@@ -173,7 +173,7 @@ void GameInfoReader::readGameInfo()
                       && m_gameCurrentState != SsGameState::gameOver)
                 {
                     m_gameCurrentState = SsGameState::unknownGameStarted;
-                    qDebug() << "INFO: Starting unknown mission";
+                    qInfo(logInfo()) << "Starting unknown mission";
 
                     checkGameInitialize();
                     emit startingMission(m_gameCurrentState);
@@ -201,7 +201,7 @@ void GameInfoReader::readGameInfo()
                             m_gameCurrentState = SsGameState::playbackLoadStarted;
                             checkGameInitialize();
                             emit loadStarted(m_gameCurrentState);
-                            qDebug() << "INFO: Playback load started";
+                            qInfo(logInfo()) << "Playback load started";
                         }
                         break;
                     }
@@ -214,7 +214,7 @@ void GameInfoReader::readGameInfo()
                             m_gameCurrentState = SsGameState::savedGameLoadStarted;
                             checkGameInitialize();
                             emit loadStarted(m_gameCurrentState);
-                            qDebug() << "INFO: Saved game load started";
+                            qInfo(logInfo()) << "Saved game load started";
                         }
                         break;
                     }
@@ -229,7 +229,7 @@ void GameInfoReader::readGameInfo()
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
                     emit loadStarted(m_gameCurrentState);
-                    qDebug() << "INFO: Game load started";
+                    qInfo(logInfo()) << "Game load started";
                 }
                 break;
             }
@@ -255,7 +255,7 @@ void GameInfoReader::readGameParametresAfterStop()
         return;
 
     QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
-    qDebug() << "INFO: teststats.lua path: " << statsPath;
+    qInfo(logInfo()) << "teststats.lua path: " << statsPath;
 
     QFile file(statsPath);
 
@@ -393,24 +393,24 @@ void GameInfoReader::readGameParametresAfterStop()
         }
     }
 
-    qDebug() << "players count" << playersCount;
-    qDebug() << "computersFinded" << computersFinded;
-    qDebug() << "teamsCount" << teamsCount;
-    qDebug() << "duration" << duration;
-    qDebug() << "winBy" << winBy;
-    qDebug() << "scenario" << scenario;
-    qDebug() << "apm" << m_lastAverrageApm;
+    qInfo(logInfo()) << "Players count:" << playersCount;
+    qInfo(logInfo()) << "Computers finded:" << computersFinded;
+    qInfo(logInfo()) << "Teams count:" << teamsCount;
+    qInfo(logInfo()) << "Duration:" << duration;
+    qInfo(logInfo()) << "Win by:" << winBy;
+    qInfo(logInfo()) << "Scenario:" << scenario;
+    qInfo(logInfo()) << "APM:" << m_lastAverrageApm;
 
     for(int i = 0; i < playerStats.count(); i++)
     {
-        qDebug() << playerStats.at(i).name;
+        qInfo(logInfo()) << "Player name:" << playerStats.at(i).name;
 
         switch (playerStats.at(i).finalState)
         {
-            case inGame: qDebug() << "In Game"; break;
-            case winner: qDebug() << "Winner";  break;
-            case loser: qDebug() << "Looser";   break;
-            default: qDebug() << "Unknown";     break;
+            case inGame: qInfo(logInfo()) << "State In Game"; break;
+            case winner: qInfo(logInfo()) << "State Winner";  break;
+            case loser: qInfo(logInfo()) << "State Looser";   break;
+            default: qInfo(logInfo()) << "State Unknown";     break;
         }
     }
 
@@ -494,7 +494,7 @@ void GameInfoReader::readGameParametresAfterStop()
 
     emit sendReplayToServer(std::move(replayInfo));
 
-    qDebug() << "INFO: Readed played game settings";
+    qInfo(logInfo()) << "Readed played game settings";
 }
 
 void GameInfoReader::receiveAverrageApm(int apm)
@@ -519,7 +519,7 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         if(!playerFinded)
         {
             m_playersInfoFromScanner.append(playersInfoFromScanner[i]);
-            qDebug() << "INFO: finded player:" << m_playersInfoFromScanner.last().name;
+            qInfo(logInfo()) << "Finded player:" << m_playersInfoFromScanner.last().name;
         }
     }
 
@@ -545,7 +545,7 @@ void GameInfoReader::ssWindowClosed()
     m_ssCurrentState = SsState::ssShutdowned;
     emit gameStopped();
     emit ssShutdown();
-    qDebug() << "INFO: SS Shutdown";
+    qInfo(logInfo()) << "SS Shutdown";
 }
 
 bool GameInfoReader::getGameInitialized()
@@ -560,7 +560,7 @@ void GameInfoReader::checkGameInitialize()
 {
     if(m_ssCurrentState != SsState::ssInitialized)
     {
-        qDebug() << "INFO: SS Initialized";
+        qInfo(logInfo()) << "SS Initialized";
         m_ssCurrentState = SsState::ssInitialized;
         emit gameInitialized();
 
@@ -594,7 +594,7 @@ void GameInfoReader::checkCurrentMode()
                         m_currentMode = m_currentMode.left(i);
                 }
 
-                qDebug() << "INFO: Current mode:" << m_currentMode;
+                qInfo(logInfo()) << "Current mode:" << m_currentMode;
                 break;
             }
 

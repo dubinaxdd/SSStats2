@@ -13,6 +13,7 @@
 #include "apmMeter/apmmeter.h"
 #include <QThread>
 #include <QMutex>
+#include "../core/logger/logger.h"
 
 class SsController : public QObject
 {

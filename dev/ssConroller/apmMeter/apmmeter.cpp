@@ -24,7 +24,7 @@ void APMMeter::onGameStarted(SsGameState gameCurrentState)
     if(!(gameCurrentState == SsGameState::gameStarted || gameCurrentState == SsGameState::savedGameStarted))
         return;
 
-    qDebug() << "INFO: APM analyse started";
+    qInfo(logInfo()) << "APM analyse started";
     started = true;
 
     // RESET ALL APM DATA
@@ -41,7 +41,7 @@ void APMMeter::onGameStarted(SsGameState gameCurrentState)
 
 void APMMeter::onGameStopped()
 {
-    qDebug() << "INFO: APM analyse stopped";
+    qInfo(logInfo()) << "APM analyse stopped";
     started = false;
     measureTickTimer->stop();
     emit sendAverrageApm(m_lastAverrageApm);

@@ -7,6 +7,7 @@
 
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
+    , m_logger(new Logger(this))
     , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(context))
@@ -14,12 +15,13 @@ Core::Core(QQmlContext *context, QObject* parent)
 {
     registerTypes();
 
+
+
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
     m_topmostTimer->setInterval(500);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
-
 
     QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   this,                       &Core::ssLaunched,                              Qt::QueuedConnection);

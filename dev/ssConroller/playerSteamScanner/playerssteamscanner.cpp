@@ -1,9 +1,5 @@
 #include "playerssteamscanner.h"
-//#include <QFile>
-//#include <QDir>
 #include <QVariantList>
-//#include <QCoreApplication>
-//#include <QSettings>
 #include <QDebug>
 #include <iostream>
 #include <fstream>
