@@ -13,6 +13,7 @@
 #include "apmMeter/apmmeter.h"
 #include <QThread>
 #include <QMutex>
+#include "../core/logger/logger.h"
 
 class SsController : public QObject
 {
@@ -45,6 +46,7 @@ public slots:
 
 private slots:
     void checkSS();
+    void checkWindowState();
     void gameInitialized();
     void ssShutdown();
     void readTestStats();
@@ -67,6 +69,7 @@ private:
     HWND m_soulstormHwnd = NULL;
 
     QTimer* m_ssLaunchControllTimer;
+    QTimer* m_ssWindowControllTimer;
     
     QString m_ssPath;
     QString m_steamPath;
@@ -77,6 +80,8 @@ private:
     bool m_ssLounchState = false;
     bool m_ssMaximized = false;
     bool m_ssWindowed = false;
+
+    bool m_gameInitialized;
 
     GameInfoReader* m_gameInfoReader;
     PlayersSteamScanner* m_playersSteamScanner;

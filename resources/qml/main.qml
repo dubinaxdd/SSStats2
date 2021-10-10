@@ -2,8 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
-
-
+import Qt.labs.platform 1.1
 
 Window {
     id: window
@@ -28,7 +27,12 @@ Window {
 
         function onSendMousePress(){
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
-            //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, columnLayout3.x + statsHeader.expandButtonRectangleX, columnLayout3.y + statsHeader.expandButtonRectangleY, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
+          /*  console.log("Windowed mode: ", _uiBackend.ssWindowed, "xMousePos: ", xMousePos, "yMousePos: ", yMousePos,
+                        "Button position X: ", columnLayout3.x + statsHeader.expandButtonRectangle.x,
+                        "Button position Y: ",columnLayout3.y + statsHeader.expandButtonRectangle.y,
+                        "Window position X:", window.x, "Window position Y:", window.y,
+                        "Window wifth:",window.width, "Window height:", window.height ,
+                        "mouseAreaWidth:", mouseAreaWidth, "mouseAreaHeight:", mouseAreaHeight);*/
 
             // Кнопка "Развернуть оверлей"
             if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangle.x &&
@@ -162,7 +166,8 @@ Window {
             }
 
             // Отлавливаем все координаты курсора при перемещении
-            //console.log(_uiBackend.ssWindowPositionX, _uiBackend.ssWindowPositionY, _uiBackend.ssWindowed, xMousePos, yMousePos, fullOverlay.x + fullOverlay.buttonSettings.x, fullOverlay.y + fullOverlay.buttonSettings.y, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
+            //console.log("Позиция курсора Х: ", _uiBackend.ssWindowPositionX, "Позиция курсора У: ",_uiBackend.ssWindowPositionY,
+            //            "Оконный режим: ", _uiBackend.ssWindowed, "xMousePos: ", xMousePos, "yMousePos: ", yMousePos, fullOverlay.x + fullOverlay.buttonSettings.x, fullOverlay.y + fullOverlay.buttonSettings.y, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
 
 
             // Кнопка "Развернуть оверлей"
@@ -296,6 +301,19 @@ Window {
         }
     }
 
+    SystemTrayIcon {
+        id: trayIcon
+        visible: true
+        icon.source: "qrc:/icons/resources/icons/ssstats.ico"
+
+        menu: Menu {
+            MenuItem {
+                text: qsTr("Exit")
+
+                onTriggered: Qt.quit()
+            }
+        }
+    }
 
     Rectangle {
         id: windowRectangle
@@ -355,7 +373,7 @@ Window {
                         visible: _uiBackend.headerVisible
                     }
 
-                    PatyStatistic
+                    PlayersStatistic
                     {
                         id: patyStatistic
                         Layout.fillWidth: false

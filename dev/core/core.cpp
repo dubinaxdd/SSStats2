@@ -5,9 +5,9 @@
 #include "../baseTypes/baseTypes.h"
 #include "dev/core/hookManager/hookmanager.h"
 
-
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
+    , m_logger(new Logger(this))
     , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(context))
@@ -15,12 +15,13 @@ Core::Core(QQmlContext *context, QObject* parent)
 {
     registerTypes();
 
+
+
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
     m_topmostTimer->setInterval(500);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
-
 
     QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   this,                       &Core::ssLaunched,                              Qt::QueuedConnection);
@@ -33,6 +34,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::loadStarted,           m_uiBackend,                &UiBackend::onLoadStarted,      Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_uiBackend,                &UiBackend::onGameStopped,      Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_uiBackend,                &UiBackend::onStartingMission,  Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameOver,              m_uiBackend,                &UiBackend::onGameOver,  Qt::QueuedConnection);
 
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::currentApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onCurrentApmChanged,            Qt::QueuedConnection);
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::averageApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onAverageApmChanged,            Qt::QueuedConnection);
@@ -76,7 +78,7 @@ void Core::topmostTimerTimout()
                     if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                     {
                         m_ssRect = ssRect;
-                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
+                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
                         m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                     }
@@ -85,8 +87,6 @@ void Core::topmostTimerTimout()
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
 
                     m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
-
-
                 }
            }
            BringWindowToTop(m_ssStatsHwnd);
@@ -98,6 +98,8 @@ void Core::topmostTimerTimout()
 
 void Core::ssMaximized(bool maximized)
 {
+    HookManager::instance()->reconnectHook();
+
     if (maximized)
     {
         int width =  GetSystemMetrics(SM_CXSCREEN);
@@ -114,8 +116,9 @@ void Core::ssMaximized(bool maximized)
             if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
             {
                 m_ssRect = ssRect;
+
                 //MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
-                SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
+                SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
                 m_uiBackend->setWindowTopmost(true);
             }
             m_topmostTimer->start();
@@ -129,18 +132,15 @@ void Core::ssMaximized(bool maximized)
                 if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                 {
                     m_ssRect = ssRect;
-                    SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_defaultWindowLong );
-
+                    SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
                     LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
-                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
                     //m_uiBackend->setWindowedMode();
-
                     m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                 }
             }
             m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
         }
-
 
         m_topmostTimer->start();
     }
@@ -156,6 +156,8 @@ void Core::ssMaximized(bool maximized)
 
 void Core::gameInitialized()
 {
+    HookManager::instance()->reconnectHook();
+
     m_topmostTimer->start();
 
     if(m_ssController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
@@ -180,6 +182,7 @@ void Core::registerTypes()
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
     qRegisterMetaType<QList<SearchStemIdPlayerInfo>>("QList<SearchStemIdPlayerInfo>");
     qRegisterMetaType<SsGameState>("SsGameState");
+    qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
 }
 
 UiBackend *Core::uiBackend() const

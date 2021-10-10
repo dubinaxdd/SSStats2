@@ -1,19 +1,44 @@
 #include "gamepanel.h"
 #include <QDebug>
 
+#define GAME_LEAVE_TIMER_INTERVAL 1000
+
 GamePanel::GamePanel(QObject *parent) : QObject(parent)
 {
     m_racePanelVisibleTimer = new QTimer(this);
     m_racePanelVisibleTimer->setInterval(20000);
     m_racePanelVisibleTimer->setSingleShot(true);
 
+    m_gameLeaveTimer = new QTimer(this);
+    m_gameLeaveTimer->setInterval(GAME_LEAVE_TIMER_INTERVAL);
+
+
     QObject::connect(m_racePanelVisibleTimer, &QTimer::timeout, this, &GamePanel::racePanelVisibleTimerTimeout, Qt::QueuedConnection);
+    QObject::connect(m_gameLeaveTimer, &QTimer::timeout, this, &GamePanel::gameLeaveTimerTimeout, Qt::QueuedConnection);
 }
 
 void GamePanel::racePanelVisibleTimerTimeout()
 {
     m_racePanelVisisble = false;
     emit racePanelVisibleChanged(m_racePanelVisisble);
+}
+
+void GamePanel::gameLeaveTimerTimeout()
+{
+    m_gameLeaveTimeLeft--;
+
+    if(m_gameLeaveTimeLeft < -5)
+    {
+
+        m_gameLeaveTimer->stop();
+        m_gameLeaveTimerVisible = false;
+        emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+    }
+    else if (m_gameLeaveTimeLeft >= 0)
+    {
+        emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
+    }
+
 }
 
 void GamePanel::onCurrentApmChanged(quint64 val)
@@ -30,10 +55,12 @@ void GamePanel::onAverageApmChanged(quint64 val)
 
 void GamePanel::onGameStopped()
 {
-    m_currentApm = QString("-");
+    m_gameLeaveTimer->stop();
+
+   /* m_currentApm = QString("-");
     m_averageApm = QString("-");
     emit currentApmUpdate();
-    emit averageApmUpdate();
+    emit averageApmUpdate();*/
 
     m_player0Race = "";
     m_player1Race = "";
@@ -52,6 +79,30 @@ void GamePanel::onGameStopped()
     emit racePanelVisibleChanged(m_racePanelVisisble);
 }
 
+void GamePanel::onGameStarted(SsGameState gameCurrentState)
+{
+    if (gameCurrentState == SsGameState::unknownGameStarted || gameCurrentState == SsGameState::playbackStarted)
+    {
+        m_currentApm = QString("-");
+        m_averageApm = QString("-");
+        emit currentApmUpdate();
+        emit averageApmUpdate();
+    }
+
+    if (gameCurrentState != SsGameState::gameStarted)
+    {
+        m_gameLeaveTimerVisible = false;
+        emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+        return;
+    }
+
+    m_gameLeaveTimeLeft = 30;
+    emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
+    m_gameLeaveTimer->start();
+    m_gameLeaveTimerVisible = true;
+    emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+}
+
 
 void GamePanel::receivePlayersTestStats(QVector<PlayerStats> testStats)
 {
@@ -67,28 +118,28 @@ void GamePanel::receivePlayersTestStats(QVector<PlayerStats> testStats)
         return;
 
     if(!testStats.at(0).name.isEmpty())
-        m_player0Race = "Team " + QString::number(testStats.at(0).team.toInt() + 1) + ": " + testStats.at(0).name.toLocal8Bit() + " - " + testStats.at(0).race;
+        m_player0Race = "Team " + QString::number(testStats.at(0).team.toInt() + 1) + ": " + testStats.at(0).name/*.toLocal8Bit()*/ + " - " + testStats.at(0).race;
 
     if(!testStats.at(1).name.isEmpty())
-        m_player1Race = "Team " + QString::number(testStats.at(1).team.toInt() + 1) + ": " + testStats.at(1).name.toLocal8Bit()  + " - " + testStats.at(1).race;
+        m_player1Race = "Team " + QString::number(testStats.at(1).team.toInt() + 1) + ": " + testStats.at(1).name/*.toLocal8Bit()*/  + " - " + testStats.at(1).race;
 
     if(!testStats.at(2).name.isEmpty())
-        m_player2Race = "Team " + QString::number(testStats.at(2).team.toInt() + 1) + ": " + testStats.at(2).name.toLocal8Bit()  + " - " + testStats.at(2).race;
+        m_player2Race = "Team " + QString::number(testStats.at(2).team.toInt() + 1) + ": " + testStats.at(2).name/*.toLocal8Bit()*/  + " - " + testStats.at(2).race;
 
     if(!testStats.at(3).name.isEmpty())
-        m_player3Race = "Team " + QString::number(testStats.at(3).team.toInt() + 1) + ": " + testStats.at(3).name.toLocal8Bit()  + " - " + testStats.at(3).race;
+        m_player3Race = "Team " + QString::number(testStats.at(3).team.toInt() + 1) + ": " + testStats.at(3).name/*.toLocal8Bit()*/  + " - " + testStats.at(3).race;
 
     if(!testStats.at(4).name.isEmpty())
-        m_player4Race = "Team " + QString::number(testStats.at(4).team.toInt() + 1) + ": " + testStats.at(4).name.toLocal8Bit()  + " - " + testStats.at(4).race;
+        m_player4Race = "Team " + QString::number(testStats.at(4).team.toInt() + 1) + ": " + testStats.at(4).name/*.toLocal8Bit()*/  + " - " + testStats.at(4).race;
 
     if(!testStats.at(5).name.isEmpty())
-        m_player5Race = "Team " + QString::number(testStats.at(5).team.toInt() + 1) + ": " + testStats.at(5).name.toLocal8Bit()  + " - " + testStats.at(5).race;
+        m_player5Race = "Team " + QString::number(testStats.at(5).team.toInt() + 1) + ": " + testStats.at(5).name/*.toLocal8Bit()*/  + " - " + testStats.at(5).race;
 
     if(!testStats.at(6).name.isEmpty())
-        m_player6Race = "Team " + QString::number(testStats.at(6).team.toInt() + 1) + ": " + testStats.at(6).name.toLocal8Bit()  + " - " + testStats.at(6).race;
+        m_player6Race = "Team " + QString::number(testStats.at(6).team.toInt() + 1) + ": " + testStats.at(6).name/*.toLocal8Bit()*/  + " - " + testStats.at(6).race;
 
     if(!testStats.at(7).name.isEmpty())
-        m_player7Race = "Team " + QString::number(testStats.at(7).team.toInt() + 1) + ": " + testStats.at(7).name.toLocal8Bit()  + " - " + testStats.at(7).race;
+        m_player7Race = "Team " + QString::number(testStats.at(7).team.toInt() + 1) + ": " + testStats.at(7).name/*.toLocal8Bit()*/  + " - " + testStats.at(7).race;
 
 
     replaceRaceKeyword(&m_player0Race);

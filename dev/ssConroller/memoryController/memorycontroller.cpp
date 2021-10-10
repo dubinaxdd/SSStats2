@@ -37,7 +37,7 @@ void MemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
 
 void MemoryController::onNoFogStateChanged(bool state)
 {
-    qDebug() << "INFO: Fog state: " <<  state;
+    qInfo(logInfo()) << "Fog state: " <<  state;
 
     targetNoFog = state;
 
@@ -47,7 +47,7 @@ void MemoryController::onNoFogStateChanged(bool state)
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
     HANDLE hProcess = OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, 0, PID);
     if(hProcess==nullptr){
-        qDebug() << "Could not open process" << GetLastError();
+        qWarning(logWarning()) << "Could not open process" << GetLastError();
         return;
     }
 
@@ -57,16 +57,16 @@ void MemoryController::onNoFogStateChanged(bool state)
         ReadProcessMemory(hProcess, MapSkyDistanceAddr, temp6_2, 6, nullptr);
 
         if(targetNoFog&&memcmp(temp6, CodeFog, 6)==0){ // Проверяем совпали ли прочитанные ранее данные "Тумана" с базовыми оригинальными данными (заведомо нам известны).
-            qDebug() << "Disable fog";
+            qInfo(logInfo()) << "Disable fog";
             WriteProcessMemory(hProcess, FogAddr, nop_array6, 6, nullptr); // Записываем данные в память процесса "Dawn of War: Soulstorm" по адресу "Тумана" (FogAddr) из буфера nop_array6 в количестве 6 байт
         } else if(!targetNoFog){ // Если данные не совпали и/или необходимо вернуть оригинальные данные
-            qDebug() << "Enable fog";
+            qInfo(logInfo()) << "Enable fog";
             WriteProcessMemory(hProcess, FogAddr, CodeFog, 6, nullptr);
         }
         if(targetNoFog&&memcmp(temp4, CodeF512, 4)==0){
             VirtualProtectEx(hProcess, Float512Addr, 4, PAGE_EXECUTE_READWRITE, &Float512OldProtect);
             if(!WriteProcessMemory(hProcess, Float512Addr, Float512, 4, nullptr))
-                qDebug() << "Could not write CodeF512 to memory";
+                qWarning(logWarning()) << "Could not write CodeF512 to memory";
             VirtualProtectEx(hProcess, Float512Addr, 4, Float512OldProtect, nullptr);
         } else if(!targetNoFog){
             //qDebug() << "temp4 is not equal to CodeF512";
@@ -76,7 +76,7 @@ void MemoryController::onNoFogStateChanged(bool state)
         }
         if(targetNoFog&&memcmp(temp6_2, CodeMapSkyDistance, 6)==0){
             if(!WriteProcessMemory(hProcess, MapSkyDistanceAddr, nop_array6, 6, nullptr))
-                qDebug() << "Could not write CodeMapSkyDistance to memory";
+                qWarning(logWarning()) << "Could not write CodeMapSkyDistance to memory";
         } else if(!targetNoFog){
             //qDebug() << "temp6 is not equal to CodeMapSkyDistance";
             WriteProcessMemory(hProcess, MapSkyDistanceAddr, CodeMapSkyDistance, 6, nullptr);

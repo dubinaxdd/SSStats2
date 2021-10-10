@@ -24,6 +24,7 @@ Rectangle {
         GradientStop {
             position: 1
             color: "#000000"
+            //color: "#48cc11"
         }
     }
     Layout.maximumHeight: 60

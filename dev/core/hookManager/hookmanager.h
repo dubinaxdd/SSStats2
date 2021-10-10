@@ -18,7 +18,9 @@ public:
         return p_instance;
     }
 
-    bool inputBlock();
+    bool inputBlock();\
+
+    void reconnectHook();
 
 public slots:
     void onInputBlockStateChanged(bool state);

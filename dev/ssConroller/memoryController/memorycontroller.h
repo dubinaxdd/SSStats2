@@ -6,6 +6,7 @@
 #include <QTextCodec>
 
 #include <Windows.h>
+#include "../../core/logger/logger.h"
 
 class MemoryController : public QObject
 {

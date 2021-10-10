@@ -14,6 +14,8 @@ class GamePanel : public QObject
 
     Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisisble NOTIFY gamePanelVisibleChanged)
     Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisisble NOTIFY racePanelVisibleChanged)
+    Q_PROPERTY(bool gameLeaveTimerVisible MEMBER m_gameLeaveTimerVisible NOTIFY gameLeaveTimerVisibleChanged)
+    Q_PROPERTY(int gameLeaveTimeLeft MEMBER m_gameLeaveTimeLeft NOTIFY gemeLeaveTimeLeftChanged)
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
     Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
@@ -46,15 +48,20 @@ signals:
     void racePanelVisibleChanged(bool);
     void playerTestStatsUpdate();
 
+    void gameLeaveTimerVisibleChanged(bool);
+    void gemeLeaveTimeLeftChanged(int);
+
 public slots:
     void onCurrentApmChanged(quint64 val);
     void onAverageApmChanged(quint64 val);
     void onGameStopped();
+    void onGameStarted(SsGameState gameCurrentState);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
     void expandPlayerRacesButtonClick();
 
 private slots:
     void racePanelVisibleTimerTimeout();
+    void gameLeaveTimerTimeout();
 
 private:
     void replaceRaceKeyword(QString *raceString);
@@ -63,11 +70,16 @@ private:
 private:
     QTimer* m_racePanelVisibleTimer;
 
+    QTimer* m_gameLeaveTimer;
+    int m_gameLeaveTimeLeft = 0;
+    bool m_gameLeaveTimerVisible = true;
+
+
     bool m_gamePanelVisisble = false;
     bool m_racePanelVisisble = false;
 
-    QString m_currentApm;
-    QString m_averageApm;
+    QString m_currentApm = "-";
+    QString m_averageApm = "-";
 
     QString m_player0Race = "";
     QString m_player1Race = "";

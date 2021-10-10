@@ -5,37 +5,35 @@ StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
     : QObject(parent)
     , m_imageProvider(imageProvider)
 {
-    m_playersStats.resize(7);
+    m_curentPlayerStatsItem = new StatisticPanelItem(this);
+
+    for(int i = 0; i < 7; i++)
+        m_playersStatsItems[i] = new StatisticPanelItem(this);
+
+    emit playersItemsInitialized();
 }
 
 void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)
 {
+    if (m_blockUpdate)
+        return;
+
     if (serverPlayerStats.isCurrentPlayer)
     {
-        m_currentPlayerSteamId = serverPlayerStats.steamId;
-        m_currentPlayerApm = QString::number(serverPlayerStats.apm);
-        m_currentPlayerGamesCount = QString::number(serverPlayerStats.gamesCount);
-        m_currentPlayerMmr = QString::number(serverPlayerStats.mmr);
-        m_currentPlayerMmr1v1 = QString::number(serverPlayerStats.mmr1v1);
-        m_currentPlayerIsBanned = serverPlayerStats.isBanned;
-        m_currentPlayerName = serverPlayerStats.name;
 
-        m_currentPlayerRace = getRaceFromNumber(serverPlayerStats.race);
-
-        m_currentPlayerWinRate = QString::number(serverPlayerStats.winRate);
-        m_currentPlayerWinsCount = QString::number(serverPlayerStats.winsCount);
-
+        m_curentPlayerStatsItem->setPlayersStats(serverPlayerStats);
         m_imageProvider->setCurrentPlayerAvatarMedium(serverPlayerStats.avatar);
+        m_curentPlayerStatsItem->setVisible(true);
 
         emit currentPlayerStatsChanged();
     }
     else
     {
-        for (int i = 0; i < m_playersStats.count(); i++)
+        for (int i = 0; i < 7; i++)
         {
-            if(serverPlayerStats.steamId == m_playersStats.at(i).steamId)
+            if(serverPlayerStats.steamId == m_playersStatsItems[i]->playersStats().steamId)
             {
-                m_playersStats[i] =  serverPlayerStats;
+                m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
 
                 switch (i)
                 {
@@ -49,64 +47,75 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
                 }
             }
         }
-
         emit playersStatsChanged();
-
     }
 }
 
 void StatisticPanel::receivePlayersCount(int playersCount)
 {
+    if (m_blockUpdate)
+        return;
+
     if (m_playersCount == playersCount)
         return;
 
     m_playersCount = playersCount;
 
     if(m_playersCount > 1)
-        m_player2StatsVisible = true;
+        m_playersStatsItems[0]->setVisible(true);
     else
-        m_player2StatsVisible = false;
+        m_playersStatsItems[0]->setVisible(false);
 
     if(m_playersCount > 2)
-        m_player3StatsVisible = true;
+        m_playersStatsItems[1]->setVisible(true);
     else
-        m_player3StatsVisible = false;
+        m_playersStatsItems[1]->setVisible(false);
+
 
     if(m_playersCount > 3)
-        m_player4StatsVisible = true;
+        m_playersStatsItems[2]->setVisible(true);
     else
-        m_player4StatsVisible = false;
+        m_playersStatsItems[2]->setVisible(false);
+
 
     if(m_playersCount > 4)
-        m_player5StatsVisible = true;
+        m_playersStatsItems[3]->setVisible(true);
     else
-        m_player5StatsVisible = false;
+        m_playersStatsItems[3]->setVisible(false);
+
 
     if(m_playersCount > 5)
-        m_player6StatsVisible = true;
+        m_playersStatsItems[4]->setVisible(true);
     else
-        m_player6StatsVisible = false;
+        m_playersStatsItems[4]->setVisible(false);
+
 
     if(m_playersCount > 6)
-        m_player7StatsVisible = true;
+        m_playersStatsItems[5]->setVisible(true);
     else
-        m_player7StatsVisible = false;
+        m_playersStatsItems[5]->setVisible(false);
+
 
     if(m_playersCount > 7)
-        m_player8StatsVisible = true;
+        m_playersStatsItems[6]->setVisible(true);
     else
-        m_player8StatsVisible = false;
+        m_playersStatsItems[6]->setVisible(false);
 
     emit playersStatsChanged();
-
 }
 
-void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo)
+void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
 {
+    if (m_blockUpdate)
+        return;
+
+    int needPlayersCount = playersCount;
+
     for (int i = 0; i < playersInfo.count(); i++)
     {
-        if(playersInfo.at(i).steamId == m_currentPlayerSteamId)
+        if(playersInfo.at(i).steamId == m_curentPlayerStatsItem->playersStats().steamId)
         {
+            needPlayersCount--;
             playersInfo.removeAt(i);
             break;
         }
@@ -125,316 +134,67 @@ void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerIn
         }
     }
 
-    for (int i = 0; i < playersInfo.count(); i++)
+    if(needPlayersCount > 7 )
+        needPlayersCount = 7;
+
+    if(playersInfo.count() < needPlayersCount)
+        needPlayersCount = playersInfo.count();
+
+    for (int i = 0; i < needPlayersCount; i++)
     {
-        m_playersStats[i].steamId = playersInfo.at(i).steamId;
+            m_playersStatsItems[i]->setPlayerSteamId(playersInfo.at(i).steamId);
     }
 }
 
-QString StatisticPanel::getRaceFromNumber(int raceNumber)
+StatisticPanelItem *StatisticPanel::getCurentPlayerStatsItem()
 {
+    return m_curentPlayerStatsItem;
+}
 
-    switch(raceNumber)
-    {
-        case 1 : return "Space Marines";
-        case 2 : return "Chaos";
-        case 3 : return "Orks";
-        case 4 : return "Eldar";
-        case 5 : return "Imperial Guard";
-        case 6 : return "Necrons";
-        case 7 : return "Tau Empire";
-        case 8 : return "Sisters of Battle";
-        case 9 : return "Dark Eldar";
-    }
+StatisticPanelItem *StatisticPanel::getPlayer2StatsItem()
+{
+    return m_playersStatsItems[0];
+}
 
-    return "";
+StatisticPanelItem *StatisticPanel::getPlayer3StatsItem()
+{
+    return m_playersStatsItems[1];
+}
+
+StatisticPanelItem *StatisticPanel::getPlayer4StatsItem()
+{
+    return m_playersStatsItems[2];
+}
+
+StatisticPanelItem *StatisticPanel::getPlayer5StatsItem()
+{
+    return m_playersStatsItems[3];
+}
+
+StatisticPanelItem *StatisticPanel::getPlayer6StatsItem()
+{
+    return m_playersStatsItems[4];
+}
+
+StatisticPanelItem *StatisticPanel::getPlayer7StatsItem()
+{
+    return m_playersStatsItems[5];
+}
+
+StatisticPanelItem *StatisticPanel::getPlayer8StatsItem()
+{
+    return m_playersStatsItems[6];
+}
+
+void StatisticPanel::setBlockUpdate(bool newBlockUpdate)
+{
+    m_blockUpdate = newBlockUpdate;
 }
 
 void StatisticPanel::setExpandPatyStatistic(bool newExpandPatyStatistic)
 {
     m_expandPatyStatistic = newExpandPatyStatistic;
     emit expandPatyStatisticChanged();
-}
-
-QString StatisticPanel::getPlayer2Name()
-{
-    return m_playersStats.at(0).name;
-}
-
-QString StatisticPanel::getPlayer3Name()
-{
-    return m_playersStats.at(1).name;
-}
-
-QString StatisticPanel::getPlayer4Name()
-{
-    return m_playersStats.at(2).name;
-}
-
-QString StatisticPanel::getPlayer5Name()
-{
-    return m_playersStats.at(3).name;
-}
-
-QString StatisticPanel::getPlayer6Name()
-{
-    return m_playersStats.at(4).name;
-}
-
-QString StatisticPanel::getPlayer7Name()
-{
-    return m_playersStats.at(5).name;
-}
-
-QString StatisticPanel::getPlayer8Name()
-{
-    return m_playersStats.at(6).name;
-}
-
-QString StatisticPanel::getPlayer2Mmr()
-{
-    return QString::number(m_playersStats.at(0).mmr);
-}
-
-QString StatisticPanel::getPlayer3Mmr()
-{
-    return QString::number(m_playersStats.at(1).mmr);
-}
-
-QString StatisticPanel::getPlayer4Mmr()
-{
-    return QString::number(m_playersStats.at(2).mmr);
-}
-
-QString StatisticPanel::getPlayer5Mmr()
-{
-    return QString::number(m_playersStats.at(3).mmr);
-}
-
-QString StatisticPanel::getPlayer6Mmr()
-{
-    return QString::number(m_playersStats.at(4).mmr);
-}
-
-QString StatisticPanel::getPlayer7Mmr()
-{
-    return QString::number(m_playersStats.at(5).mmr);
-}
-
-QString StatisticPanel::getPlayer8Mmr()
-{
-    return QString::number(m_playersStats.at(6).mmr);
-}
-
-QString StatisticPanel::getPlayer2Mmr1v1()
-{
-    return QString::number(m_playersStats.at(0).mmr1v1);
-}
-
-QString StatisticPanel::getPlayer3Mmr1v1()
-{
-    return QString::number(m_playersStats.at(1).mmr1v1);
-}
-
-QString StatisticPanel::getPlayer4Mmr1v1()
-{
-    return QString::number(m_playersStats.at(2).mmr1v1);
-}
-
-QString StatisticPanel::getPlayer5Mmr1v1()
-{
-    return QString::number(m_playersStats.at(3).mmr1v1);
-}
-
-QString StatisticPanel::getPlayer6Mmr1v1()
-{
-    return QString::number(m_playersStats.at(4).mmr1v1);
-}
-
-QString StatisticPanel::getPlayer7Mmr1v1()
-{
-    return QString::number(m_playersStats.at(5).mmr1v1);
-}
-
-QString StatisticPanel::getPlayer8Mmr1v1()
-{
-    return QString::number(m_playersStats.at(6).mmr1v1);
-}
-
-
-QString StatisticPanel::getPlayer2GamesCount()
-{
-    return QString::number(m_playersStats.at(0).gamesCount);
-}
-
-QString StatisticPanel::getPlayer3GamesCount()
-{
-    return QString::number(m_playersStats.at(1).gamesCount);
-}
-
-QString StatisticPanel::getPlayer4GamesCount()
-{
-    return QString::number(m_playersStats.at(2).gamesCount);
-}
-
-QString StatisticPanel::getPlayer5GamesCount()
-{
-    return QString::number(m_playersStats.at(3).gamesCount);
-}
-
-QString StatisticPanel::getPlayer6GamesCount()
-{
-    return QString::number(m_playersStats.at(4).gamesCount);
-}
-
-QString StatisticPanel::getPlayer7GamesCount()
-{
-    return QString::number(m_playersStats.at(5).gamesCount);
-}
-
-QString StatisticPanel::getPlayer8GamesCount()
-{
-    return QString::number(m_playersStats.at(6).gamesCount);
-}
-
-QString StatisticPanel::getPlayer2Race()
-{
-    return getRaceFromNumber(m_playersStats.at(0).race);
-}
-
-QString StatisticPanel::getPlayer3Race()
-{
-    return getRaceFromNumber(m_playersStats.at(1).race);
-}
-
-QString StatisticPanel::getPlayer4Race()
-{
-    return getRaceFromNumber(m_playersStats.at(2).race);
-}
-
-QString StatisticPanel::getPlayer5Race()
-{
-    return getRaceFromNumber(m_playersStats.at(3).race);
-}
-
-QString StatisticPanel::getPlayer6Race()
-{
-    return getRaceFromNumber(m_playersStats.at(4).race);
-}
-
-QString StatisticPanel::getPlayer7Race()
-{
-    return getRaceFromNumber(m_playersStats.at(5).race);
-}
-
-QString StatisticPanel::getPlayer8Race()
-{
-    return getRaceFromNumber(m_playersStats.at(6).race);
-}
-
-QString StatisticPanel::getPlayer2WinRate()
-{
-    return QString::number(m_playersStats.at(0).winRate);
-}
-
-QString StatisticPanel::getPlayer3WinRate()
-{
-    return QString::number(m_playersStats.at(1).winRate);
-}
-
-QString StatisticPanel::getPlayer4WinRate()
-{
-    return QString::number(m_playersStats.at(2).winRate);
-}
-
-QString StatisticPanel::getPlayer5WinRate()
-{
-    return QString::number(m_playersStats.at(3).winRate);
-}
-
-QString StatisticPanel::getPlayer6WinRate()
-{
-    return QString::number(m_playersStats.at(4).winRate);
-}
-
-QString StatisticPanel::getPlayer7WinRate()
-{
-    return QString::number(m_playersStats.at(5).winRate);
-}
-
-QString StatisticPanel::getPlayer8WinRate()
-{
-    return QString::number(m_playersStats.at(6).winRate);
-}
-
-QString StatisticPanel::getPlayer2Apm()
-{
-    return QString::number(m_playersStats.at(0).apm);
-}
-
-QString StatisticPanel::getPlayer3Apm()
-{
-    return QString::number(m_playersStats.at(1).apm);
-}
-
-QString StatisticPanel::getPlayer4Apm()
-{
-    return QString::number(m_playersStats.at(2).apm);
-}
-
-QString StatisticPanel::getPlayer5Apm()
-{
-    return QString::number(m_playersStats.at(3).apm);
-}
-
-QString StatisticPanel::getPlayer6Apm()
-{
-    return QString::number(m_playersStats.at(4).apm);
-}
-
-QString StatisticPanel::getPlayer7Apm()
-{
-    return QString::number(m_playersStats.at(5).apm);
-}
-
-QString StatisticPanel::getPlayer8Apm()
-{
-    return QString::number(m_playersStats.at(6).apm);
-}
-
-bool StatisticPanel::getPlayer2IsBanned()
-{
-    return m_playersStats.at(0).isBanned;
-}
-
-bool StatisticPanel::getPlayer3IsBanned()
-{
-    return m_playersStats.at(1).isBanned;
-}
-
-bool StatisticPanel::getPlayer4IsBanned()
-{
-    return m_playersStats.at(2).isBanned;
-}
-
-bool StatisticPanel::getPlayer5IsBanned()
-{
-    return m_playersStats.at(3).isBanned;
-}
-
-bool StatisticPanel::getPlayer6IsBanned()
-{
-    return m_playersStats.at(4).isBanned;
-}
-
-bool StatisticPanel::getPlayer7IsBanned()
-{
-    return m_playersStats.at(5).isBanned;
-}
-
-bool StatisticPanel::getPlayer8IsBanned()
-{
-    return m_playersStats.at(6).isBanned;
 }
 
 

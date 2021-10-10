@@ -149,15 +149,17 @@ Rectangle {
 
                     Label {
                         id: label4
+                        visible: model.gameLeaveTimerVisible
                         color: "#d62525"
                         text: qsTr("You can leave: ")
                         font.pointSize: 12
                     }
 
                     Label {
-                        id: label5
+                        id: timeLeftLabel
                         color: "#d62525"
-                        text: qsTr("1:00")
+                        visible: model.gameLeaveTimerVisible
+                        text: model.gameLeaveTimeLeft
                         font.pointSize: 12
                     }
 

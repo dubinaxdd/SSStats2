@@ -10,6 +10,8 @@
 #include "../core/settingsController/settingscontroller.h"
 #include "../uiBackend/uibackend.h"
 #include "../ssConroller/sscontroller.h"
+#include "logger/logger.h"
+
 
 class Core : public QObject
 {
@@ -39,16 +41,21 @@ private:
     void registerTypes();
 
 private:
+
+    Logger *m_logger;
     QTimer* m_topmostTimer;
 
     HWND m_ssStatsHwnd;
     LONG m_defaultWindowLong;
     RECT m_ssRect;
 
+
     KeyboardProcessor* m_keyboardProcessor;
     SettingsController* m_settingsController;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
+
+
 
     int m_defaultWidth;
     int m_defaultHeight;

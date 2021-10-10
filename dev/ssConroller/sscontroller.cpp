@@ -8,7 +8,10 @@
 #include <QJsonObject>
 #include <QStringList>
 
-#define CHECK_SS_TIMER_INTERVAL 100  ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
+#define WINDOW_STATE_CHECK_INTERVAL 200
+#define CHECK_SS_TIMER_INTERVAL 3000
+///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
+
 
 SsController::SsController(QObject *parent)
     : QObject(parent)
@@ -16,12 +19,12 @@ SsController::SsController(QObject *parent)
     , m_apmMeter(new APMMeter(this))
 {
     m_ssPath = getSsPathFromRegistry();
-    qDebug() << "INFO: Worked with Soulstorm from: " << m_ssPath;
+    qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
     m_gameInfoReader = new GameInfoReader(m_ssPath,this);
 
     m_steamPath = getSteamPathFromRegistry();
 
-    m_statsCollector = new StatsCollector(m_steamPath, this);
+    m_statsCollector = new StatsCollector(m_ssPath, m_steamPath, this);
 
     m_playersSteamScanner = new PlayersSteamScanner(/*this*/);
 
@@ -37,6 +40,10 @@ SsController::SsController(QObject *parent)
     m_ssLaunchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
     QObject::connect(m_ssLaunchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
 
+    m_ssWindowControllTimer = new QTimer(this);
+    m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
+    QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &SsController::checkWindowState, Qt::QueuedConnection);
+
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
 
     QObject::connect(m_gameInfoReader,  &GameInfoReader::gameOver,          m_apmMeter, &APMMeter::onGameStopped,      Qt::QueuedConnection);
@@ -44,9 +51,16 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_gameInfoReader,  &GameInfoReader::gameStopped,       m_apmMeter, &APMMeter::onGameStopped,   Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader,  &GameInfoReader::loadStarted,       m_apmMeter, &APMMeter::onGameStopped,   Qt::QueuedConnection);
 
+    QObject::connect(m_gameInfoReader,  &GameInfoReader::sendReplayToServer,       m_statsCollector, &StatsCollector::sendReplayToServer,   Qt::QueuedConnection);
+
+    QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_gameInfoReader,  &GameInfoReader::receiveAverrageApm,       Qt::QueuedConnection);
+    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+
 
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
+    m_ssLaunchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
+    m_ssWindowControllTimer->start();
 }
 
 SsController::~SsController()
@@ -75,64 +89,90 @@ void SsController::checkSS()
     m_soulstormHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
 
     m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
+    m_gameInfoReader->setGameLounched(m_soulstormHwnd);
 
-    if (m_soulstormHwnd)                                ///<Если игра запущена
-    {
-        if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
-        {
-            parseSsSettings();                                  ///<Считываем настройки соулсторма
-            m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
-            emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
-            qDebug() << "INFO: Soulstorm window opened";
-        }
-        else                                                ///<Если перед этим игра уже была запущена
-        {
-            if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
-            {
-                if(m_ssMaximized)                                   ///<Если перед этим игра была развернута
-                {
-                    m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
-                    emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
-                    qDebug() << "INFO: Soulstorm minimized";
-                }
-            }
-            else                                                 ///<Если игра развернута
-            {
-                if(!m_ssMaximized)
-                {
-                    m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
-                    emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
-                    qDebug() << "INFO: Soulstorm fullscreen";
-                }
-            }
-        }
-    }
-    else                                                ///<Если игра не запущена
-    {
-        if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
-        {
+}
 
-            m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
-            m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
-            emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
-            m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
-            emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
-            m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
-            m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
-            m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
-            qDebug() << "WARNING: Soulstorm window closed";
-        }
-        else
-        {
-           // qDebug() << "WARNING: Soulstorm window not accepted";
-        }
+void SsController::checkWindowState()
+{
+    if(m_gameInitialized != m_gameInfoReader->getGameInitialized())
+        m_gameInitialized = m_gameInfoReader->getGameInitialized();
+    else
+    {
+         if (!m_gameInitialized)
+             return;
     }
+
+     if (m_soulstormHwnd && m_gameInitialized)              ///<Если игра запущена и инициализирована
+     {
+         if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
+         {
+             m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
+             parseSsSettings();                                  ///<Считываем настройки соулсторма
+             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
+             qInfo(logInfo()) << "Soulstorm window opened";
+
+             if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
+             {
+                 m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
+                 emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+                 qInfo(logInfo()) << "Soulstorm minimized";
+             }
+             else                                                 ///<Если игра развернута
+             {
+                 m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
+                 emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
+                 qInfo(logInfo()) << "Soulstorm fullscreen";
+             }
+         }
+         else                                                ///<Если перед этим игра уже была запущена
+         {
+             if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
+             {
+                 if(m_ssMaximized)                                   ///<Если перед этим игра была развернута
+                 {
+                     m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
+                     emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+                     qInfo(logInfo()) << "Soulstorm minimized";
+                 }
+             }
+             else                                                 ///<Если игра развернута
+             {
+                 if(!m_ssMaximized)
+                 {
+                     m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
+                     emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
+                     qInfo(logInfo()) << "Soulstorm fullscreen";
+                 }
+             }
+         }
+     }
+     else                                                ///<Если игра не запущена или не инициализирована
+     {
+         if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
+         {
+             m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
+             m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
+             m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
+             m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
+             m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
+             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
+
+             //m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
+             qWarning(logWarning()) << "Soulstorm window closed";
+         }
+         else
+         {
+             qWarning(logWarning()) << "Soulstorm window not accepted";
+         }
+     }
 }
 
 void SsController::gameInitialized()
 {
     parseSsSettings();
-    m_ssLaunchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
+
     m_statsCollector->parseCurrentPlayerSteamId();
 }
 
@@ -145,7 +185,7 @@ void SsController::ssShutdown()
 void SsController::readTestStats()
 {
     QString statsPath = m_ssPath + "\\Profiles\\" + currentProfile + "\\teststats.lua";
-    qDebug() << "INFO: teststats.lua path: " << statsPath;
+    qInfo(logInfo()) << "teststats.lua path: " << statsPath;
 
     QFile file(statsPath);
 
@@ -194,8 +234,6 @@ void SsController::readTestStats()
             team = team.left(team.length() - 1);
             playerTeam.append(team);
         }
-
-
     }
 
     QVector<PlayerStats> playerStats;
@@ -203,7 +241,10 @@ void SsController::readTestStats()
     playerStats.resize(8);
 
     for(int i = 0; i < playerNames.count(); i++ )
-        playerStats[i].name = playerNames.at(i);
+    {
+        playerStats[i].name = playerNames.at(i).toLocal8Bit();
+        qInfo(logInfo()) << "Player from test stats" << playerStats[i].name;
+    }
 
     for(int i = 0; i < playerRaces.count(); i++ )
         playerStats[i].race = playerRaces.at(i);
@@ -217,7 +258,7 @@ void SsController::readTestStats()
 
 void SsController::receivePlayrStemids(QMap<QString, QString> infoMap)
 {
-    qDebug() << infoMap;
+    qInfo(logInfo()) << infoMap;
 }
 
 QString SsController::getSsPathFromRegistry()
@@ -254,7 +295,7 @@ QString SsController::getSteamPathFromRegistry()
         QSettings settings_second("HKEY_CURRENT_USER\\Software\\Valve\\Steam", QSettings::NativeFormat);
         steam_path = settings_second.value("SteamPath").toString();
     }
-    qDebug() << "INFO: Steam path:" << steam_path;
+    qInfo(logInfo()) << "Steam path: " << steam_path;
 
     return steam_path;
 }
@@ -266,10 +307,10 @@ void SsController::parseSsSettings()
     m_ssWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
     currentProfile = ssSettings->value("global/playerprofile","profile").toString();
 
+    m_gameInfoReader->setCurrentProfile(currentProfile);
 
-    qDebug() << "INFO: Current profile: " << currentProfile;
-    qDebug() << "INFO: Windowed mode = " << m_ssWindowed;
-
+    qInfo(logInfo()) << "Current profile: " << currentProfile;
+    qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
 
     delete ssSettings;
 }

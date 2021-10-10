@@ -3,13 +3,12 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 Rectangle {
-
-    property var model
     width: 260
     height: 880
     color: "#00000000"
     border.color: "#00000000"
 
+    property var model
     property Rectangle expandPatyStatisticButtonRectangle : expandPatyStatisticButtonRectangle
 
     //Костыль для перезагрузки картинки, рил так на формух делают
@@ -59,7 +58,7 @@ Rectangle {
         id: columnLayout
         anchors.fill: parent
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:curentPlayer
             Layout.maximumWidth: 260
@@ -69,23 +68,17 @@ Rectangle {
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
-            visible: !model.expandPatyStatistic || _uiBackend.expand
+            visible: model.curentPlayerStatsItem.itemVisible && (!model.expandPatyStatistic || _uiBackend.expand) && model.curentPlayerStatsItem.playerName !== ""
 
-            banned: model.currentPlayerIsBanned
+            itemModel: model.curentPlayerStatsItem
             avatarSource: "image://ImageProvider/currentPlayerAvatarMedium"
-            name: model.currentPlayerName
-            mmr: model.currentPlayerMmr
-            mmr1v1: model.currentPlayerMmr1v1
-            gamesCount: model.currentPlayerGamesCount
-            race: model.currentPlayerRace
-            winRate: model.currentPlayerWinRate
-            apm: model.currentPlayerApm
+
         }
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:player2
-            visible: model.player2StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -95,21 +88,15 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            banned: model.player2IsBanned
+            itemModel: model.player2StatsItem
             avatarSource: "image://ImageProvider/player2AvatarMedium"
-            name: model.player2Name
-            mmr: model.player2Mmr
-            mmr1v1: model.player2Mmr1v1
-            gamesCount: model.player2GamesCount
-            race: model.player2Race
-            winRate: model.player2WinRate
-            apm: model.player2Apm
+
         }
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:player3
-            visible: model.player3StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -119,21 +106,15 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            banned: model.player3IsBanned
+            itemModel: model.player3StatsItem
             avatarSource: "image://ImageProvider/player3AvatarMedium"
-            name: model.player3Name
-            mmr: model.player3Mmr
-            mmr1v1: model.player3Mmr1v1
-            gamesCount: model.player3GamesCount
-            race: model.player3Race
-            winRate: model.player3WinRate
-            apm: model.player3Apm
+
         }
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:player4
-            visible: model.player4StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -143,21 +124,15 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            banned: model.player4IsBanned
+            itemModel: model.player4StatsItem
             avatarSource: "image://ImageProvider/player4AvatarMedium"
-            name: model.player4Name
-            mmr: model.player4Mmr
-            mmr1v1: model.player4Mmr1v1
-            gamesCount: model.player4GamesCount
-            race: model.player4Race
-            winRate: model.player4WinRate
-            apm: model.player4Apm
+
         }
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:player5
-            visible: model.player5StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -167,21 +142,15 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            banned: model.player5IsBanned
+            itemModel: model.player5StatsItem
             avatarSource: "image://ImageProvider/player5AvatarMedium"
-            name: model.player5Name
-            mmr: model.player5Mmr
-            mmr1v1: model.player5Mmr1v1
-            gamesCount: model.player5GamesCount
-            race: model.player5Race
-            winRate: model.player5WinRate
-            apm: model.player5Apm
+
         }
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:player6
-            visible: model.player6StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -191,21 +160,15 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            banned: model.player6IsBanned
+            itemModel: model.player6StatsItem
             avatarSource: "image://ImageProvider/player6AvatarMedium"
-            name: model.player6Name
-            mmr: model.player6Mmr
-            mmr1v1: model.player6Mmr1v1
-            gamesCount: model.player6GamesCount
-            race: model.player6Race
-            winRate: model.player6WinRate
-            apm: model.player6Apm
+
         }
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:player7
-            visible: model.player7StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -215,22 +178,16 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            banned: model.player7IsBanned
+            itemModel: model.player7StatsItem
             avatarSource: "image://ImageProvider/player7AvatarMedium"
-            name: model.player7Name
-            mmr: model.player7Mmr
-            mmr1v1: model.player7Mmr1v1
-            gamesCount: model.player7GamesCount
-            race: model.player7Race
-            winRate: model.player7WinRate
-            apm: model.player7Apm
+
         }
 
 
-        PlayerStatistic
+        PlayersStatisticItem
         {
             id:player8
-            visible: model.player8StatsVisible && (!model.expandPatyStatistic  || _uiBackend.expand)
+            visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260
             Layout.maximumHeight: 100
@@ -240,15 +197,9 @@ Rectangle {
             Layout.fillHeight: false
             Layout.fillWidth: true
 
-            banned: model.player8IsBanned
+            itemModel: model.player8StatsItem
             avatarSource: "image://ImageProvider/player8AvatarMedium"
-            name: model.player8Name
-            mmr: model.player8Mmr
-            mmr1v1: model.player8Mmr1v1
-            gamesCount: model.player8GamesCount
-            race: model.player8Race
-            winRate: model.player8WinRate
-            apm: model.player8Apm
+
         }
 
         Rectangle {

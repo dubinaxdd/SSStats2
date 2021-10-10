@@ -1,9 +1,5 @@
 #include "playerssteamscanner.h"
-//#include <QFile>
-//#include <QDir>
 #include <QVariantList>
-//#include <QCoreApplication>
-//#include <QSettings>
 #include <QDebug>
 #include <iostream>
 #include <fstream>
@@ -129,9 +125,13 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             if (allPlayersInfo.count() == 0)
             {
 
+               // if (i < 100)
+               //      continue;
+
                 for (int k = i - 100; k < i; k++)
                 {
-
+                //    if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix)))
+               //         break;
 
                     for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
                     {
@@ -163,8 +163,14 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 if (allPlayersInfo.count() == 0)
                 {
 
+                 //   if (i < 100)
+                 //        continue;
+
                     for (int k = i - 100; k < i; k++)
                     {
+                      //  if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix2)))
+                       //     break;
+
                         for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix2)); t++)
                         {
                             if (buffer.at(k + t) != playresCountPostfix2[t])
