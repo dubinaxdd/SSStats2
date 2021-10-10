@@ -43,7 +43,7 @@ signals:
 
 private:
     void checkCurrentMode();
-    bool checkMissionSettingsValide();
+    bool checkMissionSettingsValide(int gameType);
 
 private:
     QTimer* m_gameInfoReadTimer;

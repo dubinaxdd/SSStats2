@@ -52,76 +52,97 @@ Rectangle {
             Layout.maximumWidth: 26099
             Layout.fillHeight: false
 
-            Rectangle {
-                id: buttonInfoRectangle
+            RowLayout
+            {
+                anchors.fill: parent
 
-                property bool hoverState : false
-                property bool pressedState : false
+                Rectangle {
+                    id: buttonInfoRectangle
 
-                width: 140
-                color: pressedState ? "#ff080808" : "#00ffffff"
-                anchors.left: parent.left
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.leftMargin: 0
-                anchors.bottomMargin: 0
-                anchors.topMargin: 0
+                    property bool hoverState : false
+                    property bool pressedState : true
 
-                Text {
-                    id: buttonInfoLabel
-                    color: parent.hoverState ? "#ffffff" : "#999999"
-                    opacity: 1
-                    visible: true
-                    text: qsTr("Information")
-                    anchors.fill: parent
-                    font.pointSize: 14
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                    width: 140
+                    color: pressedState ? "#ff080808" : "#00ffffff"
+                    anchors.left: parent.left
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.leftMargin: 0
+                    anchors.bottomMargin: 0
+                    anchors.topMargin: 0
 
-                    layer.enabled: true
-                    layer.effect: DropShadow {
-                        verticalOffset: 2
-                        color: "#00000064"
-                        radius: 1
-                        samples: 3
+                    Text {
+                        id: buttonInfoLabel
+                        color: parent.hoverState ? "#ffffff" : "#999999"
+                        opacity: 1
+                        visible: true
+                        text: qsTr("Information")
+                        anchors.fill: parent
+                        font.pointSize: 14
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+
+                        layer.enabled: true
+                        layer.effect: DropShadow {
+                            verticalOffset: 2
+                            color: "#00000064"
+                            radius: 1
+                            samples: 3
+                        }
                     }
                 }
-            }
 
-            Rectangle {
-                id: buttonSettingsRectangle
+                Rectangle {
+                    id: buttonSettingsRectangle
 
-                property bool hoverState : false
-                property bool pressedState : false
+                    property bool hoverState : false
+                    property bool pressedState : false
 
-                width: 140
-                color: pressedState ? "#ff080808" : "#00ffffff"
-                anchors.left: buttonInfoRectangle.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.topMargin: 0
-                anchors.bottomMargin: 0
-                anchors.leftMargin: 0
+                    width: 140
+                    color: pressedState ? "#ff080808" : "#00ffffff"
+                    anchors.left: buttonInfoRectangle.right
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
+                    anchors.topMargin: 0
+                    anchors.bottomMargin: 0
+                    anchors.leftMargin: 0
 
-                Text {
-                    id: buttonSettingsLabel
-                    color: parent.hoverState ? "#ffffff" : "#999999"
-                    opacity: 1
-                    visible: true
-                    text: qsTr("Settings")
-                    anchors.fill: parent
-                    font.pointSize: 14
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
+                    Text {
+                        id: buttonSettingsLabel
+                        color: parent.hoverState ? "#ffffff" : "#999999"
+                        opacity: 1
+                        visible: true
+                        text: qsTr("Settings")
+                        anchors.fill: parent
+                        font.pointSize: 14
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
 
-                    layer.enabled: true
-                    layer.effect: DropShadow {
-                        verticalOffset: 2
-                        color: "#00000064"
-                        radius: 1
-                        samples: 3
+                        layer.enabled: true
+                        layer.effect: DropShadow {
+                            verticalOffset: 2
+                            color: "#00000064"
+                            radius: 1
+                            samples: 3
+                        }
                     }
                 }
+
+                Rectangle
+                {
+                    Layout.fillWidth: true
+
+                }
+
+                Label {
+                    id: label
+                    color: "#ebaf36"
+                    text: qsTr("Press (~) key for roll up")
+                    Layout.margins: 15
+                    Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
+                }
+
+
             }
         }
 
@@ -130,12 +151,12 @@ Rectangle {
             width: 200
             height: 200
             opacity: 1
-            color: "#f9f9f9"
+            color: "#00000000"
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.rightMargin: 10
             Layout.bottomMargin: 10
             Layout.leftMargin: 10
-            Layout.topMargin: 10
+            Layout.topMargin: 0
             Layout.preferredHeight: 0
             Layout.preferredWidth: 0
             Layout.fillWidth: true

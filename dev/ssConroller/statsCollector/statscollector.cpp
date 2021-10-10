@@ -10,8 +10,8 @@
 #include <QBuffer>
 
 #define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 5000
-//#define SERVER_ADDRESS "http://164.90.187.79/"
-#define SERVER_ADDRESS "https://dowstats.ru/"
+#define SERVER_ADDRESS "http://164.90.187.79/"
+//#define SERVER_ADDRESS "https://dowstats.ru/"
 #define SERVER_VERSION "108"
 
 StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *parent)
