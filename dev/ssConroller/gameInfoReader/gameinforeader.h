@@ -43,6 +43,7 @@ signals:
 
 private:
     void checkCurrentMode();
+    bool checkMissionSettingsValide();
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -58,6 +59,7 @@ private:
     int m_lastAverrageApm;
 
     bool m_gameLounched = false;
+    bool m_lastGameSettingsValide = false;
 
     int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
