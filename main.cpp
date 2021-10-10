@@ -7,12 +7,35 @@
 #include "dev/core/core.h"
 #include <QDebug>
 
+// Запускает программу автообновления, которая возвращает exitCode в зависимости от наличия обновлений
+int runAutoUpdate() {
+    SHELLEXECUTEINFO ShExecInfo = {0};
+    ShExecInfo.cbSize = sizeof(SHELLEXECUTEINFO);
+    ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
+    ShExecInfo.hwnd = NULL;
+    ShExecInfo.lpVerb = NULL;
+    ShExecInfo.lpFile = "Updater.exe";
+    ShExecInfo.lpParameters = "/F";
+    ShExecInfo.lpDirectory = NULL;
+    ShExecInfo.nShow = SW_SHOWNORMAL;
+    ShExecInfo.hInstApp = NULL;
+    ShellExecuteEx(&ShExecInfo);
+    DWORD  lp;
+    WaitForSingleObject(ShExecInfo.hProcess, INFINITE);
+    GetExitCodeProcess(ShExecInfo.hProcess, &lp);
+    qDebug() << "Updater return exit code" << lp;
+    return lp;
+}
 
 int main(int argc, char *argv[])
 {
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 #endif
+
+    if(runAutoUpdate() == 5){
+        return 0; // Не запускаем ssstats - т.к. есть обновления и сейчас пойдет загрузка обновы
+    }
 
     QGuiApplication app(argc, argv);
 
@@ -25,8 +48,6 @@ int main(int argc, char *argv[])
             break;
         }
     }
-
-    ShellExecute(NULL, NULL, "Updater.exe", "/F", NULL, SW_SHOWNORMAL);
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/resources/qml/main.qml"));
