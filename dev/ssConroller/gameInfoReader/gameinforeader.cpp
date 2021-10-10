@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include "repReader/repreader.h"
 
 GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
     : QObject(parent)
@@ -228,8 +229,6 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
-                    m_lastGameSettingsValide = checkMissionSettingsValide();
-                    qInfo(logInfo()) << "Game settings valide:" << m_lastGameSettingsValide;
                     emit loadStarted(m_gameCurrentState);
                     qInfo(logInfo()) << "Game load started";
                 }
@@ -425,8 +424,7 @@ void GameInfoReader::readGameParametresAfterStop()
     if(duration <= 30)
         return;
 
-    if (!m_lastGameSettingsValide)
-        return;
+
 
     SendingReplayInfo replayInfo;
 
@@ -485,6 +483,13 @@ void GameInfoReader::readGameParametresAfterStop()
         case 7: return;
         case 8: replayInfo.gameType = GameTypeForReplaySending::GameType4x4; break;
     }
+
+    m_lastGameSettingsValide = checkMissionSettingsValide(replayInfo.gameType);
+
+    qInfo(logInfo()) << "Game settings valide:" << m_lastGameSettingsValide;
+
+    if (!m_lastGameSettingsValide)
+        return;
 
     replayInfo.mapName = scenario;
     replayInfo.gameTime = duration;
@@ -608,110 +613,32 @@ void GameInfoReader::checkCurrentMode()
     }
 }
 
-bool GameInfoReader::checkMissionSettingsValide()
+bool GameInfoReader::checkMissionSettingsValide(int gameType)
 {
-    QString playercfgPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\playercfg.lua";
-    qInfo(logInfo()) << "playercfg.lua path: " << playercfgPath;
+    //QByteArray playback;
+   // QString mod_name;
+    //QString playback_name;
 
-    QFile file(playercfgPath);
 
-    //if(!file.open(QIODevice::ReadOnly))
-    //    return false;
-    //if(!file.isReadable())
-    //    return false;
+    RepReader repReader(m_ssPath+"/Playback/temp.rec");
 
-    if(file.open(QIODevice::ReadOnly))
-    {
-        QTextStream textStream(&file);
-        QStringList fileLines = textStream.readAll().split("\r");
+    return repReader.isStandart(gameType);
 
-        int counter = 0;
+   // if(!repReader.isStandart(gameType))
+    //    return 17;
+    // конвертируем реплей в стимовскую версию
+   /* repReader.convertReplayToSteamVersion();
 
-        while (counter != fileLines.size())
-        {
-            QString line = fileLines.at(counter);
+    mod_name = repReader.replay.MOD;
 
-            if(line.contains(m_currentMode + "_game_preferences"))
-            {
-                while(!line.contains("win_conditions"))
-                {
-                    line = fileLines.at(counter);
+    QString new_name = repReader.RenameReplay();
+    // переименовываем название реплея в игре по стандарту
+    if(!new_name.isEmpty())
+        playback_name = new_name+".rec";
+    else
+        qDebug() << "Could not change playback name";
 
-                    if(line.contains("1095320646"))  ///> Сложность компьютера
-                    {
-                        qInfo(logInfo()) << "AI Difficulty" << fileLines.at(counter-1).mid(14,1);
-                    }
+    playback = repReader.getReplayData();*/
 
-                    if(line.contains("1381192532"))  ///> Начальные ресурсы
-                    {
-                        QString startingResources = fileLines.at(counter-1).mid(14,1);
-                        qInfo(logInfo()) << "Starting resources" << startingResources;
 
-                        if (startingResources != "0")
-                            return false;
-                    }
-
-                    if(line.contains("1280005197"))  ///> Закрепить команды
-                    {
-                        QString lockTeams = fileLines.at(counter-1).mid(14,1);
-                        qInfo(logInfo()) << "Lock teams" << lockTeams;
-
-                        if (lockTeams != "0")
-                            return false;
-                    }
-
-                    if(line.contains("1128809793"))  ///> Разрешить читы
-                    {
-                        QString enableCheats = fileLines.at(counter-1).mid(14,1);
-                        qInfo(logInfo()) << "Enable cheats" << enableCheats;
-
-                        if (enableCheats != "1")
-                            return false;
-                    }
-
-                    if(line.contains("1397509955"))  ///> Начальные позиции
-                    {
-                        QString startingLocations = fileLines.at(counter-1).mid(14,1);
-                        qInfo(logInfo()) << "Starting locations" << startingLocations;
-
-                        //if (startingLocations != "1")
-                         //   return false;
-                    }
-
-                    if(line.contains("1196642372"))  ///> Скорость игры
-                    {
-                        QString gameSpeed = fileLines.at(counter-1).mid(14,1);
-                        qInfo(logInfo()) << "Game speed" << gameSpeed;
-
-                        if (gameSpeed != "2")
-                            return false;
-                    }
-
-                    if(line.contains("1381192520"))  ///> Обмен ресурсов
-                    {
-                        QString resourceSharing = fileLines.at(counter-1).mid(14,1);
-                        qInfo(logInfo()) << "Resource sharing" << resourceSharing;
-
-                        if (resourceSharing != "1")
-                            return false;
-                    }
-
-                    if(line.contains("1381192276"))  ///> Скорость прироста ресурсов
-                    {
-                        QString resourceRate = fileLines.at(counter-1).mid(14,1);
-                        qInfo(logInfo()) << "Resource rate" << resourceRate;
-
-                        if (resourceRate != "1")
-                            return false;
-                    }
-                    counter++;
-                }
-            }
-            counter++;
-        }
-
-        return true;
-    }
-
-    return false;
 }

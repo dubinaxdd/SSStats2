@@ -77,6 +77,20 @@ set(PROJECT_SOURCES
         dev/uiBackend/statisticPanel/statisticpanelitem.cpp
         dev/core/logger/logger.h
         dev/core/logger/logger.cpp
+
+
+        dev/ssConroller/gameInfoReader/repReader/extendedbinreader.h
+        dev/ssConroller/gameInfoReader/repReader/extendedbinreader.cpp
+        dev/ssConroller/gameInfoReader/repReader/game_action.h
+        dev/ssConroller/gameInfoReader/repReader/gamesettings.h
+        dev/ssConroller/gameInfoReader/repReader/gamesettings.cpp
+        dev/ssConroller/gameInfoReader/repReader/player.h
+        dev/ssConroller/gameInfoReader/repReader/player.cpp
+        dev/ssConroller/gameInfoReader/repReader/replay.h
+        dev/ssConroller/gameInfoReader/repReader/replay.cpp
+        dev/ssConroller/gameInfoReader/repReader/repreader.h
+        dev/ssConroller/gameInfoReader/repReader/repreader.cpp
+
         defines.h
         qml.qrc
         resources.qrc
