@@ -64,12 +64,14 @@ Rectangle {
 
                     width: 140
                     color: pressedState ? "#ff080808" : "#00ffffff"
-                    anchors.left: parent.left
+                    Layout.minimumWidth: 100
+                    Layout.minimumHeight: 60
+                   /* anchors.left: parent.left
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     anchors.leftMargin: 0
                     anchors.bottomMargin: 0
-                    anchors.topMargin: 0
+                    anchors.topMargin: 0*/
 
                     Text {
                         id: buttonInfoLabel
@@ -100,12 +102,14 @@ Rectangle {
 
                     width: 140
                     color: pressedState ? "#ff080808" : "#00ffffff"
-                    anchors.left: buttonInfoRectangle.right
+                    Layout.minimumHeight: 60
+                    Layout.minimumWidth: 100
+                    /*anchors.left: buttonInfoRectangle.right
                     anchors.top: parent.top
                     anchors.bottom: parent.bottom
                     anchors.topMargin: 0
                     anchors.bottomMargin: 0
-                    anchors.leftMargin: 0
+                    anchors.leftMargin: 0*/
 
                     Text {
                         id: buttonSettingsLabel

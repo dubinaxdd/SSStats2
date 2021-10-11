@@ -121,16 +121,6 @@ Window {
                         fullOverlay.settingsWindow.noFogSwitch.checkedState = !fullOverlay.settingsWindow.noFogSwitch.checkedState;
                         _uiBackend.onSwitchNoFogStateChanged(fullOverlay.settingsWindow.noFogSwitch.checkedState);
                     }
-
-                    // Переключатель "Test Switch"
-                    if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x &&
-                            xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x + fullOverlay.settingsWindow.testSwitch.width &&
-                            yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y &&
-                            yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y + fullOverlay.settingsWindow.testSwitch.height)
-                    {
-                        //console.log("Test Switch Pressed: ", xMousePos, yMousePos);
-                        fullOverlay.settingsWindow.testSwitch.checkedState = !fullOverlay.settingsWindow.testSwitch.checkedState;
-                    }
                 }
             }
         }
@@ -271,18 +261,6 @@ Window {
                         fullOverlay.settingsWindow.noFogSwitch.hoverState = true;
                     } else {
                         fullOverlay.settingsWindow.noFogSwitch.hoverState = false;
-                    }
-
-                    // Переключатель "Test Switch"
-                    if (xMousePos >= fullOverlay.x + fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x &&
-                            xMousePos <= fullOverlay.x+ fullOverlay.mainContentContainerRectangle.x + fullOverlay.settingsWindow.settingsColumn.x + fullOverlay.settingsWindow.testSwitch.x + fullOverlay.settingsWindow.testSwitch.width &&
-                            yMousePos >= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y &&
-                            yMousePos <= fullOverlay.y+ fullOverlay.mainContentContainerRectangle.y + fullOverlay.settingsWindow.settingsColumn.y + fullOverlay.settingsWindow.testSwitch.y + fullOverlay.settingsWindow.testSwitch.height)
-                    {
-                        //console.log("Test Switch Hovered: ", xMousePos, yMousePos);
-                        fullOverlay.settingsWindow.testSwitch.hoverState = true;
-                    } else {
-                        fullOverlay.settingsWindow.testSwitch.hoverState = false;
                     }
                 }
             }
