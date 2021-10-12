@@ -25,6 +25,7 @@ public:
 signals:                           
     void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
     void sendPlayersCount(int playersCount);
+    void sendCurrentPlayerHostState(bool);
 
 public slots:
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
