@@ -4,6 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <QTextCodec>
+#include <psapi.h>
+#include <tchar.h>
 
 #define SCAN_STEAM_PLAYERS_INTERVAL 2000
 
@@ -18,6 +20,46 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
     QObject::connect(m_scanTimer, &QTimer::timeout, this, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection );
     m_scanTimer->start();
 }
+
+DWORD_PTR GetProcessBaseAddress( DWORD processID )
+{
+    DWORD_PTR   baseAddress = 0;
+    HANDLE      processHandle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
+    HMODULE     *moduleArray;
+    LPBYTE      moduleArrayBytes;
+    DWORD       bytesRequired;
+
+    if ( processHandle )
+    {
+        if ( EnumProcessModules( processHandle, NULL, 0, &bytesRequired ) )
+        {
+            if ( bytesRequired )
+            {
+                moduleArrayBytes = (LPBYTE)LocalAlloc( LPTR, bytesRequired );
+
+                if ( moduleArrayBytes )
+                {
+                    unsigned int moduleCount;
+
+                    moduleCount = bytesRequired / sizeof( HMODULE );
+                    moduleArray = (HMODULE *)moduleArrayBytes;
+
+                    if ( EnumProcessModules( processHandle, moduleArray, bytesRequired, &bytesRequired ) )
+                    {
+                        baseAddress = (DWORD_PTR)moduleArray[0];
+                    }
+
+                    LocalFree( moduleArrayBytes );
+                }
+            }
+        }
+
+        CloseHandle( processHandle );
+    }
+
+    return baseAddress;
+}
+
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
@@ -45,9 +87,14 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     QByteArray buffer(/*30400*/100000, 0);
 
+    //soulstorm.exe+62AB0C
+
+    DWORD_PTR soulstormexe = GetProcessBaseAddress(PID);
+
+    qDebug() << hex << soulstormexe + 0x62AB0C - 1000;
 
    //unsigned long ptr1Count = 160116800;
-    unsigned long ptr1Count = /*100000000*/0x00000000;
+    unsigned long ptr1Count = /*0*//*100000000*//*0x00000000*/soulstormexe + 0x62AB0C - 1000;
     while (ptr1Count < /*200000000*/0x7FFE0000)
     {
 
@@ -135,6 +182,9 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
                     for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
                     {
+                        if (t == 2)
+                            t++;
+
                         if (buffer.at(k + t) != playresCountPostfix[t])
                         {
                             match2= false;
@@ -158,7 +208,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 }
             }
             //Ищем постфикс байта с количеством игроков по второй маске
-           if(!match2)
+          /* if(!match2)
             {
                 if (allPlayersInfo.count() == 0)
                 {
@@ -203,7 +253,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                             playersCount = 0;
                     }
                 }
-            }
+            }*/
 
             if(playersCount == 0 || playersCount > 8)
                 continue;
@@ -273,7 +323,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
-        if (allPlayersInfo.count() > 0 && playersCount > 1 && playersCount <= 8)
+        if (/*allPlayersInfo.count() > 1 &&*/ playersCount > 1 && playersCount <= 8 && allPlayersInfo.count() >= playersCount)
         {
             break;
         }
@@ -294,9 +344,11 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
         }
     }
 
-    //qDebug() << "==============================================================";
-    //for(int i = 0; i < allPlayersInfo.values().size(); i++)
-        //qDebug() << allPlayersInfo.values().at(i).name;
+    qDebug() << "==============================================================";
+    qDebug() << "Info: Paty blok in " << hex << ptr1Count;
+    qDebug() << playersCount;
+    for(int i = 0; i < allPlayersInfo.values().size(); i++)
+        qDebug() << allPlayersInfo.values().at(i).name;
 
 
     emit sendSteamPlayersInfoMap(allPlayersInfo.values(), playersCount);

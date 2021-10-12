@@ -109,6 +109,12 @@ void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerIn
     if (m_blockUpdate)
         return;
 
+    if(playersInfo.count() == 0)
+        return;
+
+    if(playersCount == 0)
+        return;
+
     int needPlayersCount = playersCount;
 
     for (int i = 0; i < playersInfo.count(); i++)
