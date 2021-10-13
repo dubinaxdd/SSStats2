@@ -78,6 +78,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
         QStringList accountNames;
         QStringList personaNames;
         QStringList timestamps;
+        QStringList mostRecents;
 
         for(int i = 0; i < fileLines.size(); i++ )
         {
@@ -102,14 +103,25 @@ void StatsCollector::parseCurrentPlayerSteamId()
                 timestamp = timestamp.left(timestamp.length() - 1);
                 timestamps.append(timestamp);
             }
+
+            if (fileLines[i].contains("MostRecent") || fileLines[i].contains("mostrecent")){
+                QString mostRecent = fileLines[i].right(fileLines[i].length() - 17);
+                mostRecent = mostRecent.left(mostRecent.length() - 1);
+                mostRecents.append(mostRecent);
+            }
         }
 
         for(int i = 0; i < steamIDs.count(); i++)
         {
-            QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + steamIDs.at(i) + "&format=json")));
-            QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
-                receiveSteamInfoReply(reply);
-            });
+            if(mostRecents.at(i) == "1")
+            {
+                QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + steamIDs.at(i) + "&format=json")));
+                QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+                    receiveSteamInfoReply(reply);
+                });
+
+                return;
+            }
         }
     }
 }
@@ -156,18 +168,7 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 
     steamId = player.value("steamid", "").toString();
 
-    // если игрок на данном аккаунте сейчас играет, и игра Soulstorm, то добавим его в список
-    // после этого можно так же прерывать цикл, так как нужный игрок найден
-    if(player.value("personastate", 0).toInt()==1 && player.value("gameid", 0).toInt()==9450)
-    {
-        qInfo(logInfo()) << "Player" << senderName << "is online";
-        m_currentPlayerAccepted = true;
-    }
-    else
-    {
-        qInfo(logInfo()) << "Player" << senderName << "is offline";
-        m_currentPlayerAccepted = false;
-    }
+    m_currentPlayerAccepted = true;
 
     qInfo(logInfo()) << "Player's nickname and Steam ID associated with Soulstorm:" << senderName << steamId;
 
@@ -400,6 +401,11 @@ QString StatsCollector::CRC32fromByteArray( const QByteArray & array )
     buffer.close();
     crc32 ^= 0xffffffff;
     return QString("%1").arg(crc32, 8, 16, QChar('0'));
+}
+
+void StatsCollector::setCurrentPlayerAccepted(bool newCurrentPlayerAccepted)
+{
+    m_currentPlayerAccepted = newCurrentPlayerAccepted;
 }
 
 

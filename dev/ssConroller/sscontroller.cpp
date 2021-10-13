@@ -151,6 +151,7 @@ void SsController::checkWindowState()
      {
          if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
          {
+             m_statsCollector->setCurrentPlayerAccepted(false);
              m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
              m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
              m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние

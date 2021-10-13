@@ -15,8 +15,6 @@ Core::Core(QQmlContext *context, QObject* parent)
 {
     registerTypes();
 
-
-
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
@@ -71,7 +69,8 @@ void Core::topmostTimerTimout()
 
     if (m_ssController->gameInfoReader()->getGameInitialized())
     {
-        if (m_ssStatsHwnd){
+        if (m_ssStatsHwnd)
+        {
             if (m_ssController->ssWindowed())
             {
                 RECT ssRect;
@@ -91,11 +90,11 @@ void Core::topmostTimerTimout()
 
                     m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
                 }
-           }
-           BringWindowToTop(m_ssStatsHwnd);
+            }
+
+            BringWindowToTop(m_ssStatsHwnd);
         }
     }
-
 }
 
 

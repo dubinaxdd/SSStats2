@@ -22,7 +22,9 @@ public:
 
 
 
-signals:                           
+    void setCurrentPlayerAccepted(bool newCurrentPlayerAccepted);
+
+signals:
     void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
     void sendPlayersCount(int playersCount);
     void sendCurrentPlayerHostState(bool);
