@@ -383,6 +383,20 @@ void GameInfoReader::readGameParametresAfterStop()
         playerStats[i].finalState = static_cast<FinalState>(playerFinalStates.at(i));
 
 
+    //Сортировка игроков по команде
+    for(int i = 0; i < playerStats.count(); i++)
+    {
+        for(int j = 0; j < playerStats.count() - 1; j++)
+        {
+            if(playerStats[j].team > playerStats[j + 1].team)
+            {
+                auto buffer = playerStats[j];
+                playerStats[j] = playerStats[j + 1];
+                playerStats[j + 1] = buffer;
+            }
+        }
+    }
+
     bool computersFinded = false;
 
     for(int i = 0; i < playerNames.count(); i++ )
@@ -424,12 +438,18 @@ void GameInfoReader::readGameParametresAfterStop()
     if(duration <= 30)
         return;
 
+    for(int i = 0; i < playersCount; i++)
+    {
+        if(playerStats[i].finalState != FinalState::winner && playerStats[i].finalState != FinalState::loser)
+            return;
+    }
 
 
     SendingReplayInfo replayInfo;
 
     for(int i = 0; i < playersCount; i++)
     {
+
         PlayerInfoForReplaySendong newPlayer;
 
         newPlayer.playerName = playerStats[i].name;
@@ -467,10 +487,7 @@ void GameInfoReader::readGameParametresAfterStop()
         replayInfo.playersInfo.append(newPlayer);
     }
 
-
     replayInfo.apm = m_lastAverrageApm;
-
-
 
     switch (playersCount)
     {

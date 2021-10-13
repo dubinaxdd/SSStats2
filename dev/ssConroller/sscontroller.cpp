@@ -253,6 +253,20 @@ void SsController::readTestStats()
     for(int i = 0; i < playerTeam.count(); i++ )
         playerStats[i].team = playerTeam.at(i);
 
+    //Сортировка игроков по команде
+    for(int i = 0; i < playerStats.count(); i++)
+    {
+        for(int j = 0; j < playerStats.count() - 1; j++)
+        {
+            if(playerStats[j].team > playerStats[j + 1].team)
+            {
+                auto buffer = playerStats[j];
+                playerStats[j] = playerStats[j + 1];
+                playerStats[j + 1] = buffer;
+            }
+        }
+    }
+
     emit sendPlayersTestStats(playerStats);
 
 }
