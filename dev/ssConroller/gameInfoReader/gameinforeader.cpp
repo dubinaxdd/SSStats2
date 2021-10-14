@@ -438,11 +438,19 @@ void GameInfoReader::readGameParametresAfterStop()
     if(duration <= 30)
         return;
 
+    bool winnerAccepted = false;
+
     for(int i = 0; i < playersCount; i++)
     {
-        if(playerStats[i].finalState != FinalState::winner && playerStats[i].finalState != FinalState::loser)
-            return;
+        if(playerStats[i].finalState == FinalState::winner)
+        {
+            winnerAccepted = true;
+            break;
+        }
     }
+
+    if (!winnerAccepted)
+        return;
 
 
     SendingReplayInfo replayInfo;
