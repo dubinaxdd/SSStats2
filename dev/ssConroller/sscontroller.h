@@ -45,7 +45,6 @@ public slots:
     void blockInput(bool state);
 
 private slots:
-    void checkSS();
     void checkWindowState();
     void gameInitialized();
     void ssShutdown();
@@ -68,7 +67,6 @@ private:
 private:
     HWND m_soulstormHwnd = NULL;
 
-    QTimer* m_ssLaunchControllTimer;
     QTimer* m_ssWindowControllTimer;
     
     QString m_ssPath;

@@ -18,7 +18,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
-    m_topmostTimer->setInterval(500);
+    m_topmostTimer->setInterval(200);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
@@ -89,6 +89,15 @@ void Core::topmostTimerTimout()
                     SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
 
                     m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
+                }
+            }
+            else
+            {
+                RECT ssRect;
+                if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+                {
+                    m_ssRect = ssRect;
+                    SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
                 }
             }
 

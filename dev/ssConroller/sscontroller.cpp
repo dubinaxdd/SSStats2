@@ -9,7 +9,6 @@
 #include <QStringList>
 
 #define WINDOW_STATE_CHECK_INTERVAL 200
-#define CHECK_SS_TIMER_INTERVAL 3000
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
 
@@ -36,10 +35,6 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_gameInfoReader, &GameInfoReader::loadStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
 
-    m_ssLaunchControllTimer = new QTimer(this);
-    m_ssLaunchControllTimer->setInterval(CHECK_SS_TIMER_INTERVAL);
-    QObject::connect(m_ssLaunchControllTimer, &QTimer::timeout, this, &SsController::checkSS, Qt::QueuedConnection);
-
     m_ssWindowControllTimer = new QTimer(this);
     m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
     QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &SsController::checkWindowState, Qt::QueuedConnection);
@@ -59,7 +54,6 @@ SsController::SsController(QObject *parent)
 
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
-    m_ssLaunchControllTimer->start();                   ///<Запускаем таймер который будет определять игра запущена/не запущена, максимизирована/не максимизирована
     m_ssWindowControllTimer->start();
 }
 
@@ -79,8 +73,7 @@ void SsController::blockInput(bool state)
     }
 }
 
-
-void SsController::checkSS()
+void SsController::checkWindowState()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
@@ -91,10 +84,6 @@ void SsController::checkSS()
     m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
     m_gameInfoReader->setGameLounched(m_soulstormHwnd);
 
-}
-
-void SsController::checkWindowState()
-{
     if(m_gameInitialized != m_gameInfoReader->getGameInitialized())
         m_gameInitialized = m_gameInfoReader->getGameInitialized();
     else

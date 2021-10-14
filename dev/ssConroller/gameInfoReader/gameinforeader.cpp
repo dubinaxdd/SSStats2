@@ -253,7 +253,10 @@ void GameInfoReader::readGameParametresAfterStop()
                            && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
 
     if (!isStdWinConditions)
+    {
+        qWarning() << "Game have not standard win conditions, replay not sended";
         return;
+    }
 
     QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
     qInfo(logInfo()) << "teststats.lua path: " << statsPath;
@@ -551,12 +554,13 @@ void GameInfoReader::receiveAverrageApm(int apm)
 
 void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
-    for (int i = 0; i < playersInfoFromScanner.count();i++)
+    m_playersInfoFromScanner = playersInfoFromScanner;
+    /*for (int i = 0; i < playersInfoFromScanner.count();i++)
     {
         bool playerFinded = false;
         for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
         {
-            if (playersInfoFromScanner[i].name == m_playersInfoFromScanner[j].name)
+            if (playersInfoFromScanner[i].steamId == m_playersInfoFromScanner[j].steamId)
             {
                 playerFinded = true;
                 break;
@@ -568,7 +572,7 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
             m_playersInfoFromScanner.append(playersInfoFromScanner[i]);
             qInfo(logInfo()) << "Finded player:" << m_playersInfoFromScanner.last().name;
         }
-    }
+    }*/
 
     m_playersCountFromScanner = playersCount;
 }
