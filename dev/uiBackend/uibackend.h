@@ -86,6 +86,7 @@ signals:
     void gamePanelInitialized();
     void statisticPanelInitialized();
     void statsHeaderInitialized();
+    void sendExit();
 
 public slots:
 
@@ -103,6 +104,8 @@ public slots:
     void onGameStopped();
     void onStartingMission(SsGameState gameCurrentState);
     void onGameOver();
+
+    Q_INVOKABLE void onExit();
 
 private:
     void showClient();

@@ -61,6 +61,9 @@ SsController::~SsController()
 {
     m_playersSteamScannerThread.quit();
     m_playersSteamScannerThread.wait();
+
+    m_playersSteamScannerThread.deleteLater();
+    m_playersSteamScanner->deleteLater();
 }
 
 void SsController::blockInput(bool state)
@@ -97,6 +100,7 @@ void SsController::checkWindowState()
          if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
          {
              m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
+             m_defaultSoulstormWindowLong = GetWindowLongPtr(m_soulstormHwnd, GWL_EXSTYLE);
              parseSsSettings();                                  ///<Считываем настройки соулсторма
              emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
              qInfo(logInfo()) << "Soulstorm window opened";
@@ -317,6 +321,11 @@ void SsController::parseSsSettings()
     qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
 
     delete ssSettings;
+}
+
+LONG SsController::defaultSoulstormWindowLong() const
+{
+    return m_defaultSoulstormWindowLong;
 }
 
 PlayersSteamScanner *SsController::playersSteamScanner() const

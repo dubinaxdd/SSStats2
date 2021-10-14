@@ -288,7 +288,7 @@ Window {
             MenuItem {
                 text: qsTr("Exit")
 
-                onTriggered: Qt.quit()
+                onTriggered: _uiBackend.onExit();
             }
         }
     }

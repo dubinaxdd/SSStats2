@@ -41,6 +41,8 @@ public:
 
     PlayersSteamScanner *playersSteamScanner() const;
 
+    LONG defaultSoulstormWindowLong() const;
+
 public slots:
     void blockInput(bool state);
 
@@ -66,6 +68,7 @@ private:
 
 private:
     HWND m_soulstormHwnd = NULL;
+    LONG m_defaultSoulstormWindowLong = NULL;
 
     QTimer* m_ssWindowControllTimer;
     

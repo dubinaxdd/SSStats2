@@ -1,4 +1,4 @@
-#define GAME_INFO_READER_TIMER_INTERVAL 1000
+#define GAME_INFO_READER_TIMER_INTERVAL 500
 
 #include "gameinforeader.h"
 #include <QFile>
@@ -554,6 +554,9 @@ void GameInfoReader::receiveAverrageApm(int apm)
 
 void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
+    if(m_gameCurrentState != SsGameState::gameStoped)
+        return;
+
     m_playersInfoFromScanner = playersInfoFromScanner;
     /*for (int i = 0; i < playersInfoFromScanner.count();i++)
     {

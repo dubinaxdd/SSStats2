@@ -80,6 +80,11 @@ void UiBackend::onGameOver()
     onStartingMission(SsGameState::gameOver);
 }
 
+void UiBackend::onExit()
+{
+    sendExit();
+}
+
 void UiBackend::showClient()
 {
     m_showClient = m_ssLaunchState && m_ssMaximized;

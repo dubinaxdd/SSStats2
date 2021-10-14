@@ -18,7 +18,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
-    m_topmostTimer->setInterval(200);
+    m_topmostTimer->setInterval(1000);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
@@ -56,6 +56,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
     QObject::connect(HookManager::instance(), &HookManager::keyEvent, this, &Core::onKeyEvent, Qt::QueuedConnection);
     QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
+
+    QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
 }
 
 void Core::topmostTimerTimout()
@@ -101,7 +103,7 @@ void Core::topmostTimerTimout()
                 }
             }
 
-            BringWindowToTop(m_ssStatsHwnd);
+            //BringWindowToTop(m_ssStatsHwnd);
         }
     }
 }
@@ -185,6 +187,33 @@ void Core::ssLaunched(bool ssLaunched)
         SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
         m_uiBackend->setWindowTopmost(false);
     }
+}
+
+void Core::onExit()
+{
+    m_topmostTimer->stop();
+
+    ssMaximized(false);
+
+
+    if(m_ssController->soulstormHwnd())
+    {
+        qDebug() << "Ss hwnd on close accepted";
+        RECT ssRect;
+        if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+        {
+            qDebug() << "Ss hwnd bring topmost";
+            SetWindowPos(m_ssController->soulstormHwnd(), HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_ssController->defaultSoulstormWindowLong() );
+        }
+
+        BringWindowToTop(m_ssController->soulstormHwnd());
+    }
+    qInfo() << "SSStatsClosed";
+
+    m_logger->deleteLater();
+    m_ssController->deleteLater();
+
+    emit sendExit();
 }
 
 void Core::registerTypes()

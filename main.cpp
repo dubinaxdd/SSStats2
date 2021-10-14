@@ -93,6 +93,9 @@ int main(int argc, char *argv[])
 
     Core *core = new Core(context, &app);
 
+
+    //engine.addImageProvider("ImageProvider",core->uiBackend()->imageProvider());
+
     engine.addImageProvider("ImageProvider",core->uiBackend()->imageProvider());
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
@@ -101,6 +104,8 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
     engine.load(url);
+
+    QObject::connect(core, &Core::sendExit, &app, &QGuiApplication::quit);
 
     core->grubStatsWindow();
 
