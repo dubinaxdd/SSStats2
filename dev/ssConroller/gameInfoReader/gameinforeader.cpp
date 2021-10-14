@@ -1,4 +1,4 @@
-#define GAME_INFO_READER_TIMER_INTERVAL 500
+#define GAME_INFO_READER_TIMER_INTERVAL 1000
 
 #include "gameinforeader.h"
 #include <QFile>

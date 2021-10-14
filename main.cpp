@@ -93,9 +93,6 @@ int main(int argc, char *argv[])
 
     Core *core = new Core(context, &app);
 
-
-    //engine.addImageProvider("ImageProvider",core->uiBackend()->imageProvider());
-
     engine.addImageProvider("ImageProvider",core->uiBackend()->imageProvider());
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
