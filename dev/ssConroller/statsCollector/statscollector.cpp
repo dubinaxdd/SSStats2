@@ -269,6 +269,16 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8)
         return;
 
+    for (int i = 0; i < replayInfo.playersInfo.count(); i++)
+    {
+        if (replayInfo.playersInfo[i].playerSid == "")
+        {
+            qWarning() << "Player" << replayInfo.playersInfo[i].playerName << "have not steam id, replay not sended";
+            return;
+        }
+    }
+
+
     QString url;
 
     url = QString::fromStdString(SERVER_ADDRESS) + "/connect.php?";
@@ -365,6 +375,7 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     request.setRawHeader("User-Agent", "");
 
     QNetworkReply *reply = m_networkManager->post(request, postData);
+    qInfo() << "Replay sended to server";
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         //qDebug() << "Replay sending responce: " << reply->readAll();

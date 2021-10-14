@@ -430,13 +430,22 @@ void GameInfoReader::readGameParametresAfterStop()
     }
 
     if (computersFinded)
+    {
+        qWarning() << "Game have AI, raplay not sended";
         return;
+    }
 
     if (teamsCount > 2)
+    {
+        qWarning() << "Game have more then 2 teams, raplay not sended";
         return;
+    }
 
     if(duration <= 30)
+    {
+        qWarning() << "Game have duration < 30 sec, raplay not sended";
         return;
+    }
 
     bool winnerAccepted = false;
 
@@ -450,7 +459,10 @@ void GameInfoReader::readGameParametresAfterStop()
     }
 
     if (!winnerAccepted)
+    {
+        qWarning() << "Game not have winner, raplay not sended";
         return;
+    }
 
 
     SendingReplayInfo replayInfo;
