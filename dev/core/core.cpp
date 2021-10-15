@@ -18,7 +18,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
-    m_topmostTimer->setInterval(1000);
+    m_topmostTimer->setInterval(500);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
@@ -103,7 +103,7 @@ void Core::topmostTimerTimout()
                 }
             }
 
-            //BringWindowToTop(m_ssStatsHwnd);
+            BringWindowToTop(m_ssStatsHwnd);
         }
     }
 }
@@ -198,11 +198,9 @@ void Core::onExit()
 
     if(m_ssController->soulstormHwnd())
     {
-        qDebug() << "Ss hwnd on close accepted";
         RECT ssRect;
         if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
         {
-            qDebug() << "Ss hwnd bring topmost";
             SetWindowPos(m_ssController->soulstormHwnd(), HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_ssController->defaultSoulstormWindowLong() );
         }
 

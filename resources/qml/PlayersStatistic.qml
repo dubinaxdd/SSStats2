@@ -202,6 +202,17 @@ Rectangle {
 
         }
 
+
+        Rectangle {
+            id: rectangle1
+            visible: _uiBackend.ssWindowed && !_uiBackend.headerVisible
+            color: "#00000000"
+            Layout.fillWidth: true
+            Layout.preferredHeight: 25
+            Layout.maximumHeight: 25
+            Layout.minimumHeight: 25
+        }
+
         Rectangle {
             id: expandPatyStatisticButtonRectangle
 
@@ -267,6 +278,7 @@ Rectangle {
             Layout.fillHeight: true
             Layout.fillWidth: true
         }
+
 
     }
 }

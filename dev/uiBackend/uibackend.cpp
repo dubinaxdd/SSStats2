@@ -109,6 +109,7 @@ StatisticPanel *UiBackend::statisticPanel() const
 void UiBackend::setSsWindowed(bool newSsWindowed)
 {
     m_ssWindowed = newSsWindowed;
+    emit ssWindowedModeChanged();
 
     if(m_ssWindowed)
         emit windowedModeSeted();
