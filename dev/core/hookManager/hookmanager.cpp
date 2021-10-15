@@ -71,14 +71,22 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     HKL keyboard_layout = GetKeyboardLayout(0);
 
     int to_unicode_ex_result = ToUnicodeEx(cKey.vkCode, cKey.scanCode, keyboard_state, buffer, 4, 0, keyboard_layout);
+
+    Qt::KeyboardModifier modifer = Qt::NoModifier;
+
+    if(cKey.flags == 32)
+        modifer = Qt::AltModifier;
+
+
     buffer[4] = L'\0';
     // ======================
 
-    if (WM_KEYDOWN == wParam) {
+    if (WM_KEYDOWN == wParam || WM_SYSKEYDOWN == wParam)
+    {
         if(!pressedKeysSet.contains(cKey.vkCode)){ // Если клавиша не была отжата и это "залипшая" клавиша, то не повторяем ее обработку
             //qDebug() << "WM_DOWN " << "key: " << cKey.vkCode << " " << QString::fromUtf16((ushort*)buffer) << " " << QString::fromUtf16((ushort*)lpszName);
             pressedKeysSet.insert(cKey.vkCode); // Добавляем код клавиши в список зажатых
-            QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, cKey.vkCode, Qt::NoModifier, 0);
+            QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, cKey.vkCode, modifer, 0);
             emit HookManager::instance()->keyEvent(event);
         }
     }
