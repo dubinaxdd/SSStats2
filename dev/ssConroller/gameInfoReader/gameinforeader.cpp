@@ -74,9 +74,9 @@ void GameInfoReader::readGameInfo()
             {
                 if (m_gameCurrentState != SsGameState::gameStoped)
                 {
+                    m_gameCurrentState = SsGameState::gameStoped;
                     checkGameInitialize();
                     readGameParametresAfterStop();
-                    m_gameCurrentState = SsGameState::gameStoped;
                     emit gameStopped();
 
                     qInfo(logInfo()) << "Game Stoped";
@@ -241,9 +241,6 @@ void GameInfoReader::readGameInfo()
 
 void GameInfoReader::readGameParametresAfterStop()
 {
-    //if (m_gameCurrentState != SsGameState::gameStarted)
-    //    return;
-
     bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                            && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
                            && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
