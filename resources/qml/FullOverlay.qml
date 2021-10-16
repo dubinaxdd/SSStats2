@@ -141,7 +141,7 @@ Rectangle {
                 Label {
                     id: label
                     color: "#ebaf36"
-                    text: qsTr("Press (~) key for roll up")
+                    text: qsTr("Press Alt+(~) key to roll up")
                     Layout.margins: 15
                     Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
                 }

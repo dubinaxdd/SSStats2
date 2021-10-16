@@ -21,31 +21,50 @@ Rectangle {
         id: rowLayout
         anchors.fill: parent
 
-        Rectangle {
-            id: rectangle
-            width: 200
-            height: 200
-            color: (itemRectangle.itemModel.playerIsBanned) ? "#ffa9a9" : "#ffffff"
-            radius: 10
-            Layout.preferredHeight: 60
-            Layout.preferredWidth: 60
-            Layout.minimumHeight: 60
-            Layout.minimumWidth: 60
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+        ColumnLayout {
+            id: columnLayout
+            width: 100
+            height: 100
 
-            Image {
-                id: avatarImage
-                cache: false
-                x: 137
-                y: 0
-                width: 60
-                height: 60
-                anchors.verticalCenter: parent.verticalCenter
+            Rectangle {
+                id: rectangle
+                width: 200
+                height: 200
+                color: "#00000000"
+                radius: 10
+                Layout.topMargin: itemRectangle.itemModel.playerIsBanned ? 10 : 0
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.maximumWidth: 80
+                Layout.preferredHeight: 60
+                Layout.preferredWidth: 80
+                Layout.minimumHeight: 60
+                Layout.minimumWidth: 80
+                Layout.fillHeight: true
+                Layout.fillWidth: true
 
-                source: itemRectangle.avatarSource
-                anchors.horizontalCenter: parent.horizontalCenter
-                fillMode: Image.PreserveAspectFit
+                Image {
+                    id: avatarImage
+                    cache: false
+                    x: 137
+                    y: 0
+                    width: 60
+                    height: 60
+                    anchors.verticalCenter: parent.verticalCenter
+
+                    source: itemRectangle.avatarSource
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    fillMode: Image.PreserveAspectFit
+                }
+
+            }
+
+            Label {
+                id: statusLabel
+                visible: itemRectangle.itemModel.playerIsBanned
+                text: qsTr("[CHEATER]")
+                font.pointSize: 10
+                Layout.bottomMargin: 10
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             }
         }
 
@@ -59,7 +78,8 @@ Rectangle {
 
             Label {
                 id: label1
-                text: (itemRectangle.itemModel.playerIsBanned) ? itemRectangle.itemModel.playerName + " [CHEATER]" : itemRectangle.itemModel.playerName
+                text: itemRectangle.itemModel.playerName
+                Layout.maximumWidth: 180
                 font.pointSize: 12
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -113,5 +133,6 @@ Rectangle {
                 Layout.fillWidth: true
             }
         }
+
     }
 }

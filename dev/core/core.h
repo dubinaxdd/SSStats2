@@ -24,18 +24,22 @@ public:
 
     SsController *ssController() const;
     SettingsController *settingsController() const;
-
     UiBackend *uiBackend() const;
 	
+signals:
+    void sendExit();
+
 public slots:
     void onKeyEvent(QKeyEvent *event);
     void onMouseEvent(QMouseEvent *event);
+
 
 private slots:
     void topmostTimerTimout();
     void ssMaximized(bool maximized);
     void gameInitialized();
     void ssLaunched(bool ssLaunched);
+    void onExit();
 
 private:
     void registerTypes();

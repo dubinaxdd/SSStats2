@@ -37,6 +37,7 @@ public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
     void receivePlayersCount(int playersCount);
     void receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
+    void receiveCurrentPlayerHostState(bool isHost);
 
 private:
     StatisticPanelItem *getCurentPlayerStatsItem();
@@ -54,6 +55,7 @@ private:
     ImageProvider *m_imageProvider;
     int m_playersCount = 0;
     bool m_expandPatyStatistic = false;
+    bool currentPlayerIsHost = false;
 
     bool m_blockUpdate = false;
 };

@@ -102,6 +102,8 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
+    QObject::connect(core, &Core::sendExit, &app, &QGuiApplication::quit);
+
     core->grubStatsWindow();
 
     return app.exec();

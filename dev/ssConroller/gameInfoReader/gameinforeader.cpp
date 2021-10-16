@@ -74,9 +74,9 @@ void GameInfoReader::readGameInfo()
             {
                 if (m_gameCurrentState != SsGameState::gameStoped)
                 {
+                    m_gameCurrentState = SsGameState::gameStoped;
                     checkGameInitialize();
                     readGameParametresAfterStop();
-                    m_gameCurrentState = SsGameState::gameStoped;
                     emit gameStopped();
 
                     qInfo(logInfo()) << "Game Stoped";
@@ -241,9 +241,6 @@ void GameInfoReader::readGameInfo()
 
 void GameInfoReader::readGameParametresAfterStop()
 {
-    //if (m_gameCurrentState != SsGameState::gameStarted)
-    //    return;
-
     bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                            && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
                            && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
@@ -253,7 +250,10 @@ void GameInfoReader::readGameParametresAfterStop()
                            && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
 
     if (!isStdWinConditions)
+    {
+        qWarning() << "Game have not standard win conditions, replay not sended";
         return;
+    }
 
     QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
     qInfo(logInfo()) << "teststats.lua path: " << statsPath;
@@ -383,6 +383,20 @@ void GameInfoReader::readGameParametresAfterStop()
         playerStats[i].finalState = static_cast<FinalState>(playerFinalStates.at(i));
 
 
+    //Сортировка игроков по команде
+    for(int i = 0; i < playerStats.count(); i++)
+    {
+        for(int j = 0; j < playerStats.count() - 1; j++)
+        {
+            if(playerStats[j].team > playerStats[j + 1].team)
+            {
+                auto buffer = playerStats[j];
+                playerStats[j] = playerStats[j + 1];
+                playerStats[j + 1] = buffer;
+            }
+        }
+    }
+
     bool computersFinded = false;
 
     for(int i = 0; i < playerNames.count(); i++ )
@@ -416,20 +430,46 @@ void GameInfoReader::readGameParametresAfterStop()
     }
 
     if (computersFinded)
+    {
+        qWarning() << "Game have AI, raplay not sended";
         return;
+    }
 
     if (teamsCount > 2)
+    {
+        qWarning() << "Game have more then 2 teams, raplay not sended";
         return;
+    }
 
     if(duration <= 30)
+    {
+        qWarning() << "Game have duration < 30 sec, raplay not sended";
         return;
+    }
 
+    bool winnerAccepted = false;
+
+    for(int i = 0; i < playersCount; i++)
+    {
+        if(playerStats[i].finalState == FinalState::winner)
+        {
+            winnerAccepted = true;
+            break;
+        }
+    }
+
+    if (!winnerAccepted)
+    {
+        qWarning() << "Game not have winner, raplay not sended";
+        return;
+    }
 
 
     SendingReplayInfo replayInfo;
 
     for(int i = 0; i < playersCount; i++)
     {
+
         PlayerInfoForReplaySendong newPlayer;
 
         newPlayer.playerName = playerStats[i].name;
@@ -467,10 +507,7 @@ void GameInfoReader::readGameParametresAfterStop()
         replayInfo.playersInfo.append(newPlayer);
     }
 
-
     replayInfo.apm = m_lastAverrageApm;
-
-
 
     switch (playersCount)
     {
@@ -514,12 +551,16 @@ void GameInfoReader::receiveAverrageApm(int apm)
 
 void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
-    for (int i = 0; i < playersInfoFromScanner.count();i++)
+    if(m_gameCurrentState != SsGameState::gameStoped)
+        return;
+
+    m_playersInfoFromScanner = playersInfoFromScanner;
+    /*for (int i = 0; i < playersInfoFromScanner.count();i++)
     {
         bool playerFinded = false;
         for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
         {
-            if (playersInfoFromScanner[i].name == m_playersInfoFromScanner[j].name)
+            if (playersInfoFromScanner[i].steamId == m_playersInfoFromScanner[j].steamId)
             {
                 playerFinded = true;
                 break;
@@ -531,7 +572,7 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
             m_playersInfoFromScanner.append(playersInfoFromScanner[i]);
             qInfo(logInfo()) << "Finded player:" << m_playersInfoFromScanner.last().name;
         }
-    }
+    }*/
 
     m_playersCountFromScanner = playersCount;
 }

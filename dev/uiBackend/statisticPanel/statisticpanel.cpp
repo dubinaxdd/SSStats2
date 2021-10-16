@@ -56,10 +56,22 @@ void StatisticPanel::receivePlayersCount(int playersCount)
     if (m_blockUpdate)
         return;
 
-    if (m_playersCount == playersCount)
-        return;
+    if (currentPlayerIsHost)
+    {
+        if(playersCount >= m_playersCount)
+            m_playersCount = playersCount;
+        else
+            return;
+    }
+    else
+    {
 
-    m_playersCount = playersCount;
+        if (m_playersCount == playersCount)
+            return;
+        m_playersCount = playersCount;
+    }
+
+
 
     if(m_playersCount > 1)
         m_playersStatsItems[0]->setVisible(true);
@@ -150,6 +162,17 @@ void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerIn
     {
             m_playersStatsItems[i]->setPlayerSteamId(playersInfo.at(i).steamId);
     }
+}
+
+void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
+{
+    if(currentPlayerIsHost != isHost)
+        m_playersCount = 1;
+
+
+    currentPlayerIsHost = isHost;
+
+    //qDebug() << "Player is host:" << currentPlayerIsHost;
 }
 
 StatisticPanelItem *StatisticPanel::getCurentPlayerStatsItem()
