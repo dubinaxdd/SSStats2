@@ -53,12 +53,10 @@ private:
     LONG m_defaultWindowLong;
     RECT m_ssRect;
 
-
-    KeyboardProcessor* m_keyboardProcessor;
     SettingsController* m_settingsController;
+    KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
-
 
 
     int m_defaultWidth;

@@ -8,6 +8,7 @@
 #include "gamePanel/gamepanel.h"
 #include "statisticPanel/statisticpanel.h"
 #include "imageProvider/imageprovider.h"
+#include "../core/settingsController/settingscontroller.h"
 
 class UiBackend : public QObject
 {
@@ -32,18 +33,16 @@ class UiBackend : public QObject
     Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel NOTIFY gamePanelInitialized)
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
 
+    Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
 
 public:
-    explicit UiBackend(QObject *parent = nullptr);
+    explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
     bool switchNoFogState() const;
 
     bool expand() const;
-
     bool getShowClient();
-
     void setNoFogState(bool state);
-
     void setExpand(bool newExpand);
 
     void mousePressEvent (QPoint mousePosition);
@@ -56,17 +55,19 @@ public:
 
     void setSsWindowed(bool newSsWindowed);
     void setSsWindowPosition(int x, int y);
+    bool getFogState() const;
 
 
     GamePanel *gamePanel() const;
     StatisticPanel *statisticPanel() const;
 
+
     ImageProvider *imageProvider() const;
+
+
 
 signals:
     void sendSwitchNoFogHoverState(bool);
-    void switchNoFogStateChanged(bool);
-    void noFogStateChanged(bool);
 
     void sendExpand(bool);
 
@@ -87,12 +88,9 @@ signals:
     void statisticPanelInitialized();
     void statsHeaderInitialized();
     void sendExit();
+    void noFogStateChanged(bool);
 
 public slots:
-
-    void onNoFogStateChanged(bool state);
-    void onSwitchNoFogStateChanged(bool state);
-
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
 
@@ -107,6 +105,9 @@ public slots:
 
     Q_INVOKABLE void onExit();
 
+private slots:
+    void onSettingsLoaded();
+
 private:
     void showClient();
 
@@ -114,6 +115,7 @@ private:
     ImageProvider* m_imageProvider;
     GamePanel* m_gamePanel;
     StatisticPanel* m_statisticPanel;
+    SettingsController* m_settingsController;
 
     QString m_ssStatsVersion;
 
@@ -140,6 +142,8 @@ private:
     bool m_patyStatisticVisible = true;
 
     bool m_patyStatisticVisibleButtonPressedState = false;
+
+    bool m_noFogState = false;
 
 
 };

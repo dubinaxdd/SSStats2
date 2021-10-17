@@ -1,42 +1,41 @@
 #include "settingscontroller.h"
-
-#define SETTINGS_FILE "settings/settings.ini"
-#define NO_FOG_STATE_KEY "game/no_fog"
-#define DEFAULT_NO_FOG_STATE false
-
+#include "../logger/logger.h"
 
 SettingsController::SettingsController(QObject *parent) : QObject(parent)
 {
-    this->initializeSettings();
+    m_settings = new Settings();
+}
+
+SettingsController::~SettingsController()
+{
+    saveSettings();
+    delete m_settings;
 }
 
 void SettingsController::initializeSettings()
 {
-    ss_stats_settings = new QSettings(SETTINGS_FILE, QSettings::IniFormat);
+    ss_stats_settings = new QSettings("settings/settings.ini", QSettings::IniFormat, this);
+
+    ss_stats_settings->sync();
 
     // Если настроек нет, сохраняем дефолтные
-    if(!ss_stats_settings->contains(NO_FOG_STATE_KEY)) ss_stats_settings->setValue(NO_FOG_STATE_KEY, DEFAULT_NO_FOG_STATE);
+    m_settings->noFog = ss_stats_settings->value("game/no_fog", false).toBool();
+    m_settings->smallGamePanelActive = ss_stats_settings->value("client/small_pannel_active", false).toBool();
+    emit settingsLoaded();
 
-    // Загружаем настройки и генерируем соответствующие сигналы
-    emit noFogStateInitialized(ss_stats_settings->value(NO_FOG_STATE_KEY).toBool());
+    qInfo(logInfo()) << "Settings loaded";
 }
 
-void SettingsController::onSwitchNoFogStateChanged(bool state)
+void SettingsController::saveSettings()
 {
-    ss_stats_settings->setValue(NO_FOG_STATE_KEY, state);
-    emit noFogStateChanged(state);
+    ss_stats_settings->setValue("game/no_fog", m_settings->noFog);
+    ss_stats_settings->setValue("client/small_pannel_active", m_settings->smallGamePanelActive);
+
+    ss_stats_settings->sync();
 }
 
-bool SettingsController::noFogState()
+Settings *SettingsController::getSettings()
 {
-    return ss_stats_settings->value(NO_FOG_STATE_KEY, DEFAULT_NO_FOG_STATE).toBool();
+    return m_settings;
 }
 
-// Переотправляем сигналы инициализации настроек относящихся к изменению процесса DoW при запуске или перезапуске процесса DoW
-void SettingsController::onSsLaunchStateChanged(bool state)
-{
-    if (state)
-    {
-        emit noFogStateInitialized(ss_stats_settings->value(NO_FOG_STATE_KEY).toBool());
-    }
-}

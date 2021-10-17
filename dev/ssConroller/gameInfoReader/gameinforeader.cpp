@@ -251,7 +251,7 @@ void GameInfoReader::readGameParametresAfterStop()
 
     if (!isStdWinConditions)
     {
-        qWarning() << "Game have not standard win conditions, replay not sended";
+        qWarning(logWarning()) << "Game have not standard win conditions, replay not sended";
         return;
     }
 
@@ -431,19 +431,19 @@ void GameInfoReader::readGameParametresAfterStop()
 
     if (computersFinded)
     {
-        qWarning() << "Game have AI, raplay not sended";
+        qWarning(logWarning()) << "Game have AI, raplay not sended";
         return;
     }
 
     if (teamsCount > 2)
     {
-        qWarning() << "Game have more then 2 teams, raplay not sended";
+        qWarning(logWarning()) << "Game have more then 2 teams, raplay not sended";
         return;
     }
 
     if(duration <= 30)
     {
-        qWarning() << "Game have duration < 30 sec, raplay not sended";
+        qWarning(logWarning()) << "Game have duration < 30 sec, raplay not sended";
         return;
     }
 
@@ -460,7 +460,7 @@ void GameInfoReader::readGameParametresAfterStop()
 
     if (!winnerAccepted)
     {
-        qWarning() << "Game not have winner, raplay not sended";
+        qWarning(logWarning()) << "Game not have winner, raplay not sended";
         return;
     }
 

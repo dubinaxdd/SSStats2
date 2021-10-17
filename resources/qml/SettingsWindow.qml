@@ -16,10 +16,73 @@ Rectangle {
     transformOrigin: Item.BottomRight
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
 
-    property Column settingsColumn : settingsColumn
-    property Switch noFogSwitch : noFogSwitch
-    property Switch testSwitch : testSwitch
+    property int relativeMouseX
+    property int relativeMouseY
 
+   // Connections{
+   //     target: _uiBackend
+
+       // function onNoFogStateChanged(state){
+           // noFogSwitch.checkedState = state;
+       // }
+   // }
+
+
+    function mouseClick(x, y)
+    {
+        relativeMouseX = x
+        relativeMouseY = y
+
+        // Переключатель "No Fog"
+        if (relativeMouseX >= noFogSwitch.x + settingsColumn.x &&
+                relativeMouseX <= noFogSwitch.x + settingsColumn.x + noFogSwitch.width &&
+                relativeMouseY >= noFogSwitch.y + settingsColumn.y &&
+                relativeMouseY <= noFogSwitch.y + settingsColumn.y +noFogSwitch.height)
+        {
+            noFogSwitch.checkedState = !noFogSwitch.checkedState;
+            _uiBackend.noFogState = noFogSwitch.checkedState;
+        }
+
+
+        // Переключатель "Small panel"
+        if (relativeMouseX >= smallGamePanelActivateSwitch.x + settingsColumn.x &&
+                relativeMouseX <= smallGamePanelActivateSwitch.x + settingsColumn.x + smallGamePanelActivateSwitch.width &&
+                relativeMouseY >= smallGamePanelActivateSwitch.y + settingsColumn.y &&
+                relativeMouseY <= smallGamePanelActivateSwitch.y + settingsColumn.y +smallGamePanelActivateSwitch.height)
+        {
+            smallGamePanelActivateSwitch.checkedState = !smallGamePanelActivateSwitch.checkedState;
+            _uiBackend.gamePanel.smallPannelActive = smallGamePanelActivateSwitch.checkedState
+        }
+
+    }
+
+    function mouseHover(x, y)
+    {
+        relativeMouseX = x
+        relativeMouseY = y
+
+        // Переключатель "No Fog"
+        if (relativeMouseX >= noFogSwitch.x + settingsColumn.x &&
+                relativeMouseX <= noFogSwitch.x + settingsColumn.x + noFogSwitch.width &&
+                relativeMouseY >= noFogSwitch.y + settingsColumn.y&&
+                relativeMouseY <= noFogSwitch.y + settingsColumn.y + noFogSwitch.height)
+        {
+            noFogSwitch.hoverState = true;
+        } else {
+            noFogSwitch.hoverState = false;
+        }
+
+        // Переключатель "Small panel"
+        if (relativeMouseX >= smallGamePanelActivateSwitch.x + settingsColumn.x &&
+                relativeMouseX <= smallGamePanelActivateSwitch.x + settingsColumn.x + smallGamePanelActivateSwitch.width &&
+                relativeMouseY >= smallGamePanelActivateSwitch.y + settingsColumn.y&&
+                relativeMouseY <= smallGamePanelActivateSwitch.y + settingsColumn.y + smallGamePanelActivateSwitch.height)
+        {
+            smallGamePanelActivateSwitch.hoverState = true;
+        } else {
+            smallGamePanelActivateSwitch.hoverState = false;
+        }
+    }
 
     Connections{
         target: _uiBackend
@@ -56,13 +119,24 @@ Rectangle {
             id: noFogSwitch
 
             property bool hoverState : false
-            property bool checkedState : false
+            property bool checkedState : _uiBackend.noFogState
 
             text: qsTr("Remove fog (aka No Fog) of the game space when moving away")
             font.pointSize: 10
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
+        }
 
+        Switch {
+            id: smallGamePanelActivateSwitch
+
+            property bool hoverState : false
+            property bool checkedState : _uiBackend.gamePanel.smallPannelActive
+
+            text: qsTr("Small panel in game")
+            font.pointSize: 10
+            opacity: hoverState ? 1.0 : 0.8
+            checked: checkedState
         }
     }
 }

@@ -10,7 +10,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_logger(new Logger(this))
     , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_settingsController(new SettingsController(this))
-    , m_uiBackend(new UiBackend(context))
+    , m_uiBackend(new UiBackend(m_settingsController, context))
     , m_ssController(new SsController(this))
 {
     registerTypes();
@@ -26,7 +26,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_uiBackend,                &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_ssController, &SsController::ssMaximized,            m_uiBackend,                &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
     QObject::connect(m_ssController, &SsController::sendPlayersTestStats,   m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,            Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_settingsController,       &SettingsController::onSsLaunchStateChanged,    Qt::QueuedConnection);
+    //QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_settingsController,       &SettingsController::onSsLaunchStateChanged,    Qt::QueuedConnection);
 
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameInitialized,       this,                       &Core::gameInitialized,         Qt::DirectConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::loadStarted,           m_uiBackend,                &UiBackend::onLoadStarted,      Qt::QueuedConnection);
@@ -47,17 +47,17 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend, &UiBackend::switchNoFogStateChanged, m_settingsController, &SettingsController::onSwitchNoFogStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_uiBackend, &UiBackend::onNoFogStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_settingsController, &SettingsController::noFogStateChanged, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_settingsController, &SettingsController::noFogStateInitialized, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend, &UiBackend::noFogStateChanged, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
+
 
     QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
     QObject::connect(HookManager::instance(), &HookManager::keyEvent, this, &Core::onKeyEvent, Qt::QueuedConnection);
     QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
+
+    m_settingsController->initializeSettings();
 }
 
 void Core::topmostTimerTimout()
@@ -111,7 +111,7 @@ void Core::topmostTimerTimout()
 
 void Core::ssMaximized(bool maximized)
 {
-    HookManager::instance()->reconnectHook();
+    //HookManager::instance()->reconnectHook();
 
     if (maximized)
     {
@@ -209,7 +209,6 @@ void Core::onExit()
     qInfo() << "SSStatsClosed";
 
     m_logger->deleteLater();
-    m_ssController->deleteLater();
 
     emit sendExit();
 }

@@ -3,7 +3,9 @@
 
 #define GAME_LEAVE_TIMER_INTERVAL 1000
 
-GamePanel::GamePanel(QObject *parent) : QObject(parent)
+GamePanel::GamePanel(SettingsController *settingsController, QObject *parent)
+    : QObject(parent)
+    , m_settingsController(settingsController)
 {
     m_racePanelVisibleTimer = new QTimer(this);
     m_racePanelVisibleTimer->setInterval(20000);
@@ -15,6 +17,10 @@ GamePanel::GamePanel(QObject *parent) : QObject(parent)
 
     QObject::connect(m_racePanelVisibleTimer, &QTimer::timeout, this, &GamePanel::racePanelVisibleTimerTimeout, Qt::QueuedConnection);
     QObject::connect(m_gameLeaveTimer, &QTimer::timeout, this, &GamePanel::gameLeaveTimerTimeout, Qt::QueuedConnection);
+
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &GamePanel::onSettingsLoaded, Qt::QueuedConnection);
+
+
 }
 
 void GamePanel::racePanelVisibleTimerTimeout()
@@ -108,65 +114,29 @@ void GamePanel::receivePlayersTestStats(QVector<PlayerStats> testStats)
 {
     m_racePanelVisibleTimer->start();
 
+    m_testStats = testStats;
+
     m_gamePanelVisisble = true;
     emit gamePanelVisibleChanged(m_gamePanelVisisble);
 
     m_racePanelVisisble = true;
     emit racePanelVisibleChanged(m_racePanelVisisble);
 
-    if(testStats.count() < 8)
-        return;
-
-    if(!testStats.at(0).name.isEmpty())
-        m_player0Race = "Team " + QString::number(testStats.at(0).team.toInt() + 1) + ": " + testStats.at(0).name/*.toLocal8Bit()*/ + " - " + testStats.at(0).race;
-
-    if(!testStats.at(1).name.isEmpty())
-        m_player1Race = "Team " + QString::number(testStats.at(1).team.toInt() + 1) + ": " + testStats.at(1).name/*.toLocal8Bit()*/  + " - " + testStats.at(1).race;
-
-    if(!testStats.at(2).name.isEmpty())
-        m_player2Race = "Team " + QString::number(testStats.at(2).team.toInt() + 1) + ": " + testStats.at(2).name/*.toLocal8Bit()*/  + " - " + testStats.at(2).race;
-
-    if(!testStats.at(3).name.isEmpty())
-        m_player3Race = "Team " + QString::number(testStats.at(3).team.toInt() + 1) + ": " + testStats.at(3).name/*.toLocal8Bit()*/  + " - " + testStats.at(3).race;
-
-    if(!testStats.at(4).name.isEmpty())
-        m_player4Race = "Team " + QString::number(testStats.at(4).team.toInt() + 1) + ": " + testStats.at(4).name/*.toLocal8Bit()*/  + " - " + testStats.at(4).race;
-
-    if(!testStats.at(5).name.isEmpty())
-        m_player5Race = "Team " + QString::number(testStats.at(5).team.toInt() + 1) + ": " + testStats.at(5).name/*.toLocal8Bit()*/  + " - " + testStats.at(5).race;
-
-    if(!testStats.at(6).name.isEmpty())
-        m_player6Race = "Team " + QString::number(testStats.at(6).team.toInt() + 1) + ": " + testStats.at(6).name/*.toLocal8Bit()*/  + " - " + testStats.at(6).race;
-
-    if(!testStats.at(7).name.isEmpty())
-        m_player7Race = "Team " + QString::number(testStats.at(7).team.toInt() + 1) + ": " + testStats.at(7).name/*.toLocal8Bit()*/  + " - " + testStats.at(7).race;
-
-
-    replaceRaceKeyword(&m_player0Race);
-    replaceRaceKeyword(&m_player1Race);
-    replaceRaceKeyword(&m_player2Race);
-    replaceRaceKeyword(&m_player3Race);
-    replaceRaceKeyword(&m_player4Race);
-    replaceRaceKeyword(&m_player5Race);
-    replaceRaceKeyword(&m_player6Race);
-    replaceRaceKeyword(&m_player7Race);
-
-    m_player0Color = chooseColorForPlayer(testStats.at(0).team.toInt());
-    m_player1Color = chooseColorForPlayer(testStats.at(1).team.toInt());
-    m_player2Color = chooseColorForPlayer(testStats.at(2).team.toInt());
-    m_player3Color = chooseColorForPlayer(testStats.at(3).team.toInt());
-    m_player4Color = chooseColorForPlayer(testStats.at(4).team.toInt());
-    m_player5Color = chooseColorForPlayer(testStats.at(5).team.toInt());
-    m_player6Color = chooseColorForPlayer(testStats.at(6).team.toInt());
-    m_player7Color = chooseColorForPlayer(testStats.at(7).team.toInt());
-
-    emit playerTestStatsUpdate();
+    updatePlayerRaces();
 }
 
 void GamePanel::expandPlayerRacesButtonClick()
 {
     m_racePanelVisisble = !m_racePanelVisisble;
     emit racePanelVisibleChanged(m_racePanelVisisble);
+}
+
+void GamePanel::onSettingsLoaded()
+{
+    m_smallPannelActive = m_settingsController->getSettings()->smallGamePanelActive;
+    emit smallPannelActiveChanged(m_smallPannelActive);
+
+    updatePlayerRaces();
 }
 
 void GamePanel::replaceRaceKeyword(QString *raceString)
@@ -242,9 +212,103 @@ QString GamePanel::chooseColorForPlayer(int team)
     return "";
 }
 
+void GamePanel::updatePlayerRaces()
+{
+    if(m_testStats.count() < 8)
+        return;
+
+    if (!m_smallPannelActive)
+    {
+        if(!m_testStats.at(0).name.isEmpty())
+            m_player0Race = "Team " + QString::number(m_testStats.at(0).team.toInt() + 1) + ": " + m_testStats.at(0).name + " - " + m_testStats.at(0).race;
+
+        if(!m_testStats.at(1).name.isEmpty())
+            m_player1Race = "Team " + QString::number(m_testStats.at(1).team.toInt() + 1) + ": " + m_testStats.at(1).name + " - " + m_testStats.at(1).race;
+
+        if(!m_testStats.at(2).name.isEmpty())
+            m_player2Race = "Team " + QString::number(m_testStats.at(2).team.toInt() + 1) + ": " + m_testStats.at(2).name + " - " + m_testStats.at(2).race;
+
+        if(!m_testStats.at(3).name.isEmpty())
+            m_player3Race = "Team " + QString::number(m_testStats.at(3).team.toInt() + 1) + ": " + m_testStats.at(3).name + " - " + m_testStats.at(3).race;
+
+        if(!m_testStats.at(4).name.isEmpty())
+            m_player4Race = "Team " + QString::number(m_testStats.at(4).team.toInt() + 1) + ": " + m_testStats.at(4).name + " - " + m_testStats.at(4).race;
+
+        if(!m_testStats.at(5).name.isEmpty())
+            m_player5Race = "Team " + QString::number(m_testStats.at(5).team.toInt() + 1) + ": " + m_testStats.at(5).name + " - " + m_testStats.at(5).race;
+
+        if(!m_testStats.at(6).name.isEmpty())
+            m_player6Race = "Team " + QString::number(m_testStats.at(6).team.toInt() + 1) + ": " + m_testStats.at(6).name + " - " + m_testStats.at(6).race;
+
+        if(!m_testStats.at(7).name.isEmpty())
+            m_player7Race = "Team " + QString::number(m_testStats.at(7).team.toInt() + 1) + ": " + m_testStats.at(7).name + " - " + m_testStats.at(7).race;
+    }
+    else
+    {
+        if(!m_testStats.at(0).name.isEmpty())
+            m_player0Race = m_testStats.at(0).name.left(12) + " - " + m_testStats.at(0).race;
+
+        if(!m_testStats.at(1).name.isEmpty())
+            m_player1Race = m_testStats.at(1).name.left(12) + " - " + m_testStats.at(1).race;
+
+        if(!m_testStats.at(2).name.isEmpty())
+            m_player2Race = m_testStats.at(2).name.left(12) + " - " + m_testStats.at(2).race;
+
+        if(!m_testStats.at(3).name.isEmpty())
+            m_player3Race = m_testStats.at(3).name.left(12) + " - " + m_testStats.at(3).race;
+
+        if(!m_testStats.at(4).name.isEmpty())
+            m_player4Race = m_testStats.at(4).name.left(12) + " - " + m_testStats.at(4).race;
+
+        if(!m_testStats.at(5).name.isEmpty())
+            m_player5Race = m_testStats.at(5).name.left(12) + " - " + m_testStats.at(5).race;
+
+        if(!m_testStats.at(6).name.isEmpty())
+            m_player6Race = m_testStats.at(6).name.left(12) + " - " + m_testStats.at(6).race;
+
+        if(!m_testStats.at(7).name.isEmpty())
+            m_player7Race = m_testStats.at(7).name.left(12) + " - " + m_testStats.at(7).race;
+    }
+
+    replaceRaceKeyword(&m_player0Race);
+    replaceRaceKeyword(&m_player1Race);
+    replaceRaceKeyword(&m_player2Race);
+    replaceRaceKeyword(&m_player3Race);
+    replaceRaceKeyword(&m_player4Race);
+    replaceRaceKeyword(&m_player5Race);
+    replaceRaceKeyword(&m_player6Race);
+    replaceRaceKeyword(&m_player7Race);
+
+    m_player0Color = chooseColorForPlayer(m_testStats.at(0).team.toInt());
+    m_player1Color = chooseColorForPlayer(m_testStats.at(1).team.toInt());
+    m_player2Color = chooseColorForPlayer(m_testStats.at(2).team.toInt());
+    m_player3Color = chooseColorForPlayer(m_testStats.at(3).team.toInt());
+    m_player4Color = chooseColorForPlayer(m_testStats.at(4).team.toInt());
+    m_player5Color = chooseColorForPlayer(m_testStats.at(5).team.toInt());
+    m_player6Color = chooseColorForPlayer(m_testStats.at(6).team.toInt());
+    m_player7Color = chooseColorForPlayer(m_testStats.at(7).team.toInt());
+
+    emit playerTestStatsUpdate();
+}
+
 void GamePanel::setGamePanelVisisble(bool newGamePanelVisisble)
 {
     m_gamePanelVisisble = newGamePanelVisisble;
     emit gamePanelVisibleChanged(m_gamePanelVisisble);
+}
+
+void GamePanel::setSmallGamePanelActive(bool active)
+{
+    m_smallPannelActive = active;
+    m_settingsController->getSettings()->smallGamePanelActive = active;
+    m_settingsController->saveSettings();
+    emit smallPannelActiveChanged(active);
+
+    updatePlayerRaces();
+}
+
+bool GamePanel::getSmallGamePanelActive()
+{
+    return m_smallPannelActive;
 }
 

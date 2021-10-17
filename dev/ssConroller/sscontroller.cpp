@@ -8,7 +8,7 @@
 #include <QJsonObject>
 #include <QStringList>
 
-#define WINDOW_STATE_CHECK_INTERVAL 200
+#define WINDOW_STATE_CHECK_INTERVAL 500
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
 
