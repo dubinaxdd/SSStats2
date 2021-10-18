@@ -102,6 +102,8 @@ void GameInfoReader::readGameInfo()
 
                         while (!winConditionsReadLine.contains("APP -- Game Start"))
                         {
+                            m_gameWillBePlayed = true;
+
                             winConditionsReadLine = fileLines.at(winConditionsReadCounter-1);
 
                             if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
@@ -241,6 +243,13 @@ void GameInfoReader::readGameInfo()
 
 void GameInfoReader::readGameParametresAfterStop()
 {
+    if (!m_gameWillBePlayed)
+    {
+        qWarning(logWarning()) << "Game will be played in other session, replay not sended";
+        return;
+    }
+
+
     bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                            && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
                            && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)

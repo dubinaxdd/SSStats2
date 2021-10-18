@@ -60,6 +60,7 @@ private:
 
     bool m_gameLounched = false;
     bool m_lastGameSettingsValide = false;
+    bool m_gameWillBePlayed = false;
 
     int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
