@@ -11,7 +11,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(m_settingsController, context))
-    , m_ssController(new SsController(this))
+    , m_ssController(new SsController(m_settingsController, this))
 {
     registerTypes();
 

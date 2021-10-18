@@ -135,6 +135,8 @@ void GamePanel::onSettingsLoaded()
 {
     m_smallPannelActive = m_settingsController->getSettings()->smallGamePanelActive;
     emit smallPannelActiveChanged(m_smallPannelActive);
+    m_showGamePannelPreset = m_settingsController->getSettings()->showGamePanelPreset;
+    emit showGamePanelPresetChanged(m_showGamePannelPreset);
 
     updatePlayerRaces();
 }
@@ -289,6 +291,19 @@ void GamePanel::updatePlayerRaces()
     m_player7Color = chooseColorForPlayer(m_testStats.at(7).team.toInt());
 
     emit playerTestStatsUpdate();
+}
+
+bool GamePanel::showGamePannelPreset() const
+{
+    return m_showGamePannelPreset;
+}
+
+void GamePanel::setShowGamePannelPreset(bool showGamePannelPreset)
+{
+    m_showGamePannelPreset = showGamePannelPreset;
+    m_settingsController->getSettings()->showGamePanelPreset = m_showGamePannelPreset;
+    m_settingsController->saveSettings();
+    emit showGamePanelPresetChanged(m_showGamePannelPreset);
 }
 
 void GamePanel::setGamePanelVisisble(bool newGamePanelVisisble)

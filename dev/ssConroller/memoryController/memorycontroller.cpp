@@ -17,17 +17,23 @@ BYTE temp6_2[6] = {0};
 
 BYTE temp4[6] = {0};
 
-MemoryController::MemoryController(QObject *parent) : QObject(parent)
+MemoryController::MemoryController(SettingsController* settingsController, QObject *parent)
+    : QObject(parent)
+    , m_settingsController(settingsController)
 {
-
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MemoryController::onSettingsLoaded,Qt::QueuedConnection);
 }
 
 void MemoryController::onSsLaunchStateChanged(bool state)
 {
     m_ssLaunchState = state;
+    onNoFogStateChanged(currentNoFog && m_ssLaunchState);
+}
 
-    if(!m_ssLaunchState)  // Если процесс выключался, то сбрасываем текущие значения установленных инъекций памяти на стандартные
-        currentNoFog = false;
+void MemoryController::onSettingsLoaded()
+{
+    currentNoFog = m_settingsController->getSettings()->noFog;
+    onNoFogStateChanged(currentNoFog && m_ssLaunchState);
 }
 
 void MemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
@@ -37,11 +43,13 @@ void MemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
 
 void MemoryController::onNoFogStateChanged(bool state)
 {
-    qInfo(logInfo()) << "Fog state: " <<  state;
+    //qInfo(logInfo()) << "Fog state: " <<  state;
 
     targetNoFog = state;
 
-    if(m_soulstormHwnd == nullptr) return; // Процесс DoW не обнаружен
+    if(m_soulstormHwnd == nullptr)
+        return; // Процесс DoW не обнаружен
+
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
@@ -51,7 +59,7 @@ void MemoryController::onNoFogStateChanged(bool state)
         return;
     }
 
-    if(targetNoFog!=currentNoFog||force){
+    //if(targetNoFog!=currentNoFog||force){
         ReadProcessMemory(hProcess, FogAddr, temp6, 6, nullptr); // Читаем данные из памяти процесса "Dawn of War: Soulstorm" по адресу "Тумана" (FogAddr) и записываем в буфер temp6 в количестве 6 байт
         ReadProcessMemory(hProcess, Float512Addr, temp4, 4, nullptr);
         ReadProcessMemory(hProcess, MapSkyDistanceAddr, temp6_2, 6, nullptr);
@@ -85,7 +93,7 @@ void MemoryController::onNoFogStateChanged(bool state)
         //qDebug() << QString(array4.toHex());
         //QByteArray array6((const char*)temp6_2, 6);
         //qDebug() << QString(array6.toHex());
-        currentNoFog = targetNoFog;
-    }
+        //currentNoFog = targetNoFog;
+    //}
     CloseHandle(hProcess);
 }

@@ -6,7 +6,7 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
-    visible: model.gamePanelVisible && model.smallPannelActive
+    visible: model.gamePanelVisible && model.smallPannelActive && model.showGamePannelPreset
 
     property var model
 

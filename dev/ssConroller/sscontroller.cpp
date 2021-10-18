@@ -12,9 +12,10 @@
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
 
-SsController::SsController(QObject *parent)
+SsController::SsController(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
-    , m_memoryController(new MemoryController(this))
+    , m_settingsController(settingsController)
+    , m_memoryController(new MemoryController(settingsController, this))
     , m_apmMeter(new APMMeter(this))
 {
     m_ssPath = getSsPathFromRegistry();
@@ -51,6 +52,7 @@ SsController::SsController(QObject *parent)
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_gameInfoReader,  &GameInfoReader::receiveAverrageApm,       Qt::QueuedConnection);
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
 
+    QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();

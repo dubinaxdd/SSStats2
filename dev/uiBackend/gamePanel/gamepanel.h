@@ -21,6 +21,7 @@ class GamePanel : public QObject
     Q_PROPERTY(int gameLeaveTimeLeft MEMBER m_gameLeaveTimeLeft NOTIFY gemeLeaveTimeLeftChanged)
 
     Q_PROPERTY(bool smallPannelActive READ getSmallGamePanelActive WRITE setSmallGamePanelActive NOTIFY smallPannelActiveChanged)
+    Q_PROPERTY(bool showGamePannelPreset READ showGamePannelPreset WRITE setShowGamePannelPreset NOTIFY showGamePanelPresetChanged)
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
     Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
@@ -48,6 +49,9 @@ public:
     void setSmallGamePanelActive(bool active);
     bool getSmallGamePanelActive();
 
+    bool showGamePannelPreset() const;
+    void setShowGamePannelPreset(bool showGamePannelPreset);
+
 signals:
     void currentApmUpdate();
     void averageApmUpdate();
@@ -59,6 +63,7 @@ signals:
     void gameLeaveTimerVisibleChanged(bool);
     void gemeLeaveTimeLeftChanged(int);
     void smallPannelActiveChanged(bool);
+    void showGamePanelPresetChanged(bool);
 
 public slots:
     void onCurrentApmChanged(quint64 val);
@@ -91,6 +96,7 @@ private:
     bool m_gameLeaveTimerVisible = true;
 
     bool m_smallPannelActive;
+    bool m_showGamePannelPreset;
 
 
     bool m_gamePanelVisisble = false;

@@ -19,14 +19,6 @@ Rectangle {
     property int relativeMouseX
     property int relativeMouseY
 
-   // Connections{
-   //     target: _uiBackend
-
-       // function onNoFogStateChanged(state){
-           // noFogSwitch.checkedState = state;
-       // }
-   // }
-
 
     function mouseClick(x, y)
     {
@@ -42,6 +34,17 @@ Rectangle {
             noFogSwitch.checkedState = !noFogSwitch.checkedState;
             _uiBackend.noFogState = noFogSwitch.checkedState;
         }
+
+        // Переключатель "Game panel visisble"
+        if (relativeMouseX >= showGamePannelPresetSwitch.x + settingsColumn.x &&
+                relativeMouseX <= showGamePannelPresetSwitch.x + settingsColumn.x + showGamePannelPresetSwitch.width &&
+                relativeMouseY >= showGamePannelPresetSwitch.y + settingsColumn.y &&
+                relativeMouseY <= showGamePannelPresetSwitch.y + settingsColumn.y +showGamePannelPresetSwitch.height)
+        {
+            showGamePannelPresetSwitch.checkedState = !showGamePannelPresetSwitch.checkedState;
+            _uiBackend.gamePanel.showGamePannelPreset = showGamePannelPresetSwitch.checkedState;
+        }
+
 
 
         // Переключатель "Small panel"
@@ -71,6 +74,18 @@ Rectangle {
         } else {
             noFogSwitch.hoverState = false;
         }
+
+        // Переключатель "Game panel visisble"
+        if (relativeMouseX >= showGamePannelPresetSwitch.x + settingsColumn.x &&
+                relativeMouseX <= showGamePannelPresetSwitch.x + settingsColumn.x + showGamePannelPresetSwitch.width &&
+                relativeMouseY >= showGamePannelPresetSwitch.y + settingsColumn.y&&
+                relativeMouseY <= showGamePannelPresetSwitch.y + settingsColumn.y + showGamePannelPresetSwitch.height)
+        {
+            showGamePannelPresetSwitch.hoverState = true;
+        } else {
+            showGamePannelPresetSwitch.hoverState = false;
+        }
+
 
         // Переключатель "Small panel"
         if (relativeMouseX >= smallGamePanelActivateSwitch.x + settingsColumn.x &&
@@ -128,12 +143,24 @@ Rectangle {
         }
 
         Switch {
+            id: showGamePannelPresetSwitch
+
+            property bool hoverState : false
+            property bool checkedState : _uiBackend.gamePanel.showGamePannelPreset
+
+            text: qsTr("APM panel visisble in game")
+            font.pointSize: 10
+            opacity: hoverState ? 1.0 : 0.8
+            checked: checkedState
+        }
+
+        Switch {
             id: smallGamePanelActivateSwitch
 
             property bool hoverState : false
             property bool checkedState : _uiBackend.gamePanel.smallPannelActive
 
-            text: qsTr("Small panel in game")
+            text: qsTr("Small APM panel in game")
             font.pointSize: 10
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState

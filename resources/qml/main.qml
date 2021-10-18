@@ -60,16 +60,17 @@ Window {
 
 
 
-
-            if (!_uiBackend.gamePanel.smallPannelActive)
+            if(_uiBackend.gamePanel.showGamePannelPreset)
             {
-                gamePanel.mouseClick(xMousePos, yMousePos);
+                if (!_uiBackend.gamePanel.smallPannelActive )
+                {
+                    gamePanel.mouseClick(xMousePos, yMousePos);
+                }
+                else
+                {
+                    gamePanelSmall.mouseClick(xMousePos, yMousePos);
+                }
             }
-            else
-            {
-                gamePanelSmall.mouseClick(xMousePos, yMousePos);
-            }
-
 
             if(_uiBackend.expand){
                 fullOverlay.mouseClick(xMousePos - fullOverlay.x, yMousePos - fullOverlay.y );
