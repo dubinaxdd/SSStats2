@@ -330,10 +330,9 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
     RepReader repReader(m_ssPath+"/Playback/temp.rec");
 
-
     repReader.convertReplayToSteamVersion();
-    repReader.RenameReplay();
     repReader.isStandart(replayInfo.gameType);
+    repReader.RenameReplay();
 
     QByteArray playback = repReader.getReplayData();
 
