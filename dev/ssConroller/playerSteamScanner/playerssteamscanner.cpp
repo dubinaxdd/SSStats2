@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <QTextCodec>
+#include "../../core/logger/logger.h"
 
 #define SCAN_STEAM_PLAYERS_INTERVAL 2000
 
@@ -21,6 +22,8 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
+
+
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
     LPCWSTR lps = (LPCWSTR)ss.utf16();
@@ -125,13 +128,13 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             if (allPlayersInfo.count() == 0)
             {
 
-               // if (i < 100)
-               //      continue;
+                if (i < 100)
+                     continue;
 
                 for (int k = i - 100; k < i; k++)
                 {
-                //    if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix)))
-               //         break;
+                    if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix)))
+                        break;
 
                     for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
                     {
@@ -163,13 +166,13 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 if (allPlayersInfo.count() == 0)
                 {
 
-                 //   if (i < 100)
-                 //        continue;
+                    if (i < 100)
+                         continue;
 
                     for (int k = i - 100; k < i; k++)
                     {
-                      //  if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix2)))
-                       //     break;
+                        if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix2)))
+                            break;
 
                         for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix2)); t++)
                         {

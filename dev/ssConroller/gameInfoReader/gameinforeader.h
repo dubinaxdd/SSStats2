@@ -17,9 +17,7 @@ public:
     bool getGameInitialized();
     void checkGameInitialize();
 
-
     void setCurrentProfile(const QString &newCurrentProfile);
-
     void setGameLounched(bool newGameLounched);
 
 private slots:
@@ -64,6 +62,7 @@ private:
 
     int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
+    QList<SearchStemIdPlayerInfo> m_allPlayersInfoFromScanner;
 };
 
 #endif // GAMEINFOREADER_H
