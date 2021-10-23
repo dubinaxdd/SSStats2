@@ -14,12 +14,13 @@
 #include <QThread>
 #include <QMutex>
 #include "../core/logger/logger.h"
+#include "../core/settingsController/settingscontroller.h"
 
 class SsController : public QObject
 {
     Q_OBJECT
 public:
-    explicit SsController(QObject *parent = nullptr);
+    explicit SsController(SettingsController* settingsController, QObject *parent = nullptr);
     ~SsController();
 
     bool getInputBlocked() const;
@@ -93,6 +94,7 @@ private:
     APMMeter* m_apmMeter;
     StatsCollector* m_statsCollector;
     MemoryController* m_memoryController;
+    SettingsController* m_settingsController;
 
 
 };

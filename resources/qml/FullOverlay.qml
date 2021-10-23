@@ -15,11 +15,73 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     Layout.fillHeight: true
 
-    property Rectangle buttonInfo: buttonInfoRectangle
-    property Rectangle buttonSettings : buttonSettingsRectangle
+    property int relativeMouseX
+    property int relativeMouseY
 
-    property Rectangle mainContentContainerRectangle : mainContentContainerRectangle
-    property SettingsWindow settingsWindow : settingsWindow
+    function mouseClick(x, y)
+    {
+        relativeMouseX = x
+        relativeMouseY = y
+
+        if (buttonSettingsRectangle.pressedState)
+            settingsWindow.mouseClick(relativeMouseX - settingsWindow.x - mainContentContainerRectangle.x, relativeMouseY - settingsWindow.y - mainContentContainerRectangle.y);
+
+        // Кнопка "Настройки" - отобразить окно с настройками
+        if (relativeMouseX >= buttonSettingsRectangle.x &&
+                relativeMouseX <= buttonSettingsRectangle.x + buttonSettingsRectangle.width &&
+                relativeMouseY >= buttonSettingsRectangle.y &&
+                relativeMouseY <= buttonSettingsRectangle.y + buttonSettingsRectangle.height)
+        {
+            buttonInfoRectangle.pressedState = false;
+            buttonSettingsRectangle.pressedState = !buttonSettingsRectangle.pressedState;
+        }
+
+        // Кнопка "Информация" - отобразить окно с информацией
+        if (relativeMouseX >= buttonInfoRectangle.x &&
+                relativeMouseX <= buttonInfoRectangle.x + buttonInfoRectangle.width &&
+                relativeMouseY >= buttonInfoRectangle.y &&
+                relativeMouseY <= buttonInfoRectangle.y + buttonInfoRectangle.height)
+        {
+            buttonSettingsRectangle.pressedState = false;
+            buttonInfoRectangle.pressedState = !buttonInfoRectangle.pressedState;
+        }
+
+    }
+
+    function mouseHover(x, y)
+    {
+        relativeMouseX = x
+        relativeMouseY = y
+
+        if (buttonSettingsRectangle.pressedState)
+            settingsWindow.mouseHover(relativeMouseX - settingsWindow.x - mainContentContainerRectangle.x, relativeMouseY - settingsWindow.y - mainContentContainerRectangle.y);
+
+        // Кнопка "Настройки"
+        if (relativeMouseX >= buttonSettingsRectangle.x &&
+                relativeMouseX <= buttonSettingsRectangle.x + buttonSettingsRectangle.width &&
+                relativeMouseY >= buttonSettingsRectangle.y &&
+                relativeMouseY <= buttonSettingsRectangle.y + buttonSettingsRectangle.height)
+        {
+            buttonSettingsRectangle.hoverState = true;
+        }else{
+            buttonSettingsRectangle.hoverState = false;
+        }
+
+        // Кнопка "Информация"
+        if (relativeMouseX >= buttonInfoRectangle.x &&
+                relativeMouseX <= buttonInfoRectangle.x + buttonInfoRectangle.width &&
+                relativeMouseY >= buttonInfoRectangle.y &&
+                relativeMouseY <= buttonInfoRectangle.y + buttonInfoRectangle.height)
+        {
+            buttonInfoRectangle.hoverState = true;
+        } else {
+            buttonInfoRectangle.hoverState = false;
+        }
+
+    }
+
+
+
 
     Connections{
         target: _uiBackend
@@ -66,12 +128,6 @@ Rectangle {
                     color: pressedState ? "#ff080808" : "#00ffffff"
                     Layout.minimumWidth: 100
                     Layout.minimumHeight: 60
-                   /* anchors.left: parent.left
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.leftMargin: 0
-                    anchors.bottomMargin: 0
-                    anchors.topMargin: 0*/
 
                     Text {
                         id: buttonInfoLabel
@@ -104,13 +160,6 @@ Rectangle {
                     color: pressedState ? "#ff080808" : "#00ffffff"
                     Layout.minimumHeight: 60
                     Layout.minimumWidth: 100
-                    /*anchors.left: buttonInfoRectangle.right
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.topMargin: 0
-                    anchors.bottomMargin: 0
-                    anchors.leftMargin: 0*/
-
                     Text {
                         id: buttonSettingsLabel
                         color: parent.hoverState ? "#ffffff" : "#999999"

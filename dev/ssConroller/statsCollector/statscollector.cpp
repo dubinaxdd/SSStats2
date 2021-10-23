@@ -9,6 +9,7 @@
 #include <QJsonArray>
 #include <QBuffer>
 #include "../../../defines.h"
+#include "../gameInfoReader/repReader/repreader.h"
 
 #define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 5000
 
@@ -326,18 +327,15 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
     url += "key=" + QLatin1String(SERVER_KEY);
 
-    QString playbackPath = m_ssPath + "\\Playback\\temp.rec";
 
-    QFile file(playbackPath);
+    RepReader repReader(m_ssPath+"/Playback/temp.rec");
 
-    if(!file.open(QIODevice::ReadOnly))
-        return;
-    if(!file.isReadable())
-        return;
+    repReader.convertReplayToSteamVersion();
+    repReader.isStandart(replayInfo.gameType);
+    repReader.RenameReplay();
 
-    QByteArray playback = file.readAll();
+    QByteArray playback = repReader.getReplayData();
 
-    file.close();
 
     QNetworkRequest request = QNetworkRequest(QUrl(url));
 

@@ -8,5 +8,6 @@
         <file>resources/qml/InfoWindow.qml</file>
         <file>resources/qml/SettingsWindow.qml</file>
         <file>resources/qml/PlayersStatistic.qml</file>
+        <file>resources/qml/GamePanelSmall.qml</file>
     </qresource>
 </RCC>

@@ -3,24 +3,35 @@
 
 #include <QObject>
 #include <QSettings>
+#include "../logger/logger.h"
+
+struct Settings
+{
+    bool noFog = false;
+    bool smallGamePanelActive = false;
+    bool showGamePanelPreset = false;
+};
 
 class SettingsController : public QObject
 {
     Q_OBJECT
+
 public:
     explicit SettingsController(QObject *parent = nullptr);
+    ~SettingsController();
 
     void initializeSettings();
-    bool noFogState();
-signals:
-    void noFogStateInitialized(bool);
-    void noFogStateChanged(bool);
-public slots:
-    void onSwitchNoFogStateChanged(bool state);
+    void saveSettings();
+    Settings *getSettings();
 
-    void onSsLaunchStateChanged(bool state);
+
+signals:
+    void settingsLoaded();
+
+
 private:
     QSettings *ss_stats_settings;
+    Settings* m_settings;
 
 };
 

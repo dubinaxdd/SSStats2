@@ -102,6 +102,8 @@ void GameInfoReader::readGameInfo()
 
                         while (!winConditionsReadLine.contains("APP -- Game Start"))
                         {
+                            m_gameWillBePlayed = true;
+
                             winConditionsReadLine = fileLines.at(winConditionsReadCounter-1);
 
                             if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
@@ -241,6 +243,13 @@ void GameInfoReader::readGameInfo()
 
 void GameInfoReader::readGameParametresAfterStop()
 {
+    if (!m_gameWillBePlayed)
+    {
+        qWarning(logWarning()) << "Game will be played in other session, replay not sended";
+        return;
+    }
+
+
     bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                            && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
                            && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
@@ -251,7 +260,7 @@ void GameInfoReader::readGameParametresAfterStop()
 
     if (!isStdWinConditions)
     {
-        qWarning() << "Game have not standard win conditions, replay not sended";
+        qWarning(logWarning()) << "Game have not standard win conditions, replay not sended";
         return;
     }
 
@@ -431,19 +440,19 @@ void GameInfoReader::readGameParametresAfterStop()
 
     if (computersFinded)
     {
-        qWarning() << "Game have AI, raplay not sended";
+        qWarning(logWarning()) << "Game have AI, raplay not sended";
         return;
     }
 
     if (teamsCount > 2)
     {
-        qWarning() << "Game have more then 2 teams, raplay not sended";
+        qWarning(logWarning()) << "Game have more then 2 teams, raplay not sended";
         return;
     }
 
     if(duration <= 30)
     {
-        qWarning() << "Game have duration < 30 sec, raplay not sended";
+        qWarning(logWarning()) << "Game have duration < 30 sec, raplay not sended";
         return;
     }
 
@@ -460,7 +469,7 @@ void GameInfoReader::readGameParametresAfterStop()
 
     if (!winnerAccepted)
     {
-        qWarning() << "Game not have winner, raplay not sended";
+        qWarning(logWarning()) << "Game not have winner, raplay not sended";
         return;
     }
 
@@ -474,12 +483,26 @@ void GameInfoReader::readGameParametresAfterStop()
 
         newPlayer.playerName = playerStats[i].name;
 
+        //Берем сиды из последнего скана
         for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
         {
             if(newPlayer.playerName == m_playersInfoFromScanner[j].name)
             {
                 newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
                 break;
+            }
+        }
+
+        //Если сида не нашлось в последнем скане, берем сид из всей истории
+        if (newPlayer.playerSid == "")
+        {
+            for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
+            {
+                if(newPlayer.playerName == m_allPlayersInfoFromScanner[j].name)
+                {
+                    newPlayer.playerSid = m_allPlayersInfoFromScanner[j].steamId;
+                    break;
+                }
             }
         }
 
@@ -541,6 +564,9 @@ void GameInfoReader::readGameParametresAfterStop()
 
     emit sendReplayToServer(std::move(replayInfo));
 
+    m_allPlayersInfoFromScanner.clear();
+    qInfo(logInfo()) << "Players history cleared";
+
     qInfo(logInfo()) << "Readed played game settings";
 }
 
@@ -551,16 +577,19 @@ void GameInfoReader::receiveAverrageApm(int apm)
 
 void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
-    if(m_gameCurrentState != SsGameState::gameStoped)
+
+    if(m_gameCurrentState != SsGameState::gameStoped && m_gameCurrentState != SsGameState::unknown)
         return;
 
     m_playersInfoFromScanner = playersInfoFromScanner;
-    /*for (int i = 0; i < playersInfoFromScanner.count();i++)
+    m_playersCountFromScanner = playersCount;
+
+    for (int i = 0; i < playersInfoFromScanner.count(); i++)
     {
         bool playerFinded = false;
-        for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
+        for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
         {
-            if (playersInfoFromScanner[i].steamId == m_playersInfoFromScanner[j].steamId)
+            if (playersInfoFromScanner[i].name == m_allPlayersInfoFromScanner[j].name)
             {
                 playerFinded = true;
                 break;
@@ -569,12 +598,12 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
 
         if(!playerFinded)
         {
-            m_playersInfoFromScanner.append(playersInfoFromScanner[i]);
-            qInfo(logInfo()) << "Finded player:" << m_playersInfoFromScanner.last().name;
+            m_allPlayersInfoFromScanner.append(playersInfoFromScanner[i]);
+            qInfo(logInfo()) << "Finded player:" << m_allPlayersInfoFromScanner.last().name;
         }
-    }*/
+    }
 
-    m_playersCountFromScanner = playersCount;
+
 }
 
 void GameInfoReader::setGameLounched(bool newGameLounched)

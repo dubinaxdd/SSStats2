@@ -7,18 +7,20 @@
 
 #include <Windows.h>
 #include "../../core/logger/logger.h"
+#include "../../core/settingsController/settingscontroller.h"
 
 class MemoryController : public QObject
 {
     Q_OBJECT
 public:
-    explicit MemoryController(QObject *parent = nullptr);
+    explicit MemoryController(SettingsController* settingsController, QObject *parent = nullptr);
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
 
 public slots:
     void onNoFogStateChanged(bool state);
     void onSsLaunchStateChanged(bool state);
+    void onSettingsLoaded();
 signals:
 
 private:
@@ -27,6 +29,7 @@ private:
     bool targetNoFog = false;
     bool currentNoFog = false;
     bool force = false; // применить изменения принудительно
+    SettingsController* m_settingsController;
 };
 
 #endif // MEMORYCONTROLLER_H

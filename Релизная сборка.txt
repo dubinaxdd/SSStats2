@@ -7,7 +7,7 @@ E:\Qt\5.15.2\mingw81_32\bin\windeployqt.exe C:\projects\build-SSStats2-Desktop_Q
 Если не додеплоилось пихаем папку C:\Qt\5.15.2\mingw81_32\qml\Qt\labs\platform руками так чтоб в папке с релизом была папка Qt\labs\platform
 
 Даем права администратора:
-mt -manifest manifest.xml -outputresource:C:\build\SSStats2Release\SSStats2.exe
-Для выполнения этой команды, необходимо файл манифеста manifest.xml (лежит в репозитории) пометстить рядом с собранным исполняемым файлом.
-Далее нужно установить Windows SDK (если его нет.)
+В консоли перемещаемся в директорию исходников статки и вводим команду:
+"C:\Windows Kits\10\bin\10.0.22000.0\x86\mt.exe" -manifest manifest.xml -outputresource:C:\build\SSStats2ReleaseRelease\SSStats2.exe
+Для выполнения этой команды, нужно установить Windows SDK (если его нет.)
 После можно выполнить команду

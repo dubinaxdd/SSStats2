@@ -6,9 +6,12 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
-    visible: model.gamePanelVisible && !model.smallPannelActive && model.showGamePannelPreset
+    visible: model.gamePanelVisible && model.smallPannelActive && model.showGamePannelPreset
 
     property var model
+
+    property int relativeMouseX
+    property int relativeMouseY
 
     function chooseColor(string)
     {
@@ -16,33 +19,17 @@ Rectangle {
             return "#b3ea0000"
     }
 
-    property int relativeMouseX
-    property int relativeMouseY
 
     function mouseClick(x, y)
     {
         relativeMouseX = x
         relativeMouseY = y
 
-        // Кнопка "Развернуть оверлей в игровой панели"
-        if (relativeMouseX >= expandButtonRectangle.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandButtonRectangle.x + gamePanelRectangle.x + expandButtonRectangle.width &&
-                relativeMouseY >= expandButtonRectangle.y + gamePanelRectangle.y &&
-                relativeMouseY <= expandButtonRectangle.y + gamePanelRectangle.y + expandButtonRectangle.height)
-        {
-
-            if(_uiBackend.gamePanel.gamePanelVisible)
-            {
-                expandButtonRectangle.howeredState = true;
-                _uiBackend.expandKeyPressed();
-            }
-        }
-
         // Кнопка "Развернуть панель с рассами игроков"
-        if (relativeMouseX >= expandPlayerRacesButton.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandPlayerRacesButton.x + gamePanelRectangle.x + expandPlayerRacesButton.width &&
-                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 &&
-                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 + expandPlayerRacesButton.height)
+        if (relativeMouseX >= expandPlayerRacesButton.x  + gamePanelRectangle.x &&
+                relativeMouseX <= expandPlayerRacesButton.x  + gamePanelRectangle.x + expandPlayerRacesButton.width &&
+                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y &&
+                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y + expandPlayerRacesButton.height)
         {
 
             if(_uiBackend.gamePanel.gamePanelVisible)
@@ -59,28 +46,11 @@ Rectangle {
         relativeMouseX = x
         relativeMouseY = y
 
-        // Кнопка "Развернуть оверлей в игровой панели"
-        if (relativeMouseX >= expandButtonRectangle.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandButtonRectangle.x + gamePanelRectangle.x + expandButtonRectangle.width &&
-                relativeMouseY >= expandButtonRectangle.y + gamePanelRectangle.y + 5 &&
-                relativeMouseY <= expandButtonRectangle.y + gamePanelRectangle.y + 5 + expandButtonRectangle.height)
-        {
-
-            if(!expandButtonRectangle.howeredState)
-                expandButtonRectangle.howeredState = true;
-        }
-        else
-        {
-            if(expandButtonRectangle.howeredState)
-                expandButtonRectangle.howeredState = false;
-        }
-
-
         // Кнопка "Развернуть панель с рассами игроков"
-        if (relativeMouseX >= expandPlayerRacesButton.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandPlayerRacesButton.x + gamePanelRectangle.x + expandPlayerRacesButton.width &&
-                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 &&
-                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 + expandPlayerRacesButton.height)
+        if (relativeMouseX >= expandPlayerRacesButton.x  + gamePanelRectangle.x &&
+                relativeMouseX <= expandPlayerRacesButton.x  + gamePanelRectangle.x + expandPlayerRacesButton.width &&
+                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y &&
+                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y + expandPlayerRacesButton.height)
         {
 
             if(!expandPlayerRacesButton.howeredState)
@@ -97,7 +67,7 @@ Rectangle {
 
     Rectangle {
         id: gamePanelRectangle
-        width: 550
+        width: 200
         height: 200
         color: "#00000000"
         anchors.top: parent.top
@@ -131,9 +101,8 @@ Rectangle {
 
 
                 RowLayout {
-                    id: rowLayout
+                    id: rowLayout1
                     anchors.fill: parent
-                    spacing: 0
 
                     Rectangle {
                         id: rectangle3
@@ -162,45 +131,61 @@ Rectangle {
                         }
                     }
 
-                    Label {
-                        id: label
-                        color: "#ffffff"
-                        text: qsTr("Current APM: ")
-                        font.pointSize: 12
-                    }
+                    GridLayout {
+                        id: gridLayout
+                        width: 100
+                        height: 100
+                        Layout.rowSpan: 0
+                        rows: 3
+                        columns: 2
 
-                    Label {
-                        id: currentApmCountLabel
-                        color: "#ffffff"
-                        text: model.currentApm
-                        font.pointSize: 12
-                    }
+                        Label {
+                            id: label
+                            visible: !model.gameLeaveTimerVisible
+                            color: "#ffffff"
+                            text: qsTr("Current APM: ")
+                            font.pointSize: 8
+                        }
 
-                    Rectangle {
-                        id: rectangle5
-                        width: 200
-                        height: 200
-                        color: "#00000000"
-                        Layout.minimumHeight: 40
-                        Layout.minimumWidth: 20
-                        Layout.maximumHeight: 40
-                        Layout.maximumWidth: 20
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                    }
+                        Label {
+                            id: currentApmCountLabel
+                            visible: !model.gameLeaveTimerVisible
+                            color: "#ffffff"
+                            text: model.currentApm
+                            font.pointSize: 8
+                        }
 
-                    Label {
-                        id: label2
-                        color: "#ffffff"
-                        text: qsTr("Average APM: ")
-                        font.pointSize: 12
-                    }
+                        Label {
+                            id: label2
+                            visible: !model.gameLeaveTimerVisible
+                            color: "#ffffff"
+                            text: qsTr("Average APM: ")
+                            font.pointSize: 8
+                        }
 
-                    Label {
-                        id: averageApmCountLabel
-                        color: "#ffffff"
-                        text: model.averageApm
-                        font.pointSize: 12
+                        Label {
+                            id: averageApmCountLabel
+                            visible: !model.gameLeaveTimerVisible
+                            color: "#ffffff"
+                            text: model.averageApm
+                            font.pointSize: 8
+                        }
+
+                        Label {
+                            id: label4
+                            visible: model.gameLeaveTimerVisible
+                            color: "#d62525"
+                            text: qsTr("You can leave: ")
+                            font.pointSize: 10
+                        }
+
+                        Label {
+                            id: timeLeftLabel
+                            color: "#d62525"
+                            visible: model.gameLeaveTimerVisible
+                            text: model.gameLeaveTimeLeft != 0 ? model.gameLeaveTimeLeft : "Is over"
+                            font.pointSize: 10
+                        }
                     }
 
                     Rectangle {
@@ -208,41 +193,12 @@ Rectangle {
                         width: 200
                         height: 200
                         color: "#00000000"
-                        Layout.fillWidth: true
                         Layout.fillHeight: true
-                    }
-
-                    Label {
-                        id: label4
-                        visible: model.gameLeaveTimerVisible
-                        color: "#d62525"
-                        text: qsTr("You can leave: ")
-                        font.pointSize: 12
-                    }
-
-                    Label {
-                        id: timeLeftLabel
-                        color: "#d62525"
-                        visible: model.gameLeaveTimerVisible
-                        text: model.gameLeaveTimeLeft != 0 ? model.gameLeaveTimeLeft : "Is over"
-                        font.pointSize: 12
+                        Layout.fillWidth: true
                     }
 
                     Rectangle {
-                        id: rectangle6
-                        width: 200
-                        height: 200
-                        color: "#00000000"
-                        Layout.minimumWidth: 20
-                        Layout.minimumHeight: 40
-                        Layout.maximumHeight: 40
-                        Layout.fillWidth: true
-                        Layout.maximumWidth: 20
-                        Layout.fillHeight: true
-                    }
-
-                    Rectangle {
-                        id: expandButtonRectangle
+                        id: expandPlayerRacesButton
 
                         property bool howeredState: false
 
@@ -256,8 +212,6 @@ Rectangle {
                                 position: 1
                                 color: "#265a88"
                             }
-
-
                         }
 
                         property Gradient grDark: Gradient {
@@ -272,23 +226,27 @@ Rectangle {
 
                             }
                         }
-
-
-                        width: 200
-                        height: 200
-                        color: "#ffffff"
-                        Layout.topMargin: 0
+                        height: 10
+                        radius: 0
+                        border.width: 0
                         Layout.maximumHeight: 40
+                        Layout.minimumHeight: 40
                         Layout.maximumWidth: 40
-                        Layout.fillWidth: false
+                        Layout.minimumWidth: 40
+                        //text: qsTr("***")
+                        Layout.fillWidth: true
                         Layout.fillHeight: true
+                        visible: !_uiBackend.expand
+                        color: "#000000"
+
 
                         gradient: howeredState ? grDark : grLight
 
-                        BorderImage {
-                            id: borderImage
+                        Image {
+                            id: imagebutton
                             anchors.fill: parent
-                            source: _uiBackend.expand ? "qrc:/images/resources/images/hide.png" : "qrc:/images/resources/images/expand.png"
+                            source: "qrc:/images/resources/images/expandDots.png"
+                            fillMode: Image.PreserveAspectFit
                         }
                     }
                 }
@@ -513,61 +471,6 @@ Rectangle {
                             }
 
                             Rectangle {
-                                id: expandPlayerRacesButton
-
-                                property bool howeredState: false
-
-                                property Gradient grLight: Gradient {
-                                    GradientStop {
-                                        position: 0
-                                        color: "#428bca"
-                                    }
-
-                                    GradientStop {
-                                        position: 1
-                                        color: "#265a88"
-                                    }
-                                }
-
-                                property Gradient grDark: Gradient {
-                                    GradientStop {
-                                        position: 0
-                                        color: "#337ab7"
-                                    }
-
-                                    GradientStop {
-                                        position: 1
-                                        color: "#245580"
-
-                                    }
-                                }
-                                height: 10
-                                radius: 5
-                                Layout.maximumHeight: 10
-                                Layout.minimumHeight: 10
-                                Layout.maximumWidth: 65535
-                                Layout.minimumWidth: 0
-                                //text: qsTr("***")
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
-                                visible: !_uiBackend.expand
-                                color: "#000000"
-
-
-                                gradient: howeredState ? grDark : grLight
-
-                                Image {
-                                    id: imagebutton
-                                    width: 95
-                                    height: 10
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    source: "qrc:/images/resources/images/expandDots.png"
-                                    anchors.horizontalCenter: parent.horizontalCenter
-                                    fillMode: Image.PreserveAspectFit
-                                }
-                            }
-
-                            Rectangle {
                                 id: rectangle2
                                 width: 200
                                 height: 200
@@ -599,6 +502,7 @@ Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
             }
+
         }
     }
 
@@ -608,6 +512,6 @@ Rectangle {
 
 /*##^##
 Designer {
-    D{i:0;autoSize:true;height:480;width:640}
+    D{i:0;autoSize:true;height:480;width:640}D{i:25}D{i:7}
 }
 ##^##*/

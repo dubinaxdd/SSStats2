@@ -1,11 +1,13 @@
 #include "uibackend.h"
 #include "QDebug"
 #include "../../version.h"
+#include "../core/settingsController/settingscontroller.h"
 
-UiBackend::UiBackend(QObject *parent)
+UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
+    , m_settingsController(settingsController)
     , m_imageProvider(new ImageProvider(this))
-    , m_gamePanel(new GamePanel(this))
+    , m_gamePanel(new GamePanel(settingsController, this))
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
@@ -13,6 +15,8 @@ UiBackend::UiBackend(QObject *parent)
     m_ssStatsVersion.append(PROJECT_VERSION_MINOR);
     m_ssStatsVersion.append(".");
     m_ssStatsVersion.append(GIT_REL);
+
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &UiBackend::onSettingsLoaded, Qt::QueuedConnection);
 
     emit gamePanelInitialized();
     emit statisticPanelInitialized();
@@ -85,10 +89,29 @@ void UiBackend::onExit()
     sendExit();
 }
 
+void UiBackend::onSettingsLoaded()
+{
+    m_noFogState = m_settingsController->getSettings()->noFog;
+    emit noFogStateChanged(m_noFogState);
+}
+
 void UiBackend::showClient()
 {
     m_showClient = m_ssLaunchState && m_ssMaximized;
     emit sendShowClient(m_showClient);
+}
+
+bool UiBackend::getFogState() const
+{
+    return m_noFogState;
+}
+
+void UiBackend::setNoFogState(bool state)
+{
+    m_noFogState = state;
+    m_settingsController->getSettings()->noFog = m_noFogState;
+    m_settingsController->saveSettings();
+    emit noFogStateChanged(m_noFogState);
 }
 
 ImageProvider *UiBackend::imageProvider() const
@@ -123,26 +146,16 @@ void UiBackend::setSsWindowPosition(int x, int y)
     emit ssWindowPositionChanged();
 }
 
-// ### GET раздел (частично) ###
-
 bool UiBackend::getShowClient()
 {
     return m_showClient;
 }
 
+
+
 bool UiBackend::expand() const
 {
     return m_expand;
-}
-
-void UiBackend::onNoFogStateChanged(bool state)
-{
-    emit noFogStateChanged(state); // Отправка значения No Fog в QML
-}
-
-void UiBackend::onSwitchNoFogStateChanged(bool state) // Это слот, для вызова инициализатором настроек извне и в обход меню настроек GUI
-{
-    emit switchNoFogStateChanged(state);
 }
 
 void UiBackend::setExpand(bool newExpand)

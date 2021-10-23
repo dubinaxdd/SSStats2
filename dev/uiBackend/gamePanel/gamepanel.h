@@ -4,6 +4,9 @@
 #include <QObject>
 #include <QTimer>
 #include "../../baseTypes/baseTypes.h"
+#include "../../core/settingsController/settingscontroller.h"
+
+class SettingsController;
 
 class GamePanel : public QObject
 {
@@ -16,6 +19,9 @@ class GamePanel : public QObject
     Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisisble NOTIFY racePanelVisibleChanged)
     Q_PROPERTY(bool gameLeaveTimerVisible MEMBER m_gameLeaveTimerVisible NOTIFY gameLeaveTimerVisibleChanged)
     Q_PROPERTY(int gameLeaveTimeLeft MEMBER m_gameLeaveTimeLeft NOTIFY gemeLeaveTimeLeftChanged)
+
+    Q_PROPERTY(bool smallPannelActive READ getSmallGamePanelActive WRITE setSmallGamePanelActive NOTIFY smallPannelActiveChanged)
+    Q_PROPERTY(bool showGamePannelPreset READ showGamePannelPreset WRITE setShowGamePannelPreset NOTIFY showGamePanelPresetChanged)
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
     Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
@@ -36,9 +42,15 @@ class GamePanel : public QObject
     Q_PROPERTY(QString player7Color MEMBER m_player7Color NOTIFY playerTestStatsUpdate)
 
 public:
-    explicit GamePanel(QObject *parent = nullptr);
+    explicit GamePanel(SettingsController* settingsController, QObject *parent = nullptr);
 
     void setGamePanelVisisble(bool newGamePanelVisisble);
+
+    void setSmallGamePanelActive(bool active);
+    bool getSmallGamePanelActive();
+
+    bool showGamePannelPreset() const;
+    void setShowGamePannelPreset(bool showGamePannelPreset);
 
 signals:
     void currentApmUpdate();
@@ -50,6 +62,8 @@ signals:
 
     void gameLeaveTimerVisibleChanged(bool);
     void gemeLeaveTimeLeftChanged(int);
+    void smallPannelActiveChanged(bool);
+    void showGamePanelPresetChanged(bool);
 
 public slots:
     void onCurrentApmChanged(quint64 val);
@@ -58,6 +72,8 @@ public slots:
     void onGameStarted(SsGameState gameCurrentState);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
     void expandPlayerRacesButtonClick();
+    void onSettingsLoaded();
+
 
 private slots:
     void racePanelVisibleTimerTimeout();
@@ -66,13 +82,21 @@ private slots:
 private:
     void replaceRaceKeyword(QString *raceString);
     QString chooseColorForPlayer(int team);
+    void updatePlayerRaces();
 
 private:
-    QTimer* m_racePanelVisibleTimer;
+    SettingsController* m_settingsController;
 
+    QTimer* m_racePanelVisibleTimer;
     QTimer* m_gameLeaveTimer;
+
+    QVector<PlayerStats> m_testStats;
+
     int m_gameLeaveTimeLeft = 0;
     bool m_gameLeaveTimerVisible = true;
+
+    bool m_smallPannelActive;
+    bool m_showGamePannelPreset;
 
 
     bool m_gamePanelVisisble = false;
