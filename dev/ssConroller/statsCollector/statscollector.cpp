@@ -373,7 +373,7 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     request.setRawHeader("User-Agent", "");
 
     QNetworkReply *reply = m_networkManager->post(request, postData);
-    qInfo() << "Replay sended to server";
+    qInfo(logInfo()) << "Replay sended to server";
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         //qDebug() << "Replay sending responce: " << reply->readAll();

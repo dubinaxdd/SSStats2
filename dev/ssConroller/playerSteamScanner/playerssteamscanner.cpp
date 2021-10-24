@@ -22,7 +22,7 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
-
+    qInfo(logInfo()) << "Scan started";
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
@@ -66,44 +66,10 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             }
         }
 
-       // bool patyMatch = false;
-
-        //Ищем пати блок
-     /*   for (int x = 0; x < static_cast<int>(bytesRead - 10); x++)
-        {
-            for (int y = 0; y < static_cast<int>(sizeof(patyBlockHeader)); y++)
-            {
-                if (y == 1) //Потому что блять 0x8C нихера не ищется
-                    y += 2;
-
-                if (buffer.at(x + y) != patyBlockHeader[y])
-                {
-                    patyMatch = false;
-                    break;
-                }
-                else
-                {
-                    patyMatch = true;
-                }
-            }
-
-            if (patyMatch)
-               break;
-
-        }
-
-        if(!patyMatch)
-        {
-            ptr1Count += 30400;
-            continue;
-        }*/
-
-        //qDebug() << "Info: Paty blok in " << ptr1Count;
-
         int playerPosition = 0;
 
         //Ищем игроков в патиблоке
-        for (int i = 0; i < static_cast<int>(bytesRead - 200); i++)
+        for (int i = 100; i < static_cast<int>(bytesRead) - 300; i++)
         {
             bool match = false;
 
@@ -128,13 +94,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
             if (allPlayersInfo.count() == 0)
             {
 
-                if (i < 100)
-                     continue;
-
                 for (int k = i - 100; k < i; k++)
                 {
-                    if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix)))
-                        break;
 
                     for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix)); t++)
                     {
@@ -166,13 +127,8 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                 if (allPlayersInfo.count() == 0)
                 {
 
-                    if (i < 100)
-                         continue;
-
                     for (int k = i - 100; k < i; k++)
                     {
-                        if (buffer.count() <= i - 100 + k + static_cast<int>(sizeof(playresCountPostfix2)))
-                            break;
 
                         for (int t = 0; t < static_cast<int>(sizeof(playresCountPostfix2)); t++)
                         {
@@ -242,7 +198,11 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
                 QString closeConnectionFlag = QString::fromUtf8((char*)buffer.mid(nickPos + 4 + (nick.length()*2) + 29, 15).data(), 15);
                 //QString postfixFlag = QString::fromStdString(closeConnectionFlag.toLocal8Bit().toHex().toStdString());
+                //qDebug() << closeConnectionFlag;
 
+                //TODO: это тоже можно использовать как фильтр
+                //4E 6F 20 6C 6F 6E 67 65 72 20 63 6F 6E 6E 65 63 74 65 64 20 74 6F 20 68 6F 73 74 00
+                //No longer connection to host
 
                 if(!allPlayersInfo.contains(steamIdStr)){
 
@@ -253,56 +213,50 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
                     newPlayerInPaty.position = playerPosition;
                     playerPosition++;
 
-                    //TODO: это тоже можно использовать как фильтр
-                    //4E 6F 20 6C 6F 6E 67 65 72 20 63 6F 6E 6E 65 63 74 65 64 20 74 6F 20 68 6F 73 74 00
-                    //No longer connection to host
-
-                    if(closeConnectionFlag == "CloseNetSession")
-                        newPlayerInPaty.closeConnection = true;
+                    if(closeConnectionFlag == "CloseNetSession" || closeConnectionFlag == "No longer conne")
+                        //newPlayerInPaty.closeConnection = true;
+                        continue;
 
                     allPlayersInfo.insert(steamIdStr, newPlayerInPaty);
                 }
                 else
                 {
-                    if(allPlayersInfo.value(steamIdStr).name !=nick)
-                    {
-                   //     qDebug() << "Сейчас упаду как!";
+                    if(allPlayersInfo.value(steamIdStr).name != nick)
                         allPlayersInfo[steamIdStr].name = nick;
-                    }
 
-                    if(closeConnectionFlag == "CloseNetSession")
-                        allPlayersInfo[steamIdStr].closeConnection = true;
+                    if(closeConnectionFlag == "CloseNetSession" || closeConnectionFlag == "No longer conne")
+                        //allPlayersInfo[steamIdStr].closeConnection = true;
+                        continue;
                 }
             }
         }
 
         if (allPlayersInfo.count() > 0 && playersCount > 1 && playersCount <= 8)
-        {
             break;
-        }
+
 
         playersCount = 0;
         allPlayersInfo.clear();
-        ptr1Count += 30400;
+        ptr1Count += /*30400*/100000;
     }
 
 
+    QList<SearchStemIdPlayerInfo> playersList;
 
     for(int i = 0; i < allPlayersInfo.values().size(); i++)
     {
-        if (allPlayersInfo.values().at(i).closeConnection /*|| allPlayersInfo.values().at(i).position >= playersCount*/)
-        {
-            //qDebug() << allPlayersInfo.values().at(i).name;
-            allPlayersInfo.remove(allPlayersInfo.values().at(i).steamId); //Потому что ключ в мапе совпадает со стим Ид
-        }
+        if (!allPlayersInfo.values().at(i).closeConnection)
+            playersList.append(allPlayersInfo.values().at(i));
     }
 
     //qDebug() << "==============================================================";
     //for(int i = 0; i < allPlayersInfo.values().size(); i++)
-        //qDebug() << allPlayersInfo.values().at(i).name;
+        //qDebug() << playersList.name;
 
 
-    emit sendSteamPlayersInfoMap(allPlayersInfo.values(), playersCount);
+    emit sendSteamPlayersInfoMap(playersList, playersCount);
+
+    qInfo(logInfo()) << "Scan finished";
 }
 
 QTimer *PlayersSteamScanner::scanTimer() const
