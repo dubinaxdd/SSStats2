@@ -6,6 +6,10 @@ E:\Qt\5.15.2\mingw81_32\bin\windeployqt.exe C:\projects\build-SSStats2-Desktop_Q
 
 Если не додеплоилось пихаем папку C:\Qt\5.15.2\mingw81_32\qml\Qt\labs\platform руками так чтоб в папке с релизом была папка Qt\labs\platform
 
+OpenSSL брать от сюда, в папку с релизом копируем содержимое из папки bin опенссселя
+https://slproweb.com/products/Win32OpenSSL.html
+
+
 Даем права администратора:
 В консоли перемещаемся в директорию исходников статки и вводим команду:
 "C:\Windows Kits\10\bin\10.0.22000.0\x86\mt.exe" -manifest manifest.xml -outputresource:C:\build\SSStats2ReleaseRelease\SSStats2.exe

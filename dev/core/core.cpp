@@ -4,6 +4,7 @@
 #include "../ssConroller/gameInfoReader/gameinforeader.h"
 #include "../baseTypes/baseTypes.h"
 #include "dev/core/hookManager/hookmanager.h"
+#include <winuser.h>
 
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
@@ -105,6 +106,19 @@ void Core::topmostTimerTimout()
 
             BringWindowToTop(m_ssStatsHwnd);
         }
+
+        //SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, 0, 0, 0, 0, 1);
+
+       /* HWND hCurWnd = GetForegroundWindow();
+        uint dwMyID = GetCurrentThreadId();
+        LPDWORD LpdwProcessId;
+        uint dwCurID = GetWindowThreadProcessId(hCurWnd, LpdwProcessId);
+        AttachThreadInput(dwCurID, dwMyID, true);
+        SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, 0, 0, 0, 0, 0x0002 | 0x0001 | 0x0040);*/
+        //SetForegroundWindow(m_ssStatsHwnd);
+        //SetFocus(MainhWnd);
+        //SetActiveWindow(MainhWnd);
+      /*  AttachThreadInput(dwCurID, dwMyID, false);*/
     }
 }
 

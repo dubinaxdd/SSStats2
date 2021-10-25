@@ -6,7 +6,7 @@
 #include <QTextCodec>
 #include "../../core/logger/logger.h"
 
-#define SCAN_STEAM_PLAYERS_INTERVAL 2000
+#define SCAN_STEAM_PLAYERS_INTERVAL 4000
 
 using namespace std;
 
@@ -22,7 +22,6 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
 {
-    qInfo(logInfo()) << "Scan started";
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
@@ -41,6 +40,9 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
     if(hProcess==nullptr)
         return;
+
+    qInfo(logInfo()) << "Scan started";
+
 
     QMap<QString, SearchStemIdPlayerInfo> allPlayersInfo;
 
