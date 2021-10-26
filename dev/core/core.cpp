@@ -79,12 +79,13 @@ void Core::topmostTimerTimout()
             m_ssRect = ssRect;
         }
 
-        long dwExStyle = GetWindowLong(m_ssController->soulstormHwnd(), GWL_EXSTYLE);
+       /* long dwExStyle = GetWindowLong(m_ssController->soulstormHwnd(), GWL_EXSTYLE);
         dwExStyle &= ~WS_EX_TOPMOST;
-        SetWindowLong(m_ssController->soulstormHwnd(), GWL_EXSTYLE, dwExStyle);
+        SetWindowLong(m_ssController->soulstormHwnd(), GWL_EXSTYLE, dwExStyle);*/
 
         SetWindowPos(m_ssController->soulstormHwnd(), HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE);
         SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, SWP_SHOWWINDOW | m_defaultWindowLong);
+
         SetActiveWindow(m_ssController->soulstormHwnd());
 
                 m_uiBackend->setWindowTopmost(true);
