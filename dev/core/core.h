@@ -51,6 +51,7 @@ private:
 
     HWND m_ssStatsHwnd;
     LONG m_defaultWindowLong;
+    LONG m_defaultSSLong;
     RECT m_ssRect;
 
     SettingsController* m_settingsController;
