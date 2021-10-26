@@ -41,7 +41,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
     if(hProcess==nullptr)
         return;
 
-    qInfo(logInfo()) << "Scan started";
+    //qInfo(logInfo()) << "Scan started";
 
 
     QMap<QString, SearchStemIdPlayerInfo> allPlayersInfo;
@@ -258,7 +258,7 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     emit sendSteamPlayersInfoMap(playersList, playersCount);
 
-    qInfo(logInfo()) << "Scan finished";
+   // qInfo(logInfo()) << "Scan finished";
 }
 
 QTimer *PlayersSteamScanner::scanTimer() const

@@ -106,19 +106,6 @@ void Core::topmostTimerTimout()
 
             BringWindowToTop(m_ssStatsHwnd);
         }
-
-        //SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, 0, 0, 0, 0, 1);
-
-       /* HWND hCurWnd = GetForegroundWindow();
-        uint dwMyID = GetCurrentThreadId();
-        LPDWORD LpdwProcessId;
-        uint dwCurID = GetWindowThreadProcessId(hCurWnd, LpdwProcessId);
-        AttachThreadInput(dwCurID, dwMyID, true);
-        SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, 0, 0, 0, 0, 0x0002 | 0x0001 | 0x0040);*/
-        //SetForegroundWindow(m_ssStatsHwnd);
-        //SetFocus(MainhWnd);
-        //SetActiveWindow(MainhWnd);
-      /*  AttachThreadInput(dwCurID, dwMyID, false);*/
     }
 }
 
@@ -174,7 +161,7 @@ void Core::ssMaximized(bool maximized)
     else
     {
         m_topmostTimer->stop();
-        SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+        SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0,0,0,0,/*m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top,*/ m_defaultWindowLong );
         m_uiBackend->setWindowTopmost(false);
     }
 
