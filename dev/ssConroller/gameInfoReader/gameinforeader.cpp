@@ -249,21 +249,6 @@ void GameInfoReader::readGameParametresAfterStop()
         return;
     }
 
-
-    bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
-                           && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
-                           && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
-                           && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
-                           && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
-                           && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
-                           && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
-
-    if (!isStdWinConditions)
-    {
-        qWarning(logWarning()) << "Game have not standard win conditions, replay not sended";
-        return;
-    }
-
     QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
     qInfo(logInfo()) << "teststats.lua path: " << statsPath;
 
@@ -424,6 +409,42 @@ void GameInfoReader::readGameParametresAfterStop()
     qInfo(logInfo()) << "Win by:" << winBy;
     qInfo(logInfo()) << "Scenario:" << scenario;
     qInfo(logInfo()) << "APM:" << m_lastAverrageApm;
+
+
+    if (playersCount == 2)
+    {
+
+        bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
+                               && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
+                               && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
+                               && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
+                               && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
+                               && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
+                               && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
+
+        if (!isStdWinConditions)
+        {
+            qWarning(logWarning()) << "Game have not standard win conditions, replay not sended";
+            return;
+        }
+    }
+    else
+    {
+        bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
+                               && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
+                               && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
+                               && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
+                               && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
+
+        if (!isStdWinConditions)
+        {
+            qWarning(logWarning()) << "Game have not standard win conditions, replay not sended";
+            return;
+        }
+    }
+
+
+
 
     for(int i = 0; i < playerStats.count(); i++)
     {
