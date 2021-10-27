@@ -42,6 +42,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Linguist
 
 #set(TS_FILES SSStats2_en_GB.ts)
 
+
 set(PROJECT_SOURCES
         main.cpp
         dev/core/core.h
@@ -98,11 +99,14 @@ set(PROJECT_SOURCES
 )
 
 
+set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(SSStats2 WIN32
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
+        ${APP_ICON_RESOURCE_WINDOWS}
     )
 
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
@@ -114,6 +118,7 @@ else()
     else()
         add_executable(SSStats2 WIN32
           ${PROJECT_SOURCES}
+          ${APP_ICON_RESOURCE_WINDOWS}
         )
     endif()
 
