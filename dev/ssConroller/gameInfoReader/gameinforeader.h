@@ -54,7 +54,7 @@ private:
     SsState m_ssCurrentState = SsState::ssShutdowned;
     SsGameState m_gameCurrentState = SsGameState::unknown;
 
-    int m_lastAverrageApm;
+    int m_lastAverrageApm = 0;
 
     bool m_gameLounched = false;
     bool m_lastGameSettingsValide = false;

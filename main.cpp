@@ -12,6 +12,8 @@
 #include <QSharedMemory>
 #include <QMessageBox>
 
+#include "dev/core/hookManager/hookmanager.h"
+
 
 // Запускает программу автообновления, которая возвращает exitCode в зависимости от наличия обновлений
 int runAutoUpdate() {
@@ -72,6 +74,8 @@ int main(int argc, char *argv[])
 
         return 0;
     }
+
+    HookManager::instance();
 
 #if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);

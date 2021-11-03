@@ -16,8 +16,6 @@ Core::Core(QQmlContext *context, QObject* parent)
 {
     registerTypes();
 
-    HookManager::instance();
-
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
@@ -177,7 +175,7 @@ void Core::ssMaximized(bool maximized)
 
 void Core::gameInitialized()
 {
-    //HookManager::instance()->reconnectHook();
+    HookManager::instance()->reconnectHook();
 
     m_topmostTimer->start();
 
