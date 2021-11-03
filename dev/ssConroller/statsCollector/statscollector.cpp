@@ -10,6 +10,7 @@
 #include <QBuffer>
 #include "../../../defines.h"
 #include "../gameInfoReader/repReader/repreader.h"
+#include "../../../version.h"
 
 #define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 5000
 
@@ -28,7 +29,13 @@ StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *paren
 
     m_currentPlayerStatsRequestTimer->start();
 
+    m_clientVersion.append(PROJECT_VERSION_MAJOR);
+    m_clientVersion.append(PROJECT_VERSION_MINOR);
+    m_clientVersion.append(GIT_REL);
+
     qInfo(logInfo()) << "OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
+    qInfo(logInfo()) << "Protocol version:" << m_clientVersion;
+
 }
 
 void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
@@ -129,7 +136,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
 
 void StatsCollector::getPlayerStatsFromServer(QSharedPointer <ServerPlayerStats> playerInfo)
 {
-    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+SERVER_VERSION+"&sender_sid="+ playerInfo->steamId +"&")));
+    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+m_clientVersion+"&sender_sid="+ playerInfo->steamId +"&")));
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerStatsFromServer(reply, playerInfo);
     });
@@ -321,7 +328,8 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     }
 
     url += "winby=" + winCondition + "&";
-    url += "version=" + QString::fromStdString(SERVER_VERSION) + "&";
+
+    url += "version=" + m_clientVersion + "&";
 
     qInfo(logInfo()) << "Replay sending url:" << url;
 
@@ -421,7 +429,7 @@ void StatsCollector::setCurrentPlayerAccepted(bool newCurrentPlayerAccepted)
 void StatsCollector::registerPlayer(QString name, QString sid, bool init)
 {
     QByteArray enc_name = QUrl::toPercentEncoding(name.toLocal8Bit(),""," ");
-    QString reg_url = QString::fromStdString(SERVER_ADDRESS)+"/regplayer.php?name="+enc_name+"&sid="+sid+"&version="+SERVER_VERSION+"&sender_sid="+m_currentPlayerStats->steamId+"&";
+    QString reg_url = QString::fromStdString(SERVER_ADDRESS)+"/regplayer.php?name="+enc_name+"&sid="+sid+"&version="+m_clientVersion+"&sender_sid="+m_currentPlayerStats->steamId+"&";
     if( init )
         reg_url += "init=true&";
     else

@@ -62,6 +62,8 @@ private:
 
     QList<ServerPlayerStats*> m_playerStats;
 
+    QString m_clientVersion;
+
 };
 
 #endif // STATSCOLLECTOR_H

@@ -5,6 +5,7 @@
 #include "../baseTypes/baseTypes.h"
 #include "dev/core/hookManager/hookmanager.h"
 #include <winuser.h>
+#include "../../version.h"
 
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
@@ -15,6 +16,12 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_ssController(new SsController(m_settingsController, this))
 {
     registerTypes();
+
+    ///> TODO: По идее версию билда из другого места надо писать, но пишем отсюда ибо удобно.
+    qInfo(logInfo()) << "Build version: " << QString::fromStdString(PROJECT_VERSION_MAJOR)
+                                     + "." + QString::fromStdString(PROJECT_VERSION_MINOR)
+                                     + "." + QString::fromStdString(GIT_REL);
+
 
     context->setContextProperty("_uiBackend", m_uiBackend);
 
