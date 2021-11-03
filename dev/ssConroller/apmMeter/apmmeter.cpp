@@ -63,23 +63,23 @@ void APMMeter::calculateAPM()
     m_ticksActionsArray.append(jointTickActionsCount);
 
     if (m_ticksActionsArray.size() > TICKS_FOR_ANALYSE)
-        m_ticksActionsArray.removeFirst();                        // Сохраняем в массиве только последние TICKS_FOR_ANALYSE тиков
+        m_ticksActionsArray.removeFirst();
 
     quint64 actionsSum = 0;
 
     for(int i = 0; i < m_ticksActionsArray.size(); i++)
         actionsSum += m_ticksActionsArray.at(i);
 
-    int currentAnalyseDuration = m_ticksActionsArray.size() * MEASURE_TICK_INTERVAL;
+    float currentAnalyseDuration = m_ticksActionsArray.size() * MEASURE_TICK_INTERVAL;
 
-    quint16 currentApm = actionsSum * 60 * 1000 / currentAnalyseDuration ;
+    quint16 currentApm = actionsSum  / currentAnalyseDuration * 60.0 * 1000.0;
 
-    quint64 fullAnalyseDuration = m_startTime.msecsTo(QDateTime::currentDateTime());
+    double fullAnalyseDuration = m_startTime.msecsTo(QDateTime::currentDateTime());
 
     if (fullAnalyseDuration == 0)
         return;
 
-    quint16 averageApm = m_fullActionsCount * 60 * 1000 / fullAnalyseDuration ;
+    quint16 averageApm = m_fullActionsCount / fullAnalyseDuration * 60.0 * 1000.0;
 
     m_lastAverrageApm = averageApm;
     emit apmCalculated(currentApm, averageApm);
