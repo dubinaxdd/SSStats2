@@ -19,7 +19,8 @@ bool KeyboardProcessor::keyPressEvent(QKeyEvent *event)
             return true;
         }
     }
-    QObject::event(event);
+    //QObject::event(event);
+
     return false;
 }
 

@@ -12,8 +12,8 @@ class GamePanel : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString currentApm MEMBER m_currentApm NOTIFY currentApmUpdate)
-    Q_PROPERTY(QString averageApm MEMBER m_averageApm NOTIFY averageApmUpdate)
+    Q_PROPERTY(QString currentApm MEMBER m_currentApm NOTIFY apmUpdate)
+    Q_PROPERTY(QString averageApm MEMBER m_averageApm NOTIFY apmUpdate)
 
     Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisisble NOTIFY gamePanelVisibleChanged)
     Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisisble NOTIFY racePanelVisibleChanged)
@@ -52,9 +52,12 @@ public:
     bool showGamePannelPreset() const;
     void setShowGamePannelPreset(bool showGamePannelPreset);
 
+    const QString &currentApm() const;
+
+    const QString &averageApm() const;
+
 signals:
-    void currentApmUpdate();
-    void averageApmUpdate();
+    void apmUpdate();
 
     void gamePanelVisibleChanged(bool);
     void racePanelVisibleChanged(bool);
@@ -66,8 +69,7 @@ signals:
     void showGamePanelPresetChanged(bool);
 
 public slots:
-    void onCurrentApmChanged(quint64 val);
-    void onAverageApmChanged(quint64 val);
+    void onApmChanged(quint16 capm, quint16 aapm);
     void onGameStopped();
     void onGameStarted(SsGameState gameCurrentState);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);

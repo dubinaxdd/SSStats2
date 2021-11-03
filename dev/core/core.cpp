@@ -16,10 +16,13 @@ Core::Core(QQmlContext *context, QObject* parent)
 {
     registerTypes();
 
+    HookManager::instance();
+
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_topmostTimer = new QTimer();
     m_topmostTimer->setInterval(500);
+    //m_topmostTimer->setSingleShot(true);
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
@@ -35,8 +38,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_uiBackend,                &UiBackend::onStartingMission,  Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameOver,              m_uiBackend,                &UiBackend::onGameOver,  Qt::QueuedConnection);
 
-    QObject::connect(m_ssController->apmMeter(),        &APMMeter::currentApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onCurrentApmChanged,            Qt::QueuedConnection);
-    QObject::connect(m_ssController->apmMeter(),        &APMMeter::averageApmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onAverageApmChanged,            Qt::QueuedConnection);
+    QObject::connect(m_ssController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
 
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendServerPlayrStats,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,  Qt::QueuedConnection);
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendPlayersCount,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersCount,  Qt::QueuedConnection);
@@ -97,10 +99,15 @@ void Core::topmostTimerTimout()
             else
             {
                 RECT ssRect;
-                if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
                 {
-                    m_ssRect = ssRect;
-                    SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
+                    if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+                    {
+                        if (m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left)
+                        {
+                            m_ssRect = ssRect;
+                            SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
+                        }
+                    }
                 }
             }
 
@@ -170,7 +177,7 @@ void Core::ssMaximized(bool maximized)
 
 void Core::gameInitialized()
 {
-    HookManager::instance()->reconnectHook();
+    //HookManager::instance()->reconnectHook();
 
     m_topmostTimer->start();
 
@@ -240,11 +247,12 @@ SettingsController *Core::settingsController() const
 
 bool Core::event(QEvent *event)
 {
-    if (event->type() == QEvent::KeyPress && m_keyboardProcessor)
+   /* if (event->type() == QEvent::KeyPress && m_keyboardProcessor)
     {
         QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
         m_keyboardProcessor->keyPressEvent(keyEvent);
         m_ssController->apmMeter()->onKeyPressEvent(keyEvent);
+        delete keyEvent;
         return true;
     }
 
@@ -253,6 +261,7 @@ bool Core::event(QEvent *event)
         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
         m_uiBackend->mousePressEvent(mouseEvent->pos());
         m_ssController->apmMeter()->onMousePressEvent(mouseEvent->pos());
+        delete mouseEvent;
         return true;
     }
 
@@ -260,9 +269,11 @@ bool Core::event(QEvent *event)
     {
         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
         m_uiBackend->mouseMoveEvent(mouseEvent->pos());
+        delete mouseEvent;
         return true;
-    }
+    }*/
 
+    //delete event;
     QObject::event(event);
     return false;
 }
@@ -275,8 +286,12 @@ void Core::onKeyEvent(QKeyEvent *event)
             QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
             m_keyboardProcessor->keyPressEvent(keyEvent);
             m_ssController->apmMeter()->onKeyPressEvent(keyEvent);
+            delete keyEvent;
         }
     }
+    else
+        delete event;
+
 }
 
 void Core::onMouseEvent(QMouseEvent *event)
@@ -287,14 +302,18 @@ void Core::onMouseEvent(QMouseEvent *event)
             QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
             m_uiBackend->mousePressEvent(mouseEvent->pos());
             m_ssController->apmMeter()->onMousePressEvent(mouseEvent->pos());
+            delete mouseEvent;
         }
-
-        if (event->type() == QEvent::MouseMove)
+        else if (event->type() == QEvent::MouseMove)
         {
             QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
-            m_uiBackend->mouseMoveEvent(mouseEvent->pos());
+            m_uiBackend->mouseMoveEvent(mouseEvent->pos()); 
+            delete mouseEvent;
         }
     }
+    else
+        delete event;
+
 }
 
 void Core::grubStatsWindow()

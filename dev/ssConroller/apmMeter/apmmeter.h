@@ -6,19 +6,9 @@
 #include <QPoint>
 #include <QTimer>
 #include <QDateTime>
+#include <QVector>
 #include "../../baseTypes/baseTypes.h"
 #include "../../core/logger/logger.h"
-
-#define TICKS_FOR_ANALYSE 20
-#define MEASURE_TICK_LENGTH 500 // msec
-
-//typedef struct {
-//	quint64	timePoint;
-//    bool	mouseAction;
-//    bool	keyAction;
-//    QPoint mousePosition
-//} APMAction;
-
 
 class APMMeter : public QObject
 {
@@ -34,8 +24,7 @@ public slots:
     void onGameStopped();
 
 signals:
-    void currentApmCalculated(quint64);
-    void averageApmCalculated(quint64);
+    void apmCalculated(quint16 capm, quint16 aapm);
 
     void sendAverrageApm(int apm);
 
@@ -43,24 +32,16 @@ private slots:
     void calculateAPM();
 
 private:
-    bool started = false;
+    bool m_isStarted = false;
 
-    quint64 start_time = 0;
-
-    quint64	current_tick_mouse_actions_count;
-    quint64	current_tick_keys_actions_count;
-
-    quint64	full_actions_count;
-
-    quint64	tick_actions_count;
-
-    quint64 m_lastAverrageApm;
-
-    QVector<quint64> ticksActionsArray; // QVector быстрее аналогичных классов типа QList и т.д.
-
-    QTimer *measureTickTimer;
-
-//    QVector<APMFrame> actionsArray;
+    QDateTime m_startTime;
+    quint8	m_currentTickMouseActionsCount = 0;
+    quint8	m_currentTickKeysActionsCount = 0;
+    quint64	m_fullActionsCount = 0;
+    quint64	m_tickActionsCount = 0;
+    int m_lastAverrageApm = 0;
+    QVector<quint8> m_ticksActionsArray;
+    QTimer *m_measureTickTimer;
 };
 
 #endif // APMMETER_H

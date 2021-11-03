@@ -47,26 +47,20 @@ void GamePanel::gameLeaveTimerTimeout()
 
 }
 
-void GamePanel::onCurrentApmChanged(quint64 val)
+void GamePanel::onApmChanged(quint16 capm, quint16 aapm)
 {
-    m_currentApm = QString::number(val);
-    emit currentApmUpdate();
-}
-
-void GamePanel::onAverageApmChanged(quint64 val)
-{
-    m_averageApm = QString::number(val);
-    emit averageApmUpdate();
+    m_currentApm = QString::number(capm);
+    m_averageApm = QString::number(aapm);
+    emit apmUpdate();
 }
 
 void GamePanel::onGameStopped()
 {
     m_gameLeaveTimer->stop();
 
-   /* m_currentApm = QString("-");
+    m_currentApm = QString("-");
     m_averageApm = QString("-");
-    emit currentApmUpdate();
-    emit averageApmUpdate();*/
+    emit apmUpdate();
 
     m_player0Race = "";
     m_player1Race = "";
@@ -91,8 +85,7 @@ void GamePanel::onGameStarted(SsGameState gameCurrentState)
     {
         m_currentApm = QString("-");
         m_averageApm = QString("-");
-        emit currentApmUpdate();
-        emit averageApmUpdate();
+        emit apmUpdate();
     }
 
     if (gameCurrentState != SsGameState::gameStarted)
@@ -291,6 +284,16 @@ void GamePanel::updatePlayerRaces()
     m_player7Color = chooseColorForPlayer(m_testStats.at(7).team.toInt());
 
     emit playerTestStatsUpdate();
+}
+
+const QString &GamePanel::averageApm() const
+{
+    return m_averageApm;
+}
+
+const QString &GamePanel::currentApm() const
+{
+    return m_currentApm;
 }
 
 bool GamePanel::showGamePannelPreset() const

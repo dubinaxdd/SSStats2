@@ -14,11 +14,11 @@ class HookManager : public QObject
 public:
     static HookManager* instance() {
         if (!p_instance)
-            p_instance = new HookManager;
+            p_instance = new HookManager();
         return p_instance;
     }
 
-    bool inputBlock();\
+    bool inputBlock();
 
     void reconnectHook();
 
@@ -27,7 +27,7 @@ public slots:
 
 private:
     static HookManager *p_instance;
-    bool m_inputBlock;
+    bool m_inputBlock = false;
 
     HookManager();
     ~HookManager();

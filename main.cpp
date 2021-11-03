@@ -35,17 +35,11 @@ int runAutoUpdate() {
 
 int main(int argc, char *argv[])
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
+
 
     if(runAutoUpdate() == 5){
         return 0; // Не запускаем ssstats - т.к. есть обновления и сейчас пойдет загрузка обновы
     }
-
-    QGuiApplication app(argc, argv);
-    setlocale(LC_ALL,"Russian");
-
 
     QSystemSemaphore semaphore("<uniq id>", 1);     // создаём семафор
     semaphore.acquire();                            // Поднимаем семафор, запрещая другим экземплярам работать с разделяемой памятью
@@ -66,15 +60,25 @@ int main(int argc, char *argv[])
 
     // Если уже запущен один экземпляр приложения, то сообщаем об этом пользователю
     // и завершаем работу текущего экземпляра приложения
-    if(is_running){
+    if(is_running)
+    {
         QApplication app2(argc, argv);
 
         QMessageBox msgBox;
+
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setText("SSStats2 is already running");
         msgBox.exec();
-        return 1;
+
+        return 0;
     }
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
+
+    QGuiApplication app(argc, argv);
+    setlocale(LC_ALL,"Russian");
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();

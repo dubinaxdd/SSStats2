@@ -172,7 +172,7 @@ Rectangle {
                     Label {
                         id: currentApmCountLabel
                         color: "#ffffff"
-                        text: model.currentApm
+                        text: model.currentApm;
                         font.pointSize: 12
                     }
 
@@ -199,7 +199,7 @@ Rectangle {
                     Label {
                         id: averageApmCountLabel
                         color: "#ffffff"
-                        text: model.averageApm
+                        text: model.averageApm;
                         font.pointSize: 12
                     }
 
