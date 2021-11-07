@@ -131,7 +131,7 @@ endif()
 find_package(OpenSSL)
 if (OPENSSL_FOUND)
     message (STATUS "OPENSSL found")
-    message (STATUS "OpenSSL INclude directories:" OPENSSL_INCLUDE_DIR)
+    message (STATUS "OpenSSL INclude directories:" ${OPENSSL_INCLUDE_DIR})
 else()
 message (FATAL_ERROR "OpenSSL Not found.")
     endif()
@@ -153,3 +153,23 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_import_qml_plugins(SSStats2)
     qt_finalize_executable(SSStats2)
 endif()
+
+set(WINSDK_MT_DIR "${WINSDK_MT_DIR}")
+
+
+
+if("${WINSDK_MT_DIR}" STREQUAL "")
+    message (FATAL_ERROR "WinSDK mt.exe path is empty, please set cmake option DWINSDK_MT_DIR, for example: \"-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/\".")
+else()
+    message (STATUS "WINSDK_MT_DIR: " ${WINSDK_MT_DIR})
+    message(STATUS "Build dir: " ${CMAKE_BINARY_DIR})
+
+
+endif()
+
+add_custom_command(
+        TARGET SSStats2
+        POST_BUILD
+        COMMAND ${WINSDK_MT_DIR}mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${CMAKE_BINARY_DIR}/SSStats2.exe
+        COMMENT "Adding administator manifest."
+)
