@@ -19,7 +19,7 @@ void SettingsController::initializeSettings()
     ss_stats_settings->sync();
 
     // Если настроек нет, сохраняем дефолтные
-    m_settings->noFog = ss_stats_settings->value("game/no_fog", false).toBool();
+    m_settings->noFog = ss_stats_settings->value("game/no_fog", true).toBool();
     m_settings->smallGamePanelActive = ss_stats_settings->value("client/small_pannel_active", false).toBool();
     m_settings->showGamePanelPreset = ss_stats_settings->value("client/show_game_panel_preset", true).toBool();
 
