@@ -6,7 +6,7 @@
 #include <QTextCodec>
 #include "../../core/logger/logger.h"
 
-#define SCAN_STEAM_PLAYERS_INTERVAL 4000
+//#define SCAN_STEAM_PLAYERS_INTERVAL 4000
 
 using namespace std;
 
@@ -14,10 +14,10 @@ using namespace std;
 PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
     : QObject(parent)
 {
-    m_scanTimer = new QTimer(this);
-    m_scanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
-    QObject::connect(m_scanTimer, &QTimer::timeout, this, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection );
-    m_scanTimer->start();
+    //m_scanTimer = new QTimer(this);
+   // m_scanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
+   // QObject::connect(m_scanTimer, &QTimer::timeout, this, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection );
+   // m_scanTimer->start();
 }
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
@@ -258,15 +258,141 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 
     emit sendSteamPlayersInfoMap(playersList, playersCount);
 
-   // qInfo(logInfo()) << "Scan finished";
+    // qInfo(logInfo()) << "Scan finished";
 }
 
-QTimer *PlayersSteamScanner::scanTimer() const
+
+/*QTimer *PlayersSteamScanner::scanTimer() const
 {
     return m_scanTimer;
-}
+}*/
 
 void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
 {
     m_soulstormHwnd = newSoulstormHwnd;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
+{
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
+    LPCWSTR lps = (LPCWSTR)ss.utf16();
+
+    m_soulstormHwnd = FindWindowW(NULL, lps);
+
+    if(!m_soulstormHwnd)
+        return;
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_soulstormHwnd, &PID);
+    //qDebug() << "PID = " << PID;
+
+    // Получение дескриптора процесса
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+    if(hProcess==nullptr)
+        return;
+
+    //qInfo(logInfo()) << "Scan started";
+
+
+    SearchStemIdPlayerInfo playerInfo;
+
+    int playersCount = 0;
+
+    QByteArray buffer(/*30400*/100000, 0);
+
+
+   //unsigned long ptr1Count = 160116800;
+    unsigned long ptr1Count = /*100000000*/0x00000000;
+    while (ptr1Count < /*200000000*/0x7FFE0000)
+    {
+
+        SIZE_T bytesRead = 0;
+
+        // Если функция вернула не ноль, то продолжим цикл
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), /*30400*/100000 , &bytesRead))
+        {
+            if(GetLastError()!=299)
+            {
+                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
+                continue;
+            }
+        }
+
+        int playerPosition = 0;
+
+        //Ищем игроков в патиблоке
+        for (int i = 100; i < static_cast<int>(bytesRead) - 300; i++)
+        {
+            bool match = false;
+
+            for (int j = 0; j < static_cast<int>(sizeof(steamHeader)); j++)
+            {
+                if (buffer.at(i + j) != steamHeader[j])
+                {
+                    match = false;
+                    break;
+                }
+                else
+                    match = true;
+            }
+
+            if (!match)
+                continue;
+
+            int nickPos = i + 56;
+
+            if (buffer.at(nickPos) < 50 &&
+                    buffer.at(nickPos) > 0 &&
+                    buffer.at(nickPos + 1) == 0 &&
+                    buffer.at(nickPos + 2) == 0 &&
+                    buffer.at(nickPos + 3) == 0 &&
+                    buffer.at(nickPos - 1) == 0 &&
+                    buffer.at(nickPos - 2) == 0 &&
+                    buffer.at(nickPos - 3) == 0 &&
+                    buffer.at(nickPos - 4) == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2)   == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2+1) == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2+2) == 0 &&
+                    buffer.at(nickPos+4+buffer.at(nickPos)*2+3) == 0)
+            {
+
+                QByteArray readedSsIdByteArray = buffer.mid(i - 8, 4).data();
+
+
+
+                qDebug() << readedSsIdByteArray;
+
+                int readedSsId = 0;
+
+                if (readedSsId != ssId)
+                    continue;
+
+                QString steamIdStr = QString::fromUtf16((ushort*)buffer.mid(i + 18, 34).data()).left(17);
+
+                if(!steamIdStr.contains(QRegExp("^[0-9]{17}$")))
+                    continue;
+
+                QString nick = QString::fromUtf16((ushort*)buffer.mid(nickPos + 4, buffer.at(nickPos) * 2).data()).left(buffer.at(nickPos));
+
+                playerInfo.steamId = steamIdStr;
+                playerInfo.name = nick;
+                playerInfo.position = playerPosititon;
+
+            }
+        }
+
+        ptr1Count += /*30400*/100000;
+    }
+
+
+    SearchStemIdPlayerInfo playersList;
+
+    emit sendSteamPlayerInfoForHostedGame(playersList);
+}
+

@@ -19,13 +19,16 @@ public:
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
 
-    QTimer *scanTimer() const;
+   // QTimer *scanTimer() const;
 
 signals:
     void sendSteamPlayersInfoMap(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
 
-private slots:
+    void sendSteamPlayerInfoForHostedGame(SearchStemIdPlayerInfo playersInfo);
+
+public slots:
     void refreshSteamPlayersInfo();
+    void findPlayerBySsId(int ssId, int playerPosititon);
 
 private:
     unsigned char steamHeader[18] =  { 0x18, 0x0, 0x0, 0x0, 0x2F, 0x0, 0x73, 0x0, 0x74, 0x0, 0x65, 0x0, 0x61, 0x0, 0x6D, 0x0, 0x2F, 0x0 };
@@ -33,7 +36,7 @@ private:
     unsigned char playresCountPostfix2[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 
-    QTimer *m_scanTimer;
+    //QTimer *m_scanTimer;
     HWND m_soulstormHwnd = NULL;
     QMutex m_playersSteamScannerMutex;
 };

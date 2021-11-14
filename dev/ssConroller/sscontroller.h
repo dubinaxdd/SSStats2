@@ -15,6 +15,7 @@
 #include <QMutex>
 #include "../core/logger/logger.h"
 #include "../core/settingsController/settingscontroller.h"
+#include "lobbyEventReader/lobbyeventreader.h"
 
 class SsController : public QObject
 {
@@ -86,6 +87,8 @@ private:
     bool m_gameInitialized;
 
     GameInfoReader* m_gameInfoReader;
+    LobbyEventReader* m_lobbyEventReader;
+
     PlayersSteamScanner* m_playersSteamScanner;
 
     QThread m_playersSteamScannerThread;

@@ -20,7 +20,8 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 {
     m_ssPath = getSsPathFromRegistry();
     qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
-    m_gameInfoReader = new GameInfoReader(m_ssPath,this);
+    m_gameInfoReader = new GameInfoReader(m_ssPath, this);
+    m_lobbyEventReader = new LobbyEventReader(m_ssPath, this);
 
     m_steamPath = getSteamPathFromRegistry();
 
@@ -33,8 +34,13 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_gameInfoReader, &GameInfoReader::loadStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
-    QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
+    //QObject::connect(m_gameInfoReader, &GameInfoReader::loadStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
+    //QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
+
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnectedToHostedGame, m_playersSteamScanner, &PlayersSteamScanner::findPlayerBySsId, Qt::QueuedConnection);
+
+
 
     m_ssWindowControllTimer = new QTimer(this);
     m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
@@ -46,6 +52,9 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_gameInfoReader,  &GameInfoReader::startingMission,   m_apmMeter, &APMMeter::onGameStarted,   Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader,  &GameInfoReader::gameStopped,       m_apmMeter, &APMMeter::onGameStopped,   Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader,  &GameInfoReader::loadStarted,       m_apmMeter, &APMMeter::onGameStopped,   Qt::QueuedConnection);
+
+    QObject::connect(m_gameInfoReader,  &GameInfoReader::loadStarted,       m_lobbyEventReader, &LobbyEventReader::onLoadStarted,   Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader,  &GameInfoReader::gameStopped,       m_lobbyEventReader, &LobbyEventReader::onGameStopped,   Qt::QueuedConnection);
 
     QObject::connect(m_gameInfoReader,  &GameInfoReader::sendReplayToServer,       m_statsCollector, &StatsCollector::sendReplayToServer,   Qt::QueuedConnection);
 
@@ -170,12 +179,12 @@ void SsController::gameInitialized()
     parseSsSettings();
 
     m_statsCollector->parseCurrentPlayerSteamId();
+    m_lobbyEventReader->activateReading(true);
 }
 
 void SsController::ssShutdown()
 {
-
-
+    m_lobbyEventReader->activateReading(false);
 }
 
 void SsController::readTestStats()

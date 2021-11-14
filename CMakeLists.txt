@@ -78,6 +78,8 @@ set(PROJECT_SOURCES
         dev/uiBackend/statisticPanel/statisticpanelitem.cpp
         dev/core/logger/logger.h
         dev/core/logger/logger.cpp
+        dev/ssConroller/lobbyEventReader/lobbyeventreader.h
+        dev/ssConroller/lobbyEventReader/lobbyeventreader.cpp
 
 
         dev/ssConroller/gameInfoReader/repReader/extendedbinreader.h
