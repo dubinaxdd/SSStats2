@@ -3,7 +3,7 @@
 #include <QFile>
 #include <QDebug>
 
-#define READ_EVETS_TIMER_INTERVAL 500
+#define READ_EVETS_TIMER_INTERVAL 200
 
 LobbyEventReader::LobbyEventReader(QString sspath, QObject *parent) : QObject(parent)
   , m_ssPath(sspath)
@@ -105,34 +105,34 @@ void LobbyEventReader::readLobbyEvents()
 
             }
 
-            if (line.contains("Ignoring New Peer for local player"))
+            if (line.contains("Ignoring New Peer for local player") || line.contains("LIE_OnPlayerUpdate") || line.contains("Net UPDATE PLAYER information for player") || line.contains("MatchEvent:MET_MatchInfoUpdated") || line.contains("Lobby -- Remote player disconnected") || line.contains("New Peer for remote player"))
             {
                 if(line.contains(m_preLastLogTime))
                     break;
 
-                m_preLastLogTime = m_lastLogTime;
-
                 if (!isHostedGame)
+                {
+                    m_preLastLogTime = m_lastLogTime;
                     emit playerConnected();
-
-                qDebug() << "Player connected";
-                break;
+                    qDebug() << "Player connected";
+                    break;
+                }
 
             }
 
-            if (line.contains("New Peer for remote player"))
+            if (line.contains("New Peer for remote player") && isHostedGame)
             {
+
                 if(line.contains(m_preLastLogTime))
                     break;
                 else
                 {
-
-
                     int counter2 = counter;
 
                     QString line2;
 
-                    while (!line2.contains(m_preLastLogTime) && m_preLastLogTime != "baneblade") {
+                    while (!line2.contains(m_preLastLogTime) && m_preLastLogTime != "baneblade")
+                    {
                         line2 = fileLines.at(counter2-1);
 
 
@@ -163,7 +163,7 @@ void LobbyEventReader::readLobbyEvents()
 
                     }
 
-                    isHostedGame = true;
+                    //isHostedGame = true;
 
                     m_preLastLogTime = m_lastLogTime;
 

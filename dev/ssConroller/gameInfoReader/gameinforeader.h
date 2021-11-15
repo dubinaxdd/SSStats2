@@ -27,6 +27,9 @@ private slots:
 public slots:
     void receiveAverrageApm(int apm);
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
+    void receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner);
+
+
 
 signals:
     void loadStarted(SsGameState gameCurrentState);         //Сигнал о начале загрузки игры/реплея/сохраненки

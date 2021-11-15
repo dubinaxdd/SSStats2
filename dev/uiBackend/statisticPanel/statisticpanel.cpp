@@ -29,21 +29,41 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
     }
     else
     {
-        for (int i = 0; i < 7; i++)
+        if (currentPlayerIsHost)
         {
-            if(serverPlayerStats.steamId == m_playersStatsItems[i]->playersStats().steamId)
-            {
-                m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
 
-                switch (i)
+            m_playersStatsItems[serverPlayerStats.position - 1]->setPlayersStats(serverPlayerStats);
+
+            switch (serverPlayerStats.position - 1)
+            {
+                case 0: m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar); break;
+                case 1: m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar); break;
+                case 2: m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar); break;
+                case 3: m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar); break;
+                case 4: m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar); break;
+                case 5: m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar); break;
+                case 6: m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar); break;
+            }
+
+        }
+        else
+        {
+            for (int i = 0; i < 7; i++)
+            {
+                if(serverPlayerStats.steamId == m_playersStatsItems[i]->playersStats().steamId)
                 {
-                    case 0: m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar); break;
-                    case 1: m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar); break;
-                    case 2: m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar); break;
-                    case 3: m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar); break;
-                    case 4: m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar); break;
-                    case 5: m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar); break;
-                    case 6: m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar); break;
+                    m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
+
+                    switch (i)
+                    {
+                        case 0: m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar); break;
+                        case 1: m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar); break;
+                        case 2: m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar); break;
+                        case 3: m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar); break;
+                        case 4: m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar); break;
+                        case 5: m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar); break;
+                        case 6: m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar); break;
+                    }
                 }
             }
         }
@@ -56,6 +76,9 @@ void StatisticPanel::receivePlayersCount(int playersCount)
     if (m_blockUpdate)
         return;
 
+    m_playersCount = playersCount;
+
+  /*
     if (currentPlayerIsHost)
     {
         if(playersCount >= m_playersCount)
@@ -70,7 +93,7 @@ void StatisticPanel::receivePlayersCount(int playersCount)
             return;
         m_playersCount = playersCount;
     }
-
+*/
 
 
     if(m_playersCount > 1)
@@ -165,8 +188,6 @@ void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
 
 
     currentPlayerIsHost = isHost;
-
-    //qDebug() << "Player is host:" << currentPlayerIsHost;
 }
 
 StatisticPanelItem *StatisticPanel::getCurentPlayerStatsItem()

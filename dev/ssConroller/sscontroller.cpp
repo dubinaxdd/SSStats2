@@ -47,6 +47,8 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &SsController::checkWindowState, Qt::QueuedConnection);
 
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayerInfoForHostedGame, m_statsCollector, &StatsCollector::receivePlayerStemIdForHostedGame, Qt::QueuedConnection);
+
 
     QObject::connect(m_gameInfoReader,  &GameInfoReader::gameOver,          m_apmMeter, &APMMeter::onGameStopped,      Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader,  &GameInfoReader::startingMission,   m_apmMeter, &APMMeter::onGameStarted,   Qt::QueuedConnection);
@@ -59,7 +61,9 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_gameInfoReader,  &GameInfoReader::sendReplayToServer,       m_statsCollector, &StatsCollector::sendReplayToServer,   Qt::QueuedConnection);
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_gameInfoReader,  &GameInfoReader::receiveAverrageApm,       Qt::QueuedConnection);
+
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayerInfoForHostedGame, m_gameInfoReader, &GameInfoReader::receivePlayerStemIdForHostedGame, Qt::QueuedConnection);
 
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 

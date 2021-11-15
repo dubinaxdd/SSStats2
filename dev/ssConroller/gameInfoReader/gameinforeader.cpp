@@ -610,7 +610,7 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         bool playerFinded = false;
         for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
         {
-            if (playersInfoFromScanner[i].name == m_allPlayersInfoFromScanner[j].name)
+            if (playersInfoFromScanner[i].steamId == m_allPlayersInfoFromScanner[j].steamId)
             {
                 playerFinded = true;
                 break;
@@ -623,8 +623,16 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
             qInfo(logInfo()) << "Finded player:" << m_allPlayersInfoFromScanner.last().name;
         }
     }
+}
 
+void GameInfoReader::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner)
+{
+    if(m_gameCurrentState != SsGameState::gameStoped && m_gameCurrentState != SsGameState::unknown)
+        return;
 
+    m_playersInfoFromScanner.append(playerInfoFromScanner);
+
+    qInfo(logInfo()) << "Finded player:" << m_allPlayersInfoFromScanner.last().name;
 }
 
 void GameInfoReader::setGameLounched(bool newGameLounched)

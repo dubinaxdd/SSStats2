@@ -290,15 +290,11 @@ void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
 
     DWORD PID;
     GetWindowThreadProcessId(m_soulstormHwnd, &PID);
-    //qDebug() << "PID = " << PID;
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
     if(hProcess==nullptr)
         return;
-
-    //qInfo(logInfo()) << "Scan started";
-
 
     SearchStemIdPlayerInfo playerInfo;
 
@@ -364,11 +360,7 @@ void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
 
                 QByteArray readedSsIdByteArray = buffer.mid(i - 8, 4).data();
 
-
-
-                qDebug() << readedSsIdByteArray;
-
-                int readedSsId = 0;
+                int readedSsId = *reinterpret_cast<int*>(readedSsIdByteArray.data());
 
                 if (readedSsId != ssId)
                     continue;
@@ -384,6 +376,10 @@ void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
                 playerInfo.name = nick;
                 playerInfo.position = playerPosititon;
 
+                emit sendSteamPlayerInfoForHostedGame(playerInfo);
+
+                return;
+
             }
         }
 
@@ -391,8 +387,6 @@ void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
     }
 
 
-    SearchStemIdPlayerInfo playersList;
 
-    emit sendSteamPlayerInfoForHostedGame(playersList);
 }
 

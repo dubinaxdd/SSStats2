@@ -44,16 +44,12 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
 
     emit sendPlayersCount(playersCount);
 
+    sendCurrentPlayerHostState(false);
+
     for(int i = 0; i < playersInfoFromScanner.count(); i++)
     {
 
         QSharedPointer <ServerPlayerStats> newPlayer(new ServerPlayerStats);
-
-        if(playersInfoFromScanner.at(i).steamId == m_currentPlayerStats->steamId)
-        {
-            emit sendCurrentPlayerHostState(playersInfoFromScanner.at(i).position == 0);
-            continue;
-        }
 
         newPlayer->steamId = playersInfoFromScanner.at(i).steamId;
         newPlayer->position = playersInfoFromScanner.at(i).position;
@@ -67,6 +63,24 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
             receivePlayerSteamData(reply, newPlayer);
         });
     }
+}
+
+void StatsCollector::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner)
+{
+    emit sendPlayersCount(8);
+    sendCurrentPlayerHostState(true);
+
+    QSharedPointer <ServerPlayerStats> newPlayer(new ServerPlayerStats);
+
+    newPlayer->steamId = playerInfoFromScanner.steamId;
+    newPlayer->position = playerInfoFromScanner.position;
+
+    registerPlayer(playerInfoFromScanner.name, playerInfoFromScanner.steamId, false);
+
+    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playerInfoFromScanner.steamId + "&format=json")));
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receivePlayerSteamData(reply, newPlayer);
+    });
 }
 
 void StatsCollector::parseCurrentPlayerSteamId()
@@ -279,6 +293,9 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
     for (int i = 0; i < replayInfo.playersInfo.count(); i++)
     {
+        if (replayInfo.playersInfo[i].playerName == m_currentPlayerStats->name)
+            replayInfo.playersInfo[i].playerSid = m_currentPlayerStats->steamId;
+
         if (replayInfo.playersInfo[i].playerSid == "")
         {
             qWarning() << "Player" << replayInfo.playersInfo[i].playerName << "have not steam id, replay not sended";
