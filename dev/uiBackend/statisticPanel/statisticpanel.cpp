@@ -67,6 +67,8 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
                 }
             }
         }
+
+
         emit playersStatsChanged();
     }
 }

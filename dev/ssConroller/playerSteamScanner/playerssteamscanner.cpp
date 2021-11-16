@@ -6,7 +6,9 @@
 #include <QTextCodec>
 #include "../../core/logger/logger.h"
 
-//#define SCAN_STEAM_PLAYERS_INTERVAL 4000
+//#define SCAN_STEAM_PLAYERS_INTERVAL 3000
+
+#define SCAN_STEAM_PLAYERS_INTERVAL 1000
 
 using namespace std;
 
@@ -14,9 +16,12 @@ using namespace std;
 PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
     : QObject(parent)
 {
-    //m_scanTimer = new QTimer(this);
-   // m_scanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
-   // QObject::connect(m_scanTimer, &QTimer::timeout, this, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection );
+    m_scanTimer = new QTimer(this);
+    m_scanTimer->setInterval(SCAN_STEAM_PLAYERS_INTERVAL);
+
+    m_scanTimer->setSingleShot(true);
+
+    QObject::connect(m_scanTimer, &QTimer::timeout, this, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection );
    // m_scanTimer->start();
 }
 
@@ -262,10 +267,10 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 }
 
 
-/*QTimer *PlayersSteamScanner::scanTimer() const
+QTimer *PlayersSteamScanner::scanTimer() const
 {
     return m_scanTimer;
-}*/
+}
 
 void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
 {

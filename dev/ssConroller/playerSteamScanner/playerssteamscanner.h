@@ -19,7 +19,7 @@ public:
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
 
-   // QTimer *scanTimer() const;
+    QTimer *scanTimer() const;
 
 signals:
     void sendSteamPlayersInfoMap(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
@@ -36,7 +36,7 @@ private:
     unsigned char playresCountPostfix2[6] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 
-    //QTimer *m_scanTimer;
+    QTimer *m_scanTimer;
     HWND m_soulstormHwnd = NULL;
     QMutex m_playersSteamScannerMutex;
 };

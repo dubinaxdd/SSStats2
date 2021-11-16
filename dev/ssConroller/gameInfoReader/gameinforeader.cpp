@@ -610,7 +610,7 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         bool playerFinded = false;
         for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
         {
-            if (playersInfoFromScanner[i].steamId == m_allPlayersInfoFromScanner[j].steamId)
+            if (playersInfoFromScanner[i].name == m_allPlayersInfoFromScanner[j].name)
             {
                 playerFinded = true;
                 break;

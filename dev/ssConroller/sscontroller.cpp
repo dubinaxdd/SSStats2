@@ -37,6 +37,10 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     //QObject::connect(m_gameInfoReader, &GameInfoReader::loadStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
     //QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
 
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
+
+
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnectedToHostedGame, m_playersSteamScanner, &PlayersSteamScanner::findPlayerBySsId, Qt::QueuedConnection);
 
