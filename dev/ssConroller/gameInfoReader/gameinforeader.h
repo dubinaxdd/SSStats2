@@ -28,6 +28,7 @@ public slots:
     void receiveAverrageApm(int apm);
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
     void receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner);
+    void onQuitParty();
 
 
 

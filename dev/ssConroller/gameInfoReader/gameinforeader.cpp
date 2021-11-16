@@ -620,7 +620,7 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         if(!playerFinded)
         {
             m_allPlayersInfoFromScanner.append(playersInfoFromScanner[i]);
-            qInfo(logInfo()) << "Finded player:" << m_allPlayersInfoFromScanner.last().name;
+            qInfo(logInfo()) << "Finded player in joined game:" << m_allPlayersInfoFromScanner.last().name;
         }
     }
 }
@@ -630,9 +630,30 @@ void GameInfoReader::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo pla
     if(m_gameCurrentState != SsGameState::gameStoped && m_gameCurrentState != SsGameState::unknown)
         return;
 
-    m_playersInfoFromScanner.append(playerInfoFromScanner);
+    //m_playersInfoFromScanner.append(playerInfoFromScanner);
 
-    qInfo(logInfo()) << "Finded player:" << m_allPlayersInfoFromScanner.last().name;
+    bool playerFinded = false;
+    for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
+    {
+        if (playerInfoFromScanner.steamId == m_playersInfoFromScanner[j].steamId)
+        {
+            playerFinded = true;
+            break;
+        }
+    }
+
+    if(!playerFinded)
+    {
+        m_playersInfoFromScanner.append(playerInfoFromScanner);
+        qInfo(logInfo()) << "Finded player in hosted game:" << m_playersInfoFromScanner.last().name;
+    }
+
+    //qInfo(logInfo()) << "Finded player:" << m_playersInfoFromScanner.last().name;
+}
+
+void GameInfoReader::onQuitParty()
+{
+    m_playersInfoFromScanner.clear();
 }
 
 void GameInfoReader::setGameLounched(bool newGameLounched)
