@@ -342,6 +342,11 @@ void SsController::parseSsSettings()
     delete ssSettings;
 }
 
+LobbyEventReader *SsController::lobbyEventReader() const
+{
+    return m_lobbyEventReader;
+}
+
 LONG SsController::defaultSoulstormWindowLong() const
 {
     return m_defaultSoulstormWindowLong;

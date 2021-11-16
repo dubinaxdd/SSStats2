@@ -2,6 +2,7 @@
 #include "QDebug"
 #include "QFile"
 #include "../ssConroller/gameInfoReader/gameinforeader.h"
+#include "../ssConroller/lobbyEventReader/lobbyeventreader.h"
 #include "../baseTypes/baseTypes.h"
 #include "dev/core/hookManager/hookmanager.h"
 #include <winuser.h>
@@ -49,6 +50,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendPlayersCount,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersCount,  Qt::QueuedConnection);
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendCurrentPlayerHostState,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState,  Qt::QueuedConnection);
 
+    QObject::connect(m_ssController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
 
     QObject::connect(m_ssController->playersSteamScanner(),  &PlayersSteamScanner::sendSteamPlayersInfoMap,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 

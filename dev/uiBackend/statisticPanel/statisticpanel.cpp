@@ -192,6 +192,14 @@ void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
     currentPlayerIsHost = isHost;
 }
 
+void StatisticPanel::onQuitParty()
+{
+    ServerPlayerStats serverPlayerStats;
+
+    for (int i = 0; i < 7; i++)
+        m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
+}
+
 StatisticPanelItem *StatisticPanel::getCurentPlayerStatsItem()
 {
     return m_curentPlayerStatsItem;

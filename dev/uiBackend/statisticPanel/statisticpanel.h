@@ -38,6 +38,7 @@ public slots:
     void receivePlayersCount(int playersCount);
     void receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
     void receiveCurrentPlayerHostState(bool isHost);
+    void onQuitParty();
 
 private:
     StatisticPanelItem *getCurentPlayerStatsItem();

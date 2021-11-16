@@ -45,6 +45,8 @@ public:
 
     LONG defaultSoulstormWindowLong() const;
 
+    LobbyEventReader *lobbyEventReader() const;
+
 public slots:
     void blockInput(bool state);
 
