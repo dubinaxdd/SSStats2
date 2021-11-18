@@ -161,7 +161,7 @@ void LobbyEventReader::readLobbyEvents()
                                     ssId = ssId.left(i - 1);
                             }
 
-                            QString needLine = fileLines.at(counter);
+                            QString needLine = fileLines.at(counter2);
 
                             if (!needLine.contains("*******************************NewPeer"))
                                 break;
@@ -185,6 +185,85 @@ void LobbyEventReader::readLobbyEvents()
                     break;
                 }
 
+            }
+
+            counter--;
+        }
+    }
+}
+
+void LobbyEventReader::checkPatyState()
+{
+    QFile file(m_ssPath+"\\warnings.log");
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTextStream textStream(&file);
+        QStringList fileLines = textStream.readAll().split("\r");
+
+        int counter = fileLines.size();
+
+
+        while (counter!=0)
+        {
+            QString line = fileLines.at(counter-1);
+
+            if (line.contains("LIE_QuitGame"))
+            {
+                emit quitFromParty();
+                qDebug() << "Quit from paty";
+                break;
+            }
+
+            if (line.contains("LIE_JoinGame"))
+            {
+                isHostedGame = false;
+                emit joinToParty();
+                qDebug() << "Join to paty";
+                break;
+            }
+
+            if (line.contains("LIE_HostGame"))
+            {
+                isHostedGame = true;
+                emit hostParty();
+                qDebug() << "Hosting party";
+
+                int counter2 = fileLines.size();
+                QString line2;
+
+                while (counter2 != counter)
+                {
+                    line2 = fileLines.at(counter2-1);
+
+                    if (line2.contains("New Peer for remote player"))
+                    {
+                        QString ssId = line2.right(line2.size() - 51);
+
+                        for (int i = 0; i < ssId.size(); i++)
+                        {
+                            if(ssId.at(i) == "L")
+                                ssId = ssId.left(i - 1);
+                        }
+
+                        QString needLine = fileLines.at(counter2);
+
+                        if (!needLine.contains("*******************************NewPeer"))
+                            break;
+
+                        needLine = needLine.at(54);
+                        int playerPosition = needLine.toInt();
+
+                        emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+
+                        qDebug() << "Player connected:" << ssId << "position:" << playerPosition;
+                    }
+
+                    counter2--;
+
+                }
+
+                break;
             }
 
             counter--;

@@ -35,6 +35,9 @@ public slots:
 private slots:
     void readLobbyEvents();
 
+public:
+    void checkPatyState();
+
 private:
     QTimer* m_lobbyEventsReadTimer;
     QString m_ssPath;

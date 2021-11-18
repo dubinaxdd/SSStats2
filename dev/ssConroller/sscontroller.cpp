@@ -70,6 +70,8 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
+    m_lobbyEventReader->checkPatyState();
+
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
     m_ssWindowControllTimer->start();
