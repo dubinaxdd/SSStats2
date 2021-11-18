@@ -70,7 +70,7 @@ void LobbyEventReader::readLobbyEvents()
 
                 m_preLastLogTime = m_lastLogTime;
                 emit quitFromParty();
-                qDebug() << "Quit from paty";
+                qInfo(logInfo()) << "Quit from paty";
                 break;
 
 
@@ -85,7 +85,7 @@ void LobbyEventReader::readLobbyEvents()
 
                 isHostedGame = false;
                 emit joinToParty();
-                qDebug() << "Join to paty";
+                qInfo(logInfo()) << "Join to paty";
                 break;
 
 
@@ -99,7 +99,7 @@ void LobbyEventReader::readLobbyEvents()
                 m_preLastLogTime = m_lastLogTime;
                 isHostedGame = true;
                 emit hostParty();
-                qDebug() << "Hosting party";
+                qInfo(logInfo()) << "Hosting party";
                 break;
 
 
@@ -129,7 +129,7 @@ void LobbyEventReader::readLobbyEvents()
                 {
                     m_preLastLogTime = m_lastLogTime;
                     emit playerConnected();
-                    qDebug() << "Player connected";
+                    qInfo(logInfo()) << "Player connected";
                     break;
                 }
 
@@ -171,7 +171,7 @@ void LobbyEventReader::readLobbyEvents()
 
                             emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
 
-                            qDebug() << "Player connected:" << ssId << "position:" << playerPosition;
+                            qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
                         }
 
                         counter2--;
@@ -211,7 +211,7 @@ void LobbyEventReader::checkPatyState()
             if (line.contains("LIE_QuitGame"))
             {
                 emit quitFromParty();
-                qDebug() << "Quit from paty";
+                qInfo(logInfo()) << "Quit from paty";
                 break;
             }
 
@@ -219,7 +219,7 @@ void LobbyEventReader::checkPatyState()
             {
                 isHostedGame = false;
                 emit joinToParty();
-                qDebug() << "Join to paty";
+                qInfo(logInfo()) << "Join to paty";
                 break;
             }
 
@@ -227,7 +227,7 @@ void LobbyEventReader::checkPatyState()
             {
                 isHostedGame = true;
                 emit hostParty();
-                qDebug() << "Hosting party";
+                qInfo(logInfo()) << "Hosting party";
 
                 int counter2 = fileLines.size();
                 QString line2;
@@ -256,7 +256,7 @@ void LobbyEventReader::checkPatyState()
 
                         emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
 
-                        qDebug() << "Player connected:" << ssId << "position:" << playerPosition;
+                        qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
                     }
 
                     counter2--;
