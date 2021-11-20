@@ -106,18 +106,12 @@ void LobbyEventReader::readLobbyEvents()
             }
 
             if (line.contains("Ignoring New Peer for local player")
-                    || line.contains("Lobby -- Net UPDATE PLAYER information for player")
-                    //|| line.contains("MatchEvent:MET_MatchInfoUpdated")
+                   // || line.contains("Lobby -- Net UPDATE PLAYER information for player")
                     || line.contains("Lobby -- Remote player disconnected")
-                    || line.contains("New Peer for remote player")
-                   // || line.contains("Lobby - LOE_GamePlayerDestroyed received")
-                    //|| line.contains("MessageEvent:")
-                    || line.contains("MatchEvent:")
-                    || line.contains("Lobby - Join success")
+                    //|| line.contains("New Peer for remote player")
+                    //|| line.contains("MatchEvent:")
+                    //|| line.contains("Lobby - Join success")
                     || line.contains("Lobby - LIE_OnPlayerUpdate received")
-
-
-                  //  || line.contains("Lobby - LOE_JoinHostResult")
                     )
 
 

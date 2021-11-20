@@ -633,7 +633,7 @@ void GameInfoReader::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo pla
     //m_playersInfoFromScanner.append(playerInfoFromScanner);
 
     bool playerFinded = false;
-    for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
+    for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
     {
         if (playerInfoFromScanner.steamId == m_playersInfoFromScanner[j].steamId)
         {
