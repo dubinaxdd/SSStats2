@@ -37,6 +37,9 @@ void APMMeter::onGameStarted(SsGameState gameCurrentState)
 
     m_ticksActionsArray.clear();
 
+    for(int i = 0; i < TICKS_FOR_ANALYSE; i++)
+        m_ticksActionsArray.append(0);
+
     m_startTime = QDateTime::currentDateTime();//::currentMSecsSinceEpoch();
     m_measureTickTimer->start(MEASURE_TICK_INTERVAL);
 }

@@ -26,6 +26,8 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     context->setContextProperty("_uiBackend", m_uiBackend);
 
+    HookManager::instance()->setCore(this);
+
     m_topmostTimer = new QTimer();
     m_topmostTimer->setInterval(500);
     //m_topmostTimer->setSingleShot(true);
@@ -62,8 +64,8 @@ Core::Core(QQmlContext *context, QObject* parent)
 
 
     QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
-    QObject::connect(HookManager::instance(), &HookManager::keyEvent, this, &Core::onKeyEvent, Qt::QueuedConnection);
-    QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
+   // QObject::connect(HookManager::instance(), &HookManager::keyEvent, this, &Core::onKeyEvent, Qt::QueuedConnection);
+   // QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
 
@@ -286,35 +288,35 @@ bool Core::event(QEvent *event)
     return false;
 }
 
-void Core::onKeyEvent(QKeyEvent *event)
+void Core::onKeyEvent(QKeyEvent event)
 {
     if(uiBackend()->getShowClient()){
-        if (event->type() == QEvent::KeyPress && m_keyboardProcessor)
+        if (event.type() == QEvent::KeyPress && m_keyboardProcessor)
         {
-            m_keyboardProcessor->keyPressEvent(event);
+            m_keyboardProcessor->keyPressEvent(std::move(event));
             m_ssController->apmMeter()->onKeyPressEvent();
         }
     }
 
-    delete event;
+   // delete event;
 
 }
 
-void Core::onMouseEvent(QMouseEvent *event)
+void Core::onMouseEvent(QMouseEvent event)
 {
     if(uiBackend()->getShowClient()){
-        if (event->type() == QEvent::MouseButtonPress)
+        if (event.type() == QEvent::MouseButtonPress)
         {
-            m_uiBackend->mousePressEvent(event->pos());
+            m_uiBackend->mousePressEvent(event.pos());
             m_ssController->apmMeter()->onMousePressEvent();
         }
-        else if (event->type() == QEvent::MouseMove)
+        else if (event.type() == QEvent::MouseMove)
         {
-            m_uiBackend->mouseMoveEvent(event->pos());
+            m_uiBackend->mouseMoveEvent(event.pos());
         }
     }
 
-    delete event;
+    //delete event;
 
 }
 

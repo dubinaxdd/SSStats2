@@ -30,8 +30,8 @@ signals:
     void sendExit();
 
 public slots:
-    void onKeyEvent(QKeyEvent *event);
-    void onMouseEvent(QMouseEvent *event);
+    void onKeyEvent(QKeyEvent event);
+    void onMouseEvent(QMouseEvent event);
 
 
 private slots:

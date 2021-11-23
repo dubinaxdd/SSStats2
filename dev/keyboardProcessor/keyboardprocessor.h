@@ -10,7 +10,7 @@ class KeyboardProcessor : public QObject
 public:
     KeyboardProcessor(QObject* parent = nullptr);
 
-    bool keyPressEvent(QKeyEvent *event);
+    bool keyPressEvent(QKeyEvent event);
 
 signals:
     void expandKeyPressed();

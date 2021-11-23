@@ -22,19 +22,24 @@ public:
 
     void reconnectHook();
 
+    void setCore(Core *newCore);
+
+    Core *core() const;
+
 public slots:
     void onInputBlockStateChanged(bool state);
 
 private:
     static HookManager *p_instance;
     bool m_inputBlock = false;
+    Core* m_core;
 
     HookManager();
     ~HookManager();
 
-signals:
-    void keyEvent(QKeyEvent *event);
-    void mouseEvent(QMouseEvent *event);
+//signals:
+   // void keyEvent(QKeyEvent event);
+   // void mouseEvent(QMouseEvent event);
 
 };
 

@@ -27,22 +27,27 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
     {
         //qDebug() << "INFO: Left click";
 
-        QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
-        emit HookManager::instance()->mouseEvent(event);
+        //QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
+        //emit HookManager::instance()->mouseEvent(event);
+        HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers())));
         break;
     }
     case WM_RBUTTONDOWN:
     {
         //qDebug() << "INFO: Right click";
 
-        QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::RightButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
-        emit HookManager::instance()->mouseEvent(event);
+        //QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::RightButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
+        //emit HookManager::instance()->mouseEvent(event);
+        HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::RightButton, Qt::MouseButtons(), Qt::KeyboardModifiers())));
         break;
     }
     case WM_MOUSEMOVE:
     {
-        QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers());
-        emit HookManager::instance()->mouseEvent(event);
+        //QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers());
+        //emit HookManager::instance()->mouseEvent(event);
+
+        HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers())));
+
         break;
     }
     }
@@ -86,8 +91,9 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
         if(!pressedKeysSet.contains(cKey.vkCode)){ // Если клавиша не была отжата и это "залипшая" клавиша, то не повторяем ее обработку
             //qDebug() << "WM_DOWN " << "key: " << cKey.vkCode << " " << QString::fromUtf16((ushort*)buffer) << " " << QString::fromUtf16((ushort*)lpszName);
             pressedKeysSet.insert(cKey.vkCode); // Добавляем код клавиши в список зажатых
-            QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, cKey.vkCode, modifer, 0);
-            emit HookManager::instance()->keyEvent(event);
+            //QKeyEvent *event = new QKeyEvent(QEvent::KeyPress, cKey.vkCode, modifer, 0);
+            //emit HookManager::instance()->keyEvent(event);
+            HookManager::instance()->core()->onKeyEvent(std::move(QKeyEvent(QEvent::KeyPress, cKey.vkCode, modifer, 0)));
         }
     }
 
@@ -129,6 +135,16 @@ bool HookManager::inputBlock()
 void HookManager::onInputBlockStateChanged(bool state)
 {
     m_inputBlock = state;
+}
+
+Core *HookManager::core() const
+{
+    return m_core;
+}
+
+void HookManager::setCore(Core *newCore)
+{
+    m_core = newCore;
 }
 
 
