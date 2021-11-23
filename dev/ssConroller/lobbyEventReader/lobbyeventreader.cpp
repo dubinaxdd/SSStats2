@@ -144,43 +144,35 @@ void LobbyEventReader::readLobbyEvents()
                     {
                         line2 = fileLines.at(counter2-1);
 
-
                         if (line2.contains("New Peer for remote player"))
                         {
-                            QString ssId = line2.right(line2.size() - 51);
-
-                            for (int i = 0; i < ssId.size(); i++)
+                            if (line2.size() - 51 >= 0)
                             {
-                                if(ssId.at(i) == "L")
-                                    ssId = ssId.left(i - 1);
+                                QString ssId = line2.right(line2.size() - 51);
+
+                                for (int i = 0; i < ssId.size(); i++)
+                                {
+                                    if(ssId.at(i) == "L" && i - 1 >= 0)
+                                        ssId = ssId.left(i - 1);
+                                }
+
+                                QString needLine = fileLines.at(counter2);
+
+                                if (needLine.contains("*NewPeer"))
+                                {
+                                    needLine = needLine.at(54);
+                                    int playerPosition = needLine.toInt();
+                                    emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+                                    qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
+                                }
                             }
-
-                            QString needLine = fileLines.at(counter2);
-
-                            if (!needLine.contains("*******************************NewPeer"))
-                                break;
-
-                            needLine = needLine.at(54);
-                            int playerPosition = needLine.toInt();
-
-                            emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
-
-                            qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
                         }
-
                         counter2--;
-
                     }
-
-                    //isHostedGame = true;
-
                     m_preLastLogTime = m_lastLogTime;
-
                     break;
                 }
-
             }
-
             counter--;
         }
     }
@@ -232,34 +224,31 @@ void LobbyEventReader::checkPatyState()
 
                     if (line2.contains("New Peer for remote player"))
                     {
-                        QString ssId = line2.right(line2.size() - 51);
-
-                        for (int i = 0; i < ssId.size(); i++)
+                        if (line2.size() - 51 >= 0)
                         {
-                            if(ssId.at(i) == "L")
-                                ssId = ssId.left(i - 1);
+                            QString ssId = line2.right(line2.size() - 51);
+
+                            for (int i = 0; i < ssId.size(); i++)
+                            {
+                                if(ssId.at(i) == "L" && i - 1 >= 0)
+                                    ssId = ssId.left(i - 1);
+                            }
+
+                            QString needLine = fileLines.at(counter2);
+
+                            if (!needLine.contains("*NewPeer"))
+                            {
+                                needLine = needLine.at(54);
+                                int playerPosition = needLine.toInt();
+                                emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+                                qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
+                            }
                         }
-
-                        QString needLine = fileLines.at(counter2);
-
-                        if (!needLine.contains("*******************************NewPeer"))
-                            break;
-
-                        needLine = needLine.at(54);
-                        int playerPosition = needLine.toInt();
-
-                        emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
-
-                        qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
                     }
-
                     counter2--;
-
                 }
-
                 break;
             }
-
             counter--;
         }
     }
