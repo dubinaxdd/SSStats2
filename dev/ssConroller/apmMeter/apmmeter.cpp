@@ -8,16 +8,15 @@ APMMeter::APMMeter(QObject *parent) : QObject(parent)
 {
     m_measureTickTimer = new QTimer(this);
     QObject::connect(m_measureTickTimer, &QTimer::timeout, this, &APMMeter::calculateAPM, Qt::QueuedConnection);
-
 }
 
-void APMMeter::onKeyPressEvent(QKeyEvent *event)
+void APMMeter::onKeyPressEvent()
 {
     if (m_isStarted)
         ++m_currentTickKeysActionsCount;
 }
 
-void APMMeter::onMousePressEvent(QPoint mousePosition)
+void APMMeter::onMousePressEvent()
 {
     if (m_isStarted)
         ++m_currentTickMouseActionsCount;

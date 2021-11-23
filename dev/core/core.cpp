@@ -291,14 +291,12 @@ void Core::onKeyEvent(QKeyEvent *event)
     if(uiBackend()->getShowClient()){
         if (event->type() == QEvent::KeyPress && m_keyboardProcessor)
         {
-            QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
-            m_keyboardProcessor->keyPressEvent(keyEvent);
-            m_ssController->apmMeter()->onKeyPressEvent(keyEvent);
-            delete keyEvent;
+            m_keyboardProcessor->keyPressEvent(event);
+            m_ssController->apmMeter()->onKeyPressEvent();
         }
     }
-    else
-        delete event;
+
+    delete event;
 
 }
 
@@ -307,20 +305,16 @@ void Core::onMouseEvent(QMouseEvent *event)
     if(uiBackend()->getShowClient()){
         if (event->type() == QEvent::MouseButtonPress)
         {
-            QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
-            m_uiBackend->mousePressEvent(mouseEvent->pos());
-            m_ssController->apmMeter()->onMousePressEvent(mouseEvent->pos());
-            delete mouseEvent;
+            m_uiBackend->mousePressEvent(event->pos());
+            m_ssController->apmMeter()->onMousePressEvent();
         }
         else if (event->type() == QEvent::MouseMove)
         {
-            QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
-            m_uiBackend->mouseMoveEvent(mouseEvent->pos()); 
-            delete mouseEvent;
+            m_uiBackend->mouseMoveEvent(event->pos());
         }
     }
-    else
-        delete event;
+
+    delete event;
 
 }
 

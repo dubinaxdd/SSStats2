@@ -126,19 +126,27 @@ bool HookManager::inputBlock()
     return m_inputBlock;
 }
 
+void HookManager::onInputBlockStateChanged(bool state)
+{
+    m_inputBlock = state;
+}
+
+
 void HookManager::reconnectHook()
 {
     UnhookWindowsHookEx(mouseHook);
     UnhookWindowsHookEx(keyboardHook);
 
-    mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+    mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
     //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
     /*if (mouseHook == NULL)
         qDebug() << "INFO: MouseHook failed";
     else
         qDebug() << "INFO: MouseHook accepted";*/
 
-    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
+    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
+    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
     //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
    /* if (keyboardHook == NULL)
         qDebug() << "INFO: KeyboardHook failed";
@@ -146,23 +154,21 @@ void HookManager::reconnectHook()
         qDebug() << "INFO: KeyboardHook accepted";*/
 }
 
-void HookManager::onInputBlockStateChanged(bool state)
-{
-    m_inputBlock = state;
-}
 
 HookManager::HookManager()
 {
     m_inputBlock = false;
 
-    mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+    mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
     //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
     /*if (mouseHook == NULL)
         qDebug() << "INFO: MouseHook failed";
     else
         qDebug() << "INFO: MouseHook accepted";*/
 
-    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
+    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
+    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
     //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
    /* if (keyboardHook == NULL)
         qDebug() << "INFO: KeyboardHook failed";

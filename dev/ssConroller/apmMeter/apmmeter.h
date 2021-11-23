@@ -17,8 +17,8 @@ public:
     explicit APMMeter(QObject *parent = nullptr);
 
 public slots:
-    void onKeyPressEvent (QKeyEvent *event);
-    void onMousePressEvent (QPoint mousePosition);
+    void onKeyPressEvent();
+    void onMousePressEvent();
 
     void onGameStarted(SsGameState gameCurrentState);
     void onGameStopped();
