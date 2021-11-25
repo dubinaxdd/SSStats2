@@ -56,8 +56,8 @@ void GameInfoReader::readGameInfo()
                 break;
             }
 
-
-            if(line.contains("MOD -- Game Over at frame"))
+            ///Проверка на достижение условия победы
+            if(line.contains("MOD -- Game Over at frame")||line.contains("storing simulation results for match"))
             {
                 if (m_gameCurrentState != SsGameState::gameOver)
                 {
