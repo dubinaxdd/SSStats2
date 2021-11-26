@@ -69,7 +69,7 @@ signals:
     void showGamePanelPresetChanged(bool);
 
 public slots:
-    void onApmChanged(quint16 capm, quint16 aapm);
+    void onApmChanged(int capm, int aapm);
     void onGameStopped();
     void onGameStarted(SsGameState gameCurrentState);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);

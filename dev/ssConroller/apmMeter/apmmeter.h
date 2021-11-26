@@ -24,7 +24,7 @@ public slots:
     void onGameStopped();
 
 signals:
-    void apmCalculated(quint16 capm, quint16 aapm);
+    void apmCalculated(int capm, int aapm);
 
     void sendAverrageApm(int apm);
 
@@ -35,12 +35,12 @@ private:
     bool m_isStarted = false;
 
     QDateTime m_startTime;
-    quint8	m_currentTickMouseActionsCount = 0;
-    quint8	m_currentTickKeysActionsCount = 0;
-    quint64	m_fullActionsCount = 0;
-    quint64	m_tickActionsCount = 0;
+    double	m_currentTickMouseActionsCount = 0;
+    double	m_currentTickKeysActionsCount = 0;
+    double	m_fullActionsCount = 0;
+    double	m_tickActionsCount = 0;
     int m_lastAverrageApm = 0;
-    QVector<quint8> m_ticksActionsArray;
+    QVector<int> m_ticksActionsArray;
     QTimer *m_measureTickTimer;
 };
 

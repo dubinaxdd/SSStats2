@@ -55,7 +55,7 @@ void APMMeter::onGameStopped()
 
 void APMMeter::calculateAPM()
 {
-    quint8 jointTickActionsCount = m_currentTickMouseActionsCount + m_currentTickKeysActionsCount;
+    int jointTickActionsCount = m_currentTickMouseActionsCount + m_currentTickKeysActionsCount;
 
     m_currentTickMouseActionsCount = 0;
     m_currentTickKeysActionsCount = 0;
@@ -67,22 +67,22 @@ void APMMeter::calculateAPM()
     if (m_ticksActionsArray.size() > TICKS_FOR_ANALYSE)
         m_ticksActionsArray.removeFirst();
 
-    quint64 actionsSum = 0;
+    double actionsSum = 0;
 
     for(int i = 0; i < m_ticksActionsArray.size(); i++)
         actionsSum += m_ticksActionsArray.at(i);
 
-    float currentAnalyseDuration = m_ticksActionsArray.size() * MEASURE_TICK_INTERVAL;
+    double currentAnalyseDuration = m_ticksActionsArray.size() * MEASURE_TICK_INTERVAL;
 
-    quint16 currentApm = actionsSum  / currentAnalyseDuration * 60.0 * 1000.0;
+    double currentApm = actionsSum  / currentAnalyseDuration * 1000.0 * 60.0;
 
     double fullAnalyseDuration = m_startTime.msecsTo(QDateTime::currentDateTime());
 
     if (fullAnalyseDuration == 0)
         return;
 
-    quint16 averageApm = m_fullActionsCount / fullAnalyseDuration * 60.0 * 1000.0;
+    double averageApm = m_fullActionsCount / fullAnalyseDuration * 1000.0  * 60.0;
 
     m_lastAverrageApm = averageApm;
-    emit apmCalculated(currentApm, averageApm);
+    emit apmCalculated(static_cast<int>(currentApm), static_cast<int>(averageApm));
 }

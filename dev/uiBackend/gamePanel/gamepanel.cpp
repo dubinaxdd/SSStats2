@@ -47,7 +47,7 @@ void GamePanel::gameLeaveTimerTimeout()
 
 }
 
-void GamePanel::onApmChanged(quint16 capm, quint16 aapm)
+void GamePanel::onApmChanged(int capm, int aapm)
 {
     m_currentApm = QString::number(capm);
     m_averageApm = QString::number(aapm);
