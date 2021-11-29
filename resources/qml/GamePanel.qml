@@ -39,10 +39,10 @@ Rectangle {
         }
 
         // Кнопка "Развернуть панель с рассами игроков"
-        if (relativeMouseX >= expandPlayerRacesButton.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandPlayerRacesButton.x + gamePanelRectangle.x + expandPlayerRacesButton.width &&
-                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 &&
-                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 + expandPlayerRacesButton.height)
+        if (relativeMouseX >= expandPlayerRacesButton.x  + gamePanelRectangle.x &&
+                relativeMouseX <= expandPlayerRacesButton.x  + gamePanelRectangle.x + expandPlayerRacesButton.width &&
+                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y &&
+                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y + expandPlayerRacesButton.height)
         {
 
             if(_uiBackend.gamePanel.gamePanelVisible)
@@ -77,10 +77,10 @@ Rectangle {
 
 
         // Кнопка "Развернуть панель с рассами игроков"
-        if (relativeMouseX >= expandPlayerRacesButton.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandPlayerRacesButton.x + gamePanelRectangle.x + expandPlayerRacesButton.width &&
-                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 &&
-                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y  + rectangle1.height + 5 + expandPlayerRacesButton.height)
+        if (relativeMouseX >= expandPlayerRacesButton.x  + gamePanelRectangle.x &&
+                relativeMouseX <= expandPlayerRacesButton.x  + gamePanelRectangle.x + expandPlayerRacesButton.width &&
+                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y &&
+                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y + expandPlayerRacesButton.height)
         {
 
             if(!expandPlayerRacesButton.howeredState)
@@ -134,6 +134,58 @@ Rectangle {
                     id: rowLayout
                     anchors.fill: parent
                     spacing: 0
+
+                    Rectangle {
+                        id: expandButtonRectangle
+
+                        property bool howeredState: false
+
+                        property Gradient grLight: Gradient {
+                            GradientStop {
+                                position: 0
+                                color: "#428bca"
+                            }
+
+                            GradientStop {
+                                position: 1
+                                color: "#265a88"
+                            }
+
+
+                        }
+
+                        property Gradient grDark: Gradient {
+                            GradientStop {
+                                position: 0
+                                color: "#337ab7"
+                            }
+
+                            GradientStop {
+                                position: 1
+                                color: "#245580"
+
+                            }
+                        }
+
+
+                        width: 200
+                        height: 200
+                        color: "#ffffff"
+                        Layout.topMargin: 0
+                        Layout.maximumHeight: 40
+                        Layout.maximumWidth: 40
+                        Layout.fillWidth: false
+                        Layout.fillHeight: true
+
+                        gradient: howeredState ? grDark : grLight
+
+                        BorderImage {
+                            id: borderImage
+                            anchors.fill: parent
+                            source: _uiBackend.expand ? "qrc:/images/resources/images/hide.png" : "qrc:/images/resources/images/expand.png"
+                        }
+                    }
+
 
                     Rectangle {
                         id: rectangle3
@@ -242,7 +294,7 @@ Rectangle {
                     }
 
                     Rectangle {
-                        id: expandButtonRectangle
+                        id: expandPlayerRacesButton
 
                         property bool howeredState: false
 
@@ -256,8 +308,6 @@ Rectangle {
                                 position: 1
                                 color: "#265a88"
                             }
-
-
                         }
 
                         property Gradient grDark: Gradient {
@@ -272,23 +322,27 @@ Rectangle {
 
                             }
                         }
-
-
-                        width: 200
-                        height: 200
-                        color: "#ffffff"
-                        Layout.topMargin: 0
+                        height: 10
+                        radius: 0
+                        border.width: 0
                         Layout.maximumHeight: 40
+                        Layout.minimumHeight: 40
                         Layout.maximumWidth: 40
-                        Layout.fillWidth: false
+                        Layout.minimumWidth: 40
+                        //text: qsTr("***")
+                        Layout.fillWidth: true
                         Layout.fillHeight: true
+                        visible: !_uiBackend.expand
+                        color: "#000000"
+
 
                         gradient: howeredState ? grDark : grLight
 
-                        BorderImage {
-                            id: borderImage
+                        Image {
+                            id: imagebutton
                             anchors.fill: parent
-                            source: _uiBackend.expand ? "qrc:/images/resources/images/hide.png" : "qrc:/images/resources/images/expand.png"
+                            source: "qrc:/images/resources/images/expandDots.png"
+                            fillMode: Image.PreserveAspectFit
                         }
                     }
                 }
@@ -512,7 +566,7 @@ Rectangle {
                                 visible: model.racePanelVisible;
                             }
 
-                            Rectangle {
+                           /* Rectangle {
                                 id: expandPlayerRacesButton
 
                                 property bool howeredState: false
@@ -565,7 +619,7 @@ Rectangle {
                                     anchors.horizontalCenter: parent.horizontalCenter
                                     fillMode: Image.PreserveAspectFit
                                 }
-                            }
+                            }*/
 
                             Rectangle {
                                 id: rectangle2
