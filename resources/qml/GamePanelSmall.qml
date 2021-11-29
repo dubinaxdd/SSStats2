@@ -6,7 +6,7 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
-    visible: model.gamePanelVisible && model.smallPannelActive && model.showGamePannelPreset
+    visible: model.smallPannelActive && model.showGamePannelPreset
 
     property var model
 
@@ -86,6 +86,8 @@ Rectangle {
                 Layout.maximumHeight: 40
                 Layout.fillHeight: false
                 Layout.fillWidth: true
+
+                visible: model.gamePanelVisible
 
                 gradient: Gradient {
                     GradientStop {

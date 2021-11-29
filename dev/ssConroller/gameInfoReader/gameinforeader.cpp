@@ -1,4 +1,5 @@
 #define GAME_INFO_READER_TIMER_INTERVAL 1000
+#define RACES_READ_TIMER_INTERVAL 2000
 
 #include "gameinforeader.h"
 #include <QFile>
@@ -11,6 +12,12 @@ GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
     , m_ssPath(sspath)
 
 {
+
+    m_readRacesSingleShootTimer = new QTimer();
+    m_readRacesSingleShootTimer->setSingleShot(true);
+    m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
+    QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &GameInfoReader::readRacesTimerTimeout, Qt::QueuedConnection );
+
     m_gameInfoReadTimer = new QTimer();
     m_gameInfoReadTimer->setInterval(GAME_INFO_READER_TIMER_INTERVAL);
     QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &GameInfoReader::readGameInfo, Qt::QueuedConnection );
@@ -64,6 +71,7 @@ void GameInfoReader::readGameInfo()
                     m_gameCurrentState = SsGameState::gameOver;
                     checkGameInitialize();
                     emit startingMission(m_gameCurrentState);
+                    readRacesTimerTimeout();
                     emit gameOver();
                 }
                 break;
@@ -151,7 +159,6 @@ void GameInfoReader::readGameInfo()
 
                             winConditionsReadCounter--;
                         }
-
                         qInfo(logInfo()) << "Starting game mission";
                     }
                     else if (m_gameCurrentState == SsGameState::playbackLoadStarted)
@@ -166,6 +173,7 @@ void GameInfoReader::readGameInfo()
                     }
 
                     checkGameInitialize();
+                    m_readRacesSingleShootTimer->start();
                     emit startingMission(m_gameCurrentState);
 
                 }
@@ -179,6 +187,7 @@ void GameInfoReader::readGameInfo()
                     qInfo(logInfo()) << "Starting unknown mission";
 
                     checkGameInitialize();
+                    m_readRacesSingleShootTimer->start();
                     emit startingMission(m_gameCurrentState);
                 }
 
@@ -203,6 +212,7 @@ void GameInfoReader::readGameInfo()
                         {
                             m_gameCurrentState = SsGameState::playbackLoadStarted;
                             checkGameInitialize();
+                            m_readRacesSingleShootTimer->start();
                             emit loadStarted(m_gameCurrentState);
                             qInfo(logInfo()) << "Playback load started";
                         }
@@ -216,6 +226,7 @@ void GameInfoReader::readGameInfo()
                         {
                             m_gameCurrentState = SsGameState::savedGameLoadStarted;
                             checkGameInitialize();
+                            m_readRacesSingleShootTimer->start();
                             emit loadStarted(m_gameCurrentState);
                             qInfo(logInfo()) << "Saved game load started";
                         }
@@ -231,6 +242,7 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
+                    m_readRacesSingleShootTimer->start();
                     emit loadStarted(m_gameCurrentState);
                     qInfo(logInfo()) << "Game load started";
                 }
@@ -589,6 +601,93 @@ void GameInfoReader::readGameParametresAfterStop()
     qInfo(logInfo()) << "Players history cleared";
 
     qInfo(logInfo()) << "Readed played game settings";
+}
+
+void GameInfoReader::readRacesTimerTimeout()
+{
+    QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
+    qInfo(logInfo()) << "teststats.lua path: " << statsPath;
+
+    QFile file(statsPath);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+    if(!file.isReadable())
+        return;
+
+    // в начале файла лежат байты из-за этого корневой ключ может не читаться
+    int k=0;
+    while(file.read(1)!="G")
+        k++;
+    file.seek(k);
+
+    //QByteArray testStats = file.readAll();
+
+    QTextStream textStream(&file);
+    QStringList fileLines = textStream.readAll().split("\r");
+
+    file.close();
+
+    QStringList playerNames;
+    QStringList playerRaces;
+    QStringList playerTeam;
+
+    for(int i = 0; i < fileLines.size(); i++ )
+    {
+        if (fileLines[i].contains("PName")){
+
+            QString name = fileLines[i].right(fileLines[i].length() - 12);
+            name = name.left(name.length() - 2);
+            playerNames.append(name);
+        }
+
+        if (fileLines[i].contains("PRace")){
+
+            QString race = fileLines[i].right(fileLines[i].length() - 12);
+            race = race.left(race.length() - 2);
+            playerRaces.append(race);
+        }
+
+
+        if (fileLines[i].contains("PTeam")){
+
+            QString team = fileLines[i].right(fileLines[i].length() - 11);
+            team = team.left(team.length() - 1);
+            playerTeam.append(team);
+        }
+    }
+
+    QVector<PlayerStats> playerStats;
+
+    playerStats.resize(8);
+
+    for(int i = 0; i < playerNames.count(); i++ )
+    {
+        playerStats[i].name = playerNames.at(i).toLocal8Bit();
+        qInfo(logInfo()) << "Player from test stats" << playerStats[i].name;
+    }
+
+    for(int i = 0; i < playerRaces.count(); i++ )
+        playerStats[i].race = playerRaces.at(i);
+
+    for(int i = 0; i < playerTeam.count(); i++ )
+        playerStats[i].team = playerTeam.at(i);
+
+    //Сортировка игроков по команде
+    for(int i = 0; i < playerStats.count(); i++)
+    {
+        for(int j = 0; j < playerStats.count() - 1; j++)
+        {
+            if(playerStats[j].team > playerStats[j + 1].team)
+            {
+                auto buffer = playerStats[j];
+                playerStats[j] = playerStats[j + 1];
+                playerStats[j + 1] = buffer;
+            }
+        }
+    }
+
+    emit sendPlayersTestStats(playerStats);
 }
 
 void GameInfoReader::receiveAverrageApm(int apm)

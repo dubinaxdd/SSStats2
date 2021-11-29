@@ -23,6 +23,7 @@ public:
 private slots:
     void readGameInfo();
     void readGameParametresAfterStop();
+    void readRacesTimerTimeout();
 
 public slots:
     void receiveAverrageApm(int apm);
@@ -40,7 +41,7 @@ signals:
     void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
     void ssShutdown();                                      //Сигнал о выключении игры
 
-
+    void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
 private:
@@ -49,6 +50,8 @@ private:
 
 private:
     QTimer* m_gameInfoReadTimer;
+    QTimer* m_readRacesSingleShootTimer;
+
     QString m_ssPath;
     QString m_currentProfile;
     QString m_currentMode;

@@ -95,7 +95,7 @@ private:
     QVector<PlayerStats> m_testStats;
 
     int m_gameLeaveTimeLeft = 0;
-    bool m_gameLeaveTimerVisible = true;
+    bool m_gameLeaveTimerVisible = false;
 
     bool m_smallPannelActive;
     bool m_showGamePannelPreset;

@@ -11,13 +11,14 @@
 #define WINDOW_STATE_CHECK_INTERVAL 1000
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
-
 SsController::SsController(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
     , m_settingsController(settingsController)
     , m_memoryController(new MemoryController(settingsController, this))
     , m_apmMeter(new APMMeter(this))
 {
+
+
     m_ssPath = getSsPathFromRegistry();
     qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
     m_gameInfoReader = new GameInfoReader(m_ssPath, this);
@@ -31,7 +32,7 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
-    QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
+    //QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
     //QObject::connect(m_gameInfoReader, &GameInfoReader::loadStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
@@ -196,7 +197,7 @@ void SsController::ssShutdown()
     m_lobbyEventReader->activateReading(false);
 }
 
-void SsController::readTestStats()
+/*void SsController::readTestStats()
 {
     QString statsPath = m_ssPath + "\\Profiles\\" + currentProfile + "\\teststats.lua";
     qInfo(logInfo()) << "teststats.lua path: " << statsPath;
@@ -282,7 +283,7 @@ void SsController::readTestStats()
 
     emit sendPlayersTestStats(playerStats);
 
-}
+}*/
 
 void SsController::receivePlayrStemids(QMap<QString, QString> infoMap)
 {

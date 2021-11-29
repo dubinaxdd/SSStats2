@@ -6,7 +6,7 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
-    visible: model.gamePanelVisible && !model.smallPannelActive && model.showGamePannelPreset
+    visible: !model.smallPannelActive && model.showGamePannelPreset
 
     property var model
 
@@ -110,6 +110,9 @@ Rectangle {
 
             Rectangle {
                 id: rectangle1
+
+                visible: model.gamePanelVisible
+
                 width: 200
                 height: 200
                 //color: "#333333"
@@ -166,7 +169,6 @@ Rectangle {
 
                             }
                         }
-
 
                         width: 200
                         height: 200

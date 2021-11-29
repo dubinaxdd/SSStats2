@@ -54,14 +54,14 @@ private slots:
     void checkWindowState();
     void gameInitialized();
     void ssShutdown();
-    void readTestStats();
+    //void readTestStats();
 
     void receivePlayrStemids(QMap<QString, QString> infoMap);
 
 signals:
     void ssLaunchStateChanged(bool lounched);
     void ssMaximized(bool maximized);
-    void sendPlayersTestStats(QVector<PlayerStats> testStats);
+    //void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void inputBlockStateChanged(bool);
 
 private:

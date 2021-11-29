@@ -95,23 +95,21 @@ void GamePanel::onGameStarted(SsGameState gameCurrentState)
         return;
     }
 
+    m_gamePanelVisisble = true;
+    emit gamePanelVisibleChanged(m_gamePanelVisisble);
+
     m_gameLeaveTimeLeft = 30;
     emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
     m_gameLeaveTimer->start();
     m_gameLeaveTimerVisible = true;
+    m_racePanelVisibleTimer->start();
     emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
 }
 
 
 void GamePanel::receivePlayersTestStats(QVector<PlayerStats> testStats)
 {
-    m_racePanelVisibleTimer->start();
-
     m_testStats = testStats;
-
-    m_gamePanelVisisble = true;
-    emit gamePanelVisibleChanged(m_gamePanelVisisble);
-
     m_racePanelVisisble = true;
     emit racePanelVisibleChanged(m_racePanelVisisble);
 
