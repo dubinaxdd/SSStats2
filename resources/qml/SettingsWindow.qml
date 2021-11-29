@@ -148,7 +148,7 @@ Rectangle {
             property bool hoverState : false
             property bool checkedState : _uiBackend.gamePanel.showGamePannelPreset
 
-            text: qsTr("APM panel visisble in game")
+            text: qsTr("APM panel visible in game")
             font.pointSize: 10
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
