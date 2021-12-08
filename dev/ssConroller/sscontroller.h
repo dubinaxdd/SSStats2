@@ -69,7 +69,6 @@ private slots:
 signals:
     void ssLaunchStateChanged(bool lounched);
     void ssMaximized(bool maximized);
-    //void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void inputBlockStateChanged(bool);
 
 private:
@@ -115,6 +114,8 @@ private:
     QProcess *m_soulstormProcess;
     bool useWindows7SupportMode = false;
 
+    int m_ssWindowWidth = 0;
+    int m_ssWindowHeight = 0;
 
 };
 

@@ -301,10 +301,18 @@ void SsController::parseSsSettings()
 void SsController::launchSoulstorm()
 {
 
+    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+    m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
+    m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
+
+    ssSettings->setValue("global/screenwindowed", 1);
+
+    delete ssSettings;
+
     if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
     {
         m_soulstormProcess = new QProcess(this);
-        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {""}/*{"-window"}*/);
+        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {""});
         useWindows7SupportMode = true;
     }
 }
@@ -314,7 +322,7 @@ void SsController::fullscrenizeSoulstorm()
     if(m_soulstormHwnd)
     {
         SetWindowLongW(m_soulstormHwnd, GWL_STYLE , /*GetWindowLong(m_soulstormHwnd, GWL_STYLE) |*/ WS_OVERLAPPED /*|  WS_POPUP*/ /*| WS_VISIBLE*/ );
-        SetWindowPos(m_soulstormHwnd,0,0,0,1921, 1081, SWP_SHOWWINDOW);
+        SetWindowPos(m_soulstormHwnd,0,0,0,m_ssWindowWidth + 1, m_ssWindowHeight + 1, SWP_SHOWWINDOW);
         ShowWindow(m_soulstormHwnd, SW_SHOWNORMAL);
 
         m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
