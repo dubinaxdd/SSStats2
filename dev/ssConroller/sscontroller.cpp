@@ -348,6 +348,9 @@ void SsController::fullscrenizeSoulstorm()
 
 void SsController::minimizeSoulstorm()
 {
+    if (!useWindows7SupportMode)
+        return;
+
     ChangeDisplaySettings(0, 0);
 
     ShowWindow(m_soulstormHwnd, SW_MINIMIZE);
