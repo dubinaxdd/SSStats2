@@ -93,22 +93,20 @@ void Core::topmostTimerTimout()
                 RECT ssRect;
                 if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
                 {
-                    if (!m_ssController->getUseWindows7SupportMode())
+
+                    if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                     {
-                        if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
-                        {
-                            m_ssRect = ssRect;
-                            SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+                        m_ssRect = ssRect;
+                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
-                            m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
-                        }
-
-
-                        LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
-                        SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
-
-                        m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
+                        m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                     }
+
+
+                    LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
+                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+
+                    m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
                 }
             }
             else
@@ -134,8 +132,6 @@ void Core::topmostTimerTimout()
 
 void Core::ssMaximized(bool maximized)
 {
-    //HookManager::instance()->reconnectHook();
-
     if (maximized)
     {
         int width =  GetSystemMetrics(SM_CXSCREEN);
@@ -152,8 +148,6 @@ void Core::ssMaximized(bool maximized)
             if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
             {
                 m_ssRect = ssRect;
-
-                //MoveWindow(m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, true);
                 SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
                 m_uiBackend->setWindowTopmost(true);
             }
@@ -167,10 +161,6 @@ void Core::ssMaximized(bool maximized)
             {
                 if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                 {
-
-                    if (!m_ssController->getUseWindows7SupportMode())
-                    {
-
                         m_ssRect = ssRect;
                         SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
@@ -178,9 +168,6 @@ void Core::ssMaximized(bool maximized)
                         SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
 
                         m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
-                    }
-
-
                 }
             }
             m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
@@ -191,11 +178,7 @@ void Core::ssMaximized(bool maximized)
     else
     {
         m_topmostTimer->stop();
-        if (!m_ssController->getUseWindows7SupportMode())
-        {
-            SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0,0,0,0,/*m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top,*/ m_defaultWindowLong );
-        }
-
+        SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0,0,0,0, m_defaultWindowLong );
         m_uiBackend->setWindowTopmost(false);
     }
 
