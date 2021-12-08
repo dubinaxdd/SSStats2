@@ -89,6 +89,11 @@ void UiBackend::onExit()
     sendExit();
 }
 
+void UiBackend::onLaunchSoulstormWithSupportMode()
+{
+    emit sendLaunchSoulstormWithSupportMode();
+}
+
 void UiBackend::onSettingsLoaded()
 {
     m_noFogState = m_settingsController->getSettings()->noFog;

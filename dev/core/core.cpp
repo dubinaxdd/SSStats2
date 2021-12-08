@@ -68,6 +68,8 @@ Core::Core(QQmlContext *context, QObject* parent)
    // QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController, &SsController::launchSoulstormWithSupportMode, Qt::QueuedConnection);
+
 
     m_settingsController->initializeSettings();
 }

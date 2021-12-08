@@ -88,6 +88,7 @@ signals:
     void statisticPanelInitialized();
     void statsHeaderInitialized();
     void sendExit();
+    void sendLaunchSoulstormWithSupportMode();
     void noFogStateChanged(bool);
 
 public slots:
@@ -104,6 +105,7 @@ public slots:
     void onGameOver();
 
     Q_INVOKABLE void onExit();
+    Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
 
 private slots:
     void onSettingsLoaded();

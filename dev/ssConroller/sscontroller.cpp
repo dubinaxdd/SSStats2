@@ -8,6 +8,8 @@
 #include <QJsonObject>
 #include <QStringList>
 
+#define SS_FULLSCREENIZE_TIMER_INTERVAL 2000
+
 #define WINDOW_STATE_CHECK_INTERVAL 1000
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
@@ -16,6 +18,7 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     , m_settingsController(settingsController)
     , m_memoryController(new MemoryController(settingsController, this))
     , m_apmMeter(new APMMeter(this))
+    , m_soulstormProcess(nullptr)
 {
 
 
@@ -97,6 +100,11 @@ void SsController::blockInput(bool state)
     }
 }
 
+void SsController::launchSoulstormWithSupportMode()
+{
+    launchSoulstorm();
+}
+
 void SsController::checkWindowState()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
@@ -107,6 +115,15 @@ void SsController::checkWindowState()
 
     m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
     m_gameInfoReader->setGameLounched(m_soulstormHwnd);
+
+    if (m_soulstormHwnd && !m_ssWindowCreated)
+    {
+        m_ssWindowCreated = true;
+
+        if (useWindows7SupportMode)
+            fullscrenizeSoulstorm();
+    }
+
 
     if(m_gameInitialized != m_gameInfoReader->getGameInitialized())
         m_gameInitialized = m_gameInfoReader->getGameInitialized();
@@ -121,10 +138,13 @@ void SsController::checkWindowState()
          if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
          {
              m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
-             m_defaultSoulstormWindowLong = GetWindowLongPtr(m_soulstormHwnd, GWL_EXSTYLE);
+
+             m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
              parseSsSettings();                                  ///<Считываем настройки соулсторма
              emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
              qInfo(logInfo()) << "Soulstorm window opened";
+
+
 
              if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
              {
@@ -166,9 +186,11 @@ void SsController::checkWindowState()
          if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
          {
              m_statsCollector->setCurrentPlayerAccepted(false);
+             useWindows7SupportMode = false;
              m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
              m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
              m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
+             m_ssWindowCreated = false;
              m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
              m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
              emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
@@ -196,94 +218,6 @@ void SsController::ssShutdown()
 {
     m_lobbyEventReader->activateReading(false);
 }
-
-/*void SsController::readTestStats()
-{
-    QString statsPath = m_ssPath + "\\Profiles\\" + currentProfile + "\\teststats.lua";
-    qInfo(logInfo()) << "teststats.lua path: " << statsPath;
-
-    QFile file(statsPath);
-
-    if(!file.open(QIODevice::ReadOnly))
-        return;
-    if(!file.isReadable())
-        return;
-
-    // в начале файла лежат байты из-за этого корневой ключ может не читаться
-    int k=0;
-    while(file.read(1)!="G")
-        k++;
-    file.seek(k);
-
-    //QByteArray testStats = file.readAll();
-
-    QTextStream textStream(&file);
-    QStringList fileLines = textStream.readAll().split("\r");
-
-    file.close();
-
-    QStringList playerNames;
-    QStringList playerRaces;
-    QStringList playerTeam;
-
-    for(int i = 0; i < fileLines.size(); i++ )
-    {
-        if (fileLines[i].contains("PName")){
-
-            QString name = fileLines[i].right(fileLines[i].length() - 12);
-            name = name.left(name.length() - 2);
-            playerNames.append(name);
-        }
-
-        if (fileLines[i].contains("PRace")){
-
-            QString race = fileLines[i].right(fileLines[i].length() - 12);
-            race = race.left(race.length() - 2);
-            playerRaces.append(race);
-        }
-
-
-        if (fileLines[i].contains("PTeam")){
-
-            QString team = fileLines[i].right(fileLines[i].length() - 11);
-            team = team.left(team.length() - 1);
-            playerTeam.append(team);
-        }
-    }
-
-    QVector<PlayerStats> playerStats;
-
-    playerStats.resize(8);
-
-    for(int i = 0; i < playerNames.count(); i++ )
-    {
-        playerStats[i].name = playerNames.at(i).toLocal8Bit();
-        qInfo(logInfo()) << "Player from test stats" << playerStats[i].name;
-    }
-
-    for(int i = 0; i < playerRaces.count(); i++ )
-        playerStats[i].race = playerRaces.at(i);
-
-    for(int i = 0; i < playerTeam.count(); i++ )
-        playerStats[i].team = playerTeam.at(i);
-
-    //Сортировка игроков по команде
-    for(int i = 0; i < playerStats.count(); i++)
-    {
-        for(int j = 0; j < playerStats.count() - 1; j++)
-        {
-            if(playerStats[j].team > playerStats[j + 1].team)
-            {
-                auto buffer = playerStats[j];
-                playerStats[j] = playerStats[j + 1];
-                playerStats[j + 1] = buffer;
-            }
-        }
-    }
-
-    emit sendPlayersTestStats(playerStats);
-
-}*/
 
 void SsController::receivePlayrStemids(QMap<QString, QString> infoMap)
 {
@@ -342,6 +276,35 @@ void SsController::parseSsSettings()
     qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
 
     delete ssSettings;
+}
+
+void SsController::launchSoulstorm()
+{
+
+    if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
+    {
+        m_soulstormProcess = new QProcess(this);
+        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {""}/*{"-window"}*/);
+        useWindows7SupportMode = true;
+    }
+}
+
+void SsController::fullscrenizeSoulstorm()
+{
+    if(m_soulstormHwnd)
+    {
+        //SetWindowLongW(m_soulstormHwnd, GWL_EXSTYLE , ~WS_EX_WINDOWEDGE);
+        //SetWindowLongW(m_soulstormHwnd, GWL_EXSTYLE , WS_EX_APPWINDOW);
+        SetWindowLongW(m_soulstormHwnd, GWL_STYLE , WS_POPUP /*| WS_VISIBLE*/ );
+        SetWindowPos(m_soulstormHwnd,0,0,0,800,600, SWP_NOSIZE | SWP_SHOWWINDOW);
+
+        m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
+    }
+}
+
+bool SsController::getUseWindows7SupportMode() const
+{
+    return useWindows7SupportMode;
 }
 
 LobbyEventReader *SsController::lobbyEventReader() const

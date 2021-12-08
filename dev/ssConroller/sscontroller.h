@@ -16,6 +16,7 @@
 #include "../core/logger/logger.h"
 #include "../core/settingsController/settingscontroller.h"
 #include "lobbyEventReader/lobbyeventreader.h"
+#include <QProcess>
 
 class SsController : public QObject
 {
@@ -47,8 +48,11 @@ public:
 
     LobbyEventReader *lobbyEventReader() const;
 
+    bool getUseWindows7SupportMode() const;
+
 public slots:
     void blockInput(bool state);
+    void launchSoulstormWithSupportMode();
 
 private slots:
     void checkWindowState();
@@ -57,6 +61,7 @@ private slots:
     //void readTestStats();
 
     void receivePlayrStemids(QMap<QString, QString> infoMap);
+    void fullscrenizeSoulstorm();
 
 signals:
     void ssLaunchStateChanged(bool lounched);
@@ -68,6 +73,8 @@ private:
     QString getSsPathFromRegistry();
     QString getSteamPathFromRegistry();
     void parseSsSettings();
+    void launchSoulstorm();
+
 
 
 private:
@@ -87,6 +94,7 @@ private:
     bool m_ssWindowed = false;
 
     bool m_gameInitialized;
+    bool m_ssWindowCreated = false;
 
     GameInfoReader* m_gameInfoReader;
     LobbyEventReader* m_lobbyEventReader;
@@ -100,6 +108,9 @@ private:
     StatsCollector* m_statsCollector;
     MemoryController* m_memoryController;
     SettingsController* m_settingsController;
+
+    QProcess *m_soulstormProcess;
+    bool useWindows7SupportMode = false;
 
 
 };
