@@ -211,6 +211,7 @@ void SsController::checkWindowState()
              m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
              m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
              m_ssWindowCreated = false;
+             ChangeDisplaySettings(0, 0);
              m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
              m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
              emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
@@ -321,6 +322,16 @@ void SsController::fullscrenizeSoulstorm()
 {
     if(m_soulstormHwnd)
     {
+        DEVMODE deviceMode;
+
+        deviceMode.dmSize = sizeof(deviceMode);
+        deviceMode.dmPelsWidth = m_ssWindowWidth;
+        deviceMode.dmPelsHeight = m_ssWindowHeight;
+        deviceMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
+
+        ChangeDisplaySettings(&deviceMode, CDS_FULLSCREEN);
+
+
         SetWindowLongW(m_soulstormHwnd, GWL_STYLE , /*GetWindowLong(m_soulstormHwnd, GWL_STYLE) |*/ WS_OVERLAPPED /*|  WS_POPUP*/ /*| WS_VISIBLE*/ );
         SetWindowPos(m_soulstormHwnd,0,0,0,m_ssWindowWidth + 1, m_ssWindowHeight + 1, SWP_SHOWWINDOW);
         ShowWindow(m_soulstormHwnd, SW_SHOWNORMAL);
@@ -337,6 +348,8 @@ void SsController::fullscrenizeSoulstorm()
 
 void SsController::minimizeSoulstorm()
 {
+    ChangeDisplaySettings(0, 0);
+
     ShowWindow(m_soulstormHwnd, SW_MINIMIZE);
     m_ssMaximized = false;
     emit ssMaximized(m_ssMaximized);
