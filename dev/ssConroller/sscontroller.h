@@ -53,6 +53,7 @@ public:
 public slots:
     void blockInput(bool state);
     void launchSoulstormWithSupportMode();
+    void minimizeSsWithWin7Support();
 
 private slots:
     void checkWindowState();
@@ -62,6 +63,8 @@ private slots:
 
     void receivePlayrStemids(QMap<QString, QString> infoMap);
     void fullscrenizeSoulstorm();
+    void minimizeSoulstorm();
+
 
 signals:
     void ssLaunchStateChanged(bool lounched);

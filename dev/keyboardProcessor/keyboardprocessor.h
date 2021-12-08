@@ -14,6 +14,7 @@ public:
 
 signals:
     void expandKeyPressed();
+    void altTabPressed();
 
 };
 

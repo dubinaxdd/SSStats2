@@ -105,6 +105,11 @@ void SsController::launchSoulstormWithSupportMode()
     launchSoulstorm();
 }
 
+void SsController::minimizeSsWithWin7Support()
+{
+    minimizeSoulstorm();
+}
+
 void SsController::checkWindowState()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
@@ -132,6 +137,7 @@ void SsController::checkWindowState()
          if (!m_gameInitialized)
              return;
     }
+
 
      if (m_soulstormHwnd && m_gameInitialized)              ///<Если игра запущена и инициализирована
      {
@@ -161,22 +167,48 @@ void SsController::checkWindowState()
          }
          else                                                ///<Если перед этим игра уже была запущена
          {
-             if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
+             if (useWindows7SupportMode)
              {
-                 if(m_ssMaximized)                                   ///<Если перед этим игра была развернута
+                 if (!IsIconic(m_soulstormHwnd))
                  {
-                     m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
-                     emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
-                     qInfo(logInfo()) << "Soulstorm minimized";
+                     if (!m_ssMaximized)
+                     {
+                        fullscrenizeSoulstorm();
+
+                        //emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
+                       // qInfo(logInfo()) << "Soulstorm fullscreen";
+                     }
+
+                 }
+                 else
+                 {
+                     if (m_ssMaximized)
+                     {
+                        m_ssMaximized = false;
+                        //emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
+                        //qInfo(logInfo()) << "Soulstorm fullscreen";
+                     }
                  }
              }
-             else                                                 ///<Если игра развернута
+             else
              {
-                 if(!m_ssMaximized)
+                 if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
                  {
-                     m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
-                     emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
-                     qInfo(logInfo()) << "Soulstorm fullscreen";
+                     if(m_ssMaximized)                                   ///<Если перед этим игра была развернута
+                     {
+                         m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
+                         emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+                         qInfo(logInfo()) << "Soulstorm minimized";
+                     }
+                 }
+                 else                                                 ///<Если игра развернута
+                 {
+                     if(!m_ssMaximized)
+                     {
+                         m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
+                         emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
+                         qInfo(logInfo()) << "Soulstorm fullscreen";
+                     }
                  }
              }
          }
@@ -293,13 +325,23 @@ void SsController::fullscrenizeSoulstorm()
 {
     if(m_soulstormHwnd)
     {
-        //SetWindowLongW(m_soulstormHwnd, GWL_EXSTYLE , ~WS_EX_WINDOWEDGE);
-        //SetWindowLongW(m_soulstormHwnd, GWL_EXSTYLE , WS_EX_APPWINDOW);
-        SetWindowLongW(m_soulstormHwnd, GWL_STYLE , WS_POPUP /*| WS_VISIBLE*/ );
-        SetWindowPos(m_soulstormHwnd,0,0,0,800,600, SWP_NOSIZE | SWP_SHOWWINDOW);
+        SetWindowLongW(m_soulstormHwnd, GWL_STYLE , GetWindowLong(m_soulstormHwnd, GWL_STYLE) | WS_OVERLAPPED /*|  WS_POPUP*/ /*| WS_VISIBLE*/ );
+        SetWindowPos(m_soulstormHwnd,0,0,0,3840, 2160, SWP_SHOWWINDOW);
+        ShowWindow(m_soulstormHwnd, SW_SHOWNORMAL);
+        //BringWindowToTop(m_soulstormHwnd);
 
         m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
+
+        m_ssMaximized = true;
+        //emit ssMaximized(m_ssMaximized);
     }
+}
+
+void SsController::minimizeSoulstorm()
+{
+    ShowWindow(m_soulstormHwnd, SW_MINIMIZE);
+    m_ssMaximized = false;
+    //emit ssMaximized(m_ssMaximized);
 }
 
 bool SsController::getUseWindows7SupportMode() const

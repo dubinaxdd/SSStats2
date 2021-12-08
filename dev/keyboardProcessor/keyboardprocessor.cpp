@@ -16,9 +16,13 @@ bool KeyboardProcessor::keyPressEvent(QKeyEvent event)
             emit expandKeyPressed();
             return true;
         }
-    }
-    //QObject::event(event);
 
+        if(event.key() == 9 && event.modifiers() == Qt::KeyboardModifier::AltModifier)
+        {
+            emit altTabPressed();
+            return true;
+        }
+    }
     return false;
 }
 

@@ -57,6 +57,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->playersSteamScanner(),  &PlayersSteamScanner::sendSteamPlayersInfoMap,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
+    QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_ssController, &SsController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection);
 
@@ -89,6 +90,8 @@ void Core::topmostTimerTimout()
         {
             if (m_ssController->ssWindowed())
             {
+
+
                 RECT ssRect;
                 if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
                 {
@@ -101,8 +104,24 @@ void Core::topmostTimerTimout()
                         m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                     }
 
-                    LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
-                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    if (m_ssController->getUseWindows7SupportMode())
+                    {
+
+                        LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
+                       // SetWindowPos(m_ssController->soulstormHwnd(), HWND_TOP, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                      //  SetWindowPos(m_ssStatsHwnd, HWND_TOP, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+
+                        //BringWindowToTop(m_ssController->soulstormHwnd());
+                       // BringWindowToTop(m_ssStatsHwnd);
+                        SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                        //SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+                        //BringWindowToTop(m_ssStatsHwnd);
+                    }
+                    else
+                    {
+                        LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
+                        SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    }
 
                     m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
                 }
