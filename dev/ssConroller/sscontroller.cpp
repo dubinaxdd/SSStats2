@@ -126,7 +126,9 @@ void SsController::checkWindowState()
         m_ssWindowCreated = true;
 
         if (useWindows7SupportMode)
+        {
             fullscrenizeSoulstorm();
+        }
     }
 
 
@@ -172,23 +174,9 @@ void SsController::checkWindowState()
                  if (!IsIconic(m_soulstormHwnd))
                  {
                      if (!m_ssMaximized)
-                     {
                         fullscrenizeSoulstorm();
-
-                        //emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
-                       // qInfo(logInfo()) << "Soulstorm fullscreen";
-                     }
-
                  }
-                 else
-                 {
-                     if (m_ssMaximized)
-                     {
-                        m_ssMaximized = false;
-                        //emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
-                        //qInfo(logInfo()) << "Soulstorm fullscreen";
-                     }
-                 }
+
              }
              else
              {
@@ -325,15 +313,17 @@ void SsController::fullscrenizeSoulstorm()
 {
     if(m_soulstormHwnd)
     {
-        SetWindowLongW(m_soulstormHwnd, GWL_STYLE , GetWindowLong(m_soulstormHwnd, GWL_STYLE) | WS_OVERLAPPED /*|  WS_POPUP*/ /*| WS_VISIBLE*/ );
-        SetWindowPos(m_soulstormHwnd,0,0,0,3840, 2160, SWP_SHOWWINDOW);
+        SetWindowLongW(m_soulstormHwnd, GWL_STYLE , /*GetWindowLong(m_soulstormHwnd, GWL_STYLE) |*/ WS_OVERLAPPED /*|  WS_POPUP*/ /*| WS_VISIBLE*/ );
+        SetWindowPos(m_soulstormHwnd,0,0,0,1921, 1081, SWP_SHOWWINDOW);
         ShowWindow(m_soulstormHwnd, SW_SHOWNORMAL);
-        //BringWindowToTop(m_soulstormHwnd);
 
         m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
 
         m_ssMaximized = true;
-        //emit ssMaximized(m_ssMaximized);
+        emit ssMaximized(m_ssMaximized);
+        qInfo(logInfo()) << "Soulstorm maximized with win7 support mode";
+
+
     }
 }
 
@@ -341,7 +331,8 @@ void SsController::minimizeSoulstorm()
 {
     ShowWindow(m_soulstormHwnd, SW_MINIMIZE);
     m_ssMaximized = false;
-    //emit ssMaximized(m_ssMaximized);
+    emit ssMaximized(m_ssMaximized);
+    qInfo(logInfo()) << "Soulstorm minimized with win7 support mode";
 }
 
 bool SsController::getUseWindows7SupportMode() const
@@ -386,7 +377,7 @@ HWND SsController::soulstormHwnd() const
 
 bool SsController::ssWindowed() const
 {
-    return m_ssWindowed;
+    return m_ssWindowed && !useWindows7SupportMode;
 }
 
 GameInfoReader *SsController::gameInfoReader() const
