@@ -6,7 +6,7 @@ Rectangle {
     id: rectangle
     color: "#00000000"
     anchors.fill: parent
-    visible: model.smallPannelActive && model.showGamePannelPreset
+    //visible: model.smallPannelActive && model.showGamePannelPreset
 
     property var model
 
@@ -83,11 +83,13 @@ Rectangle {
                 width: 200
                 height: 200
                 //color: "#333333"
+                visible: model.smallPannelActive && model.showGamePannelPreset && model.gamePanelVisible
+
                 Layout.maximumHeight: 40
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
-                visible: model.gamePanelVisible
+
 
                 gradient: Gradient {
                     GradientStop {
@@ -291,7 +293,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: model.player0Race !== "" && model.racePanelVisible;
+                                visible: model.player0Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player0RaceLabel
@@ -314,7 +316,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: model.player1Race !== "" && model.racePanelVisible;
+                                visible: model.player1Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player1RaceLabel
@@ -337,7 +339,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
-                                visible: model.player2Race !== "" && model.racePanelVisible;
+                                visible: model.player2Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player2RaceLabel
@@ -358,7 +360,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player3Race !== "" && model.racePanelVisible;
+                                visible: model.player3Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player3RaceLabel
@@ -379,7 +381,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player4Race !== "" && model.racePanelVisible;
+                                visible: model.player4Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player4RaceLabel
@@ -400,7 +402,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player5Race !== "" && model.racePanelVisible;
+                                visible: model.player5Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player5RaceLabel
@@ -421,7 +423,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player6Race !== "" && model.racePanelVisible;
+                                visible: model.player6Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player6RaceLabel
@@ -443,7 +445,7 @@ Rectangle {
                                 Layout.maximumHeight: 20
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
-                                visible: model.player7Race !== "" && model.racePanelVisible;
+                                visible: model.player7Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player7RaceLabel
@@ -469,7 +471,7 @@ Rectangle {
                                 Layout.minimumWidth: 0
                                 Layout.fillWidth: true
                                 Layout.fillHeight: true
-                                visible: model.racePanelVisible;
+                                visible: model.racePanelVisible && model.smallPannelActive;
                             }
 
                             Rectangle {
