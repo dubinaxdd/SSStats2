@@ -245,7 +245,6 @@ void UiBackend::onGameStopped()
 {
     m_loadStarted = false;
     m_missionStarted = false;
-
     m_gamePanel->onGameStopped();
     m_statisticPanel->setBlockUpdate(false);
 

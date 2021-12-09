@@ -1,5 +1,5 @@
 #define GAME_INFO_READER_TIMER_INTERVAL 1000
-#define RACES_READ_TIMER_INTERVAL 2000
+#define RACES_READ_TIMER_INTERVAL 500
 
 #include "gameinforeader.h"
 #include <QFile>
@@ -14,7 +14,6 @@ GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
 {
 
     m_readRacesSingleShootTimer = new QTimer();
-    m_readRacesSingleShootTimer->setSingleShot(true);
     m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
     QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &GameInfoReader::readRacesTimerTimeout, Qt::QueuedConnection );
 
@@ -71,7 +70,9 @@ void GameInfoReader::readGameInfo()
                     m_gameCurrentState = SsGameState::gameOver;
                     checkGameInitialize();
                     emit startingMission(m_gameCurrentState);
+                    testStatsTemp = QStringList();
                     readRacesTimerTimeout();
+
                     emit gameOver();
                 }
                 break;
@@ -84,6 +85,7 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameStoped;
                     checkGameInitialize();
+                    readTestStatsTemp();
                     readGameParametresAfterStop();
                     emit gameStopped();
 
@@ -173,6 +175,7 @@ void GameInfoReader::readGameInfo()
                     }
 
                     checkGameInitialize();
+                    testStatsTemp = QStringList();
                     m_readRacesSingleShootTimer->start();
                     emit startingMission(m_gameCurrentState);
 
@@ -605,8 +608,9 @@ void GameInfoReader::readGameParametresAfterStop()
 
 void GameInfoReader::readRacesTimerTimeout()
 {
+    m_readRacesSingleShootTimer->stop();
+
     QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
-    qInfo(logInfo()) << "teststats.lua path: " << statsPath;
 
     QFile file(statsPath);
 
@@ -621,12 +625,18 @@ void GameInfoReader::readRacesTimerTimeout()
         k++;
     file.seek(k);
 
-    //QByteArray testStats = file.readAll();
-
     QTextStream textStream(&file);
     QStringList fileLines = textStream.readAll().split("\r");
 
     file.close();
+
+    if (testStatsTemp == fileLines)
+    {
+        m_readRacesSingleShootTimer->start();
+        return;
+    }
+
+    testStatsTemp = fileLines;
 
     QStringList playerNames;
     QStringList playerRaces;
@@ -789,11 +799,15 @@ void GameInfoReader::checkGameInitialize()
 {
     if(m_ssCurrentState != SsState::ssInitialized)
     {
+
+
         qInfo(logInfo()) << "SS Initialized";
         m_ssCurrentState = SsState::ssInitialized;
         emit gameInitialized();
 
+
         checkCurrentMode();
+        readTestStatsTemp();
     }
 }
 
@@ -860,4 +874,27 @@ bool GameInfoReader::checkMissionSettingsValide(int gameType)
     playback = repReader.getReplayData();*/
 
 
+}
+
+void GameInfoReader::readTestStatsTemp()
+{
+    QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
+
+    QFile file(statsPath);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return;
+    if(!file.isReadable())
+        return;
+
+    // в начале файла лежат байты из-за этого корневой ключ может не читаться
+    int k=0;
+    while(file.read(1)!="G")
+        k++;
+    file.seek(k);
+
+    QTextStream textStream(&file);
+    testStatsTemp = textStream.readAll().split("\r");
+
+    file.close();
 }

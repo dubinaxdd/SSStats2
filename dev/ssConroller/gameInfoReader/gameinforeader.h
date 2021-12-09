@@ -47,6 +47,7 @@ signals:
 private:
     void checkCurrentMode();
     bool checkMissionSettingsValide(int gameType);
+    void readTestStatsTemp();
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -70,6 +71,8 @@ private:
     int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
     QList<SearchStemIdPlayerInfo> m_allPlayersInfoFromScanner;
+
+    QStringList testStatsTemp;
 };
 
 #endif // GAMEINFOREADER_H

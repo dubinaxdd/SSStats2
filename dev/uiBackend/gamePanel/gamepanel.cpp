@@ -57,6 +57,7 @@ void GamePanel::onApmChanged(int capm, int aapm)
 void GamePanel::onGameStopped()
 {
     m_gameLeaveTimer->stop();
+    m_racePanelVisibleTimer->stop();
 
     m_currentApm = QString("-");
     m_averageApm = QString("-");
@@ -209,6 +210,15 @@ void GamePanel::updatePlayerRaces()
 {
     if(m_testStats.count() < 8)
         return;
+
+    m_player0Race = "";
+    m_player1Race = "";
+    m_player2Race = "";
+    m_player3Race = "";
+    m_player4Race = "";
+    m_player5Race = "";
+    m_player6Race = "";
+    m_player7Race = "";
 
     if (!m_smallPannelActive)
     {
