@@ -179,7 +179,7 @@ Window {
 
         menu: Menu {
             MenuItem {
-                text: qsTr("Launch Soulstorm with SSStats Windows7 support mode")
+                text: qsTr("Launch Soulstorm with Windows7 support mode")
 
                 onTriggered: _uiBackend.onLaunchSoulstormWithSupportMode();
             }

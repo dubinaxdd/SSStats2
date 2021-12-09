@@ -128,8 +128,8 @@ void SsController::checkWindowState()
         if (useWindows7SupportMode)
         {
             fullscrenizeSoulstorm();
-            Sleep(1000);
-            minimizeSoulstorm();
+           // Sleep(1000);
+           // minimizeSoulstorm();
         }
     }
 
@@ -335,10 +335,7 @@ void SsController::fullscrenizeSoulstorm()
 
         SetWindowLongW(m_soulstormHwnd, GWL_STYLE , /*GetWindowLong(m_soulstormHwnd, GWL_STYLE) |*/ WS_OVERLAPPED /*|  WS_POPUP*/ | WS_VISIBLE );
         SetWindowPos(m_soulstormHwnd,0,0,0,m_ssWindowWidth + 1, m_ssWindowHeight + 1, SWP_SHOWWINDOW );
-       // ShowWindow(m_soulstormHwnd, SW_SHOWNORMAL);
-
-        ShowWindow(m_soulstormHwnd, SHOW_FULLSCREEN);
-
+        ShowWindow(m_soulstormHwnd, SW_SHOWNORMAL);
 
         m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
 
