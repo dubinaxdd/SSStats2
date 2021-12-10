@@ -162,8 +162,12 @@ void LobbyEventReader::readLobbyEvents()
                                 {
                                     needLine = needLine.at(54);
                                     int playerPosition = needLine.toInt();
-                                    emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
-                                    qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
+
+                                    if (playerPosition < 8 && playerPosition >= 0)
+                                    {
+                                        emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+                                        qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition + 1;
+                                    }
                                 }
                             }
                         }
@@ -240,8 +244,12 @@ void LobbyEventReader::checkPatyState()
                             {
                                 needLine = needLine.at(54);
                                 int playerPosition = needLine.toInt();
-                                emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
-                                qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition;
+
+                                if (playerPosition < 8 && playerPosition >= 0)
+                                {
+                                    emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+                                    qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition + 1;
+                                }
                             }
                         }
                     }
