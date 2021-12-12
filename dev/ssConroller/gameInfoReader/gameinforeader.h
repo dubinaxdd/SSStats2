@@ -19,6 +19,7 @@ public:
 
     void setCurrentProfile(const QString &newCurrentProfile);
     void setGameLounched(bool newGameLounched);
+    void stopedGame();
 
 private slots:
     void readGameInfo();
@@ -48,6 +49,7 @@ private:
     void checkCurrentMode();
     bool checkMissionSettingsValide(int gameType);
     void readTestStatsTemp();
+    void parseSsSettings();
 
 private:
     QTimer* m_gameInfoReadTimer;

@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
+#include <QSettings>
 #include "repReader/repreader.h"
 
 GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
@@ -45,13 +46,8 @@ void GameInfoReader::readGameInfo()
             if(line.contains("GAME -- Shutdown quit") || line.contains("MOD -- Shutting down Mod"))
             {
                 if (m_ssCurrentState != SsState::ssShutdowned)
-                {
-                    m_gameCurrentState = SsGameState::gameStoped;
-                    m_ssCurrentState = SsState::ssShutdowned;
-                    emit gameStopped();
-                    emit ssShutdown();
-                    qInfo(logInfo()) << "SS Shutdown";
-                }
+                    ssWindowClosed();
+
                 break;
             }
 
@@ -69,10 +65,9 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameOver;
                     checkGameInitialize();
-                    emit startingMission(m_gameCurrentState);
                     testStatsTemp = QStringList();
                     readRacesTimerTimeout();
-
+                    emit startingMission(m_gameCurrentState);
                     emit gameOver();
                 }
                 break;
@@ -88,7 +83,6 @@ void GameInfoReader::readGameInfo()
                     readTestStatsTemp();
                     readGameParametresAfterStop();
                     emit gameStopped();
-
                     qInfo(logInfo()) << "Game Stoped";
                 }
                 break;
@@ -173,10 +167,9 @@ void GameInfoReader::readGameInfo()
                         m_gameCurrentState = SsGameState::savedGameStarted;
                         qInfo(logInfo()) << "Starting saved game mission";
                     }
-
                     checkGameInitialize();
                     testStatsTemp = QStringList();
-                    m_readRacesSingleShootTimer->start();
+                    readRacesTimerTimeout();
                     emit startingMission(m_gameCurrentState);
 
                 }
@@ -188,9 +181,9 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::unknownGameStarted;
                     qInfo(logInfo()) << "Starting unknown mission";
-
                     checkGameInitialize();
-                    m_readRacesSingleShootTimer->start();
+                    testStatsTemp = QStringList();
+                    readRacesTimerTimeout();
                     emit startingMission(m_gameCurrentState);
                 }
 
@@ -215,6 +208,7 @@ void GameInfoReader::readGameInfo()
                         {
                             m_gameCurrentState = SsGameState::playbackLoadStarted;
                             checkGameInitialize();
+                            readTestStatsTemp();
                             m_readRacesSingleShootTimer->start();
                             emit loadStarted(m_gameCurrentState);
                             qInfo(logInfo()) << "Playback load started";
@@ -229,6 +223,7 @@ void GameInfoReader::readGameInfo()
                         {
                             m_gameCurrentState = SsGameState::savedGameLoadStarted;
                             checkGameInitialize();
+                            readTestStatsTemp();
                             m_readRacesSingleShootTimer->start();
                             emit loadStarted(m_gameCurrentState);
                             qInfo(logInfo()) << "Saved game load started";
@@ -245,6 +240,7 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
+                    readTestStatsTemp();
                     m_readRacesSingleShootTimer->start();
                     emit loadStarted(m_gameCurrentState);
                     qInfo(logInfo()) << "Game load started";
@@ -773,6 +769,16 @@ void GameInfoReader::setGameLounched(bool newGameLounched)
         readGameInfo();
 }
 
+void GameInfoReader::stopedGame()
+{
+    if (m_gameCurrentState != SsGameState::gameStoped)
+    {
+        qInfo(logInfo()) << "Game Stoped";
+        m_gameCurrentState = SsGameState::gameStoped;
+        emit gameStopped();
+    }
+}
+
 void GameInfoReader::setCurrentProfile(const QString &newCurrentProfile)
 {
     m_currentProfile = newCurrentProfile;
@@ -780,9 +786,8 @@ void GameInfoReader::setCurrentProfile(const QString &newCurrentProfile)
 
 void GameInfoReader::ssWindowClosed()
 {
-    m_gameCurrentState = SsGameState::gameStoped;
+    stopedGame();
     m_ssCurrentState = SsState::ssShutdowned;
-    emit gameStopped();
     emit ssShutdown();
     qInfo(logInfo()) << "SS Shutdown";
 }
@@ -799,15 +804,11 @@ void GameInfoReader::checkGameInitialize()
 {
     if(m_ssCurrentState != SsState::ssInitialized)
     {
-
-
         qInfo(logInfo()) << "SS Initialized";
         m_ssCurrentState = SsState::ssInitialized;
+        parseSsSettings();
         emit gameInitialized();
-
-
         checkCurrentMode();
-        readTestStatsTemp();
     }
 }
 
@@ -897,4 +898,14 @@ void GameInfoReader::readTestStatsTemp()
     testStatsTemp = textStream.readAll().split("\r");
 
     file.close();
+
+    qInfo(logInfo()) << "testStats temp readed";
 }
+
+void GameInfoReader::parseSsSettings()
+{
+    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+    m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
+    delete ssSettings;
+}
+

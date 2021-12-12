@@ -89,7 +89,7 @@ void GamePanel::onGameStarted(SsGameState gameCurrentState)
         emit apmUpdate();
     }
 
-    if (gameCurrentState != SsGameState::gameStarted)
+    if (gameCurrentState != SsGameState::gameStarted && gameCurrentState != SsGameState::savedGameStarted && gameCurrentState != SsGameState::playbackStarted)
     {
         m_gameLeaveTimerVisible = false;
         emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
@@ -99,12 +99,21 @@ void GamePanel::onGameStarted(SsGameState gameCurrentState)
     m_gamePanelVisisble = true;
     emit gamePanelVisibleChanged(m_gamePanelVisisble);
 
-    m_gameLeaveTimeLeft = 30;
-    emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
-    m_gameLeaveTimer->start();
-    m_gameLeaveTimerVisible = true;
-    m_racePanelVisibleTimer->start();
-    emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+    if (gameCurrentState == SsGameState::gameStarted)
+    {
+        m_gameLeaveTimeLeft = 30;
+        emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
+        m_gameLeaveTimer->start();
+        m_gameLeaveTimerVisible = true;
+        m_racePanelVisibleTimer->start();
+        emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+    }
+    else
+    {
+        m_gameLeaveTimerVisible = false;
+        m_racePanelVisibleTimer->start();
+        emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
+    }
 }
 
 

@@ -35,15 +35,7 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, this, &SsController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::ssShutdown, this, &SsController::ssShutdown, Qt::QueuedConnection);
-    //QObject::connect(m_gameInfoReader, &GameInfoReader::startingMission, this, &SsController::readTestStats, Qt::QueuedConnection);
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
-
-    //QObject::connect(m_gameInfoReader, &GameInfoReader::loadStarted, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
-    //QObject::connect(m_gameInfoReader, &GameInfoReader::gameStopped, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
-
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty, m_playersSteamScanner->scanTimer(), &QTimer::stop, Qt::QueuedConnection);
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty, m_playersSteamScanner->scanTimer(), static_cast<void (QTimer::*)(void)>(&QTimer::start), Qt::QueuedConnection);
-
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnectedToHostedGame, m_playersSteamScanner, &PlayersSteamScanner::findPlayerBySsId, Qt::QueuedConnection);
@@ -128,8 +120,6 @@ void SsController::checkWindowState()
         if (useWindows7SupportMode)
         {
             fullscrenizeSoulstorm();
-           // Sleep(1000);
-           // minimizeSoulstorm();
         }
     }
 
@@ -150,11 +140,8 @@ void SsController::checkWindowState()
              m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
 
              m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
-             parseSsSettings();                                  ///<Считываем настройки соулсторма
              emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
              qInfo(logInfo()) << "Soulstorm window opened";
-
-
 
              if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
              {
@@ -215,11 +202,10 @@ void SsController::checkWindowState()
              m_ssWindowCreated = false;
              ChangeDisplaySettings(0, 0);
              m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
-             m_gameInfoReader->ssWindowClosed();                 ///<Говорим инфоРидеру что окно сс закрыто
+             m_gameInfoReader->stopedGame();
+             ssShutdown();
              emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
              emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
-
-             //m_ssLaunchControllTimer->stop();                    ///<Останавливаем таймер контроля запуска
              qWarning(logWarning()) << "Soulstorm window closed";
          }
          else
