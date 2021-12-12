@@ -1,5 +1,5 @@
 #define GAME_INFO_READER_TIMER_INTERVAL 1000
-#define RACES_READ_TIMER_INTERVAL 500
+#define RACES_READ_TIMER_INTERVAL 100
 
 #include "gameinforeader.h"
 #include <QFile>
@@ -47,7 +47,6 @@ void GameInfoReader::readGameInfo()
             {
                 if (m_ssCurrentState != SsState::ssShutdowned)
                     ssWindowClosed();
-
                 break;
             }
 
@@ -208,7 +207,6 @@ void GameInfoReader::readGameInfo()
                         {
                             m_gameCurrentState = SsGameState::playbackLoadStarted;
                             checkGameInitialize();
-                            readTestStatsTemp();
                             m_readRacesSingleShootTimer->start();
                             emit loadStarted(m_gameCurrentState);
                             qInfo(logInfo()) << "Playback load started";
@@ -240,7 +238,6 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
-                    readTestStatsTemp();
                     m_readRacesSingleShootTimer->start();
                     emit loadStarted(m_gameCurrentState);
                     qInfo(logInfo()) << "Game load started";
@@ -763,10 +760,15 @@ void GameInfoReader::onQuitParty()
 
 void GameInfoReader::setGameLounched(bool newGameLounched)
 {
+    if (m_gameLounched == newGameLounched)
+        return;
+
     m_gameLounched = newGameLounched;
 
     if (m_gameLounched)
         readGameInfo();
+    else
+        ssWindowClosed();
 }
 
 void GameInfoReader::stopedGame()
@@ -787,6 +789,10 @@ void GameInfoReader::setCurrentProfile(const QString &newCurrentProfile)
 void GameInfoReader::ssWindowClosed()
 {
     stopedGame();
+
+    if (m_ssCurrentState == SsState::ssShutdowned)
+        return;
+
     m_ssCurrentState = SsState::ssShutdowned;
     emit ssShutdown();
     qInfo(logInfo()) << "SS Shutdown";
@@ -807,6 +813,7 @@ void GameInfoReader::checkGameInitialize()
         qInfo(logInfo()) << "SS Initialized";
         m_ssCurrentState = SsState::ssInitialized;
         parseSsSettings();
+        readTestStatsTemp();
         emit gameInitialized();
         checkCurrentMode();
     }

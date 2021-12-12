@@ -27,6 +27,10 @@ MemoryController::MemoryController(SettingsController* settingsController, QObje
 void MemoryController::onSsLaunchStateChanged(bool state)
 {
     m_ssLaunchState = state;
+
+    if (!m_ssLaunchState)
+        return;
+
     onNoFogStateChanged(currentNoFog && m_ssLaunchState);
 }
 
@@ -65,10 +69,10 @@ void MemoryController::onNoFogStateChanged(bool state)
         ReadProcessMemory(hProcess, MapSkyDistanceAddr, temp6_2, 6, nullptr);
 
         if(targetNoFog&&memcmp(temp6, CodeFog, 6)==0){ // Проверяем совпали ли прочитанные ранее данные "Тумана" с базовыми оригинальными данными (заведомо нам известны).
-            qInfo(logInfo()) << "Disable fog";
+            qInfo(logInfo()) << "Enable NoFOG";
             WriteProcessMemory(hProcess, FogAddr, nop_array6, 6, nullptr); // Записываем данные в память процесса "Dawn of War: Soulstorm" по адресу "Тумана" (FogAddr) из буфера nop_array6 в количестве 6 байт
         } else if(!targetNoFog){ // Если данные не совпали и/или необходимо вернуть оригинальные данные
-            qInfo(logInfo()) << "Enable fog";
+            qInfo(logInfo()) << "Disable NoFOG";
             WriteProcessMemory(hProcess, FogAddr, CodeFog, 6, nullptr);
         }
         if(targetNoFog&&memcmp(temp4, CodeF512, 4)==0){
