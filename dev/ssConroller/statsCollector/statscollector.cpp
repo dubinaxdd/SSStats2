@@ -54,8 +54,6 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         newPlayer->steamId = playersInfoFromScanner.at(i).steamId;
         newPlayer->position = playersInfoFromScanner.at(i).position;
 
-        //m_playerStats.append(newPlayer);
-
         registerPlayer(playersInfoFromScanner.at(i).name, playersInfoFromScanner.at(i).steamId, false);
 
         QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playersInfoFromScanner.at(i).steamId + "&format=json")));
