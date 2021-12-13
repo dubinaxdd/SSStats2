@@ -195,7 +195,10 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     }
 
     if (m_currentPlayerAccepted)
+    {
+        reply->deleteLater();
         return;
+    }
 
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
@@ -453,7 +456,9 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     QNetworkReply *reply = m_networkManager->post(request, postData);
     qInfo(logInfo()) << "Replay sended to server";
 
-    reply->deleteLater();
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        reply->deleteLater();
+    });
 }
 
 QString StatsCollector::GetRandomString() const
