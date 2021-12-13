@@ -150,7 +150,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
 
 void StatsCollector::getPlayerStatsFromServer(QSharedPointer <ServerPlayerStats> playerInfo)
 {
-    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+m_clientVersion+"&sender_sid="+ playerInfo->steamId +"&")));
+    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + playerInfo->steamId + "&version="+m_clientVersion+"&sender_sid="+ m_currentPlayerStats->steamId +"&")));
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerStatsFromServer(reply, playerInfo);
     });
