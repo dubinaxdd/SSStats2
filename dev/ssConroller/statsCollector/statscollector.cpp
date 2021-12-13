@@ -44,7 +44,7 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
 
     emit sendPlayersCount(playersCount);
 
-    sendCurrentPlayerHostState(false);
+    emit sendCurrentPlayerHostState(false);
 
     for(int i = 0; i < playersInfoFromScanner.count(); i++)
     {
@@ -62,13 +62,17 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
         QObject::connect(reply, &QNetworkReply::finished, this, [=](){
             receivePlayerSteamData(reply, newPlayer);
         });
+
+        QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+            reply->deleteLater();
+        });
     }
 }
 
 void StatsCollector::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner)
 {
     emit sendPlayersCount(8);
-    sendCurrentPlayerHostState(true);
+    emit sendCurrentPlayerHostState(true);
 
     QSharedPointer <ServerPlayerStats> newPlayer(new ServerPlayerStats);
 
@@ -80,6 +84,10 @@ void StatsCollector::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo pla
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playerInfoFromScanner.steamId + "&format=json")));
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerSteamData(reply, newPlayer);
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
     });
 }
 
@@ -138,8 +146,13 @@ void StatsCollector::parseCurrentPlayerSteamId()
             if(mostRecents.at(i) == "1")
             {
                 QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + steamIDs.at(i) + "&format=json")));
-                QObject::connect(reply, &QNetworkReply::readyRead, this, [=](){
+                QObject::connect(reply, &QNetworkReply::finished, this, [=](){
                     receiveSteamInfoReply(reply);
+                });
+
+
+                QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+                    reply->deleteLater();
                 });
 
                 return;
@@ -154,6 +167,10 @@ void StatsCollector::getPlayerStatsFromServer(QSharedPointer <ServerPlayerStats>
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerStatsFromServer(reply, playerInfo);
     });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
 }
 
 void StatsCollector::getPlayerMediumAvatar(QString url, QSharedPointer <ServerPlayerStats> playerInfo)
@@ -162,10 +179,21 @@ void StatsCollector::getPlayerMediumAvatar(QString url, QSharedPointer <ServerPl
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerMediumAvatar(reply, playerInfo);
     });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
 }
 
 void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 {
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     if (m_currentPlayerAccepted)
         return;
 
@@ -207,15 +235,23 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
 
 void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
 {
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
     if (!jsonDoc.isArray())
+    {
+        reply->deleteLater();
         return;
+    }
 
     QJsonArray jsonArray = jsonDoc.array();
-
-
 
     for(int i = 0; i < jsonArray.count(); i++)
     {
@@ -242,13 +278,23 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedP
 
 void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
 {
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QByteArray replyByteArray = reply->readAll();
 
     QImage avatarMedium = QImage::fromData(replyByteArray);
 
 
     if (avatarMedium.isNull())
+    {
+        reply->deleteLater();
         return;
+    }
 
     playerInfo->avatarAvailable = true;
     playerInfo->avatar = avatarMedium;
@@ -261,6 +307,13 @@ void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPoin
 
 void StatsCollector::receivePlayerSteamData(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
 {
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -400,9 +453,7 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     QNetworkReply *reply = m_networkManager->post(request, postData);
     qInfo(logInfo()) << "Replay sended to server";
 
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        //qDebug() << "Replay sending responce: " << reply->readAll();
-    });
+    reply->deleteLater();
 }
 
 QString StatsCollector::GetRandomString() const
@@ -411,7 +462,7 @@ QString StatsCollector::GetRandomString() const
    const int randomStringLength = 12; // assuming you want random strings of 12 characters
 
    QString randomString;
-   for(int i=0; i<randomStringLength; ++i)
+   for(int i=0; i < randomStringLength; ++i)
    {
        int index = qrand() % possibleCharacters.length();
        QChar nextChar = possibleCharacters.at(index);
@@ -456,7 +507,10 @@ void StatsCollector::registerPlayer(QString name, QString sid, bool init)
 
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(reg_url)));
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-       // qDebug() << "INFO: Player registred";
+        reply->deleteLater();
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         reply->deleteLater();
     });
 }
