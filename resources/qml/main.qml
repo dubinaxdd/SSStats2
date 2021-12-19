@@ -9,7 +9,7 @@ Window {
     width: 640
     height: 480
     visible: true
-    title: "SSStats2"
+    title: "DowStats2Overlay"
     color: "#00000000"
     visibility: Window.Maximized
 
@@ -248,9 +248,9 @@ Window {
 
                     StatsHeader{
                         id: statsHeader
-                        width: 260
+                        width: 280
                         height: 60
-                        Layout.minimumWidth: 260
+                        Layout.minimumWidth: 280
                         Layout.minimumHeight: 60
                         Layout.fillHeight: true
                         visible: _uiBackend.headerVisible

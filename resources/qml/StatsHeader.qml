@@ -5,10 +5,10 @@ import QtQuick.Layouts 1.12
 
 Rectangle {
     id: headerRectangle
-    width: 260
+    width: 280
     height: 60
     color: "#333333"
-    Layout.minimumWidth: 260
+    Layout.minimumWidth: 280
     Layout.minimumHeight: 60
 
     property Rectangle expandButtonRectangle : expandButtonRectangle
@@ -28,7 +28,7 @@ Rectangle {
         }
     }
     Layout.maximumHeight: 60
-    Layout.maximumWidth: 260
+    Layout.maximumWidth: 280
     Layout.fillHeight: false
 
     RowLayout {
@@ -78,7 +78,7 @@ Rectangle {
             Label {
                 id: label
                 color: "#ffffff"
-                text: qsTr("SS Stats 2")
+                text: qsTr("DoW Stats 2")
                 font.pointSize: 20
             }
 

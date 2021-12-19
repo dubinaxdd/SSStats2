@@ -49,20 +49,19 @@ private:
     Logger *m_logger;
     QTimer* m_topmostTimer;
 
-    HWND m_ssStatsHwnd;
-    LONG m_defaultWindowLong;
-    RECT m_ssRect;
-
     SettingsController* m_settingsController;
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
 
-
     int m_defaultWidth;
     int m_defaultHeight;
     int m_widthInGame;
     int m_heightInGame;
+
+    HWND m_ssStatsHwnd;
+    LONG m_defaultWindowLong;
+    RECT m_ssRect;
 
 };
 

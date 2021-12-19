@@ -30,7 +30,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     m_topmostTimer = new QTimer();
     m_topmostTimer->setInterval(500);
-    //m_topmostTimer->setSingleShot(true);
+
     connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
@@ -38,7 +38,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_uiBackend,                &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_ssController, &SsController::ssMaximized,            m_uiBackend,                &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::sendPlayersTestStats,   m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,            Qt::QueuedConnection);
-    //QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_settingsController,       &SettingsController::onSsLaunchStateChanged,    Qt::QueuedConnection);
+
 
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameInitialized,       this,                       &Core::gameInitialized,         Qt::DirectConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::loadStarted,           m_uiBackend,                &UiBackend::onLoadStarted,      Qt::QueuedConnection);
@@ -65,8 +65,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
 
     QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
-   // QObject::connect(HookManager::instance(), &HookManager::keyEvent, this, &Core::onKeyEvent, Qt::QueuedConnection);
-   // QObject::connect(HookManager::instance(), &HookManager::mouseEvent, this, &Core::onMouseEvent, Qt::QueuedConnection);
+
 
     QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
     QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController, &SsController::launchSoulstormWithSupportMode, Qt::QueuedConnection);
@@ -298,9 +297,6 @@ void Core::onKeyEvent(QKeyEvent event)
             m_ssController->apmMeter()->onKeyPressEvent();
         }
     }
-
-   // delete event;
-
 }
 
 void Core::onMouseEvent(QMouseEvent event)
@@ -316,15 +312,12 @@ void Core::onMouseEvent(QMouseEvent event)
             m_uiBackend->mouseMoveEvent(event.pos());
         }
     }
-
-    //delete event;
-
 }
 
 void Core::grubStatsWindow()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QString s = codec->toUnicode("SSStats2");
+    QString s = codec->toUnicode("DowStats2Overlay");
     LPCWSTR lps = (LPCWSTR)s.utf16();
 
     m_ssStatsHwnd = FindWindowW(NULL, lps);

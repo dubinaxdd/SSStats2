@@ -3,7 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 Rectangle {
-    width: 260
+    width: 280
     height: 880
     color: "#00000000"
     border.color: "#00000000"
@@ -61,9 +61,9 @@ Rectangle {
         PlayersStatisticItem
         {
             id:curentPlayer
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
@@ -80,9 +80,9 @@ Rectangle {
             id:player2
             visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
@@ -98,9 +98,9 @@ Rectangle {
             id:player3
             visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
@@ -116,9 +116,9 @@ Rectangle {
             id:player4
             visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
@@ -134,9 +134,9 @@ Rectangle {
             id:player5
             visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
@@ -152,9 +152,9 @@ Rectangle {
             id:player6
             visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
@@ -170,9 +170,9 @@ Rectangle {
             id:player7
             visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
@@ -189,9 +189,9 @@ Rectangle {
             id:player8
             visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
+            Layout.maximumWidth: 280
             Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
+            Layout.minimumWidth: 280
             Layout.minimumHeight: 60
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false

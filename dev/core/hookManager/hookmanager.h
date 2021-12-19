@@ -36,11 +36,6 @@ private:
 
     HookManager();
     ~HookManager();
-
-//signals:
-   // void keyEvent(QKeyEvent event);
-   // void mouseEvent(QMouseEvent event);
-
 };
 
 #endif // HOOKMANAGER_H

@@ -23,36 +23,25 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     switch(wParam)
     {
-    case WM_LBUTTONDOWN:
-    {
-        //qDebug() << "INFO: Left click";
-
-        //QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
-        //emit HookManager::instance()->mouseEvent(event);
-        HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers())));
-        break;
-    }
-    case WM_RBUTTONDOWN:
-    {
-        //qDebug() << "INFO: Right click";
-
-        //QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::RightButton, Qt::MouseButtons(), Qt::KeyboardModifiers());
-        //emit HookManager::instance()->mouseEvent(event);
-        HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::RightButton, Qt::MouseButtons(), Qt::KeyboardModifiers())));
-        break;
-    }
-    case WM_MOUSEMOVE:
-    {
-        //QMouseEvent *event = new QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers());
-        //emit HookManager::instance()->mouseEvent(event);
-
-        HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers())));
-
-        break;
-    }
+        case WM_LBUTTONDOWN:
+        {
+            HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers())));
+            break;
+        }
+        case WM_RBUTTONDOWN:
+        {
+            HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::RightButton, Qt::MouseButtons(), Qt::KeyboardModifiers())));
+            break;
+        }
+        case WM_MOUSEMOVE:
+        {
+            HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers())));
+            break;
+        }
     }
 
-    return CallNextHookEx(mouseHook, nCode, wParam, lParam);
+    //return CallNextHookEx(mouseHook, nCode, wParam, lParam);
+    return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -124,7 +113,8 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     //qDebug() << cKey.vkCode;
 
-    return (HookManager::instance()->inputBlock() && !isPriorityKey) ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
+    //return (HookManager::instance()->inputBlock() && !isPriorityKey) ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
+    return (HookManager::instance()->inputBlock() && !isPriorityKey) ? 1 : CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 bool HookManager::inputBlock()
@@ -153,21 +143,19 @@ void HookManager::reconnectHook()
     UnhookWindowsHookEx(mouseHook);
     UnhookWindowsHookEx(keyboardHook);
 
-    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
     mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
-    /*if (mouseHook == NULL)
-        qDebug() << "INFO: MouseHook failed";
-    else
-        qDebug() << "INFO: MouseHook accepted";*/
 
-    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
-    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
-   /* if (keyboardHook == NULL)
-        qDebug() << "INFO: KeyboardHook failed";
+    if (mouseHook == NULL)
+        qWarning(logWarning()) << "INFO: MouseHook failed";
     else
-        qDebug() << "INFO: KeyboardHook accepted";*/
+        qInfo(logInfo()) << "INFO: MouseHook accepted";
+
+    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
+
+    if (keyboardHook == NULL)
+        qWarning(logWarning()) << "INFO: KeyboardHook failed";
+    else
+        qInfo(logInfo()) << "INFO: KeyboardHook accepted";
 }
 
 
@@ -175,21 +163,20 @@ HookManager::HookManager()
 {
     m_inputBlock = false;
 
-    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
     mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
-    /*if (mouseHook == NULL)
-        qDebug() << "INFO: MouseHook failed";
-    else
-        qDebug() << "INFO: MouseHook accepted";*/
 
-    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
-    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
-   /* if (keyboardHook == NULL)
-        qDebug() << "INFO: KeyboardHook failed";
+    if (mouseHook == NULL)
+        qWarning(logWarning()) << "INFO: MouseHook failed";
     else
-        qDebug() << "INFO: KeyboardHook accepted";*/
+        qInfo(logInfo()) << "INFO: MouseHook accepted";
+
+
+    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
+
+    if (keyboardHook == NULL)
+        qWarning(logWarning()) << "INFO: KeyboardHook failed";
+    else
+        qInfo(logInfo()) << "INFO: KeyboardHook accepted";
 }
 
 HookManager::~HookManager()
