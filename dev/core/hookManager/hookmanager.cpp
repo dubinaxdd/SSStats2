@@ -17,12 +17,19 @@ void UpdateKeySate(BYTE *keystate, int keycode)
 
 
 LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
+
     MSLLHOOKSTRUCT mKey = *((MSLLHOOKSTRUCT*)lParam);
-
-
 
     switch(wParam)
     {
+        case WM_MOUSEWHEEL:
+        {
+            const MSLLHOOKSTRUCT *mllhs = (const MSLLHOOKSTRUCT *) lParam;
+            short delta = HIWORD(mllhs->mouseData);
+            HookManager::instance()->core()->onWheelEvent(std::move(QWheelEvent( QPointF(mKey.pt.x, mKey.pt.y), delta, Qt::MouseButtons(), Qt::KeyboardModifiers())));
+            break;
+        }
+
         case WM_LBUTTONDOWN:
         {
             HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseButtonPress, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton::LeftButton, Qt::MouseButtons(), Qt::KeyboardModifiers())));
@@ -38,6 +45,7 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
             HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers())));
             break;
         }
+
     }
 
     //return CallNextHookEx(mouseHook, nCode, wParam, lParam);

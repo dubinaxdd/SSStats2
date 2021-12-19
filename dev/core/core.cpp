@@ -314,6 +314,11 @@ void Core::onMouseEvent(QMouseEvent event)
     }
 }
 
+void Core::onWheelEvent(QWheelEvent event)
+{
+
+}
+
 void Core::grubStatsWindow()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");

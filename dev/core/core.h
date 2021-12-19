@@ -32,6 +32,7 @@ signals:
 public slots:
     void onKeyEvent(QKeyEvent event);
     void onMouseEvent(QMouseEvent event);
+    void onWheelEvent(QWheelEvent event);
 
 
 private slots:
