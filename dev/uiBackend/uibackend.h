@@ -56,6 +56,7 @@ public:
     void setSsWindowed(bool newSsWindowed);
     void setSsWindowPosition(int x, int y);
     bool getFogState() const;
+    void onMouseWheel(int delta);
 
 
     GamePanel *gamePanel() const;
@@ -73,6 +74,7 @@ signals:
 
     void sendMousePress();
     void sendMouseMove();
+    void sendMouseWheel(int delta);
 
     void sendShowClient(bool);
     void windowTopmostChanged();

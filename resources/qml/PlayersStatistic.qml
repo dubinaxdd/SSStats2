@@ -11,6 +11,33 @@ Rectangle {
     property var model
     property Rectangle expandPatyStatisticButtonRectangle : expandPatyStatisticButtonRectangle
 
+    property int relativeMouseX
+    property int relativeMouseY
+
+    function mouseWheel(delta)
+    {
+        if (relativeMouseX >= scrollView.x &&
+            relativeMouseX <= scrollView.x + scrollView.width &&
+            relativeMouseY >= scrollView.y &&
+            relativeMouseY <= scrollView.y + scrollView.height
+                )
+        {
+
+            if (delta > 0)
+                scrollView.scrollToTop();
+
+            if (delta < 0)
+                scrollView.scrollToBottom()
+        }
+    }
+
+
+    function mouseHover(x, y)
+    {
+        relativeMouseX = x
+        relativeMouseY = y
+    }
+
     //Костыль для перезагрузки картинки, рил так на формух делают
 
     Connections {
@@ -58,6 +85,15 @@ Rectangle {
     ScrollView {
         id: scrollView
         anchors.fill: parent
+
+
+        function scrollToTop() {
+            ScrollBar.vertical.position += 0.1//1.0 + ScrollBar.vertical.size
+        }
+
+        function scrollToBottom() {
+            ScrollBar.vertical.position -= 0.1//1.0 - ScrollBar.vertical.size
+        }
 
         ColumnLayout {
             id: columnLayout

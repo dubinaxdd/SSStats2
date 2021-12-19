@@ -111,6 +111,11 @@ bool UiBackend::getFogState() const
     return m_noFogState;
 }
 
+void UiBackend::onMouseWheel(int delta)
+{
+    emit sendMouseWheel(delta);
+}
+
 void UiBackend::setNoFogState(bool state)
 {
     m_noFogState = state;

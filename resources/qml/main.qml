@@ -21,6 +21,12 @@ Window {
     Connections{
         target: _uiBackend
 
+        function onSendMouseWheel(delta)
+        {
+            patyStatistic.mouseWheel(delta);
+        }
+
+
         function onSendMousePress(){
             //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
           /*  console.log("Windowed mode: ", _uiBackend.ssWindowed, "xMousePos: ", xMousePos, "yMousePos: ", yMousePos,
@@ -73,7 +79,7 @@ Window {
             }
 
             if(_uiBackend.expand){
-                fullOverlay.mouseClick(xMousePos - fullOverlay.x, yMousePos - fullOverlay.y );
+                fullOverlay.mouseClick(xMousePos - fullOverlay.x , yMousePos - fullOverlay.y );
             }
         }
 
@@ -152,6 +158,9 @@ Window {
                 if(patyStatistic.expandPatyStatisticButtonRectangle.howeredState)
                     patyStatistic.expandPatyStatisticButtonRectangle.howeredState = false;
             }
+
+
+            patyStatistic.mouseHover(xMousePos - patyStatistic.x - columnLayout3.x, yMousePos - patyStatistic.y - columnLayout3.y );
 
             if(_uiBackend.expand){
 

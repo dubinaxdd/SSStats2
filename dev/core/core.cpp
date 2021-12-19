@@ -316,7 +316,7 @@ void Core::onMouseEvent(QMouseEvent event)
 
 void Core::onWheelEvent(QWheelEvent event)
 {
-
+    m_uiBackend->onMouseWheel(event.delta());
 }
 
 void Core::grubStatsWindow()
