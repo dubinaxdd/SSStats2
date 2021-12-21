@@ -2,7 +2,8 @@
 #define HOOKMANAGER_H
 
 #include <QObject>
-#include <windows.h>
+//#include <windows.h>
+#include "Windows.h"
 #include "../core.h"
 //#pragma comment(lib, "user32.lib")
 
@@ -33,6 +34,9 @@ private:
     static HookManager *p_instance;
     bool m_inputBlock = false;
     Core* m_core;
+
+    HANDLE m_mousehThread = NULL;
+    HANDLE m_keyboradThread = NULL;
 
     HookManager();
     ~HookManager();
