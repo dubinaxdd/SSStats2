@@ -81,6 +81,8 @@ int main(int argc, char *argv[])
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 //#endif
 
+    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+
     QGuiApplication app(argc, argv);
     setlocale(LC_ALL,"Russian");
 
