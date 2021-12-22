@@ -243,8 +243,6 @@ Window {
 
                 ColumnLayout {
                     id: columnLayout3
-                    //width: 100 * _uiBackend.sizeModifer
-                   // height: 100 * _uiBackend.sizeModifer
 
                     StatsHeader{
                         id: statsHeader
@@ -259,17 +257,15 @@ Window {
                     PlayersStatistic
                     {
                         id: patyStatistic
-                        //Layout.fillWidth: false
                         width: 260 * _uiBackend.sizeModifer
                         Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-                        Layout.alignment: /*Qt.AlignHCenter |*/ Qt.AlignVCenter
+                        Layout.alignment: Qt.AlignTop
                         model: _uiBackend.statisticPanel
                         visible: _uiBackend.patyStatisticVisible
                     }
 
                     Rectangle {
                         id: rectangle2
-                        //width: 200 * _uiBackend.sizeModifer
                         width: 0
                         height: 200 * _uiBackend.sizeModifer
                         color: "#00000000"

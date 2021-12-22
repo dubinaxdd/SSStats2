@@ -10,6 +10,7 @@ struct Settings
     bool noFog = false;
     bool smallGamePanelActive = false;
     bool showGamePanelPreset = false;
+    float scale = 1.0;
 };
 
 class SettingsController : public QObject

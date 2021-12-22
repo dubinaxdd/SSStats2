@@ -188,6 +188,21 @@ Rectangle {
 
     Connections{
         target: _uiBackend
+
+
+        function onSizeModiferLoadedFromSettings(scale)
+        {
+            switch (scale)
+            {
+                case 0.5: scaleRadioButton0.checked = true; break;
+                case 0.75: scaleRadioButton1.checked = true; break;
+                case 1.0: scaleRadioButton2.checked = true; break;
+                case 1.25: scaleRadioButton3.checked = true; break;
+                case 1.5: scaleRadioButton4.checked = true; break;
+                case 1.75: scaleRadioButton5.checked = true; break;
+                case 2.0: scaleRadioButton6.checked = true; break;
+            }
+        }
     }
 
 

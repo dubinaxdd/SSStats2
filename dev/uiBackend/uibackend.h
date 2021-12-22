@@ -96,6 +96,7 @@ signals:
     void noFogStateChanged(bool);
 
     void sizeModiferChanged(float sizeModifer);
+    void sizeModiferLoadedFromSettings(float scale);
 
 public slots:
     void expandKeyPressed();

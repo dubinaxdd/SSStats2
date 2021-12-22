@@ -6,11 +6,9 @@ Rectangle {
     id: mainRectangle
 
     width: 260 * _uiBackend.sizeModifer
-    height: 880 * _uiBackend.sizeModifer
 
     Layout.minimumWidth: 260 * _uiBackend.sizeModifer
     Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-
 
     color: "#00000000"
     border.color: "#00000000"
@@ -69,10 +67,11 @@ Rectangle {
         {
             id:curentPlayer
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
             visible: model.curentPlayerStatsItem.itemVisible && (!model.expandPatyStatistic || _uiBackend.expand) && model.curentPlayerStatsItem.playerName !== ""
@@ -88,10 +87,11 @@ Rectangle {
             visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 200 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
 
@@ -106,10 +106,11 @@ Rectangle {
             visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
 
@@ -124,10 +125,11 @@ Rectangle {
             visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
 
@@ -142,10 +144,11 @@ Rectangle {
             visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
 
@@ -160,10 +163,11 @@ Rectangle {
             visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
 
@@ -178,10 +182,11 @@ Rectangle {
             visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
 
@@ -197,10 +202,11 @@ Rectangle {
             visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
 
             Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 120 * _uiBackend.sizeModifer
             Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-            Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+            Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+            height: 120 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillHeight: false
             Layout.fillWidth: true
 
@@ -215,9 +221,12 @@ Rectangle {
             visible: _uiBackend.ssWindowed && !_uiBackend.headerVisible
             color: "#00000000"
             Layout.fillWidth: true
+            Layout.fillHeight: false
             Layout.preferredHeight: 25 * _uiBackend.sizeModifer
             Layout.maximumHeight: 25 * _uiBackend.sizeModifer
             Layout.minimumHeight: 25 * _uiBackend.sizeModifer
+            height: 25 * _uiBackend.sizeModifer
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
         }
 
         Rectangle {
@@ -251,22 +260,13 @@ Rectangle {
             }
 
             height: 10 * _uiBackend.sizeModifer
-            //width: 260 * _uiBackend.sizeModifer
-
-
-
             radius: 5 * _uiBackend.sizeModifer
-            //Layout.maximumWidth: 260 * _uiBackend.sizeModifer
-            //Layout.minimumWidth: 260 * _uiBackend.sizeModifer
 
             Layout.maximumHeight: 10 * _uiBackend.sizeModifer
             Layout.minimumHeight: 10 * _uiBackend.sizeModifer
-
-            //Layout.maximumWidth: 65535
-            //Layout.minimumWidth: 0
-            //text: qsTr("***")
+            Layout.alignment: Qt.AlignRight | Qt.AlignTop
             Layout.fillWidth: true
-            //Layout.fillHeight: true
+            Layout.fillHeight: false
             visible: !_uiBackend.expand
 
 
@@ -284,11 +284,6 @@ Rectangle {
         }
 
         Rectangle {
-            id: rectangle
-            //width: 200 * _uiBackend.sizeModifer
-            //width:0
-            //height: 200 * _uiBackend.sizeModifer
-            color: "#00000000"
             Layout.fillHeight: true
             Layout.fillWidth: true
         }
