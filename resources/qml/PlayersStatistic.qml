@@ -3,8 +3,15 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 Rectangle {
-    width: 260
-    height: 880
+    id: mainRectangle
+
+    width: 260 * _uiBackend.sizeModifer
+    height: 880 * _uiBackend.sizeModifer
+
+    Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+    Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+
+
     color: "#00000000"
     border.color: "#00000000"
 
@@ -61,10 +68,10 @@ Rectangle {
         PlayersStatisticItem
         {
             id:curentPlayer
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -80,10 +87,10 @@ Rectangle {
             id:player2
             visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -98,10 +105,10 @@ Rectangle {
             id:player3
             visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -116,10 +123,10 @@ Rectangle {
             id:player4
             visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -134,10 +141,10 @@ Rectangle {
             id:player5
             visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -152,10 +159,10 @@ Rectangle {
             id:player6
             visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -170,10 +177,10 @@ Rectangle {
             id:player7
             visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -189,10 +196,10 @@ Rectangle {
             id:player8
             visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
 
-            Layout.maximumWidth: 260
-            Layout.maximumHeight: 100
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 100 * _uiBackend.sizeModifer
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
             Layout.fillHeight: false
             Layout.fillWidth: true
@@ -208,9 +215,9 @@ Rectangle {
             visible: _uiBackend.ssWindowed && !_uiBackend.headerVisible
             color: "#00000000"
             Layout.fillWidth: true
-            Layout.preferredHeight: 25
-            Layout.maximumHeight: 25
-            Layout.minimumHeight: 25
+            Layout.preferredHeight: 25 * _uiBackend.sizeModifer
+            Layout.maximumHeight: 25 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 25 * _uiBackend.sizeModifer
         }
 
         Rectangle {
@@ -242,18 +249,24 @@ Rectangle {
 
                 }
             }
-            height: 10
 
-            //color: "#337ab7"
-            radius: 5
+            height: 10 * _uiBackend.sizeModifer
+            //width: 260 * _uiBackend.sizeModifer
 
-            Layout.maximumHeight: 10
-            Layout.minimumHeight: 10
-            Layout.maximumWidth: 65535
-            Layout.minimumWidth: 0
+
+
+            radius: 5 * _uiBackend.sizeModifer
+            //Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+            //Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+
+            Layout.maximumHeight: 10 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 10 * _uiBackend.sizeModifer
+
+            //Layout.maximumWidth: 65535
+            //Layout.minimumWidth: 0
             //text: qsTr("***")
             Layout.fillWidth: true
-            Layout.fillHeight: true
+            //Layout.fillHeight: true
             visible: !_uiBackend.expand
 
 
@@ -261,8 +274,8 @@ Rectangle {
 
             Image {
                 id: image
-                width: 95
-                height: 10
+                width: 95 * _uiBackend.sizeModifer
+                height: 10 * _uiBackend.sizeModifer
                 anchors.verticalCenter: parent.verticalCenter
                 source: "qrc:/images/resources/images/expandDots.png"
                 anchors.horizontalCenter: parent.horizontalCenter
@@ -272,14 +285,13 @@ Rectangle {
 
         Rectangle {
             id: rectangle
-            width: 200
-            height: 200
+            //width: 200 * _uiBackend.sizeModifer
+            //width:0
+            //height: 200 * _uiBackend.sizeModifer
             color: "#00000000"
             Layout.fillHeight: true
             Layout.fillWidth: true
         }
-
-
     }
 }
 

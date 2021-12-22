@@ -9,13 +9,13 @@ Rectangle {
     border.color: "#00000000"
     border.width: 0
     anchors.fill: parent
-    Layout.margins: 60
+    Layout.margins: 60 * _uiBackend.sizeModifer
     Layout.fillWidth: true
     Layout.fillHeight: true
     transformOrigin: Item.BottomRight
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
 
-    radius: 10
+    radius: 10 * _uiBackend.sizeModifer
 
     Text {
         id: infoText
@@ -61,7 +61,7 @@ Rectangle {
         anchors.fill: parent
         wrapMode: Text.WordWrap
         textFormat: Text.RichText
-        anchors.margins: 10
+        anchors.margins: 10 * _uiBackend.sizeModifer
     }
 }
 

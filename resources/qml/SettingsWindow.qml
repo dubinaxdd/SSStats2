@@ -6,11 +6,11 @@ Rectangle {
     id: settingsRectangle
     opacity: 1
     color: "#f9f9f9"
-    radius: 10
+    radius: 10 * _uiBackend.sizeModifer
     border.color: "#00000000"
     border.width: 0
     anchors.fill: parent
-    Layout.margins: 60
+    Layout.margins: 60 * _uiBackend.sizeModifer
     Layout.fillWidth: true
     Layout.fillHeight: true
     transformOrigin: Item.BottomRight
@@ -57,6 +57,93 @@ Rectangle {
             _uiBackend.gamePanel.smallPannelActive = smallGamePanelActivateSwitch.checkedState
         }
 
+
+        //Scale 50%
+        if (relativeMouseX >= scaleRadioButton0.x + settingsColumn.x &&
+                relativeMouseX <= scaleRadioButton0.x + settingsColumn.x + scaleRadioButton0.width &&
+                relativeMouseY >= scaleRadioButton0.y + settingsColumn.y &&
+                relativeMouseY <= scaleRadioButton0.y + settingsColumn.y +scaleRadioButton0.height)
+        {
+
+            if (!scaleRadioButton0.checked)
+                _uiBackend.setSizeModifer(0.5);
+
+            scaleRadioButton0.checked = true;
+        }
+
+        //Scale 75%
+        if (relativeMouseX >= scaleRadioButton1.x + settingsColumn.x &&
+                relativeMouseX <= scaleRadioButton1.x + settingsColumn.x + scaleRadioButton1.width &&
+                relativeMouseY >= scaleRadioButton1.y + settingsColumn.y &&
+                relativeMouseY <= scaleRadioButton1.y + settingsColumn.y +scaleRadioButton1.height)
+        {
+            if (!scaleRadioButton1.checked)
+                _uiBackend.setSizeModifer(0.75);
+
+            scaleRadioButton1.checked = true;
+        }
+
+
+        //Scale 100%
+        if (relativeMouseX >= scaleRadioButton2.x + settingsColumn.x &&
+                relativeMouseX <= scaleRadioButton2.x + settingsColumn.x + scaleRadioButton2.width &&
+                relativeMouseY >= scaleRadioButton2.y + settingsColumn.y &&
+                relativeMouseY <= scaleRadioButton2.y + settingsColumn.y +scaleRadioButton2.height)
+        {
+            if (!scaleRadioButton2.checked)
+                _uiBackend.setSizeModifer(1.0);
+
+            scaleRadioButton2.checked = true;
+        }
+
+        //Scale 125%
+        if (relativeMouseX >= scaleRadioButton3.x + settingsColumn.x &&
+                relativeMouseX <= scaleRadioButton3.x + settingsColumn.x + scaleRadioButton3.width &&
+                relativeMouseY >= scaleRadioButton3.y + settingsColumn.y &&
+                relativeMouseY <= scaleRadioButton3.y + settingsColumn.y +scaleRadioButton3.height)
+        {
+            if (!scaleRadioButton3.checked)
+                _uiBackend.setSizeModifer(1.25);
+
+            scaleRadioButton3.checked = true;
+        }
+
+        //Scale 150%
+        if (relativeMouseX >= scaleRadioButton4.x + settingsColumn.x &&
+                relativeMouseX <= scaleRadioButton4.x + settingsColumn.x + scaleRadioButton4.width &&
+                relativeMouseY >= scaleRadioButton4.y + settingsColumn.y &&
+                relativeMouseY <= scaleRadioButton4.y + settingsColumn.y +scaleRadioButton4.height)
+        {
+            if (!scaleRadioButton4.checked)
+                _uiBackend.setSizeModifer(1.5);
+
+            scaleRadioButton4.checked = true;
+        }
+
+        //Scale 175%
+        if (relativeMouseX >= scaleRadioButton5.x + settingsColumn.x &&
+                relativeMouseX <= scaleRadioButton5.x + settingsColumn.x + scaleRadioButton5.width &&
+                relativeMouseY >= scaleRadioButton5.y + settingsColumn.y &&
+                relativeMouseY <= scaleRadioButton5.y + settingsColumn.y +scaleRadioButton5.height)
+        {
+            if (!scaleRadioButton5.checked)
+                _uiBackend.setSizeModifer(1.75);
+
+            scaleRadioButton5.checked = true;
+        }
+
+        //Scale 200%
+        if (relativeMouseX >= scaleRadioButton6.x + settingsColumn.x &&
+                relativeMouseX <= scaleRadioButton6.x + settingsColumn.x + scaleRadioButton6.width &&
+                relativeMouseY >= scaleRadioButton6.y + settingsColumn.y &&
+                relativeMouseY <= scaleRadioButton6.y + settingsColumn.y +scaleRadioButton6.height)
+        {
+
+            if (!scaleRadioButton6.checked)
+                _uiBackend.setSizeModifer(2.0);
+
+            scaleRadioButton6.checked = true;
+        }
     }
 
     function mouseHover(x, y)
@@ -106,7 +193,7 @@ Rectangle {
 
     Text {
         id: settingsLabel
-        height: 40
+        height: 40 * _uiBackend.sizeModifer
         text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>"
         anchors.left: parent.left
         anchors.right: parent.right
@@ -125,10 +212,10 @@ Rectangle {
         anchors.right: parent.right
         anchors.top: settingsLabel.bottom
         anchors.bottom: parent.bottom
-        anchors.rightMargin: 10
-        anchors.leftMargin: 10
-        anchors.bottomMargin: 10
-        anchors.topMargin: 10
+        anchors.rightMargin: 10 * _uiBackend.sizeModifer
+        anchors.leftMargin: 10 * _uiBackend.sizeModifer
+        anchors.bottomMargin: 10 * _uiBackend.sizeModifer
+        anchors.topMargin: 10 * _uiBackend.sizeModifer
 
         Switch {
             id: noFogSwitch
@@ -137,7 +224,8 @@ Rectangle {
             property bool checkedState : _uiBackend.noFogState
 
             text: qsTr("Remove fog (aka No Fog) of the game space when moving away")
-            font.pointSize: 10
+            //font.pointSize: 10
+            font.pixelSize: 15 * _uiBackend.sizeModifer
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
         }
@@ -149,7 +237,8 @@ Rectangle {
             property bool checkedState : _uiBackend.gamePanel.showGamePannelPreset
 
             text: qsTr("APM panel visible in game")
-            font.pointSize: 10
+            //font.pointSize: 10
+            font.pixelSize: 15 * _uiBackend.sizeModifer
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
         }
@@ -161,10 +250,63 @@ Rectangle {
             property bool checkedState : _uiBackend.gamePanel.smallPannelActive
 
             text: qsTr("Small APM panel in game")
-            font.pointSize: 10
+            //font.pointSize: 10
+            font.pixelSize: 15 * _uiBackend.sizeModifer
+
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
         }
+
+        Label {
+            id: label
+            text: qsTr("Scale")
+            leftPadding: 10
+            font.pointSize: 10
+            topPadding: 20
+        }
+
+        RadioButton {
+            id: scaleRadioButton0
+            text: qsTr("50%")
+            leftPadding: 20
+        }
+
+        RadioButton {
+            id: scaleRadioButton1
+            text: qsTr("75%")
+            leftPadding: 20
+        }
+
+        RadioButton {
+            id: scaleRadioButton2
+            text: qsTr("100%")
+            leftPadding: 20
+        }
+
+        RadioButton {
+            id: scaleRadioButton3
+            text: qsTr("125%")
+            leftPadding: 20
+        }
+
+        RadioButton {
+            id: scaleRadioButton4
+            text: qsTr("150%")
+            leftPadding: 20
+        }
+
+        RadioButton {
+            id: scaleRadioButton5
+            text: qsTr("175%")
+            leftPadding: 20
+        }
+
+        RadioButton {
+            id: scaleRadioButton6
+            text: qsTr("200%")
+            leftPadding: 20
+        }
+
     }
 }
 

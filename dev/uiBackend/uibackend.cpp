@@ -94,6 +94,13 @@ void UiBackend::onLaunchSoulstormWithSupportMode()
     emit sendLaunchSoulstormWithSupportMode();
 }
 
+void UiBackend::setSizeModifer(float size)
+{
+    m_sizeModifer = size;
+
+    emit sizeModiferChanged(m_sizeModifer);
+}
+
 void UiBackend::onSettingsLoaded()
 {
     m_noFogState = m_settingsController->getSettings()->noFog;
