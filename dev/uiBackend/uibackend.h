@@ -100,6 +100,8 @@ signals:
     void sizeModiferChanged(float sizeModifer);
     void sizeModiferLoadedFromSettings(float scale);
 
+    void expandButtonPressed();
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();

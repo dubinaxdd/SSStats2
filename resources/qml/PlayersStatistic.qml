@@ -148,9 +148,11 @@ Rectangle {
             updateScrollViewHeight();
         }
 
-        function onSendExpand()
+        function onExpandButtonPressed()
         {
             updateScrollViewHeight();
+            scrollView.setDefault();
+            scrollView.height = ((120 * _uiBackend.sizeModifer) + columnLayout.spacing) * playersCount ;
         }
     }
 

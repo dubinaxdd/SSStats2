@@ -26,6 +26,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
 void UiBackend::expandKeyPressed()
 {
     setExpand(!m_expand);
+    emit expandButtonPressed();
 }
 
 void UiBackend::expandPatyStatisticButtonClick()

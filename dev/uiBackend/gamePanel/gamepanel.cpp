@@ -19,8 +19,6 @@ GamePanel::GamePanel(SettingsController *settingsController, QObject *parent)
     QObject::connect(m_gameLeaveTimer, &QTimer::timeout, this, &GamePanel::gameLeaveTimerTimeout, Qt::QueuedConnection);
 
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &GamePanel::onSettingsLoaded, Qt::QueuedConnection);
-
-
 }
 
 void GamePanel::racePanelVisibleTimerTimeout()
