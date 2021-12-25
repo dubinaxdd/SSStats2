@@ -261,6 +261,7 @@ Window {
                         Layout.minimumHeight: 60 * _uiBackend.sizeModifer
                         Layout.fillHeight: true
                         visible: _uiBackend.headerVisible
+                        z: 3
                     }
 
                     PlayersStatistic
@@ -271,6 +272,7 @@ Window {
                         Layout.alignment: Qt.AlignTop
                         model: _uiBackend.statisticPanel
                         visible: _uiBackend.patyStatisticVisible
+                        z: 2
                     }
 
                     Rectangle {

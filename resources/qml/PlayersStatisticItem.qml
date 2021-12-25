@@ -6,15 +6,26 @@ Rectangle {
 
     property var itemModel
     id: itemRectangle
-    width: 280 * _uiBackend.sizeModifer
+
+ /* width: 280 * _uiBackend.sizeModifer
     height: 130 * _uiBackend.sizeModifer
-    color: (itemRectangle.itemModel.playerIsBanned) ? "#ffa9a9" : "#ffffff"
-    radius: 10 * _uiBackend.sizeModifer
     Layout.maximumHeight: 100 * _uiBackend.sizeModifer
     Layout.maximumWidth: 200 * _uiBackend.sizeModifer
     Layout.fillWidth: false
     Layout.fillHeight: true
+*/
 
+    Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+    Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+    Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+    Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+    height: 120 * _uiBackend.sizeModifer
+    Layout.alignment: Qt.AlignRight | Qt.AlignTop
+    Layout.fillHeight: false
+    Layout.fillWidth: true
+
+    color: (itemRectangle.itemModel.playerIsBanned) ? "#ffa9a9" : "#ffffff"
+    radius: 10 * _uiBackend.sizeModifer
     property url avatarSource
 
     RowLayout {
