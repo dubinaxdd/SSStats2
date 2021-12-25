@@ -27,7 +27,6 @@ Rectangle {
             relativeMouseY <= scrollView.y + scrollView.height
                 )
         {
-
             if (delta > 0)
                 scrollView.scrollToTop();
 
@@ -41,6 +40,34 @@ Rectangle {
     {
         relativeMouseX = x
         relativeMouseY = y
+    }
+
+    function visibleItemsCount()
+    {
+        var asd = 1;
+
+        if (player2.visible)
+            asd++;
+
+        if (player3.visible)
+            asd++;
+
+        if (player4.visible)
+            asd++;
+
+        if (player5.visible)
+            asd++;
+
+        if (player6.visible)
+            asd++;
+
+        if (player7.visible)
+            asd++;
+
+        if (player8.visible)
+            asd++;
+
+        return asd;
     }
 
     //Костыль для перезагрузки картинки, рил так на формух делают
@@ -89,7 +116,11 @@ Rectangle {
 
     ScrollView {
         id: scrollView
-        anchors.fill: parent
+        //anchors.fill: parent
+
+        height: (120 + columnLayout.spacing) * visibleItemsCount() *_uiBackend.sizeModifer
+
+        width: 260 *_uiBackend.sizeModifer
 
         function scrollToTop() {
             ScrollBar.vertical.position += 0.1//1.0 + ScrollBar.vertical.size
@@ -126,11 +157,13 @@ Rectangle {
             {
                 id:player2
                 visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
+                //visible: true
+
 
                 Layout.maximumWidth: 260 * _uiBackend.sizeModifer
                 Layout.maximumHeight: 120 * _uiBackend.sizeModifer
                 Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-                Layout.minimumHeight: 200 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
                 height: 120 * _uiBackend.sizeModifer
                 Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
@@ -145,6 +178,7 @@ Rectangle {
             {
                 id:player3
                 visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
+                //visible: true
 
                 Layout.maximumWidth: 260 * _uiBackend.sizeModifer
                 Layout.maximumHeight: 120 * _uiBackend.sizeModifer
@@ -164,6 +198,7 @@ Rectangle {
             {
                 id:player4
                 visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
+                //visible: true
 
                 Layout.maximumWidth: 260 * _uiBackend.sizeModifer
                 Layout.maximumHeight: 120 * _uiBackend.sizeModifer
@@ -183,6 +218,7 @@ Rectangle {
             {
                 id:player5
                 visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
+               // visible: true
 
                 Layout.maximumWidth: 260 * _uiBackend.sizeModifer
                 Layout.maximumHeight: 120 * _uiBackend.sizeModifer
@@ -202,6 +238,7 @@ Rectangle {
             {
                 id:player6
                 visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
+                //visible: true
 
                 Layout.maximumWidth: 260 * _uiBackend.sizeModifer
                 Layout.maximumHeight: 120 * _uiBackend.sizeModifer
@@ -221,6 +258,7 @@ Rectangle {
             {
                 id:player7
                 visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
+               // visible: true
 
                 Layout.maximumWidth: 260 * _uiBackend.sizeModifer
                 Layout.maximumHeight: 120 * _uiBackend.sizeModifer
@@ -241,6 +279,7 @@ Rectangle {
             {
                 id:player8
                 visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
+                //visible: true
 
                 Layout.maximumWidth: 260 * _uiBackend.sizeModifer
                 Layout.maximumHeight: 120 * _uiBackend.sizeModifer
