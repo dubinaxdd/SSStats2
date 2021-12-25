@@ -20,6 +20,8 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     MSLLHOOKSTRUCT mKey = *((MSLLHOOKSTRUCT*)lParam);
 
+    bool isWheel = false;
+
     switch(wParam)
     {
         case WM_MOUSEWHEEL:
@@ -27,6 +29,7 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
             const MSLLHOOKSTRUCT *mllhs = (const MSLLHOOKSTRUCT *) lParam;
             short delta = HIWORD(mllhs->mouseData);
             HookManager::instance()->core()->onWheelEvent(std::move(QWheelEvent( QPointF(mKey.pt.x, mKey.pt.y), delta, Qt::MouseButtons(), Qt::KeyboardModifiers())));
+            isWheel = true;
             break;
         }
 
@@ -47,7 +50,7 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
         }    
     }
 
-    return CallNextHookEx(mouseHook, nCode, wParam, lParam);
+    return (HookManager::instance()->inputBlock() && isWheel) ? 1 : CallNextHookEx(mouseHook, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -187,52 +190,9 @@ void HookManager::setCore(Core *newCore)
 
 }
 
-
-void HookManager::reconnectHook()
-{
-    ///UnhookWindowsHookEx(mouseHook);
-   /// UnhookWindowsHookEx(keyboardHook);
-
-
-
-    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
-  ////  mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
-    /*if (mouseHook == NULL)
-        qDebug() << "INFO: MouseHook failed";
-    else
-        qDebug() << "INFO: MouseHook accepted";*/
-
-    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
-  ////  keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
-   /* if (keyboardHook == NULL)
-        qDebug() << "INFO: KeyboardHook failed";
-    else
-        qDebug() << "INFO: KeyboardHook accepted";*/
-}
-
-
 HookManager::HookManager()
 {
     m_inputBlock = false;
-
-
-    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
-   //// mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
-    /*if (mouseHook == NULL)
-        qDebug() << "INFO: MouseHook failed";
-    else
-        qDebug() << "INFO: MouseHook accepted";*/
-
-    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
-   //// keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
-    //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
-   /* if (keyboardHook == NULL)
-        qDebug() << "INFO: KeyboardHook failed";
-    else
-        qDebug() << "INFO: KeyboardHook accepted";*/
 }
 
 HookManager::~HookManager()

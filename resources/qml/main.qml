@@ -50,20 +50,7 @@ Window {
             }
 
 
-
-            // Кнопка "Свернуть колонку статистики"
-            if (xMousePos >= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x &&
-                    xMousePos <= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x + patyStatistic.expandPatyStatisticButtonRectangle.width &&
-                    yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
-                    yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
-            {
-                if(!_uiBackend.gamePanel.gamePanelVisible)
-                {
-                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
-                    _uiBackend.expandPatyStatisticButtonClick();
-                }
-            }
-
+            patyStatistic.mouseClick(xMousePos - columnLayout3.x - patyStatistic.x, yMousePos - columnLayout3.y - patyStatistic.y);
 
 
             if(_uiBackend.gamePanel.showGamePannelPreset)
@@ -142,28 +129,10 @@ Window {
                 gamePanelSmall.mouseHover(xMousePos, yMousePos);
             }
 
-
-            // Кнопка "Свернуть колонку статистики"
-            if (xMousePos >= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x &&
-                    xMousePos <= columnLayout3.x + patyStatistic.x + patyStatistic.expandPatyStatisticButtonRectangle.x + patyStatistic.expandPatyStatisticButtonRectangle.width &&
-                    yMousePos >= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y &&
-                    yMousePos <= columnLayout3.y + patyStatistic.y + patyStatistic.expandPatyStatisticButtonRectangle.y + patyStatistic.expandPatyStatisticButtonRectangle.height)
-            {
-
-                if(!patyStatistic.expandPatyStatisticButtonRectangle.howeredState)
-                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = true;
-            }
-            else
-            {
-                if(patyStatistic.expandPatyStatisticButtonRectangle.howeredState)
-                    patyStatistic.expandPatyStatisticButtonRectangle.howeredState = false;
-            }
-
-
             patyStatistic.mouseHover(xMousePos - patyStatistic.x - columnLayout3.x, yMousePos - patyStatistic.y - columnLayout3.y );
 
-            if(_uiBackend.expand){
-
+            if(_uiBackend.expand)
+            {
                 fullOverlay.mouseHover(xMousePos - fullOverlay.x, yMousePos - fullOverlay.y );
             }
         }

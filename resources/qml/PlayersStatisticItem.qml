@@ -7,14 +7,6 @@ Rectangle {
     property var itemModel
     id: itemRectangle
 
- /* width: 280 * _uiBackend.sizeModifer
-    height: 130 * _uiBackend.sizeModifer
-    Layout.maximumHeight: 100 * _uiBackend.sizeModifer
-    Layout.maximumWidth: 200 * _uiBackend.sizeModifer
-    Layout.fillWidth: false
-    Layout.fillHeight: true
-*/
-
     Layout.maximumWidth: 260 * _uiBackend.sizeModifer
     Layout.maximumHeight: 120 * _uiBackend.sizeModifer
     Layout.minimumWidth: 260 * _uiBackend.sizeModifer
@@ -34,14 +26,10 @@ Rectangle {
 
         ColumnLayout {
             id: columnLayout
-            //width: 100 * _uiBackend.sizeModifer
-            //height: 100 * _uiBackend.sizeModifer
 
             Rectangle {
                 id: rectangle
-                //width: 200 * _uiBackend.sizeModifer
-               // width: 0
-                //height: 200 * _uiBackend.sizeModifer
+
                 color: "#00000000"
                 radius: 10 * _uiBackend.sizeModifer
                 Layout.topMargin: (itemRectangle.itemModel.playerIsBanned ? 10 : 0) * _uiBackend.sizeModifer
@@ -74,7 +62,6 @@ Rectangle {
                 id: statusLabel
                 visible: itemRectangle.itemModel.playerIsBanned
                 text: qsTr("[CHEATER]")
-                //font.pointSize: 10
                 font.pixelSize: 15 * _uiBackend.sizeModifer
 
                 Layout.bottomMargin: 10 * _uiBackend.sizeModifer
@@ -94,7 +81,6 @@ Rectangle {
                 id: label1
                 text: itemRectangle.itemModel.playerName
                 Layout.maximumWidth: 180 * _uiBackend.sizeModifer
-                //font.pointSize: 12
 
                 font.pixelSize: 20 * _uiBackend.sizeModifer
 
@@ -105,8 +91,6 @@ Rectangle {
             Label {
                 id: label2
                 text: "MMR: " + itemRectangle.itemModel.playerMmr
-                //font.pointSize: 8
-
                 font.pixelSize: 12 * _uiBackend.sizeModifer
 
                 Layout.fillWidth: true
@@ -118,14 +102,12 @@ Rectangle {
                 text: "Solo MMR: " + itemRectangle.itemModel.playerMmr1v1
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                //font.pointSize: 8
                 font.pixelSize: 12 * _uiBackend.sizeModifer
             }
 
             Label {
                 id: label4
                 text: "Games played: " + itemRectangle.itemModel.playerGamesCount
-                //font.pointSize: 8
                 font.pixelSize: 12 * _uiBackend.sizeModifer
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -136,14 +118,12 @@ Rectangle {
                 text: "Race: " + itemRectangle.itemModel.playerRace
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-               // font.pointSize: 8
                 font.pixelSize: 12 * _uiBackend.sizeModifer
             }
 
             Label {
                 id: label5
                 text: "Win rate: " + itemRectangle.itemModel.playerWinRate + "%"
-                //font.pointSize: 8
                 font.pixelSize: 12 * _uiBackend.sizeModifer
                 Layout.fillHeight: true
                 Layout.fillWidth: true
@@ -152,7 +132,6 @@ Rectangle {
             Label {
                 id: label6
                 text: "APM: " + itemRectangle.itemModel.playerApm
-                //font.pointSize: 8
                 font.pixelSize: 12 * _uiBackend.sizeModifer
                 Layout.fillHeight: true
                 Layout.fillWidth: true

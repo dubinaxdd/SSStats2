@@ -80,13 +80,6 @@ Rectangle {
 
     }
 
-
-
-
-    Connections{
-        target: _uiBackend
-    }
-
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
@@ -188,7 +181,6 @@ Rectangle {
                 Rectangle
                 {
                     Layout.fillWidth: true
-
                 }
 
                 Label {

@@ -21,8 +21,6 @@ public:
 
     bool inputBlock();
 
-    void reconnectHook();
-
     void setCore(Core *newCore);
 
     Core *core() const;

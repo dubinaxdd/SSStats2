@@ -198,6 +198,8 @@ void StatisticPanel::onQuitParty()
 
     for (int i = 0; i < 7; i++)
         m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
+
+    emit playersStatsChanged();
 }
 
 StatisticPanelItem *StatisticPanel::getCurentPlayerStatsItem()
