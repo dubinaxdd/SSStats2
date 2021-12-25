@@ -67,8 +67,8 @@ Rectangle {
 
     Rectangle {
         id: gamePanelRectangle
-        width: 200
-        height: 200
+        width: 200 * _uiBackend.sizeModifer
+        height: 200 * _uiBackend.sizeModifer
         color: "#00000000"
         anchors.top: parent.top
         anchors.topMargin: 0
@@ -80,12 +80,12 @@ Rectangle {
 
             Rectangle {
                 id: rectangle1
-                width: 200
-                height: 200
+                width: 200 * _uiBackend.sizeModifer
+                height: 200 * _uiBackend.sizeModifer
                 //color: "#333333"
                 visible: model.smallPannelActive && model.showGamePannelPreset && model.gamePanelVisible
 
-                Layout.maximumHeight: 40
+                Layout.maximumHeight: 40 * _uiBackend.sizeModifer
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -110,13 +110,13 @@ Rectangle {
 
                     Rectangle {
                         id: rectangle3
-                        width: 200
-                        height: 200
+                        width: 200 * _uiBackend.sizeModifer
+                        height: 200 * _uiBackend.sizeModifer
                         color: "#00000000"
-                        Layout.minimumHeight: 40
-                        Layout.minimumWidth: 40
-                        Layout.maximumHeight: 40
-                        Layout.maximumWidth: 40
+                        Layout.minimumHeight: 40 * _uiBackend.sizeModifer
+                        Layout.minimumWidth: 40 * _uiBackend.sizeModifer
+                        Layout.maximumHeight: 40 * _uiBackend.sizeModifer
+                        Layout.maximumWidth: 40 * _uiBackend.sizeModifer
                         Layout.fillWidth: true
                         Layout.fillHeight: true
 
@@ -125,20 +125,20 @@ Rectangle {
                             id: image
                             anchors.fill: parent
                             source: "qrc:/images/resources/images/ssstats.png"
-                            anchors.rightMargin: 5
-                            anchors.leftMargin: 5
-                            anchors.bottomMargin: 5
-                            anchors.topMargin: 5
-                            Layout.maximumHeight: 40
-                            Layout.maximumWidth: 40
+                            anchors.rightMargin: 5 * _uiBackend.sizeModifer
+                            anchors.leftMargin: 5 * _uiBackend.sizeModifer
+                            anchors.bottomMargin: 5 * _uiBackend.sizeModifer
+                            anchors.topMargin: 5 * _uiBackend.sizeModifer
+                            Layout.maximumHeight: 40 * _uiBackend.sizeModifer
+                            Layout.maximumWidth: 40 * _uiBackend.sizeModifer
                             fillMode: Image.PreserveAspectFit
                         }
                     }
 
                     GridLayout {
                         id: gridLayout
-                        width: 100
-                        height: 100
+                        width: 100 * _uiBackend.sizeModifer
+                        height: 100 * _uiBackend.sizeModifer
                         Layout.rowSpan: 0
                         rows: 3
                         columns: 2
@@ -148,7 +148,8 @@ Rectangle {
                             visible: !model.gameLeaveTimerVisible
                             color: "#ffffff"
                             text: qsTr("Current APM: ")
-                            font.pointSize: 8
+                            //font.pointSize: 8
+                            font.pixelSize: 12 * _uiBackend.sizeModifer
                         }
 
                         Label {
@@ -156,7 +157,8 @@ Rectangle {
                             visible: !model.gameLeaveTimerVisible
                             color: "#ffffff"
                             text: model.currentApm
-                            font.pointSize: 8
+                            //font.pointSize: 8
+                            font.pixelSize: 12 * _uiBackend.sizeModifer
                         }
 
                         Label {
@@ -164,7 +166,8 @@ Rectangle {
                             visible: !model.gameLeaveTimerVisible
                             color: "#ffffff"
                             text: qsTr("Average APM: ")
-                            font.pointSize: 8
+                            //font.pointSize: 8
+                            font.pixelSize: 12 * _uiBackend.sizeModifer
                         }
 
                         Label {
@@ -172,7 +175,8 @@ Rectangle {
                             visible: !model.gameLeaveTimerVisible
                             color: "#ffffff"
                             text: model.averageApm
-                            font.pointSize: 8
+                            //font.pointSize: 8
+                            font.pixelSize: 12 * _uiBackend.sizeModifer
                         }
 
                         Label {
@@ -180,7 +184,8 @@ Rectangle {
                             visible: model.gameLeaveTimerVisible
                             color: "#d62525"
                             text: qsTr("You can leave: ")
-                            font.pointSize: 10
+                            //font.pointSize: 10
+                            font.pixelSize: 12 * _uiBackend.sizeModifer
                         }
 
                         Label {
@@ -188,14 +193,16 @@ Rectangle {
                             color: "#d62525"
                             visible: model.gameLeaveTimerVisible
                             text: model.gameLeaveTimeLeft != 0 ? model.gameLeaveTimeLeft : "Is over"
-                            font.pointSize: 10
+                            //font.pointSize: 10
+
+                            font.pixelSize: 12 * _uiBackend.sizeModifer
                         }
                     }
 
                     Rectangle {
                         id: rectangle4
-                        width: 200
-                        height: 200
+                        width: 200 * _uiBackend.sizeModifer
+                        height: 200 * _uiBackend.sizeModifer
                         color: "#00000000"
                         Layout.fillHeight: true
                         Layout.fillWidth: true
@@ -230,13 +237,13 @@ Rectangle {
 
                             }
                         }
-                        height: 10
+                        height: 10 * _uiBackend.sizeModifer
                         radius: 0
                         border.width: 0
-                        Layout.maximumHeight: 40
-                        Layout.minimumHeight: 40
-                        Layout.maximumWidth: 40
-                        Layout.minimumWidth: 40
+                        Layout.maximumHeight: 40 * _uiBackend.sizeModifer
+                        Layout.minimumHeight: 40 * _uiBackend.sizeModifer
+                        Layout.maximumWidth: 40 * _uiBackend.sizeModifer
+                        Layout.minimumWidth: 40 * _uiBackend.sizeModifer
                         //text: qsTr("***")
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -258,8 +265,8 @@ Rectangle {
 
             Rectangle {
                 id: playerRacesRectangle
-                width: 200
-                height: 200
+                width: 200 * _uiBackend.sizeModifer
+                height: 200 * _uiBackend.sizeModifer
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 color: "#00000000"
@@ -271,10 +278,10 @@ Rectangle {
 
                     Rectangle {
                         id: rectangle8
-                        width: 200
-                        height: 200
+                        width: 200 * _uiBackend.sizeModifer
+                        height: 200 * _uiBackend.sizeModifer
                         color: "#00000000"
-                        Layout.maximumHeight: 150
+                        Layout.maximumHeight: 150 * _uiBackend.sizeModifer
                         Layout.maximumWidth: 65535
                         Layout.fillHeight: false
                         Layout.fillWidth: true
@@ -286,18 +293,18 @@ Rectangle {
 
                             Rectangle {
                                 id: player0Rectangle
-                                width: 200
-                                height: 20
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 20 * _uiBackend.sizeModifer
                                 opacity: 1
                                 color: model.player0Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
                                 visible: model.player0Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player0RaceLabel
-                                    height: 20
+                                    height: 20 * _uiBackend.sizeModifer
                                     text: model.player0Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -305,22 +312,24 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: model.player0Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
                             Rectangle {
                                 id: player1Rectangle
-                                width: 200
-                                height: 20
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 20 * _uiBackend.sizeModifer
                                 color: model.player1Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
                                 visible: model.player1Race !== "" && model.racePanelVisible && model.smallPannelActive;
 
                                 Label {
                                     id: player1RaceLabel
-                                    height: 20
+                                    height: 20 * _uiBackend.sizeModifer
                                     text: model.player1Race
                                     anchors.fill: parent
                                     horizontalAlignment: Text.AlignHCenter
@@ -328,15 +337,17 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: model.player1Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
                             Rectangle {
                                 id: player2Rectangle
-                                width: 200
-                                height: 20
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 20 * _uiBackend.sizeModifer
                                 color: model.player2Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillWidth: true
                                 Layout.fillHeight: false
                                 visible: model.player2Race !== "" && model.racePanelVisible && model.smallPannelActive;
@@ -349,15 +360,17 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: model.player2Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
                             Rectangle {
                                 id: player3Rectangle
-                                width: 200
-                                height: 20
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 20 * _uiBackend.sizeModifer
                                 color: model.player3Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
                                 visible: model.player3Race !== "" && model.racePanelVisible && model.smallPannelActive;
@@ -370,15 +383,17 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: model.player3Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
                             Rectangle {
                                 id: player4Rectangle
-                                width: 200
-                                height: 200
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 200 * _uiBackend.sizeModifer
                                 color: model.player4Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
                                 visible: model.player4Race !== "" && model.racePanelVisible && model.smallPannelActive;
@@ -391,15 +406,17 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: model.player4Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
                             Rectangle {
                                 id: player5Rectangle
-                                width: 200
-                                height: 200
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 200 * _uiBackend.sizeModifer
                                 color: model.player5Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
                                 visible: model.player5Race !== "" && model.racePanelVisible && model.smallPannelActive;
@@ -412,15 +429,17 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: model.player5Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
                             Rectangle {
                                 id: player6Rectangle
-                                width: 200
-                                height: 200
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 200 * _uiBackend.sizeModifer
                                 color: model.player6Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
                                 visible: model.player6Race !== "" && model.racePanelVisible && model.smallPannelActive;
@@ -433,16 +452,18 @@ Rectangle {
                                     Layout.fillWidth: true
                                     visible: model.player6Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
 
                             Rectangle {
                                 id: player7Rectangle
-                                width: 200
-                                height: 200
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 200 * _uiBackend.sizeModifer
                                 color: model.player7Color
-                                Layout.maximumHeight: 20
+                                Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                                 Layout.fillHeight: false
                                 Layout.fillWidth: true
                                 visible: model.player7Race !== "" && model.racePanelVisible && model.smallPannelActive;
@@ -456,17 +477,19 @@ Rectangle {
                                     Layout.fillHeight: false
                                     visible: model.player7Race !== "";
                                     color: "#ffffff"
+
+                                    font.pixelSize: 12 * _uiBackend.sizeModifer
                                 }
                             }
 
                             Rectangle {
                                 id: rectangle9
-                                width: 200
-                                height: 200
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 200 * _uiBackend.sizeModifer
                                 color: "#00000000"
                                 border.color: "#00000000"
-                                Layout.maximumHeight: 3
-                                Layout.minimumHeight: 3
+                                Layout.maximumHeight: 3 * _uiBackend.sizeModifer
+                                Layout.minimumHeight: 3 * _uiBackend.sizeModifer
                                 Layout.maximumWidth: 65526
                                 Layout.minimumWidth: 0
                                 Layout.fillWidth: true
@@ -476,8 +499,8 @@ Rectangle {
 
                             Rectangle {
                                 id: rectangle2
-                                width: 200
-                                height: 200
+                                width: 200 * _uiBackend.sizeModifer
+                                height: 200 * _uiBackend.sizeModifer
                                 color: "#00000000"
                                 Layout.fillHeight: true
                                 Layout.fillWidth: true
@@ -488,8 +511,8 @@ Rectangle {
 
                     Rectangle {
                         id: rectangle7
-                        width: 200
-                        height: 200
+                        width: 200 * _uiBackend.sizeModifer
+                        height: 200 * _uiBackend.sizeModifer
                         color: "#00000000"
                         Layout.fillHeight: true
                         Layout.fillWidth: true
@@ -499,8 +522,8 @@ Rectangle {
 
             Rectangle {
                 id: rectangle10
-                width: 200
-                height: 200
+                width: 200 * _uiBackend.sizeModifer
+                height: 200 * _uiBackend.sizeModifer
                 opacity: 1
                 color: "#00000000"
                 Layout.fillHeight: true

@@ -35,6 +35,10 @@ class UiBackend : public QObject
 
     Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
 
+    Q_PROPERTY(float sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
+
+
+
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -93,6 +97,9 @@ signals:
     void sendLaunchSoulstormWithSupportMode();
     void noFogStateChanged(bool);
 
+    void sizeModiferChanged(float sizeModifer);
+    void sizeModiferLoadedFromSettings(float scale);
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
@@ -108,6 +115,7 @@ public slots:
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
+    Q_INVOKABLE void setSizeModifer(float size);
 
 private slots:
     void onSettingsLoaded();
@@ -148,6 +156,8 @@ private:
     bool m_patyStatisticVisibleButtonPressedState = false;
 
     bool m_noFogState = false;
+
+    float m_sizeModifer = 2.0;
 
 
 };

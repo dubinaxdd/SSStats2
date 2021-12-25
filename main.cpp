@@ -77,9 +77,11 @@ int main(int argc, char *argv[])
 
     HookManager::instance();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
+//#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+//#endif
+
+    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
     setlocale(LC_ALL,"Russian");

@@ -3,8 +3,13 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 Rectangle {
-    width: 280
-    height: 880
+    id: mainRectangle
+
+    width: 260 * _uiBackend.sizeModifer
+
+    Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+    Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+
     color: "#00000000"
     border.color: "#00000000"
 
@@ -86,7 +91,6 @@ Rectangle {
         id: scrollView
         anchors.fill: parent
 
-
         function scrollToTop() {
             ScrollBar.vertical.position += 0.1//1.0 + ScrollBar.vertical.size
         }
@@ -99,14 +103,16 @@ Rectangle {
             id: columnLayout
             anchors.fill: parent
 
+
             PlayersStatisticItem
             {
                 id:curentPlayer
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
                 visible: model.curentPlayerStatsItem.itemVisible && (!model.expandPatyStatistic || _uiBackend.expand) && model.curentPlayerStatsItem.playerName !== ""
@@ -119,14 +125,14 @@ Rectangle {
             PlayersStatisticItem
             {
                 id:player2
-                // visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
-                visible: true
+                visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
 
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 200 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -138,14 +144,14 @@ Rectangle {
             PlayersStatisticItem
             {
                 id:player3
-                //visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
-                visible: true
+                visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
 
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -157,14 +163,14 @@ Rectangle {
             PlayersStatisticItem
             {
                 id:player4
-                //visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
-                visible: true
+                visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
 
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -176,14 +182,14 @@ Rectangle {
             PlayersStatisticItem
             {
                 id:player5
-                //visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
-                visible: true
+                visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
 
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -195,14 +201,14 @@ Rectangle {
             PlayersStatisticItem
             {
                 id:player6
-                //visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
-                visible: true
+                visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
 
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -214,14 +220,14 @@ Rectangle {
             PlayersStatisticItem
             {
                 id:player7
-                //visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
-                visible: true
+                visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
 
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -234,136 +240,14 @@ Rectangle {
             PlayersStatisticItem
             {
                 id:player8
-                //visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                visible: true
+                visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
 
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-
-                itemModel: model.player8StatsItem
-                avatarSource: "image://ImageProvider/player8AvatarMedium"
-
-            }
-
-
-            PlayersStatisticItem
-            {
-                id:player9
-                //visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                visible: true
-
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-
-                itemModel: model.player8StatsItem
-                avatarSource: "image://ImageProvider/player8AvatarMedium"
-
-            }
-
-
-            PlayersStatisticItem
-            {
-                id:player10
-                //visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                visible: true
-
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-
-                itemModel: model.player8StatsItem
-                avatarSource: "image://ImageProvider/player8AvatarMedium"
-
-            }
-
-
-
-            PlayersStatisticItem
-            {
-                id:player11
-                //visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                visible: true
-
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-
-                itemModel: model.player8StatsItem
-                avatarSource: "image://ImageProvider/player8AvatarMedium"
-
-            }
-
-
-
-            PlayersStatisticItem
-            {
-                id:player12
-                //visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                visible: true
-
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-
-                itemModel: model.player8StatsItem
-                avatarSource: "image://ImageProvider/player8AvatarMedium"
-
-            }
-
-
-
-            PlayersStatisticItem
-            {
-                id:player13
-                //visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                visible: true
-
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-
-                itemModel: model.player8StatsItem
-                avatarSource: "image://ImageProvider/player8AvatarMedium"
-
-            }
-
-            PlayersStatisticItem
-            {
-                id:player14
-                //visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                visible: true
-
-                Layout.maximumWidth: 280
-                Layout.maximumHeight: 100
-                Layout.minimumWidth: 280
-                Layout.minimumHeight: 60
-                Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
+                Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 120 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 120 * _uiBackend.sizeModifer
+                height: 120 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillHeight: false
                 Layout.fillWidth: true
 
@@ -378,9 +262,12 @@ Rectangle {
                 visible: _uiBackend.ssWindowed && !_uiBackend.headerVisible
                 color: "#00000000"
                 Layout.fillWidth: true
-                Layout.preferredHeight: 25
-                Layout.maximumHeight: 25
-                Layout.minimumHeight: 25
+                Layout.fillHeight: false
+                Layout.preferredHeight: 25 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 25 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 25 * _uiBackend.sizeModifer
+                height: 25 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
             }
 
             Rectangle {
@@ -412,18 +299,15 @@ Rectangle {
 
                     }
                 }
-                height: 10
 
-                //color: "#337ab7"
-                radius: 5
+                height: 10 * _uiBackend.sizeModifer
+                radius: 5 * _uiBackend.sizeModifer
 
-                Layout.maximumHeight: 10
-                Layout.minimumHeight: 10
-                Layout.maximumWidth: 65535
-                Layout.minimumWidth: 0
-                //text: qsTr("***")
+                Layout.maximumHeight: 10 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 10 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
                 Layout.fillWidth: true
-                Layout.fillHeight: true
+                Layout.fillHeight: false
                 visible: !_uiBackend.expand
 
 
@@ -431,29 +315,21 @@ Rectangle {
 
                 Image {
                     id: image
-                    width: 95
-                    height: 10
+                    width: 95 * _uiBackend.sizeModifer
+                    height: 10 * _uiBackend.sizeModifer
                     anchors.verticalCenter: parent.verticalCenter
                     source: "qrc:/images/resources/images/expandDots.png"
                     anchors.horizontalCenter: parent.horizontalCenter
                     fillMode: Image.PreserveAspectFit
                 }
             }
+        }
 
-            Rectangle {
-                id: rectangle
-                width: 200
-                height: 200
-                color: "#00000000"
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-            }
-
-
+        Rectangle {
+            Layout.fillHeight: true
+            Layout.fillWidth: true
         }
     }
-
-
 }
 
 

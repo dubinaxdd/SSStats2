@@ -44,12 +44,10 @@ LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam) {
         {
             HookManager::instance()->core()->onMouseEvent(std::move(QMouseEvent(QEvent::Type::MouseMove, QPointF(mKey.pt.x, mKey.pt.y), Qt::MouseButton(), Qt::MouseButtons(), Qt::KeyboardModifiers())));
             break;
-        }
-
+        }    
     }
 
-    //return CallNextHookEx(mouseHook, nCode, wParam, lParam);
-    return CallNextHookEx(NULL, nCode, wParam, lParam);
+    return CallNextHookEx(mouseHook, nCode, wParam, lParam);
 }
 
 LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
@@ -121,8 +119,38 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     //qDebug() << cKey.vkCode;
 
-    //return (HookManager::instance()->inputBlock() && !isPriorityKey) ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
-    return (HookManager::instance()->inputBlock() && !isPriorityKey) ? 1 : CallNextHookEx(NULL, nCode, wParam, lParam);
+    return (HookManager::instance()->inputBlock() && !isPriorityKey) ? 1 : CallNextHookEx(keyboardHook, nCode, wParam, lParam);
+}
+
+DWORD WINAPI MyMouseLogger(LPVOID lpParm)
+{
+    mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+
+    MSG message;
+    while (GetMessage(&message, NULL, 0, 0) > 0)
+    {
+        TranslateMessage(&message);
+        DispatchMessage(&message);
+    }
+
+    UnhookWindowsHookEx(mouseHook);
+    return 0;
+}
+
+
+DWORD WINAPI MyKeyboadLogger(LPVOID lpParm)
+{
+    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
+
+    MSG message;
+    while (GetMessage(&message, NULL, 0, 0) > 0)
+    {
+        TranslateMessage(&message);
+        DispatchMessage(&message);
+    }
+
+    UnhookWindowsHookEx(keyboardHook);
+    return 0;
 }
 
 bool HookManager::inputBlock()
@@ -143,27 +171,45 @@ Core *HookManager::core() const
 void HookManager::setCore(Core *newCore)
 {
     m_core = newCore;
+    p_instance->setParent(m_core);
+
+    m_mousehThread = NULL;
+    m_mousehThread = CreateThread(NULL, 0, MyMouseLogger, NULL, 0, NULL);
+
+    m_keyboradThread = NULL;
+    m_keyboradThread = CreateThread(NULL, 0, MyKeyboadLogger, NULL, 0, NULL);
+
+
+   // if (m_mousehThread != NULL )
+  //      WaitForSingleObject(m_mousehThread, /*INFINITE*/1000);
+  //  else
+  //      Q_ASSERT(false);
+
 }
 
 
 void HookManager::reconnectHook()
 {
-    UnhookWindowsHookEx(mouseHook);
-    UnhookWindowsHookEx(keyboardHook);
+    ///UnhookWindowsHookEx(mouseHook);
+   /// UnhookWindowsHookEx(keyboardHook);
 
-    mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
 
-    if (mouseHook == NULL)
-        qWarning(logWarning()) << "INFO: MouseHook failed";
+
+    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+  ////  mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
+    //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
+    /*if (mouseHook == NULL)
+        qDebug() << "INFO: MouseHook failed";
     else
-        qInfo(logInfo()) << "INFO: MouseHook accepted";
+        qDebug() << "INFO: MouseHook accepted";*/
 
-    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
-
-    if (keyboardHook == NULL)
-        qWarning(logWarning()) << "INFO: KeyboardHook failed";
+    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
+  ////  keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
+    //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
+   /* if (keyboardHook == NULL)
+        qDebug() << "INFO: KeyboardHook failed";
     else
-        qInfo(logInfo()) << "INFO: KeyboardHook accepted";
+        qDebug() << "INFO: KeyboardHook accepted";*/
 }
 
 
@@ -171,24 +217,29 @@ HookManager::HookManager()
 {
     m_inputBlock = false;
 
-    mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
 
-    if (mouseHook == NULL)
-        qWarning(logWarning()) << "INFO: MouseHook failed";
+    //mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+   //// mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, GetModuleHandle(NULL), NULL);
+    //Q_ASSERT_X(mouseHook, "HookManager", "Mouse Hook failed");
+    /*if (mouseHook == NULL)
+        qDebug() << "INFO: MouseHook failed";
     else
-        qInfo(logInfo()) << "INFO: MouseHook accepted";
+        qDebug() << "INFO: MouseHook accepted";*/
 
-
-    keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
-
-    if (keyboardHook == NULL)
-        qWarning(logWarning()) << "INFO: KeyboardHook failed";
+    //keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , NULL, 0);
+   //// keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc , GetModuleHandle(NULL), NULL);
+    //Q_ASSERT_X(keyboardHook, "HookManager", "Keyboard Hook failed");
+   /* if (keyboardHook == NULL)
+        qDebug() << "INFO: KeyboardHook failed";
     else
-        qInfo(logInfo()) << "INFO: KeyboardHook accepted";
+        qDebug() << "INFO: KeyboardHook accepted";*/
 }
 
 HookManager::~HookManager()
 {
     UnhookWindowsHookEx(mouseHook);
     UnhookWindowsHookEx(keyboardHook);
+
+    CloseHandle(m_mousehThread);
+    CloseHandle(m_keyboradThread);
 }

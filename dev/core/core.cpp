@@ -186,7 +186,7 @@ void Core::ssMaximized(bool maximized)
 
 void Core::gameInitialized()
 {
-    HookManager::instance()->reconnectHook();
+   // HookManager::instance()->reconnectHook();
 
     m_topmostTimer->start();
 
@@ -223,6 +223,7 @@ void Core::onExit()
 
         BringWindowToTop(m_ssController->soulstormHwnd());
     }
+
     qInfo(logInfo()) << "SSStats2 сlosed";
 
     m_logger->deleteLater();

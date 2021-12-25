@@ -94,10 +94,23 @@ void UiBackend::onLaunchSoulstormWithSupportMode()
     emit sendLaunchSoulstormWithSupportMode();
 }
 
+void UiBackend::setSizeModifer(float size)
+{
+    m_sizeModifer = size;
+
+    emit sizeModiferChanged(m_sizeModifer);
+    m_settingsController->getSettings()->scale = m_sizeModifer;
+    m_settingsController->saveSettings();
+}
+
 void UiBackend::onSettingsLoaded()
 {
     m_noFogState = m_settingsController->getSettings()->noFog;
     emit noFogStateChanged(m_noFogState);
+
+    m_sizeModifer = m_settingsController->getSettings()->scale;
+    emit sizeModiferLoadedFromSettings(m_sizeModifer);
+    emit sizeModiferChanged(m_sizeModifer);
 }
 
 void UiBackend::showClient()
@@ -160,7 +173,6 @@ bool UiBackend::getShowClient()
 {
     return m_showClient;
 }
-
 
 
 bool UiBackend::expand() const
@@ -262,7 +274,6 @@ void UiBackend::onGameStopped()
     {
         m_headerVisible = true;
         m_statisticPanel->setExpandPatyStatistic(false);
-
     }
 
     m_patyStatisticVisible = true;

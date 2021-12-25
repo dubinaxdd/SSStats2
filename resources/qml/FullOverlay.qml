@@ -5,8 +5,8 @@ import QtGraphicalEffects 1.15
 
 Rectangle {
     id: fullOverlayRectangle
-    width: 600
-    height: 600
+    //width: 600 * _uiBackend.sizeModifer
+    //height: 600 * _uiBackend.sizeModifer
     opacity: 1
     color: "#00000000"
     border.color: "#00000000"
@@ -93,12 +93,12 @@ Rectangle {
 
         Rectangle {
             id: fullOverlayHeader
-            width: 260
-            height: 60
+            width: 260 * _uiBackend.sizeModifer
+            height: 60 * _uiBackend.sizeModifer
             color: "#333333"
             Layout.fillWidth: true
-            Layout.minimumWidth: 260
-            Layout.minimumHeight: 60
+            Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+            Layout.minimumHeight: 60 * _uiBackend.sizeModifer
             gradient: Gradient {
                 GradientStop {
                     position: 0
@@ -110,7 +110,7 @@ Rectangle {
                     color: "#000000"
                 }
             }
-            Layout.maximumHeight: 60
+            Layout.maximumHeight: 60 * _uiBackend.sizeModifer
             Layout.maximumWidth: 26099
             Layout.fillHeight: false
 
@@ -124,10 +124,10 @@ Rectangle {
                     property bool hoverState : false
                     property bool pressedState : true
 
-                    width: 140
+                    width: 140 * _uiBackend.sizeModifer
                     color: pressedState ? "#ff080808" : "#00ffffff"
-                    Layout.minimumWidth: 100
-                    Layout.minimumHeight: 60
+                    Layout.minimumWidth: 100 * _uiBackend.sizeModifer
+                    Layout.minimumHeight: 60 * _uiBackend.sizeModifer
 
                     Text {
                         id: buttonInfoLabel
@@ -136,16 +136,19 @@ Rectangle {
                         visible: true
                         text: qsTr("Information")
                         anchors.fill: parent
-                        font.pointSize: 14
+                        //font.pointSize: 14
+
+                        font.pixelSize: 20 * _uiBackend.sizeModifer
+
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
 
                         layer.enabled: true
                         layer.effect: DropShadow {
-                            verticalOffset: 2
+                            verticalOffset: 2 * _uiBackend.sizeModifer
                             color: "#00000064"
-                            radius: 1
-                            samples: 3
+                            radius: 1 * _uiBackend.sizeModifer
+                            samples: 3 * _uiBackend.sizeModifer
                         }
                     }
                 }
@@ -156,10 +159,10 @@ Rectangle {
                     property bool hoverState : false
                     property bool pressedState : false
 
-                    width: 140
+                    width: 140 * _uiBackend.sizeModifer
                     color: pressedState ? "#ff080808" : "#00ffffff"
-                    Layout.minimumHeight: 60
-                    Layout.minimumWidth: 100
+                    Layout.minimumHeight: 60 * _uiBackend.sizeModifer
+                    Layout.minimumWidth: 100 * _uiBackend.sizeModifer
                     Text {
                         id: buttonSettingsLabel
                         color: parent.hoverState ? "#ffffff" : "#999999"
@@ -167,16 +170,17 @@ Rectangle {
                         visible: true
                         text: qsTr("Settings")
                         anchors.fill: parent
-                        font.pointSize: 14
+                        //font.pointSize: 14
+                        font.pixelSize: 20 * _uiBackend.sizeModifer
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
 
                         layer.enabled: true
                         layer.effect: DropShadow {
-                            verticalOffset: 2
+                            verticalOffset: 2 * _uiBackend.sizeModifer
                             color: "#00000064"
-                            radius: 1
-                            samples: 3
+                            radius: 1 * _uiBackend.sizeModifer
+                            samples: 3 * _uiBackend.sizeModifer
                         }
                     }
                 }
@@ -191,7 +195,8 @@ Rectangle {
                     id: label
                     color: "#ebaf36"
                     text: qsTr("Press Alt+(~) key to roll up")
-                    Layout.margins: 15
+                    font.pixelSize: 12 * _uiBackend.sizeModifer
+                    Layout.margins: 15 * _uiBackend.sizeModifer
                     Layout.alignment: Qt.AlignLeft | Qt.AlignBottom
                 }
 
@@ -201,14 +206,14 @@ Rectangle {
 
         Rectangle {
             id: mainContentContainerRectangle
-            width: 200
-            height: 200
+            width: 200 * _uiBackend.sizeModifer
+            height: 200 * _uiBackend.sizeModifer
             opacity: 1
             color: "#00000000"
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            Layout.rightMargin: 10
-            Layout.bottomMargin: 10
-            Layout.leftMargin: 10
+            Layout.rightMargin: 10 * _uiBackend.sizeModifer
+            Layout.bottomMargin: 10 * _uiBackend.sizeModifer
+            Layout.leftMargin: 10 * _uiBackend.sizeModifer
             Layout.topMargin: 0
             Layout.preferredHeight: 0
             Layout.preferredWidth: 0

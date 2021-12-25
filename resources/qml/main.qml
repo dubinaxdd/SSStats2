@@ -237,8 +237,8 @@ Window {
 
                 Rectangle {
                     id: fullOverlayRectangle
-                    width: 200
-                    height: 200
+                    width: 200 * _uiBackend.sizeModifer
+                    height: 200 * _uiBackend.sizeModifer
                     color: "#00000000"
                     Layout.fillWidth: true
                     Layout.fillHeight: true
@@ -252,15 +252,13 @@ Window {
 
                 ColumnLayout {
                     id: columnLayout3
-                    width: 100
-                    height: 100
 
                     StatsHeader{
                         id: statsHeader
-                        width: 280
-                        height: 60
-                        Layout.minimumWidth: 280
-                        Layout.minimumHeight: 60
+                        width: 260 * _uiBackend.sizeModifer
+                        height: 60 * _uiBackend.sizeModifer
+                        Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                        Layout.minimumHeight: 60 * _uiBackend.sizeModifer
                         Layout.fillHeight: true
                         visible: _uiBackend.headerVisible
                     }
@@ -268,25 +266,24 @@ Window {
                     PlayersStatistic
                     {
                         id: patyStatistic
-                        Layout.fillWidth: false
-                        Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                        width: 260 * _uiBackend.sizeModifer
+                        Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+                        Layout.alignment: Qt.AlignTop
                         model: _uiBackend.statisticPanel
                         visible: _uiBackend.patyStatisticVisible
                     }
 
                     Rectangle {
                         id: rectangle2
-                        width: 200
-                        height: 200
+                        width: 0
+                        height: 200 * _uiBackend.sizeModifer
                         color: "#00000000"
                         radius: 0
                         border.color: "#00000000"
                         Layout.fillWidth: false
                         Layout.fillHeight: true
                     }
-
                 }
-
             }
         }
     }
