@@ -49,6 +49,8 @@ Rectangle {
         relativeMouseX = x
         relativeMouseY = y
 
+        updateScrollViewHeight();
+
         // Кнопка "Свернуть колонку статистики"
         if (relativeMouseX >= expandPatyStatisticButtonRectangle.x &&
             relativeMouseX <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
@@ -68,6 +70,7 @@ Rectangle {
 
     function mouseWheel(delta)
     {
+        updateScrollViewHeight();
 
         if (relativeMouseX >= scrollView.x &&
             relativeMouseX <= scrollView.x + scrollView.width &&
@@ -86,7 +89,10 @@ Rectangle {
 
     function visibleItemsCountChanged()
     {
-        var asd = 1;
+        var asd = 0;
+
+        if(curentPlayer.visible)
+            asd++;
 
         if (player2.visible)
             asd++;
@@ -109,7 +115,9 @@ Rectangle {
         if (player8.visible)
             asd++;
 
-        playersCount =  asd;
+
+        if(asd > 0)
+            playersCount =  asd;
     }
 
 
