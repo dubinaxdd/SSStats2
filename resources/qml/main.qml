@@ -26,7 +26,9 @@ Item{
         icon.source: "qrc:/icons/resources/icons/ssstats.ico"
 
         onActivated:{
-            mainWindow.show();
+            mainWindow.showNormal();
+            mainWindow.raise();
+            mainWindow.requestActivate();
         }
 
 
