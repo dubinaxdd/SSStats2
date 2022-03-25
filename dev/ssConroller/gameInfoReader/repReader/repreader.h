@@ -1,9 +1,9 @@
 #ifndef REPREADER_H
 #define REPREADER_H
-#include "replay.h"
-#include "player.h"
-#include "extendedbinreader.h"
-#include "game_action.h"
+#include <replay.h>
+#include <player.h>
+#include <extendedbinreader.h>
+#include <game_action.h>
 #include <QDataStream>
 #include <QFile>
 

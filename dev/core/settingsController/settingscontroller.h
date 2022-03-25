@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QSettings>
-#include "../logger/logger.h"
+#include <logger.h>
 
 struct Settings
 {

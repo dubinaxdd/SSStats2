@@ -1,10 +1,10 @@
-#include "playerssteamscanner.h"
+#include <playerssteamscanner.h>
 #include <QVariantList>
 #include <QDebug>
 #include <iostream>
 #include <fstream>
 #include <QTextCodec>
-#include "../../core/logger/logger.h"
+#include <logger.h>
 
 //#define SCAN_STEAM_PLAYERS_INTERVAL 3000
 

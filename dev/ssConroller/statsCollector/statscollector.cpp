@@ -1,16 +1,16 @@
-#include "statscollector.h"
+#include <statscollector.h>
 #include <QFile>
 #include <QTextStream>
-#include "../../../defines.h"
-#include "QUrl"
+#include <defines.h>
+#include <QUrl>
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QBuffer>
-#include "../../../defines.h"
-#include "../gameInfoReader/repReader/repreader.h"
-#include "../../../version.h"
+#include <defines.h>
+#include <repreader.h>
+#include <version.h>
 
 #define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 5000
 

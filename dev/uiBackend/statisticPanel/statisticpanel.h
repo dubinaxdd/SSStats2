@@ -1,11 +1,11 @@
 #ifndef STATISTICPANEL_H
 #define STATISTICPANEL_H
 
-#include "../../baseTypes/baseTypes.h"
+#include <baseTypes.h>
 #include <QObject>
 #include <QImage>
-#include "../imageProvider/imageprovider.h"
-#include "statisticpanelitem.h"
+#include <imageprovider.h>
+#include <statisticpanelitem.h>
 
 class StatisticPanel : public QObject
 {

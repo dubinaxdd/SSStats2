@@ -3,9 +3,9 @@
 #include <QString>
 #include <QMap>
 #include <QVector>
-#include "game_action.h"
-#include "player.h"
-#include "gamesettings.h"
+#include <game_action.h>
+#include <player.h>
+#include <gamesettings.h>
 
 class GameAction;
 

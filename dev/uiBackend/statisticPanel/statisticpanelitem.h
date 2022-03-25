@@ -2,7 +2,7 @@
 #define STATISTICPANELITEM_H
 
 #include <QObject>
-#include "../../baseTypes/baseTypes.h"
+#include <baseTypes.h>
 
 class StatisticPanelItem : public QObject
 {

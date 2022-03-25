@@ -1,4 +1,4 @@
-#include "extendedbinreader.h"
+#include <extendedbinreader.h>
 #include <QDebug>
 #include <typeinfo>
 

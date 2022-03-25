@@ -1,12 +1,12 @@
-#include "core.h"
-#include "QDebug"
-#include "QFile"
-#include "../ssConroller/gameInfoReader/gameinforeader.h"
-#include "../ssConroller/lobbyEventReader/lobbyeventreader.h"
-#include "../baseTypes/baseTypes.h"
-#include "dev/core/hookManager/hookmanager.h"
+#include <core.h>
+#include <QDebug>
+#include <QFile>
+#include <gameinforeader.h>
+#include <lobbyeventreader.h>
+#include <baseTypes.h>
+#include <hookmanager.h>
 #include <winuser.h>
-#include "../../version.h"
+#include <version.h>
 
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)

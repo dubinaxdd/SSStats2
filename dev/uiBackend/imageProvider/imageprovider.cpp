@@ -1,5 +1,5 @@
-#include "imageprovider.h"
-#include "QDebug"
+#include <imageprovider.h>
+#include <QDebug>
 
 ImageProvider::ImageProvider(QObject *parent)
     : QObject(parent)

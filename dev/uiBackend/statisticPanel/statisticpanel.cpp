@@ -1,4 +1,4 @@
-#include "statisticpanel.h"
+#include <statisticpanel.h>
 #include <QDebug>
 
 StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)

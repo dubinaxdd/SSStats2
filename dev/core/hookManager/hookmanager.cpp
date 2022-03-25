@@ -1,4 +1,4 @@
-#include "hookmanager.h"
+#include <hookmanager.h>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>

@@ -3,12 +3,12 @@
 
 #include <QObject>
 #include <QPoint>
-#include "QTimer"
+#include <QTimer>
 
-#include "gamePanel/gamepanel.h"
-#include "statisticPanel/statisticpanel.h"
-#include "imageProvider/imageprovider.h"
-#include "../core/settingsController/settingscontroller.h"
+#include <gamepanel.h>
+#include <statisticpanel.h>
+#include <imageprovider.h>
+#include <settingscontroller.h>
 
 class UiBackend : public QObject
 {

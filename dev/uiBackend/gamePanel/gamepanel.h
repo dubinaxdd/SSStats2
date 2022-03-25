@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <QTimer>
-#include "../../baseTypes/baseTypes.h"
-#include "../../core/settingsController/settingscontroller.h"
+#include <baseTypes.h>
+#include <settingscontroller.h>
 
 class SettingsController;
 

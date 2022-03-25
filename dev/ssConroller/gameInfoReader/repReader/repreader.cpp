@@ -1,4 +1,4 @@
-#include "repreader.h"
+#include <repreader.h>
 #include <QVector>
 #include <QDebug>
 #include "repreader.h"

@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QTimer>
-#include "../../core/logger/logger.h"
+#include <logger.h>
 
 enum eventType
 {

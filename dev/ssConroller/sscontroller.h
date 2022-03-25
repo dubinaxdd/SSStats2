@@ -4,18 +4,18 @@
 #include <QObject>
 #include "Windows.h"
 #include <QTimer>
-#include "gameInfoReader/gameinforeader.h"
-#include "playerSteamScanner/playerssteamscanner.h"
-#include "../baseTypes/baseTypes.h"
+#include <gameinforeader.h>
+#include <playerssteamscanner.h>
+#include <baseTypes.h>
 #include <QVector>
-#include "statsCollector/statscollector.h"
-#include "memoryController/memorycontroller.h"
-#include "apmMeter/apmmeter.h"
+#include <statscollector.h>
+#include <memorycontroller.h>
+#include <apmmeter.h>
 #include <QThread>
 #include <QMutex>
-#include "../core/logger/logger.h"
-#include "../core/settingsController/settingscontroller.h"
-#include "lobbyEventReader/lobbyeventreader.h"
+#include <logger.h>
+#include <settingscontroller.h>
+#include <lobbyeventreader.h>
 #include <QProcess>
 
 class SsController : public QObject

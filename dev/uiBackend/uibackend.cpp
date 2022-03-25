@@ -1,7 +1,7 @@
-#include "uibackend.h"
-#include "QDebug"
-#include "../../version.h"
-#include "../core/settingsController/settingscontroller.h"
+#include <uibackend.h>
+#include <QDebug>
+#include <version.h>
+#include <settingscontroller.h>
 
 UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     : QObject(parent)

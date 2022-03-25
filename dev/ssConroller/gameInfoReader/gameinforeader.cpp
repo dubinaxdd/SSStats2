@@ -1,12 +1,12 @@
 #define GAME_INFO_READER_TIMER_INTERVAL 1000
 #define RACES_READ_TIMER_INTERVAL 100
 
-#include "gameinforeader.h"
+#include <gameinforeader.h>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
 #include <QSettings>
-#include "repReader/repreader.h"
+#include <repreader.h>
 
 GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
     : QObject(parent)

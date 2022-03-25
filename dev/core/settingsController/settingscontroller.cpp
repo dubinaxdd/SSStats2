@@ -1,5 +1,5 @@
-#include "settingscontroller.h"
-#include "../logger/logger.h"
+#include <settingscontroller.h>
+#include <logger.h>
 
 SettingsController::SettingsController(QObject *parent) : QObject(parent)
 {

@@ -2,9 +2,8 @@
 #define HOOKMANAGER_H
 
 #include <QObject>
-//#include <windows.h>
 #include "Windows.h"
-#include "../core.h"
+#include <core.h>
 //#pragma comment(lib, "user32.lib")
 
 

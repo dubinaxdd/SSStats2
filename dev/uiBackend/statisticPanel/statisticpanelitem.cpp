@@ -1,4 +1,4 @@
-#include "statisticpanelitem.h"
+#include <statisticpanelitem.h>
 
 StatisticPanelItem::StatisticPanelItem(QObject *parent) : QObject(parent)
 {

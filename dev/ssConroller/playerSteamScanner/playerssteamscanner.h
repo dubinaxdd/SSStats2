@@ -7,7 +7,7 @@
 #include <QMap>
 #include <QTimer>
 #include <windows.h>
-#include "../../baseTypes/baseTypes.h"
+#include <baseTypes.h>
 #include <QMutex>
 
 

@@ -7,8 +7,8 @@
 #include <QTimer>
 #include <QDateTime>
 #include <QVector>
-#include "../../baseTypes/baseTypes.h"
-#include "../../core/logger/logger.h"
+#include <baseTypes.h>
+#include <logger.h>
 
 class APMMeter : public QObject
 {

@@ -3,11 +3,11 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
-#include "../../baseTypes/baseTypes.h"
+#include <baseTypes.h>
 #include <QImage>
 #include <QSharedPointer>
 #include <QTimer>
-#include "../../core/logger/logger.h"
+#include <logger.h>
 
 class StatsCollector : public QObject
 {

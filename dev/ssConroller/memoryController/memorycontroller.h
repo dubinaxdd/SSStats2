@@ -6,8 +6,8 @@
 #include <QTextCodec>
 
 #include <Windows.h>
-#include "../../core/logger/logger.h"
-#include "../../core/settingsController/settingscontroller.h"
+#include <logger.h>
+#include <settingscontroller.h>
 
 class MemoryController : public QObject
 {

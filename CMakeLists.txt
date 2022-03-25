@@ -101,6 +101,9 @@ set(PROJECT_SOURCES
 )
 
 
+
+
+
 set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
 
 
@@ -174,4 +177,27 @@ add_custom_command(
         POST_BUILD
         COMMAND ${WINSDK_MT_DIR}mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${CMAKE_BINARY_DIR}/SSStats2.exe
         COMMENT "Adding administator manifest."
+)
+
+
+include_directories(SSStats2
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/settingsController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/hookManager
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/keyboardProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/gameInfoReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/playerSteamScanner
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/memoryController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/statsCollector
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/apmMeter
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/gamePanel
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/imageProvider
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/baseTypes
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/logger
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/lobbyEventReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/gameInfoReader/repReader
 )

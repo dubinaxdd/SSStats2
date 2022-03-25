@@ -5,12 +5,12 @@
 #include <QTextCodec>
 #include <QTimer>
 #include "Windows.h"
-#include "../keyboardProcessor/keyboardprocessor.h"
+#include <keyboardprocessor.h>
 #include <QQmlContext>
-#include "../core/settingsController/settingscontroller.h"
-#include "../uiBackend/uibackend.h"
-#include "../ssConroller/sscontroller.h"
-#include "logger/logger.h"
+#include <settingscontroller.h>
+#include <uibackend.h>
+#include <sscontroller.h>
+#include <logger.h>
 
 
 class Core : public QObject

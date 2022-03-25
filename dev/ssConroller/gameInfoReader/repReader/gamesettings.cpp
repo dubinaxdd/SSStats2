@@ -1,4 +1,4 @@
-#include "gamesettings.h"
+#include <gamesettings.h>
 #include <QDebug>
 
 GameSettings::GameSettings()
