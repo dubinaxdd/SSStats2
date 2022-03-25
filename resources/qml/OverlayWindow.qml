@@ -133,26 +133,6 @@ Window {
         }
     }
 
-    SystemTrayIcon {
-        id: trayIcon
-        visible: true
-        icon.source: "qrc:/icons/resources/icons/ssstats.ico"
-
-        menu: Menu {
-            MenuItem {
-                text: qsTr("Launch Soulstorm with Windows7 support mode")
-
-                onTriggered: _uiBackend.onLaunchSoulstormWithSupportMode();
-            }
-
-            MenuItem {
-                text: qsTr("Exit")
-
-                onTriggered: _uiBackend.onExit();
-            }
-        }
-    }
-
     Rectangle {
         id: windowRectangle
         color: "#00000000"

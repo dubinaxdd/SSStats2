@@ -11,5 +11,4 @@ Window {
 
     flags: Qt.Window
     visibility: Window.Maximized
-
 }
