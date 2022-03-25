@@ -9,5 +9,7 @@
         <file>resources/qml/SettingsWindow.qml</file>
         <file>resources/qml/PlayersStatistic.qml</file>
         <file>resources/qml/GamePanelSmall.qml</file>
+        <file>resources/qml/MainWindow.qml</file>
+        <file>resources/qml/OverlayWindow.qml</file>
     </qresource>
 </RCC>
