@@ -33,7 +33,7 @@ set(PROJECT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/repreader.cpp
 )
 
-add_library(ReplayReaderLibrary ${PROJECT_SOURCES})
+add_library(ReplayReaderLibrary STATIC ${PROJECT_SOURCES})
 
 target_link_libraries(ReplayReaderLibrary
                         PRIVATE
