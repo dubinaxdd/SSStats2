@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0048 NEW)
 
-project(SSStats2 VERSION 2.0 LANGUAGES CXX)
+project(DowStats2 VERSION 2.0 LANGUAGES CXX)
 
 #set(PROJECT_VERSION_MAJOR "0")
 #set(PROJECT_VERSION_MINOR "1")
@@ -15,18 +15,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# QtCreator supports the following variables for Android, which are identical to qmake Android variables.
-# Check https://doc.qt.io/qt/deployment-android.html for more information.
-# They need to be set before the find_package(...) calls below.
-
-#if(ANDROID)
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
-#    if (ANDROID_ABI STREQUAL "armeabi-v7a")
-#        set(ANDROID_EXTRA_LIBS
-#            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libcrypto.so
-#            ${CMAKE_CURRENT_SOURCE_DIR}/path/to/libssl.so)
-#    endif()
-#endif()
+add_subdirectory(externals/ReplayReaderLibrary)
 
 exec_program(
       "git"
@@ -40,7 +29,7 @@ configure_file( "${CMAKE_SOURCE_DIR}/version.h.template" "${CMAKE_SOURCE_DIR}/ve
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets REQUIRED)
 
-#set(TS_FILES SSStats2_en_GB.ts)
+#set(TS_FILES DowStats2_en_GB.ts)
 
 
 set(PROJECT_SOURCES
@@ -81,34 +70,16 @@ set(PROJECT_SOURCES
         dev/ssConroller/lobbyEventReader/lobbyeventreader.h
         dev/ssConroller/lobbyEventReader/lobbyeventreader.cpp
 
-
-        dev/ssConroller/gameInfoReader/repReader/extendedbinreader.h
-        dev/ssConroller/gameInfoReader/repReader/extendedbinreader.cpp
-        dev/ssConroller/gameInfoReader/repReader/game_action.h
-        dev/ssConroller/gameInfoReader/repReader/gamesettings.h
-        dev/ssConroller/gameInfoReader/repReader/gamesettings.cpp
-        dev/ssConroller/gameInfoReader/repReader/player.h
-        dev/ssConroller/gameInfoReader/repReader/player.cpp
-        dev/ssConroller/gameInfoReader/repReader/replay.h
-        dev/ssConroller/gameInfoReader/repReader/replay.cpp
-        dev/ssConroller/gameInfoReader/repReader/repreader.h
-        dev/ssConroller/gameInfoReader/repReader/repreader.cpp
-
         defines.h
         qml.qrc
         resources.qrc
-       # ${TS_FILES}
 )
-
-
-
-
 
 set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
 
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(SSStats2 WIN32
+    qt_add_executable(DowStats2 WIN32
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         ${APP_ICON_RESOURCE_WINDOWS}
@@ -117,11 +88,11 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 else()
     if(ANDROID)
-        add_library(SSStats2 SHARED
+        add_library(DowStats2 SHARED
             ${PROJECT_SOURCES}
         )
     else()
-        add_executable(SSStats2 WIN32
+        add_executable(DowStats2 WIN32
           ${PROJECT_SOURCES}
           ${APP_ICON_RESOURCE_WINDOWS}
         )
@@ -142,21 +113,29 @@ message (FATAL_ERROR "OpenSSL Not found.")
     endif()
 
 
-target_compile_definitions(SSStats2
+target_compile_definitions(DowStats2
   PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
-target_link_libraries(SSStats2
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Quick Qt${QT_VERSION_MAJOR}::QuickControls2 Qt${QT_VERSION_MAJOR}::Network Qt${QT_VERSION_MAJOR}::Widgets OpenSSL::SSL OpenSSL::Crypto)
+target_link_libraries(DowStats2
+                        PRIVATE
+                        Qt${QT_VERSION_MAJOR}::Core
+                        Qt${QT_VERSION_MAJOR}::Quick
+                        Qt${QT_VERSION_MAJOR}::QuickControls2
+                        Qt${QT_VERSION_MAJOR}::Network
+                        Qt${QT_VERSION_MAJOR}::Widgets
+                        OpenSSL::SSL
+                        OpenSSL::Crypto
+                        ReplayReaderLibrary)
 
 
-set_target_properties(SSStats2 PROPERTIES
+set_target_properties(DowStats2 PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
 )
 
 if(QT_VERSION_MAJOR EQUAL 6)
-    qt_import_qml_plugins(SSStats2)
-    qt_finalize_executable(SSStats2)
+    qt_import_qml_plugins(DowStats2)
+    qt_finalize_executable(DowStats2)
 endif()
 
 set(WINSDK_MT_DIR "${WINSDK_MT_DIR}")
@@ -173,14 +152,14 @@ else()
 endif()
 
 add_custom_command(
-        TARGET SSStats2
+        TARGET DowStats2
         POST_BUILD
-        COMMAND ${WINSDK_MT_DIR}mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${CMAKE_BINARY_DIR}/SSStats2.exe
+        COMMAND ${WINSDK_MT_DIR}mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${CMAKE_BINARY_DIR}/DowStats2.exe
         COMMENT "Adding administator manifest."
 )
 
 
-include_directories(SSStats2
+include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/settingsController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/hookManager
@@ -199,5 +178,5 @@ include_directories(SSStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/logger
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/lobbyEventReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/gameInfoReader/repReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/externals/ReplayReaderLibrary
 )
