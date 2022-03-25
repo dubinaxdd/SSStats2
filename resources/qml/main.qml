@@ -76,24 +76,6 @@ Window {
             mouseAreaWidth = _uiBackend.mouseAreaWidth;
             mouseAreaHeight = _uiBackend.mouseAreaHeight;
 
-            // Костыль для работы с 4k мониторами, не спрашивайте почему так, все равно не скажу. Просто сс не может работать в большем разрешении чем 1920/1080
-
-            if (!_uiBackend.ssWindowed && mouseAreaWidth !== 0 && mouseAreaHeight !== 0 && window.width >= 1920 && window.height >= 1080)
-            {
-                if (window.width !== mouseAreaWidth && window.height !== mouseAreaHeight)
-                {
-                    xMousePos = (window.width * xMousePos) / mouseAreaWidth;
-                    yMousePos = (window.height * yMousePos) / mouseAreaHeight;
-                }
-            }
-
-            // Это тоже кусок костыля, только для оконного режима игры
-            if ( _uiBackend.ssWindowed && mouseAreaWidth > 1920 && mouseAreaHeight > 1080)
-            {
-                xMousePos = xMousePos/2;
-                yMousePos = yMousePos/2;
-            }
-
             if (_uiBackend.ssWindowed)
             {
                 xMousePos = xMousePos - _uiBackend.ssWindowPositionX;
@@ -224,10 +206,6 @@ Window {
 
                     StatsHeader{
                         id: statsHeader
-                        width: 260 * _uiBackend.sizeModifer
-                        height: 60 * _uiBackend.sizeModifer
-                        Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-                        Layout.minimumHeight: 60 * _uiBackend.sizeModifer
                         Layout.fillHeight: true
                         visible: _uiBackend.headerVisible
                         z: 3
@@ -236,8 +214,6 @@ Window {
                     PlayersStatistic
                     {
                         id: patyStatistic
-                        width: 260 * _uiBackend.sizeModifer
-                        Layout.minimumWidth: 260 * _uiBackend.sizeModifer
                         Layout.alignment: Qt.AlignTop
                         model: _uiBackend.statisticPanel
                         visible: _uiBackend.patyStatisticVisible

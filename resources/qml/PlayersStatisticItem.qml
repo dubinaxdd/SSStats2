@@ -7,9 +7,9 @@ Rectangle {
     property var itemModel
     id: itemRectangle
 
-    Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+    Layout.maximumWidth: 280 * _uiBackend.sizeModifer
     Layout.maximumHeight: 120 * _uiBackend.sizeModifer
-    Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+    Layout.minimumWidth: 280 * _uiBackend.sizeModifer
     Layout.minimumHeight: 120 * _uiBackend.sizeModifer
     height: 120 * _uiBackend.sizeModifer
     Layout.alignment: Qt.AlignRight | Qt.AlignTop

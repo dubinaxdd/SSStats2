@@ -5,21 +5,17 @@ import QtQuick.Layouts 1.12
 Rectangle {
     id: mainRectangle
 
-    width: 260 * _uiBackend.sizeModifer
+    width: 280 * _uiBackend.sizeModifer
 
-    Layout.minimumWidth: 260 * _uiBackend.sizeModifer
-    Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+    Layout.minimumWidth: 280 * _uiBackend.sizeModifer
+    Layout.maximumWidth: 280 * _uiBackend.sizeModifer
 
     color: "#00000000"
     border.color: "#00000000"
 
     property var model
-
     property real scrollViewPosition: 0
-
     property int playersCount: 1
-
-
     property int relativeMouseX
     property int relativeMouseY
 
@@ -134,12 +130,20 @@ Rectangle {
         }
     }
 
+
+    function forceUpdateScrollViewHeight()
+    {
+        visibleItemsCountChanged();
+        scrollView.setDefault();
+        scrollView.height = ((120 * _uiBackend.sizeModifer) + columnLayout.spacing) * playersCount ;
+    }
+
     Connections{
         target: _uiBackend.statisticPanel
 
         function onPlayersStatsChanged()
         {
-            updateScrollViewHeight();
+            forceUpdateScrollViewHeight();
         }
     }
 
@@ -158,9 +162,7 @@ Rectangle {
 
         function onExpandButtonPressed()
         {
-            updateScrollViewHeight();
-            scrollView.setDefault();
-            scrollView.height = ((120 * _uiBackend.sizeModifer) + columnLayout.spacing) * playersCount ;
+            forceUpdateScrollViewHeight();
         }
     }
 
@@ -212,7 +214,7 @@ Rectangle {
         id: scrollView
 
         height: 120 + columnLayout.spacing
-        width: 260 *_uiBackend.sizeModifer
+        width: mainRectangle.width//280 *_uiBackend.sizeModifer
 
         function scrollToBottom() {
 

@@ -20,7 +20,6 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
     if (serverPlayerStats.isCurrentPlayer)
     {
-
         m_curentPlayerStatsItem->setPlayersStats(serverPlayerStats);
         m_imageProvider->setCurrentPlayerAvatarMedium(serverPlayerStats.avatar);
         m_curentPlayerStatsItem->setVisible(true);

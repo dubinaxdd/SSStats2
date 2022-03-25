@@ -87,7 +87,7 @@ void UiBackend::onGameOver()
 
 void UiBackend::onExit()
 {
-    sendExit();
+    emit sendExit();
 }
 
 void UiBackend::onLaunchSoulstormWithSupportMode()
@@ -100,6 +100,7 @@ void UiBackend::setSizeModifer(float size)
     m_sizeModifer = size;
 
     emit sizeModiferChanged(m_sizeModifer);
+
     m_settingsController->getSettings()->scale = m_sizeModifer;
     m_settingsController->saveSettings();
 }
@@ -108,7 +109,6 @@ void UiBackend::onSettingsLoaded()
 {
     m_noFogState = m_settingsController->getSettings()->noFog;
     emit noFogStateChanged(m_noFogState);
-
     m_sizeModifer = m_settingsController->getSettings()->scale;
     emit sizeModiferLoadedFromSettings(m_sizeModifer);
     emit sizeModiferChanged(m_sizeModifer);

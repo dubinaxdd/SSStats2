@@ -5,11 +5,14 @@ import QtQuick.Layouts 1.12
 
 Rectangle {
     id: headerRectangle
-    width: 260 * _uiBackend.sizeModifer
+    width: 280 * _uiBackend.sizeModifer
     height: 60 * _uiBackend.sizeModifer
     color: "#333333"
-    Layout.minimumWidth: 260 * _uiBackend.sizeModifer
+    Layout.minimumWidth: 280 * _uiBackend.sizeModifer
     Layout.minimumHeight: 60 * _uiBackend.sizeModifer
+
+    Layout.maximumHeight: 60 * _uiBackend.sizeModifer
+    Layout.maximumWidth: 280 * _uiBackend.sizeModifer
 
     property Rectangle expandButtonRectangle : expandButtonRectangle
 
@@ -28,8 +31,7 @@ Rectangle {
         }
     }
 
-    Layout.maximumHeight: 60 * _uiBackend.sizeModifer
-    Layout.maximumWidth: 260 * _uiBackend.sizeModifer
+
 
     Layout.fillHeight: false
 
