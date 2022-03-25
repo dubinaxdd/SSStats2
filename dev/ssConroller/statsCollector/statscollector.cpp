@@ -14,6 +14,7 @@
 
 #define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 5000
 
+using namespace ReplayReader;
 
 StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *parent)
     : QObject(parent)

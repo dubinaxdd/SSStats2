@@ -1,5 +1,7 @@
 #include <player.h>
 
+using namespace ReplayReader;
+
 Player::Player()
 {
 

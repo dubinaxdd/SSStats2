@@ -7,6 +7,8 @@
 #include <player.h>
 #include <gamesettings.h>
 
+namespace ReplayReader{
+
 class GameAction;
 
 class Replay
@@ -84,5 +86,7 @@ public:
     ulong ActionStart;
     uint ActionCount;
 };
+
+}
 
 #endif // Replay_H

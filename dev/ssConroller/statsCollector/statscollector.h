@@ -18,10 +18,6 @@ public:
     void parseCurrentPlayerSteamId();
     void getPlayerStatsFromServer(QSharedPointer<ServerPlayerStats> playerInfo);
     void getPlayerMediumAvatar(QString url, QSharedPointer<ServerPlayerStats> playerInfo);
-
-
-
-
     void setCurrentPlayerAccepted(bool newCurrentPlayerAccepted);
 
 signals:

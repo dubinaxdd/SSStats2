@@ -8,6 +8,9 @@
 #include <QSettings>
 #include <repreader.h>
 
+using namespace ReplayReader;
+
+
 GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
     : QObject(parent)
     , m_ssPath(sspath)

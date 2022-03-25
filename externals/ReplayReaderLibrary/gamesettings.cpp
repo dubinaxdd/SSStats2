@@ -1,6 +1,8 @@
 #include <gamesettings.h>
 #include <QDebug>
 
+using namespace ReplayReader;
+
 GameSettings::GameSettings()
 {
     StartRes      = 0;

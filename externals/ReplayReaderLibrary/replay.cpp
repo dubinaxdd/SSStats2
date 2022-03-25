@@ -2,6 +2,8 @@
 #include <QStringList>
 #include <QDebug>
 
+using namespace ReplayReader;
+
 Replay::Replay()
 {
     ReadedFully = false;

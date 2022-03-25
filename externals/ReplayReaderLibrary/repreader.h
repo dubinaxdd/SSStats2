@@ -7,6 +7,7 @@
 #include <QDataStream>
 #include <QFile>
 
+namespace ReplayReader{
 class RepReader
 {
 public:
@@ -37,4 +38,5 @@ private:
     int _lastTick;
     ExtendedBinReader *BinReader;
 };
+}
 #endif //REPREADER_H

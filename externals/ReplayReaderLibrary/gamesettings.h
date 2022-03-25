@@ -3,6 +3,8 @@
 
 #include <QString>
 
+namespace ReplayReader{
+
 class GameSettings
 {
 public:
@@ -28,5 +30,5 @@ public:
     QString getResolvedPositions() const;
     bool isStandart(int game_type);
 };
-
+}
 #endif // GAMESETTINGS_H

@@ -7,6 +7,8 @@
 #include <QTextCodec>
 #include <QDir>
 
+using namespace ReplayReader;
+
 RepReader::RepReader(QString fileName)
 {
     pfile = new QFile(fileName);

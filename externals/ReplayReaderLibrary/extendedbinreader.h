@@ -4,6 +4,7 @@
 #include <QString>
 #include <QDataStream>
 #include <QTextCodec>
+namespace ReplayReader{
 
 class ExtendedBinReader : public QDataStream
 {
@@ -23,5 +24,6 @@ public:
     QString ReadStringUTF16(int count);
     QByteArray ReadBytesArray(int count);
 };
+}
 
 #endif // EXTENDEDBINREADER_H

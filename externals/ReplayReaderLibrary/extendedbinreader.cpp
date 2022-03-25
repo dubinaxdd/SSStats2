@@ -2,6 +2,8 @@
 #include <QDebug>
 #include <typeinfo>
 
+using namespace ReplayReader;
+
 ExtendedBinReader::ExtendedBinReader(QIODevice *parent)
     : QDataStream(parent)
 {

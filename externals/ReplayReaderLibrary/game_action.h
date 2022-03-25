@@ -3,6 +3,8 @@
 
 #include <QString>
 
+namespace ReplayReader{
+
 class GameAction
 {
 public:
@@ -28,5 +30,5 @@ public:
     bool Chat;
     bool Empty;
 };
-
+}
 #endif // GAME_ACTION_H

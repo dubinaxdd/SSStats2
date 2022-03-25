@@ -3,6 +3,8 @@
 
 #include <QString>
 
+namespace ReplayReader{
+
 class Player
 {
 public:
@@ -50,5 +52,6 @@ public:
     bool isEmpty() const;
     bool isSpectator() const;
 };
+}
 
 #endif // PLAYER_H
