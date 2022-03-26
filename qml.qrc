@@ -11,5 +11,7 @@
         <file>resources/qml/GamePanelSmall.qml</file>
         <file>resources/qml/MainWindow.qml</file>
         <file>resources/qml/OverlayWindow.qml</file>
+        <file>resources/qml/HeaderButton.qml</file>
+        <file>resources/qml/NewsPage.qml</file>
     </qresource>
 </RCC>

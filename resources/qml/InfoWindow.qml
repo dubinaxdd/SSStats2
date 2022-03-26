@@ -29,10 +29,10 @@ Rectangle {
             </head>
             <body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n
             <p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
-            <span style=\" font-size:12pt; font-weight:600; color:#333333; background-color:#ffffff;\">Welcome to SS Stats 2</span></p>\n
+            <span style=\" font-size:12pt; font-weight:600; color:#333333; background-color:#ffffff;\">Welcome to DoW Stats 2</span></p>\n
             <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
           <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
-            <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Standart game settings for sending statistics:</span></p>\n
+            <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Standard game settings for sending statistics:</span></p>\n
             <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
             <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">1v1 Game rules: Annihilate, Control Area, Game Timer (optional), Take and Hold.</span></li>\n
             <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">2v2, 3v3, 4v4 Game rules: Annihilate, Control Area (optional), Game Timer (optional), Take and Hold (optional).</span></li>\n
@@ -52,17 +52,19 @@ Rectangle {
             <p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600; color:#333333;\"><br /></p>\n
             <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Developers</span></p>\n
             <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Dubina_xdd - SS Stats 2 client main developer </span></li>\n
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Anibus - dowstats web site main developer, SS Stats 2 client developer </span></li>\n
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">NCTribit - SS Stats 2 client developer</span></li>\n
+            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Dubina_xdd - DoW Stats 2 client main developer </span></li>\n
+            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Anibus - dowstats web site main developer, DoW Stats 2 client developer </span></li>\n
             <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">New - first client (SSStats) main developer</span></li>\n
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">With participation: elamaunt, TranspersonalPsy, Drobor</span></li></ul></body></html>
+            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit</span></li></ul></body></html>
             "
         anchors.fill: parent
         wrapMode: Text.WordWrap
         textFormat: Text.RichText
         anchors.margins: 10 * _uiBackend.sizeModifer
+
+
     }
+
 }
 
 /*##^##

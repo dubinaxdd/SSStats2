@@ -10,6 +10,7 @@
 #include <settingscontroller.h>
 #include <uibackend.h>
 #include <sscontroller.h>
+#include <discordController.h>
 #include <logger.h>
 
 
@@ -54,6 +55,7 @@ private:
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
+    DiscordController* m_discordController;
 
     int m_defaultWidth;
     int m_defaultHeight;

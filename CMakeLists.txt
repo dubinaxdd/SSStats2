@@ -69,6 +69,8 @@ set(PROJECT_SOURCES
         dev/core/logger/logger.cpp
         dev/ssConroller/lobbyEventReader/lobbyeventreader.h
         dev/ssConroller/lobbyEventReader/lobbyeventreader.cpp
+        dev/discordController/discordController.h
+        dev/discordController/discordController.cpp
 
         defines.h
         qml.qrc
@@ -179,4 +181,5 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/logger
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/lobbyEventReader
     ${CMAKE_CURRENT_SOURCE_DIR}/externals/ReplayReaderLibrary
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/discordController/
 )
