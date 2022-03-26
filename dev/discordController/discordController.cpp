@@ -4,6 +4,7 @@
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDebug>
+#include <defines.h>
 
 DiscordController::DiscordController(QObject *parent)
     : QObject(parent)
@@ -18,7 +19,7 @@ void DiscordController::requestNews()
     QNetworkRequest newRequest;
 
     newRequest.setUrl(QUrl("https://discord.com/api/v9/channels/852182655570411592/messages"));
-    newRequest.setRawHeader("Authorization", QString("Bot OTU3MjU2NDk1MjQ5MTE3Mjg1.Yj8IlQ.HEbVQobwToJBstp1MgJd3GJidYg").toLocal8Bit());
+    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", QString("discord.com").toLocal8Bit());
 
     qDebug() << newRequest.url();
