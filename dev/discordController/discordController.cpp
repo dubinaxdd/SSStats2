@@ -20,10 +20,9 @@ void DiscordController::requestNews()
 
     newRequest.setUrl(QUrl("https://discord.com/api/v9/channels/852182655570411592/messages"));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
-    newRequest.setRawHeader("Host", QString("discord.com").toLocal8Bit());
-
-    qDebug() << newRequest.url();
-    qDebug() << newRequest.rawHeader(QByteArray("Authorization"));
+    newRequest.setRawHeader("Host", "discord.com");
+    newRequest.setRawHeader("User-Agent", "Dowstats 2.0");
+    newRequest.setRawHeader("Content-Type","application/json");
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -31,9 +30,9 @@ void DiscordController::requestNews()
         receiveNews(reply);
     });
 
-   /* QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         reply->deleteLater();
-    });*/
+    });
 
 }
 
@@ -42,13 +41,12 @@ void DiscordController::receiveNews(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        //reply->deleteLater();
-        //return;
+        reply->deleteLater();
+        return;
     }
 
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
-    qWarning(logWarning()) << jsonDoc.toJson();
 
     reply->deleteLater();
 }
