@@ -11,7 +11,6 @@ DiscordController::DiscordController(QObject *parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
 
-    requestNews();
 }
 
 void DiscordController::requestNews()

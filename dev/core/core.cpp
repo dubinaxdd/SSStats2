@@ -75,6 +75,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_discordController, &DiscordController::sendNews, m_uiBackend->newsPage(), &NewsPage::receiveNews, Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
+
+    m_discordController->requestNews();
 }
 
 void Core::topmostTimerTimout()
@@ -245,9 +247,6 @@ void Core::registerTypes()
     qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");
     qRegisterMetaType<QMap<QString, QImage>>("QMap<QString, QImage>");
     qRegisterMetaType<DiscordMessage>("DiscordMessage");
-
-    qmlRegisterType<DiscordController>("DowStats", 1, 0, "DiscordController");
-
 }
 
 UiBackend *Core::uiBackend() const

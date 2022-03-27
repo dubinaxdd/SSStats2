@@ -11,11 +11,10 @@ class DiscordController : public QObject
     Q_OBJECT
 public:
     explicit DiscordController(QObject *parent = nullptr);
+    void requestNews();
 
 private:
-    void requestNews();
     void requestUserAvatar(QString userId, QString avatarId);
-
 
 private slots:
     void receiveNews(QNetworkReply* reply);
