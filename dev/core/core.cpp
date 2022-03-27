@@ -72,6 +72,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController, &SsController::launchSoulstormWithSupportMode, Qt::QueuedConnection);
 
 
+    QObject::connect(m_discordController, &DiscordController::sendNews, m_uiBackend->newsPage(), &NewsPage::receiveNews, Qt::QueuedConnection);
+
     m_settingsController->initializeSettings();
 }
 
@@ -240,6 +242,12 @@ void Core::registerTypes()
     qRegisterMetaType<SsGameState>("SsGameState");
     qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
     qRegisterMetaType<SearchStemIdPlayerInfo>("SearchStemIdPlayerInfo");
+    qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");
+    qRegisterMetaType<QMap<QString, QImage>>("QMap<QString, QImage>");
+    qRegisterMetaType<DiscordMessage>("DiscordMessage");
+
+    qmlRegisterType<DiscordController>("DowStats", 1, 0, "DiscordController");
+
 }
 
 UiBackend *Core::uiBackend() const

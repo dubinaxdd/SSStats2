@@ -4,6 +4,7 @@
 
 #include <QString>
 #include <QImage>
+#include <QDateTime>
 
 enum WinCondition
 {
@@ -191,6 +192,17 @@ struct SendingReplayInfo
     int gameTime;
     QString mod;
     WinCondition winBy;
+};
+
+
+struct DiscordMessage
+{
+    QString content;
+    QString userId;
+    QString userName;
+    QDateTime timestamp;
+    QString avatarId;
+    QImage avatar;
 };
 
 #endif // BASETYPES_H

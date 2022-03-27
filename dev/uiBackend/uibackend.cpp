@@ -9,6 +9,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_imageProvider(new ImageProvider(this))
     , m_gamePanel(new GamePanel(settingsController, this))
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
+    , m_newsPage(new NewsPage(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");
@@ -118,6 +119,11 @@ void UiBackend::showClient()
 {
     m_showClient = m_ssLaunchState && m_ssMaximized;
     emit sendShowClient(m_showClient);
+}
+
+NewsPage *UiBackend::newsPage() const
+{
+    return m_newsPage;
 }
 
 bool UiBackend::getFogState() const

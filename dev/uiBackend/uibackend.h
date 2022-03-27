@@ -9,6 +9,7 @@
 #include <statisticpanel.h>
 #include <imageprovider.h>
 #include <settingscontroller.h>
+#include <NewsPage.h>
 
 class UiBackend : public QObject
 {
@@ -36,6 +37,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
 
     Q_PROPERTY(float sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
+
+    Q_PROPERTY(NewsPage* newsPage MEMBER m_newsPage NOTIFY statisticPanelInitialized)
 
 
 
@@ -70,6 +73,8 @@ public:
     ImageProvider *imageProvider() const;
 
 
+
+    NewsPage *newsPage() const;
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -130,6 +135,7 @@ private:
     GamePanel* m_gamePanel;
     StatisticPanel* m_statisticPanel;
     SettingsController* m_settingsController;
+    NewsPage* m_newsPage;
 
     QString m_ssStatsVersion;
 

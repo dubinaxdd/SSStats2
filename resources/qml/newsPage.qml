@@ -16,4 +16,34 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
 
     radius: 10
+
+    property var model: _uiBackend.newsPage
+
+    ColumnLayout
+    {
+        anchors.fill: parent
+
+
+        ListView{
+            id: messagesListView
+
+            implicitWidth: 2500
+            implicitHeight: 2500
+
+            clip: true
+
+            model: infoRectangle.model
+
+            delegate: DiscordMessage{
+
+                width: 100
+                height: 100
+
+                userName: model.userName
+                content: model.content
+            }
+
+
+        }
+    }
 }

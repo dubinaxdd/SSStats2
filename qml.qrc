@@ -13,5 +13,6 @@
         <file>resources/qml/OverlayWindow.qml</file>
         <file>resources/qml/HeaderButton.qml</file>
         <file>resources/qml/NewsPage.qml</file>
+        <file>resources/qml/DiscordMessage.qml</file>
     </qresource>
 </RCC>

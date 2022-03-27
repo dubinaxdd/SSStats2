@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <logger.h>
+#include <baseTypes.h>
 
 class DiscordController : public QObject
 {
@@ -13,17 +14,22 @@ public:
 
 private:
     void requestNews();
+    void requestUserAvatar(QString userId, QString avatarId);
 
 
 private slots:
     void receiveNews(QNetworkReply* reply);
+    void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
 
 
 signals:
+    void sendNews(QList<DiscordMessage> news);
 
 private:
 
     QNetworkAccessManager *m_networkManager;
+    QList<DiscordMessage> discordNewsList;
+    QMap<QString, QImage> m_avatarMap;
 
 };
 
