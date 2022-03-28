@@ -44,8 +44,6 @@ Rectangle {
 
                 Layout.leftMargin: 15
                 Layout.rightMargin: 15
-                //Layout.topMargin: 15
-                //Layout.bottomMargin: 5
 
                 Image {
                     id: avatarImage
