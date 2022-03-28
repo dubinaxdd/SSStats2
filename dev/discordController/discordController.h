@@ -23,12 +23,13 @@ private slots:
 
 signals:
     void sendNews(QList<DiscordMessage> news);
+    void sendAvatar(QString avatarId, QImage discordAvatar);
 
 private:
 
     QNetworkAccessManager *m_networkManager;
     QList<DiscordMessage> discordNewsList;
-    QMap<QString, QImage> m_avatarMap;
+    QList<QString> m_avatarIdList;
 
 };
 

@@ -1,6 +1,6 @@
 #include "NewsPage.h"
 #include <QDebug>
-
+#include <QAbstractItemModel>
 NewsPage::NewsPage(QObject *parent) : QAbstractListModel(parent)
 {
 
@@ -18,6 +18,8 @@ QVariant NewsPage::data(const QModelIndex &index, int role) const
         return message.content;
     else if (role == TimesTamp)
         return message.timestamp.toString("dd.MM.yyyy");
+    else if (role == AvatarId)
+        return message.avatarId;
     return QVariant();
 }
 
@@ -33,6 +35,7 @@ QHash<int, QByteArray> NewsPage::roleNames() const
     roles[UserName] = "userName";
     roles[Content] = "content";
     roles[TimesTamp] = "timesTamp";
+    roles[AvatarId] = "avatarId";
     return roles;
 }
 
@@ -42,4 +45,22 @@ void NewsPage::receiveNews(QList<DiscordMessage> news)
     m_news = news;
     endInsertRows();
 
+}
+
+void NewsPage::onAvatarUpdate()
+{
+    for(int i = 0; i < m_news.count(); i++)
+    {
+        QString temp = m_news.at(i).avatarId;
+
+        m_news[i].avatarId = "";
+
+        QModelIndex first = QAbstractItemModel::createIndex(i, 0);
+        QModelIndex last = QAbstractItemModel::createIndex(i, 0);
+
+        emit dataChanged(first, last);
+
+        m_news[i].avatarId = temp;
+        emit dataChanged(first, last);
+    }
 }

@@ -13,6 +13,7 @@ public:
     enum DataRoles {
             UserName = Qt::UserRole + 1,
             Content = Qt::UserRole + 2,
+            AvatarId = Qt::UserRole + 3,
             TimesTamp
     };
 
@@ -25,6 +26,7 @@ protected:
 
 public slots:
     void receiveNews(QList<DiscordMessage> news);
+    void onAvatarUpdate();
 
 signals:
 

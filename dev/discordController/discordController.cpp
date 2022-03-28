@@ -37,8 +37,6 @@ void DiscordController::requestNews()
 
 void DiscordController::requestUserAvatar(QString userId, QString avatarId)
 {
-    if (m_avatarMap.keys().contains(avatarId))
-        return;
 
     QNetworkRequest newRequest;
 
@@ -98,11 +96,14 @@ void DiscordController::receiveNews(QNetworkReply *reply)
         newDiscordMessage.userName = authorObject.value("username").toString();
         newDiscordMessage.avatarId = authorObject.value("avatar").toString();
 
-        requestUserAvatar(newDiscordMessage.userId, newDiscordMessage.avatarId);
+        if(!m_avatarIdList.contains(newDiscordMessage.avatarId))
+        {
+            m_avatarIdList.append(newDiscordMessage.avatarId);
+            requestUserAvatar(newDiscordMessage.userId, newDiscordMessage.avatarId);
+        }
 
         discordNewsList.append(std::move(newDiscordMessage));
     }
-
 
     emit sendNews(discordNewsList);
 }
@@ -126,5 +127,5 @@ void DiscordController::receiveUserAvatar(QNetworkReply *reply, QString avatarId
     if (avatar.isNull())
         return;
 
-    m_avatarMap.insert(avatarId, avatar);
+    emit sendAvatar(avatarId, std::move(avatar));
 }

@@ -73,9 +73,14 @@ Core::Core(QQmlContext *context, QObject* parent)
 
 
     QObject::connect(m_discordController, &DiscordController::sendNews, m_uiBackend->newsPage(), &NewsPage::receiveNews, Qt::QueuedConnection);
+    QObject::connect(m_discordController, &DiscordController::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
+
+    QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAvatars, m_uiBackend->newsPage(), &NewsPage::onAvatarUpdate,  Qt::QueuedConnection);
+
+
+
 
     m_settingsController->initializeSettings();
-
     m_discordController->requestNews();
 }
 

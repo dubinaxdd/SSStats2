@@ -22,8 +22,11 @@ public:
     void setPlayer7AvatarMedium(QImage avatarMedium);
     void setPlayer8AvatarMedium(QImage avatarMedium);
 
-
 signals:
+    void updateAvatars();
+
+public slots:
+    void addDiscordAvatar(QString avatarId, QImage discordAvatar);
 
 private:
     QImage m_currentPlayerAvatarMedium;
@@ -35,6 +38,9 @@ private:
     QImage m_player6AvatarMedium;
     QImage m_player7AvatarMedium;
     QImage m_player8AvatarMedium;
+
+
+    QMap <QString, QImage> m_discordAvatars;
 };
 
 #endif // IMAGEPROVIDER_H

@@ -35,12 +35,12 @@ Rectangle {
 
             delegate: DiscordMessage{
                 width: messagesListView.width
+
                 userName: model.userName
                 content: model.content
                 timesTamp: model.timesTamp
+                avatarId: model.avatarId
             }
-
-
         }
     }
 }

@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import Qt.labs.platform 1.1
+import QtGraphicalEffects 1.0
 
 Rectangle {
     id: mainRectangle
@@ -12,13 +13,13 @@ Rectangle {
     Layout.minimumHeight: 60
 
 
-    height: 100 + contentTextArea.height
+    height: 110 + contentTextArea.height
 
 
-    property url avatarSource
     property string userName: "Unknown user"
     property string content: "Message text"
     property string timesTamp: "00-00-0000 00:00"
+    property string avatarId : ""
     color: "#eaeaea"
     radius: 10
     border.color: "#00000000"
@@ -27,21 +28,43 @@ Rectangle {
     {
         anchors.fill: parent
 
-
         RowLayout
         {
             Layout.fillWidth: true
 
-            Image {
-                id: avatarImage
-                source: mainRectangle.avatarSource
+            Rectangle {
+                id: imageRectangle
 
-                width: 50
-                height:50
+                width: 65
+                height:65
 
-
+                radius: 10
 
                 Layout.margins: 15
+
+                Image {
+                    id: avatarImage
+                    cache: false
+                    anchors.fill: parent
+                    source: "image://ImageProvider/" + mainRectangle.avatarId
+                    visible: false
+                }
+
+                 Rectangle {
+                     id: maskRectangle
+
+                     anchors.fill: parent
+                     radius: 10
+                     visible: false
+
+                 }
+
+                 OpacityMask {
+                     id: opacityMask
+                     anchors.fill: avatarImage
+                     source: avatarImage
+                     maskSource: maskRectangle
+                 }
             }
 
             Label{
@@ -65,6 +88,7 @@ Rectangle {
         }
 
 
+
         TextArea{
 
             Layout.minimumWidth: 40
@@ -81,5 +105,6 @@ Rectangle {
         }
     }
 }
+
 
 
