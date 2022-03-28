@@ -1,14 +1,14 @@
-#ifndef NEWSPAGE_H
-#define NEWSPAGE_H
+#ifndef MESSAGESPAGE_H
+#define MESSAGESPAGE_H
 
 #include <QAbstractListModel>
 #include <baseTypes.h>
 
-class NewsPage : public QAbstractListModel
+class MessagesPage : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit NewsPage(QObject *parent = nullptr);
+    explicit MessagesPage(QObject *parent = nullptr);
 
     enum DataRoles {
             UserName = Qt::UserRole + 1,
@@ -25,7 +25,7 @@ protected:
    QHash<int, QByteArray> roleNames() const override;
 
 public slots:
-    void receiveNews(QList<DiscordMessage> news);
+    void receiveMessages(QList<DiscordMessage> news);
     void onAvatarUpdate();
 
 signals:
@@ -35,4 +35,4 @@ private:
 
 };
 
-#endif // NEWSPAGE_H
+#endif // MESSAGESPAGE_H

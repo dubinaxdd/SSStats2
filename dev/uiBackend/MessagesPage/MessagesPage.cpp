@@ -1,12 +1,12 @@
-#include "NewsPage.h"
+#include "MessagesPage.h"
 #include <QDebug>
 #include <QAbstractItemModel>
-NewsPage::NewsPage(QObject *parent) : QAbstractListModel(parent)
+MessagesPage::MessagesPage(QObject *parent) : QAbstractListModel(parent)
 {
 
 }
 
-QVariant NewsPage::data(const QModelIndex &index, int role) const
+QVariant MessagesPage::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_news.count())
         return QVariant();
@@ -23,13 +23,13 @@ QVariant NewsPage::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-int NewsPage::rowCount(const QModelIndex &parent) const
+int MessagesPage::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
     return m_news.count();
 }
 
-QHash<int, QByteArray> NewsPage::roleNames() const
+QHash<int, QByteArray> MessagesPage::roleNames() const
 {
     QHash<int, QByteArray> roles;
     roles[UserName] = "userName";
@@ -39,7 +39,7 @@ QHash<int, QByteArray> NewsPage::roleNames() const
     return roles;
 }
 
-void NewsPage::receiveNews(QList<DiscordMessage> news)
+void MessagesPage::receiveMessages(QList<DiscordMessage> news)
 {
     beginInsertRows(QModelIndex(), 0, news.count() - 1);
     m_news = news;
@@ -47,7 +47,7 @@ void NewsPage::receiveNews(QList<DiscordMessage> news)
 
 }
 
-void NewsPage::onAvatarUpdate()
+void MessagesPage::onAvatarUpdate()
 {
     for(int i = 0; i < m_news.count(); i++)
     {

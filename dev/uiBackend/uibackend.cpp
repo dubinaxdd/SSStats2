@@ -9,7 +9,8 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_imageProvider(new ImageProvider(this))
     , m_gamePanel(new GamePanel(settingsController, this))
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
-    , m_newsPage(new NewsPage(this))
+    , m_newsPage(new MessagesPage(this))
+    , m_eventsPage(new MessagesPage(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");
@@ -121,7 +122,12 @@ void UiBackend::showClient()
     emit sendShowClient(m_showClient);
 }
 
-NewsPage *UiBackend::newsPage() const
+MessagesPage *UiBackend::eventsPage() const
+{
+    return m_eventsPage;
+}
+
+MessagesPage *UiBackend::newsPage() const
 {
     return m_newsPage;
 }

@@ -17,7 +17,7 @@ Rectangle {
 
     radius: 10
 
-    property var model: _uiBackend.newsPage
+    property var model
 
     ColumnLayout
     {

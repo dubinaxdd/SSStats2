@@ -137,35 +137,48 @@ Window {
 
                 HeaderButton{
                     id: newsButton
-
                     text: "News"
-
                     pressedState: true
 
                     onClicked: {
+                        eventsButton.pressedState = false;
+                        infoButton.pressedState = false;
+                        settingsButton.pressedState = false;
+
+                    }
+                }
+
+                HeaderButton{
+                    id: eventsButton
+                    text: "Events"
+
+
+                    onClicked: {
+                        newsButton.pressedState = false;
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;
                     }
                 }
 
+
                 HeaderButton{
                     id: infoButton
-
                     text: "Information"
 
                     onClicked: {
                         newsButton.pressedState = false;
+                        eventsButton.pressedState = false;
                         settingsButton.pressedState = false;
                     }
                 }
 
                 HeaderButton{
                     id: settingsButton
-
                     text: "Settings"
 
                     onClicked: {
                         newsButton.pressedState = false;
+                        eventsButton.pressedState = false;
                         infoButton.pressedState = false;
                     }
                 }
@@ -194,9 +207,18 @@ Window {
             Layout.fillHeight: true
 
 
-            NewsPage{
+            MessagesPage{
                 id: newsPage
                 visible: newsButton.pressedState
+                model: _uiBackend.newsPage
+                anchors.fill: parent
+            }
+
+            MessagesPage{
+                id: eventsPage
+
+                visible: eventsButton.pressedState
+                model: _uiBackend.eventsPage
                 anchors.fill: parent
             }
 

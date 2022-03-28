@@ -17,7 +17,9 @@ void DiscordController::requestNews()
 {
     QNetworkRequest newRequest;
 
-    newRequest.setUrl(QUrl("https://discord.com/api/v9/channels/852182655570411592/messages"));
+    QString urlString = "https://discord.com/api/v9/channels/" + QString(NEWS_CHANNEL_ID).toLocal8Bit() + "/messages";
+
+    newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", "discord.com");
     newRequest.setRawHeader("User-Agent", "DowStats2");
@@ -33,6 +35,29 @@ void DiscordController::requestNews()
         reply->deleteLater();
     });
 
+}
+
+void DiscordController::requestEvents()
+{
+    QNetworkRequest newRequest;
+
+    QString urlString = "https://discord.com/api/v9/channels/" + QString(EVENTS_CHANNEL_ID).toLocal8Bit() + "/messages";
+
+    newRequest.setUrl(QUrl(urlString));
+    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
+    newRequest.setRawHeader("Host", "discord.com");
+    newRequest.setRawHeader("User-Agent", "DowStats2");
+    newRequest.setRawHeader("Content-Type","application/json");
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveEvents(reply);
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
 }
 
 void DiscordController::requestUserAvatar(QString userId, QString avatarId)
@@ -53,27 +78,16 @@ void DiscordController::requestUserAvatar(QString userId, QString avatarId)
     });
 }
 
-void DiscordController::receiveNews(QNetworkReply *reply)
+QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
 {
-    if (reply->error() != QNetworkReply::NoError)
-    {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
-        return;
-    }
-
-    QByteArray replyByteArray = reply->readAll();
-
-    reply->deleteLater();
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(byteArray);
 
     if(!jsonDoc.isArray())
-        return;
+        return QList<DiscordMessage>();
 
     QJsonArray replyJsonArray = jsonDoc.array();
 
-    discordNewsList.clear();
+    QList<DiscordMessage> discordNewsList;
 
     for (int i = 0; i < replyJsonArray.count(); i++)
     {
@@ -105,7 +119,39 @@ void DiscordController::receiveNews(QNetworkReply *reply)
         discordNewsList.append(std::move(newDiscordMessage));
     }
 
-    emit sendNews(discordNewsList);
+    return std::move(discordNewsList);
+}
+
+void DiscordController::receiveNews(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    reply->deleteLater();
+
+    emit sendNews(std::move(parseMessagesJson(replyByteArray)));
+}
+
+void DiscordController::receiveEvents(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    reply->deleteLater();
+
+    emit sendEvents(std::move(parseMessagesJson(replyByteArray)));
 }
 
 void DiscordController::receiveUserAvatar(QNetworkReply *reply, QString avatarId)
