@@ -11,6 +11,8 @@ class DiscordController : public QObject
     Q_OBJECT
 public:
     explicit DiscordController(QObject *parent = nullptr);
+
+public slots:
     void requestNews();
     void requestEvents();
 

@@ -71,6 +71,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
     QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController, &SsController::launchSoulstormWithSupportMode, Qt::QueuedConnection);
 
+    QObject::connect(m_uiBackend, &UiBackend::requestEvents, m_discordController, &DiscordController::requestEvents, Qt::QueuedConnection);
 
     QObject::connect(m_discordController, &DiscordController::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
 
@@ -82,7 +83,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     m_settingsController->initializeSettings();
     m_discordController->requestNews();
-    m_discordController->requestEvents();
+    //m_discordController->requestEvents();
 }
 
 void Core::topmostTimerTimout()

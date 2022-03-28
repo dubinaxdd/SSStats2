@@ -71,6 +71,9 @@ public:
     MessagesPage *newsPage() const;
     MessagesPage *eventsPage() const;
 
+
+
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -102,6 +105,8 @@ signals:
 
     void expandButtonPressed();
 
+    void requestEvents();
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
@@ -118,6 +123,7 @@ public slots:
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
     Q_INVOKABLE void setSizeModifer(float size);
+    Q_INVOKABLE void onRequestEvents();
 
 private slots:
     void onSettingsLoaded();

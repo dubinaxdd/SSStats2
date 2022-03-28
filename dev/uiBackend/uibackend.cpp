@@ -127,6 +127,11 @@ MessagesPage *UiBackend::eventsPage() const
     return m_eventsPage;
 }
 
+void UiBackend::onRequestEvents()
+{
+    emit requestEvents();
+}
+
 MessagesPage *UiBackend::newsPage() const
 {
     return m_newsPage;

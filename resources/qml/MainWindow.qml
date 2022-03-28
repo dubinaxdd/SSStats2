@@ -151,9 +151,15 @@ Window {
                 HeaderButton{
                     id: eventsButton
                     text: "Events"
-
+                    property bool dataRequested: false
 
                     onClicked: {
+                        if (!eventsButton.dataRequested)
+                        {
+                            _uiBackend.onRequestEvents();
+                            eventsButton.dataRequested = true;
+
+                        }
                         newsButton.pressedState = false;
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;

@@ -41,6 +41,10 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
 
 void MessagesPage::receiveMessages(QList<DiscordMessage> news)
 {
+    beginRemoveRows(QModelIndex(), 0, m_news.count() - 1);
+    m_news.clear();
+    endRemoveRows();
+
     beginInsertRows(QModelIndex(), 0, news.count() - 1);
     m_news = news;
     endInsertRows();

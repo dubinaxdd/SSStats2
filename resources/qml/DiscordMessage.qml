@@ -13,7 +13,7 @@ Rectangle {
     Layout.minimumHeight: 60
 
 
-    height: 110 + contentTextArea.height
+    height: 120 + contentTextArea.height
 
 
     property string userName: "Unknown user"
@@ -28,6 +28,8 @@ Rectangle {
     {
         anchors.fill: parent
 
+        spacing: 0
+
         RowLayout
         {
             Layout.fillWidth: true
@@ -35,12 +37,15 @@ Rectangle {
             Rectangle {
                 id: imageRectangle
 
-                width: 65
-                height:65
+                width: 55
+                height:55
 
                 radius: 10
 
-                Layout.margins: 15
+                Layout.leftMargin: 15
+                Layout.rightMargin: 15
+                //Layout.topMargin: 15
+                //Layout.bottomMargin: 5
 
                 Image {
                     id: avatarImage
@@ -83,25 +88,29 @@ Rectangle {
                 color: "#26282a"
                 text: mainRectangle.timesTamp
 
-                Layout.margins: 15
+                Layout.rightMargin: 15
             }
         }
 
-
-
-        TextArea{
+        Text{
 
             Layout.minimumWidth: 40
-
+            Layout.leftMargin: 15
+            Layout.rightMargin: 15
             Layout.fillWidth: true
-            //Layout.fillHeight: true
-
             id:contentTextArea
             text: mainRectangle.content
             wrapMode: Text.Wrap
-            placeholderTextColor: "#fcfdfe"
-            font.pointSize: 9
+            color: "#26282a"
+            font.pointSize: 11
             textFormat: Text.AutoText
+        }
+
+        Rectangle{
+            Layout.fillWidth: true
+            height: 10
+            color: "#00000000"
+            border.color: "#00000000"
         }
     }
 }
