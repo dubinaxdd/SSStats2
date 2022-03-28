@@ -12,6 +12,12 @@ Item{
 
     MainWindow{
         id: mainWindow
+
+        Component.onCompleted: {
+            mainWindow.showNormal();
+            mainWindow.raise();
+            mainWindow.requestActivate();
+        }
     }
 
     OverlayWindow

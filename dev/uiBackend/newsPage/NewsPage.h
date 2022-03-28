@@ -12,7 +12,8 @@ public:
 
     enum DataRoles {
             UserName = Qt::UserRole + 1,
-            Content
+            Content = Qt::UserRole + 2,
+            TimesTamp
     };
 
 

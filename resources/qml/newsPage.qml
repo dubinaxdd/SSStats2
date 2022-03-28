@@ -23,24 +23,21 @@ Rectangle {
     {
         anchors.fill: parent
 
-
         ListView{
             id: messagesListView
-
-            implicitWidth: 2500
-            implicitHeight: 2500
-
+            Layout.margins: 10
+            Layout.fillWidth: true
+            Layout.fillHeight: true
             clip: true
+            spacing: 5
 
             model: infoRectangle.model
 
             delegate: DiscordMessage{
-
-                width: 100
-                height: 100
-
+                width: messagesListView.width
                 userName: model.userName
                 content: model.content
+                timesTamp: model.timesTamp
             }
 
 

@@ -16,6 +16,8 @@ QVariant NewsPage::data(const QModelIndex &index, int role) const
         return message.userName;
     else if (role == Content)
         return message.content;
+    else if (role == TimesTamp)
+        return message.timestamp.toString("dd.MM.yyyy");
     return QVariant();
 }
 
@@ -30,6 +32,7 @@ QHash<int, QByteArray> NewsPage::roleNames() const
     QHash<int, QByteArray> roles;
     roles[UserName] = "userName";
     roles[Content] = "content";
+    roles[TimesTamp] = "timesTamp";
     return roles;
 }
 
