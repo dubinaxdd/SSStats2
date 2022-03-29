@@ -12,9 +12,7 @@ Rectangle {
     Layout.minimumWidth: 60
     Layout.minimumHeight: 60
 
-
-    height: 120 + contentTextArea.height
-
+    height: bottomSpacerRectangle.height + messageHeader.height + contentTextArea.height + 30
 
     property string userName: "Unknown user"
     property string content: "Message text"
@@ -32,50 +30,66 @@ Rectangle {
 
         RowLayout
         {
+            id: messageHeader
+
             Layout.fillWidth: true
-
-            Rectangle {
-                id: imageRectangle
-
-                width: 55
-                height:55
+            Layout.alignment: Qt.AlignTop
+            Layout.topMargin: 15
+            Layout.leftMargin: 15
+            Layout.rightMargin: 15
+            Rectangle{
+                width: imageRectangle.width + userNameLabel.width + 10 + 30
+                height: imageRectangle.height
+                color: "#c8c8c8"
 
                 radius: 10
 
-                Layout.leftMargin: 15
-                Layout.rightMargin: 15
+                RowLayout{
 
-                Image {
-                    id: avatarImage
-                    cache: false
-                    anchors.fill: parent
-                    source: "image://ImageProvider/" + mainRectangle.avatarId
-                    visible: false
+                    Rectangle {
+                        id: imageRectangle
+
+                        width: 50
+                        height:50
+                        radius: 10
+                        Layout.rightMargin: 15
+
+                        Image {
+                            id: avatarImage
+                            cache: false
+                            anchors.fill: parent
+                            source: "image://ImageProvider/" + mainRectangle.avatarId
+                            visible: false
+                        }
+
+                         Rectangle {
+                             id: maskRectangle
+
+                             anchors.fill: parent
+                             radius: 10
+                             visible: false
+
+                         }
+
+                         OpacityMask {
+                             id: opacityMask
+                             anchors.fill: avatarImage
+                             source: avatarImage
+                             maskSource: maskRectangle
+                         }
+                    }
+
+                    Label{
+                        id: userNameLabel
+                        Layout.rightMargin: 15
+                        color: "#26282a"
+                        text: mainRectangle.userName
+                        font.pointSize: 14
+                    }
                 }
-
-                 Rectangle {
-                     id: maskRectangle
-
-                     anchors.fill: parent
-                     radius: 10
-                     visible: false
-
-                 }
-
-                 OpacityMask {
-                     id: opacityMask
-                     anchors.fill: avatarImage
-                     source: avatarImage
-                     maskSource: maskRectangle
-                 }
             }
 
-            Label{
-                id: userNameLabel
-                color: "#26282a"
-                text: mainRectangle.userName
-                font.pointSize: 14
-            }
+
 
             Rectangle{
                 Layout.fillWidth: true
@@ -85,28 +99,30 @@ Rectangle {
                 id: dateTimeLabel
                 color: "#26282a"
                 text: mainRectangle.timesTamp
-
+                font.pointSize: 10
                 Layout.rightMargin: 15
             }
         }
 
         Text{
-
-            Layout.minimumWidth: 40
+            Layout.alignment: Qt.AlignTop
             Layout.leftMargin: 15
             Layout.rightMargin: 15
+            Layout.topMargin: 15
             Layout.fillWidth: true
+
             id:contentTextArea
             text: mainRectangle.content
             wrapMode: Text.Wrap
             color: "#26282a"
-            font.pointSize: 11
+            font.pointSize: 10
             textFormat: Text.AutoText
         }
 
         Rectangle{
+            id: bottomSpacerRectangle
             Layout.fillWidth: true
-            height: 10
+            height: 15
             color: "#00000000"
             border.color: "#00000000"
         }
