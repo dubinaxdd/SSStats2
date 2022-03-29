@@ -24,9 +24,11 @@ public:
 
 signals:
     void updateAvatars();
+    void updateAttachments();
 
 public slots:
     void addDiscordAvatar(QString avatarId, QImage discordAvatar);
+    void addAttachmentImage(QString attachmentId, QImage image);
 
 private:
     QImage m_currentPlayerAvatarMedium;
@@ -41,6 +43,7 @@ private:
 
 
     QMap <QString, QImage> m_discordAvatars;
+    QMap <QString, QImage> m_attachmentImages;
 };
 
 #endif // IMAGEPROVIDER_H

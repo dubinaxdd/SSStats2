@@ -20,6 +20,8 @@ QVariant MessagesPage::data(const QModelIndex &index, int role) const
         return message.timestamp.toString("dd.MM.yyyy");
     else if (role == AvatarId)
         return message.avatarId;
+    else if (role == AttachmentId)
+        return message.attachmentId;
     return QVariant();
 }
 
@@ -36,6 +38,8 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
     roles[Content] = "content";
     roles[TimesTamp] = "timesTamp";
     roles[AvatarId] = "avatarId";
+    roles[AttachmentId] = "attachmentId";
+
     return roles;
 }
 
@@ -65,6 +69,24 @@ void MessagesPage::onAvatarUpdate()
         emit dataChanged(first, last);
 
         m_news[i].avatarId = temp;
+        emit dataChanged(first, last);
+    }
+}
+
+void MessagesPage::onAttachmetImagesUpdate()
+{
+    for(int i = 0; i < m_news.count(); i++)
+    {
+        QString temp = m_news.at(i).attachmentId;
+
+        m_news[i].attachmentId = "";
+
+        QModelIndex first = QAbstractItemModel::createIndex(i, 0);
+        QModelIndex last = QAbstractItemModel::createIndex(i, 0);
+
+        emit dataChanged(first, last);
+
+        m_news[i].attachmentId = temp;
         emit dataChanged(first, last);
     }
 }

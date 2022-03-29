@@ -12,12 +12,14 @@ Rectangle {
     Layout.minimumWidth: 60
     Layout.minimumHeight: 60
 
-    height: bottomSpacerRectangle.height + messageHeader.height + contentTextArea.height + 30
+    height: bottomSpacerRectangle.height + messageHeader.height + contentTextArea.height + attachmentRectangle.height + 30
 
     property string userName: "Unknown user"
     property string content: "Message text"
     property string timesTamp: "00-00-0000 00:00"
     property string avatarId : ""
+    property string attachmentId : ""
+
     color: "#eaeaea"
     radius: 10
     border.color: "#00000000"
@@ -38,8 +40,8 @@ Rectangle {
             Layout.leftMargin: 15
             Layout.rightMargin: 15
             Rectangle{
-                width: imageRectangle.width + userNameLabel.width + 10 + 30
-                height: imageRectangle.height
+                width: avatarRectangle.width + userNameLabel.width + 10 + 30
+                height: avatarRectangle.height
                 color: "#c8c8c8"
 
                 radius: 10
@@ -47,7 +49,7 @@ Rectangle {
                 RowLayout{
 
                     Rectangle {
-                        id: imageRectangle
+                        id: avatarRectangle
 
                         width: 50
                         height:50
@@ -118,6 +120,45 @@ Rectangle {
             font.pointSize: 10
             textFormat: Text.AutoText
         }
+
+        Rectangle {
+            id: attachmentRectangle
+
+            visible: mainRectangle.attachmentId != "0"
+
+            width: mainRectangle.attachmentId == "0" ? 0 : 300
+            height: mainRectangle.attachmentId == "0" ? 0 : 230
+
+            //width: 600
+            //height: 400
+
+            radius: 10
+            Layout.rightMargin: 15
+
+            Image {
+                id: attachmentImage
+                cache: false
+                anchors.fill: parent
+                source: "image://ImageProvider/" + mainRectangle.attachmentId
+                visible: false
+            }
+
+             Rectangle {
+                 id: attachmentMaskRectangle
+                 anchors.fill: parent
+                 radius: 10
+                 visible: false
+
+             }
+
+             OpacityMask {
+                 id: attachmentOpacityMask
+                 anchors.fill: attachmentImage
+                 source: attachmentImage
+                 maskSource: attachmentMaskRectangle
+             }
+        }
+
 
         Rectangle{
             id: bottomSpacerRectangle

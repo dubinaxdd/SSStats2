@@ -40,6 +40,7 @@ Rectangle {
                 content: model.content
                 timesTamp: model.timesTamp
                 avatarId: model.avatarId
+                attachmentId: model.attachmentId
             }
         }
     }

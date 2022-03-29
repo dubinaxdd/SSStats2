@@ -18,6 +18,7 @@ public slots:
 
 private:
     void requestUserAvatar(QString userId, QString avatarId);
+    void requestAttachmentImage(QString attachmentId, QString url);
 
     QList<DiscordMessage> parseMessagesJson(QByteArray byteArray);
 
@@ -25,12 +26,14 @@ private slots:
     void receiveNews(QNetworkReply* reply);
     void receiveEvents(QNetworkReply* reply);
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
+    void receiveAttachmentImage(QNetworkReply* reply, QString attachmentId);
 
 
 signals:
     void sendNews(QList<DiscordMessage> news);
     void sendEvents(QList<DiscordMessage> news);
     void sendAvatar(QString avatarId, QImage discordAvatar);
+    void sendAttachmentImage(QString attachmentId, QImage attachmentImage);
 
 private:
 

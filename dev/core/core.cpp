@@ -74,11 +74,15 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend, &UiBackend::requestEvents, m_discordController, &DiscordController::requestEvents, Qt::QueuedConnection);
 
     QObject::connect(m_discordController, &DiscordController::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
+    QObject::connect(m_discordController, &DiscordController::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
 
     QObject::connect(m_discordController, &DiscordController::sendNews, m_uiBackend->newsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAvatars, m_uiBackend->newsPage(), &MessagesPage::onAvatarUpdate,  Qt::QueuedConnection);
     QObject::connect(m_discordController, &DiscordController::sendEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAvatars, m_uiBackend->eventsPage(), &MessagesPage::onAvatarUpdate,  Qt::QueuedConnection);
+
+    QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->newsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->eventsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
 
 
     m_settingsController->initializeSettings();

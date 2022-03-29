@@ -78,6 +78,23 @@ void DiscordController::requestUserAvatar(QString userId, QString avatarId)
     });
 }
 
+void DiscordController::requestAttachmentImage(QString attachmentId, QString url)
+{
+    QNetworkRequest newRequest;
+
+    newRequest.setUrl(QUrl(url));
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveAttachmentImage(reply, attachmentId);
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
+}
+
 QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(byteArray);
@@ -109,6 +126,32 @@ QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
         newDiscordMessage.userId = authorObject.value("id").toString();
         newDiscordMessage.userName = authorObject.value("username").toString();
         newDiscordMessage.avatarId = authorObject.value("avatar").toString();
+
+        newDiscordMessage.attachmentId = "0";
+
+        if (newObject.value("attachments").isArray())
+        {
+            QJsonArray attachmentsArray = newObject.value("attachments").toArray();
+
+            for (int j = 0; j < attachmentsArray.count(); j++)
+            {
+                if(attachmentsArray.at(j).isObject() )
+                {
+                    QJsonObject attachmentObject = attachmentsArray.at(j).toObject();
+
+                    if (attachmentObject.value("content_type").toString() != "image/png")
+                        continue;
+
+                    QString url = attachmentObject.value("url").toString();
+                    QString attachmentId = attachmentObject.value("id").toString();
+
+                    newDiscordMessage.attachmentId = attachmentId;
+                    requestAttachmentImage(attachmentId, url);
+
+                    break;
+                }
+            }
+        }
 
         if(!m_avatarIdList.contains(newDiscordMessage.avatarId))
         {
@@ -174,4 +217,25 @@ void DiscordController::receiveUserAvatar(QNetworkReply *reply, QString avatarId
         return;
 
     emit sendAvatar(avatarId, std::move(avatar));
+}
+
+void DiscordController::receiveAttachmentImage(QNetworkReply *reply, QString attachmentId)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    reply->deleteLater();
+
+    QImage image = QImage::fromData(replyByteArray);
+
+    if (image.isNull())
+        return;
+
+    emit sendAttachmentImage(attachmentId, std::move(image));
 }

@@ -202,7 +202,8 @@ struct DiscordMessage
     QString userName;
     QDateTime timestamp;
     QString avatarId;
-    QImage avatar;
+   // QImage avatar;
+    QString attachmentId;
 };
 
 #endif // BASETYPES_H

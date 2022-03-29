@@ -14,6 +14,7 @@ public:
             UserName = Qt::UserRole + 1,
             Content = Qt::UserRole + 2,
             AvatarId = Qt::UserRole + 3,
+            AttachmentId = Qt::UserRole + 4,
             TimesTamp
     };
 
@@ -27,6 +28,7 @@ protected:
 public slots:
     void receiveMessages(QList<DiscordMessage> news);
     void onAvatarUpdate();
+    void onAttachmetImagesUpdate();
 
 signals:
 

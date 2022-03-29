@@ -45,6 +45,13 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
 
     }
 
+    for(int i = 0; i < m_attachmentImages.count(); i++)
+    {
+        if (id == m_attachmentImages.keys().at(i))
+            return m_attachmentImages.values().at(i);
+
+    }
+
     //если ничего не нашлось возвращаем черную картинку
     QImage image(60,60, QImage::Format_ARGB32);
     image.fill(QColor(0,0,0).rgba());
@@ -96,6 +103,12 @@ void ImageProvider::addDiscordAvatar(QString avatarId, QImage discordAvatar)
 {
     m_discordAvatars.insert(avatarId, discordAvatar);
     emit updateAvatars();
+}
+
+void ImageProvider::addAttachmentImage(QString attachmentId, QImage image)
+{
+    m_attachmentImages.insert(attachmentId, image);
+    emit updateAttachments();
 }
 
 
