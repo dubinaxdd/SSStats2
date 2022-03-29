@@ -139,7 +139,7 @@ QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
                 {
                     QJsonObject attachmentObject = attachmentsArray.at(j).toObject();
 
-                    if (attachmentObject.value("content_type").toString() != "image/png")
+                    if (attachmentObject.value("content_type").toString() != "image/png" && attachmentObject.value("content_type").toString() != "image/jpeg")
                         continue;
 
                     QString url = attachmentObject.value("url").toString();
