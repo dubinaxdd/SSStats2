@@ -31,6 +31,12 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
+/*
+        hoverEnabled: true
+
+        onHoveredChanged: {
+            mouseArea.cursorShape = Qt.IBeamCursor;
+        }*/
     }
 
     ColumnLayout
@@ -117,7 +123,7 @@ Rectangle {
             }
         }
 
-        Text{
+        TextArea{
             id:contentTextArea
 
             Layout.alignment: Qt.AlignTop
@@ -132,13 +138,17 @@ Rectangle {
             font.pointSize: 10
             textFormat: Text.RichText
 
+            selectByMouse: true
+            readOnly: true
+
             onLinkActivated: Qt.openUrlExternally(link)
 
-            onLinkHovered:
-            {
+            onLinkHovered:{
+
                 if (hoveredLink != "")
                     mouseArea.cursorShape = Qt.PointingHandCursor;
                 else
+                    //mouseArea.cursorShape = Qt.IBeamCursor;
                     mouseArea.cursorShape = Qt.ArrowCursor;
             }
         }
