@@ -87,8 +87,17 @@ void MessagesPage::receiveMessages(QList<DiscordMessage> news)
             }
         }
 
+        for (int j = 0; j < newText.count(); j++)
+        {
+            if(newText.at(j) == '\n')
+                newText.replace(j, 1, "<br> ");
+        }
+
         m_news[i].content = newText;
     }
+
+
+
 
     endInsertRows();
 }
