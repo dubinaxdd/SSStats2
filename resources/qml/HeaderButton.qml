@@ -41,6 +41,8 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
 
+        cursorShape: Qt.PointingHandCursor
+
         onClicked: {
             pressedState = true;
             mainRectangle.clicked();

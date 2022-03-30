@@ -26,6 +26,8 @@ Rectangle {
     radius: 10
     border.color: "#00000000"
 
+    signal attachmentImageClicked()
+
     ColumnLayout
     {
         anchors.fill: parent
@@ -130,17 +132,22 @@ Rectangle {
 
             visible: mainRectangle.attachmentId != "0"
 
-            //width: mainRectangle.attachmentId == "0" ? 0 : mainRectangle.attachmentImageWidth
-            //height: mainRectangle.attachmentId == "0" ? 0 : mainRectangle.attachmentImageHeight
-
             Layout.leftMargin: 15
             Layout.topMargin: contentTextArea.text != "" ? 15 : 0
 
-            //width: 600
-            //height: 400
-
             radius: 10
             Layout.rightMargin: 15
+
+            MouseArea
+            {
+                anchors.fill: parent
+
+                cursorShape: Qt.PointingHandCursor
+
+                onClicked: {
+                    mainRectangle.attachmentImageClicked();
+                }
+            }
 
             Image {
                 id: attachmentImage
@@ -150,7 +157,6 @@ Rectangle {
                 visible: false
 
                 onSourceChanged: {
-                    //attachmentRectangle
                     if (mainRectangle.attachmentImageHeight > mainRectangle.attachmentImageWidth)
                     {
                         attachmentRectangle.height = 400;
