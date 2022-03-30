@@ -56,9 +56,41 @@ void MessagesPage::receiveMessages(QList<DiscordMessage> news)
     endRemoveRows();
 
     beginInsertRows(QModelIndex(), 0, news.count() - 1);
-    m_news = news;
-    endInsertRows();
 
+    m_news = news;
+
+    for (int i = 0; i < m_news.count(); i++)
+    {
+        QString newText = m_news.at(i).content;
+
+        newText.append('\0');
+
+        for (int j = 0; j < newText.count() - 8; j++)
+        {
+            if(newText.mid(j, 7) == "http://" || newText.mid(j, 8) == "https://")
+            {
+                for(int k = j; k < newText.count(); k++)
+                {
+                    if(  k == newText.count() - 1 ||
+                         newText.at(k) == ' ' ||
+                         newText.at(k) == '\n' ||
+                         newText.at(k) == '\0')
+                    {
+                        QString url = newText.mid(j, k - j);
+                        QString formattedUrl = "<a href=\"" + url + "\">" + url + "</a>";
+
+                        newText.replace(j, k-j, formattedUrl);
+                        j += formattedUrl.count();
+                        break;
+                    }
+                }
+            }
+        }
+
+        m_news[i].content = newText;
+    }
+
+    endInsertRows();
 }
 
 void MessagesPage::onAvatarUpdate()
