@@ -28,6 +28,12 @@ Rectangle {
 
     signal attachmentImageClicked()
 
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+    }
+
+
     ColumnLayout
     {
         anchors.fill: parent
@@ -113,18 +119,29 @@ Rectangle {
         }
 
         Text{
+            id:contentTextArea
+
             Layout.alignment: Qt.AlignTop
             Layout.leftMargin: 15
             Layout.rightMargin: 15
-            //Layout.topMargin: 15
             Layout.fillWidth: true
 
-            id:contentTextArea
+
             text: mainRectangle.content
             wrapMode: Text.Wrap
             color: "#26282a"
             font.pointSize: 10
-            textFormat: Text.AutoText
+            textFormat: Text.RichText
+
+            onLinkActivated: Qt.openUrlExternally(link)
+
+            onLinkHovered:
+            {
+                if (hoveredLink != "")
+                    mouseArea.cursorShape = Qt.PointingHandCursor;
+                else
+                    mouseArea.cursorShape = Qt.ArrowCursor;
+            }
         }
 
         Rectangle {
