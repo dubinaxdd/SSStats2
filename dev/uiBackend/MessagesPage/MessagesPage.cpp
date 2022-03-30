@@ -22,6 +22,10 @@ QVariant MessagesPage::data(const QModelIndex &index, int role) const
         return message.avatarId;
     else if (role == AttachmentId)
         return message.attachmentId;
+    else if (role == AttachmentImageWidth)
+        return message.attachmentImageWidth;
+    else if (role == AttachmentImageHeight)
+        return message.attachmentImageHeight;
     return QVariant();
 }
 
@@ -39,6 +43,8 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
     roles[TimesTamp] = "timesTamp";
     roles[AvatarId] = "avatarId";
     roles[AttachmentId] = "attachmentId";
+    roles[AttachmentImageWidth] = "attachmentImageWidth";
+    roles[AttachmentImageHeight] = "attachmentImageHeight";
 
     return roles;
 }

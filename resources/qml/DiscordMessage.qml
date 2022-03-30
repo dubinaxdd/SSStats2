@@ -12,13 +12,15 @@ Rectangle {
     Layout.minimumWidth: 60
     Layout.minimumHeight: 60
 
-    height: bottomSpacerRectangle.height + messageHeader.height + contentTextArea.height + attachmentRectangle.height + 30
+    height: bottomSpacerRectangle.height + messageHeader.height + contentTextArea.height + attachmentRectangle.height + 30 + (contentTextArea.text != "" ? 15 : 0)
 
     property string userName: "Unknown user"
     property string content: "Message text"
     property string timesTamp: "00-00-0000 00:00"
     property string avatarId : ""
     property string attachmentId : ""
+    property int attachmentImageWidth: 0
+    property int attachmentImageHeight: 0
 
     color: "#eaeaea"
     radius: 10
@@ -39,6 +41,8 @@ Rectangle {
             Layout.topMargin: 15
             Layout.leftMargin: 15
             Layout.rightMargin: 15
+            Layout.bottomMargin: 15
+
             Rectangle{
                 width: avatarRectangle.width + userNameLabel.width + 10 + 30
                 height: avatarRectangle.height
@@ -110,7 +114,7 @@ Rectangle {
             Layout.alignment: Qt.AlignTop
             Layout.leftMargin: 15
             Layout.rightMargin: 15
-            Layout.topMargin: 15
+            //Layout.topMargin: 15
             Layout.fillWidth: true
 
             id:contentTextArea
@@ -126,8 +130,11 @@ Rectangle {
 
             visible: mainRectangle.attachmentId != "0"
 
-            width: mainRectangle.attachmentId == "0" ? 0 : 300
-            height: mainRectangle.attachmentId == "0" ? 0 : 230
+            //width: mainRectangle.attachmentId == "0" ? 0 : mainRectangle.attachmentImageWidth
+            //height: mainRectangle.attachmentId == "0" ? 0 : mainRectangle.attachmentImageHeight
+
+            Layout.leftMargin: 15
+            Layout.topMargin: contentTextArea.text != "" ? 15 : 0
 
             //width: 600
             //height: 400
@@ -141,6 +148,20 @@ Rectangle {
                 anchors.fill: parent
                 source: "image://ImageProvider/" + mainRectangle.attachmentId
                 visible: false
+
+                onSourceChanged: {
+                    //attachmentRectangle
+                    if (mainRectangle.attachmentImageHeight > mainRectangle.attachmentImageWidth)
+                    {
+                        attachmentRectangle.height = 400;
+                        attachmentRectangle.width = (attachmentRectangle.height * mainRectangle.attachmentImageWidth / mainRectangle.attachmentImageHeight);
+                    }
+                    else
+                    {
+                        attachmentRectangle.width = 400;
+                        attachmentRectangle.height = (attachmentRectangle.width * mainRectangle.attachmentImageHeight / mainRectangle.attachmentImageWidth);
+                    }
+                }
             }
 
              Rectangle {
@@ -158,7 +179,6 @@ Rectangle {
                  maskSource: attachmentMaskRectangle
              }
         }
-
 
         Rectangle{
             id: bottomSpacerRectangle

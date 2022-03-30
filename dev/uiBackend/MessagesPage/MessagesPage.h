@@ -15,6 +15,8 @@ public:
             Content = Qt::UserRole + 2,
             AvatarId = Qt::UserRole + 3,
             AttachmentId = Qt::UserRole + 4,
+            AttachmentImageWidth = Qt::UserRole + 5,
+            AttachmentImageHeight = Qt::UserRole + 6,
             TimesTamp
     };
 

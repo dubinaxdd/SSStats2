@@ -146,6 +146,10 @@ QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
                     QString attachmentId = attachmentObject.value("id").toString();
 
                     newDiscordMessage.attachmentId = attachmentId;
+                    newDiscordMessage.attachmentImageWidth = attachmentObject.value("width").toInt();
+                    newDiscordMessage.attachmentImageHeight = attachmentObject.value("height").toInt();
+
+
                     requestAttachmentImage(attachmentId, url);
 
                     break;
