@@ -84,10 +84,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->newsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->eventsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
 
-
     m_settingsController->initializeSettings();
-    m_discordController->requestNews();
-    //m_discordController->requestEvents();
 }
 
 void Core::topmostTimerTimout()

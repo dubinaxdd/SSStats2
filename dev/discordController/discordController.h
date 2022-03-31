@@ -5,6 +5,7 @@
 #include <QNetworkAccessManager>
 #include <logger.h>
 #include <baseTypes.h>
+#include <QTimer>
 
 class DiscordController : public QObject
 {
@@ -15,6 +16,8 @@ public:
 public slots:
     void requestNews();
     void requestEvents();
+    void requestNewsChannel();
+    void requestEventsChannel();
 
 private:
     void requestUserAvatar(QString userId, QString avatarId);
@@ -25,8 +28,12 @@ private:
 private slots:
     void receiveNews(QNetworkReply* reply);
     void receiveEvents(QNetworkReply* reply);
+    void receiveNewsChannel(QNetworkReply* reply);
+    void receiveEventsChannel(QNetworkReply* reply);
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
     void receiveAttachmentImage(QNetworkReply* reply, QString attachmentId);
+
+    void requestMessages();
 
 
 signals:
@@ -35,11 +42,18 @@ signals:
     void sendAvatar(QString avatarId, QImage discordAvatar);
     void sendAttachmentImage(QString attachmentId, QImage attachmentImage);
 
+
 private:
 
+    QTimer* m_requestTimer;
+
     QNetworkAccessManager *m_networkManager;
-   // QList<DiscordMessage> discordNewsList;
     QList<QString> m_avatarIdList;
+
+    QString m_lastNewsMessageID = "";
+    QString m_lastEventMessageID = "";
+
+    bool m_requestNewsNow = true;
 
 };
 

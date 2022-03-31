@@ -154,15 +154,16 @@ Window {
                     text: "Events"
                     newsAvailable: eventsPage.model.newsAvailable
 
-                    property bool dataRequested: false
+                   // property bool dataRequested: false
 
                     onClicked: {
-                        if (!eventsButton.dataRequested)
+                        /*if (!eventsButton.dataRequested)
                         {
                             _uiBackend.onRequestEvents();
                             eventsButton.dataRequested = true;
 
-                        }
+                        }*/
+
                         newsButton.pressedState = false;
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;

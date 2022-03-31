@@ -197,6 +197,7 @@ struct SendingReplayInfo
 
 struct DiscordMessage
 {
+    QString messageId;
     QString content;
     QString userId;
     QString userName;
