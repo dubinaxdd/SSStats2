@@ -12,7 +12,12 @@ Rectangle {
     Layout.minimumWidth: 60
     Layout.minimumHeight: 60
 
-    height: bottomSpacerRectangle.height + messageHeader.height + contentTextArea.height + attachmentRectangle.height + 30 + (contentTextArea.text != "" ? 15 : 0)
+    height: 15 + messageHeader.height
+               + (contentTextArea.visible ? 15 : 0)
+               + (contentTextArea.visible ? contentTextArea.height : 0)
+               + (attachmentRectangle.visible ? 15 : 0)
+               + (attachmentRectangle.visible ? attachmentRectangle.height : 0)
+               + bottomSpacerRectangle.height
 
     property string userName: "Unknown user"
     property string content: "Message text"
@@ -54,7 +59,7 @@ Rectangle {
             Layout.topMargin: 15
             Layout.leftMargin: 15
             Layout.rightMargin: 15
-            Layout.bottomMargin: 15
+            Layout.bottomMargin: contentTextArea.visible ? 15 : 0
 
             Rectangle{
                 width: avatarRectangle.width + userNameLabel.width + 10 + 30
@@ -108,8 +113,6 @@ Rectangle {
                 }
             }
 
-
-
             Rectangle{
                 Layout.fillWidth: true
             }
@@ -131,12 +134,13 @@ Rectangle {
             Layout.rightMargin: 15
             Layout.fillWidth: true
 
-
             text: mainRectangle.content
             wrapMode: Text.Wrap
             color: "#26282a"
             font.pointSize: 10
             textFormat: Text.RichText
+
+            visible: mainRectangle.content != "\0"
 
             selectByMouse: true
             readOnly: true
@@ -159,7 +163,7 @@ Rectangle {
             visible: mainRectangle.attachmentId != "0"
 
             Layout.leftMargin: 15
-            Layout.topMargin: contentTextArea.text != "" ? 15 : 0
+            Layout.topMargin: contentTextArea.visible ? 15 : 0
 
             radius: 10
             Layout.rightMargin: 15
