@@ -71,8 +71,6 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
     QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController, &SsController::launchSoulstormWithSupportMode, Qt::QueuedConnection);
 
-    QObject::connect(m_uiBackend, &UiBackend::requestEvents, m_discordController, &DiscordController::requestEvents, Qt::QueuedConnection);
-
     QObject::connect(m_discordController, &DiscordController::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
     QObject::connect(m_discordController, &DiscordController::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
 
@@ -83,6 +81,9 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->newsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->eventsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
+
+    QObject::connect(m_uiBackend->newsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedNewsMessageID, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->eventsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedEventsMessageID, Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
 }

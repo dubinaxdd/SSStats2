@@ -40,6 +40,7 @@ public slots:
 
 signals:
     void newsAvailableChanged(bool);
+    void sendLastReadedMessageId(QString id);
 
 private:
     QList<DiscordMessage> m_news;

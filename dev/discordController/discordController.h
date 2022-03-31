@@ -13,17 +13,21 @@ class DiscordController : public QObject
 public:
     explicit DiscordController(QObject *parent = nullptr);
 
-public slots:
+private:
     void requestNews();
     void requestEvents();
     void requestNewsChannel();
     void requestEventsChannel();
 
-private:
     void requestUserAvatar(QString userId, QString avatarId);
     void requestAttachmentImage(QString attachmentId, QString url);
 
     QList<DiscordMessage> parseMessagesJson(QByteArray byteArray);
+
+
+public slots:
+    void setLastReadedNewsMessageID(QString id);
+    void setLastReadedEventsMessageID(QString id);
 
 private slots:
     void receiveNews(QNetworkReply* reply);
@@ -52,6 +56,9 @@ private:
 
     QString m_lastNewsMessageID = "";
     QString m_lastEventMessageID = "";
+
+    QString m_lastReadedNewsMessageID = "";
+    QString m_lastReadedEventMessageID = "";
 
     bool m_requestNewsNow = true;
 

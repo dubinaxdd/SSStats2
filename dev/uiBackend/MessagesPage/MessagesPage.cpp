@@ -156,4 +156,7 @@ void MessagesPage::messagesReaded()
 
     m_newsAvailable = false;
     emit newsAvailableChanged(m_newsAvailable);
+
+    if(m_news.count() > 0)
+        emit sendLastReadedMessageId(m_news[0].messageId);
 }

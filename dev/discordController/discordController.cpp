@@ -223,6 +223,16 @@ QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
     return std::move(discordNewsList);
 }
 
+void DiscordController::setLastReadedNewsMessageID(QString id)
+{
+    m_lastReadedNewsMessageID = id;
+}
+
+void DiscordController::setLastReadedEventsMessageID(QString id)
+{
+    m_lastReadedEventMessageID = id;
+}
+
 void DiscordController::receiveNews(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
@@ -236,14 +246,13 @@ void DiscordController::receiveNews(QNetworkReply *reply)
 
     reply->deleteLater();
 
-
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
 
     bool isNewMessage = true;
 
     for(int i = 0; i < newsList.count(); i++)
     {
-        if (newsList.at(i).messageId == m_lastNewsMessageID)
+        if (newsList.at(i).messageId == m_lastReadedNewsMessageID)
             isNewMessage = false;
 
         newsList[i].isNew = isNewMessage;
@@ -271,7 +280,7 @@ void DiscordController::receiveEvents(QNetworkReply *reply)
 
     for(int i = 0; i < eventsList.count(); i++)
     {
-        if (eventsList.at(i).messageId == m_lastEventMessageID)
+        if (eventsList.at(i).messageId == m_lastReadedEventMessageID)
             isNewMessage = false;
 
         eventsList[i].isNew = isNewMessage;
