@@ -6,12 +6,13 @@
 #include <logger.h>
 #include <baseTypes.h>
 #include <QTimer>
+#include <settingscontroller.h>
 
 class DiscordController : public QObject
 {
     Q_OBJECT
 public:
-    explicit DiscordController(QObject *parent = nullptr);
+    explicit DiscordController(SettingsController* settingsController, QObject *parent = nullptr);
 
 private:
     void requestNews();
@@ -36,6 +37,7 @@ private slots:
     void receiveEventsChannel(QNetworkReply* reply);
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
     void receiveAttachmentImage(QNetworkReply* reply, QString attachmentId);
+    void onSettingsLoaded();
 
     void requestMessages();
 
@@ -48,6 +50,8 @@ signals:
 
 
 private:
+
+    SettingsController* m_settingsController;
 
     QTimer* m_requestTimer;
 

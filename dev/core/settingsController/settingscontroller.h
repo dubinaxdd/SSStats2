@@ -11,6 +11,8 @@ struct Settings
     bool smallGamePanelActive = false;
     bool showGamePanelPreset = false;
     float scale = 1.0;
+    QString lastReadedNewsMessageID = "";
+    QString lastReadedEventsMessageID = "";
 };
 
 class SettingsController : public QObject

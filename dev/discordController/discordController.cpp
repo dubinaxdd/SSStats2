@@ -8,12 +8,13 @@
 
 #define REQUEST_TIMER_INTERVAL 1000
 
-DiscordController::DiscordController(QObject *parent)
+DiscordController::DiscordController(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
     , m_requestTimer(new QTimer(this))
+    , m_settingsController(settingsController)
 {
-
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordController::onSettingsLoaded, Qt::QueuedConnection);
     QObject::connect(m_requestTimer, &QTimer::timeout, this, &DiscordController::requestMessages, Qt::QueuedConnection);
 
     m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL);
@@ -226,11 +227,13 @@ QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
 void DiscordController::setLastReadedNewsMessageID(QString id)
 {
     m_lastReadedNewsMessageID = id;
+    m_settingsController->getSettings()->lastReadedNewsMessageID = m_lastReadedNewsMessageID;
 }
 
 void DiscordController::setLastReadedEventsMessageID(QString id)
 {
     m_lastReadedEventMessageID = id;
+    m_settingsController->getSettings()->lastReadedEventsMessageID = m_lastReadedEventMessageID;
 }
 
 void DiscordController::receiveNews(QNetworkReply *reply)
@@ -384,6 +387,12 @@ void DiscordController::receiveAttachmentImage(QNetworkReply *reply, QString att
         return;
 
     emit sendAttachmentImage(attachmentId, std::move(image));
+}
+
+void DiscordController::onSettingsLoaded()
+{
+    m_lastReadedNewsMessageID = m_settingsController->getSettings()->lastReadedNewsMessageID;
+    m_lastReadedEventMessageID = m_settingsController->getSettings()->lastReadedEventsMessageID;
 }
 
 void DiscordController::requestMessages()

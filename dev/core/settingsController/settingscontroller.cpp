@@ -23,6 +23,8 @@ void SettingsController::initializeSettings()
     m_settings->smallGamePanelActive = ss_stats_settings->value("client/small_pannel_active", false).toBool();
     m_settings->showGamePanelPreset = ss_stats_settings->value("client/show_game_panel_preset", true).toBool();
     m_settings->scale = ss_stats_settings->value("client/scale", 1.0).toFloat();
+    m_settings->lastReadedNewsMessageID = ss_stats_settings->value("client/last_readed_news_message_id", "").toString();
+    m_settings->lastReadedEventsMessageID = ss_stats_settings->value("client/last_readed_events_message_id", "").toString();
 
     emit settingsLoaded();
 
@@ -35,6 +37,8 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("client/small_pannel_active", m_settings->smallGamePanelActive);
     ss_stats_settings->setValue("client/show_game_panel_preset", m_settings->showGamePanelPreset);
     ss_stats_settings->setValue("client/scale", m_settings->scale);
+    ss_stats_settings->setValue("client/last_readed_news_message_id", m_settings->lastReadedNewsMessageID);
+    ss_stats_settings->setValue("client/last_readed_events_message_id", m_settings->lastReadedEventsMessageID);
 
     ss_stats_settings->sync();
 }

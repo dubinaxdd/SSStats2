@@ -15,7 +15,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(m_settingsController, context))
     , m_ssController(new SsController(m_settingsController, this))
-    , m_discordController(new DiscordController(this))
+    , m_discordController(new DiscordController(m_settingsController, this))
 {
     registerTypes();
 
