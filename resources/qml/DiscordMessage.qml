@@ -26,6 +26,7 @@ Rectangle {
     property string attachmentId : ""
     property int attachmentImageWidth: 0
     property int attachmentImageHeight: 0
+    property bool isNew: false
 
     color: "#eaeaea"
     radius: 10
@@ -111,6 +112,16 @@ Rectangle {
                         font.pointSize: 14
                     }
                 }
+            }
+
+
+            Label{
+                id: newMessageLabel
+                visible: mainRectangle.isNew
+                color: "#e60000"
+                text: "NEW"
+                font.pointSize: 10
+                Layout.rightMargin: 15
             }
 
             Rectangle{

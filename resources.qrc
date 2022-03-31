@@ -7,5 +7,6 @@
         <file>resources/images/expand.png</file>
         <file>resources/images/hide.png</file>
         <file>resources/images/expandDots.png</file>
+        <file>resources/images/redDot.png</file>
     </qresource>
 </RCC>

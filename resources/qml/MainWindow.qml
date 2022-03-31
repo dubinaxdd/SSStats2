@@ -139,6 +139,7 @@ Window {
                     id: newsButton
                     text: "News"
                     pressedState: true
+                    newsAvailable: newsPage.model.newsAvailable
 
                     onClicked: {
                         eventsButton.pressedState = false;
@@ -151,6 +152,8 @@ Window {
                 HeaderButton{
                     id: eventsButton
                     text: "Events"
+                    newsAvailable: eventsPage.model.newsAvailable
+
                     property bool dataRequested: false
 
                     onClicked: {

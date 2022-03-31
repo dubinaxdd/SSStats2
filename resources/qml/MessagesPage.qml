@@ -18,6 +18,13 @@ Rectangle {
 
     radius: 10
 
+    onVisibleChanged: {
+        if (infoRectangle.visible == false)
+        {
+            model.messagesReaded();
+        }
+    }
+
     property var model
 
     onWidthChanged: resizeFullAttachmentImage();
@@ -119,7 +126,7 @@ Rectangle {
                 avatarId: model.avatarId
                 attachmentId: model.attachmentId
                 attachmentImageWidth: model.attachmentImageWidth
-                attachmentImageHeight: model.attachmentImageHeight
+                isNew: model.isNew
 
                 onAttachmentImageClicked: {
                     fullAttachmenImageRectangle.visible = true;

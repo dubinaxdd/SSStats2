@@ -7,6 +7,9 @@
 class MessagesPage : public QAbstractListModel
 {
     Q_OBJECT
+
+    Q_PROPERTY( bool newsAvailable MEMBER m_newsAvailable NOTIFY newsAvailableChanged)
+
 public:
     explicit MessagesPage(QObject *parent = nullptr);
 
@@ -17,12 +20,15 @@ public:
             AttachmentId = Qt::UserRole + 4,
             AttachmentImageWidth = Qt::UserRole + 5,
             AttachmentImageHeight = Qt::UserRole + 6,
+            IsNew = Qt::UserRole + 7,
             TimesTamp
     };
 
 
    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
    int rowCount( const QModelIndex& parent ) const override;
+
+   Q_INVOKABLE void messagesReaded();
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
@@ -33,9 +39,11 @@ public slots:
     void onAttachmetImagesUpdate();
 
 signals:
+    void newsAvailableChanged(bool);
 
 private:
     QList<DiscordMessage> m_news;
+    bool m_newsAvailable = false;
 
 };
 

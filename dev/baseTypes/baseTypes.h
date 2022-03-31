@@ -205,6 +205,7 @@ struct DiscordMessage
     QString attachmentId;
     int attachmentImageWidth = 0;
     int attachmentImageHeight = 0;
+    bool isNew = true;
 };
 
 #endif // BASETYPES_H

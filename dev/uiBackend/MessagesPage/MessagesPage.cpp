@@ -26,6 +26,8 @@ QVariant MessagesPage::data(const QModelIndex &index, int role) const
         return message.attachmentImageWidth;
     else if (role == AttachmentImageHeight)
         return message.attachmentImageHeight;
+    else if (role == IsNew)
+        return message.isNew;
     return QVariant();
 }
 
@@ -45,6 +47,7 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
     roles[AttachmentId] = "attachmentId";
     roles[AttachmentImageWidth] = "attachmentImageWidth";
     roles[AttachmentImageHeight] = "attachmentImageHeight";
+    roles[IsNew] = "isNew";
 
     return roles;
 }
@@ -93,11 +96,14 @@ void MessagesPage::receiveMessages(QList<DiscordMessage> news)
                 newText.replace(j, 1, "<br> ");
         }
 
+        if ( m_news.at(i).isNew)
+        {
+            m_newsAvailable = true;
+            emit newsAvailableChanged(m_newsAvailable);
+        }
+
         m_news[i].content = newText;
     }
-
-
-
 
     endInsertRows();
 }
@@ -136,4 +142,18 @@ void MessagesPage::onAttachmetImagesUpdate()
         m_news[i].attachmentId = temp;
         emit dataChanged(first, last);
     }
+}
+
+void MessagesPage::messagesReaded()
+{
+    for(int i = 0; i < m_news.count(); i++)
+    {
+        QModelIndex first = QAbstractItemModel::createIndex(i, 0);
+        QModelIndex last = QAbstractItemModel::createIndex(i, 0);
+        m_news[i].isNew = false;
+        emit dataChanged(first, last);
+    }
+
+    m_newsAvailable = false;
+    emit newsAvailableChanged(m_newsAvailable);
 }

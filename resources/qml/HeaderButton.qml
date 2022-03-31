@@ -7,6 +7,7 @@ Rectangle {
 
     property bool pressedState : false
     property string text: "button"
+    property bool newsAvailable: false
 
     signal clicked()
 
@@ -33,6 +34,27 @@ Rectangle {
             color: "#00000064"
             radius: 1
             samples: 3
+        }
+    }
+
+    Rectangle{
+
+        width: 10
+        height: 10
+
+        anchors.top: parent.top
+        anchors.right: parent.right
+
+        anchors.margins: 5
+
+        visible: newsAvailable
+
+        color: "#00000000"
+
+        Image {
+            id: name
+            anchors.fill: parent
+            source: "qrc:/images/resources/images/redDot.png"
         }
     }
 
