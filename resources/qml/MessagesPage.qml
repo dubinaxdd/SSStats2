@@ -126,6 +126,7 @@ Rectangle {
                 avatarId: model.avatarId
                 attachmentId: model.attachmentId
                 attachmentImageWidth: model.attachmentImageWidth
+                attachmentImageHeight: model.attachmentImageHeight
                 isNew: model.isNew
 
                 onAttachmentImageClicked: {

@@ -265,7 +265,19 @@ void DiscordController::receiveEvents(QNetworkReply *reply)
 
     reply->deleteLater();
 
-    emit sendEvents(std::move(parseMessagesJson(replyByteArray)));
+    QList<DiscordMessage> eventsList = parseMessagesJson(replyByteArray);
+
+    bool isNewMessage = true;
+
+    for(int i = 0; i < eventsList.count(); i++)
+    {
+        if (eventsList.at(i).messageId == m_lastEventMessageID)
+            isNewMessage = false;
+
+        eventsList[i].isNew = isNewMessage;
+    }
+
+    emit sendEvents(std::move(eventsList));
 }
 
 void DiscordController::receiveNewsChannel(QNetworkReply *reply)
