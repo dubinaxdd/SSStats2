@@ -14,5 +14,6 @@
         <file>resources/qml/HeaderButton.qml</file>
         <file>resources/qml/MessagesPage.qml</file>
         <file>resources/qml/DiscordMessage.qml</file>
+        <file>resources/qml/Botter.qml</file>
     </qresource>
 </RCC>

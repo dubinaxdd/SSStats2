@@ -244,5 +244,10 @@ Window {
                 anchors.fill: parent
             }
         }
+
+        Botter{
+            Layout.fillWidth: true
+            Layout.minimumHeight: 50
+        }
     }
 }
