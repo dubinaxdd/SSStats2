@@ -128,7 +128,6 @@ Rectangle {
                 Label{
                     id: lounchSoulstormLabel
                     text: "Launch Soulstorm"
-
                     Layout.leftMargin: 15
                     color: lounchSoulstormMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
                     font.pointSize: 12

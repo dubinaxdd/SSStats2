@@ -42,10 +42,12 @@ Core::Core(QQmlContext *context, QObject* parent)
 
 
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameInitialized,       this,                       &Core::gameInitialized,         Qt::DirectConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::ssShutdown,            this,                       &Core::onSsShutdowned,          Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::loadStarted,           m_uiBackend,                &UiBackend::onLoadStarted,      Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_uiBackend,                &UiBackend::onGameStopped,      Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_uiBackend,                &UiBackend::onStartingMission,  Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameOver,              m_uiBackend,                &UiBackend::onGameOver,  Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameOver,              m_uiBackend,                &UiBackend::onGameOver,         Qt::QueuedConnection);
+
 
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
 
@@ -143,7 +145,6 @@ void Core::topmostTimerTimout()
     }
 }
 
-
 void Core::ssMaximized(bool maximized)
 {
     if (maximized)
@@ -219,6 +220,11 @@ void Core::ssLaunched(bool ssLaunched)
         SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
         m_uiBackend->setWindowTopmost(false);
     }
+}
+
+void Core::onSsShutdowned()
+{
+    ssMaximized(false);
 }
 
 void Core::onExit()

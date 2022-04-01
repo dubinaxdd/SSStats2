@@ -122,9 +122,17 @@ Window {
 
         function onWindowTopmostChanged(){
             if (_uiBackend.topmost)
+            {
                 window.flags =  Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |Qt.Popup | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground /*| Qt.WA_MSWindowsUseDirect3D*/ | Qt.WA_ShowWithoutActivating
+                window.showMaximized();
+            }
             else
+            {
                 window.flags =  Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground /*| Qt.WA_MSWindowsUseDirect3D*/ | Qt.WA_ShowWithoutActivating | Qt.WA_WState_Hidden
+                window.setWidth(0);
+                window.setHeight(0);
+            }
+
         }
 
         function onWindowedModeSeted()
