@@ -70,6 +70,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
     QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController, &SsController::launchSoulstormWithSupportMode, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstorm, m_ssController, &SsController::onLaunchSoulstorm, Qt::QueuedConnection);
 
     QObject::connect(m_discordController, &DiscordController::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
     QObject::connect(m_discordController, &DiscordController::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);

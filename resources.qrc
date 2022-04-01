@@ -8,5 +8,6 @@
         <file>resources/images/hide.png</file>
         <file>resources/images/expandDots.png</file>
         <file>resources/images/redDot.png</file>
+        <file>resources/icons/ssIcon.png</file>
     </qresource>
 </RCC>

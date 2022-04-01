@@ -97,6 +97,11 @@ void UiBackend::onLaunchSoulstormWithSupportMode()
     emit sendLaunchSoulstormWithSupportMode();
 }
 
+void UiBackend::launchSoulstorm()
+{
+    emit sendLaunchSoulstorm();
+}
+
 void UiBackend::setSizeModifer(float size)
 {
     m_sizeModifer = size;

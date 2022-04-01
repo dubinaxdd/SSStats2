@@ -3,7 +3,8 @@ import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 
 Rectangle {
-    width:50
+    width: 50
+    color: "#ffffff"
 
     gradient: Gradient {
         GradientStop {
@@ -44,13 +45,13 @@ Rectangle {
                 }
             }*/
 
-
             Label{
                 id: dowstatsLinkLabel
                 text: "dowstats.ru"
                 color: dowstatsLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
 
                 anchors.verticalCenter: parent.verticalCenter
+                font.pointSize: 12
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -79,6 +80,7 @@ Rectangle {
                 text: "Discord"
                 color: discordLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
                 anchors.verticalCenter: parent.verticalCenter
+                font.pointSize: 12
                 anchors.horizontalCenter: parent.horizontalCenter
 
             }
@@ -97,6 +99,67 @@ Rectangle {
 
         Rectangle{
             Layout.fillWidth: true
+        }
+
+        Rectangle{
+            id: lounchSoulstormButtonRectangle
+            width: 15 + lounchSoulstormLabel.width + 15 + iconImage.width + 5
+            height: 35
+            radius:5
+            Layout.rightMargin: 15
+
+            gradient: Gradient {
+                GradientStop {
+                    position: 0
+                    color: "#337ab7"
+                }
+
+                GradientStop {
+                    position: 1
+                    color: "#245580"
+                }
+            }
+
+            RowLayout
+            {
+                anchors.fill: parent
+                spacing: 15
+
+                Label{
+                    id: lounchSoulstormLabel
+                    text: "Launch Soulstorm"
+
+                    Layout.leftMargin: 15
+                    color: lounchSoulstormMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                    font.pointSize: 12
+                }
+
+                Rectangle
+                {
+                    width: 30
+                    height: 30
+                    color: "#00000000"
+
+                    Layout.rightMargin: 15
+
+                    Image{
+                        id: iconImage
+                        anchors.fill: parent
+                        source: "qrc:/images/resources/icons/ssIcon.png"
+                    }
+                }
+            }
+
+            MouseArea{
+                id: lounchSoulstormMouseArea
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+
+                onClicked: {
+                    _uiBackend.launchSoulstorm()
+                }
+            }
         }
     }
 }

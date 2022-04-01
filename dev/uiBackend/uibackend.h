@@ -71,8 +71,7 @@ public:
     MessagesPage *newsPage() const;
     MessagesPage *eventsPage() const;
 
-
-
+    Q_INVOKABLE void launchSoulstorm();
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -98,6 +97,7 @@ signals:
     void statsHeaderInitialized();
     void sendExit();
     void sendLaunchSoulstormWithSupportMode();
+    void sendLaunchSoulstorm();
     void noFogStateChanged(bool);
 
     void sizeModiferChanged(float sizeModifer);

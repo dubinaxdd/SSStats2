@@ -54,6 +54,7 @@ public slots:
     void blockInput(bool state);
     void launchSoulstormWithSupportMode();
     void minimizeSsWithWin7Support();
+    void onLaunchSoulstorm();
 
 private slots:
     void checkWindowState();

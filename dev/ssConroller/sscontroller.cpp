@@ -90,6 +90,15 @@ void SsController::blockInput(bool state)
     }
 }
 
+void SsController::onLaunchSoulstorm()
+{
+    if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
+    {
+        m_soulstormProcess = new QProcess(this);
+        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {""});
+    }
+}
+
 void SsController::launchSoulstormWithSupportMode()
 {
     launchSoulstorm();
