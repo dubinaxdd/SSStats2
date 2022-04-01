@@ -78,8 +78,6 @@ private:
     void parseSsSettings();
     void launchSoulstorm();
 
-
-
 private:
     HWND m_soulstormHwnd = NULL;
     LONG m_defaultSoulstormWindowLong = NULL;

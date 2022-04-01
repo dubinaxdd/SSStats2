@@ -60,6 +60,20 @@ void GameInfoReader::readGameInfo()
                 break;
             }
 
+
+            ///Проверка на переключение профиля
+            if(line.contains("GAME -- Using player profile"))
+            {
+                QString playerName = line.mid(44, line.count() - 44);
+
+                if (m_playerName != playerName)
+                {
+                    m_playerName = playerName;
+                    changeCurrentProfile();
+                }
+                break;
+            }
+
             ///Проверка на достижение условия победы
             if(line.contains("MOD -- Game Over at frame")||line.contains("storing simulation results for match"))
             {
@@ -917,5 +931,10 @@ void GameInfoReader::parseSsSettings()
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
     delete ssSettings;
+}
+
+void GameInfoReader::changeCurrentProfile()
+{
+     qDebug() << "ASDASDASDADASDASDASDASD";
 }
 

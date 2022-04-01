@@ -6,7 +6,7 @@
 #include <QDebug>
 #include <defines.h>
 
-#define REQUEST_TIMER_INTERVAL 1000
+#define REQUEST_TIMER_INTERVAL 5000
 
 DiscordController::DiscordController(SettingsController* settingsController, QObject *parent)
     : QObject(parent)

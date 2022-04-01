@@ -42,6 +42,7 @@ signals:
     void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
     void ssShutdown();                                      //Сигнал о выключении игры
 
+
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
@@ -49,7 +50,8 @@ private:
     void checkCurrentMode();
     bool checkMissionSettingsValide(int gameType);
     void readTestStatsTemp();
-    void parseSsSettings();
+    void parseSsSettings(); 
+    void changeCurrentProfile();
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -58,6 +60,8 @@ private:
     QString m_ssPath;
     QString m_currentProfile;
     QString m_currentMode;
+
+    QString m_playerName;
 
     QVector<WinCondition> m_winCoditionsVector;
 
