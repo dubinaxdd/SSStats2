@@ -32,8 +32,6 @@ public slots:
     void receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner);
     void onQuitParty();
 
-
-
 signals:
     void loadStarted(SsGameState gameCurrentState);         //Сигнал о начале загрузки игры/реплея/сохраненки
     void startingMission(SsGameState gameCurrentState);     //Сигнал о старте миссии после загрузки
@@ -51,7 +49,8 @@ private:
     bool checkMissionSettingsValide(int gameType);
     void readTestStatsTemp();
     void parseSsSettings(); 
-    void changeCurrentProfile();
+
+    QString updaTetestStatsFilePath();
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -60,6 +59,8 @@ private:
     QString m_ssPath;
     QString m_currentProfile;
     QString m_currentMode;
+
+    QString m_testStatsPath;
 
     QString m_playerName;
 

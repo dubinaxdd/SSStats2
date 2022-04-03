@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QSettings>
 #include <repreader.h>
+#include <QDir>
 
 using namespace ReplayReader;
 
@@ -16,7 +17,6 @@ GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
     , m_ssPath(sspath)
 
 {
-
     m_readRacesSingleShootTimer = new QTimer();
     m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
     QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &GameInfoReader::readRacesTimerTimeout, Qt::QueuedConnection );
@@ -24,6 +24,7 @@ GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
     m_gameInfoReadTimer = new QTimer();
     m_gameInfoReadTimer->setInterval(GAME_INFO_READER_TIMER_INTERVAL);
     QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &GameInfoReader::readGameInfo, Qt::QueuedConnection );
+
     m_gameInfoReadTimer->start();
 }
 
@@ -60,20 +61,6 @@ void GameInfoReader::readGameInfo()
                 break;
             }
 
-
-            ///Проверка на переключение профиля
-            if(line.contains("GAME -- Using player profile"))
-            {
-                QString playerName = line.mid(44, line.count() - 44);
-
-                if (m_playerName != playerName)
-                {
-                    m_playerName = playerName;
-                    changeCurrentProfile();
-                }
-                break;
-            }
-
             ///Проверка на достижение условия победы
             if(line.contains("MOD -- Game Over at frame")||line.contains("storing simulation results for match"))
             {
@@ -97,7 +84,6 @@ void GameInfoReader::readGameInfo()
                     m_gameCurrentState = SsGameState::gameStoped;
                     checkGameInitialize();
                     readTestStatsTemp();
-                    readGameParametresAfterStop();
                     emit gameStopped();
                     qInfo(logInfo()) << "Game Stoped";
                 }
@@ -255,6 +241,8 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
+                    testStatsTemp = QStringList();
+                    readRacesTimerTimeout();
                     m_readRacesSingleShootTimer->start();
                     emit loadStarted(m_gameCurrentState);
                     qInfo(logInfo()) << "Game load started";
@@ -274,7 +262,7 @@ void GameInfoReader::readGameParametresAfterStop()
         return;
     }
 
-    QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
+    QString statsPath = m_currentMode;
     qInfo(logInfo()) << "teststats.lua path: " << statsPath;
 
     QFile file(statsPath);
@@ -620,9 +608,9 @@ void GameInfoReader::readRacesTimerTimeout()
 {
     m_readRacesSingleShootTimer->stop();
 
-    QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
+    m_testStatsPath = updaTetestStatsFilePath();
 
-    QFile file(statsPath);
+    QFile file(m_testStatsPath);
 
     if(!file.open(QIODevice::ReadOnly))
         return;
@@ -639,6 +627,8 @@ void GameInfoReader::readRacesTimerTimeout()
     QStringList fileLines = textStream.readAll().split("\r");
 
     file.close();
+
+    qInfo(logInfo()) << "testStats temp readed in" << m_testStatsPath;
 
     if (testStatsTemp == fileLines)
     {
@@ -903,9 +893,9 @@ bool GameInfoReader::checkMissionSettingsValide(int gameType)
 
 void GameInfoReader::readTestStatsTemp()
 {
-    QString statsPath = m_ssPath + "\\Profiles\\" + m_currentProfile + "\\teststats.lua";
 
-    QFile file(statsPath);
+    m_testStatsPath = updaTetestStatsFilePath();
+    QFile file(m_testStatsPath);
 
     if(!file.open(QIODevice::ReadOnly))
         return;
@@ -923,7 +913,7 @@ void GameInfoReader::readTestStatsTemp()
 
     file.close();
 
-    qInfo(logInfo()) << "testStats temp readed";
+    qInfo(logInfo()) << "testStats temp readed in" << m_testStatsPath;
 }
 
 void GameInfoReader::parseSsSettings()
@@ -933,8 +923,28 @@ void GameInfoReader::parseSsSettings()
     delete ssSettings;
 }
 
-void GameInfoReader::changeCurrentProfile()
+QString GameInfoReader::updaTetestStatsFilePath()
 {
-     qDebug() << "ASDASDASDADASDASDASDASD";
+    QDir dir(m_ssPath + "\\Profiles\\");
+
+    QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+    QString statsPath;
+    QDateTime fileModified;
+
+    for (int i = 0; i < dirContent.count(); i++)
+    {
+
+        QDir path(dirContent.at(i).absoluteFilePath() + "\\teststats.lua");
+
+        QFileInfo info(path.absolutePath());
+
+        if (info.isFile() && info.lastModified() > fileModified)
+        {
+            fileModified = info.lastModified();
+            statsPath = path.absolutePath();
+        }
+    }
+
+    return statsPath;
 }
 

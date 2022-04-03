@@ -390,8 +390,5 @@ void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
 
         ptr1Count += /*30400*/100000;
     }
-
-
-
 }
 
