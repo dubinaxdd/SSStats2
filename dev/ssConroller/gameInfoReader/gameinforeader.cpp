@@ -84,6 +84,7 @@ void GameInfoReader::readGameInfo()
                     m_gameCurrentState = SsGameState::gameStoped;
                     checkGameInitialize();
                     readTestStatsTemp();
+                    readGameParametresAfterStop();
                     emit gameStopped();
                     qInfo(logInfo()) << "Game Stoped";
                 }
@@ -241,8 +242,6 @@ void GameInfoReader::readGameInfo()
                 {
                     m_gameCurrentState = SsGameState::gameLoadStarted;
                     checkGameInitialize();
-                    testStatsTemp = QStringList();
-                    readRacesTimerTimeout();
                     m_readRacesSingleShootTimer->start();
                     emit loadStarted(m_gameCurrentState);
                     qInfo(logInfo()) << "Game load started";
@@ -261,11 +260,11 @@ void GameInfoReader::readGameParametresAfterStop()
         qWarning(logWarning()) << "Game will be played in other session, replay not sended";
         return;
     }
+    m_testStatsPath = updaTetestStatsFilePath();
 
-    QString statsPath = m_currentMode;
-    qInfo(logInfo()) << "teststats.lua path: " << statsPath;
+    qInfo(logInfo()) << "teststats.lua path: " << m_testStatsPath;
 
-    QFile file(statsPath);
+    QFile file(m_testStatsPath);
 
     if(!file.open(QIODevice::ReadOnly))
         return;
