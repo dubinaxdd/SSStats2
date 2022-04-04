@@ -23,7 +23,7 @@ public:
 
 private slots:
     void readGameInfo();
-    void readGameParametresAfterStop();
+    void readReplayDataAfterStop();
     void readRacesTimerTimeout();
 
 public slots:

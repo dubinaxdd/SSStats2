@@ -17,11 +17,11 @@ GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
     , m_ssPath(sspath)
 
 {
-    m_readRacesSingleShootTimer = new QTimer();
+    m_readRacesSingleShootTimer = new QTimer(this);
     m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
     QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &GameInfoReader::readRacesTimerTimeout, Qt::QueuedConnection );
 
-    m_gameInfoReadTimer = new QTimer();
+    m_gameInfoReadTimer = new QTimer(this);
     m_gameInfoReadTimer->setInterval(GAME_INFO_READER_TIMER_INTERVAL);
     QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &GameInfoReader::readGameInfo, Qt::QueuedConnection );
 
@@ -84,7 +84,7 @@ void GameInfoReader::readGameInfo()
                     m_gameCurrentState = SsGameState::gameStoped;
                     checkGameInitialize();
                     readTestStatsTemp();
-                    readGameParametresAfterStop();
+                    readReplayDataAfterStop();
                     emit gameStopped();
                     qInfo(logInfo()) << "Game Stoped";
                 }
@@ -253,7 +253,7 @@ void GameInfoReader::readGameInfo()
     }
 }
 
-void GameInfoReader::readGameParametresAfterStop()
+void GameInfoReader::readReplayDataAfterStop()
 {
     if (!m_gameWillBePlayed)
     {
@@ -403,6 +403,7 @@ void GameInfoReader::readGameParametresAfterStop()
         }
     }
 
+    //Проверка на наличие компьютера
     bool computersFinded = false;
 
     for(int i = 0; i < playerNames.count(); i++ )
@@ -414,6 +415,14 @@ void GameInfoReader::readGameParametresAfterStop()
         }
     }
 
+    //Проверка на наличие ИИ
+    if (computersFinded)
+    {
+        qWarning(logWarning()) << "Game have AI, raplay not sended";
+        return;
+    }
+
+    //Выводим информацию об игре
     qInfo(logInfo()) << "Players count:" << playersCount;
     qInfo(logInfo()) << "Computers finded:" << computersFinded;
     qInfo(logInfo()) << "Teams count:" << teamsCount;
@@ -426,6 +435,7 @@ void GameInfoReader::readGameParametresAfterStop()
     if (playersCount == 2)
     {
 
+        //Проверка условий победы для игр 1х1
         bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                                && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
                                && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
@@ -442,6 +452,8 @@ void GameInfoReader::readGameParametresAfterStop()
     }
     else
     {
+        //Проверка условий победы для игр больше чем 1х1
+
         bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                                && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
                                && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
@@ -455,9 +467,7 @@ void GameInfoReader::readGameParametresAfterStop()
         }
     }
 
-
-
-
+    //Выводим в лог информацию о состоянии игрока
     for(int i = 0; i < playerStats.count(); i++)
     {
         qInfo(logInfo()) << "Player name:" << playerStats.at(i).name;
@@ -471,24 +481,55 @@ void GameInfoReader::readGameParametresAfterStop()
         }
     }
 
-    if (computersFinded)
-    {
-        qWarning(logWarning()) << "Game have AI, raplay not sended";
-        return;
-    }
-
+    //Проверка на количество команд
     if (teamsCount > 2)
     {
         qWarning(logWarning()) << "Game have more then 2 teams, raplay not sended";
         return;
     }
 
+    //Проверка на равенство команд
+    QMap<QString, int> teamsCounter;
+
+    for (int i = 0; i < playerStats.count(); i++)
+    {
+        if (teamsCounter.keys().contains(playerStats.at(i).team))
+        {
+           teamsCounter.insert(playerStats.at(i).team, teamsCounter.value(playerStats.at(i).team) + 1);
+        }
+        else
+        {
+            teamsCounter.insert(playerStats.at(i).team, 1);
+        }
+    }
+
+    int count;
+    if (teamsCounter.values().count() > 0)
+        count = teamsCounter.values().at(0);
+    else
+    {
+        qWarning(logWarning()) << "Game have 0 teams, raplay not sended";
+        return;
+    }
+
+
+    for (int i = 0; i < teamsCounter.values().count(); i++)
+    {
+        if (teamsCounter.values().at(i) != count)
+        {
+            qWarning(logWarning()) << "Game have not equal teams, raplay not sended";
+            return;
+        }
+    }
+
+    //Проверка на длительность игры
     if(duration <= 30)
     {
         qWarning(logWarning()) << "Game have duration < 30 sec, raplay not sended";
         return;
     }
 
+    //Проверка на наличие победителя
     bool winnerAccepted = false;
 
     for(int i = 0; i < playersCount; i++)
@@ -507,6 +548,7 @@ void GameInfoReader::readGameParametresAfterStop()
     }
 
 
+    //Отправка реплея
     SendingReplayInfo replayInfo;
 
     for(int i = 0; i < playersCount; i++)
