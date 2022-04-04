@@ -141,6 +141,12 @@ Window {
         }
     }
 
+
+    Notification{
+        x: 50
+        y: 50
+    }
+
     Rectangle {
         id: windowRectangle
         color: "#00000000"

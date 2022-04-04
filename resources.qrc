@@ -9,5 +9,7 @@
         <file>resources/images/expandDots.png</file>
         <file>resources/images/redDot.png</file>
         <file>resources/icons/ssIcon.png</file>
+        <file>resources/images/warning.png</file>
+        <file>resources/images/closeButton.png</file>
     </qresource>
 </RCC>
