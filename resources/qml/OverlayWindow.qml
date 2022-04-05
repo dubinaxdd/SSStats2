@@ -69,6 +69,11 @@ Window {
             if(_uiBackend.expand){
                 fullOverlay.mouseClick(xMousePos - fullOverlay.x , yMousePos - fullOverlay.y );
             }
+
+            if (notification.visible == true)
+            {
+                notification.mouseClick(xMousePos - notification.x, yMousePos - notification.y);
+            }
         }
 
         function onSendMouseMove(){
@@ -118,6 +123,11 @@ Window {
             {
                 fullOverlay.mouseHover(xMousePos - fullOverlay.x, yMousePos - fullOverlay.y );
             }
+
+            if (notification.visible == true)
+            {
+                notification.mouseHover(xMousePos - notification.x, yMousePos - notification.y);
+            }
         }
 
         function onWindowTopmostChanged(){
@@ -143,6 +153,7 @@ Window {
 
 
     Notification{
+        id: notification
         x: 50
         y: 50
     }
