@@ -415,11 +415,17 @@ void GameInfoReader::readReplayDataAfterStop()
         }
     }
 
+    QString warning;
+
+    warning += "    Raplay not sended!\n";
+
+    bool checkFailed = false;
+
     //Проверка на наличие ИИ
     if (computersFinded)
     {
-        qWarning(logWarning()) << "Game have AI, raplay not sended";
-        return;
+        checkFailed = true;
+        warning += "    Game have AI\n";
     }
 
     //Выводим информацию об игре
@@ -434,7 +440,6 @@ void GameInfoReader::readReplayDataAfterStop()
 
     if (playersCount == 2)
     {
-
         //Проверка условий победы для игр 1х1
         bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
                                && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
@@ -446,8 +451,8 @@ void GameInfoReader::readReplayDataAfterStop()
 
         if (!isStdWinConditions)
         {
-            qWarning(logWarning()) << "Game have not standard win conditions, replay not sended";
-            return;
+            checkFailed = true;
+            warning += "    Game have not standard win conditions\n";
         }
     }
     else
@@ -462,8 +467,8 @@ void GameInfoReader::readReplayDataAfterStop()
 
         if (!isStdWinConditions)
         {
-            qWarning(logWarning()) << "Game have not standard win conditions, replay not sended";
-            return;
+            checkFailed = true;
+            warning += "    Game have not standard win conditions\n";
         }
     }
 
@@ -484,8 +489,8 @@ void GameInfoReader::readReplayDataAfterStop()
     //Проверка на количество команд
     if (teamsCount > 2)
     {
-        qWarning(logWarning()) << "Game have more then 2 teams, raplay not sended";
-        return;
+        checkFailed = true;
+        warning += "    Game have more then 2 teams\n";
     }
 
     //Проверка на равенство команд
@@ -508,8 +513,8 @@ void GameInfoReader::readReplayDataAfterStop()
         count = teamsCounter.values().at(0);
     else
     {
-        qWarning(logWarning()) << "Game have 0 teams, raplay not sended";
-        return;
+        checkFailed = true;
+        warning += "    Game have 0 teams\n";
     }
 
 
@@ -517,16 +522,16 @@ void GameInfoReader::readReplayDataAfterStop()
     {
         if (teamsCounter.values().at(i) != count)
         {
-            qWarning(logWarning()) << "Game have not equal teams, raplay not sended";
-            return;
+            checkFailed = true;
+            warning += "    Game have not equal teams\n";
         }
     }
 
     //Проверка на длительность игры
     if(duration <= 30)
     {
-        qWarning(logWarning()) << "Game have duration < 30 sec, raplay not sended";
-        return;
+        checkFailed = true;
+        warning += "    Game have duration < 30 sec\n";
     }
 
     //Проверка на наличие победителя
@@ -543,10 +548,18 @@ void GameInfoReader::readReplayDataAfterStop()
 
     if (!winnerAccepted)
     {
-        qWarning(logWarning()) << "Game not have winner, raplay not sended";
-        return;
+        checkFailed = true;
+        warning += "    Game not have winner\n";
     }
 
+    emit sendNotification(warning);
+
+
+    if (checkFailed)
+    {
+        qWarning(logWarning()) << warning;
+        return;
+    }
 
     //Отправка реплея
     SendingReplayInfo replayInfo;

@@ -41,6 +41,9 @@ class UiBackend : public QObject
     Q_PROPERTY(MessagesPage* newsPage MEMBER m_newsPage NOTIFY statisticPanelInitialized)
     Q_PROPERTY(MessagesPage* eventsPage MEMBER m_eventsPage NOTIFY statisticPanelInitialized)
 
+    Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
+
+
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -104,6 +107,7 @@ signals:
     void sizeModiferLoadedFromSettings(float scale);
 
     void expandButtonPressed();
+    void updateNotification();
 
 public slots:
     void expandKeyPressed();
@@ -117,6 +121,8 @@ public slots:
     void onGameStopped();
     void onStartingMission(SsGameState gameCurrentState);
     void onGameOver();
+
+    void receiveNotification(QString notify);
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
@@ -165,6 +171,8 @@ private:
     bool m_noFogState = false;
 
     float m_sizeModifer = 2.0;
+
+    QString m_lastNotification;
 
 
 };

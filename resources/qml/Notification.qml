@@ -8,6 +8,7 @@ Rectangle{
     width: 600 * _uiBackend.sizeModifer
     height: textMessage.height  * _uiBackend.sizeModifer + 60
     color: "#535353"
+    visible: false
 
     radius: 10 * _uiBackend.sizeModifer
     z: 100
@@ -31,13 +32,8 @@ Rectangle{
 
     }
 
-
-
     function mouseHover(x, y)
     {
-
-        console.log("AASDASDASDASDASDA");
-
         relativeMouseX = x
         relativeMouseY = y
 
@@ -93,9 +89,16 @@ Rectangle{
             Layout.fillWidth: true
 
           //  text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
-            text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
+            //text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
+
+
+            text: _uiBackend.lastNotification
             font.pixelSize: 15 * _uiBackend.sizeModifer
             wrapMode: Text.WordWrap
+
+            onTextChanged: {
+                mainRectangle.visible = true;
+            }
         }
 
         Rectangle

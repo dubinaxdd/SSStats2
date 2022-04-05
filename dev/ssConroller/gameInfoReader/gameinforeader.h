@@ -6,8 +6,6 @@
 #include <baseTypes.h>
 #include <logger.h>
 
-
-
 class GameInfoReader : public QObject
 { 
     Q_OBJECT
@@ -43,6 +41,8 @@ signals:
 
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendReplayToServer(SendingReplayInfo replayInfo);
+
+    void sendNotification(QString warningString);
 
 private:
     void checkCurrentMode();

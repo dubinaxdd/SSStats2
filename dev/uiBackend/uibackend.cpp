@@ -87,6 +87,12 @@ void UiBackend::onGameOver()
     onStartingMission(SsGameState::gameOver);
 }
 
+void UiBackend::receiveNotification(QString notify)
+{
+    m_lastNotification = notify;
+    emit updateNotification();
+}
+
 void UiBackend::onExit()
 {
     emit sendExit();
