@@ -3,10 +3,8 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 Rectangle{
-    width: mainRowLayout.width
-    height: mainRowLayout.height
-    //width: /*450 * _uiBackend.sizeModifer*/ textMessage.width + closeRectangle.width + iconRectangle.width + (20 * 4 * _uiBackend.sizeModifer)
-    //height: (textMessage.height + 60) * _uiBackend.sizeModifer
+    width: 600 * _uiBackend.sizeModifer
+    height: textMessage.height  * _uiBackend.sizeModifer + 60
     color: "#535353"
 
     radius: 10 * _uiBackend.sizeModifer
@@ -15,18 +13,18 @@ Rectangle{
     RowLayout{
 
         id: mainRowLayout
-        x:0
-        y:0
-        //anchors.fill: parent
+
+        anchors.fill: parent
 
         Rectangle{
             id: iconRectangle
 
             width: 40 * _uiBackend.sizeModifer
             height: 40 * _uiBackend.sizeModifer
-
-            Layout.leftMargin: 20 * _uiBackend.sizeModifer
-            Layout.rightMargin: 20 * _uiBackend.sizeModifer
+            Layout.preferredHeight: 40 * _uiBackend.sizeModifer
+            Layout.preferredWidth: 40 * _uiBackend.sizeModifer
+            Layout.leftMargin: 10 * _uiBackend.sizeModifer
+            Layout.rightMargin: 10 * _uiBackend.sizeModifer
 
             color: "#00000000"
 
@@ -36,7 +34,6 @@ Rectangle{
                 height: 40 * _uiBackend.sizeModifer
                 x: 0
                 y: 0
-                //anchors.fill: parent
                 source: "qrc:/images/resources/images/warning.png"
                 fillMode: Image.PreserveAspectFit
             }
@@ -46,19 +43,15 @@ Rectangle{
 
             id: textMessage
             color: "#ffffff"
-            width: 300 * _uiBackend.sizeModifer
-            Layout.maximumWidth: 300 * _uiBackend.sizeModifer
-            text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
 
+
+            Layout.fillWidth: true
+
+          //  text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
+            text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
             font.pixelSize: 15 * _uiBackend.sizeModifer
             wrapMode: Text.WordWrap
         }
-
-
-        Rectangle{
-            Layout.fillWidth: true
-        }
-
 
         Rectangle
         {
@@ -66,14 +59,19 @@ Rectangle{
 
             width: 30 * _uiBackend.sizeModifer
             height: 30 * _uiBackend.sizeModifer
-            radius: 5 * _uiBackend.sizeModifer
+            //radius: 5 * _uiBackend.sizeModifer
 
-            Layout.leftMargin: 20 * _uiBackend.sizeModifer
-            Layout.rightMargin: 20 * _uiBackend.sizeModifer
+            Layout.preferredHeight: 30 * _uiBackend.sizeModifer
+            Layout.preferredWidth: 30 * _uiBackend.sizeModifer
+
+
+            Layout.topMargin: 10 * _uiBackend.sizeModifer
+            Layout.leftMargin: 10 * _uiBackend.sizeModifer
+            Layout.rightMargin: 10 * _uiBackend.sizeModifer
 
             color: "#00000000"
 
-            //Layout.alignment: Qt.AlignTop
+            Layout.alignment: Qt.AlignTop
 
             Image{
                 cache: false
@@ -82,7 +80,6 @@ Rectangle{
                 width: 30 * _uiBackend.sizeModifer
                 height: 30 * _uiBackend.sizeModifer
 
-                //anchors.fill: parent
                 source: "qrc:/images/resources/images/closeButton.png"
                 fillMode: Image.PreserveAspectFit
             }
