@@ -89,6 +89,8 @@ void UiBackend::onGameOver()
 
 void UiBackend::receiveNotification(QString notify)
 {
+    m_lastNotification = "";
+    emit updateNotification();
     m_lastNotification = notify;
     emit updateNotification();
 }
