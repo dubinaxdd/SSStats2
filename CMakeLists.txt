@@ -73,6 +73,8 @@ set(PROJECT_SOURCES
         dev/discordController/discordController.cpp
         dev/uiBackend/MessagesPage/MessagesPage.h
         dev/uiBackend/MessagesPage/MessagesPage.cpp
+        dev/ssConroller/dowServerProcessor/DowServerProcessor.h
+        dev/ssConroller/dowServerProcessor/DowServerProcessor.cpp
 
         defines.h
         qml.qrc
@@ -185,4 +187,5 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/externals/ReplayReaderLibrary
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/discordController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/MessagesPage
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/dowServerProcessor
 )

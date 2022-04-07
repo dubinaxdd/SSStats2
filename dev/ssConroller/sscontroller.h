@@ -16,6 +16,7 @@
 #include <logger.h>
 #include <settingscontroller.h>
 #include <lobbyeventreader.h>
+#include <DowServerProcessor.h>
 #include <QProcess>
 
 class SsController : public QObject
@@ -109,6 +110,7 @@ private:
     StatsCollector* m_statsCollector;
     MemoryController* m_memoryController;
     SettingsController* m_settingsController;
+    DowServerProcessor* m_dowServerProcessor;
 
     QProcess *m_soulstormProcess;
     bool useWindows7SupportMode = false;

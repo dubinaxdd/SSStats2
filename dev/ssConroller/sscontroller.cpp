@@ -18,9 +18,9 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     , m_settingsController(settingsController)
     , m_memoryController(new MemoryController(settingsController, this))
     , m_apmMeter(new APMMeter(this))
+    , m_dowServerProcessor(new DowServerProcessor(this))
     , m_soulstormProcess(nullptr)
 {
-
 
     m_ssPath = getSsPathFromRegistry();
     qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
@@ -69,6 +69,8 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayerInfoForHostedGame, m_gameInfoReader, &GameInfoReader::receivePlayerStemIdForHostedGame, Qt::QueuedConnection);
+
+    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 
