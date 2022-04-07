@@ -40,6 +40,11 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnectedToHostedGame, m_playersSteamScanner, &PlayersSteamScanner::findPlayerBySsId, Qt::QueuedConnection);
+
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId, m_playersSteamScanner, &PlayersSteamScanner::findSessionId, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, m_playersSteamScanner, &PlayersSteamScanner::findSessionId, Qt::QueuedConnection);
+
+
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty, m_gameInfoReader, &GameInfoReader::onQuitParty, Qt::QueuedConnection);
 
     m_ssWindowControllTimer = new QTimer(this);

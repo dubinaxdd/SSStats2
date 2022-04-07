@@ -63,6 +63,22 @@ void LobbyEventReader::readLobbyEvents()
                 break;
             }
 
+
+            if (line.contains("Lobby - LIE_GetNews received"))
+            {
+                if(line.contains(m_preLastLogTime))
+                    break;
+
+                m_preLastLogTime = m_lastLogTime;
+                emit requestSessionId();
+                qInfo(logInfo()) << "Lobby news received";
+                break;
+
+
+            }
+
+            //20:24:50.54   Lobby - LIE_GetNews received
+
             if (line.contains("LIE_QuitGame"))
             {
                 if(line.contains(m_preLastLogTime))

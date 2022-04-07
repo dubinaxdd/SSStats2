@@ -26,6 +26,7 @@ signals:
     void joinToParty();
     void hostParty();
     void quitFromParty();
+    void requestSessionId();
 
 public slots:
     void activateReading(bool activated);

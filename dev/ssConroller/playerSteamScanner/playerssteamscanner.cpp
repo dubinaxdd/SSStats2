@@ -392,3 +392,81 @@ void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
     }
 }
 
+void PlayersSteamScanner::findSessionId()
+{
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
+    LPCWSTR lps = (LPCWSTR)ss.utf16();
+
+    m_soulstormHwnd = FindWindowW(NULL, lps);
+
+    if(!m_soulstormHwnd)
+        return;
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_soulstormHwnd, &PID);
+
+    // Получение дескриптора процесса
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+    if(hProcess==nullptr)
+        return;
+
+    SearchStemIdPlayerInfo playerInfo;
+
+    int playersCount = 0;
+
+    QByteArray buffer(/*30400*/100000, 0);
+
+
+   //unsigned long ptr1Count = 160116800;
+    unsigned long ptr1Count = /*100000000*/0x00000000;
+    while (ptr1Count < /*200000000*/0x7FFE0000)
+    {
+
+        SIZE_T bytesRead = 0;
+
+        // Если функция вернула не ноль, то продолжим цикл
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), /*30400*/100000 , &bytesRead))
+        {
+            if(GetLastError()!=299)
+            {
+                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
+                continue;
+            }
+        }
+
+        //Ищем игроков в патиблоке
+        for (int i = 100; i < static_cast<int>(bytesRead) - 44; i++)
+        {
+            bool match = false;
+            for (int j = 0; j < static_cast<int>(sizeof(sessionHeader)); j++)
+            {
+                if (buffer.at(i + j) != sessionHeader[j])
+                {
+                    match = false;
+                    break;
+                }
+                else
+                    match = true;
+            }
+
+            if (!match)
+                continue;
+
+            QString sessionIdStr = QString::fromUtf8((char*)buffer.mid(i, 44).data()).right(34);
+
+            if (sessionIdStr.right(4) != "&ack")
+                continue;
+
+            sessionIdStr = sessionIdStr.left(30);
+
+            qDebug() << "sessionID=" << sessionIdStr;
+            emit sendSessionId(sessionIdStr);
+
+            return;
+        }
+
+        ptr1Count += 100000;
+    }
+}
+
