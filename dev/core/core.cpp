@@ -58,8 +58,6 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_ssController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
 
-    QObject::connect(m_ssController->playersSteamScanner(),  &PlayersSteamScanner::sendSteamPlayersInfoMap,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
-
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_ssController, &SsController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 

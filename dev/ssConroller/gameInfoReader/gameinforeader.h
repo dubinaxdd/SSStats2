@@ -27,7 +27,6 @@ private slots:
 public slots:
     void receiveAverrageApm(int apm);
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
-    void receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner);
     void onQuitParty();
 
 signals:
@@ -77,7 +76,6 @@ private:
 
     int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
-    QList<SearchStemIdPlayerInfo> m_allPlayersInfoFromScanner;
 
     QStringList testStatsTemp;
 };

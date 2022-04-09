@@ -38,23 +38,14 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected, m_playersSteamScanner, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnectedToHostedGame, m_playersSteamScanner, &PlayersSteamScanner::findPlayerBySsId, Qt::QueuedConnection);
-
-
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId, m_playersSteamScanner, &PlayersSteamScanner::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader, &GameInfoReader::gameInitialized, m_playersSteamScanner, &PlayersSteamScanner::findSessionId, Qt::QueuedConnection);
-
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty, m_gameInfoReader, &GameInfoReader::onQuitParty, Qt::QueuedConnection);
 
     m_ssWindowControllTimer = new QTimer(this);
     m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
     QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &SsController::checkWindowState, Qt::QueuedConnection);
-
-    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
-    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayerInfoForHostedGame, m_statsCollector, &StatsCollector::receivePlayerStemIdForHostedGame, Qt::QueuedConnection);
-
 
     QObject::connect(m_gameInfoReader,  &GameInfoReader::gameOver,          m_apmMeter, &APMMeter::onGameStopped,      Qt::QueuedConnection);
     QObject::connect(m_gameInfoReader,  &GameInfoReader::startingMission,   m_apmMeter, &APMMeter::onGameStarted,   Qt::QueuedConnection);
@@ -68,12 +59,9 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_gameInfoReader,  &GameInfoReader::receiveAverrageApm,       Qt::QueuedConnection);
 
-    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayersInfoMap, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
-    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayerInfoForHostedGame, m_gameInfoReader, &GameInfoReader::receivePlayerStemIdForHostedGame, Qt::QueuedConnection);
-
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
     QObject::connect(m_statsCollector, &StatsCollector::sendCurrentPlayerSteamID, m_dowServerProcessor, &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestUpdateStats, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);

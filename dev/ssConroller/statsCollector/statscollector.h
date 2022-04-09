@@ -28,7 +28,6 @@ signals:
 
 public slots:
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
-    void receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner);
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
 private slots:

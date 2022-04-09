@@ -580,19 +580,6 @@ void GameInfoReader::readReplayDataAfterStop()
             }
         }
 
-        //Если сида не нашлось в последнем скане, берем сид из всей истории
-        if (newPlayer.playerSid == "")
-        {
-            for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
-            {
-                if(newPlayer.playerName == m_allPlayersInfoFromScanner[j].name)
-                {
-                    newPlayer.playerSid = m_allPlayersInfoFromScanner[j].steamId;
-                    break;
-                }
-            }
-        }
-
         if (playerStats[i].race == "guard_race")
             newPlayer.playerRace = Race::ImperialGuard;
         if (playerStats[i].race == "tau_race")
@@ -651,7 +638,7 @@ void GameInfoReader::readReplayDataAfterStop()
 
     emit sendReplayToServer(std::move(replayInfo));
 
-    m_allPlayersInfoFromScanner.clear();
+    //m_allPlayersInfoFromScanner.clear();
     qInfo(logInfo()) << "Players history cleared";
 
     qInfo(logInfo()) << "Readed played game settings";
@@ -767,50 +754,6 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
     m_playersInfoFromScanner = playersInfoFromScanner;
     m_playersCountFromScanner = playersCount;
 
-    for (int i = 0; i < playersInfoFromScanner.count(); i++)
-    {
-        bool playerFinded = false;
-        for(int j = 0; j < m_allPlayersInfoFromScanner.count(); j++)
-        {
-            if (playersInfoFromScanner[i].name == m_allPlayersInfoFromScanner[j].name)
-            {
-                playerFinded = true;
-                break;
-            }
-        }
-
-        if(!playerFinded)
-        {
-            m_allPlayersInfoFromScanner.append(playersInfoFromScanner[i]);
-            qInfo(logInfo()) << "Finded player in joined game:" << m_allPlayersInfoFromScanner.last().name;
-        }
-    }
-}
-
-void GameInfoReader::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner)
-{
-    if(m_gameCurrentState != SsGameState::gameStoped && m_gameCurrentState != SsGameState::unknown)
-        return;
-
-    //m_playersInfoFromScanner.append(playerInfoFromScanner);
-
-    bool playerFinded = false;
-    for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
-    {
-        if (playerInfoFromScanner.steamId == m_playersInfoFromScanner[j].steamId)
-        {
-            playerFinded = true;
-            break;
-        }
-    }
-
-    if(!playerFinded)
-    {
-        m_playersInfoFromScanner.append(playerInfoFromScanner);
-        qInfo(logInfo()) << "Finded player in hosted game:" << m_playersInfoFromScanner.last().name;
-    }
-
-    //qInfo(logInfo()) << "Finded player:" << m_playersInfoFromScanner.last().name;
 }
 
 void GameInfoReader::onQuitParty()

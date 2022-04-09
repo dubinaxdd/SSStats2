@@ -22,12 +22,10 @@ public:
 
 signals:
     void playerConnected();                 //игрок присоединился к игре которая создана не нами
-    void playerConnectedToHostedGame(int ssId, int playerPosition);     //игрок присоединился к игре которую создали мы
     void joinToParty();
     void hostParty();
     void quitFromParty();
     void requestSessionId();
-    void requestUpdateStats();
 
 public slots:
     void activateReading(bool activated);

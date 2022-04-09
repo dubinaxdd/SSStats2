@@ -68,28 +68,6 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
     }
 }
 
-void StatsCollector::receivePlayerStemIdForHostedGame(SearchStemIdPlayerInfo playerInfoFromScanner)
-{
-    emit sendPlayersCount(8);
-    emit sendCurrentPlayerHostState(true);
-
-    QSharedPointer <ServerPlayerStats> newPlayer(new ServerPlayerStats);
-
-    newPlayer->steamId = playerInfoFromScanner.steamId;
-    newPlayer->position = playerInfoFromScanner.position;
-
-    registerPlayer(playerInfoFromScanner.name, playerInfoFromScanner.steamId, false);
-
-    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key="+QLatin1String(STEAM_API_KEY) + "&steamids=" + playerInfoFromScanner.steamId + "&format=json")));
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receivePlayerSteamData(reply, newPlayer);
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
-}
-
 void StatsCollector::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");
@@ -290,9 +268,7 @@ void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPoin
     }
 
     QByteArray replyByteArray = reply->readAll();
-
     QImage avatarMedium = QImage::fromData(replyByteArray);
-
 
     if (avatarMedium.isNull())
     {
