@@ -7,7 +7,7 @@
 #include <QSslConfiguration>
 #include <defines.h>
 
-#define QUEUE_TIMER_INTERVAL 1000
+#define QUEUE_TIMER_INTERVAL 500
 
 DowServerProcessor::DowServerProcessor(QObject *parent)
     : QObject(parent)
@@ -271,8 +271,6 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
     {
         QJsonArray messageArray = jsonDoc.array();
 
-
-
         if (messageArray.count() >= 2 && messageArray.at(1).isArray())
         {
             QJsonArray partysArrayJson = messageArray.at(1).toArray();
@@ -336,6 +334,51 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
     qDebug() << jsonDoc;
+
+    QList<SearchStemIdPlayerInfo> playersInfo;
+
+
+    if (jsonDoc.isArray())
+    {
+        QJsonArray messageArray = jsonDoc.array();
+
+        if (messageArray.count() >= 2 && messageArray.at(1).isArray())
+        {
+            QJsonArray playersJsonArray = messageArray.at(1).toArray();
+
+            for (int i = 0; i < playersJsonArray.count(); i++)
+            {
+                if (!playersJsonArray.at(i).isArray())
+                    continue;
+
+                QJsonArray needPlayerJson = playersJsonArray.at(i).toArray();
+
+                if (needPlayerJson.count() != 8)
+                    continue;
+
+                SearchStemIdPlayerInfo newPlayerInfo;
+
+                newPlayerInfo.steamId = needPlayerJson.at(2).toString().right(17);
+
+                if (newPlayerInfo.steamId == m_steamID)
+                    continue;
+
+                newPlayerInfo.closeConnection = false;
+                newPlayerInfo.name = needPlayerJson.at(4).toString();
+                //newPlayerInfo.position = i+1;
+
+                playersInfo.append(newPlayerInfo);
+            }
+        }
+    }
+
+    for (int i = 0; i < playersInfo.count(); i++)
+        playersInfo[i].position = i+1;
+
+
+    qDebug() << "ASDASDASDASDASDADASDAA";
+
+    emit sendSteamIds(playersInfo, playersInfo.count() + 1);
 }
 
 void DowServerProcessor::checkQueue()

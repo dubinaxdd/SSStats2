@@ -51,6 +51,8 @@ public:
 
     bool getUseWindows7SupportMode() const;
 
+    DowServerProcessor *dowServerProcessor() const;
+
 public slots:
     void blockInput(bool state);
     void launchSoulstormWithSupportMode();

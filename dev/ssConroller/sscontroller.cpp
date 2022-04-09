@@ -75,6 +75,9 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_statsCollector, &StatsCollector::sendCurrentPlayerSteamID, m_dowServerProcessor, &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestUpdateStats, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
 
+    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+
     m_lobbyEventReader->checkPatyState();
 
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
@@ -324,6 +327,11 @@ void SsController::launchSoulstorm()
         m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {""});
         useWindows7SupportMode = true;
     }
+}
+
+DowServerProcessor *SsController::dowServerProcessor() const
+{
+    return m_dowServerProcessor;
 }
 
 void SsController::fullscrenizeSoulstorm()

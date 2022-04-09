@@ -89,6 +89,9 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->newsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedNewsMessageID, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->eventsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedEventsMessageID, Qt::QueuedConnection);
 
+
+    QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
+
     m_settingsController->initializeSettings();
 }
 

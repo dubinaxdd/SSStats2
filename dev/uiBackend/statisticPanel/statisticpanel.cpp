@@ -142,8 +142,15 @@ void StatisticPanel::receivePlayersCount(int playersCount)
 
 void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
 {
-    if (m_blockUpdate)
-        return;
+   // if (m_blockUpdate)
+   //     return;
+
+    qDebug() << "ASDASDASDASDADASDADASDASd" << playersInfo.count();
+
+
+
+    if (!playersInfo.isEmpty())
+        qDebug() << "asdasdasdasdasdasdasdasd" << playersInfo.at(0).name << playersInfo.at(0).steamId << playersInfo.at(0).closeConnection << playersInfo.at(0).position;
 
     int needPlayersCount = playersCount;
 

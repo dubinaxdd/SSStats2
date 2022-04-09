@@ -10,7 +10,6 @@
 class DowServerProcessor : public QObject
 {
 
-
     Q_OBJECT
 public:
     explicit DowServerProcessor(QObject *parent = nullptr);
@@ -22,8 +21,6 @@ public:
         PlayersSids = 2,
         ChannelData = 3
     };
-
-
 
 private:
     bool checkReplyErrors(QNetworkReply *reply);
@@ -52,6 +49,7 @@ private slots:
 
 signals:
     void sendPartysArray(QVector<PartyData> partyDataArray);
+    void sendSteamIds(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount );
 
 private:
 
