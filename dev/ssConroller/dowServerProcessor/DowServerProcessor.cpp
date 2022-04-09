@@ -43,6 +43,32 @@ QNetworkRequest DowServerProcessor::createDowServerRequest(QString url)
     return std::move(newRequest);
 }
 
+QVector<QString> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
+{
+    if (m_profileID.isEmpty())
+        return QVector<QString>();
+
+    QVector<QString> profileIDs;
+
+    for (int i = 0; i < partyDataArray.count(); i++)
+    {
+        QVector<PlayerData> playersDataArray = partyDataArray.at(i).profilesIds;
+
+        for(int j = 0; j < playersDataArray.count(); j++)
+        {
+            if (playersDataArray.at(j).profileID == m_profileID)
+            {
+                for (int k = 0; k < playersDataArray.count(); k++)
+                    profileIDs.append(playersDataArray.at(k).profileID);
+
+                return profileIDs;
+            }
+        }
+    }
+
+    return QVector<QString>();
+}
+
 void DowServerProcessor::rquestChannellData(int id)
 {
     if (m_sessionID.isEmpty())
@@ -96,6 +122,38 @@ void DowServerProcessor::requestFindAdvertisements()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveFindAdvertisements(reply);
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
+}
+
+void DowServerProcessor::requestPlayersSids(QVector<QString> profileIDs)
+{
+    if (m_sessionID.isEmpty() || profileIDs.count() < 1)
+        return;
+
+    QString profilesIDsString;
+
+    profilesIDsString += "%5b";
+
+    for (int i = 0; i < profileIDs.count(); i++)
+    {
+        if (i != 0)
+            profilesIDsString += "%2c";
+
+        profilesIDsString += profileIDs.at(i);
+    }
+
+    profilesIDsString += "%5d";
+
+    QString urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_sessionID.toLocal8Bit();
+    QNetworkRequest newRequest = createDowServerRequest(urlString);
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receivePlayersSids(reply);
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
@@ -234,6 +292,20 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
             }
 
             emit sendPartysArray(partysArray);
+            requestPlayersSids(getPlayersInCurrentRoom(partysArray));
         }
     }
+}
+
+void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
+{
+    if (checkReplyErrors(reply))
+        return;
+
+    QByteArray replyByteArray = reply->readAll();
+    reply->deleteLater();
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    qDebug() << jsonDoc;
 }

@@ -15,10 +15,12 @@ public:
 private:
     bool checkReplyErrors(QNetworkReply *reply);
     QNetworkRequest createDowServerRequest(QString url);
+    QVector<QString> getPlayersInCurrentRoom(QVector<PartyData> partyDataArray);
 
     void rquestChannellData(int id);
     void requestProfileID(QString steamID);
     void requestFindAdvertisements();
+    void requestPlayersSids(QVector<QString> profileIDs);
 
 public slots:
     void setSessionID(QString sessionID);
@@ -29,10 +31,11 @@ private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
     void receiveProfileID(QNetworkReply *reply, QString steamID);
     void receiveFindAdvertisements(QNetworkReply *reply);
+    void receivePlayersSids(QNetworkReply *reply);
 
 
 signals:
-    void sendPartysArray(QVector<PartyData>);
+    void sendPartysArray(QVector<PartyData> partyDataArray);
 
 private:
     QNetworkAccessManager *m_networkManager;
