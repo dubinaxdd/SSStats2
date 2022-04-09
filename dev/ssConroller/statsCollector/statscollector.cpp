@@ -227,6 +227,8 @@ void StatsCollector::receiveSteamInfoReply(QNetworkReply *reply)
     m_currentPlayerStats->steamId = steamId;
     m_currentPlayerStats->isCurrentPlayer = true;
 
+    emit sendCurrentPlayerSteamID(steamId);
+
     registerPlayer(playerName, steamId, true);
 
     getPlayerStatsFromServer(m_currentPlayerStats);

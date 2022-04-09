@@ -460,9 +460,7 @@ void PlayersSteamScanner::findSessionId()
 
             sessionIdStr = sessionIdStr.left(30);
 
-            qDebug() << "sessionID=" << sessionIdStr;
             emit sendSessionId(sessionIdStr);
-
             return;
         }
 

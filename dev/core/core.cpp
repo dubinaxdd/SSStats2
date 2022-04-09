@@ -246,7 +246,7 @@ void Core::onExit()
         BringWindowToTop(m_ssController->soulstormHwnd());
     }
 
-    qInfo(logInfo()) << "SSStats2 сlosed";
+    qInfo(logInfo()) << "DowStats2 сlosed";
 
     m_logger->deleteLater();
 

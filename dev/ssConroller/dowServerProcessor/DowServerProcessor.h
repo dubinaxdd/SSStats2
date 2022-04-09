@@ -13,19 +13,24 @@ public:
 
 
 private:
+    bool checkReplyErrors(QNetworkReply *reply);
+
     void rquestChannellData(int id);
+    void requestProfileID(QString steamID);
 
 public slots:
     void setSessionID(QString sessionID);
+    void setCurrentPlayerSteamID(QString steamID);
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
+    void receiveProfileID(QNetworkReply *reply, QString steamID);
 
 private:
     QNetworkAccessManager *m_networkManager;
     QString m_sessionID = "";
-    QString steamID = "";
-    QString ssID = "";
+    QString m_steamID = "";
+    QString m_profileID = "";
 
 };
 

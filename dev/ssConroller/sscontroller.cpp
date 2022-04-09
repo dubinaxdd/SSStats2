@@ -71,6 +71,7 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSteamPlayerInfoForHostedGame, m_gameInfoReader, &GameInfoReader::receivePlayerStemIdForHostedGame, Qt::QueuedConnection);
 
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
+    QObject::connect(m_statsCollector, &StatsCollector::sendCurrentPlayerSteamID, m_dowServerProcessor, &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 
