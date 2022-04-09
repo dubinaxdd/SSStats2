@@ -5,12 +5,25 @@
 #include <QNetworkAccessManager>
 #include <logger.h>
 #include <baseTypes.h>
+#include <QTimer>
 
 class DowServerProcessor : public QObject
 {
+
+
     Q_OBJECT
 public:
     explicit DowServerProcessor(QObject *parent = nullptr);
+
+    enum QueryType : int
+    {
+        ProfileID = 0,
+        FindAdvertisements = 1,
+        PlayersSids = 2,
+        ChannelData = 3
+    };
+
+
 
 private:
     bool checkReplyErrors(QNetworkReply *reply);
@@ -33,11 +46,21 @@ private slots:
     void receiveFindAdvertisements(QNetworkReply *reply);
     void receivePlayersSids(QNetworkReply *reply);
 
+    void checkQueue();
+    void addQuery(QueryType type);
+
 
 signals:
     void sendPartysArray(QVector<PartyData> partyDataArray);
 
 private:
+
+    QVector<QueryType> m_requestsQueue;
+    QTimer *m_queueTimer;
+
+    QVector<QString> m_profileIdsForQueue;
+
+
     QNetworkAccessManager *m_networkManager;
     QString m_sessionID = "";
     QString m_steamID = "";

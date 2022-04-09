@@ -7,12 +7,17 @@
 #include <QSslConfiguration>
 #include <defines.h>
 
+#define QUEUE_TIMER_INTERVAL 1000
 
 DowServerProcessor::DowServerProcessor(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
-    m_networkManager->setStrictTransportSecurityEnabled(false);
+    m_queueTimer = new QTimer(this);
+    m_queueTimer->setInterval(QUEUE_TIMER_INTERVAL);
+
+    QObject::connect(m_queueTimer, &QTimer::timeout, this, &DowServerProcessor::checkQueue, Qt::QueuedConnection);
+    m_queueTimer->start();
 }
 
 bool DowServerProcessor::checkReplyErrors(QNetworkReply *reply)
@@ -168,7 +173,12 @@ void DowServerProcessor::setSessionID(QString sessionID)
     qInfo(logInfo()) << "sessionID =" << m_sessionID;
 
     if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
-        requestProfileID(m_steamID);
+    {
+        addQuery(QueryType::ProfileID);
+        //requestProfileID(m_steamID);
+    }
+
+
 }
 
 void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
@@ -176,7 +186,11 @@ void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
     m_steamID = steamID;
 
     if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
-        requestProfileID(m_steamID);
+    {
+        addQuery(QueryType::ProfileID);
+        //requestProfileID(m_steamID);
+    }
+
 }
 
 void DowServerProcessor::requestPartysData()
@@ -184,7 +198,8 @@ void DowServerProcessor::requestPartysData()
     if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_sessionID.isEmpty())
         m_needUpdateLatter = true;
 
-    requestFindAdvertisements();
+    addQuery(QueryType::FindAdvertisements);
+    //requestFindAdvertisements();
 }
 
 void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
@@ -301,7 +316,11 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
             }
 
             emit sendPartysArray(partysArray);
-            requestPlayersSids(getPlayersInCurrentRoom(partysArray));
+
+            m_profileIdsForQueue = getPlayersInCurrentRoom(partysArray);
+            addQuery(QueryType::PlayersSids);
+
+            //requestPlayersSids();
         }
     }
 }
@@ -317,4 +336,45 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
     qDebug() << jsonDoc;
+}
+
+void DowServerProcessor::checkQueue()
+{
+    if (m_requestsQueue.isEmpty())
+        return;
+
+    QueryType needType = m_requestsQueue.first();
+
+    m_requestsQueue.remove(0);
+
+
+    switch (needType) {
+        case QueryType::FindAdvertisements :{
+            requestFindAdvertisements();
+            break;
+        }
+
+        case QueryType::PlayersSids :{
+            requestPlayersSids(m_profileIdsForQueue);
+            break;
+        }
+
+        case QueryType::ProfileID :{
+            requestProfileID(m_steamID);
+            break;
+        }
+
+        case QueryType::ChannelData :{
+            rquestChannellData(1);
+            break;
+        }
+    }
+}
+
+void DowServerProcessor::addQuery(QueryType type)
+{
+    if (m_requestsQueue.contains(type) && type != QueryType::PlayersSids)
+        return;
+
+    m_requestsQueue.append(type);
 }
