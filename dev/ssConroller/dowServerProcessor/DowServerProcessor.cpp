@@ -181,6 +181,9 @@ void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
 
 void DowServerProcessor::requestPartysData()
 {
+    if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_sessionID.isEmpty())
+        m_needUpdateLatter = true;
+
     requestFindAdvertisements();
 }
 
@@ -227,6 +230,12 @@ void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
                     m_statGroupId = QString::number(palyerDataArray.at(6).toInt());
                     qInfo(logInfo()) << "profileID=" << m_profileID;
                     qInfo(logInfo()) << "statsGroupID=" << m_statGroupId;
+
+                    if (m_needUpdateLatter)
+                    {
+                        requestPartysData();
+                        m_needUpdateLatter = false;
+                    }
                 }
             }
         }

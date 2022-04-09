@@ -122,10 +122,10 @@ void LobbyEventReader::readLobbyEvents()
             if (line.contains("Ignoring New Peer for local player")
                    // || line.contains("Lobby -- Net UPDATE PLAYER information for player")
                     || line.contains("Lobby -- Remote player disconnected")
-                    //|| line.contains("New Peer for remote player")
+                    || line.contains("New Peer for remote player")
                     //|| line.contains("MatchEvent:")
                     //|| line.contains("Lobby - Join success")
-                    || line.contains("Lobby - LIE_OnPlayerUpdate received")
+                    //|| line.contains("Lobby - LIE_OnPlayerUpdate received")
                     )
 
 
@@ -133,19 +133,19 @@ void LobbyEventReader::readLobbyEvents()
                 if(line.contains(m_preLastLogTime))
                     break;
 
-                if (!isHostedGame)
-                {
+              //  if (!isHostedGame)
+               // {
                     m_preLastLogTime = m_lastLogTime;
 
                     emit requestUpdateStats();
                     //emit playerConnected();
                     qInfo(logInfo()) << "Player connected";
                     break;
-                }
+               // }
 
             }
 
-            if (line.contains("New Peer for remote player") && isHostedGame)
+           /* if (line.contains("New Peer for remote player") && isHostedGame)
             {
 
                 if(line.contains(m_preLastLogTime))
@@ -193,7 +193,7 @@ void LobbyEventReader::readLobbyEvents()
                     m_preLastLogTime = m_lastLogTime;
                     break;
                 }
-            }
+            }*/
             counter--;
         }
     }
@@ -235,7 +235,7 @@ void LobbyEventReader::checkPatyState()
                 emit hostParty();
                 qInfo(logInfo()) << "Hosting party";
 
-                int counter2 = fileLines.size();
+               /* int counter2 = fileLines.size();
                 QString line2;
 
                 while (counter2 != counter)
@@ -271,7 +271,7 @@ void LobbyEventReader::checkPatyState()
                         }
                     }
                     counter2--;
-                }
+                }*/
                 break;
             }
             counter--;

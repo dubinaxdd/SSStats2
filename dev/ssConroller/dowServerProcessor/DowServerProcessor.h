@@ -46,6 +46,8 @@ private:
     QString m_modName = "winter+assault";
     QString m_modVersion = "1.0";
 
+    bool m_needUpdateLatter = false;
+
 };
 
 #endif // DOWSERVERPROCESSOR_H
