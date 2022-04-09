@@ -365,8 +365,6 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
 
                 newPlayerInfo.closeConnection = false;
                 newPlayerInfo.name = needPlayerJson.at(4).toString();
-                //newPlayerInfo.position = i+1;
-
                 playersInfo.append(newPlayerInfo);
             }
         }
@@ -375,8 +373,6 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
     for (int i = 0; i < playersInfo.count(); i++)
         playersInfo[i].position = i+1;
 
-
-    qDebug() << "ASDASDASDASDASDADASDAA";
 
     emit sendSteamIds(playersInfo, playersInfo.count() + 1);
 }
