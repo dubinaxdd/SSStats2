@@ -552,11 +552,10 @@ void GameInfoReader::readReplayDataAfterStop()
         warning += "    Game not have winner\n";
     }
 
-    emit sendNotification(warning);
-
 
     if (checkFailed)
     {
+        emit sendNotification(warning);
         qWarning(logWarning()) << warning;
         return;
     }

@@ -187,7 +187,6 @@ void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
     if(currentPlayerIsHost != isHost)
         m_playersCount = 1;
 
-
     currentPlayerIsHost = isHost;
 }
 
