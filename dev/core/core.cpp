@@ -264,6 +264,8 @@ void Core::registerTypes()
     qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");
     qRegisterMetaType<QMap<QString, QImage>>("QMap<QString, QImage>");
     qRegisterMetaType<DiscordMessage>("DiscordMessage");
+    qRegisterMetaType<QVector<PartyData>>("QVector<PartyData>");
+    qRegisterMetaType<PartyData>("PartyData");
 }
 
 UiBackend *Core::uiBackend() const

@@ -88,8 +88,6 @@ void LobbyEventReader::readLobbyEvents()
                 emit quitFromParty();
                 qInfo(logInfo()) << "Quit from paty";
                 break;
-
-
             }
 
             if (line.contains("LIE_JoinGame"))
@@ -138,7 +136,9 @@ void LobbyEventReader::readLobbyEvents()
                 if (!isHostedGame)
                 {
                     m_preLastLogTime = m_lastLogTime;
-                    emit playerConnected();
+
+                    emit requestUpdateStats();
+                    //emit playerConnected();
                     qInfo(logInfo()) << "Player connected";
                     break;
                 }
@@ -181,7 +181,8 @@ void LobbyEventReader::readLobbyEvents()
 
                                     if (playerPosition < 8 && playerPosition >= 0)
                                     {
-                                        emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+                                        emit requestUpdateStats();
+                                        //emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
                                         qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition + 1;
                                     }
                                 }
@@ -208,7 +209,6 @@ void LobbyEventReader::checkPatyState()
         QStringList fileLines = textStream.readAll().split("\r");
 
         int counter = fileLines.size();
-
 
         while (counter!=0)
         {
@@ -263,7 +263,8 @@ void LobbyEventReader::checkPatyState()
 
                                 if (playerPosition < 8 && playerPosition >= 0)
                                 {
-                                    emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+                                    //emit playerConnectedToHostedGame(ssId.toInt(), playerPosition);
+                                    emit requestUpdateStats();
                                     qInfo(logInfo()) << "Player connected:" << ssId << "position:" << playerPosition + 1;
                                 }
                             }

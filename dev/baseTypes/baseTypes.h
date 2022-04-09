@@ -71,6 +71,21 @@ enum GameTypeForReplaySending
     GameType4x4 = 4
 };
 
+struct PlayerData
+{
+    QString partyID = "";
+    QString profileID = "";
+};
+
+struct PartyData
+{
+    QString partyId = "";
+    QString hostPlayerId = "";
+    QString partyMapName = "";
+    QString partyName = "";
+    QVector<PlayerData> profilesIds = {};
+};
+
 struct PlayerStats
 {
     QString name = "";

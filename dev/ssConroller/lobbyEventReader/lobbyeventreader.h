@@ -27,6 +27,7 @@ signals:
     void hostParty();
     void quitFromParty();
     void requestSessionId();
+    void requestUpdateStats();
 
 public slots:
     void activateReading(bool activated);
