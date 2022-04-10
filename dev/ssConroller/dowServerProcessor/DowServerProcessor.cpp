@@ -189,8 +189,6 @@ void DowServerProcessor::setSessionID(QString sessionID)
     {
         addQuery(QueryType::ProfileID);
     }
-
-
 }
 
 void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)

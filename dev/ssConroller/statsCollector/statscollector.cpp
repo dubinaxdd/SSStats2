@@ -211,7 +211,12 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedP
         playersInfo.get()->operator[](i).avatarUrl = jsonArray.at(i)["avatarUrl"].toString();
 
         playersInfo.get()->operator[](i).statsAvailable = true;
+
+       // emit sendServerPlayrStats(playersInfo.get()->operator[](i));
     }
+
+    //if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
+    //    emit sendServerPlayrStats(*playerInfo.data());
 
     getPlayersMediumAvatar(playersInfo);
     reply->deleteLater();
