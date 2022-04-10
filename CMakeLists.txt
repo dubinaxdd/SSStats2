@@ -144,26 +144,25 @@ if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(DowStats2)
 endif()
 
-set(WINSDK_MT_DIR "${WINSDK_MT_DIR}")
 
+if(CMAKE_BUILD_TYPE STREQUAL DEBUG)
 
+    set(WINSDK_MT_DIR "${WINSDK_MT_DIR}")
 
-if("${WINSDK_MT_DIR}" STREQUAL "")
-    message (FATAL_ERROR "WinSDK mt.exe path is empty, please set cmake option DWINSDK_MT_DIR, for example: \"-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/\".")
-else()
-    message (STATUS "WINSDK_MT_DIR: " ${WINSDK_MT_DIR})
-    message(STATUS "Build dir: " ${CMAKE_BINARY_DIR})
+    if("${WINSDK_MT_DIR}" STREQUAL "")
+        message (FATAL_ERROR "WinSDK mt.exe path is empty, please set cmake option DWINSDK_MT_DIR, for example: \"-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/\".")
+    else()
+        message (STATUS "WINSDK_MT_DIR: " ${WINSDK_MT_DIR})
+        message(STATUS "Build dir: " ${CMAKE_BINARY_DIR})
+    endif()
 
-
-endif()
-
-add_custom_command(
+    add_custom_command(
         TARGET DowStats2
         POST_BUILD
         COMMAND ${WINSDK_MT_DIR}mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${CMAKE_BINARY_DIR}/DowStats2.exe
         COMMENT "Adding administator manifest."
-)
-
+    )
+endif()
 
 include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core
