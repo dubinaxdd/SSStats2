@@ -32,16 +32,21 @@ private:
     void requestFindAdvertisements();
     void requestPlayersSids(QVector<QString> profileIDs);
 
+
 public slots:
     void setSessionID(QString sessionID);
     void setCurrentPlayerSteamID(QString steamID);
     void requestPartysData();
+    void onPlayerDisconnected();
+
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
     void receiveProfileID(QNetworkReply *reply, QString steamID);
     void receiveFindAdvertisements(QNetworkReply *reply);
     void receivePlayersSids(QNetworkReply *reply);
+
+    void asdTimerTimeout();
 
     void checkQueue();
     void addQuery(QueryType type);
@@ -55,6 +60,8 @@ private:
 
     QVector<QueryType> m_requestsQueue;
     QTimer *m_queueTimer;
+
+    QTimer *m_requestDataAftrePlayerDiscoonectTimer;
 
     QVector<QString> m_profileIdsForQueue;
 

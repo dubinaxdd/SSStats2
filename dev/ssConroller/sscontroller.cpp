@@ -62,6 +62,7 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
     QObject::connect(m_statsCollector, &StatsCollector::sendCurrentPlayerSteamID, m_dowServerProcessor, &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);

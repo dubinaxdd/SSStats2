@@ -133,8 +133,11 @@ Window {
         function onWindowTopmostChanged(){
             if (_uiBackend.topmost)
             {
+                //window.showMaximized();
+               // window.setWidth(mouseAreaWidth);
+               // window.setHeight(mouseAreaHeight);
+               // window.showMaximized();
                 window.flags =  Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |Qt.Popup | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground /*| Qt.WA_MSWindowsUseDirect3D*/ | Qt.WA_ShowWithoutActivating
-                window.showMaximized();
             }
             else
             {
@@ -142,7 +145,6 @@ Window {
                 window.setWidth(0);
                 window.setHeight(0);
             }
-
         }
 
         function onWindowedModeSeted()

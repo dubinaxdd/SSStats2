@@ -8,6 +8,7 @@
 #include <defines.h>
 
 #define QUEUE_TIMER_INTERVAL 500
+#define ASD_TIMER_INTERVAL 2000
 
 DowServerProcessor::DowServerProcessor(QObject *parent)
     : QObject(parent)
@@ -16,7 +17,13 @@ DowServerProcessor::DowServerProcessor(QObject *parent)
     m_queueTimer = new QTimer(this);
     m_queueTimer->setInterval(QUEUE_TIMER_INTERVAL);
 
+    m_requestDataAftrePlayerDiscoonectTimer = new QTimer(this);
+    m_requestDataAftrePlayerDiscoonectTimer->setInterval(ASD_TIMER_INTERVAL);
+    m_requestDataAftrePlayerDiscoonectTimer->setSingleShot(true);
+
     QObject::connect(m_queueTimer, &QTimer::timeout, this, &DowServerProcessor::checkQueue, Qt::QueuedConnection);
+    QObject::connect(m_requestDataAftrePlayerDiscoonectTimer, &QTimer::timeout, this, &DowServerProcessor::asdTimerTimeout, Qt::QueuedConnection);
+
     m_queueTimer->start();
 }
 
@@ -166,6 +173,11 @@ void DowServerProcessor::requestPlayersSids(QVector<QString> profileIDs)
     });
 }
 
+void DowServerProcessor::onPlayerDisconnected()
+{
+    m_requestDataAftrePlayerDiscoonectTimer->start();
+}
+
 void DowServerProcessor::setSessionID(QString sessionID)
 {
     m_sessionID = sessionID;
@@ -175,7 +187,6 @@ void DowServerProcessor::setSessionID(QString sessionID)
     if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
     {
         addQuery(QueryType::ProfileID);
-        //requestProfileID(m_steamID);
     }
 
 
@@ -188,7 +199,6 @@ void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
     if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
     {
         addQuery(QueryType::ProfileID);
-        //requestProfileID(m_steamID);
     }
 
 }
@@ -199,7 +209,6 @@ void DowServerProcessor::requestPartysData()
         m_needUpdateLatter = true;
 
     addQuery(QueryType::FindAdvertisements);
-    //requestFindAdvertisements();
 }
 
 void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
@@ -317,8 +326,6 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
 
             m_profileIdsForQueue = getPlayersInCurrentRoom(partysArray);
             addQuery(QueryType::PlayersSids);
-
-            //requestPlayersSids();
         }
     }
 }
@@ -375,6 +382,11 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
 
 
     emit sendSteamIds(playersInfo, playersInfo.count() + 1);
+}
+
+void DowServerProcessor::asdTimerTimeout()
+{
+    addQuery(QueryType::FindAdvertisements);
 }
 
 void DowServerProcessor::checkQueue()
