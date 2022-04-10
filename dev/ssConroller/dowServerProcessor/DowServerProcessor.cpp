@@ -225,7 +225,7 @@ void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
     if(!jsonDoc.isArray())
         return;
 
-    qDebug() << jsonDoc.array();
+    //qDebug() << jsonDoc.array();
 }
 
 void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
@@ -347,7 +347,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-    qDebug() << jsonDoc;
+    //qDebug() << jsonDoc;
 
     QList<SearchStemIdPlayerInfo> playersInfo;
 
