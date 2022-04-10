@@ -16,8 +16,8 @@ public:
     explicit StatsCollector(QString ssPath, QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
-    void getPlayerStatsFromServer(QSharedPointer<ServerPlayerStats> playerInfo);
-    void getPlayerMediumAvatar(QString url, QSharedPointer<ServerPlayerStats> playerInfo);
+    void getPlayerStatsFromServer(QSharedPointer<QList<ServerPlayerStats> > playersInfo);
+    void getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo);
     void setCurrentPlayerAccepted(bool newCurrentPlayerAccepted);
 
 signals:
@@ -31,11 +31,8 @@ public slots:
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
 private slots:
-    void receiveSteamInfoReply(QNetworkReply* reply);
-    void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<ServerPlayerStats> playerInfo);
+    void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
-    void receivePlayerSteamData(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
-
     void currentPlayerStatsRequestTimerTimeout();
 
 
@@ -55,7 +52,7 @@ private:
 
     QNetworkAccessManager *m_networkManager;
 
-    QSharedPointer<ServerPlayerStats> m_currentPlayerStats;
+   QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
 
     QList<ServerPlayerStats*> m_playerStats;
 

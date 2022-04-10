@@ -22,7 +22,7 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
     m_scanTimer->setSingleShot(true);
 
     QObject::connect(m_scanTimer, &QTimer::timeout, this, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection );
-   // m_scanTimer->start();
+    // m_scanTimer->start();
 }
 
 void PlayersSteamScanner::refreshSteamPlayersInfo()
