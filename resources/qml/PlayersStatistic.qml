@@ -30,7 +30,7 @@ Rectangle {
             relativeMouseY >= expandPatyStatisticButtonRectangle.y - (expandPatyStatisticButtonRectangle.y * scrollViewPosition) &&
             relativeMouseY <= expandPatyStatisticButtonRectangle.y - (expandPatyStatisticButtonRectangle.y * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
         {
-            if(!_uiBackend.gamePanel.gamePanelVisible)
+            if(!_uiBackend.gamePanel.gamePanelVisible && expandPatyStatisticButtonRectangle.visible == true)
             {
                 expandPatyStatisticButtonRectangle.howeredState = true;
                 _uiBackend.expandPatyStatisticButtonClick();
