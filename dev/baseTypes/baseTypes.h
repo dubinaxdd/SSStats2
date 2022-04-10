@@ -75,6 +75,7 @@ struct PlayerData
 {
     QString partyID = "";
     QString profileID = "";
+    int position = 0;
 };
 
 struct PartyData
@@ -116,6 +117,7 @@ struct ServerPlayerStats
 
 struct SearchStemIdPlayerInfo
 {
+    QString playerID;
     QString steamId;
     int position;
     QString name;

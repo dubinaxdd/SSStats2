@@ -23,6 +23,8 @@ public:
 signals:
     void playerConnected();                 //игрок присоединился к игре которая создана не нами
     void playerDisconnected();
+    void playerKicked();
+
     void joinToParty();
     void hostParty();
     void quitFromParty();

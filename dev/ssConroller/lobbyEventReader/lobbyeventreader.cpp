@@ -111,6 +111,21 @@ void LobbyEventReader::readLobbyEvents()
                 break;
             }
 
+
+            if (line.contains("Lobby - LIE_Ban received")
+                || line.contains("Lobby -- kicked player")
+                )
+            {
+                if(line.contains(m_preLastLogTime))
+                    break;
+
+                m_preLastLogTime = m_lastLogTime;
+                emit playerKicked();
+                qInfo(logInfo()) << "Player kicked";
+                break;
+            }
+
+
             if (line.contains("Ignoring New Peer for local player")
                    // || line.contains("Lobby -- Net UPDATE PLAYER information for player")
                     || line.contains("New Peer for remote player")
@@ -143,7 +158,6 @@ void LobbyEventReader::readLobbyEvents()
                 qInfo(logInfo()) << "Player disconnected";
                 break;
             }
-
 
             counter--;
         }

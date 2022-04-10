@@ -8,7 +8,7 @@
 #include <defines.h>
 
 #define QUEUE_TIMER_INTERVAL 500
-#define ASD_TIMER_INTERVAL 2000
+#define ASD_TIMER_INTERVAL 3000
 
 DowServerProcessor::DowServerProcessor(QObject *parent)
     : QObject(parent)
@@ -55,12 +55,12 @@ QNetworkRequest DowServerProcessor::createDowServerRequest(QString url)
     return std::move(newRequest);
 }
 
-QVector<QString> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
+QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
 {
     if (m_profileID.isEmpty())
-        return QVector<QString>();
+        return QVector<PlayerData>();
 
-    QVector<QString> profileIDs;
+    QVector<PlayerData> playersData;
 
     for (int i = 0; i < partyDataArray.count(); i++)
     {
@@ -71,14 +71,14 @@ QVector<QString> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> 
             if (playersDataArray.at(j).profileID == m_profileID)
             {
                 for (int k = 0; k < playersDataArray.count(); k++)
-                    profileIDs.append(playersDataArray.at(k).profileID);
+                    playersData.append(playersDataArray.at(k));
 
-                return profileIDs;
+                return playersData;
             }
         }
     }
 
-    return QVector<QString>();
+    return QVector<PlayerData>();
 }
 
 void DowServerProcessor::rquestChannellData(int id)
@@ -141,21 +141,21 @@ void DowServerProcessor::requestFindAdvertisements()
     });
 }
 
-void DowServerProcessor::requestPlayersSids(QVector<QString> profileIDs)
+void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 {
-    if (m_sessionID.isEmpty() || profileIDs.count() < 1)
+    if (m_sessionID.isEmpty() || profilesData.count() < 1)
         return;
 
     QString profilesIDsString;
 
     profilesIDsString += "%5b";
 
-    for (int i = 0; i < profileIDs.count(); i++)
+    for (int i = 0; i < profilesData.count(); i++)
     {
         if (i != 0)
             profilesIDsString += "%2c";
 
-        profilesIDsString += profileIDs.at(i);
+        profilesIDsString += profilesData.at(i).profileID;
     }
 
     profilesIDsString += "%5d";
@@ -165,7 +165,7 @@ void DowServerProcessor::requestPlayersSids(QVector<QString> profileIDs)
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receivePlayersSids(reply);
+        receivePlayersSids(reply, profilesData);
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
@@ -176,6 +176,7 @@ void DowServerProcessor::requestPlayersSids(QVector<QString> profileIDs)
 void DowServerProcessor::onPlayerDisconnected()
 {
     m_requestDataAftrePlayerDiscoonectTimer->start();
+    //addQuery(QueryType::FindAdvertisements);
 }
 
 void DowServerProcessor::setSessionID(QString sessionID)
@@ -276,6 +277,8 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
+   // qDebug() << jsonDoc;
+
     if (jsonDoc.isArray())
     {
         QJsonArray messageArray = jsonDoc.array();
@@ -314,8 +317,12 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
                     QJsonArray playerDataJson = playersJsonArray.at(j).toArray();
                     PlayerData newPlayerData;
 
+                    //if (playerDataJson.at(5).toInt() == 3)
+                    //    continue;
+
                     newPlayerData.partyID = QString::number(playerDataJson.at(0).toInt());
                     newPlayerData.profileID = QString::number(playerDataJson.at(1).toInt());
+                    newPlayerData.position = playerDataJson.at(5).toInt();
 
                     newPartyData.profilesIds.append(newPlayerData);
                 }
@@ -330,7 +337,7 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
     }
 }
 
-void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
+void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData)
 {
     if (checkReplyErrors(reply))
         return;
@@ -370,6 +377,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
                 if (newPlayerInfo.steamId == m_steamID)
                     continue;
 
+                newPlayerInfo.playerID = QString::number(needPlayerJson.at(1).toInt());
                 newPlayerInfo.closeConnection = false;
                 newPlayerInfo.name = needPlayerJson.at(4).toString();
                 playersInfo.append(newPlayerInfo);
@@ -377,8 +385,22 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply)
         }
     }
 
+
     for (int i = 0; i < playersInfo.count(); i++)
-        playersInfo[i].position = i+1;
+    {
+        for (int j = 0; j < profilesData.count(); j++)
+        {
+            if (playersInfo.at(i).playerID == profilesData.at(j).profileID )
+            {
+                playersInfo[i].position = profilesData.at(j).position + 1;
+                break;
+            }
+        }
+    }
+
+
+   // for (int i = 0; i < playersInfo.count(); i++)
+   //     playersInfo[i].position = i+1;
 
 
     emit sendSteamIds(playersInfo, playersInfo.count() + 1);
