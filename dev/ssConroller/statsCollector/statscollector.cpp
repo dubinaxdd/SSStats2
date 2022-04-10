@@ -251,7 +251,7 @@ void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPoin
 
 void StatsCollector::currentPlayerStatsRequestTimerTimeout()
 {
-    if (!m_currentPlayerStats.data()->at(0).steamId.isEmpty())
+    if (!m_currentPlayerStats.data()->isEmpty() && !m_currentPlayerStats.data()->at(0).steamId.isEmpty())
         getPlayerStatsFromServer(m_currentPlayerStats);
 }
 
