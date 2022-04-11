@@ -396,7 +396,6 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
         }
     }
 
-
    // for (int i = 0; i < playersInfo.count(); i++)
    //     playersInfo[i].position = i+1;
 

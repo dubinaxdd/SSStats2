@@ -11,5 +11,11 @@
         <file>resources/icons/ssIcon.png</file>
         <file>resources/images/warning.png</file>
         <file>resources/images/closeButton.png</file>
+        <file>resources/images/rank1_200.png</file>
+        <file>resources/images/rank2_200.png</file>
+        <file>resources/images/rank3_200.png</file>
+        <file>resources/images/rank4_200.png</file>
+        <file>resources/images/rank5_200.png</file>
+        <file>resources/images/rank6_200.png</file>
     </qresource>
 </RCC>
