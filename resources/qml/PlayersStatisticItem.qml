@@ -196,15 +196,16 @@ Rectangle {
                     Layout.minimumWidth: 50 * _uiBackend.sizeModifer
                     Layout.margins: 5 * _uiBackend.sizeModifer
 
+                    color: "#00000000"
+
+
                     Image
                     {
                         id: rankImage
 
                         cache: false
-                        x: 137 * _uiBackend.sizeModifer
-                        y: 0 * _uiBackend.sizeModifer
-                        width: 60 * _uiBackend.sizeModifer
-                        height: 60 * _uiBackend.sizeModifer
+                        width: 50 * _uiBackend.sizeModifer
+                        height: 50 * _uiBackend.sizeModifer
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
                         fillMode: Image.PreserveAspectFit
