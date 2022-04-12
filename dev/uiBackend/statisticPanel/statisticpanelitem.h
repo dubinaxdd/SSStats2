@@ -30,18 +30,19 @@ signals:
     void playersStatsChanged();
     void itemVisibleChanged();
 
-private:
-    QString getPlayerName();
-    QString getPlayerMmr();
-    QString getPlayerMmr1v1();
-    QString getPlayerGamesCount();
-    QString getPlayerRace();
-    QString getPlayerWinRate();
-    QString getPlayerApm();
-    bool    getPlayerIsBanned();
-    bool    getVisible();
+public:
+    QString getPlayerName() const;
+    QString getPlayerMmr() const;
+    QString getPlayerMmr1v1() const;
+    QString getPlayerGamesCount() const;
+    QString getPlayerRace() const;
+    QString getPlayerWinRate() const;
+    QString getPlayerApm() const;
+    bool    getPlayerIsBanned() const;
+    bool    getVisible() const;
+    int     getPosition() const;
 
-    QString getRaceFromNumber(int raceNumber);
+    QString getRaceFromNumber(int raceNumber) const;
 
 private:
     ServerPlayerStats m_playersStats;

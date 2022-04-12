@@ -15,7 +15,7 @@ Rectangle {
 
     property var model
     property real scrollViewPosition: 0
-    property int playersCount: 1
+    property int playersCount: 1 + playersListView.count
     property int relativeMouseX
     property int relativeMouseY
 
@@ -45,7 +45,7 @@ Rectangle {
         relativeMouseX = x
         relativeMouseY = y
 
-        updateScrollViewHeight();
+        //updateScrollViewHeight();
 
         // Кнопка "Свернуть колонку статистики"
         if (relativeMouseX >= expandPatyStatisticButtonRectangle.x &&
@@ -66,7 +66,7 @@ Rectangle {
 
     function mouseWheel(delta)
     {
-        updateScrollViewHeight();
+        //updateScrollViewHeight();
 
         if (relativeMouseX >= scrollView.x &&
             relativeMouseX <= scrollView.x + scrollView.width &&
@@ -83,45 +83,10 @@ Rectangle {
         }
     }
 
-    function visibleItemsCountChanged()
-    {
-        var asd = 0;
-
-        if(curentPlayer.visible)
-            asd++;
-
-        if (player2.visible)
-            asd++;
-
-        if (player3.visible)
-            asd++;
-
-        if (player4.visible)
-            asd++;
-
-        if (player5.visible)
-            asd++;
-
-        if (player6.visible)
-            asd++;
-
-        if (player7.visible)
-            asd++;
-
-        if (player8.visible)
-            asd++;
-
-
-        if(asd > 0)
-            playersCount =  asd;
-    }
-
-
+/*
     function updateScrollViewHeight()
     {
         var playersCountTemp = playersCount;
-
-        visibleItemsCountChanged();
 
         if (playersCountTemp !== playersCount)
         {
@@ -133,7 +98,6 @@ Rectangle {
 
     function forceUpdateScrollViewHeight()
     {
-        visibleItemsCountChanged();
         scrollView.setDefault();
         scrollView.height = ((120 * _uiBackend.sizeModifer) + columnLayout.spacing) * playersCount ;
     }
@@ -164,7 +128,7 @@ Rectangle {
         {
             forceUpdateScrollViewHeight();
         }
-    }
+    }*/
 
     //Костыль для перезагрузки картинки, рил так на формух делают
 
@@ -213,8 +177,8 @@ Rectangle {
     ScrollView {
         id: scrollView
 
-        height: 120 + columnLayout.spacing
-        width: mainRectangle.width//280 *_uiBackend.sizeModifer
+        height: mainRectangle.height
+        width: mainRectangle.width
 
         function scrollToBottom() {
 
@@ -244,15 +208,57 @@ Rectangle {
 
             spacing: 5 * _uiBackend.sizeModifer
 
+
             PlayersStatisticItem
             {
                 id:curentPlayer
                 visible: model.curentPlayerStatsItem.itemVisible && (!model.expandPatyStatistic || _uiBackend.expand) && model.curentPlayerStatsItem.playerName !== ""
 
-                itemModel: model.curentPlayerStatsItem
+                playerName: model.curentPlayerStatsItem.playerName
+                playerMmr: model.curentPlayerStatsItem.playerMmr
+                playerMmr1v1: model.curentPlayerStatsItem.playerMmr1v1
+                playerGamesCount: model.curentPlayerStatsItem.playerGamesCount
+                playerRace: model.curentPlayerStatsItem.playerRace
+                playerWinRate: model.curentPlayerStatsItem.playerWinRate
+                playerPlayerApm: model.curentPlayerStatsItem.playerApm
+                playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
+                playerVisible: model.curentPlayerStatsItem.itemVisible
+
                 avatarSource: "image://ImageProvider/currentPlayerAvatarMedium"
 
             }
+
+            ListView
+            {
+                id: playersListView
+
+                model:_uiBackend.statisticPanel
+
+                Layout.preferredHeight: (120 + 5) * count * _uiBackend.sizeModifer
+                Layout.maximumHeight: (120 + 5) * count * _uiBackend.sizeModifer
+                Layout.minimumHeight: (120 + 5) * count * _uiBackend.sizeModifer
+
+                spacing: 5 * _uiBackend.sizeModifer
+
+                delegate: PlayersStatisticItem{
+
+                    playerName: model.playerName
+                    playerMmr: model.playerMmr
+                    playerMmr1v1: model.playerMmr1v1
+                    playerGamesCount: model.playerGamesCount
+                    playerRace: model.playerRace
+                    playerWinRate: model.playerWinRate
+                    playerPlayerApm: model.playerApm
+                    playerIsBanned: model.playerIsBanned
+                    playerVisible: model.playerVisible
+
+                    height: 120 * _uiBackend.sizeModifer
+                    width: 280 * _uiBackend.sizeModifer
+                }
+            }
+
+
+/*
 
             PlayersStatisticItem
             {
@@ -323,6 +329,7 @@ Rectangle {
                 itemModel: model.player8StatsItem
                 avatarSource: "image://ImageProvider/player8AvatarMedium"
             }
+*/
 
             Rectangle {
                 id: rectangle1
@@ -390,11 +397,11 @@ Rectangle {
                     fillMode: Image.PreserveAspectFit
                 }
             }
-        }
 
-        Rectangle {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
+            Rectangle {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+            }
         }
     }
 }

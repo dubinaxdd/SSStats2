@@ -11,7 +11,7 @@ void StatisticPanelItem::setPlayersStats(ServerPlayerStats newPlayersStats)
     emit playersStatsChanged();
 }
 
-QString StatisticPanelItem::getRaceFromNumber(int raceNumber)
+QString StatisticPanelItem::getRaceFromNumber(int raceNumber) const
 {
 
     switch(raceNumber)
@@ -41,9 +41,14 @@ void StatisticPanelItem::setVisible(bool newVisible)
     emit itemVisibleChanged();
 }
 
-bool StatisticPanelItem::getVisible()
+bool StatisticPanelItem::getVisible() const
 {
     return m_visible;
+}
+
+int StatisticPanelItem::getPosition() const
+{
+    return m_playersStats.position;
 }
 
 void StatisticPanelItem::setPlayerSteamId(QString steamId)
@@ -51,42 +56,42 @@ void StatisticPanelItem::setPlayerSteamId(QString steamId)
     m_playersStats.steamId = steamId;
 }
 
-QString StatisticPanelItem::getPlayerName()
+QString StatisticPanelItem::getPlayerName() const
 {
     return m_playersStats.name;
 }
 
-QString StatisticPanelItem::getPlayerMmr()
+QString StatisticPanelItem::getPlayerMmr() const
 {
     return QString::number(m_playersStats.mmr);
 }
 
-QString StatisticPanelItem::getPlayerMmr1v1()
+QString StatisticPanelItem::getPlayerMmr1v1() const
 {
     return QString::number(m_playersStats.mmr1v1);
 }
 
-QString StatisticPanelItem::getPlayerGamesCount()
+QString StatisticPanelItem::getPlayerGamesCount() const
 {
     return QString::number(m_playersStats.gamesCount);
 }
 
-QString StatisticPanelItem::getPlayerRace()
+QString StatisticPanelItem::getPlayerRace() const
 {
     return getRaceFromNumber(m_playersStats.race);
 }
 
-QString StatisticPanelItem::getPlayerWinRate()
+QString StatisticPanelItem::getPlayerWinRate() const
 {
     return QString::number(m_playersStats.winRate);
 }
 
-QString StatisticPanelItem::getPlayerApm()
+QString StatisticPanelItem::getPlayerApm() const
 {
     return QString::number(m_playersStats.apm);
 }
 
-bool StatisticPanelItem::getPlayerIsBanned()
+bool StatisticPanelItem::getPlayerIsBanned() const
 {
     return m_playersStats.isBanned;
 }

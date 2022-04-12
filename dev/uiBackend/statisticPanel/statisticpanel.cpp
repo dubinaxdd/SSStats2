@@ -2,15 +2,61 @@
 #include <QDebug>
 
 StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
-    : QObject(parent)
+    : QAbstractListModel(parent)
     , m_imageProvider(imageProvider)
 {
     m_curentPlayerStatsItem = new StatisticPanelItem(this);
 
-    for(int i = 0; i < 7; i++)
-        m_playersStatsItems[i] = new StatisticPanelItem(this);
+   // for(int i = 0; i < 7; i++)
+   //     m_playersStatsItems[i] = new StatisticPanelItem(this);
 
     emit playersItemsInitialized();
+}
+
+QVariant StatisticPanel::data(const QModelIndex &index, int role) const
+{
+    if (index.row() < 0 || index.row() >= m_playersStatsItems.count())
+        return QVariant();
+
+    const StatisticPanelItem* item = m_playersStatsItems[index.row()];
+
+    switch (role)
+    {
+        case PlayerName: return item->getPlayerName();
+        case PlayerMmr: return item->getPlayerMmr();
+        case PlayerMmr1v1: return item->getPlayerMmr1v1();
+        case PlayerGamesCount: return item->getPlayerGamesCount();
+        case PlayerRace: return item->getPlayerRace();
+        case PlayerWinRate: return item->getPlayerWinRate();
+        case PlayerApm: return item->getPlayerApm();
+        case PlayerIsBanned: return item->getPlayerIsBanned();
+        case PlayerVisible: return item->getVisible();
+    }
+
+    return QVariant();
+}
+
+int StatisticPanel::rowCount(const QModelIndex &parent) const
+{
+    Q_UNUSED(parent);
+    return m_playersStatsItems.count();
+}
+
+QHash<int, QByteArray> StatisticPanel::roleNames() const
+{
+    QHash<int, QByteArray> roles;
+
+    roles[PlayerName]       = "playerName";
+    roles[PlayerMmr]        = "playerMmr";
+    roles[PlayerMmr1v1]     = "playerMmr1v1";
+    roles[PlayerGamesCount] = "playerGamesCount";
+    roles[PlayerRace]       = "playerRace";
+    roles[PlayerWinRate]    = "playerWinRate";
+    roles[PlayerApm]        = "playerApm";
+    roles[PlayerIsBanned]   = "playerIsBanned";
+    roles[PlayerVisible]    = "playerVisible";
+
+    return roles;
 }
 
 void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)
@@ -28,47 +74,26 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
     }
     else
     {
-        if (currentPlayerIsHost)
+        for(int i = 0; i < m_playersStatsItems.count(); i++)
         {
-
-            m_playersStatsItems[serverPlayerStats.position - 1]->setPlayersStats(serverPlayerStats);
-
-            switch (serverPlayerStats.position - 1)
+            if (serverPlayerStats.position == m_playersStatsItems.at(i)->getPosition())
             {
-                case 0: m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar); break;
-                case 1: m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar); break;
-                case 2: m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar); break;
-                case 3: m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar); break;
-                case 4: m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar); break;
-                case 5: m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar); break;
-                case 6: m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar); break;
-            }
+                 m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
+                 QModelIndex first = QAbstractItemModel::createIndex(m_playersStatsItems.count(), 0);
+                 QModelIndex last = QAbstractItemModel::createIndex(m_playersStatsItems.count(), 0);
+                 emit dataChanged(first, last);
 
-        }
-        else
-        {
-            for (int i = 0; i < 7; i++)
-            {
-                if(serverPlayerStats.steamId == m_playersStatsItems[i]->playersStats().steamId)
-                {
-                    m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
-
-                    switch (i)
-                    {
-                        case 0: m_imageProvider->setPlayer2AvatarMedium(serverPlayerStats.avatar); break;
-                        case 1: m_imageProvider->setPlayer3AvatarMedium(serverPlayerStats.avatar); break;
-                        case 2: m_imageProvider->setPlayer4AvatarMedium(serverPlayerStats.avatar); break;
-                        case 3: m_imageProvider->setPlayer5AvatarMedium(serverPlayerStats.avatar); break;
-                        case 4: m_imageProvider->setPlayer6AvatarMedium(serverPlayerStats.avatar); break;
-                        case 5: m_imageProvider->setPlayer7AvatarMedium(serverPlayerStats.avatar); break;
-                        case 6: m_imageProvider->setPlayer8AvatarMedium(serverPlayerStats.avatar); break;
-                    }
-                }
+                 break;
             }
         }
 
+        beginInsertRows(QModelIndex(), 0, m_playersStatsItems.count());
 
-        emit playersStatsChanged();
+        StatisticPanelItem* newItem = new StatisticPanelItem(this);
+        newItem->setPlayersStats(serverPlayerStats);
+        m_playersStatsItems.append(newItem);
+
+        endInsertRows();
     }
 }
 
@@ -79,108 +104,27 @@ void StatisticPanel::receivePlayersCount(int playersCount)
 
     m_playersCount = playersCount;
 
-  /*
-    if (currentPlayerIsHost)
+
+    beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count());
+
+    for(int i = 0; i < m_playersStatsItems.count(); i++)
     {
-        if(playersCount >= m_playersCount)
-            m_playersCount = playersCount;
-        else
-            return;
+        if (m_playersStatsItems.at(i)->getPosition() > m_playersCount + 2)
+        {
+            delete m_playersStatsItems.at(i);
+            m_playersStatsItems.removeAt(i);
+            i--;
+        }
     }
-    else
-    {
+    endRemoveRows();
 
-        if (m_playersCount == playersCount)
-            return;
-        m_playersCount = playersCount;
-    }
-*/
-
-
-    if(m_playersCount > 1)
-        m_playersStatsItems[0]->setVisible(true);
-    else
-        m_playersStatsItems[0]->setVisible(false);
-
-    if(m_playersCount > 2)
-        m_playersStatsItems[1]->setVisible(true);
-    else
-        m_playersStatsItems[1]->setVisible(false);
-
-
-    if(m_playersCount > 3)
-        m_playersStatsItems[2]->setVisible(true);
-    else
-        m_playersStatsItems[2]->setVisible(false);
-
-
-    if(m_playersCount > 4)
-        m_playersStatsItems[3]->setVisible(true);
-    else
-        m_playersStatsItems[3]->setVisible(false);
-
-
-    if(m_playersCount > 5)
-        m_playersStatsItems[4]->setVisible(true);
-    else
-        m_playersStatsItems[4]->setVisible(false);
-
-
-    if(m_playersCount > 6)
-        m_playersStatsItems[5]->setVisible(true);
-    else
-        m_playersStatsItems[5]->setVisible(false);
-
-
-    if(m_playersCount > 7)
-        m_playersStatsItems[6]->setVisible(true);
-    else
-        m_playersStatsItems[6]->setVisible(false);
-
-    emit playersStatsChanged();
+    //emit playersStatsChanged();
 }
 
-void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
+/*void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
 {
-    if (m_blockUpdate)
-        return;
-
-    int needPlayersCount = playersCount;
-
-    for (int i = 0; i < playersInfo.count(); i++)
-    {
-        if(playersInfo.at(i).steamId == m_curentPlayerStatsItem->playersStats().steamId)
-        {
-            needPlayersCount--;
-            playersInfo.removeAt(i);
-            break;
-        }
-    }
-
-    for (int i = 0; i < playersInfo.count() - 1; i++)
-    {
-        for (int j = 1; j < playersInfo.count(); j++)
-        {
-            if(playersInfo.at(j-1).position > playersInfo.at(j).position)
-            {
-                SearchStemIdPlayerInfo buffer = playersInfo.at(j-1);
-                playersInfo[j-1] = playersInfo.at(j);
-                playersInfo[j] = buffer;
-            }
-        }
-    }
-
-    if(needPlayersCount > 7 )
-        needPlayersCount = 7;
-
-    if(playersInfo.count() < needPlayersCount)
-        needPlayersCount = playersInfo.count();
-
-    for (int i = 0; i < needPlayersCount; i++)
-    {
-            m_playersStatsItems[i]->setPlayerSteamId(playersInfo.at(i).steamId);
-    }
-}
+    m_playersInfo = playersInfo;
+}*/
 
 void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
 {
@@ -192,52 +136,27 @@ void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
 
 void StatisticPanel::onQuitParty()
 {
-    ServerPlayerStats serverPlayerStats;
+    //ServerPlayerStats serverPlayerStats;
 
-    for (int i = 0; i < 7; i++)
-        m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
+   // for (int i = 0; i < 7; i++)
+   //     m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
 
-    emit playersStatsChanged();
+   //emit playersStatsChanged();
+
+
+    beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
+
+    for(int i = 0; i < m_playersStatsItems.count(); i++)
+        delete m_playersStatsItems.at(i);
+
+    m_playersStatsItems.clear();
+
+    endRemoveRows();
 }
 
 StatisticPanelItem *StatisticPanel::getCurentPlayerStatsItem()
 {
     return m_curentPlayerStatsItem;
-}
-
-StatisticPanelItem *StatisticPanel::getPlayer2StatsItem()
-{
-    return m_playersStatsItems[0];
-}
-
-StatisticPanelItem *StatisticPanel::getPlayer3StatsItem()
-{
-    return m_playersStatsItems[1];
-}
-
-StatisticPanelItem *StatisticPanel::getPlayer4StatsItem()
-{
-    return m_playersStatsItems[2];
-}
-
-StatisticPanelItem *StatisticPanel::getPlayer5StatsItem()
-{
-    return m_playersStatsItems[3];
-}
-
-StatisticPanelItem *StatisticPanel::getPlayer6StatsItem()
-{
-    return m_playersStatsItems[4];
-}
-
-StatisticPanelItem *StatisticPanel::getPlayer7StatsItem()
-{
-    return m_playersStatsItems[5];
-}
-
-StatisticPanelItem *StatisticPanel::getPlayer8StatsItem()
-{
-    return m_playersStatsItems[6];
 }
 
 void StatisticPanel::setBlockUpdate(bool newBlockUpdate)

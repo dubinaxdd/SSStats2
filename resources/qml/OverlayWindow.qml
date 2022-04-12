@@ -226,16 +226,7 @@ Window {
                         model: _uiBackend.statisticPanel
                         visible: _uiBackend.patyStatisticVisible
                         z: 2
-                    }
 
-                    Rectangle {
-                        id: rectangle2
-                        width: 0
-                        height: 200 * _uiBackend.sizeModifer
-                        color: "#00000000"
-                        radius: 0
-                        border.color: "#00000000"
-                        Layout.fillWidth: false
                         Layout.fillHeight: true
                     }
                 }
