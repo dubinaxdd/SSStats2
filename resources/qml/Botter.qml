@@ -51,7 +51,7 @@ Rectangle {
                 color: dowstatsLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
 
                 anchors.verticalCenter: parent.verticalCenter
-                font.pointSize: 12
+                font.pixelSize: 16
                 anchors.horizontalCenter: parent.horizontalCenter
             }
 
@@ -80,7 +80,7 @@ Rectangle {
                 text: "Discord"
                 color: discordLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
                 anchors.verticalCenter: parent.verticalCenter
-                font.pointSize: 12
+                font.pixelSize: 16
                 anchors.horizontalCenter: parent.horizontalCenter
 
             }
@@ -130,7 +130,7 @@ Rectangle {
                     text: "Launch Soulstorm"
                     Layout.leftMargin: 15
                     color: lounchSoulstormMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
-                    font.pointSize: 12
+                    font.pixelSize: 16
                 }
 
                 Rectangle

@@ -109,11 +109,10 @@ Rectangle {
                         Layout.rightMargin: 15
                         color: "#26282a"
                         text: mainRectangle.userName
-                        font.pointSize: 14
+                        font.pixelSize: 22
                     }
                 }
             }
-
 
             Label{
                 id: newMessageLabel
@@ -132,7 +131,7 @@ Rectangle {
                 id: dateTimeLabel
                 color: "#26282a"
                 text: mainRectangle.timesTamp
-                font.pointSize: 10
+                font.pixelSize: 18
                 Layout.rightMargin: 15
             }
         }
@@ -148,7 +147,7 @@ Rectangle {
             text: mainRectangle.content
             wrapMode: Text.Wrap
             color: "#26282a"
-            font.pointSize: 10
+            font.pixelSize: 16
             textFormat: Text.RichText
 
             visible: mainRectangle.content != "\0"
