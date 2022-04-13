@@ -19,6 +19,10 @@ Rectangle {
     property int relativeMouseX
     property int relativeMouseY
 
+
+
+
+
     function mouseClick(x, y)
     {
         relativeMouseX = x
@@ -31,10 +35,12 @@ Rectangle {
         {
             if(!_uiBackend.gamePanel.gamePanelVisible && expandPatyStatisticButtonRectangle.visible == true && expandPatyStatisticButtonRectangle.height != 0)
             {
+
                 expandPatyStatisticButtonRectangle.howeredState = true;
                 _uiBackend.expandPatyStatisticButtonClick();
 
-               scrollView.setDefault();
+                scrollView.setDefault();
+
             }
         }
     }
@@ -124,6 +130,19 @@ Rectangle {
         }
     }
 
+
+
+    Connections
+    {
+        target: _uiBackend
+
+
+        function onSendExpand()
+        {
+            scrollViewPosition = 0.0;
+        }
+    }
+
     ScrollView {
         id: scrollView
 
@@ -156,8 +175,8 @@ Rectangle {
 
         function setDefault()
         {
-            ScrollBar.vertical.position = 0
-            scrollViewPosition = ScrollBar.vertical.position
+            ScrollBar.vertical.position = 0.0
+            scrollViewPosition = 0.0
         }
 
         ColumnLayout {
