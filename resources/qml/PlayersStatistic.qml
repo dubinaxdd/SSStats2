@@ -29,7 +29,7 @@ Rectangle {
                     relativeMouseY >= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) &&
                     relativeMouseY <= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
         {
-            if(!_uiBackend.gamePanel.gamePanelVisible && expandPatyStatisticButtonRectangle.visible == true)
+            if(!_uiBackend.gamePanel.gamePanelVisible && expandPatyStatisticButtonRectangle.visible == true && expandPatyStatisticButtonRectangle.height != 0)
             {
                 expandPatyStatisticButtonRectangle.howeredState = true;
                 _uiBackend.expandPatyStatisticButtonClick();
@@ -265,18 +265,20 @@ Rectangle {
                 Layout.minimumWidth: 280 * _uiBackend.sizeModifer
                 width: 280 * _uiBackend.sizeModifer
 
-                Layout.maximumHeight: 10 * _uiBackend.sizeModifer
-                Layout.minimumHeight: 10 * _uiBackend.sizeModifer
-                height: 10 * _uiBackend.sizeModifer
+                Layout.maximumHeight: !_uiBackend.expand ? 10 * _uiBackend.sizeModifer : 0
+                Layout.minimumHeight: !_uiBackend.expand ? 10 * _uiBackend.sizeModifer : 0
+                height: !_uiBackend.expand ? 10 * _uiBackend.sizeModifer : 0
 
                 radius: 5 * _uiBackend.sizeModifer
 
                 Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                visible: !_uiBackend.expand
+                //visible: !_uiBackend.expand
                 gradient: howeredState ? grDark : grLight
 
                 Image {
                     id: image
+
+                    visible: !_uiBackend.expand
                     width: 95 * _uiBackend.sizeModifer
                     height: 10 * _uiBackend.sizeModifer
                     anchors.verticalCenter: parent.verticalCenter
