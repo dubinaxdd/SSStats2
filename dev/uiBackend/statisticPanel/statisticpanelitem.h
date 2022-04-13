@@ -44,8 +44,11 @@ public:
 
     QString getRaceFromNumber(int raceNumber) const;
 
+    const QString &getTempSid() const;
+
 private:
     ServerPlayerStats m_playersStats;
+    QString tempSid = "";
     bool m_visible = false;
 
 

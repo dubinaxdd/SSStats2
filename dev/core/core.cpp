@@ -53,7 +53,6 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
 
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendServerPlayrStats,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,  Qt::QueuedConnection);
-    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendPlayersCount,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersCount,  Qt::QueuedConnection);
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendCurrentPlayerHostState,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState,  Qt::QueuedConnection);
 
     QObject::connect(m_ssController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
@@ -88,7 +87,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->eventsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedEventsMessageID, Qt::QueuedConnection);
 
 
-   // QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
+    QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
 }

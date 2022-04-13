@@ -6,10 +6,6 @@ StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
     , m_imageProvider(imageProvider)
 {
     m_curentPlayerStatsItem = new StatisticPanelItem(this);
-
-   // for(int i = 0; i < 7; i++)
-   //     m_playersStatsItems[i] = new StatisticPanelItem(this);
-
     emit playersItemsInitialized();
 }
 
@@ -76,55 +72,43 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
     {
         for(int i = 0; i < m_playersStatsItems.count(); i++)
         {
-            if (serverPlayerStats.position == m_playersStatsItems.at(i)->getPosition())
+            if (serverPlayerStats.steamId == m_playersStatsItems.at(i)->getTempSid())
             {
                  m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
-                 QModelIndex first = QAbstractItemModel::createIndex(m_playersStatsItems.count(), 0);
-                 QModelIndex last = QAbstractItemModel::createIndex(m_playersStatsItems.count(), 0);
+                 QModelIndex first = QAbstractItemModel::createIndex(i, 0);
+                 QModelIndex last = QAbstractItemModel::createIndex(i, 0);
                  emit dataChanged(first, last);
-
-                 break;
+                 return;
             }
         }
-
-        beginInsertRows(QModelIndex(), 0, m_playersStatsItems.count());
-
-        StatisticPanelItem* newItem = new StatisticPanelItem(this);
-        newItem->setPlayersStats(serverPlayerStats);
-        m_playersStatsItems.append(newItem);
-
-        endInsertRows();
     }
 }
 
-void StatisticPanel::receivePlayersCount(int playersCount)
+void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
 {
-    if (m_blockUpdate)
-        return;
+    Q_UNUSED(playersCount);
 
-    m_playersCount = playersCount;
+    m_playersInfo = playersInfo;
 
-
-    beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count());
-
+    beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
     for(int i = 0; i < m_playersStatsItems.count(); i++)
-    {
-        if (m_playersStatsItems.at(i)->getPosition() > m_playersCount + 2)
-        {
-            delete m_playersStatsItems.at(i);
-            m_playersStatsItems.removeAt(i);
-            i--;
-        }
-    }
+        delete m_playersStatsItems.at(i);
+
+    m_playersStatsItems.clear();
+
     endRemoveRows();
 
-    //emit playersStatsChanged();
-}
+    beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-1);
 
-/*void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
-{
-    m_playersInfo = playersInfo;
-}*/
+    for(int i = 0; i < m_playersInfo.count(); i++)
+    {
+        StatisticPanelItem* newItem = new StatisticPanelItem(this);
+        newItem->setPlayerSteamId(m_playersInfo.at(i).steamId);
+        m_playersStatsItems.append(newItem);
+    }
+
+    endInsertRows();
+}
 
 void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
 {
@@ -136,14 +120,6 @@ void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
 
 void StatisticPanel::onQuitParty()
 {
-    //ServerPlayerStats serverPlayerStats;
-
-   // for (int i = 0; i < 7; i++)
-   //     m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
-
-   //emit playersStatsChanged();
-
-
     beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
 
     for(int i = 0; i < m_playersStatsItems.count(); i++)

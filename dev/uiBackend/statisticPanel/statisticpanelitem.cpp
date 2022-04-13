@@ -30,6 +30,11 @@ QString StatisticPanelItem::getRaceFromNumber(int raceNumber) const
     return "";
 }
 
+const QString &StatisticPanelItem::getTempSid() const
+{
+    return tempSid;
+}
+
 ServerPlayerStats StatisticPanelItem::playersStats()
 {
     return m_playersStats;
@@ -53,6 +58,7 @@ int StatisticPanelItem::getPosition() const
 
 void StatisticPanelItem::setPlayerSteamId(QString steamId)
 {
+    tempSid = steamId;
     m_playersStats.steamId = steamId;
 }
 

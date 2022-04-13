@@ -12,15 +12,8 @@ class StatisticPanel :  public QAbstractListModel
 {
     Q_OBJECT
     Q_PROPERTY(bool expandPatyStatistic MEMBER m_expandPatyStatistic NOTIFY expandPatyStatisticChanged)
-
     Q_PROPERTY(StatisticPanelItem* curentPlayerStatsItem READ getCurentPlayerStatsItem NOTIFY playersItemsInitialized)
-   /* Q_PROPERTY(StatisticPanelItem* player2StatsItem READ getPlayer2StatsItem NOTIFY playersItemsInitialized)
-    Q_PROPERTY(StatisticPanelItem* player3StatsItem READ getPlayer3StatsItem NOTIFY playersItemsInitialized)
-    Q_PROPERTY(StatisticPanelItem* player4StatsItem READ getPlayer4StatsItem NOTIFY playersItemsInitialized)
-    Q_PROPERTY(StatisticPanelItem* player5StatsItem READ getPlayer5StatsItem NOTIFY playersItemsInitialized)
-    Q_PROPERTY(StatisticPanelItem* player6StatsItem READ getPlayer6StatsItem NOTIFY playersItemsInitialized)
-    Q_PROPERTY(StatisticPanelItem* player7StatsItem READ getPlayer7StatsItem NOTIFY playersItemsInitialized)
-    Q_PROPERTY(StatisticPanelItem* player8StatsItem READ getPlayer8StatsItem NOTIFY playersItemsInitialized)*/
+
 public:
     explicit StatisticPanel(ImageProvider *imageProvider, QObject *parent = nullptr);
 
@@ -55,27 +48,19 @@ signals:
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
-    void receivePlayersCount(int playersCount);
-   // void receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
+    void receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
     void receiveCurrentPlayerHostState(bool isHost);
     void onQuitParty();
 
 private:
     StatisticPanelItem *getCurentPlayerStatsItem();
-   /* StatisticPanelItem *getPlayer2StatsItem();
-    StatisticPanelItem *getPlayer3StatsItem();
-    StatisticPanelItem *getPlayer4StatsItem();
-    StatisticPanelItem *getPlayer5StatsItem();
-    StatisticPanelItem *getPlayer6StatsItem();
-    StatisticPanelItem *getPlayer7StatsItem();
-    StatisticPanelItem *getPlayer8StatsItem();*/
 
 private:
     StatisticPanelItem* m_curentPlayerStatsItem;
     QVector<StatisticPanelItem*> m_playersStatsItems;
 
     SearchStemIdPlayerInfo m_crrentPlayerInfo;
-    //QList<SearchStemIdPlayerInfo> m_playersInfo;
+    QList<SearchStemIdPlayerInfo> m_playersInfo;
 
     ImageProvider *m_imageProvider;
     int m_playersCount = 0;
