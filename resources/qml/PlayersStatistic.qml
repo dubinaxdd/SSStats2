@@ -132,16 +132,24 @@ Rectangle {
 
         function scrollToBottom() {
 
-            if (ScrollBar.vertical.position + 0.125  < 0.9 && (!model.expandPatyStatistic || _uiBackend.expand) )
-                ScrollBar.vertical.position += 0.125
+            var cof = 0.04 * _uiBackend.sizeModifer
+
+
+            if (ScrollBar.vertical.position + cof <= 0.9 && (!model.expandPatyStatistic || _uiBackend.expand) && (expandPatyStatisticButtonRectangle.y - (scrollView.height * (scrollViewPosition + cof))) >= 0.0 )
+                ScrollBar.vertical.position += cof
 
             scrollViewPosition = ScrollBar.vertical.position
         }
 
         function scrollToTop() {
 
-            if (ScrollBar.vertical.position - 0.125  >= 0 && (!model.expandPatyStatistic || _uiBackend.expand) )
-                ScrollBar.vertical.position -= 0.125
+            var cof = 0.04 * _uiBackend.sizeModifer
+
+            if ((!model.expandPatyStatistic || _uiBackend.expand) )
+                ScrollBar.vertical.position -= cof
+
+            if (ScrollBar.vertical.position < 0)
+                ScrollBar.vertical.position = 0
 
             scrollViewPosition = ScrollBar.vertical.position
         }
