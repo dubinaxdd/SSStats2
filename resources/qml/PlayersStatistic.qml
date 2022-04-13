@@ -344,6 +344,8 @@ Rectangle {
                 Layout.alignment: Qt.AlignRight | Qt.AlignTop
             }
 
+
+
             Rectangle {
                 id: expandPatyStatisticButtonRectangle
 
@@ -374,14 +376,20 @@ Rectangle {
                     }
                 }
 
-                height: 10 * _uiBackend.sizeModifer
-                radius: 5 * _uiBackend.sizeModifer
+
+                Layout.maximumWidth: 280 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 280 * _uiBackend.sizeModifer
+                width: 280 * _uiBackend.sizeModifer
 
                 Layout.maximumHeight: 10 * _uiBackend.sizeModifer
                 Layout.minimumHeight: 10 * _uiBackend.sizeModifer
+                height: 10 * _uiBackend.sizeModifer
+
+                radius: 5 * _uiBackend.sizeModifer
+
                 Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                Layout.fillWidth: true
-                Layout.fillHeight: false
+                //Layout.fillWidth: false
+                //Layout.fillHeight: false
                 visible: !_uiBackend.expand
 
 
