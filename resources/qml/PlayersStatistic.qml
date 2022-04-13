@@ -24,11 +24,10 @@ Rectangle {
         relativeMouseX = x
         relativeMouseY = y
 
-        // Кнопка "Свернуть колонку статистики"
         if (relativeMouseX >= expandPatyStatisticButtonRectangle.x &&
-            relativeMouseX <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
-            relativeMouseY >= expandPatyStatisticButtonRectangle.y - (expandPatyStatisticButtonRectangle.y * scrollViewPosition) &&
-            relativeMouseY <= expandPatyStatisticButtonRectangle.y - (expandPatyStatisticButtonRectangle.y * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
+                    relativeMouseX <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
+                    relativeMouseY >= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) &&
+                    relativeMouseY <= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
         {
             if(!_uiBackend.gamePanel.gamePanelVisible && expandPatyStatisticButtonRectangle.visible == true)
             {
@@ -45,13 +44,10 @@ Rectangle {
         relativeMouseX = x
         relativeMouseY = y
 
-        //updateScrollViewHeight();
-
-        // Кнопка "Свернуть колонку статистики"
         if (relativeMouseX >= expandPatyStatisticButtonRectangle.x &&
-            relativeMouseX <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
-            relativeMouseY >= expandPatyStatisticButtonRectangle.y - (expandPatyStatisticButtonRectangle.y * scrollViewPosition) &&
-            relativeMouseY <= expandPatyStatisticButtonRectangle.y - (expandPatyStatisticButtonRectangle.y * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
+                    relativeMouseX <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
+                    relativeMouseY >= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) &&
+                    relativeMouseY <= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
         {
 
             if(!expandPatyStatisticButtonRectangle.howeredState)
@@ -83,52 +79,6 @@ Rectangle {
         }
     }
 
-/*
-    function updateScrollViewHeight()
-    {
-        var playersCountTemp = playersCount;
-
-        if (playersCountTemp !== playersCount)
-        {
-            scrollView.setDefault();
-            scrollView.height = ((120 * _uiBackend.sizeModifer) + columnLayout.spacing) * playersCount ;
-        }
-    }
-
-
-    function forceUpdateScrollViewHeight()
-    {
-        scrollView.setDefault();
-        scrollView.height = ((120 * _uiBackend.sizeModifer) + columnLayout.spacing) * playersCount ;
-    }
-
-    Connections{
-        target: _uiBackend.statisticPanel
-
-        function onPlayersStatsChanged()
-        {
-            forceUpdateScrollViewHeight();
-        }
-    }
-
-    Connections{
-        target: _uiBackend
-
-        function onSizeModiferChanged(sizeModifer)
-        {
-            updateScrollViewHeight();
-        }
-
-        function onSizeModiferLoadedFromSettings(sizeModifer)
-        {
-            updateScrollViewHeight();
-        }
-
-        function onExpandButtonPressed()
-        {
-            forceUpdateScrollViewHeight();
-        }
-    }*/
 
     //Костыль для перезагрузки картинки, рил так на формух делают
 
@@ -182,7 +132,7 @@ Rectangle {
 
         function scrollToBottom() {
 
-            if (ScrollBar.vertical.position + 0.125  < 0.9 && (!model.expandPatyStatistic || _uiBackend.expand))
+            if (ScrollBar.vertical.position + 0.125  < 0.9 && (!model.expandPatyStatistic || _uiBackend.expand) )
                 ScrollBar.vertical.position += 0.125
 
             scrollViewPosition = ScrollBar.vertical.position
@@ -190,7 +140,7 @@ Rectangle {
 
         function scrollToTop() {
 
-            if (ScrollBar.vertical.position - 0.125  >= 0 && (!model.expandPatyStatistic || _uiBackend.expand))
+            if (ScrollBar.vertical.position - 0.125  >= 0 && (!model.expandPatyStatistic || _uiBackend.expand) )
                 ScrollBar.vertical.position -= 0.125
 
             scrollViewPosition = ScrollBar.vertical.position
@@ -258,79 +208,6 @@ Rectangle {
             }
 
 
-/*
-
-            PlayersStatisticItem
-            {
-                id:player2
-                visible: model.player2StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player2StatsItem.playerName !== ""
-                //visible: true
-                itemModel: model.player2StatsItem
-                avatarSource: "image://ImageProvider/player2AvatarMedium"
-
-            }
-
-            PlayersStatisticItem
-            {
-                id:player3
-                visible: model.player3StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player3StatsItem.playerName !== ""
-                //visible: true
-                itemModel: model.player3StatsItem
-                avatarSource: "image://ImageProvider/player3AvatarMedium"
-
-            }
-
-            PlayersStatisticItem
-            {
-                id:player4
-                visible: model.player4StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player4StatsItem.playerName !== ""
-                //visible: true
-                itemModel: model.player4StatsItem
-                avatarSource: "image://ImageProvider/player4AvatarMedium"
-
-            }
-
-            PlayersStatisticItem
-            {
-                id:player5
-                visible: model.player5StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player5StatsItem.playerName !== ""
-                //visible: true
-                itemModel: model.player5StatsItem
-                avatarSource: "image://ImageProvider/player5AvatarMedium"
-
-            }
-
-            PlayersStatisticItem
-            {
-                id:player6
-                visible: model.player6StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player6StatsItem.playerName !== ""
-               // visible: true
-                itemModel: model.player6StatsItem
-                avatarSource: "image://ImageProvider/player6AvatarMedium"
-
-            }
-
-            PlayersStatisticItem
-            {
-                id:player7
-                visible: model.player7StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player7StatsItem.playerName !== ""
-                //visible: true
-                itemModel: model.player7StatsItem
-                avatarSource: "image://ImageProvider/player7AvatarMedium"
-
-            }
-
-
-            PlayersStatisticItem
-            {
-                id:player8
-                visible: model.player8StatsItem.itemVisible && (!model.expandPatyStatistic  || _uiBackend.expand) && model.player8StatsItem.playerName !== ""
-                //visible: true
-                itemModel: model.player8StatsItem
-                avatarSource: "image://ImageProvider/player8AvatarMedium"
-            }
-*/
-
             Rectangle {
                 id: rectangle1
                 visible: _uiBackend.ssWindowed && !_uiBackend.headerVisible
@@ -344,10 +221,10 @@ Rectangle {
                 Layout.alignment: Qt.AlignRight | Qt.AlignTop
             }
 
-
-
             Rectangle {
                 id: expandPatyStatisticButtonRectangle
+
+
 
                 property bool howeredState: false
 
@@ -376,7 +253,6 @@ Rectangle {
                     }
                 }
 
-
                 Layout.maximumWidth: 280 * _uiBackend.sizeModifer
                 Layout.minimumWidth: 280 * _uiBackend.sizeModifer
                 width: 280 * _uiBackend.sizeModifer
@@ -388,11 +264,7 @@ Rectangle {
                 radius: 5 * _uiBackend.sizeModifer
 
                 Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                //Layout.fillWidth: false
-                //Layout.fillHeight: false
                 visible: !_uiBackend.expand
-
-
                 gradient: howeredState ? grDark : grLight
 
                 Image {
