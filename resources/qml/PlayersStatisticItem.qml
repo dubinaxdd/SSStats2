@@ -13,7 +13,7 @@ Rectangle {
     property int playerGamesCount
     property string playerRace
     property int playerWinRate
-    property int playerPlayerApm
+    property int playerApm
     property bool playerIsBanned
     property bool playerVisible
 

@@ -197,7 +197,7 @@ Rectangle {
                 playerGamesCount: model.curentPlayerStatsItem.playerGamesCount
                 playerRace: model.curentPlayerStatsItem.playerRace
                 playerWinRate: model.curentPlayerStatsItem.playerWinRate
-                playerPlayerApm: model.curentPlayerStatsItem.playerApm
+                playerApm: model.curentPlayerStatsItem.playerApm
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
 
@@ -225,7 +225,7 @@ Rectangle {
                     playerGamesCount: model.playerGamesCount
                     playerRace: model.playerRace
                     playerWinRate: model.playerWinRate
-                    playerPlayerApm: model.playerApm
+                    playerApm: model.playerApm
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
 
@@ -250,8 +250,6 @@ Rectangle {
 
             Rectangle {
                 id: expandPatyStatisticButtonRectangle
-
-
 
                 property bool howeredState: false
 
