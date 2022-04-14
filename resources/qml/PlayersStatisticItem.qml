@@ -17,6 +17,8 @@ Rectangle {
     property bool playerIsBanned
     property bool playerVisible
 
+    property url avatarSource: ""
+
     Layout.maximumWidth: 280 * _uiBackend.sizeModifer
     Layout.maximumHeight: 120 * _uiBackend.sizeModifer
     Layout.minimumWidth: 280 * _uiBackend.sizeModifer
@@ -67,7 +69,7 @@ Rectangle {
 
     color: (itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff"
     radius: 10 * _uiBackend.sizeModifer
-    property url avatarSource
+
 
     RowLayout {
         id: rowLayout
@@ -106,13 +108,13 @@ Rectangle {
                     Image {
                         id: avatarImage
                         cache: false
-
                         width: 60 * _uiBackend.sizeModifer
                         height: 60 * _uiBackend.sizeModifer
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
                         source: itemRectangle.avatarSource
                         visible:false
+                        fillMode: Image.PreserveAspectFit
                     }
 
                      Rectangle {

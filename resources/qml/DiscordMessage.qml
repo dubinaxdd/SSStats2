@@ -83,7 +83,7 @@ Rectangle {
                             id: avatarImage
                             cache: false
                             anchors.fill: parent
-                            source: "image://ImageProvider/" + mainRectangle.avatarId
+                            source: "image://imageprovider/" + mainRectangle.avatarId
                             visible: false
                         }
 
@@ -193,7 +193,7 @@ Rectangle {
                 id: attachmentImage
                 cache: false
                 anchors.fill: parent
-                source: "image://ImageProvider/" + mainRectangle.attachmentId
+                source: "image://imageprovider/" + mainRectangle.attachmentId
                 visible: false
 
                 onSourceChanged: {

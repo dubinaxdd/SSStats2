@@ -27,6 +27,7 @@ public:
         PlayerWinRate = Qt::UserRole + 6,
         PlayerApm = Qt::UserRole + 7,
         PlayerIsBanned = Qt::UserRole + 8,
+        PlayerAvatarId = Qt::UserRole + 9,
         PlayerVisible = Qt::UserRole
     };
 
@@ -53,7 +54,6 @@ public slots:
 
 private:
     StatisticPanelItem *getCurentPlayerStatsItem();
-
     void sortStatsBySoloMmr();
 
 private:

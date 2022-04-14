@@ -35,6 +35,17 @@ const QString &StatisticPanelItem::getTempSid() const
     return tempSid;
 }
 
+const QString &StatisticPanelItem::avatarId() const
+{
+    return m_avatarId;
+}
+
+void StatisticPanelItem::setAvatarId(const QString &newAvatarId)
+{
+    m_avatarId = newAvatarId;
+    emit playersStatsChanged();
+}
+
 ServerPlayerStats StatisticPanelItem::playersStats()
 {
     return m_playersStats;
@@ -54,6 +65,11 @@ bool StatisticPanelItem::getVisible() const
 int StatisticPanelItem::getPosition() const
 {
     return m_playersStats.position;
+}
+
+QImage StatisticPanelItem::getAvatar() const
+{
+    return m_playersStats.avatar;
 }
 
 void StatisticPanelItem::setPlayerSteamId(QString steamId)

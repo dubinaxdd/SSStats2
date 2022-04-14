@@ -28,20 +28,15 @@ signals:
 
 public slots:
     void addDiscordAvatar(QString avatarId, QImage discordAvatar);
+    //void updateStatsAvatar(QMap <QString, QImage> playerStatsAvatars);
+    void addPlayerAvatar(QString avatarId, QImage image);
+
     void addAttachmentImage(QString attachmentId, QImage image);
 
 private:
     QImage m_currentPlayerAvatarMedium;
 
-    QImage m_player2AvatarMedium;
-    QImage m_player3AvatarMedium;
-    QImage m_player4AvatarMedium;
-    QImage m_player5AvatarMedium;
-    QImage m_player6AvatarMedium;
-    QImage m_player7AvatarMedium;
-    QImage m_player8AvatarMedium;
-
-
+    QMap <QString, QImage> m_playerStatsAvatars;
     QMap <QString, QImage> m_discordAvatars;
     QMap <QString, QImage> m_attachmentImages;
 };

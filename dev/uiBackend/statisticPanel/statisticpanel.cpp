@@ -27,6 +27,7 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case PlayerApm: return item->getPlayerApm();
         case PlayerIsBanned: return item->getPlayerIsBanned();
         case PlayerVisible: return item->getVisible();
+        case PlayerAvatarId: return item->avatarId();
     }
 
     return QVariant();
@@ -51,6 +52,8 @@ QHash<int, QByteArray> StatisticPanel::roleNames() const
     roles[PlayerApm]        = "playerApm";
     roles[PlayerIsBanned]   = "playerIsBanned";
     roles[PlayerVisible]    = "playerVisible";
+    roles[PlayerAvatarId]   = "avatarId";
+
 
     return roles;
 }
@@ -75,6 +78,8 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
             if (serverPlayerStats.steamId == m_playersStatsItems.at(i)->getTempSid())
             {
                  m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
+                 m_imageProvider->addPlayerAvatar("playerAvatar" + m_playersStatsItems.at(i)->getTempSid(), m_playersStatsItems.at(i)->getAvatar());
+                 m_playersStatsItems[i]->setAvatarId( "playerAvatar" + m_playersStatsItems.at(i)->getTempSid());
                  break;
             }
         }

@@ -197,7 +197,7 @@ Rectangle {
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
 
-                avatarSource: "image://ImageProvider/currentPlayerAvatarMedium"
+                avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
 
             }
 
@@ -225,6 +225,8 @@ Rectangle {
                     playerApm: model.playerApm
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
+
+                    avatarSource: "image://imageprovider/" + model.avatarId
 
                     height: 120 * _uiBackend.sizeModifer
                     width: 280 * _uiBackend.sizeModifer

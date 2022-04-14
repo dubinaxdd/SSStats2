@@ -93,7 +93,7 @@ Rectangle {
                 id: attachmentImage
                 cache: false
                 anchors.fill: parent
-                source: "image://ImageProvider/" + fullAttachmenImageRectangle.attachmentId
+                source: "image://imageprovider/" + fullAttachmenImageRectangle.attachmentId
 
                 onSourceChanged: {
                     resizeFullAttachmentImage()

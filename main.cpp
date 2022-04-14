@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
     engine.load(url);
 
     QObject::connect(core, &Core::sendExit, [&] {
-        engine.removeImageProvider("ImageProvider");
+        engine.removeImageProvider("imageprovider");
         app.exit(0);});
 
     core->grubStatsWindow();

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <baseTypes.h>
+#include <QUrl>
 
 class StatisticPanelItem : public QObject
 {
@@ -17,6 +18,8 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(QString  playerWinRate    READ getPlayerWinRate      NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerApm        READ getPlayerApm          NOTIFY playersStatsChanged)
     Q_PROPERTY(bool     itemVisible      READ getVisible            NOTIFY itemVisibleChanged)
+    Q_PROPERTY(QUrl     playerAvatarId   READ avatarId              NOTIFY playersStatsChanged)
+
 
 public:
     explicit StatisticPanelItem(QObject *parent = nullptr);
@@ -41,14 +44,19 @@ public:
     bool    getPlayerIsBanned() const;
     bool    getVisible() const;
     int     getPosition() const;
+    QImage getAvatar() const;
 
     QString getRaceFromNumber(int raceNumber) const;
 
     const QString &getTempSid() const;
 
+    const QString &avatarId() const;
+    void setAvatarId(const QString &newAvatarId);
+
 private:
     ServerPlayerStats m_playersStats;
     QString tempSid = "";
+    QString m_avatarId = "";
     bool m_visible = false;
 
 
