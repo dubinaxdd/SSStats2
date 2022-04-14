@@ -93,7 +93,7 @@ Rectangle {
             curentPlayer.avatarSource = "";
             curentPlayer.avatarSource = oldSource;
         }
-
+/*
         function onPlayersStatsChanged()
         {
             var oldSource = player2.avatarSource;
@@ -123,7 +123,7 @@ Rectangle {
             oldSource = player8.avatarSource;
             player8.avatarSource = "";
             player8.avatarSource = oldSource;
-        }
+        }*/
     }
 
 

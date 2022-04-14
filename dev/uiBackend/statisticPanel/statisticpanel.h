@@ -42,7 +42,6 @@ public:
 
 signals:
     void currentPlayerStatsChanged();
-    void playersStatsChanged();
     void expandPatyStatisticChanged();
     void playersItemsInitialized();
 
@@ -54,6 +53,8 @@ public slots:
 
 private:
     StatisticPanelItem *getCurentPlayerStatsItem();
+
+    void sortStatsBySoloMmr();
 
 private:
     StatisticPanelItem* m_curentPlayerStatsItem;

@@ -75,12 +75,16 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
             if (serverPlayerStats.steamId == m_playersStatsItems.at(i)->getTempSid())
             {
                  m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
-                 QModelIndex first = QAbstractItemModel::createIndex(i, 0);
-                 QModelIndex last = QAbstractItemModel::createIndex(i, 0);
-                 emit dataChanged(first, last);
-                 return;
+                 break;
             }
         }
+
+        sortStatsBySoloMmr();
+
+        QModelIndex first = QAbstractItemModel::createIndex(0, 0);
+        QModelIndex last = QAbstractItemModel::createIndex(m_playersStatsItems.count() -1, 0);
+        emit dataChanged(first, last);
+
     }
 }
 
@@ -133,6 +137,22 @@ void StatisticPanel::onQuitParty()
 StatisticPanelItem *StatisticPanel::getCurentPlayerStatsItem()
 {
     return m_curentPlayerStatsItem;
+}
+
+void StatisticPanel::sortStatsBySoloMmr()
+{
+    for (int i = 0; i < m_playersStatsItems.count(); i++)
+    {
+        for (int j = 1; j < m_playersStatsItems.count(); j++)
+        {
+            if (m_playersStatsItems.at(j - 1)->getPlayerMmr1v1() <  m_playersStatsItems.at(j)->getPlayerMmr1v1())
+            {
+                StatisticPanelItem* buffer = m_playersStatsItems.at(j - 1);
+                m_playersStatsItems[j-1] = m_playersStatsItems.at(j);
+                m_playersStatsItems[j] = buffer;
+            }
+        }
+    }
 }
 
 void StatisticPanel::setBlockUpdate(bool newBlockUpdate)
