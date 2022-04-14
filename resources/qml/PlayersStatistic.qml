@@ -19,10 +19,6 @@ Rectangle {
     property int relativeMouseX
     property int relativeMouseY
 
-
-
-
-
     function mouseClick(x, y)
     {
         relativeMouseX = x
@@ -212,9 +208,9 @@ Rectangle {
                 model:_uiBackend.statisticPanel
                 visible: (!model.expandPatyStatistic || _uiBackend.expand)
 
-                Layout.preferredHeight: (120 + 5) * count * _uiBackend.sizeModifer
-                Layout.maximumHeight: (120 + 5) * count * _uiBackend.sizeModifer
-                Layout.minimumHeight: (120 + 5) * count * _uiBackend.sizeModifer
+                Layout.preferredHeight: ((120 + 5) * count  - 5) * _uiBackend.sizeModifer
+                Layout.maximumHeight: ((120 + 5) * count - 5) * _uiBackend.sizeModifer
+                Layout.minimumHeight: ((120 + 5) * count - 5) * _uiBackend.sizeModifer
 
                 spacing: 5 * _uiBackend.sizeModifer
 
