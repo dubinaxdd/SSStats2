@@ -210,6 +210,7 @@ Rectangle {
                 id: playersListView
 
                 model:_uiBackend.statisticPanel
+                visible: (!model.expandPatyStatistic || _uiBackend.expand)
 
                 Layout.preferredHeight: (120 + 5) * count * _uiBackend.sizeModifer
                 Layout.maximumHeight: (120 + 5) * count * _uiBackend.sizeModifer
