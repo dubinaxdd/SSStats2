@@ -97,6 +97,38 @@ Rectangle {
             }
         }
 
+
+        Rectangle{
+            id: dowGuideLinkRectangle
+            width: dowGuideLinkLabel.width + 30
+            height: 35
+            radius:5
+
+            color: "#D2691E"
+
+            Label{
+                id: dowGuideLinkLabel
+                text: "DoW Player's Guide"
+                color: dowGuideLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: 16
+                anchors.horizontalCenter: parent.horizontalCenter
+
+            }
+
+            MouseArea{
+                id: dowGuideLinkMouseArea
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+
+                onClicked: {
+                    Qt.openUrlExternally("https://warhammer-guide.ru/wiki/Dawn_of_War_Players_Guide.html");
+                }
+            }
+        }
+
+
         Rectangle{
             Layout.fillWidth: true
         }
