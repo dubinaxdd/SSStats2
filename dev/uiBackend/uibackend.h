@@ -122,6 +122,8 @@ public slots:
     void onStartingMission(SsGameState gameCurrentState);
     void onGameOver();
 
+    void setGameCurrentState(SsGameState gameCurrentState);
+
     void receiveNotification(QString notify);
 
     Q_INVOKABLE void onExit();
@@ -143,6 +145,8 @@ private:
     MessagesPage* m_eventsPage;
 
     QString m_ssStatsVersion;
+
+    SsGameState m_gameCurrentState;
 
     bool m_expand = false;
 
@@ -173,8 +177,6 @@ private:
     float m_sizeModifer = 2.0;
 
     QString m_lastNotification;
-
-
 };
 
 #endif // UIBACKEND_H

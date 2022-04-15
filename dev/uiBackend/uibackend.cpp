@@ -27,8 +27,14 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
 
 void UiBackend::expandKeyPressed()
 {
-    setExpand(!m_expand);
-    emit expandButtonPressed();
+    if (m_gameCurrentState != SsGameState::gameLoadStarted
+            && m_gameCurrentState != SsGameState::playbackLoadStarted
+            && m_gameCurrentState != SsGameState::savedGameLoadStarted
+     )
+    {
+        setExpand(!m_expand);
+        emit expandButtonPressed();
+    }
 }
 
 void UiBackend::expandPatyStatisticButtonClick()
@@ -70,7 +76,6 @@ void UiBackend::onLoadStarted()
 
 void UiBackend::onStartingMission(SsGameState gameCurrentState)
 {
-
     m_gamePanel->onGameStarted(gameCurrentState);
 
     m_missionStarted = true;
@@ -85,6 +90,42 @@ void UiBackend::onStartingMission(SsGameState gameCurrentState)
 void UiBackend::onGameOver()
 {
     onStartingMission(SsGameState::gameOver);
+}
+
+void UiBackend::setGameCurrentState(SsGameState gameCurrentState)
+{
+    if (m_gameCurrentState == gameCurrentState)
+        return;
+
+    m_gameCurrentState = gameCurrentState;
+
+    //TODO: Тут нужен рефактор, желательн о перевести взаимодействие с гейминфоридером на один сигнал присылающий текущее состояние.
+
+/*
+    if (m_gameCurrentState == SsGameState::gameLoadStarted
+            || m_gameCurrentState == SsGameState::playbackLoadStarted
+            || m_gameCurrentState == SsGameState::savedGameLoadStarted
+     )
+        onLoadStarted();
+
+
+    if (m_gameCurrentState == SsGameState::gameStoped)
+        onGameStopped();
+
+    if (m_gameCurrentState ==SsGameState::gameStarted
+            || m_gameCurrentState ==SsGameState::playbackStarted
+            || m_gameCurrentState ==SsGameState::savedGameStarted
+            )
+    {
+        onStartingMission(m_gameCurrentState);
+    }
+
+    if (m_gameCurrentState == SsGameState::gameStoped)
+        onGameStopped();
+
+
+    if (m_gameCurrentState == SsGameState::gameOver)
+        onGameOver();*/
 }
 
 void UiBackend::receiveNotification(QString notify)

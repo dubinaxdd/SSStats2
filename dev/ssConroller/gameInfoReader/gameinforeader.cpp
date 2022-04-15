@@ -250,6 +250,8 @@ void GameInfoReader::readGameInfo()
             }
             counter--;
         }
+
+        emit sendCurrentGameState(m_gameCurrentState);
     }
 }
 

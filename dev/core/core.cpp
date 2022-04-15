@@ -43,12 +43,14 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameInitialized,       this,                       &Core::gameInitialized,         Qt::DirectConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::ssShutdown,            this,                       &Core::onSsShutdowned,          Qt::QueuedConnection);
+
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::loadStarted,           m_uiBackend,                &UiBackend::onLoadStarted,      Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_uiBackend,                &UiBackend::onGameStopped,      Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_uiBackend,                &UiBackend::onStartingMission,  Qt::QueuedConnection);
     QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameOver,              m_uiBackend,                &UiBackend::onGameOver,         Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::sendNotification,              m_uiBackend,        &UiBackend::receiveNotification,         Qt::QueuedConnection);
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::sendCurrentGameState,          m_uiBackend,        &UiBackend::setGameCurrentState,         Qt::QueuedConnection);
 
+    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::sendNotification,              m_uiBackend,        &UiBackend::receiveNotification,         Qt::QueuedConnection);
 
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
 

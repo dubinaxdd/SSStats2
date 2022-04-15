@@ -38,6 +38,8 @@ signals:
     void ssShutdown();                                      //Сигнал о выключении игры
 
 
+    void sendCurrentGameState(SsGameState gameCurrentState);
+
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
