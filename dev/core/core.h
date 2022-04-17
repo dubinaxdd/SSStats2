@@ -12,6 +12,7 @@
 #include <sscontroller.h>
 #include <discordController.h>
 #include <logger.h>
+#include <ModsProcessor.h>
 
 
 class Core : public QObject
@@ -57,6 +58,7 @@ private:
     UiBackend* m_uiBackend;
     SsController* m_ssController;
     DiscordController* m_discordController;
+    ModsProcessor* m_modsProcessor;
 
     int m_defaultWidth;
     int m_defaultHeight;

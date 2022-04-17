@@ -238,8 +238,8 @@ Window {
                 anchors.fill: parent
             }
 
-            SettingsWindow {
-                id: settingsWindow
+            SettingsPage {
+                id: settingsPage
                 visible: settingsButton.pressedState
                 anchors.fill: parent
             }

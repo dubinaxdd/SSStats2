@@ -75,6 +75,12 @@ set(PROJECT_SOURCES
         dev/uiBackend/MessagesPage/MessagesPage.cpp
         dev/ssConroller/dowServerProcessor/DowServerProcessor.h
         dev/ssConroller/dowServerProcessor/DowServerProcessor.cpp
+        dev/ModsProcessor/ModsProcessor.h
+        dev/ModsProcessor/ModsProcessor.cpp
+        dev/ModsProcessor/ModsDownloader/ModsDownloader.h
+        dev/ModsProcessor/ModsDownloader/ModsDownloader.cpp
+        dev/ModsProcessor/ModsInstaller/ModsInstaller.h
+        dev/ModsProcessor/ModsInstaller/ModsInstaller.cpp
 
         defines.h
         qml.qrc
@@ -187,4 +193,7 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/discordController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/MessagesPage
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/dowServerProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsDownloader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsInstaller
 )

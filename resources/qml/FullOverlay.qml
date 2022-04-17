@@ -24,7 +24,7 @@ Rectangle {
         relativeMouseY = y
 
         if (buttonSettingsRectangle.pressedState)
-            settingsWindow.mouseClick(relativeMouseX - settingsWindow.x - mainContentContainerRectangle.x, relativeMouseY - settingsWindow.y - mainContentContainerRectangle.y);
+            overlaySettingsPage.mouseClick(relativeMouseX - overlaySettingsPage.x - mainContentContainerRectangle.x, relativeMouseY - overlaySettingsPage.y - mainContentContainerRectangle.y);
 
         // Кнопка "Настройки" - отобразить окно с настройками
         if (relativeMouseX >= buttonSettingsRectangle.x &&
@@ -54,7 +54,7 @@ Rectangle {
         relativeMouseY = y
 
         if (buttonSettingsRectangle.pressedState)
-            settingsWindow.mouseHover(relativeMouseX - settingsWindow.x - mainContentContainerRectangle.x, relativeMouseY - settingsWindow.y - mainContentContainerRectangle.y);
+            overlaySettingsPage.mouseHover(relativeMouseX - overlaySettingsPage.x - mainContentContainerRectangle.x, relativeMouseY - overlaySettingsPage.y - mainContentContainerRectangle.y);
 
         // Кнопка "Настройки"
         if (relativeMouseX >= buttonSettingsRectangle.x &&
@@ -212,8 +212,8 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-            SettingsWindow {
-                id: settingsWindow
+            OverlaySettingsPage {
+                id: overlaySettingsPage
                 visible: buttonSettingsRectangle.pressedState
                 anchors.fill: parent
             }
