@@ -3,6 +3,8 @@
 #include <QDir>
 #include <QDataStream>
 
+#include "JlCompress.h"
+
 ModsDownloader::ModsDownloader(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
@@ -67,4 +69,6 @@ void ModsDownloader::saveRussianFonts(QByteArray russianFontsByteArray)
         stream << russianFontsByteArray;
         newFile.close();
     }
+
+    JlCompress::extractDir(QDir::currentPath() + QDir::separator() + "RussianFonts.zip", QDir::currentPath() + QDir::separator());
 }

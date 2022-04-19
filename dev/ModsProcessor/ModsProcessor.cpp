@@ -5,5 +5,5 @@ ModsProcessor::ModsProcessor(QObject *parent)
     , m_modsDownloader(new ModsDownloader(this))
     , m_modsInstaller(new ModsInstaller(this))
 {
-    //m_modsDownloader->downloadRussinFonts();
+    m_modsDownloader->downloadRussinFonts();
 }

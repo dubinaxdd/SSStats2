@@ -15,7 +15,13 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+
 add_subdirectory(externals/ReplayReaderLibrary)
+add_subdirectory(externals/quazip)
+
+set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "ON" FORCE)
+#set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "ON" FORCE)
+
 
 exec_program(
       "git"
@@ -82,6 +88,7 @@ set(PROJECT_SOURCES
         dev/ModsProcessor/ModsInstaller/ModsInstaller.h
         dev/ModsProcessor/ModsInstaller/ModsInstaller.cpp
 
+
         defines.h
         qml.qrc
         resources.qrc
@@ -136,6 +143,7 @@ target_link_libraries(DowStats2
                         Qt${QT_VERSION_MAJOR}::Widgets
                         OpenSSL::SSL
                         OpenSSL::Crypto
+                        QuaZip::QuaZip
                         ReplayReaderLibrary)
 
 

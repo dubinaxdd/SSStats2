@@ -3,6 +3,10 @@
 
 #include <QObject>
 
+#include <zlib.h>
+#include <zconf.h>
+#include <QtZlib/zlib.h>
+
 class ModsInstaller : public QObject
 {
     Q_OBJECT
