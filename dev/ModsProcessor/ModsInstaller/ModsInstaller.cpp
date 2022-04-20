@@ -1,6 +1,5 @@
 #include "ModsInstaller.h"
-//#include "quazip.h"
-//#include "quazipfile.h"
+#include "QFile"
 #include "JlCompress.h"
 #include "QDir"
 #include "QDebug"
@@ -50,4 +49,7 @@ void ModsInstaller::installRussianFonts(QString path)
     emit russianFontsInstalled();
 
     qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
+
+    QFile tempfile(path);
+    tempfile.remove();
 }
