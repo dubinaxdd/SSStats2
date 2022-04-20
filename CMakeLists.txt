@@ -87,6 +87,8 @@ set(PROJECT_SOURCES
         dev/ModsProcessor/ModsDownloader/ModsDownloader.cpp
         dev/ModsProcessor/ModsInstaller/ModsInstaller.h
         dev/ModsProcessor/ModsInstaller/ModsInstaller.cpp
+        dev/uiBackend/SettingsPage/SettingsPageModel.h
+        dev/uiBackend/SettingsPage/SettingsPageModel.cpp
 
 
         defines.h
@@ -204,4 +206,5 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsDownloader
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsInstaller
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/SettingsPage/
 )

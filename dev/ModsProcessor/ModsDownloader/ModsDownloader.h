@@ -16,7 +16,7 @@ public:
 
 signals:
     void russianFontsDownladProgress(int);
-    void russianFontsDownloaded();
+    void russianFontsDownloaded(QString path);
 
 private:
     void requestRussianFonts();

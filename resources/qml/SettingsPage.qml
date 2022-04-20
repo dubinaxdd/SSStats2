@@ -15,23 +15,56 @@ Rectangle {
     transformOrigin: Item.BottomRight
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
 
-    ColumnLayout{
+    property var model: _uiBackend.settingsPageModel
+
+    ColumnLayout
+    {
+        anchors.margins: 15
         anchors.fill: parent
 
-        Switch{
-            text: "Install Russian font in game"
-        }
+        GridLayout{
 
-        Switch{
-            text: "Install QWER hotkeys "
-        }
+            columns: 4
 
-        Switch{
-            text: "Install advanced camera mod"
-        }
+            Label{
+                text: "Russian fonts:"
+            }
 
-        Switch{
-            text: "Unlock races"
+            Label{
+                id: progressLabel0;
+                text: model.russianFontsInstallProgress
+            }
+
+            Button{
+                text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
+
+                height: 20
+
+                onClicked: {
+                    model.installRussianFonts();
+                }
+            }
+
+            Button{
+                text: "Delete"
+                height: 20
+                enabled: model.russianFontsInstalledStatus
+            }
+
+
+
+    /*
+            Switch{
+                text: "Install QWER hotkeys "
+            }
+
+            Switch{
+                text: "Install advanced camera mod"
+            }
+
+            Switch{
+                text: "Unlock races"
+            }*/
         }
 
         Rectangle

@@ -31,8 +31,8 @@ void ModsDownloader::requestRussianFonts()
     });
 
     QObject::connect(reply, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
-        emit russianFontsDownladProgress(bytesReceived/bytesTotal);
-        qDebug() << bytesReceived << "/" << bytesTotal;
+        emit russianFontsDownladProgress(bytesReceived * 100 / bytesTotal);
+        qInfo(logInfo()) << "Russian fonts download progress:" << bytesReceived << "/" << bytesTotal;
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
@@ -55,13 +55,13 @@ void ModsDownloader::receiveRussinFonts(QNetworkReply* reply)
 
     saveRussianFonts(std::move(replyByteArray));
 
-    emit russianFontsDownloaded();
+    qInfo(logInfo()) <<  "Russian fonts downloaded to " << QDir::currentPath() + QDir::separator() + "RussianFonts.zip";
+
+    emit russianFontsDownloaded(QDir::currentPath() + QDir::separator() + "RussianFonts.zip");
 }
 
 void ModsDownloader::saveRussianFonts(QByteArray russianFontsByteArray)
 {
-    qDebug() << QDir::currentPath() + QDir::separator() + "RussianFonts.zip";
-
     QFile newFile( QDir::currentPath() + QDir::separator() + "RussianFonts.zip" );
     if( newFile.open( QIODevice::WriteOnly ) ) {
 
@@ -69,6 +69,4 @@ void ModsDownloader::saveRussianFonts(QByteArray russianFontsByteArray)
         stream << russianFontsByteArray;
         newFile.close();
     }
-
-    JlCompress::extractDir(QDir::currentPath() + QDir::separator() + "RussianFonts.zip", QDir::currentPath() + QDir::separator());
 }

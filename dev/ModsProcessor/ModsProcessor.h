@@ -6,19 +6,25 @@
 #include <ModsInstaller.h>
 
 
+
 class ModsProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit ModsProcessor(QObject *parent = nullptr);
+    explicit ModsProcessor(QString ssPath, QObject *parent = nullptr);
 
 signals:
+    void russianFontsInstallCompleeted();
+    void russianFontsInstallProgress(int);
 
+public slots:
+    void onRussianFontsInstallRequest();
 
 private:
-
     ModsDownloader* m_modsDownloader;
     ModsInstaller* m_modsInstaller;
+
+    QString m_ssPath = "";
 
 };
 

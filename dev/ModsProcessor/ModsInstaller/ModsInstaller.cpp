@@ -1,11 +1,14 @@
 #include "ModsInstaller.h"
-#include "quazip.h"
-#include "quazipfile.h"
+//#include "quazip.h"
+//#include "quazipfile.h"
 #include "JlCompress.h"
+#include "QDir"
 #include "QDebug"
 
-ModsInstaller::ModsInstaller(QObject *parent) : QObject(parent)
+ModsInstaller::ModsInstaller(QString ssPath, QObject *parent) : QObject(parent)
 {
+    m_ssPath = ssPath;
+
     //QuaZip zip("zipFile.zip");
    // zip.open(QuaZip::mdUnzip);
 
@@ -22,5 +25,19 @@ ModsInstaller::ModsInstaller(QObject *parent) : QObject(parent)
         file.close();
     }*/
 
-  /*  zip.close();*/
+    /*  zip.close();*/
+}
+
+void ModsInstaller::onRussianFontsDownloaded(QString path)
+{
+    installRussianFonts(path);
+}
+
+void ModsInstaller::installRussianFonts(QString path)
+{
+    JlCompress::extractDir(path, m_ssPath + QDir::separator());
+
+    emit russianFontsInstalled();
+
+    qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
 }

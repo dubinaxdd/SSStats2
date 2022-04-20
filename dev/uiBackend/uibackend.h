@@ -10,6 +10,7 @@
 #include <imageprovider.h>
 #include <settingscontroller.h>
 #include <MessagesPage.h>
+#include <SettingsPageModel.h>
 
 class UiBackend : public QObject
 {
@@ -40,6 +41,7 @@ class UiBackend : public QObject
 
     Q_PROPERTY(MessagesPage* newsPage MEMBER m_newsPage NOTIFY statisticPanelInitialized)
     Q_PROPERTY(MessagesPage* eventsPage MEMBER m_eventsPage NOTIFY statisticPanelInitialized)
+    Q_PROPERTY(SettingsPageModel* settingsPageModel MEMBER m_settingsPageModel NOTIFY statisticPanelInitialized)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
 
@@ -75,6 +77,8 @@ public:
     MessagesPage *eventsPage() const;
 
     Q_INVOKABLE void launchSoulstorm();
+
+    SettingsPageModel *settingsPageModel() const;
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -143,6 +147,7 @@ private:
     SettingsController* m_settingsController;
     MessagesPage* m_newsPage;
     MessagesPage* m_eventsPage;
+    SettingsPageModel* m_settingsPageModel;
 
     QString m_ssStatsVersion;
 

@@ -24,11 +24,10 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     m_ssPath = getSsPathFromRegistry();
     qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
+
     m_gameInfoReader = new GameInfoReader(m_ssPath, this);
     m_lobbyEventReader = new LobbyEventReader(m_ssPath, this);
-
     m_steamPath = getSteamPathFromRegistry();
-
     m_statsCollector = new StatsCollector(m_ssPath, m_steamPath, this);
 
     m_playersSteamScanner = new PlayersSteamScanner(/*this*/);
