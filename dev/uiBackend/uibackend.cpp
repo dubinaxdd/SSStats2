@@ -11,7 +11,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
     , m_newsPage(new MessagesPage(this))
     , m_eventsPage(new MessagesPage(this))
-    , m_settingsPageModel(new SettingsPageModel(this))
+    , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");

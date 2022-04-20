@@ -13,6 +13,7 @@ struct Settings
     float scale = 1.0;
     QString lastReadedNewsMessageID = "";
     QString lastReadedEventsMessageID = "";
+    bool russianFontsInstalled = false;
 };
 
 class SettingsController : public QObject
