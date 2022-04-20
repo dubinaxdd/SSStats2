@@ -19,7 +19,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
 
-set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "ON" FORCE)
+set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 exec_program(
       "git"

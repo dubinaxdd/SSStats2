@@ -13,3 +13,4 @@ CMake optoins example:
 -DOPENSSL_ROOT_DIR:=C:/Qt/Tools/OpenSSL/Win_x86
 -DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/
 -DQUAZIP_USE_QT_ZLIB:=ON
+-DBUILD_SHARED_LIBS:BOOL=OFF
