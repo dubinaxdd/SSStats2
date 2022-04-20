@@ -90,9 +90,9 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->eventsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedEventsMessageID, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startRussianFontsInstall, m_modsProcessor, &ModsProcessor::onRussianFontsInstallRequest, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startRussianFontsUninstall, m_modsProcessor, &ModsProcessor::onRussianFontsUninstallRequest, Qt::QueuedConnection);
     QObject::connect(m_modsProcessor, &ModsProcessor::russianFontsInstallCompleeted, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveRussianFontsInstallCompleeted, Qt::QueuedConnection);
     QObject::connect(m_modsProcessor, &ModsProcessor::russianFontsInstallProgress, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveRussianFontsDownloadProgress, Qt::QueuedConnection);
-
 
     QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 

@@ -18,11 +18,10 @@ public:
 signals:
     void russianFontsInstalled();
 
-public slots:
-    void onRussianFontsDownloaded(QString path);
-
-private:
+public:
+    void uninstalRussianFonts();
     void installRussianFonts(QString path);
+
 
 private:
     QString m_ssPath = "";

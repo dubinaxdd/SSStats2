@@ -49,6 +49,10 @@ Rectangle {
                 text: "Delete"
                 height: 20
                 enabled: model.russianFontsInstalledStatus
+
+                onClicked: {
+                    model.uninstallRussianFonts();
+                }
             }
 
 

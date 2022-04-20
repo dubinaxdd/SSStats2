@@ -13,6 +13,18 @@ void SettingsPageModel::installRussianFonts()
     emit startRussianFontsInstall();
 }
 
+void SettingsPageModel::uninstallRussianFonts()
+{
+
+
+    m_russianFontsInstalledStatus = false;
+    m_russianFontsInstallProgress = "Not installed";
+
+    emit startRussianFontsUninstall();
+    emit russianFontsInstallProgressChanged();
+    emit russianFontsInstallStatusChanged();
+}
+
 void SettingsPageModel::receiveRussianFontsDownloadProgress(int progress)
 {
     m_russianFontsInstallProgress = "Progress: " + QString::number(progress) + "%";

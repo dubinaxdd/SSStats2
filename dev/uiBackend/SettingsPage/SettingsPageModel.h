@@ -15,6 +15,7 @@ public:
 
 signals:
     void startRussianFontsInstall();
+    void startRussianFontsUninstall();
 
     void russianFontsInstallStatusChanged();
     void russianFontsInstallProgressChanged();
@@ -25,6 +26,7 @@ public slots:
 
 public:
     Q_INVOKABLE void installRussianFonts();
+    Q_INVOKABLE void uninstallRussianFonts();
 
     QString m_russianFontsInstallProgress = "Not installed";
     bool m_russianFontsInstalledStatus = false;

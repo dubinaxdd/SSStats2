@@ -28,9 +28,12 @@ ModsInstaller::ModsInstaller(QString ssPath, QObject *parent) : QObject(parent)
     /*  zip.close();*/
 }
 
-void ModsInstaller::onRussianFontsDownloaded(QString path)
+void ModsInstaller::uninstalRussianFonts()
 {
-    installRussianFonts(path);
+    QDir dir(m_ssPath + "\\Engine\\Locale\\English\\data\\");
+    dir.removeRecursively();
+
+    qInfo(logInfo()) <<  "Russian fonts uninstalled";
 }
 
 void ModsInstaller::installRussianFonts(QString path)

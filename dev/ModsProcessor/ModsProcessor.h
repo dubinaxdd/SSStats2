@@ -19,6 +19,7 @@ signals:
 
 public slots:
     void onRussianFontsInstallRequest();
+    void onRussianFontsUninstallRequest();
 
 private:
     ModsDownloader* m_modsDownloader;
