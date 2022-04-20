@@ -1,3 +1,5 @@
+Чтоб собрать смотри README.md
+
 Dubina_xdd:
 C:\Qt\5.15.2\mingw81_32\bin\windeployqt.exe C:\build\SSStats2Release\SSStats2.exe -qmldir C:\Qt\5.15.2\mingw81_32\qml -verbose=2
 

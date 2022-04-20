@@ -20,8 +20,6 @@ add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
 
 set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "ON" FORCE)
-#set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "ON" FORCE)
-
 
 exec_program(
       "git"
