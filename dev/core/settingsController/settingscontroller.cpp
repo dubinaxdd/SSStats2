@@ -26,6 +26,7 @@ void SettingsController::initializeSettings()
     m_settings->lastReadedNewsMessageID = ss_stats_settings->value("client/last_readed_news_message_id", "").toString();
     m_settings->lastReadedEventsMessageID = ss_stats_settings->value("client/last_readed_events_message_id", "").toString();
     m_settings->russianFontsInstalled = ss_stats_settings->value("mods/russian_fonts_installed", false).toBool();
+    m_settings->cameraModInstalled = ss_stats_settings->value("mods/camera_mod_installed", false).toBool();
 
     emit settingsLoaded();
 
@@ -41,6 +42,7 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("client/last_readed_news_message_id", m_settings->lastReadedNewsMessageID);
     ss_stats_settings->setValue("client/last_readed_events_message_id", m_settings->lastReadedEventsMessageID);
     ss_stats_settings->setValue("mods/russian_fonts_installed", m_settings->russianFontsInstalled);
+    ss_stats_settings->setValue("mods/camera_mod_installed", m_settings->cameraModInstalled);
 
     ss_stats_settings->sync();
 }

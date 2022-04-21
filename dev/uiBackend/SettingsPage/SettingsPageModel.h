@@ -13,6 +13,10 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(QString russianFontsInstallProgress MEMBER m_russianFontsInstallProgress NOTIFY russianFontsInstallProgressChanged)
     Q_PROPERTY(bool russianFontsInstallInProcess MEMBER m_russianFontsInstallInProcess NOTIFY russianFontsInstallInProcessChanged)
 
+    Q_PROPERTY(bool cameraModInstalledStatus MEMBER m_cameraModInstalledStatus NOTIFY cameraModInstallStatusChanged)
+    Q_PROPERTY(QString cameraModInstallProgress MEMBER m_cameraModInstallProgress NOTIFY cameraModInstallProgressChanged)
+    Q_PROPERTY(bool cameraModInstallInProcess MEMBER m_cameraModInstallInProcess NOTIFY cameraModInstallInProcessChanged)
+
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -23,6 +27,10 @@ signals:
     void russianFontsInstallStatusChanged();
     void russianFontsInstallProgressChanged();
     void russianFontsInstallInProcessChanged();
+
+    void cameraModInstallStatusChanged();
+    void cameraModInstallProgressChanged();
+    void cameraModInstallInProcessChanged();
 
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
@@ -35,6 +43,9 @@ private slots:
 public:
     Q_INVOKABLE void installRussianFonts();
     Q_INVOKABLE void uninstallRussianFonts();
+
+    Q_INVOKABLE void installCameraMod();
+    Q_INVOKABLE void uninstallCameraMod();
 
 private:
     void receiveRussianFontsDownloadProgress(int progress);
@@ -51,6 +62,11 @@ private:
     QString m_russianFontsInstallProgress = "Not installed";
     bool m_russianFontsInstalledStatus = false;
     bool m_russianFontsInstallInProcess = false;
+
+    QString m_cameraModInstallProgress = "Not installed";
+    bool m_cameraModInstalledStatus = false;
+    bool m_cameraModInstallInProcess = false;
+
 
 };
 

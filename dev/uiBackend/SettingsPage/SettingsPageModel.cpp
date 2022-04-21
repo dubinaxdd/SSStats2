@@ -12,16 +12,20 @@ void SettingsPageModel::onSettingsLoaded()
 {
     m_russianFontsInstalledStatus = m_settingsController->getSettings()->russianFontsInstalled;
     m_russianFontsInstallProgress = m_russianFontsInstalledStatus ? "Installed" : "Not installed";
-
     emit russianFontsInstallStatusChanged();
     emit russianFontsInstallProgressChanged();
+
+    m_cameraModInstalledStatus = m_settingsController->getSettings()->cameraModInstalled;
+    m_cameraModInstallProgress = m_cameraModInstalledStatus ? "Installed" : "Not installed";
+    emit cameraModInstallStatusChanged();
+    emit cameraModInstallProgressChanged();
 }
 
 void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
 {
     switch (mod) {
         case InstMod::RussianFonts : receiveRussianFontsDownloadProgress(progress); break;
-        case InstMod::CameraMod : receiveRussianFontsDownloadProgress(progress); break;
+        case InstMod::CameraMod : receiveCameraModDownloadProgress(progress); break;
     }
 }
 
@@ -64,6 +68,28 @@ void SettingsPageModel::uninstallRussianFonts()
     emit russianFontsInstallStatusChanged();
 }
 
+void SettingsPageModel::installCameraMod()
+{
+    m_cameraModInstallInProcess = true;
+    m_cameraModInstallProgress = "Progress: 0%";
+    emit cameraModInstallProgressChanged();
+    emit startInstall(InstMod::CameraMod);
+    emit cameraModInstallInProcessChanged();
+}
+
+void SettingsPageModel::uninstallCameraMod()
+{
+    m_cameraModInstalledStatus = false;
+    m_cameraModInstallProgress = "Not installed";
+
+    m_settingsController->getSettings()->cameraModInstalled = m_cameraModInstalledStatus;
+    m_settingsController->saveSettings();
+
+    emit startUninstall(InstMod::CameraMod);
+    emit cameraModInstallProgressChanged();
+    emit cameraModInstallStatusChanged();
+}
+
 void SettingsPageModel::receiveRussianFontsDownloadProgress(int progress)
 {
     m_russianFontsInstallProgress = "Progress: " + QString::number(progress) + "%";
@@ -95,17 +121,31 @@ void SettingsPageModel::receiveRussianFontsDownloadError()
 
 void SettingsPageModel::receiveCameraModDownloadProgress(int progress)
 {
-
+    m_cameraModInstallProgress = "Progress: " + QString::number(progress) + "%";
+    emit cameraModInstallProgressChanged();
 }
 
 void SettingsPageModel::receiveCameraModInstallCompleeted()
 {
+    m_cameraModInstalledStatus = true;
+    m_cameraModInstallInProcess = false;
+    m_cameraModInstallProgress = "Installed";
 
+    m_settingsController->getSettings()->cameraModInstalled = m_cameraModInstalledStatus;
+    m_settingsController->saveSettings();
+
+    emit cameraModInstallProgressChanged();
+    emit cameraModInstallStatusChanged();
+    emit cameraModInstallInProcessChanged();
 }
 
 void SettingsPageModel::receiveCameraModDownloadError()
 {
+    m_cameraModInstallProgress = "Download error";
+    emit cameraModInstallProgressChanged();
 
+    m_cameraModInstallInProcess = false;
+    emit cameraModInstallInProcessChanged();
 }
 
 

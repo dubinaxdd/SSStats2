@@ -71,10 +71,21 @@ void ModsInstaller::installRussianFonts(QString path)
 
 void ModsInstaller::installCameraMod(QString path)
 {
+    JlCompress::extractDir(path, m_ssPath + QDir::separator());
+    qInfo(logInfo()) <<  "Camera mod installed from " << path << "to" << m_ssPath;
 
+    QFile tempfile(path);
+    tempfile.remove();
 }
 
 void ModsInstaller::uninstallCameraMod()
 {
+    QFile tempfile1(m_ssPath + "\\Engine\\Data\\camera_ed.lua");
+    tempfile1.remove();
 
+    QFile tempfile2(m_ssPath + "\\Engine\\Data\\camera_high.lua");
+    tempfile2.remove();
+
+    QFile tempfile3(m_ssPath + "\\Engine\\Data\\camera_low.lua");
+    tempfile3.remove();
 }

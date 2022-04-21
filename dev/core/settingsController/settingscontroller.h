@@ -14,6 +14,7 @@ struct Settings
     QString lastReadedNewsMessageID = "";
     QString lastReadedEventsMessageID = "";
     bool russianFontsInstalled = false;
+    bool cameraModInstalled = false;
 };
 
 class SettingsController : public QObject

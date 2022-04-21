@@ -26,6 +26,8 @@ private:
     void saveRussianFonts(QByteArray russianFontsByteArray);
 
     void requestCameraMod();
+    void receiveCameraMod(QNetworkReply* reply);
+    void saveCameraMod(QByteArray cameraModByteArray);
 
 
 private:

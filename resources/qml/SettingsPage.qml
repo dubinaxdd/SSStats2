@@ -63,30 +63,28 @@ Rectangle {
 
             Label{
                 id: progressLabel1;
-                text: model.russianFontsInstallProgress
+                text: model.cameraModInstallProgress
             }
 
             Button{
-                text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
-                enabled: !model.russianFontsInstallInProcess
+                text: model.cameraModInstalledStatus ? "Reinstall" : "Install"
+                enabled: !model.cameraModInstallInProcess
                 height: 20
 
                 onClicked: {
-                    model.installRussianFonts();
+                    model.installCameraMod();
                 }
             }
 
             Button{
                 text: "Delete"
                 height: 20
-                enabled: model.russianFontsInstalledStatus
+                enabled: model.cameraModInstalledStatus
 
                 onClicked: {
-                    model.uninstallRussianFonts();
+                    model.uninstallCameraMod();
                 }
             }
-
-
 
     /*
             Switch{
