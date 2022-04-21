@@ -27,7 +27,15 @@ ModsInstaller::ModsInstaller(QString ssPath, QObject *parent) : QObject(parent)
     /*  zip.close();*/
 }
 
-void ModsInstaller::uninstalRussianFonts()
+void ModsInstaller::uninstallMod(InstMod mod)
+{
+    switch (mod){
+        case InstMod::RussianFonts : uninstallRussianFonts();
+        case InstMod::CameraMod : uninstallCameraMod();
+    }
+}
+
+void ModsInstaller::uninstallRussianFonts()
 {
     QDir dir1(m_ssPath + "\\Engine\\Locale\\English\\data\\art");
     dir1.removeRecursively();
@@ -42,14 +50,31 @@ void ModsInstaller::uninstalRussianFonts()
     qInfo(logInfo()) <<  "Russian fonts uninstalled";
 }
 
+void ModsInstaller::installMod(InstMod mod, QString path)
+{
+    switch(mod){
+        case InstMod::RussianFonts : installRussianFonts(path); break;
+        case InstMod::CameraMod : installCameraMod(path); break;
+    }
+
+    emit modInstalled(mod);
+}
+
 void ModsInstaller::installRussianFonts(QString path)
 {
     JlCompress::extractDir(path, m_ssPath + QDir::separator());
-
-    emit russianFontsInstalled();
-
     qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
 
     QFile tempfile(path);
     tempfile.remove();
+}
+
+void ModsInstaller::installCameraMod(QString path)
+{
+
+}
+
+void ModsInstaller::uninstallCameraMod()
+{
+
 }

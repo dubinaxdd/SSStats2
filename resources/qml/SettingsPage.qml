@@ -26,6 +26,7 @@ Rectangle {
 
             columns: 4
 
+            //Шрифты
             Label{
                 text: "Russian fonts:"
             }
@@ -55,15 +56,41 @@ Rectangle {
                 }
             }
 
+            //Камера мод
+            Label{
+                text: "Advanced camera mod:"
+            }
+
+            Label{
+                id: progressLabel1;
+                text: model.russianFontsInstallProgress
+            }
+
+            Button{
+                text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
+                enabled: !model.russianFontsInstallInProcess
+                height: 20
+
+                onClicked: {
+                    model.installRussianFonts();
+                }
+            }
+
+            Button{
+                text: "Delete"
+                height: 20
+                enabled: model.russianFontsInstalledStatus
+
+                onClicked: {
+                    model.uninstallRussianFonts();
+                }
+            }
+
 
 
     /*
             Switch{
                 text: "Install QWER hotkeys "
-            }
-
-            Switch{
-                text: "Install advanced camera mod"
             }
 
             Switch{

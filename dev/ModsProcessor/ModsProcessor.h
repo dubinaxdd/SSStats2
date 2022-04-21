@@ -4,7 +4,7 @@
 #include <QObject>
 #include <ModsDownloader.h>
 #include <ModsInstaller.h>
-
+#include <baseTypes.h>
 
 
 class ModsProcessor : public QObject
@@ -14,13 +14,13 @@ public:
     explicit ModsProcessor(QString ssPath, QObject *parent = nullptr);
 
 signals:
-    void russianFontsInstallCompleeted();
-    void russianFontsInstallProgress(int);
-    void russianFontsDownloadError();
+    void modInstallCompleeted(InstMod);
+    void installProgress(InstMod, int);
+    void downloadError(InstMod);
 
 public slots:
-    void onRussianFontsInstallRequest();
-    void onRussianFontsUninstallRequest();
+    void onModInstallRequest(InstMod mod);
+    void onUninstallRequest(InstMod mod);
 
 private:
     ModsDownloader* m_modsDownloader;

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <settingscontroller.h>
+#include <baseTypes.h>
 
 class SettingsPageModel : public QObject
 {
@@ -16,17 +17,17 @@ public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
 
 signals:
-    void startRussianFontsInstall();
-    void startRussianFontsUninstall();
+    void startInstall(InstMod mod);
+    void startUninstall(InstMod mod);
 
     void russianFontsInstallStatusChanged();
     void russianFontsInstallProgressChanged();
     void russianFontsInstallInProcessChanged();
 
 public slots:
-    void receiveRussianFontsDownloadProgress(int progress);
-    void receiveRussianFontsInstallCompleeted();
-    void receiveRussianFontsDownloadError();
+    void receiveDownloadProgress(InstMod mod, int progress);
+    void receiveInstallCompleeted(InstMod mod);
+    void receiveDownloadError(InstMod mod);
 
 private slots:
     void onSettingsLoaded();
@@ -34,6 +35,15 @@ private slots:
 public:
     Q_INVOKABLE void installRussianFonts();
     Q_INVOKABLE void uninstallRussianFonts();
+
+private:
+    void receiveRussianFontsDownloadProgress(int progress);
+    void receiveRussianFontsInstallCompleeted();
+    void receiveRussianFontsDownloadError();
+
+    void receiveCameraModDownloadProgress(int progress);
+    void receiveCameraModInstallCompleeted();
+    void receiveCameraModDownloadError();
 
 private:
     SettingsController* m_settingsController;

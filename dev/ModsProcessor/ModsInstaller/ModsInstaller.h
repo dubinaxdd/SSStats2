@@ -7,6 +7,7 @@
 #include <zconf.h>
 #include <QtZlib/zlib.h>
 #include <logger.h>
+#include <baseTypes.h>
 
 class ModsInstaller : public QObject
 {
@@ -16,11 +17,17 @@ public:
     explicit ModsInstaller(QString ssPath, QObject *parent = nullptr);
 
 signals:
-    void russianFontsInstalled();
+    void modInstalled(InstMod mod);
 
 public:
-    void uninstalRussianFonts();
+    void uninstallMod(InstMod mod);
+    void installMod(InstMod mod, QString path);
+
+private:
     void installRussianFonts(QString path);
+    void installCameraMod(QString path);
+    void uninstallRussianFonts();
+    void uninstallCameraMod();
 
 
 private:

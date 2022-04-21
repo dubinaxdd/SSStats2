@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <logger.h>
+#include <baseTypes.h>
 
 class ModsDownloader : public QObject
 {
@@ -12,17 +13,19 @@ public:
     explicit ModsDownloader(QObject *parent = nullptr);
 
 public:
-    void downloadRussinFonts();
+    void downloadMod(InstMod mod);
 
 signals:
-    void russianFontsDownladProgress(int);
-    void russianFontsDownloaded(QString path);
-    void russianFontsDownloadError();
+    void downladProgress(InstMod, int);
+    void modDownloaded(InstMod, QString path);
+    void downloadError(InstMod);
 
 private:
     void requestRussianFonts();
     void receiveRussinFonts(QNetworkReply* reply);
     void saveRussianFonts(QByteArray russianFontsByteArray);
+
+    void requestCameraMod();
 
 
 private:

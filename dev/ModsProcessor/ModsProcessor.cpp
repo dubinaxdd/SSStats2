@@ -7,19 +7,19 @@ ModsProcessor::ModsProcessor(QString ssPath, QObject *parent)
 {
     m_ssPath = ssPath;
 
-    QObject::connect(m_modsDownloader, &ModsDownloader::russianFontsDownloaded, this, [&](QString path){m_modsInstaller->installRussianFonts(path);}, Qt::QueuedConnection);
-    QObject::connect(m_modsInstaller, &ModsInstaller::russianFontsInstalled, this, [&]{emit russianFontsInstallCompleeted();}, Qt::QueuedConnection);
-    QObject::connect(m_modsDownloader, &ModsDownloader::russianFontsDownloadError, this, [&]{emit russianFontsDownloadError();}, Qt::QueuedConnection);
-    QObject::connect(m_modsDownloader, &ModsDownloader::russianFontsDownladProgress, this, [&](int progress){emit russianFontsInstallProgress(progress);}, Qt::QueuedConnection);
+    QObject::connect(m_modsDownloader, &ModsDownloader::modDownloaded, this, [&](InstMod mod, QString path){m_modsInstaller->installMod(mod, path);}, Qt::QueuedConnection);
+    QObject::connect(m_modsInstaller, &ModsInstaller::modInstalled, this, [&](InstMod mod){emit modInstallCompleeted(mod);}, Qt::QueuedConnection);
+    QObject::connect(m_modsDownloader, &ModsDownloader::downloadError, this, [&](InstMod mod){emit downloadError(mod);}, Qt::QueuedConnection);
+    QObject::connect(m_modsDownloader, &ModsDownloader::downladProgress, this, [&](InstMod mod, int progress){emit installProgress(mod, progress);}, Qt::QueuedConnection);
 
 }
 
-void ModsProcessor::onRussianFontsInstallRequest()
+void ModsProcessor::onModInstallRequest(InstMod mod)
 {
-    m_modsDownloader->downloadRussinFonts();
+    m_modsDownloader->downloadMod(mod);
 }
 
-void ModsProcessor::onRussianFontsUninstallRequest()
+void ModsProcessor::onUninstallRequest(InstMod mod)
 {
-    m_modsInstaller->uninstalRussianFonts();
+    m_modsInstaller->uninstallMod(mod);
 }

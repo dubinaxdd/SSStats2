@@ -89,12 +89,12 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->newsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedNewsMessageID, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->eventsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedEventsMessageID, Qt::QueuedConnection);
 
-    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startRussianFontsInstall, m_modsProcessor, &ModsProcessor::onRussianFontsInstallRequest, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startRussianFontsUninstall, m_modsProcessor, &ModsProcessor::onRussianFontsUninstallRequest, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startInstall, m_modsProcessor, &ModsProcessor::onModInstallRequest, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startUninstall, m_modsProcessor, &ModsProcessor::onUninstallRequest, Qt::QueuedConnection);
 
-    QObject::connect(m_modsProcessor, &ModsProcessor::russianFontsInstallCompleeted, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveRussianFontsInstallCompleeted, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::russianFontsInstallProgress, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveRussianFontsDownloadProgress, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::russianFontsDownloadError, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveRussianFontsDownloadError, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessor, &ModsProcessor::modInstallCompleeted, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveInstallCompleeted, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessor, &ModsProcessor::installProgress, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadProgress, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessor, &ModsProcessor::downloadError, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadError, Qt::QueuedConnection);
 
     QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 
@@ -275,6 +275,8 @@ void Core::registerTypes()
     qRegisterMetaType<DiscordMessage>("DiscordMessage");
     qRegisterMetaType<QVector<PartyData>>("QVector<PartyData>");
     qRegisterMetaType<PartyData>("PartyData");
+    qRegisterMetaType<InstMod>("InstMod");
+
 }
 
 UiBackend *Core::uiBackend() const

@@ -6,6 +6,12 @@
 #include <QImage>
 #include <QDateTime>
 
+enum InstMod
+{
+    RussianFonts,
+    CameraMod
+};
+
 enum WinCondition
 {
     ANNIHILATE,
