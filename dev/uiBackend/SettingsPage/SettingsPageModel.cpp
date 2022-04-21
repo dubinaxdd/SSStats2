@@ -10,9 +10,11 @@ SettingsPageModel::SettingsPageModel(SettingsController *settingsController, QOb
 
 void SettingsPageModel::installRussianFonts()
 {
+    m_russianFontsInstallInProcess = true;
     m_russianFontsInstallProgress = "Progress: 0%";
     emit russianFontsInstallProgressChanged();
     emit startRussianFontsInstall();
+    emit russianFontsInstallInProcessChanged();
 }
 
 void SettingsPageModel::uninstallRussianFonts()
@@ -37,6 +39,7 @@ void SettingsPageModel::receiveRussianFontsDownloadProgress(int progress)
 void SettingsPageModel::receiveRussianFontsInstallCompleeted()
 {
     m_russianFontsInstalledStatus = true;
+    m_russianFontsInstallInProcess = false;
     m_russianFontsInstallProgress = "Installed";
 
     m_settingsController->getSettings()->russianFontsInstalled = m_russianFontsInstalledStatus;
@@ -44,6 +47,16 @@ void SettingsPageModel::receiveRussianFontsInstallCompleeted()
 
     emit russianFontsInstallProgressChanged();
     emit russianFontsInstallStatusChanged();
+    emit russianFontsInstallInProcessChanged();
+}
+
+void SettingsPageModel::receiveRussianFontsDownloadError()
+{
+    m_russianFontsInstallProgress = "Download error";
+    emit russianFontsInstallProgressChanged();
+
+    m_russianFontsInstallInProcess = false;
+    emit russianFontsInstallInProcessChanged();
 }
 
 void SettingsPageModel::onSettingsLoaded()

@@ -16,6 +16,7 @@ public:
 signals:
     void russianFontsInstallCompleeted();
     void russianFontsInstallProgress(int);
+    void russianFontsDownloadError();
 
 public slots:
     void onRussianFontsInstallRequest();

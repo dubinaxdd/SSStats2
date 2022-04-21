@@ -9,6 +9,7 @@ ModsProcessor::ModsProcessor(QString ssPath, QObject *parent)
 
     QObject::connect(m_modsDownloader, &ModsDownloader::russianFontsDownloaded, this, [&](QString path){m_modsInstaller->installRussianFonts(path);}, Qt::QueuedConnection);
     QObject::connect(m_modsInstaller, &ModsInstaller::russianFontsInstalled, this, [&]{emit russianFontsInstallCompleeted();}, Qt::QueuedConnection);
+    QObject::connect(m_modsDownloader, &ModsDownloader::russianFontsDownloadError, this, [&]{emit russianFontsDownloadError();}, Qt::QueuedConnection);
     QObject::connect(m_modsDownloader, &ModsDownloader::russianFontsDownladProgress, this, [&](int progress){emit russianFontsInstallProgress(progress);}, Qt::QueuedConnection);
 
 }

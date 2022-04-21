@@ -37,7 +37,7 @@ Rectangle {
 
             Button{
                 text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
-
+                enabled: !model.russianFontsInstallInProcess
                 height: 20
 
                 onClicked: {

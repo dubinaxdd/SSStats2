@@ -31,8 +31,12 @@ void ModsDownloader::requestRussianFonts()
     });
 
     QObject::connect(reply, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
-        emit russianFontsDownladProgress(bytesReceived * 100 / bytesTotal);
-        qInfo(logInfo()) << "Russian fonts download progress:" << bytesReceived << "/" << bytesTotal;
+
+        if(bytesTotal != 0)
+        {
+            emit russianFontsDownladProgress(bytesReceived * 100 / bytesTotal);
+            qInfo(logInfo()) << "Russian fonts download progress:" << bytesReceived << "/" << bytesTotal;
+        }
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
@@ -46,6 +50,7 @@ void ModsDownloader::receiveRussinFonts(QNetworkReply* reply)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
         reply->deleteLater();
+        emit russianFontsDownloadError();
         return;
     }
 
