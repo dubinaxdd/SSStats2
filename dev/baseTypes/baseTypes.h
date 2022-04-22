@@ -9,7 +9,8 @@
 enum InstMod
 {
     RussianFonts,
-    CameraMod
+    CameraMod,
+    GridHotkeys
 };
 
 enum WinCondition

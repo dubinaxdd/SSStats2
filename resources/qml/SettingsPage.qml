@@ -86,6 +86,37 @@ Rectangle {
                 }
             }
 
+
+            //Хоткеи
+            Label{
+                text: "Grid hotkeys:"
+            }
+
+            Label{
+                id: progressLabel2;
+                text: model.gridHotkeysInstallProgress
+            }
+
+            Button{
+                text: model.gridHotkeysInstalledStatus ? "Reinstall" : "Install"
+                enabled: !model.gridHotkeysInstallInProcess
+                height: 20
+
+                onClicked: {
+                    model.installGridHotkeys();
+                }
+            }
+
+            Button{
+                text: "Delete"
+                height: 20
+                enabled: model.gridHotkeysInstalledStatus
+
+                onClicked: {
+                    model.uninstallGridHotkeys();
+                }
+            }
+
     /*
             Switch{
                 text: "Install QWER hotkeys "

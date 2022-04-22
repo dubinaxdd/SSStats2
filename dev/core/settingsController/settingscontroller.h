@@ -15,6 +15,7 @@ struct Settings
     QString lastReadedEventsMessageID = "";
     bool russianFontsInstalled = false;
     bool cameraModInstalled = false;
+    bool gridHotkeysInstalled = false;
 };
 
 class SettingsController : public QObject

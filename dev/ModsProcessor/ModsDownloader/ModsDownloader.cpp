@@ -17,6 +17,7 @@ void ModsDownloader::downloadMod(InstMod mod)
     switch (mod){
         case InstMod::RussianFonts  : requestRussianFonts(); break;
         case InstMod::CameraMod     : requestCameraMod(); break;
+        case InstMod::GridHotkeys   : requestGridHotkeys(); break;
     }
 }
 
@@ -134,6 +135,65 @@ void ModsDownloader::saveCameraMod(QByteArray cameraModByteArray)
 
         QDataStream stream( &newFile );
         stream << cameraModByteArray;
+        newFile.close();
+    }
+}
+
+void ModsDownloader::requestGridHotkeys()
+{
+    QNetworkRequest newRequest;
+
+    QString urlString = "https://dowstats.ru/ssstats/Downloads/Gridkeys.zip";
+
+    newRequest.setUrl(QUrl(urlString));
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveGridHotkeys(reply);
+    });
+
+    QObject::connect(reply, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
+
+        if(bytesTotal != 0)
+        {
+            emit downladProgress(InstMod::GridHotkeys, bytesReceived * 100 / bytesTotal);
+            qInfo(logInfo()) << "Russian fonts download progress:" << bytesReceived << "/" << bytesTotal;
+        }
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
+}
+
+void ModsDownloader::receiveGridHotkeys(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        emit downloadError(InstMod::GridHotkeys);
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    reply->deleteLater();
+
+    saveGridHotkeys(std::move(replyByteArray));
+
+    qInfo(logInfo()) <<  "Grid hotkeys downloaded to " << QDir::currentPath() + QDir::separator() + "Gridkeys.zip";
+
+    emit modDownloaded(InstMod::GridHotkeys, QDir::currentPath() + QDir::separator() + "Gridkeys.zip");
+}
+
+void ModsDownloader::saveGridHotkeys(QByteArray gridHotkeysByteArray)
+{
+    QFile newFile( QDir::currentPath() + QDir::separator() + "Gridkeys.zip" );
+    if( newFile.open( QIODevice::WriteOnly ) ) {
+
+        QDataStream stream( &newFile );
+        stream << gridHotkeysByteArray;
         newFile.close();
     }
 }

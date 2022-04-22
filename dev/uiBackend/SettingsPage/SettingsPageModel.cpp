@@ -26,6 +26,7 @@ void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
     switch (mod) {
         case InstMod::RussianFonts : receiveRussianFontsDownloadProgress(progress); break;
         case InstMod::CameraMod : receiveCameraModDownloadProgress(progress); break;
+        case InstMod::GridHotkeys : receiveGridHotkeysDownloadProgress(progress); break;
     }
 }
 
@@ -34,6 +35,7 @@ void SettingsPageModel::receiveInstallCompleeted(InstMod mod)
     switch (mod) {
         case InstMod::RussianFonts : receiveRussianFontsInstallCompleeted(); break;
         case InstMod::CameraMod : receiveCameraModInstallCompleeted(); break;
+        case InstMod::GridHotkeys : receiveGridHotkeysInstallCompleeted(); break;
     }
 }
 
@@ -42,6 +44,7 @@ void SettingsPageModel::receiveDownloadError(InstMod mod)
     switch (mod) {
         case InstMod::RussianFonts : receiveRussianFontsDownloadError(); break;
         case InstMod::CameraMod : receiveCameraModDownloadError(); break;
+        case InstMod::GridHotkeys : receiveGridHotkeysDownloadError(); break;
     }
 }
 
@@ -88,6 +91,28 @@ void SettingsPageModel::uninstallCameraMod()
     emit startUninstall(InstMod::CameraMod);
     emit cameraModInstallProgressChanged();
     emit cameraModInstallStatusChanged();
+}
+
+void SettingsPageModel::installGridHotkeys()
+{
+    m_gridHotkeysInstallInProcess = true;
+    m_gridHotkeysInstallProgress = "Progress: 0%";
+    emit gridHotkeysInstallProgressChanged();
+    emit startInstall(InstMod::GridHotkeys);
+    emit gridHotkeysInstallInProcessChanged();
+}
+
+void SettingsPageModel::uninstallGridHotkeys()
+{
+    m_gridHotkeysInstalledStatus = false;
+    m_gridHotkeysInstallProgress = "Not installed";
+
+    m_settingsController->getSettings()->gridHotkeysInstalled = m_gridHotkeysInstalledStatus;
+    m_settingsController->saveSettings();
+
+    emit startUninstall(InstMod::GridHotkeys);
+    emit gridHotkeysInstallProgressChanged();
+    emit gridHotkeysInstallStatusChanged();
 }
 
 void SettingsPageModel::receiveRussianFontsDownloadProgress(int progress)
@@ -146,6 +171,35 @@ void SettingsPageModel::receiveCameraModDownloadError()
 
     m_cameraModInstallInProcess = false;
     emit cameraModInstallInProcessChanged();
+}
+
+void SettingsPageModel::receiveGridHotkeysDownloadProgress(int progress)
+{
+    m_gridHotkeysInstallProgress = "Progress: " + QString::number(progress) + "%";
+    emit gridHotkeysInstallProgressChanged();
+}
+
+void SettingsPageModel::receiveGridHotkeysInstallCompleeted()
+{
+    m_gridHotkeysInstalledStatus = true;
+    m_gridHotkeysInstallInProcess = false;
+    m_gridHotkeysInstallProgress = "Installed";
+
+    m_settingsController->getSettings()->gridHotkeysInstalled = m_gridHotkeysInstalledStatus;
+    m_settingsController->saveSettings();
+
+    emit gridHotkeysInstallProgressChanged();
+    emit gridHotkeysInstallStatusChanged();
+    emit gridHotkeysInstallInProcessChanged();
+}
+
+void SettingsPageModel::receiveGridHotkeysDownloadError()
+{
+    m_gridHotkeysInstallProgress = "Download error";
+    emit gridHotkeysInstallProgressChanged();
+
+    m_gridHotkeysInstallInProcess = false;
+    emit gridHotkeysInstallInProcessChanged();
 }
 
 

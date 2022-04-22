@@ -27,12 +27,34 @@ ModsInstaller::ModsInstaller(QString ssPath, QObject *parent) : QObject(parent)
     /*  zip.close();*/
 }
 
+void ModsInstaller::installMod(InstMod mod, QString path)
+{
+    switch(mod){
+        case InstMod::RussianFonts : installRussianFonts(path); break;
+        case InstMod::CameraMod : installCameraMod(path); break;
+        case InstMod::GridHotkeys : installGridHotkeys(path); break;
+    }
+
+    emit modInstalled(mod);
+}
+
 void ModsInstaller::uninstallMod(InstMod mod)
 {
     switch (mod){
         case InstMod::RussianFonts : uninstallRussianFonts();
         case InstMod::CameraMod : uninstallCameraMod();
+        case InstMod::GridHotkeys : uninstallGridHotkeys();
     }
+}
+
+
+void ModsInstaller::installRussianFonts(QString path)
+{
+    JlCompress::extractDir(path, m_ssPath + QDir::separator());
+    qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
+
+    QFile tempfile(path);
+    tempfile.remove();
 }
 
 void ModsInstaller::uninstallRussianFonts()
@@ -48,25 +70,6 @@ void ModsInstaller::uninstallRussianFonts()
 
 
     qInfo(logInfo()) <<  "Russian fonts uninstalled";
-}
-
-void ModsInstaller::installMod(InstMod mod, QString path)
-{
-    switch(mod){
-        case InstMod::RussianFonts : installRussianFonts(path); break;
-        case InstMod::CameraMod : installCameraMod(path); break;
-    }
-
-    emit modInstalled(mod);
-}
-
-void ModsInstaller::installRussianFonts(QString path)
-{
-    JlCompress::extractDir(path, m_ssPath + QDir::separator());
-    qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
-
-    QFile tempfile(path);
-    tempfile.remove();
 }
 
 void ModsInstaller::installCameraMod(QString path)
@@ -88,4 +91,37 @@ void ModsInstaller::uninstallCameraMod()
 
     QFile tempfile3(m_ssPath + "\\Engine\\Data\\camera_low.lua");
     tempfile3.remove();
+}
+
+void ModsInstaller::installGridHotkeys(QString path)
+{
+
+    QDir dir(m_ssPath + "\\Profiles\\");
+    QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    for (int i = 0; i < dirContent.count(); i++)
+    {
+        QString profilePath = dirContent.at(i).absoluteFilePath() + QDir::separator() + "dxp2" + QDir::separator();
+        JlCompress::extractDir(path, profilePath);
+        qInfo(logInfo()) <<  "Grid hotkeys installed from " << path << "to" << profilePath;
+    }
+
+    QFile tempfile(path);
+    tempfile.remove();
+}
+
+void ModsInstaller::uninstallGridHotkeys()
+{
+    QDir dir(m_ssPath + "\\Profiles\\");
+    QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    for (int i = 0; i < dirContent.count(); i++)
+    {
+        QString path = dirContent.at(i).absoluteFilePath() + "\\dxp2\\KEYDEFAULTS.LUA";
+
+        QFile tempfile1(path);
+        tempfile1.remove();
+
+        qInfo(logInfo()) <<  "Grid hotkeys uninstalled from " << path;
+    }
 }

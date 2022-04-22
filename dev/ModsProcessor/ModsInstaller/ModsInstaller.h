@@ -25,9 +25,14 @@ public:
 
 private:
     void installRussianFonts(QString path);
-    void installCameraMod(QString path);
     void uninstallRussianFonts();
+
+    void installCameraMod(QString path);
     void uninstallCameraMod();
+
+    void installGridHotkeys(QString path);
+    void uninstallGridHotkeys();
+
 
 
 private:

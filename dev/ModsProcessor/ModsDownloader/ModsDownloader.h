@@ -29,6 +29,10 @@ private:
     void receiveCameraMod(QNetworkReply* reply);
     void saveCameraMod(QByteArray cameraModByteArray);
 
+    void requestGridHotkeys();
+    void receiveGridHotkeys(QNetworkReply* reply);
+    void saveGridHotkeys(QByteArray gridHotkeysByteArray);
+
 
 private:
     QNetworkAccessManager *m_networkManager;
