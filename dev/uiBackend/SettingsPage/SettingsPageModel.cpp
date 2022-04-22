@@ -19,6 +19,12 @@ void SettingsPageModel::onSettingsLoaded()
     m_cameraModInstallProgress = m_cameraModInstalledStatus ? "Installed" : "Not installed";
     emit cameraModInstallStatusChanged();
     emit cameraModInstallProgressChanged();
+
+
+    m_gridHotkeysInstalledStatus = m_settingsController->getSettings()->gridHotkeysInstalled;
+    m_gridHotkeysInstallProgress = m_gridHotkeysInstalledStatus ? "Installed" : "Not installed";
+    emit gridHotkeysInstallStatusChanged();
+    emit gridHotkeysInstallProgressChanged();
 }
 
 void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
