@@ -21,27 +21,18 @@ Rectangle {
     {
         anchors.fill: parent
         anchors.rightMargin: 15
+        anchors.topMargin: 10
         clip: true
 
         TextArea {
             readOnly: true
             id: infoText
-            text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n
+            text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 5.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n
                 <html>
-                <head>
-                <meta name=\"qrichtext\" content=\"1\" />
-                <style type=\"text/css\">\n
-                p, li { white-space: pre-wrap; }\n
-                .defeatPts > div{
-                    width: 50px;
-                    height: 50px;
-                    display: inline-block;
-                }
-                </style>
-                </head>
-                <body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n
+
+               <body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n
                 <p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
-                <span style=\" font-size:12pt; font-weight:600; color:#333333; background-color:#ffffff;\">Welcome to DoW Stats 2</span></p>\n
+                <h1>Welcome to DoW Stats 2</h1></p>\n
                 <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
               <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
                 <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Standard game settings for sending statistics:</span></p>\n
@@ -64,36 +55,38 @@ Rectangle {
                 <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Anibus - dowstats web site main developer, DoW Stats 2 client developer </span></li>\n
                 <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">New - first client (SSStats) main developer</span></li>\n
                 <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE</span></li></ul>
-                <center>
-                    <br>
-                    <h2>Players are divided into the following ranks</h2><br>
-                    <table>
-                    <tr>
-                        <td><center>Scout</center></td>
-                        <td><center>Space Marine</center></td>
-                        <td><center>Sergeant</center></td>
-                        <td><center>Terminator</center></td>
-                        <td><center>Chaplain</center></td>
-                        <td><center>Force Commander</center></td>
-                    </tr>
-                    <tr>
-                        <td><center>0 - 1599</center></td>
-                        <td><center>1600 - 1799</center></td>
-                        <td><center>1800 - 2099</center></td>
-                        <td><center>2100 - 2299</center></td>
-                        <td><center>2300 - 2499</center></td>
-                        <td><center>2500+</center></td>
-                    </tr>
-                    <tr>
-                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank1_200.png\" width=\"50\" height=\"50\"></td>
-                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank2_200.png\" width=\"50\" height=\"50\"></td>
-                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank3_200.png\" width=\"50\" height=\"50\"></td>
-                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank4_200.png\" width=\"50\" height=\"50\"></td>
-                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank5_200.png\" width=\"50\" height=\"50\"></td>
-                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank6_200.png\" width=\"50\" height=\"50\"></td>
-                    </tr>
-                    </table>
-                    </center>
+
+                 <br>
+                <center><h2>Players are divided into the following ranks</h2></center><br>
+                <table align=\"center\" style=\"margin: 0px auto;\">
+                <tr>
+                    <td><center>Scout</center></td>
+                    <td><center>Space Marine</center></td>
+                    <td><center>Sergeant</center></td>
+                    <td><center>Terminator</center></td>
+                    <td><center>Chaplain</center></td>
+                    <td><center>Force Commander</center></td>
+                </tr>
+                <tr>
+                    <td><center>0 - 1699</center></td>
+                    <td><center>1700 - 1899</center></td>
+                    <td><center>1900 - 2099</center></td>
+                    <td><center>2100 - 2299</center></td>
+                    <td><center>2300 - 2499</center></td>
+                    <td><center>2500+</center></td>
+                </tr>
+                <tr>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank1_200.png\" width=\"70\" height=\"70\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank2_200.png\" width=\"70\" height=\"70\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank3_200.png\" width=\"70\" height=\"70\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank4_200.png\" width=\"70\" height=\"70\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank5_200.png\" width=\"70\" height=\"70\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank6_200.png\" width=\"70\" height=\"70\"></td>
+                </tr>
+                </table>
+                <br>
+                <br>
+                <br>
                 </body></html>
                 "
             //anchors.fill: parent

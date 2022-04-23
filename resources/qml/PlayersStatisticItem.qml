@@ -60,7 +60,6 @@ Rectangle {
             return;
         }
 
-
         if (playerMmr1v1 < 2500)
         {
             rankImage.source = "qrc:/images/resources/images/rank5_200.png"
