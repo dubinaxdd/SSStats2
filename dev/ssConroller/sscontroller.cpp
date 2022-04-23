@@ -232,7 +232,7 @@ void SsController::checkWindowState()
 void SsController::gameInitialized()
 {
     parseSsSettings();
-    //m_statsCollector->parseCurrentPlayerSteamId();
+    m_statsCollector->parseCurrentPlayerSteamId();
     m_lobbyEventReader->activateReading(true);
 }
 
