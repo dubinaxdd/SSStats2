@@ -28,7 +28,7 @@ void SettingsController::initializeSettings()
     m_settings->russianFontsInstalled = ss_stats_settings->value("mods/russian_fonts_installed", false).toBool();
     m_settings->cameraModInstalled = ss_stats_settings->value("mods/camera_mod_installed", false).toBool();
     m_settings->gridHotkeysInstalled = ss_stats_settings->value("mods/grid_hotkeys_installed", false).toBool();
-
+    m_settings->overlayVisible = ss_stats_settings->value("client/overlay_visible", true).toBool();
 
     emit settingsLoaded();
 
@@ -46,6 +46,8 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("mods/russian_fonts_installed", m_settings->russianFontsInstalled);
     ss_stats_settings->setValue("mods/camera_mod_installed", m_settings->cameraModInstalled);
     ss_stats_settings->setValue("mods/grid_hotkeys_installed", m_settings->gridHotkeysInstalled);
+    ss_stats_settings->setValue("client/overlay_visible", m_settings->overlayVisible);
+
 
     ss_stats_settings->sync();
 }

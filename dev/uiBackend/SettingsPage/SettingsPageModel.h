@@ -21,8 +21,14 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(QString gridHotkeysInstallProgress MEMBER m_gridHotkeysInstallProgress NOTIFY gridHotkeysInstallProgressChanged)
     Q_PROPERTY(bool gridHotkeysInstallInProcess MEMBER m_gridHotkeysInstallInProcess NOTIFY gridHotkeysInstallInProcessChanged)
 
+    Q_PROPERTY(bool overlayVisible READ overlayVisible WRITE setOverlayVisible NOTIFY overlayVisibleChanged)
+
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
+
+    bool overlayVisible() const;
+    void setOverlayVisible(bool newOverlayVisible);
+
 
 signals:
     void startInstall(InstMod mod);
@@ -39,6 +45,8 @@ signals:
     void gridHotkeysInstallStatusChanged();
     void gridHotkeysInstallProgressChanged();
     void gridHotkeysInstallInProcessChanged();
+
+    void overlayVisibleChanged();
 
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
@@ -86,6 +94,7 @@ private:
     bool m_gridHotkeysInstalledStatus = false;
     bool m_gridHotkeysInstallInProcess = false;
 
+    bool m_overlayVisible = true;
 
 };
 

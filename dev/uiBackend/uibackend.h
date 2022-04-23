@@ -46,8 +46,6 @@ class UiBackend : public QObject
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
 
-
-
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 

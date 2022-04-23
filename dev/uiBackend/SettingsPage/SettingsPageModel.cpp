@@ -25,6 +25,9 @@ void SettingsPageModel::onSettingsLoaded()
     m_gridHotkeysInstallProgress = m_gridHotkeysInstalledStatus ? "Installed" : "Not installed";
     emit gridHotkeysInstallStatusChanged();
     emit gridHotkeysInstallProgressChanged();
+
+    m_overlayVisible =  m_settingsController->getSettings()->overlayVisible;
+    emit overlayVisibleChanged();
 }
 
 void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
@@ -206,6 +209,21 @@ void SettingsPageModel::receiveGridHotkeysDownloadError()
 
     m_gridHotkeysInstallInProcess = false;
     emit gridHotkeysInstallInProcessChanged();
+}
+
+bool SettingsPageModel::overlayVisible() const
+{
+    return m_overlayVisible;
+}
+
+void SettingsPageModel::setOverlayVisible(bool newOverlayVisible)
+{
+    if (m_overlayVisible == newOverlayVisible)
+        return;
+    m_overlayVisible = newOverlayVisible;
+    emit overlayVisibleChanged();
+
+    m_settingsController->getSettings()->overlayVisible = m_overlayVisible;
 }
 
 

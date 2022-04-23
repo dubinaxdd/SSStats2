@@ -16,6 +16,7 @@ struct Settings
     bool russianFontsInstalled = false;
     bool cameraModInstalled = false;
     bool gridHotkeysInstalled = false;
+    bool overlayVisible = true;
 };
 
 class SettingsController : public QObject

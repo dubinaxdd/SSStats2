@@ -127,6 +127,15 @@ Rectangle {
             }*/
         }
 
+        Switch{
+            text: "Show overlay:"
+            checked: model.overlayVisible
+
+            onCheckedChanged: {
+                model.overlayVisible = checked;
+            }
+        }
+
         Rectangle
         {
             Layout.fillHeight: true

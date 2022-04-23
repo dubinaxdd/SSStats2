@@ -25,7 +25,6 @@ Item{
         id: overlayWindow
     }
 
-
     SystemTrayIcon {
         id: trayIcon
         visible: true
@@ -36,7 +35,6 @@ Item{
             mainWindow.raise();
             mainWindow.requestActivate();
         }
-
 
         menu: Menu {
             MenuItem {
