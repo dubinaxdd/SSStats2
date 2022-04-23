@@ -145,16 +145,36 @@ Rectangle {
                 model.win7SupportMode = checked;
             }
         }
-
+/*
         Switch{
             text: "No FOG"
             checked: _uiBackend.noFogState
 
             onCheckedChanged: {
-                _uiBackend.noFogState = checked;
+                //_uiBackend.noFogState = checked;
+
+                _uiBackend.setNoFogWithoutSignal(checked);
             }
         }
 
+        Switch{
+            text: "APM panel visible in game"
+            checked: _uiBackend.gamePanel.showGamePannelPreset
+
+            onCheckedChanged: {
+                _uiBackend.gamePanel.showGamePannelPreset = checked;
+            }
+        }
+
+        Switch{
+            text: "Small APM panel in game"
+            checked: _uiBackend.gamePanel.smallPannelActive
+
+            onCheckedChanged: {
+                _uiBackend.gamePanel.smallPannelActive = checked;
+            }
+        }
+*/
         Rectangle
         {
             Layout.fillHeight: true
