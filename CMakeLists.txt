@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0048 NEW)
 
-project(DowStats2 VERSION 2.0 LANGUAGES CXX)
+project(DowStats2 VERSION 2.1 LANGUAGES CXX)
 
 #set(PROJECT_VERSION_MAJOR "0")
 #set(PROJECT_VERSION_MINOR "1")
