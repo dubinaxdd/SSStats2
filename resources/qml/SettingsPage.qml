@@ -116,12 +116,7 @@ Rectangle {
                     model.uninstallGridHotkeys();
                 }
             }
-
-    /*
-            Switch{
-                text: "Install QWER hotkeys "
-            }
-
+/*
             Switch{
                 text: "Unlock races"
             }*/
@@ -130,6 +125,8 @@ Rectangle {
         Switch{
             text: "Show overlay"
             checked: model.overlayVisible
+
+            opacity: hovered? 1.0 : 0.8
 
             onCheckedChanged: {
                 model.overlayVisible = checked;
@@ -140,6 +137,8 @@ Rectangle {
         Switch{
             text: "Launch Soulstorm with Windows7 support mode"
             checked: model.win7SupportMode
+
+            opacity: hovered? 1.0 : 0.8
 
             onCheckedChanged: {
                 model.win7SupportMode = checked;
