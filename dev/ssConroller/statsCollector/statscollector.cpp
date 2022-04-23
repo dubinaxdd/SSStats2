@@ -136,7 +136,6 @@ void StatsCollector::parseCurrentPlayerSteamId()
 
 void StatsCollector::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayerStats>> playersInfo)
 {
-
     QString sidsString;
 
     for(int i = 0; i < playersInfo.data()->count(); i++)
@@ -147,7 +146,11 @@ void StatsCollector::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayer
         sidsString += playersInfo.data()->at(i).steamId;
     }
 
-    QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats.php?key="+QLatin1String(SERVER_KEY) + "&sids=" + sidsString + "&version="+m_clientVersion+"&sender_sid="+ m_currentPlayerStats.data()->at(0).steamId +"&")));
+    QNetworkRequest newRequest = QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats.php?sids=" + sidsString + "&version="+m_clientVersion+"&sender_sid="+ m_currentPlayerStats.data()->at(0).steamId));
+    newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerStatsFromServer(reply, playersInfo);
     });
@@ -160,10 +163,8 @@ void StatsCollector::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayer
 void StatsCollector::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo)
 {
     for (int i = 0; i < playersInfo.data()->count(); i++)
-{
+    {
         QSharedPointer<ServerPlayerStats> playerInfo(new ServerPlayerStats(playersInfo.data()->at(i)));
-
-
 
         QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(playerInfo.data()->avatarUrl)));
         QObject::connect(reply, &QNetworkReply::finished, this, [=](){
@@ -173,7 +174,6 @@ void StatsCollector::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerSta
         QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
             reply->deleteLater();
         });
-
     }
 }
 
@@ -274,7 +274,7 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
     QString url;
 
-    url = QString::fromStdString(SERVER_ADDRESS) + "/connect.php?";
+    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
 
     int winnerCount = 0;
 
@@ -331,6 +331,8 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
 
     QNetworkRequest request = QNetworkRequest(QUrl(url));
+
+    request.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
 
     QByteArray postData, boundary="1BEF0A57BE110FD467A";
     //параметр 2 - файл
