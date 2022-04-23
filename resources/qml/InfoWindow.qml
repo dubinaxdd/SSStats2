@@ -17,52 +17,92 @@ Rectangle {
 
     radius: 10 * _uiBackend.sizeModifer
 
-    Text {
-        id: infoText
-        text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n
-            <html>
-            <head>
-            <meta name=\"qrichtext\" content=\"1\" />
-            <style type=\"text/css\">\n
-            p, li { white-space: pre-wrap; }\n
-            </style>
-            </head>
-            <body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n
-            <p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
-            <span style=\" font-size:12pt; font-weight:600; color:#333333; background-color:#ffffff;\">Welcome to DoW Stats 2</span></p>\n
-            <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
-          <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
-            <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Standard game settings for sending statistics:</span></p>\n
-            <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">1v1 Game rules: Annihilate, Control Area, Game Timer (optional), Take and Hold.</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">2v2, 3v3, 4v4 Game rules: Annihilate, Control Area (optional), Game Timer (optional), Take and Hold (optional).</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Ai difficulty (optional), if there is AI in the game, statistics are not sent.</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Starting resources: Standard</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Lock teams: Yes</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Enable cheats: No</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Starting location: Optional</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Game speed: Normal</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Resource sharing: No</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Resource Rate: Standard</span></li>\n
-            <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Game duration is more than 30 seconds</span></li></ul>\n
-            <p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600; color:#333333;\"><br /></p>\n
-            <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Recommendatitons</span></p>\n
-            <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Searching for a player in the lobby does not always work correctly, sometimes players may not be found. If the player is not found, try pressing the highlighted ready button in your profile element, very often this will fix a bug in the virtual memory of the game, and the players are detected by the client.</span></li>\n
-            <p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600; color:#333333;\"><br /></p>\n
-            <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Developers</span></p>\n
-            <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Dubina_xdd - DoW Stats 2 client main developer </span></li>\n
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Anibus - dowstats web site main developer, DoW Stats 2 client developer </span></li>\n
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">New - first client (SSStats) main developer</span></li>\n
-            <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE</span></li></ul></body></html>
-            "
+    ScrollView
+    {
         anchors.fill: parent
-        wrapMode: Text.WordWrap
-        textFormat: Text.RichText
-        anchors.margins: 10 * _uiBackend.sizeModifer
+        anchors.rightMargin: 15
+        clip: true
+
+        TextArea {
+            readOnly: true
+            id: infoText
+            text: "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n
+                <html>
+                <head>
+                <meta name=\"qrichtext\" content=\"1\" />
+                <style type=\"text/css\">\n
+                p, li { white-space: pre-wrap; }\n
+                .defeatPts > div{
+                    width: 50px;
+                    height: 50px;
+                    display: inline-block;
+                }
+                </style>
+                </head>
+                <body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n
+                <p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
+                <span style=\" font-size:12pt; font-weight:600; color:#333333; background-color:#ffffff;\">Welcome to DoW Stats 2</span></p>\n
+                <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
+              <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
+                <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Standard game settings for sending statistics:</span></p>\n
+                <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">1v1 Game rules: Annihilate, Control Area, Game Timer (optional), Take and Hold.</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">2v2, 3v3, 4v4 Game rules: Annihilate, Control Area (optional), Game Timer (optional), Take and Hold (optional).</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Ai difficulty (optional), if there is AI in the game, statistics are not sent.</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Starting resources: Standard</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Lock teams: Yes</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Enable cheats: No</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Starting location: Optional</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Game speed: Normal</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Resource sharing: No</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Resource Rate: Standard</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Game duration is more than 30 seconds</span></li></ul>\n
+                <p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600; color:#333333;\"><br /></p>\n
+                <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Developers</span></p>\n
+                <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
+                <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Dubina_xdd - DoW Stats 2 client main developer </span></li>\n
+                <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Anibus - dowstats web site main developer, DoW Stats 2 client developer </span></li>\n
+                <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">New - first client (SSStats) main developer</span></li>\n
+                <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE</span></li></ul>
+                <center>
+                    <br>
+                    <h2>Players are divided into the following ranks</h2><br>
+                    <table>
+                    <tr>
+                        <td><center>Scout</center></td>
+                        <td><center>Space Marine</center></td>
+                        <td><center>Sergeant</center></td>
+                        <td><center>Terminator</center></td>
+                        <td><center>Chaplain</center></td>
+                        <td><center>Force Commander</center></td>
+                    </tr>
+                    <tr>
+                        <td><center>0 - 1599</center></td>
+                        <td><center>1600 - 1799</center></td>
+                        <td><center>1800 - 2099</center></td>
+                        <td><center>2100 - 2299</center></td>
+                        <td><center>2300 - 2499</center></td>
+                        <td><center>2500+</center></td>
+                    </tr>
+                    <tr>
+                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank1_200.png\" width=\"50\" height=\"50\"></td>
+                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank2_200.png\" width=\"50\" height=\"50\"></td>
+                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank3_200.png\" width=\"50\" height=\"50\"></td>
+                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank4_200.png\" width=\"50\" height=\"50\"></td>
+                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank5_200.png\" width=\"50\" height=\"50\"></td>
+                        <td ><img style=\" display: block; margin-left: auto; margin-right: auto; width: 50%;\" src=\"qrc:/images/resources/images/rank6_200.png\" width=\"50\" height=\"50\"></td>
+                    </tr>
+                    </table>
+                    </center>
+                </body></html>
+                "
+            //anchors.fill: parent
+            wrapMode: Text.WordWrap
+            textFormat: Text.RichText
+            anchors.margins: 10 * _uiBackend.sizeModifer
 
 
+        }
     }
 
 }
