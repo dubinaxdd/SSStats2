@@ -39,7 +39,8 @@ Rectangle {
             Button{
                 text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
                 enabled: !model.russianFontsInstallInProcess
-                height: 20
+                height: 15
+                opacity: hovered? 1.0 : 0.8
 
                 onClicked: {
                     model.installRussianFonts();
@@ -48,8 +49,9 @@ Rectangle {
 
             Button{
                 text: "Delete"
-                height: 20
+                height: 15
                 enabled: model.russianFontsInstalledStatus
+                opacity: hovered? 1.0 : 0.8
 
                 onClicked: {
                     model.uninstallRussianFonts();
@@ -69,7 +71,8 @@ Rectangle {
             Button{
                 text: model.cameraModInstalledStatus ? "Reinstall" : "Install"
                 enabled: !model.cameraModInstallInProcess
-                height: 20
+                height: 15
+                opacity: hovered? 1.0 : 0.8
 
                 onClicked: {
                     model.installCameraMod();
@@ -78,8 +81,9 @@ Rectangle {
 
             Button{
                 text: "Delete"
-                height: 20
+                height: 15
                 enabled: model.cameraModInstalledStatus
+                opacity: hovered? 1.0 : 0.8
 
                 onClicked: {
                     model.uninstallCameraMod();
@@ -100,7 +104,8 @@ Rectangle {
             Button{
                 text: model.gridHotkeysInstalledStatus ? "Reinstall" : "Install"
                 enabled: !model.gridHotkeysInstallInProcess
-                height: 20
+                height: 15
+                opacity: hovered? 1.0 : 0.8
 
                 onClicked: {
                     model.installGridHotkeys();
@@ -109,9 +114,9 @@ Rectangle {
 
             Button{
                 text: "Delete"
-                height: 20
+                height: 15
                 enabled: model.gridHotkeysInstalledStatus
-
+                opacity: hovered? 1.0 : 0.8
                 onClicked: {
                     model.uninstallGridHotkeys();
                 }
@@ -192,7 +197,6 @@ Rectangle {
     //Отключтить туман
     //Включить игровую панель
     //Масштаб оверлея
-
 
     radius: 10
 }
