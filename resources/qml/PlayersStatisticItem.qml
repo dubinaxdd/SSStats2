@@ -22,6 +22,8 @@ Rectangle {
 
     property double sizeModifer: 1
 
+    property var hoveredState
+
     Layout.maximumWidth: 280 * sizeModifer
     Layout.maximumHeight: 120 * sizeModifer
     Layout.minimumWidth: 280 * sizeModifer
@@ -70,7 +72,7 @@ Rectangle {
     }
 
 
-    color: (itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff"
+    color: itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff")
     radius: 10 * sizeModifer
 
 
@@ -258,7 +260,6 @@ Rectangle {
         }
     }
 
-
     MouseArea{
         id: playerItemMouseArea
         anchors.fill: parent
@@ -267,6 +268,15 @@ Rectangle {
 
         onClicked: {
             Qt.openUrlExternally("https://dowstats.ru/player.php?sid=" + itemRectangle.steamId + "&server=steam");
+        }
+
+        onContainsMouseChanged: {
+            if (playerItemMouseArea.containsMouse)
+                //itemRectangle.color = "#c8c8c8";
+                itemRectangle.hoveredState = true;
+            else
+                //itemRectangle.color = (itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff"
+                itemRectangle.hoveredState = false;
         }
     }
 }
