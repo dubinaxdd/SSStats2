@@ -128,7 +128,7 @@ Rectangle {
         }
 
         Switch{
-            text: "Show overlay:"
+            text: "Show overlay"
             checked: model.overlayVisible
 
             onCheckedChanged: {
@@ -138,11 +138,20 @@ Rectangle {
 
 
         Switch{
-            text: "Launch Soulstorm with Windows7 support mode:"
+            text: "Launch Soulstorm with Windows7 support mode"
             checked: model.win7SupportMode
 
             onCheckedChanged: {
                 model.win7SupportMode = checked;
+            }
+        }
+
+        Switch{
+            text: "No FOG"
+            checked: _uiBackend.noFogState
+
+            onCheckedChanged: {
+                _uiBackend.noFogState = checked;
             }
         }
 

@@ -36,7 +36,6 @@ class UiBackend : public QObject
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
 
     Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
-
     Q_PROPERTY(float sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
 
     Q_PROPERTY(MessagesPage* newsPage MEMBER m_newsPage NOTIFY statisticPanelInitialized)
