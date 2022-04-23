@@ -56,7 +56,8 @@ Rectangle {
             Image {
                 id: image
                 anchors.fill: parent
-                source: "qrc:/images/resources/images/ssstats.png"
+                //source: "qrc:/images/resources/images/ssstats.png"
+                source: "qrc:/images/resources/images/rank6_60.png"
                 anchors.rightMargin: 10 * _uiBackend.sizeModifer
                 anchors.leftMargin: 10 * _uiBackend.sizeModifer
                 anchors.bottomMargin: 10 * _uiBackend.sizeModifer

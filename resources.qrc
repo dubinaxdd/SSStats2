@@ -1,6 +1,8 @@
 <RCC>
     <qresource prefix="/icons">
         <file>resources/icons/ssstats.ico</file>
+        <file>resources/icons/DowStats2.ico</file>
+        <file>resources/icons/DowStats2Big.ico</file>
     </qresource>
     <qresource prefix="/images">
         <file>resources/images/ssstats.png</file>
@@ -18,5 +20,7 @@
         <file>resources/images/rank5_200.png</file>
         <file>resources/images/rank6_200.png</file>
         <file>resources/images/readyImage.png</file>
+        <file>resources/images/rank6_30.png</file>
+        <file>resources/images/rank6_60.png</file>
     </qresource>
 </RCC>
