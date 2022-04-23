@@ -200,48 +200,61 @@ Window {
             }
         }
 
-        Rectangle {
-            id: mainContentContainerRectangle
-            width: 200
-            height: 200
-            opacity: 1
-            color: "#00000000"
-            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            Layout.rightMargin: 10
-            Layout.bottomMargin: 10
-            Layout.leftMargin: 10
-            Layout.topMargin: 0
-            Layout.preferredHeight: 0
-            Layout.preferredWidth: 0
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+        RowLayout
+        {
+
+            Rectangle {
+                id: mainContentContainerRectangle
+                width: 200
+                height: 200
+                opacity: 1
+                color: "#00000000"
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.rightMargin: 10
+                Layout.bottomMargin: 10
+                Layout.leftMargin: 10
+                Layout.topMargin: 0
+                Layout.preferredHeight: 0
+                Layout.preferredWidth: 0
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
 
-            MessagesPage{
-                id: newsPage
-                visible: newsButton.pressedState
-                model: _uiBackend.newsPage
-                anchors.fill: parent
+                MessagesPage{
+                    id: newsPage
+                    visible: newsButton.pressedState
+                    model: _uiBackend.newsPage
+                    anchors.fill: parent
+                }
+
+                MessagesPage{
+                    id: eventsPage
+
+                    visible: eventsButton.pressedState
+                    model: _uiBackend.eventsPage
+                    anchors.fill: parent
+                }
+
+                InfoWindow {
+                    id: infoWindow
+                    visible: infoButton.pressedState
+                    anchors.fill: parent
+                }
+
+                SettingsPage {
+                    id: settingsPage
+                    visible: settingsButton.pressedState
+                    anchors.fill: parent
+                }
             }
 
-            MessagesPage{
-                id: eventsPage
-
-                visible: eventsButton.pressedState
-                model: _uiBackend.eventsPage
-                anchors.fill: parent
-            }
-
-            InfoWindow {
-                id: infoWindow
-                visible: infoButton.pressedState
-                anchors.fill: parent
-            }
-
-            SettingsPage {
-                id: settingsPage
-                visible: settingsButton.pressedState
-                anchors.fill: parent
+            PlayersStatistic
+            {
+                id: patyStatistic
+                Layout.alignment: Qt.AlignTop
+                model: _uiBackend.statisticPanel
+                Layout.fillHeight: true
+                Layout.rightMargin: 5
             }
         }
 

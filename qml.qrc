@@ -7,7 +7,7 @@
         <file>resources/qml/GamePanel.qml</file>
         <file>resources/qml/InfoWindow.qml</file>
         <file>resources/qml/OverlaySettingsPage.qml</file>
-        <file>resources/qml/PlayersStatistic.qml</file>
+        <file>resources/qml/OverlayPlayersStatistic.qml</file>
         <file>resources/qml/GamePanelSmall.qml</file>
         <file>resources/qml/MainWindow.qml</file>
         <file>resources/qml/OverlayWindow.qml</file>
@@ -17,5 +17,6 @@
         <file>resources/qml/Botter.qml</file>
         <file>resources/qml/Notification.qml</file>
         <file>resources/qml/SettingsPage.qml</file>
+        <file>resources/qml/PlayersStatistic.qml</file>
     </qresource>
 </RCC>

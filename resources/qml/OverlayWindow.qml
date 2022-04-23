@@ -219,7 +219,7 @@ Window {
                         z: 3
                     }
 
-                    PlayersStatistic
+                    OverlayPlayersStatistic
                     {
                         id: patyStatistic
                         Layout.alignment: Qt.AlignTop

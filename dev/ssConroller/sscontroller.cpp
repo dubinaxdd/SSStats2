@@ -72,6 +72,8 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
     m_playersSteamScannerThread.start();
     m_ssWindowControllTimer->start();
+
+    m_statsCollector->parseCurrentPlayerSteamId();
 }
 
 SsController::~SsController()
@@ -230,8 +232,7 @@ void SsController::checkWindowState()
 void SsController::gameInitialized()
 {
     parseSsSettings();
-
-    m_statsCollector->parseCurrentPlayerSteamId();
+    //m_statsCollector->parseCurrentPlayerSteamId();
     m_lobbyEventReader->activateReading(true);
 }
 
