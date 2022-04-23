@@ -188,7 +188,11 @@ Rectangle {
                 hoverEnabled: true
 
                 onClicked: {
-                    _uiBackend.launchSoulstorm()
+
+                    if (_uiBackend.settingsPageModel.win7SupportMode)
+                        _uiBackend.onLaunchSoulstormWithSupportMode();
+                    else
+                        _uiBackend.launchSoulstorm()
                 }
             }
         }

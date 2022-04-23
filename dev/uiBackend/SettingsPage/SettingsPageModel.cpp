@@ -28,6 +28,9 @@ void SettingsPageModel::onSettingsLoaded()
 
     m_overlayVisible =  m_settingsController->getSettings()->overlayVisible;
     emit overlayVisibleChanged();
+
+    m_win7SupportMode =  m_settingsController->getSettings()->win7SupportMode;
+    emit win7SupportModeChanged();
 }
 
 void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
@@ -209,6 +212,21 @@ void SettingsPageModel::receiveGridHotkeysDownloadError()
 
     m_gridHotkeysInstallInProcess = false;
     emit gridHotkeysInstallInProcessChanged();
+}
+
+bool SettingsPageModel::win7SupportMode() const
+{
+    return m_win7SupportMode;
+}
+
+void SettingsPageModel::setWin7SupportMode(bool newWin7SupportMode)
+{
+    if (m_win7SupportMode == newWin7SupportMode)
+        return;
+    m_win7SupportMode = newWin7SupportMode;
+    emit win7SupportModeChanged();
+
+    m_settingsController->getSettings()->win7SupportMode = m_win7SupportMode;
 }
 
 bool SettingsPageModel::overlayVisible() const

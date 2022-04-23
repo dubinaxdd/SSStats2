@@ -136,6 +136,16 @@ Rectangle {
             }
         }
 
+
+        Switch{
+            text: "Launch Soulstorm with Windows7 support mode:"
+            checked: model.win7SupportMode
+
+            onCheckedChanged: {
+                model.win7SupportMode = checked;
+            }
+        }
+
         Rectangle
         {
             Layout.fillHeight: true

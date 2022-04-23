@@ -17,6 +17,7 @@ struct Settings
     bool cameraModInstalled = false;
     bool gridHotkeysInstalled = false;
     bool overlayVisible = true;
+    bool win7SupportMode = false;
 };
 
 class SettingsController : public QObject

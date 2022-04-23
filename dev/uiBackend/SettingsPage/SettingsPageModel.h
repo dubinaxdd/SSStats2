@@ -22,6 +22,8 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool gridHotkeysInstallInProcess MEMBER m_gridHotkeysInstallInProcess NOTIFY gridHotkeysInstallInProcessChanged)
 
     Q_PROPERTY(bool overlayVisible READ overlayVisible WRITE setOverlayVisible NOTIFY overlayVisibleChanged)
+    Q_PROPERTY(bool win7SupportMode READ win7SupportMode WRITE setWin7SupportMode NOTIFY win7SupportModeChanged)
+
 
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
@@ -47,6 +49,7 @@ signals:
     void gridHotkeysInstallInProcessChanged();
 
     void overlayVisibleChanged();
+    void win7SupportModeChanged();
 
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
@@ -65,6 +68,9 @@ public:
 
     Q_INVOKABLE void installGridHotkeys();
     Q_INVOKABLE void uninstallGridHotkeys();
+
+    bool win7SupportMode() const;
+    void setWin7SupportMode(bool newWin7SupportMode);
 
 private:
     void receiveRussianFontsDownloadProgress(int progress);
@@ -95,6 +101,7 @@ private:
     bool m_gridHotkeysInstallInProcess = false;
 
     bool m_overlayVisible = true;
+    bool m_win7SupportMode = false;
 
 };
 
