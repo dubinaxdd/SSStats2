@@ -55,6 +55,7 @@ Rectangle {
                 playerApm: model.curentPlayerStatsItem.playerApm
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
+                steamId: model.curentPlayerStatsItem.steamId
 
                 avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
 
@@ -82,6 +83,7 @@ Rectangle {
                     playerApm: model.playerApm
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
+                    steamId: model.steamId
 
                     avatarSource: "image://imageprovider/" + model.avatarId
 

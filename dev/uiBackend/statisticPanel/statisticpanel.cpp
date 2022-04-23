@@ -28,6 +28,7 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case PlayerIsBanned: return item->getPlayerIsBanned();
         case PlayerVisible: return item->getVisible();
         case PlayerAvatarId: return item->avatarId();
+        case SteamId: return item->getSteamId();
     }
 
     return QVariant();
@@ -53,7 +54,7 @@ QHash<int, QByteArray> StatisticPanel::roleNames() const
     roles[PlayerIsBanned]   = "playerIsBanned";
     roles[PlayerVisible]    = "playerVisible";
     roles[PlayerAvatarId]   = "avatarId";
-
+    roles[SteamId]          = "steamId";
 
     return roles;
 }

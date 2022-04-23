@@ -16,6 +16,7 @@ Rectangle {
     property int playerApm
     property bool playerIsBanned
     property bool playerVisible
+    property string steamId
 
     property url avatarSource: ""
 
@@ -251,8 +252,19 @@ Rectangle {
                         source: "qrc:/images/resources/images/rank1_200.png"
                     }
                 }
-
             }
+        }
+    }
+
+
+    MouseArea{
+        id: playerItemMouseArea
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
+        hoverEnabled: true
+
+        onClicked: {
+            Qt.openUrlExternally("https://dowstats.ru/player.php?sid=" + itemRectangle.steamId + "&server=steam");
         }
     }
 }

@@ -72,6 +72,11 @@ QImage StatisticPanelItem::getAvatar() const
     return m_playersStats.avatar;
 }
 
+QString StatisticPanelItem::getSteamId() const
+{
+    return m_playersStats.steamId;
+}
+
 void StatisticPanelItem::setPlayerSteamId(QString steamId)
 {
     tempSid = steamId;
