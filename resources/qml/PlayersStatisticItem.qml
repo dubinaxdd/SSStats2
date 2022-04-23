@@ -20,11 +20,13 @@ Rectangle {
 
     property url avatarSource: ""
 
-    Layout.maximumWidth: 280 * _uiBackend.sizeModifer
-    Layout.maximumHeight: 120 * _uiBackend.sizeModifer
-    Layout.minimumWidth: 280 * _uiBackend.sizeModifer
-    Layout.minimumHeight: 120 * _uiBackend.sizeModifer
-    height: 120 * _uiBackend.sizeModifer
+    property double sizeModifer: 1
+
+    Layout.maximumWidth: 280 * sizeModifer
+    Layout.maximumHeight: 120 * sizeModifer
+    Layout.minimumWidth: 280 * sizeModifer
+    Layout.minimumHeight: 120 * sizeModifer
+    height: 120 * sizeModifer
     Layout.alignment: Qt.AlignRight | Qt.AlignTop
     Layout.fillHeight: false
     Layout.fillWidth: true
@@ -69,7 +71,7 @@ Rectangle {
 
 
     color: (itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff"
-    radius: 10 * _uiBackend.sizeModifer
+    radius: 10 * sizeModifer
 
 
     RowLayout {
@@ -83,14 +85,14 @@ Rectangle {
                 id: rectangle
 
                 color: "#00000000"
-                radius: 10 * _uiBackend.sizeModifer
-                Layout.topMargin: (itemRectangle.playerIsBanned ? 10 : 0) * _uiBackend.sizeModifer
+                radius: 10 * sizeModifer
+                Layout.topMargin: (itemRectangle.playerIsBanned ? 10 : 0) * sizeModifer
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-                Layout.maximumWidth: 80 * _uiBackend.sizeModifer
-                Layout.preferredHeight: 60 * _uiBackend.sizeModifer
-                Layout.preferredWidth: 80 * _uiBackend.sizeModifer
-                Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-                Layout.minimumWidth: 80 * _uiBackend.sizeModifer
+                Layout.maximumWidth: 80 * sizeModifer
+                Layout.preferredHeight: 60 * sizeModifer
+                Layout.preferredWidth: 80 * sizeModifer
+                Layout.minimumHeight: 60 * sizeModifer
+                Layout.minimumWidth: 80 * sizeModifer
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
@@ -98,9 +100,9 @@ Rectangle {
                 Rectangle {
                     id: avatarRectangle
 
-                    width: 60 * _uiBackend.sizeModifer
-                    height:60 * _uiBackend.sizeModifer
-                    radius: 10 * _uiBackend.sizeModifer
+                    width: 60 * sizeModifer
+                    height:60 * sizeModifer
+                    radius: 10 * sizeModifer
                     //Layout.rightMargin: 15
 
                     anchors.verticalCenter: parent.verticalCenter
@@ -109,8 +111,8 @@ Rectangle {
                     Image {
                         id: avatarImage
                         cache: false
-                        width: 60 * _uiBackend.sizeModifer
-                        height: 60 * _uiBackend.sizeModifer
+                        width: 60 * sizeModifer
+                        height: 60 * sizeModifer
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
                         source: itemRectangle.avatarSource
@@ -122,7 +124,7 @@ Rectangle {
                          id: maskRectangle
 
                          anchors.fill: parent
-                         radius: 10 * _uiBackend.sizeModifer
+                         radius: 10 * sizeModifer
                          visible: false
 
                      }
@@ -140,17 +142,17 @@ Rectangle {
                 id: statusLabel
                 visible: itemRectangle.playerIsBanned
                 text: qsTr("[CHEATER]")
-                font.pixelSize: 15 * _uiBackend.sizeModifer
+                font.pixelSize: 15 * sizeModifer
 
-                Layout.bottomMargin: 10 * _uiBackend.sizeModifer
+                Layout.bottomMargin: 10 * sizeModifer
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             }
         }
 
         ColumnLayout {
             id: columnLayout4
-            spacing: 5 * _uiBackend.sizeModifer
-            Layout.margins: 5 * _uiBackend.sizeModifer
+            spacing: 5 * sizeModifer
+            Layout.margins: 5 * sizeModifer
             Layout.fillHeight: true
             Layout.fillWidth: true
             anchors.bottomMargin: 0
@@ -158,9 +160,9 @@ Rectangle {
             Label {
                 id: label1
                 text: itemRectangle.playerName
-                Layout.maximumWidth: 180 * _uiBackend.sizeModifer
+                Layout.maximumWidth: 180 * sizeModifer
 
-                font.pixelSize: 20 * _uiBackend.sizeModifer
+                font.pixelSize: 20 * sizeModifer
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -177,7 +179,7 @@ Rectangle {
                     Label {
                         id: label2
                         text: "MMR: " + itemRectangle.playerMmr
-                        font.pixelSize: 12 * _uiBackend.sizeModifer
+                        font.pixelSize: 12 * sizeModifer
 
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -188,13 +190,13 @@ Rectangle {
                         text: "Solo MMR: " + itemRectangle.playerMmr1v1
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        font.pixelSize: 12 * _uiBackend.sizeModifer
+                        font.pixelSize: 12 * sizeModifer
                     }
 
                     Label {
                         id: label4
                         text: "Games played: " + itemRectangle.playerGamesCount
-                        font.pixelSize: 12 * _uiBackend.sizeModifer
+                        font.pixelSize: 12 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
@@ -204,13 +206,13 @@ Rectangle {
                         text: "Race: " + itemRectangle.playerRace
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        font.pixelSize: 12 * _uiBackend.sizeModifer
+                        font.pixelSize: 12 * sizeModifer
                     }
 
                     Label {
                         id: label5
                         text: "Win rate: " + itemRectangle.playerWinRate + "%"
-                        font.pixelSize: 12 * _uiBackend.sizeModifer
+                        font.pixelSize: 12 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
@@ -218,7 +220,7 @@ Rectangle {
                     Label {
                         id: label6
                         text: "APM: " + itemRectangle.playerApm
-                        font.pixelSize: 12 * _uiBackend.sizeModifer
+                        font.pixelSize: 12 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
@@ -227,12 +229,12 @@ Rectangle {
 
                 Rectangle
                 {
-                    Layout.maximumWidth: 60 * _uiBackend.sizeModifer
-                    Layout.preferredHeight: 60 * _uiBackend.sizeModifer
-                    Layout.preferredWidth: 60 * _uiBackend.sizeModifer
-                    Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-                    Layout.minimumWidth: 60 * _uiBackend.sizeModifer
-                    Layout.margins: 5 * _uiBackend.sizeModifer
+                    Layout.maximumWidth: 60 * sizeModifer
+                    Layout.preferredHeight: 60 * sizeModifer
+                    Layout.preferredWidth: 60 * sizeModifer
+                    Layout.minimumHeight: 60 * sizeModifer
+                    Layout.minimumWidth: 60 * sizeModifer
+                    Layout.margins: 5 * sizeModifer
 
                     //color: "#b7b7b7"
                     color: "#00000000"
@@ -243,8 +245,8 @@ Rectangle {
                         id: rankImage
 
                         cache: false
-                        width: 50 * _uiBackend.sizeModifer
-                        height: 50 * _uiBackend.sizeModifer
+                        width: 50 * sizeModifer
+                        height: 50 * sizeModifer
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
                         fillMode: Image.PreserveAspectFit

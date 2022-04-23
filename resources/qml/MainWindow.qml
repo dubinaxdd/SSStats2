@@ -202,6 +202,7 @@ Window {
 
         RowLayout
         {
+            spacing: 0
 
             Rectangle {
                 id: mainContentContainerRectangle
@@ -255,6 +256,7 @@ Window {
                 model: _uiBackend.statisticPanel
                 Layout.fillHeight: true
                 Layout.rightMargin: 5
+                Layout.leftMargin: 0
             }
         }
 

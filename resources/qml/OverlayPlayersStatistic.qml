@@ -198,6 +198,7 @@ Rectangle {
                 playerVisible: model.curentPlayerStatsItem.itemVisible
 
                 avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
+                sizeModifer: _uiBackend.sizeModifer
 
             }
 
@@ -227,6 +228,8 @@ Rectangle {
                     playerVisible: model.playerVisible
 
                     avatarSource: "image://imageprovider/" + model.avatarId
+
+                    sizeModifer: _uiBackend.sizeModifer
 
                     height: 120 * _uiBackend.sizeModifer
                     width: 280 * _uiBackend.sizeModifer
