@@ -44,6 +44,7 @@ class UiBackend : public QObject
     Q_PROPERTY(SettingsPageModel* settingsPageModel MEMBER m_settingsPageModel NOTIFY statisticPanelInitialized)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
+    Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
 
 
 
@@ -128,7 +129,7 @@ public slots:
 
     void setGameCurrentState(SsGameState gameCurrentState);
 
-    void receiveNotification(QString notify);
+    void receiveNotification(QString notify, bool isWarning);
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
@@ -182,6 +183,7 @@ private:
     float m_sizeModifer = 2.0;
 
     QString m_lastNotification;
+    bool m_lastNotificationIsWarning = false;
 };
 
 #endif // UIBACKEND_H

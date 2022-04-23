@@ -17,5 +17,6 @@
         <file>resources/images/rank4_200.png</file>
         <file>resources/images/rank5_200.png</file>
         <file>resources/images/rank6_200.png</file>
+        <file>resources/images/readyImage.png</file>
     </qresource>
 </RCC>

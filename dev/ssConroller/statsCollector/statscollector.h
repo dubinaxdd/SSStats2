@@ -25,6 +25,7 @@ signals:
     void sendPlayersCount(int playersCount);
     void sendCurrentPlayerHostState(bool);
     void sendCurrentPlayerSteamID(QString steamID);
+    void sendNotification(QString text, bool isWarning);
 
 public slots:
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);

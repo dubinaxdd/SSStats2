@@ -57,6 +57,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendServerPlayrStats,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,  Qt::QueuedConnection);
     QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendCurrentPlayerHostState,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState,  Qt::QueuedConnection);
+    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendNotification,              m_uiBackend,        &UiBackend::receiveNotification,         Qt::QueuedConnection);
 
     QObject::connect(m_ssController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
 

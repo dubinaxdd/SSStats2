@@ -43,7 +43,7 @@ signals:
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
-    void sendNotification(QString warningString);
+    void sendNotification(QString warningString, bool isWarning);
 
     void sendCurrentModeVersion(QString modVersion);
 

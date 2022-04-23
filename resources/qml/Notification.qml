@@ -16,6 +16,8 @@ Rectangle{
     property int relativeMouseX
     property int relativeMouseY
 
+    property bool isWarning: _uiBackend.lastNotificationIsWarning
+
     function mouseClick(x, y)
     {
         relativeMouseX = x
@@ -76,7 +78,7 @@ Rectangle{
                 height: 40 * _uiBackend.sizeModifer
                 x: 0
                 y: 0
-                source: "qrc:/images/resources/images/warning.png"
+                source: isWarning ? "qrc:/images/resources/images/warning.png" : "qrc:/images/resources/images/readyImage.png"
                 fillMode: Image.PreserveAspectFit
             }
         }
@@ -87,11 +89,6 @@ Rectangle{
             color: "#ffffff"
 
             Layout.fillWidth: true
-
-          //  text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!! РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
-            //text:"Alert, РЕПЛЕЙ НЕ ОТПРАВЛЕН БЛЕАТЬ!!!"
-
-
             text: _uiBackend.lastNotification
             font.pixelSize: 15 * _uiBackend.sizeModifer
             wrapMode: Text.WordWrap

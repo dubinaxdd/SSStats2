@@ -557,7 +557,7 @@ void GameInfoReader::readReplayDataAfterStop()
 
     if (checkFailed)
     {
-        emit sendNotification(warning);
+        emit sendNotification(warning, true);
         qWarning(logWarning()) << warning;
         return;
     }

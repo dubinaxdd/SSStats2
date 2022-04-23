@@ -129,11 +129,12 @@ void UiBackend::setGameCurrentState(SsGameState gameCurrentState)
         onGameOver();*/
 }
 
-void UiBackend::receiveNotification(QString notify)
+void UiBackend::receiveNotification(QString notify, bool isWarning)
 {
     m_lastNotification = "";
     emit updateNotification();
     m_lastNotification = notify;
+    m_lastNotificationIsWarning = isWarning;
     emit updateNotification();
 }
 

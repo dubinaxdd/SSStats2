@@ -268,6 +268,7 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
         if (replayInfo.playersInfo[i].playerSid == "")
         {
             qWarning() << "Player" << replayInfo.playersInfo[i].playerName << "have not steam id, replay not sended";
+            emit sendNotification("Player " + replayInfo.playersInfo[i].playerName + " have not steam id, replay not sended", true);
             return;
         }
     }
@@ -370,7 +371,9 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     QNetworkReply *reply = m_networkManager->post(request, postData);
     qInfo(logInfo()) << "Replay sended to server";
 
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+    emit sendNotification("Replay sended to server", false);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
     });
 }
