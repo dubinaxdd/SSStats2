@@ -57,7 +57,7 @@ Rectangle {
                 <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE</span></li></ul>
 
                  <br>
-                <center><h2>Players are divided into the following ranks</h2></center><br>
+                <center><h2>Players are divided into the following ranks by Solo MMR</h2></center><br>
                 <table align=\"center\" style=\"margin: 0px auto;\">
                 <tr>
                     <td><center>Scout</center></td>
