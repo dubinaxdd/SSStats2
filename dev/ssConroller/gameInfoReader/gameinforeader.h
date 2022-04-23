@@ -45,6 +45,8 @@ signals:
 
     void sendNotification(QString warningString);
 
+    void sendCurrentModeVersion(QString modVersion);
+
 private:
     void checkCurrentMode();
     bool checkMissionSettingsValide(int gameType);
@@ -60,6 +62,7 @@ private:
     QString m_ssPath;
     QString m_currentProfile;
     QString m_currentMode;
+    QString m_currentModeVersion;
 
     QString m_testStatsPath;
 

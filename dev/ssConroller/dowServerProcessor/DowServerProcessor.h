@@ -36,6 +36,7 @@ private:
 public slots:
     void setSessionID(QString sessionID);
     void setCurrentPlayerSteamID(QString steamID);
+    void setCurrentModVersion(QString modVersion);
     void requestPartysData();
     void onPlayerDisconnected();
 

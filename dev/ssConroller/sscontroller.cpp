@@ -66,6 +66,7 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_gameInfoReader, &GameInfoReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+    QObject::connect(m_gameInfoReader, &GameInfoReader::sendCurrentModeVersion, m_dowServerProcessor, &DowServerProcessor::setCurrentModVersion, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 

@@ -847,10 +847,17 @@ void GameInfoReader::checkCurrentMode()
                 for (int i = 0; i < m_currentMode.size(); i++)
                 {
                     if(m_currentMode.at(i) == ',')
+                    {
+                        m_currentModeVersion  = m_currentMode.right(m_currentMode.size() - i - 2);
                         m_currentMode = m_currentMode.left(i);
+                    }
                 }
 
                 qInfo(logInfo()) << "Current mode:" << m_currentMode;
+                qInfo(logInfo()) << "Current mode version:" << m_currentModeVersion;
+
+                emit sendCurrentModeVersion(m_currentModeVersion);
+
                 break;
             }
 

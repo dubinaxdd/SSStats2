@@ -129,6 +129,8 @@ void DowServerProcessor::requestFindAdvertisements()
                         + m_modVersion + "&modDLLFile=WXPMod.dll&modDLLChecksum=1077236955&dataChecksum=206085050&appBinaryChecksum=1817556062&cheatsEnabled=0&sessionID="
                         + m_sessionID.toLocal8Bit();
 
+    qDebug() << urlString;
+
     QNetworkRequest newRequest = createDowServerRequest(urlString);
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -200,6 +202,11 @@ void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
         addQuery(QueryType::ProfileID);
     }
 
+}
+
+void DowServerProcessor::setCurrentModVersion(QString modVersion)
+{
+    m_modVersion = modVersion;
 }
 
 void DowServerProcessor::requestPartysData()
