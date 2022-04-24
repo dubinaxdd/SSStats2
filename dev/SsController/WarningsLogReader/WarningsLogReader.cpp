@@ -1,7 +1,7 @@
 #define GAME_INFO_READER_TIMER_INTERVAL 1000
 #define RACES_READ_TIMER_INTERVAL 100
 
-#include <gameinforeader.h>
+#include <WarningsLogReader.h>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -12,23 +12,23 @@
 using namespace ReplayReader;
 
 
-GameInfoReader::GameInfoReader(QString sspath, QObject *parent)
+WarningsLogReader::WarningsLogReader(QString sspath, QObject *parent)
     : QObject(parent)
     , m_ssPath(sspath)
 
 {
     m_readRacesSingleShootTimer = new QTimer(this);
     m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
-    QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &GameInfoReader::readRacesTimerTimeout, Qt::QueuedConnection );
+    QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &WarningsLogReader::readRacesTimerTimeout, Qt::QueuedConnection );
 
     m_gameInfoReadTimer = new QTimer(this);
     m_gameInfoReadTimer->setInterval(GAME_INFO_READER_TIMER_INTERVAL);
-    QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &GameInfoReader::readGameInfo, Qt::QueuedConnection );
+    QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &WarningsLogReader::readGameInfo, Qt::QueuedConnection );
 
     m_gameInfoReadTimer->start();
 }
 
-void GameInfoReader::readGameInfo()
+void WarningsLogReader::readGameInfo()
 {
     if (!m_gameLounched)
         return;
@@ -38,13 +38,15 @@ void GameInfoReader::readGameInfo()
     if(file.open(QIODevice::ReadOnly))
     {
         QTextStream textStream(&file);
-        QStringList fileLines = textStream.readAll().split("\r");
+        QStringList* fileLines = new QStringList();
 
-        int counter = fileLines.size();
+        *fileLines = textStream.readAll().split("\r");
+
+        int counter = fileLines->size();
 
         while (counter!=0)
         {
-            QString line = fileLines.at(counter-1);
+            QString line = fileLines->at(counter-1);
 
             ///Проверка на выключение соулсторма
             if(line.contains("GAME -- Shutdown quit") || line.contains("MOD -- Shutting down Mod"))
@@ -64,132 +66,21 @@ void GameInfoReader::readGameInfo()
             ///Проверка на достижение условия победы
             if(line.contains("MOD -- Game Over at frame")||line.contains("storing simulation results for match"))
             {
-                if (m_gameCurrentState != SsGameState::gameOver)
-                {
-                    m_gameCurrentState = SsGameState::gameOver;
-                    checkGameInitialize();
-                    testStatsTemp = QStringList();
-                    readRacesTimerTimeout();
-                    emit startingMission(m_gameCurrentState);
-                    emit gameOver();
-                }
+                missionOver();
                 break;
             }
 
             ///Проверка на окончание игры
             if(line.contains("APP -- Game Stop"))
             {
-                if (m_gameCurrentState != SsGameState::gameStoped)
-                {
-                    m_gameCurrentState = SsGameState::gameStoped;
-                    checkGameInitialize();
-                    readTestStatsTemp();
-                    readReplayDataAfterStop();
-                    emit gameStopped();
-                    qInfo(logInfo()) << "Game Stoped";
-                }
+                missionStoped();
                 break;
             }
 
             ///Проверка на старт миссии игры
             if (line.contains("GAME -- Starting mission"))
             {
-                if(m_gameCurrentState == SsGameState::gameLoadStarted
-                   || m_gameCurrentState == SsGameState::playbackLoadStarted
-                   || m_gameCurrentState == SsGameState::savedGameLoadStarted)
-                {
-                    if(m_gameCurrentState == SsGameState::gameLoadStarted)
-                    {
-                        m_gameCurrentState = SsGameState::gameStarted;
-
-                        m_winCoditionsVector.clear();
-
-                        int winConditionsReadCounter = counter;
-                        QString winConditionsReadLine;
-
-                        while (!winConditionsReadLine.contains("APP -- Game Start"))
-                        {
-                            m_gameWillBePlayed = true;
-
-                            winConditionsReadLine = fileLines.at(winConditionsReadCounter-1);
-
-                            if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
-                            {
-                                if(winConditionsReadLine.contains("ANNIHILATE")){
-                                    m_winCoditionsVector.append(WinCondition::ANNIHILATE);
-                                    qInfo(logInfo()) << "Loaded ANNIHILATE";
-                                }
-
-                                if(winConditionsReadLine.contains("ASSASSINATE")){
-                                    m_winCoditionsVector.append(WinCondition::ASSASSINATE);
-                                    qInfo(logInfo()) << "Loaded ASSASSINATE";
-                                }
-
-                                if(winConditionsReadLine.contains("CONTROLAREA")){
-                                    m_winCoditionsVector.append(WinCondition::CONTROLAREA);
-                                    qInfo(logInfo()) << "Loaded CONTROLAREA";
-                                }
-
-                                if(winConditionsReadLine.contains("DESTROYHQ")){
-                                    m_winCoditionsVector.append(WinCondition::DESTROYHQ);
-                                    qInfo(logInfo()) << "Loaded DESTROYHQ";
-                                }
-
-                                if(winConditionsReadLine.contains("ECONOMICVICTORY")){
-                                    m_winCoditionsVector.append(WinCondition::ECONOMICVICTORY);
-                                    qInfo(logInfo()) << "Loaded ECONOMICVICTORY";
-                                }
-
-                                if(winConditionsReadLine.contains("GAMETIMER")){
-                                    m_winCoditionsVector.append(WinCondition::GAMETIMER);
-                                    qInfo(logInfo()) << "Loaded GAMETIMER";
-                                }
-
-                                if(winConditionsReadLine.contains("STRATEGICOBJECTIVE")){
-                                    m_winCoditionsVector.append(WinCondition::STRATEGICOBJECTIVE);
-                                    qInfo(logInfo()) << "Loaded STRATEGICOBJECTIVE";
-                                }
-
-                                if(winConditionsReadLine.contains("SUDDENDEATH")){
-                                    m_winCoditionsVector.append(WinCondition::SUDDENDEATH);
-                                    qInfo(logInfo()) << "Loaded SUDDENDEATH";
-                                }
-                            }
-
-                            winConditionsReadCounter--;
-                        }
-                        qInfo(logInfo()) << "Starting game mission";
-                    }
-                    else if (m_gameCurrentState == SsGameState::playbackLoadStarted)
-                    {
-                        m_gameCurrentState = SsGameState::playbackStarted;
-                        qInfo(logInfo()) << "Starting playback mission";
-                    }
-                    else if (m_gameCurrentState == SsGameState::savedGameLoadStarted)
-                    {
-                        m_gameCurrentState = SsGameState::savedGameStarted;
-                        qInfo(logInfo()) << "Starting saved game mission";
-                    }
-                    checkGameInitialize();
-                    testStatsTemp = QStringList();
-                    readRacesTimerTimeout();
-                    emit startingMission(m_gameCurrentState);
-
-                }
-                else if(m_gameCurrentState != SsGameState::gameStarted
-                      && m_gameCurrentState != SsGameState::playbackStarted
-                      && m_gameCurrentState != SsGameState::savedGameStarted
-                      && m_gameCurrentState != SsGameState::unknownGameStarted
-                      && m_gameCurrentState != SsGameState::gameOver)
-                {
-                    m_gameCurrentState = SsGameState::unknownGameStarted;
-                    qInfo(logInfo()) << "Starting unknown mission";
-                    checkGameInitialize();
-                    testStatsTemp = QStringList();
-                    readRacesTimerTimeout();
-                    emit startingMission(m_gameCurrentState);
-                }
-
+                missionStarted(fileLines, counter);
                 break;
             }
 
@@ -197,67 +88,19 @@ void GameInfoReader::readGameInfo()
             ///Проверка на старт загрузки игры
             if (line.contains("APP -- Game Start"))
             {
-                //Что бы точно понять норм игра это или долбаный реплей чекаем ближайшие строки
-                int checkCounter = counter - 1;
-
-                while (checkCounter!=0 && checkCounter != (counter - 10))
-                {
-                    QString checkLine = fileLines.at(checkCounter-1);
-
-                    ///Проверка на реплей
-                    if(checkLine.contains("APP -- Game Playback"))
-                    {
-                        if (m_gameCurrentState != SsGameState::playbackLoadStarted)
-                        {
-                            m_gameCurrentState = SsGameState::playbackLoadStarted;
-                            checkGameInitialize();
-                            m_readRacesSingleShootTimer->start();
-                            emit loadStarted(m_gameCurrentState);
-                            qInfo(logInfo()) << "Playback load started";
-                        }
-                        break;
-                    }
-
-                    ///Проверка на загруженную игру
-                    if (checkLine.contains("APP -- Game Load"))
-                    {
-                        if (m_gameCurrentState != SsGameState::savedGameLoadStarted)
-                        {
-                            m_gameCurrentState = SsGameState::savedGameLoadStarted;
-                            checkGameInitialize();
-                            readTestStatsTemp();
-                            m_readRacesSingleShootTimer->start();
-                            emit loadStarted(m_gameCurrentState);
-                            qInfo(logInfo()) << "Saved game load started";
-                        }
-                        break;
-                    }
-
-                    checkCounter--;
-                }
-
-                if (m_gameCurrentState != SsGameState::savedGameLoadStarted
-                    && m_gameCurrentState != SsGameState::playbackLoadStarted
-                    && m_gameCurrentState != SsGameState::gameLoadStarted)
-                {
-                    m_gameCurrentState = SsGameState::gameLoadStarted;
-                    checkGameInitialize();
-                    m_readRacesSingleShootTimer->start();
-                    emit loadStarted(m_gameCurrentState);
-                    qInfo(logInfo()) << "Game load started";
-                }
+                missionLoad(fileLines, counter);
                 break;
             }
             counter--;
         }
 
-        emit sendCurrentGameState(m_gameCurrentState);
+        delete fileLines;
     }
 }
 
-void GameInfoReader::readReplayDataAfterStop()
+void WarningsLogReader::readReplayDataAfterStop()
 {
-    if (!m_gameWillBePlayed)
+    if (!m_gameWillBePlayedInOtherSession)
     {
         qWarning(logWarning()) << "Game will be played in other session, replay not sended";
         return;
@@ -286,10 +129,10 @@ void GameInfoReader::readReplayDataAfterStop()
 
     file.close();
 
-    int playersCount;
+    int playersCount = 0;
     QString winBy;
-    int teamsCount;
-    int duration;
+    int teamsCount = 0;
+    int duration = 0;
     QString scenario;
 
     QStringList playerNames;
@@ -373,23 +216,17 @@ void GameInfoReader::readReplayDataAfterStop()
 
     QVector<PlayerStats> playerStats;
 
-    playerStats.resize(playersCount);
+    for(int i = 0; i < playersCount; i++ )
+    {
+        PlayerStats newPlayerStats;
+        newPlayerStats.name = playerNames.at(i).toLocal8Bit();
+        newPlayerStats.race = playerRaces.at(i);
+        newPlayerStats.team = playerTeams.at(i);
+        newPlayerStats.pHuman = playerHumanFlags.at(i);
+        newPlayerStats.finalState = static_cast<FinalState>(playerFinalStates.at(i));
 
-    for(int i = 0; i < playerNames.count(); i++ )
-        playerStats[i].name = playerNames.at(i).toLocal8Bit();
-
-    for(int i = 0; i < playerRaces.count(); i++ )
-        playerStats[i].race = playerRaces.at(i);
-
-    for(int i = 0; i < playerTeams.count(); i++ )
-        playerStats[i].team = playerTeams.at(i);
-
-    for(int i = 0; i < playerHumanFlags.count(); i++ )
-        playerStats[i].pHuman = playerHumanFlags.at(i);
-
-    for(int i = 0; i < playerFinalStates.count(); i++ )
-        playerStats[i].finalState = static_cast<FinalState>(playerFinalStates.at(i));
-
+        playerStats.append(newPlayerStats);
+    }
 
     //Сортировка игроков по команде
     for(int i = 0; i < playerStats.count(); i++)
@@ -500,27 +337,22 @@ void GameInfoReader::readReplayDataAfterStop()
 
     for (int i = 0; i < playerStats.count(); i++)
     {
-        if (teamsCounter.keys().contains(playerStats.at(i).team))
-        {
+        if (teamsCounter.contains(playerStats.at(i).team))
            teamsCounter.insert(playerStats.at(i).team, teamsCounter.value(playerStats.at(i).team) + 1);
-        }
         else
-        {
             teamsCounter.insert(playerStats.at(i).team, 1);
-        }
     }
 
-    int count;
-    if (teamsCounter.values().count() > 0)
-        count = teamsCounter.values().at(0);
+    int count = 0;
+    if (teamsCounter.count() > 0)
+        count = teamsCounter.first();
     else
     {
         checkFailed = true;
         warning += "    Game have 0 teams\n";
     }
 
-
-    for (int i = 0; i < teamsCounter.values().count(); i++)
+    for (int i = 0; i < teamsCounter.count(); i++)
     {
         if (teamsCounter.values().at(i) != count)
         {
@@ -646,7 +478,7 @@ void GameInfoReader::readReplayDataAfterStop()
     qInfo(logInfo()) << "Readed played game settings";
 }
 
-void GameInfoReader::readRacesTimerTimeout()
+void WarningsLogReader::readRacesTimerTimeout()
 {
     m_readRacesSingleShootTimer->stop();
 
@@ -742,15 +574,15 @@ void GameInfoReader::readRacesTimerTimeout()
     emit sendPlayersTestStats(playerStats);
 }
 
-void GameInfoReader::receiveAverrageApm(int apm)
+void WarningsLogReader::receiveAverrageApm(int apm)
 {
     m_lastAverrageApm = apm;
 }
 
-void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
+void WarningsLogReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
 
-    if(m_gameCurrentState != SsGameState::gameStoped && m_gameCurrentState != SsGameState::unknown)
+    if(m_missionCurrentState != SsMissionState::gameStoped && m_missionCurrentState != SsMissionState::unknown)
         return;
 
     m_playersInfoFromScanner = playersInfoFromScanner;
@@ -758,12 +590,12 @@ void GameInfoReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
 
 }
 
-void GameInfoReader::onQuitParty()
+void WarningsLogReader::onQuitParty()
 {
     m_playersInfoFromScanner.clear();
 }
 
-void GameInfoReader::setGameLounched(bool newGameLounched)
+void WarningsLogReader::setGameLounched(bool newGameLounched)
 {
     if (m_gameLounched == newGameLounched)
         return;
@@ -776,22 +608,25 @@ void GameInfoReader::setGameLounched(bool newGameLounched)
         ssWindowClosed();
 }
 
-void GameInfoReader::stopedGame()
+void WarningsLogReader::stopedGame()
 {
-    if (m_gameCurrentState != SsGameState::gameStoped)
+    if (m_missionCurrentState != SsMissionState::gameStoped
+            && m_missionCurrentState != SsMissionState::playbackStoped
+            && m_missionCurrentState != SsMissionState::savedGameStoped
+            && m_missionCurrentState != SsMissionState::unknownGameStoped)
     {
         qInfo(logInfo()) << "Game Stoped";
-        m_gameCurrentState = SsGameState::gameStoped;
-        emit gameStopped();
+        m_missionCurrentState = SsMissionState::gameStoped;
+        emit sendCurrentMissionState(m_missionCurrentState);
     }
 }
 
-void GameInfoReader::setCurrentProfile(const QString &newCurrentProfile)
+void WarningsLogReader::setCurrentProfile(const QString &newCurrentProfile)
 {
     m_currentProfile = newCurrentProfile;
 }
 
-void GameInfoReader::ssWindowClosed()
+void WarningsLogReader::ssWindowClosed()
 {
     stopedGame();
 
@@ -803,7 +638,7 @@ void GameInfoReader::ssWindowClosed()
     qInfo(logInfo()) << "SS Shutdown";
 }
 
-bool GameInfoReader::getGameInitialized()
+bool WarningsLogReader::getGameInitialized()
 {
     if (m_ssCurrentState == SsState::ssInitialized)
         return true;
@@ -811,7 +646,7 @@ bool GameInfoReader::getGameInitialized()
         return false;
 }
 
-void GameInfoReader::checkGameInitialize()
+void WarningsLogReader::checkGameInitialize()
 {
     if(m_ssCurrentState != SsState::ssInitialized)
     {
@@ -824,7 +659,7 @@ void GameInfoReader::checkGameInitialize()
     }
 }
 
-void GameInfoReader::checkCurrentMode()
+void WarningsLogReader::checkCurrentMode()
 {
     QFile file(m_ssPath+"\\warnings.log");
 
@@ -866,7 +701,7 @@ void GameInfoReader::checkCurrentMode()
     }
 }
 
-bool GameInfoReader::checkMissionSettingsValide(int gameType)
+bool WarningsLogReader::checkMissionSettingsValide(int gameType)
 {
     //QByteArray playback;
    // QString mod_name;
@@ -896,7 +731,7 @@ bool GameInfoReader::checkMissionSettingsValide(int gameType)
 
 }
 
-void GameInfoReader::readTestStatsTemp()
+void WarningsLogReader::readTestStatsTemp()
 {
 
     m_testStatsPath = updaTetestStatsFilePath();
@@ -921,14 +756,14 @@ void GameInfoReader::readTestStatsTemp()
     qInfo(logInfo()) << "testStats temp readed in" << m_testStatsPath;
 }
 
-void GameInfoReader::parseSsSettings()
+void WarningsLogReader::parseSsSettings()
 {
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
     delete ssSettings;
 }
 
-QString GameInfoReader::updaTetestStatsFilePath()
+QString WarningsLogReader::updaTetestStatsFilePath()
 {
     QDir dir(m_ssPath + "\\Profiles\\");
 
@@ -951,5 +786,216 @@ QString GameInfoReader::updaTetestStatsFilePath()
     }
 
     return statsPath;
+}
+
+void WarningsLogReader::missionLoad(QStringList* fileLines, int counter)
+{
+    //Что бы точно понять норм игра это или долбаный реплей чекаем ближайшие строки
+    int checkCounter = counter - 1;
+
+    while (checkCounter!=0 && checkCounter != (counter - 10))
+    {
+        QString checkLine = fileLines->at(checkCounter-1);
+
+        ///Проверка на реплей
+        if(checkLine.contains("APP -- Game Playback"))
+        {
+            if (m_missionCurrentState != SsMissionState::playbackLoadStarted)
+            {
+                m_missionCurrentState = SsMissionState::playbackLoadStarted;
+                checkGameInitialize();
+                m_readRacesSingleShootTimer->start();
+                emit sendCurrentMissionState(m_missionCurrentState);
+                qInfo(logInfo()) << "Playback load started";
+            }
+            break;
+        }
+
+        ///Проверка на загруженную игру
+        if (checkLine.contains("APP -- Game Load"))
+        {
+            if (m_missionCurrentState != SsMissionState::savedGameLoadStarted)
+            {
+                m_missionCurrentState = SsMissionState::savedGameLoadStarted;
+                checkGameInitialize();
+                readTestStatsTemp();
+                m_readRacesSingleShootTimer->start();
+                emit sendCurrentMissionState(m_missionCurrentState);
+                qInfo(logInfo()) << "Saved game load started";
+            }
+            break;
+        }
+
+        checkCounter--;
+    }
+
+    if (m_missionCurrentState != SsMissionState::savedGameLoadStarted
+        && m_missionCurrentState != SsMissionState::playbackLoadStarted
+        && m_missionCurrentState != SsMissionState::gameLoadStarted)
+    {
+        m_missionCurrentState = SsMissionState::gameLoadStarted;
+        checkGameInitialize();
+        m_readRacesSingleShootTimer->start();
+        emit sendCurrentMissionState(m_missionCurrentState);
+        qInfo(logInfo()) << "Game load started";
+    }
+}
+
+void WarningsLogReader::missionStarted(QStringList* fileLines, int counter)
+{
+    if(m_missionCurrentState == SsMissionState::gameLoadStarted
+       || m_missionCurrentState == SsMissionState::playbackLoadStarted
+       || m_missionCurrentState == SsMissionState::savedGameLoadStarted)
+    {
+        if(m_missionCurrentState == SsMissionState::gameLoadStarted)
+        {
+            m_missionCurrentState = SsMissionState::gameStarted;
+            readWinCondotions(fileLines, counter);
+            qInfo(logInfo()) << "Starting game mission";
+        }
+        else if (m_missionCurrentState == SsMissionState::playbackLoadStarted)
+        {
+            m_missionCurrentState = SsMissionState::playbackStarted;
+            qInfo(logInfo()) << "Starting playback mission";
+        }
+        else if (m_missionCurrentState == SsMissionState::savedGameLoadStarted)
+        {
+            m_missionCurrentState = SsMissionState::savedGameStarted;
+            qInfo(logInfo()) << "Starting saved game mission";
+        }
+        checkGameInitialize();
+        testStatsTemp = QStringList();
+        readRacesTimerTimeout();
+        emit sendCurrentMissionState(m_missionCurrentState);
+
+    }
+    else if(m_missionCurrentState != SsMissionState::gameStarted
+          && m_missionCurrentState != SsMissionState::playbackStarted
+          && m_missionCurrentState != SsMissionState::savedGameStarted
+          && m_missionCurrentState != SsMissionState::unknownGameStarted
+          && m_missionCurrentState != SsMissionState::gameOver)
+    {
+        m_missionCurrentState = SsMissionState::unknownGameStarted;
+        qInfo(logInfo()) << "Starting unknown mission";
+        checkGameInitialize();
+        testStatsTemp = QStringList();
+        readRacesTimerTimeout();
+        emit sendCurrentMissionState(m_missionCurrentState);
+    }
+}
+
+void WarningsLogReader::missionOver()
+{
+    if (m_missionCurrentState != SsMissionState::gameOver
+            && m_missionCurrentState != SsMissionState::playbackOver
+            && m_missionCurrentState != SsMissionState::savedGameOver
+            && m_missionCurrentState != SsMissionState::unknownGameOver)
+    {
+        switch(m_missionCurrentState)
+        {
+            case SsMissionState::gameStarted : m_missionCurrentState = SsMissionState::gameOver; break;
+            case SsMissionState::playbackStarted : m_missionCurrentState = SsMissionState::playbackOver; break;
+            case SsMissionState::savedGameStarted : m_missionCurrentState = SsMissionState::savedGameOver; break;
+            case unknownGameStarted : m_missionCurrentState = SsMissionState::unknownGameOver; break;
+            default: break;
+        }
+
+        checkGameInitialize();
+        testStatsTemp = QStringList();
+        readRacesTimerTimeout();
+
+        emit sendCurrentMissionState(m_missionCurrentState);
+
+        qInfo(logInfo()) << "Mission over";
+    }
+}
+
+void WarningsLogReader::missionStoped()
+{
+    if (m_missionCurrentState != SsMissionState::gameStoped
+        && m_missionCurrentState != SsMissionState::playbackStoped
+        && m_missionCurrentState != SsMissionState::savedGameStoped
+        && m_missionCurrentState != SsMissionState::unknownGameStoped)
+    {
+        checkGameInitialize();
+        readTestStatsTemp();
+
+        switch(m_missionCurrentState)
+        {
+            case SsMissionState::gameOver :
+            case SsMissionState::gameStarted : m_missionCurrentState = SsMissionState::gameStoped; readReplayDataAfterStop(); break;
+            case SsMissionState::playbackOver :
+            case SsMissionState::playbackStarted : m_missionCurrentState = SsMissionState::playbackStoped; break;
+            case SsMissionState::savedGameOver :
+            case SsMissionState::savedGameStarted : m_missionCurrentState = SsMissionState::savedGameStoped; break;
+            case unknown :
+            case unknownGameOver :
+            case unknownGameStarted : m_missionCurrentState = SsMissionState::unknownGameStoped; break;
+            default: break;
+        }
+
+        emit sendCurrentMissionState(m_missionCurrentState);
+        qInfo(logInfo()) << "Mission Stoped";
+    }
+}
+
+void WarningsLogReader::readWinCondotions(QStringList *fileLines, int counter)
+{
+    m_winCoditionsVector.clear();
+
+    int winConditionsReadCounter = counter;
+    QString winConditionsReadLine;
+
+    while (!winConditionsReadLine.contains("APP -- Game Start"))
+    {
+        m_gameWillBePlayedInOtherSession = true;
+
+        winConditionsReadLine = fileLines->at(winConditionsReadCounter-1);
+
+        if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
+        {
+            if(winConditionsReadLine.contains("ANNIHILATE")){
+                m_winCoditionsVector.append(WinCondition::ANNIHILATE);
+                qInfo(logInfo()) << "Loaded ANNIHILATE";
+            }
+
+            if(winConditionsReadLine.contains("ASSASSINATE")){
+                m_winCoditionsVector.append(WinCondition::ASSASSINATE);
+                qInfo(logInfo()) << "Loaded ASSASSINATE";
+            }
+
+            if(winConditionsReadLine.contains("CONTROLAREA")){
+                m_winCoditionsVector.append(WinCondition::CONTROLAREA);
+                qInfo(logInfo()) << "Loaded CONTROLAREA";
+            }
+
+            if(winConditionsReadLine.contains("DESTROYHQ")){
+                m_winCoditionsVector.append(WinCondition::DESTROYHQ);
+                qInfo(logInfo()) << "Loaded DESTROYHQ";
+            }
+
+            if(winConditionsReadLine.contains("ECONOMICVICTORY")){
+                m_winCoditionsVector.append(WinCondition::ECONOMICVICTORY);
+                qInfo(logInfo()) << "Loaded ECONOMICVICTORY";
+            }
+
+            if(winConditionsReadLine.contains("GAMETIMER")){
+                m_winCoditionsVector.append(WinCondition::GAMETIMER);
+                qInfo(logInfo()) << "Loaded GAMETIMER";
+            }
+
+            if(winConditionsReadLine.contains("STRATEGICOBJECTIVE")){
+                m_winCoditionsVector.append(WinCondition::STRATEGICOBJECTIVE);
+                qInfo(logInfo()) << "Loaded STRATEGICOBJECTIVE";
+            }
+
+            if(winConditionsReadLine.contains("SUDDENDEATH")){
+                m_winCoditionsVector.append(WinCondition::SUDDENDEATH);
+                qInfo(logInfo()) << "Loaded SUDDENDEATH";
+            }
+        }
+
+        winConditionsReadCounter--;
+    }
 }
 

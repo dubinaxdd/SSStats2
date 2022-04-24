@@ -78,16 +78,16 @@ void GamePanel::onGameStopped()
     emit racePanelVisibleChanged(m_racePanelVisisble);
 }
 
-void GamePanel::onGameStarted(SsGameState gameCurrentState)
+void GamePanel::onGameStarted(SsMissionState gameCurrentState)
 {
-    if (gameCurrentState == SsGameState::unknownGameStarted || gameCurrentState == SsGameState::playbackStarted)
+    if (gameCurrentState == SsMissionState::unknownGameStarted || gameCurrentState == SsMissionState::playbackStarted)
     {
         m_currentApm = QString("-");
         m_averageApm = QString("-");
         emit apmUpdate();
     }
 
-    if (gameCurrentState != SsGameState::gameStarted && gameCurrentState != SsGameState::savedGameStarted && gameCurrentState != SsGameState::playbackStarted)
+    if (gameCurrentState != SsMissionState::gameStarted && gameCurrentState != SsMissionState::savedGameStarted && gameCurrentState != SsMissionState::playbackStarted)
     {
         m_gameLeaveTimerVisible = false;
         emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
@@ -97,7 +97,7 @@ void GamePanel::onGameStarted(SsGameState gameCurrentState)
     m_gamePanelVisisble = true;
     emit gamePanelVisibleChanged(m_gamePanelVisisble);
 
-    if (gameCurrentState == SsGameState::gameStarted)
+    if (gameCurrentState == SsMissionState::gameStarted)
     {
         m_gameLeaveTimeLeft = 30;
         emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);

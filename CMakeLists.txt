@@ -49,18 +49,22 @@ set(PROJECT_SOURCES
         dev/keyboardProcessor/keyboardprocessor.cpp
         dev/uiBackend/uibackend.h
         dev/uiBackend/uibackend.cpp
-        dev/ssConroller/sscontroller.h
-        dev/ssConroller/sscontroller.cpp
-        dev/ssConroller/gameInfoReader/gameinforeader.h
-        dev/ssConroller/gameInfoReader/gameinforeader.cpp
-        dev/ssConroller/playerSteamScanner/playerssteamscanner.h
-        dev/ssConroller/playerSteamScanner/playerssteamscanner.cpp
-        dev/ssConroller/memoryController/memorycontroller.h
-        dev/ssConroller/memoryController/memorycontroller.cpp
-        dev/ssConroller/statsCollector/statscollector.h
-        dev/ssConroller/statsCollector/statscollector.cpp
-        dev/ssConroller/apmMeter/apmmeter.h
-        dev/ssConroller/apmMeter/apmmeter.cpp
+        dev/SsController/SsController.h
+        dev/SsController/SsController.cpp
+        dev/SsController/WarningsLogReader/WarningsLogReader.h
+        dev/SsController/WarningsLogReader/WarningsLogReader.cpp
+        dev/SsController/playerSteamScanner/playerssteamscanner.h
+        dev/SsController/playerSteamScanner/playerssteamscanner.cpp
+        dev/SsController/memoryController/memorycontroller.h
+        dev/SsController/memoryController/memorycontroller.cpp
+        dev/SsController/statsCollector/statscollector.h
+        dev/SsController/statsCollector/statscollector.cpp
+        dev/SsController/apmMeter/apmmeter.h
+        dev/SsController/apmMeter/apmmeter.cpp
+        dev/SsController/lobbyEventReader/lobbyeventreader.h
+        dev/SsController/lobbyEventReader/lobbyeventreader.cpp
+        dev/SsController/dowServerProcessor/DowServerProcessor.h
+        dev/SsController/dowServerProcessor/DowServerProcessor.cpp
         dev/uiBackend/statisticPanel/statisticpanel.h
         dev/uiBackend/statisticPanel/statisticpanel.cpp
         dev/uiBackend/gamePanel/gamepanel.h
@@ -72,14 +76,10 @@ set(PROJECT_SOURCES
         dev/uiBackend/statisticPanel/statisticpanelitem.cpp
         dev/core/logger/logger.h
         dev/core/logger/logger.cpp
-        dev/ssConroller/lobbyEventReader/lobbyeventreader.h
-        dev/ssConroller/lobbyEventReader/lobbyeventreader.cpp
         dev/discordController/discordController.h
         dev/discordController/discordController.cpp
         dev/uiBackend/MessagesPage/MessagesPage.h
         dev/uiBackend/MessagesPage/MessagesPage.cpp
-        dev/ssConroller/dowServerProcessor/DowServerProcessor.h
-        dev/ssConroller/dowServerProcessor/DowServerProcessor.cpp
         dev/ModsProcessor/ModsProcessor.h
         dev/ModsProcessor/ModsProcessor.cpp
         dev/ModsProcessor/ModsDownloader/ModsDownloader.h
@@ -185,23 +185,23 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/hookManager
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/keyboardProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/gameInfoReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/playerSteamScanner
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/memoryController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/statsCollector
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/apmMeter
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/WarningsLogReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/playerSteamScanner
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/memoryController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/statsCollector
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/apmMeter
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/lobbyEventReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/dowServerProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/gamePanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/imageProvider
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/baseTypes
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/logger
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/lobbyEventReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/logger    
     ${CMAKE_CURRENT_SOURCE_DIR}/externals/ReplayReaderLibrary
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/discordController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/MessagesPage
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ssConroller/dowServerProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsDownloader
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsInstaller

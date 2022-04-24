@@ -118,13 +118,7 @@ public slots:
     void receiveSsMaximized(bool maximized);
     void onSsLaunchStateChanged(bool state);
 
-
-    void onLoadStarted();
-    void onGameStopped();
-    void onStartingMission(SsGameState gameCurrentState);
-    void onGameOver();
-
-    void setGameCurrentState(SsGameState gameCurrentState);
+    void setMissionCurrentState(SsMissionState gameCurrentState);
 
     void receiveNotification(QString notify, bool isWarning);
 
@@ -138,6 +132,11 @@ private slots:
 private:
     void showClient();
 
+    void loadStarted();
+    void gameStopped();
+    void startingMission(SsMissionState gameCurrentState);
+    void gameOver();
+
 private:
     ImageProvider* m_imageProvider;
     GamePanel* m_gamePanel;
@@ -149,7 +148,7 @@ private:
 
     QString m_ssStatsVersion;
 
-    SsGameState m_gameCurrentState;
+    SsMissionState m_gameCurrentState;
 
     bool m_expand = false;
 

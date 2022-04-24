@@ -9,7 +9,7 @@
 #include <QQmlContext>
 #include <settingscontroller.h>
 #include <uibackend.h>
-#include <sscontroller.h>
+#include <SsController.h>
 #include <discordController.h>
 #include <logger.h>
 #include <ModsProcessor.h>

@@ -19,9 +19,7 @@ public:
 public slots:
     void onKeyPressEvent();
     void onMousePressEvent();
-
-    void onGameStarted(SsGameState gameCurrentState);
-    void onGameStopped();
+    void receiveMissionCurrentState(SsMissionState gameCurrentState);
 
 signals:
     void apmCalculated(int capm, int aapm);

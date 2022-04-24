@@ -22,35 +22,34 @@ void APMMeter::onMousePressEvent()
         ++m_currentTickMouseActionsCount;
 }
 
-void APMMeter::onGameStarted(SsGameState gameCurrentState)
+void APMMeter::receiveMissionCurrentState(SsMissionState gameCurrentState)
 {
-    if(!(gameCurrentState == SsGameState::gameStarted || gameCurrentState == SsGameState::savedGameStarted))
-        return;
+    if(gameCurrentState == SsMissionState::gameStarted || gameCurrentState == SsMissionState::savedGameStarted)
+    {
+        qInfo(logInfo()) << "APM analyse started";
+        m_isStarted = true;
 
-    qInfo(logInfo()) << "APM analyse started";
-    m_isStarted = true;
+        // RESET ALL APM DATA
+        m_currentTickMouseActionsCount = 0;
+        m_currentTickKeysActionsCount = 0;
+        m_fullActionsCount = 0;
 
-    // RESET ALL APM DATA
-    m_currentTickMouseActionsCount = 0;
-    m_currentTickKeysActionsCount = 0;
-    m_fullActionsCount = 0;
+        m_ticksActionsArray.clear();
 
-    m_ticksActionsArray.clear();
+        for(int i = 0; i < TICKS_FOR_ANALYSE; i++)
+            m_ticksActionsArray.append(0);
 
-    for(int i = 0; i < TICKS_FOR_ANALYSE; i++)
-        m_ticksActionsArray.append(0);
-
-    m_startTime = QDateTime::currentDateTime();//::currentMSecsSinceEpoch();
-    m_measureTickTimer->start(MEASURE_TICK_INTERVAL);
-}
-
-void APMMeter::onGameStopped()
-{
-    qInfo(logInfo()) << "APM analyse stopped";
-    m_isStarted = false;
-    m_measureTickTimer->stop();
-    m_ticksActionsArray.clear();
-    emit sendAverrageApm(m_lastAverrageApm);
+        m_startTime = QDateTime::currentDateTime();//::currentMSecsSinceEpoch();
+        m_measureTickTimer->start(MEASURE_TICK_INTERVAL);
+    }
+    else
+    {
+        qInfo(logInfo()) << "APM analyse stopped";
+        m_isStarted = false;
+        m_measureTickTimer->stop();
+        m_ticksActionsArray.clear();
+        emit sendAverrageApm(m_lastAverrageApm);
+    }
 }
 
 void APMMeter::calculateAPM()

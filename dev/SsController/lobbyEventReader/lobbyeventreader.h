@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTimer>
 #include <logger.h>
-
+#include <baseTypes.h>
 enum eventType
 {
     playerConnected,
@@ -32,8 +32,9 @@ signals:
 
 public slots:
     void activateReading(bool activated);
-    void onLoadStarted();
-    void onGameStopped();
+
+
+    void receiveCurrentMissionState(SsMissionState gameCurrentState);
 
 private slots:
     void readLobbyEvents();

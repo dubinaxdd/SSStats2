@@ -1,16 +1,17 @@
-#ifndef GAMEINFOREADER_H
-#define GAMEINFOREADER_H
+#ifndef WARNINGSLOGREADER_H
+#define WARNINGSLOGREADER_H
 
 #include <QObject>
 #include <QTimer>
 #include <baseTypes.h>
 #include <logger.h>
 
-class GameInfoReader : public QObject
+class WarningsLogReader : public QObject
 { 
     Q_OBJECT
 public:
-    explicit GameInfoReader(QString sspath, QObject *parent = nullptr);
+    explicit WarningsLogReader(QString sspath, QObject *parent = nullptr);
+
     void ssWindowClosed();
     bool getGameInitialized();
     void checkGameInitialize();
@@ -30,21 +31,19 @@ public slots:
     void onQuitParty();
 
 signals:
-    void loadStarted(SsGameState gameCurrentState);         //Сигнал о начале загрузки игры/реплея/сохраненки
+    /*void loadStarted(SsGameState gameCurrentState);       //Сигнал о начале загрузки игры/реплея/сохраненки
     void startingMission(SsGameState gameCurrentState);     //Сигнал о старте миссии после загрузки
     void gameOver();                                        //Сигнал о победе какой-то из сторон
     void gameStopped();                                     //Сигнал о завершении игры и выхода в меню
+ */
     void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
     void ssShutdown();                                      //Сигнал о выключении игры
 
 
-    void sendCurrentGameState(SsGameState gameCurrentState);
-
+    void sendCurrentMissionState(SsMissionState gameCurrentState);
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendReplayToServer(SendingReplayInfo replayInfo);
-
     void sendNotification(QString warningString, bool isWarning);
-
     void sendCurrentModeVersion(QString modVersion);
 
 private:
@@ -54,6 +53,13 @@ private:
     void parseSsSettings(); 
 
     QString updaTetestStatsFilePath();
+
+    void missionLoad(QStringList* fileLines, int counter);
+    void missionStarted(QStringList *fileLines, int counter);
+    void missionOver();
+    void missionStoped();
+
+    void readWinCondotions(QStringList *fileLines, int counter);
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -71,13 +77,13 @@ private:
     QVector<WinCondition> m_winCoditionsVector;
 
     SsState m_ssCurrentState = SsState::ssShutdowned;
-    SsGameState m_gameCurrentState = SsGameState::unknown;
+    SsMissionState m_missionCurrentState = SsMissionState::unknown;
 
     int m_lastAverrageApm = 0;
 
     bool m_gameLounched = false;
     bool m_lastGameSettingsValide = false;
-    bool m_gameWillBePlayed = false;
+    bool m_gameWillBePlayedInOtherSession = false;
 
     int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
@@ -85,4 +91,4 @@ private:
     QStringList testStatsTemp;
 };
 
-#endif // GAMEINFOREADER_H
+#endif // WARNINGSLOGREADER_H

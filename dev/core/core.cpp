@@ -1,7 +1,7 @@
 #include <core.h>
 #include <QDebug>
 #include <QFile>
-#include <gameinforeader.h>
+#include <WarningsLogReader.h>
 #include <lobbyeventreader.h>
 #include <baseTypes.h>
 #include <hookmanager.h>
@@ -33,71 +33,52 @@ Core::Core(QQmlContext *context, QObject* parent)
     m_topmostTimer = new QTimer();
     m_topmostTimer->setInterval(500);
 
-    connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
+    QObject::connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
-    QObject::connect(m_ssController, &SsController::ssMaximized,            this,                       &Core::ssMaximized,                             Qt::DirectConnection);
-    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   this,                       &Core::ssLaunched,                              Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::ssLaunchStateChanged,   m_uiBackend,                &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::ssMaximized,            m_uiBackend,                &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(), &GameInfoReader::sendPlayersTestStats,   m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,            Qt::QueuedConnection);
-
-
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameInitialized,       this,                       &Core::gameInitialized,         Qt::DirectConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::ssShutdown,            this,                       &Core::onSsShutdowned,          Qt::QueuedConnection);
-
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::loadStarted,           m_uiBackend,                &UiBackend::onLoadStarted,      Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameStopped,           m_uiBackend,                &UiBackend::onGameStopped,      Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::startingMission,       m_uiBackend,                &UiBackend::onStartingMission,  Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::gameOver,              m_uiBackend,                &UiBackend::onGameOver,         Qt::QueuedConnection);
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::sendCurrentGameState,          m_uiBackend,        &UiBackend::setGameCurrentState,         Qt::QueuedConnection);
-
-    QObject::connect(m_ssController->gameInfoReader(),  &GameInfoReader::sendNotification,              m_uiBackend,        &UiBackend::receiveNotification,         Qt::QueuedConnection);
+    QObject::connect(m_ssController,                    &SsController::ssMaximized,                     this,                           &Core::ssMaximized,                             Qt::DirectConnection);
+    QObject::connect(m_ssController,                    &SsController::ssLaunchStateChanged,            this,                           &Core::ssLaunched,                              Qt::QueuedConnection);
+    QObject::connect(m_ssController,                    &SsController::ssLaunchStateChanged,            m_uiBackend,                    &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
+    QObject::connect(m_ssController,                    &SsController::ssMaximized,                     m_uiBackend,                    &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
+    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
+    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendCurrentPlayerHostState,    m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState, Qt::QueuedConnection);
+    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
+    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::gameInitialized,         this,                       &Core::gameInitialized,                  Qt::DirectConnection);
+    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::ssShutdown,              this,                       &Core::onSsShutdowned,                   Qt::QueuedConnection);
+    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
+    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
+    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
 
     QObject::connect(m_ssController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
-
-    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendServerPlayrStats,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,  Qt::QueuedConnection);
-    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendCurrentPlayerHostState,  m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState,  Qt::QueuedConnection);
-    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendNotification,              m_uiBackend,        &UiBackend::receiveNotification,         Qt::QueuedConnection);
-
     QObject::connect(m_ssController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
+    QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_ssController, &SsController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
-    QObject::connect(m_uiBackend, &UiBackend::sendExpand, m_ssController, &SsController::blockInput, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::sendExpand,                         m_ssController,                     &SsController::blockSsWindowInput,                  Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::noFogStateChanged,                  m_ssController->memoryController(), &MemoryController::onNoFogStateChanged,             Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::sendExit,                           this,                               &Core::onExit,                                      Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController,                     &SsController::launchSoulstormWithSupportMode,      Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_ssController,                     &SsController::launchSoulstorm,                     Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAttachments,              m_uiBackend->newsPage(),            &MessagesPage::onAttachmetImagesUpdate,             Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAttachments,              m_uiBackend->eventsPage(),          &MessagesPage::onAttachmetImagesUpdate,             Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAvatars,                  m_uiBackend->newsPage(),            &MessagesPage::onAvatarUpdate,                      Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAvatars,                  m_uiBackend->eventsPage(),          &MessagesPage::onAvatarUpdate,                      Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->newsPage(),           &MessagesPage::sendLastReadedMessageId,         m_discordController,                &DiscordController::setLastReadedNewsMessageID,     Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->eventsPage(),         &MessagesPage::sendLastReadedMessageId,         m_discordController,                &DiscordController::setLastReadedEventsMessageID,   Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::startInstall,               m_modsProcessor,                    &ModsProcessor::onModInstallRequest,                Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::startUninstall,             m_modsProcessor,                    &ModsProcessor::onUninstallRequest,                 Qt::QueuedConnection);
 
-    QObject::connect(m_uiBackend, &UiBackend::noFogStateChanged, m_ssController->memoryController(), &MemoryController::onNoFogStateChanged, Qt::QueuedConnection);
-
-
-    QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
-
-
-    QObject::connect(m_uiBackend, &UiBackend::sendExit, this, &Core::onExit, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController, &SsController::launchSoulstormWithSupportMode, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend, &UiBackend::sendLaunchSoulstorm, m_ssController, &SsController::onLaunchSoulstorm, Qt::QueuedConnection);
 
     QObject::connect(m_discordController, &DiscordController::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
     QObject::connect(m_discordController, &DiscordController::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
-
     QObject::connect(m_discordController, &DiscordController::sendNews, m_uiBackend->newsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAvatars, m_uiBackend->newsPage(), &MessagesPage::onAvatarUpdate,  Qt::QueuedConnection);
     QObject::connect(m_discordController, &DiscordController::sendEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAvatars, m_uiBackend->eventsPage(), &MessagesPage::onAvatarUpdate,  Qt::QueuedConnection);
-
-    QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->newsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->imageProvider(), &ImageProvider::updateAttachments, m_uiBackend->eventsPage(), &MessagesPage::onAttachmetImagesUpdate,  Qt::QueuedConnection);
-
-    QObject::connect(m_uiBackend->newsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedNewsMessageID, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->eventsPage(), &MessagesPage::sendLastReadedMessageId, m_discordController, &DiscordController::setLastReadedEventsMessageID, Qt::QueuedConnection);
-
-    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startInstall, m_modsProcessor, &ModsProcessor::onModInstallRequest, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::startUninstall, m_modsProcessor, &ModsProcessor::onUninstallRequest, Qt::QueuedConnection);
 
     QObject::connect(m_modsProcessor, &ModsProcessor::modInstallCompleeted, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveInstallCompleeted, Qt::QueuedConnection);
     QObject::connect(m_modsProcessor, &ModsProcessor::installProgress, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadProgress, Qt::QueuedConnection);
     QObject::connect(m_modsProcessor, &ModsProcessor::downloadError, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadError, Qt::QueuedConnection);
-
-    QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
 }
@@ -111,7 +92,7 @@ void Core::topmostTimerTimout()
     //Соответственно затираем флаг и выставлем заного по таймеру.
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
 
-    if (m_ssController->gameInfoReader()->getGameInitialized())
+    if (m_ssController->warningsLogReader()->getGameInitialized())
     {
         if (m_ssStatsHwnd)
         {
@@ -268,7 +249,7 @@ void Core::registerTypes()
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
     qRegisterMetaType<QList<SearchStemIdPlayerInfo>>("QList<SearchStemIdPlayerInfo>");
-    qRegisterMetaType<SsGameState>("SsGameState");
+    qRegisterMetaType<SsMissionState>("SsMissionState");
     qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
     qRegisterMetaType<SearchStemIdPlayerInfo>("SearchStemIdPlayerInfo");
     qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");

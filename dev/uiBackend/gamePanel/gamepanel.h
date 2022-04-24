@@ -71,7 +71,7 @@ signals:
 public slots:
     void onApmChanged(int capm, int aapm);
     void onGameStopped();
-    void onGameStarted(SsGameState gameCurrentState);
+    void onGameStarted(SsMissionState gameCurrentState);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
     void expandPlayerRacesButtonClick();
     void onSettingsLoaded();

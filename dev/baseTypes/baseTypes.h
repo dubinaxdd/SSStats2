@@ -43,18 +43,31 @@ enum SsState
 };
 
 
-enum SsGameState
+enum SsMissionState
 {
     unknown = 0,
-    gameStoped = 1,             //Игра завершена
-    gameLoadStarted = 2,        //Начало загрузки Игры
-    playbackLoadStarted = 3,    //Начало загрузки Реплея
-    savedGameLoadStarted = 4,   //Начало загрузки сохраненной игры
-    gameStarted = 5,            //Начало игры
-    playbackStarted = 6,        //Начало реплея
-    savedGameStarted = 7,       //Начало загруженной игры
-    unknownGameStarted= 8,      //Начало хрен пойми какой игры (работает когда включили статку посреди игры)
-    gameOver = 9                //Победа какой-то команды
+
+    gameLoadStarted = 1,        //Начало загрузки Игры
+    playbackLoadStarted = 2,    //Начало загрузки Реплея
+    savedGameLoadStarted = 3,   //Начало загрузки сохраненной игры
+
+    gameStarted = 4,            //Начало игры
+    playbackStarted = 5,        //Начало реплея
+    savedGameStarted = 6,       //Начало загруженной игры
+    unknownGameStarted= 7,      //Начало хрен пойми какой игры (работает когда включили статку посреди игры)
+
+    gameStoped = 8,             //Игра завершена
+    playbackStoped = 9,         //Игра завершена
+    savedGameStoped = 10,       //Игра завершена
+    unknownGameStoped = 11,     //Игра завершена
+
+    gameOver = 12,              //Победа какой-то команды в миссии
+    playbackOver = 13,          //Победа какой-то команды в реплее
+    savedGameOver = 14,         //Победа какой-то команды в сохраненной игре
+    unknownGameOver = 15        //Победа какой-то команды в неизвестной игре
+
+
+
 };
 
 enum Race

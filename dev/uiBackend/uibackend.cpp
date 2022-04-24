@@ -28,9 +28,9 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
 
 void UiBackend::expandKeyPressed()
 {
-    if (m_gameCurrentState != SsGameState::gameLoadStarted
-            && m_gameCurrentState != SsGameState::playbackLoadStarted
-            && m_gameCurrentState != SsGameState::savedGameLoadStarted
+    if (m_gameCurrentState != SsMissionState::gameLoadStarted
+            && m_gameCurrentState != SsMissionState::playbackLoadStarted
+            && m_gameCurrentState != SsMissionState::savedGameLoadStarted
      )
     {
         setExpand(!m_expand);
@@ -62,7 +62,7 @@ void UiBackend::onSsLaunchStateChanged(bool state)
     showClient();
 }
 
-void UiBackend::onLoadStarted()
+void UiBackend::loadStarted()
 {
     m_loadStarted = true;
     m_gamePanel->onGameStopped();
@@ -75,12 +75,11 @@ void UiBackend::onLoadStarted()
     emit patyStatisticVisibleChanged();
 }
 
-void UiBackend::onStartingMission(SsGameState gameCurrentState)
+void UiBackend::startingMission(SsMissionState gameCurrentState)
 {
     m_gamePanel->onGameStarted(gameCurrentState);
 
     m_missionStarted = true;
-
     m_headerVisible = false;
     m_patyStatisticVisible = false;
 
@@ -88,12 +87,12 @@ void UiBackend::onStartingMission(SsGameState gameCurrentState)
     emit patyStatisticVisibleChanged();
 }
 
-void UiBackend::onGameOver()
+void UiBackend::gameOver()
 {
-    onStartingMission(SsGameState::gameOver);
+    startingMission(SsMissionState::gameOver);
 }
 
-void UiBackend::setGameCurrentState(SsGameState gameCurrentState)
+void UiBackend::setMissionCurrentState(SsMissionState gameCurrentState)
 {
     if (m_gameCurrentState == gameCurrentState)
         return;
@@ -102,31 +101,30 @@ void UiBackend::setGameCurrentState(SsGameState gameCurrentState)
 
     //TODO: Тут нужен рефактор, желательн о перевести взаимодействие с гейминфоридером на один сигнал присылающий текущее состояние.
 
-/*
-    if (m_gameCurrentState == SsGameState::gameLoadStarted
-            || m_gameCurrentState == SsGameState::playbackLoadStarted
-            || m_gameCurrentState == SsGameState::savedGameLoadStarted
-     )
-        onLoadStarted();
 
-
-    if (m_gameCurrentState == SsGameState::gameStoped)
-        onGameStopped();
-
-    if (m_gameCurrentState ==SsGameState::gameStarted
-            || m_gameCurrentState ==SsGameState::playbackStarted
-            || m_gameCurrentState ==SsGameState::savedGameStarted
-            )
+    switch (m_gameCurrentState)
     {
-        onStartingMission(m_gameCurrentState);
+        case SsMissionState::gameLoadStarted :
+        case SsMissionState::playbackLoadStarted :
+        case SsMissionState::savedGameLoadStarted : loadStarted(); break;
+
+        case SsMissionState::gameStoped :
+        case SsMissionState::playbackStoped :
+        case SsMissionState::savedGameStoped :
+        case SsMissionState::unknownGameStoped : gameStopped(); break;
+
+        case SsMissionState::gameStarted :
+        case SsMissionState::playbackStarted :
+        case SsMissionState::savedGameStarted :
+        case SsMissionState::unknownGameStarted : startingMission(m_gameCurrentState); break;
+
+        case SsMissionState::gameOver :
+        case SsMissionState::playbackOver :
+        case SsMissionState::savedGameOver :
+        case SsMissionState::unknownGameOver : gameOver(); break;
+
+        default: break;
     }
-
-    if (m_gameCurrentState == SsGameState::gameStoped)
-        onGameStopped();
-
-
-    if (m_gameCurrentState == SsGameState::gameOver)
-        onGameOver();*/
 }
 
 void UiBackend::receiveNotification(QString notify, bool isWarning)
@@ -332,7 +330,7 @@ void UiBackend::setMouseArea(int width, int height)
     m_mouseAreaHeight = height;
 }
 
-void UiBackend::onGameStopped()
+void UiBackend::gameStopped()
 {
     m_loadStarted = false;
     m_missionStarted = false;

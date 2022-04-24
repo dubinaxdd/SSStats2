@@ -4,7 +4,7 @@
 #include <QObject>
 #include "Windows.h"
 #include <QTimer>
-#include <gameinforeader.h>
+#include <WarningsLogReader.h>
 #include <playerssteamscanner.h>
 #include <baseTypes.h>
 #include <QVector>
@@ -12,7 +12,6 @@
 #include <memorycontroller.h>
 #include <apmmeter.h>
 #include <QThread>
-#include <QMutex>
 #include <logger.h>
 #include <settingscontroller.h>
 #include <lobbyeventreader.h>
@@ -26,46 +25,36 @@ public:
     explicit SsController(SettingsController* settingsController, QObject *parent = nullptr);
     ~SsController();
 
-    bool getInputBlocked() const;
-
-    const QString &ssPath() const;
-    bool getSsMaximized();
-
-    GameInfoReader *gameInfoReader() const;
-
-    bool ssWindowed() const;
+    WarningsLogReader   *warningsLogReader()    const;
+    StatsCollector      *statsCollector()       const;
+    MemoryController    *memoryController()     const;
+    APMMeter            *apmMeter()             const;
+    PlayersSteamScanner *playersSteamScanner()  const;
+    LobbyEventReader    *lobbyEventReader()     const;
+    DowServerProcessor  *dowServerProcessor()   const;
 
     HWND soulstormHwnd() const;
-
-    StatsCollector *statsCollector() const;
-
-    MemoryController *memoryController() const;
-
-    APMMeter *apmMeter() const;
-
-    PlayersSteamScanner *playersSteamScanner() const;
-
     LONG defaultSoulstormWindowLong() const;
 
-    LobbyEventReader *lobbyEventReader() const;
+    const QString &ssPath() const;
 
+    bool getInputBlocked() const;
+    bool getSsMaximized();
+    bool ssWindowed() const;
     bool getUseWindows7SupportMode() const;
 
-    DowServerProcessor *dowServerProcessor() const;
+
 
 public slots:
-    void blockInput(bool state);
+    void blockSsWindowInput(bool state);
     void launchSoulstormWithSupportMode();
     void minimizeSsWithWin7Support();
-    void onLaunchSoulstorm();
+    void launchSoulstorm();
 
 private slots:
     void checkWindowState();
     void gameInitialized();
     void ssShutdown();
-    //void readTestStats();
-
-    void receivePlayrStemids(QMap<QString, QString> infoMap);
     void fullscrenizeSoulstorm();
     void minimizeSoulstorm();
 
@@ -79,7 +68,6 @@ private:
     QString getSsPathFromRegistry();
     QString getSteamPathFromRegistry();
     void parseSsSettings();
-    void launchSoulstorm();
 
 private:
     HWND m_soulstormHwnd = NULL;
@@ -90,23 +78,22 @@ private:
     QString m_ssPath;
     QString m_steamPath;
 
-    QString currentProfile;
+    QString m_currentProfile;
 
     bool inputBlocked = false;
     bool m_ssLounchState = false;
     bool m_ssMaximized = false;
     bool m_ssWindowed = false;
 
-    bool m_gameInitialized;
+    bool m_gameInitialized = false;
     bool m_ssWindowCreated = false;
 
-    GameInfoReader* m_gameInfoReader;
+    WarningsLogReader* m_warningsLogReader;
     LobbyEventReader* m_lobbyEventReader;
 
     PlayersSteamScanner* m_playersSteamScanner;
 
     QThread m_playersSteamScannerThread;
-    QMutex m_playersSteamScannerMutex;
 
     APMMeter* m_apmMeter;
     StatsCollector* m_statsCollector;
