@@ -63,6 +63,18 @@ void WarningsLogReader::readGameInfo()
                 break;
             }
 
+            ///Проверка имени локального игрока
+            if(line.contains("GAME -- Local player"))
+            {
+                setLocalPlayerName(line);
+            }
+
+            ///Проверка на выбадение в обсы локального игрока
+            if(line.contains("MOD -- Player"))
+            {
+                playerDroppedToObserver(line);
+            }
+
             ///Проверка на достижение условия победы
             if(line.contains("MOD -- Game Over at frame")||line.contains("storing simulation results for match"))
             {
@@ -502,13 +514,14 @@ void WarningsLogReader::readRacesTimerTimeout()
 
     file.close();
 
-    qInfo(logInfo()) << "testStats temp readed in" << m_testStatsPath;
 
     if (testStatsTemp == fileLines)
     {
         m_readRacesSingleShootTimer->start();
         return;
     }
+
+    qInfo(logInfo()) << "testStats temp readed in" << m_testStatsPath;
 
     testStatsTemp = fileLines;
 
@@ -816,6 +829,7 @@ void WarningsLogReader::missionLoad(QStringList* fileLines, int counter)
         {
             if (m_missionCurrentState != SsMissionState::savedGameLoadStarted)
             {
+                m_playerDroppedToObserver = false;
                 m_missionCurrentState = SsMissionState::savedGameLoadStarted;
                 checkGameInitialize();
                 readTestStatsTemp();
@@ -831,9 +845,9 @@ void WarningsLogReader::missionLoad(QStringList* fileLines, int counter)
 
     if (m_missionCurrentState != SsMissionState::savedGameLoadStarted
         && m_missionCurrentState != SsMissionState::playbackLoadStarted
-        && m_missionCurrentState != SsMissionState::gameLoadStarted
-        && m_missionCurrentState != SsMissionState::unknown)
+        && m_missionCurrentState != SsMissionState::gameLoadStarted)
     {
+        m_playerDroppedToObserver = false;
         m_missionCurrentState = SsMissionState::gameLoadStarted;
         checkGameInitialize();
         m_readRacesSingleShootTimer->start();
@@ -868,6 +882,9 @@ void WarningsLogReader::missionStarted(QStringList* fileLines, int counter)
         testStatsTemp = QStringList();
         readRacesTimerTimeout();
         emit sendCurrentMissionState(m_missionCurrentState);
+
+        if (m_playerDroppedToObserver)
+            emit localPlayerDroppedToObserver();
 
     }
     else if(m_missionCurrentState != SsMissionState::gameStarted
@@ -916,8 +933,7 @@ void WarningsLogReader::missionStoped()
     if (m_missionCurrentState != SsMissionState::gameStoped
         && m_missionCurrentState != SsMissionState::playbackStoped
         && m_missionCurrentState != SsMissionState::savedGameStoped
-        && m_missionCurrentState != SsMissionState::unknownGameStoped
-        && m_missionCurrentState != SsMissionState::unknown)
+        && m_missionCurrentState != SsMissionState::unknownGameStoped)
     {
         checkGameInitialize();
         readTestStatsTemp();
@@ -938,6 +954,29 @@ void WarningsLogReader::missionStoped()
 
         emit sendCurrentMissionState(m_missionCurrentState);
         qInfo(logInfo()) << "Mission Stoped";
+    }
+}
+
+void WarningsLogReader::setLocalPlayerName(QString str)
+{
+    QString localPlayerName = str.right(str.length() - 37);
+
+    if(m_localPlayerName != localPlayerName)
+    {
+        m_localPlayerName = localPlayerName;
+        qInfo(logInfo()) << "Local player name" << m_localPlayerName;
+    }
+}
+
+void WarningsLogReader::playerDroppedToObserver(QString str)
+{
+    QString playerName = str.right(str.length() - 29);
+
+    if (playerName == m_localPlayerName && !m_playerDroppedToObserver)
+    {
+        m_playerDroppedToObserver = true;
+        emit localPlayerDroppedToObserver();
+        qInfo(logInfo()) << "Local player dropped to observer" << playerName;
     }
 }
 

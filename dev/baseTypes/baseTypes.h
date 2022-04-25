@@ -65,9 +65,6 @@ enum SsMissionState
     playbackOver = 13,          //Победа какой-то команды в реплее
     savedGameOver = 14,         //Победа какой-то команды в сохраненной игре
     unknownGameOver = 15        //Победа какой-то команды в неизвестной игре
-
-
-
 };
 
 enum Race

@@ -10,6 +10,34 @@ APMMeter::APMMeter(QObject *parent) : QObject(parent)
     QObject::connect(m_measureTickTimer, &QTimer::timeout, this, &APMMeter::calculateAPM, Qt::QueuedConnection);
 }
 
+void APMMeter::startAnalys()
+{
+    qInfo(logInfo()) << "APM analyse started";
+    m_isStarted = true;
+
+    // RESET ALL APM DATA
+    m_currentTickMouseActionsCount = 0;
+    m_currentTickKeysActionsCount = 0;
+    m_fullActionsCount = 0;
+
+    m_ticksActionsArray.clear();
+
+    for(int i = 0; i < TICKS_FOR_ANALYSE; i++)
+        m_ticksActionsArray.append(0);
+
+    m_startTime = QDateTime::currentDateTime();//::currentMSecsSinceEpoch();
+    m_measureTickTimer->start(MEASURE_TICK_INTERVAL);
+}
+
+void APMMeter::stopAnalys()
+{
+    qInfo(logInfo()) << "APM analyse stopped";
+    m_isStarted = false;
+    m_measureTickTimer->stop();
+    m_ticksActionsArray.clear();
+    emit sendAverrageApm(m_lastAverrageApm);
+}
+
 void APMMeter::onKeyPressEvent()
 {
     if (m_isStarted)
@@ -25,31 +53,9 @@ void APMMeter::onMousePressEvent()
 void APMMeter::receiveMissionCurrentState(SsMissionState gameCurrentState)
 {
     if(gameCurrentState == SsMissionState::gameStarted || gameCurrentState == SsMissionState::savedGameStarted)
-    {
-        qInfo(logInfo()) << "APM analyse started";
-        m_isStarted = true;
-
-        // RESET ALL APM DATA
-        m_currentTickMouseActionsCount = 0;
-        m_currentTickKeysActionsCount = 0;
-        m_fullActionsCount = 0;
-
-        m_ticksActionsArray.clear();
-
-        for(int i = 0; i < TICKS_FOR_ANALYSE; i++)
-            m_ticksActionsArray.append(0);
-
-        m_startTime = QDateTime::currentDateTime();//::currentMSecsSinceEpoch();
-        m_measureTickTimer->start(MEASURE_TICK_INTERVAL);
-    }
+        startAnalys();
     else
-    {
-        qInfo(logInfo()) << "APM analyse stopped";
-        m_isStarted = false;
-        m_measureTickTimer->stop();
-        m_ticksActionsArray.clear();
-        emit sendAverrageApm(m_lastAverrageApm);
-    }
+        stopAnalys();
 }
 
 void APMMeter::calculateAPM()

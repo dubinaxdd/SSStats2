@@ -48,6 +48,8 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     QObject::connect(m_warningsLogReader, &WarningsLogReader::sendCurrentModeVersion,   m_dowServerProcessor, &DowServerProcessor::setCurrentModVersion, Qt::QueuedConnection);
     QObject::connect(m_warningsLogReader, &WarningsLogReader::sendReplayToServer,       m_statsCollector, &StatsCollector::sendReplayToServer,   Qt::QueuedConnection);
 
+    QObject::connect(m_warningsLogReader, &WarningsLogReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
+
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_playersSteamScanner, &PlayersSteamScanner::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_warningsLogReader,  &WarningsLogReader::onQuitParty, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);

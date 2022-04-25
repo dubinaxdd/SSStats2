@@ -16,6 +16,9 @@ class APMMeter : public QObject
 public:
     explicit APMMeter(QObject *parent = nullptr);
 
+    void startAnalys();
+    void stopAnalys();
+
 public slots:
     void onKeyPressEvent();
     void onMousePressEvent();

@@ -45,6 +45,7 @@ signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void sendNotification(QString warningString, bool isWarning);
     void sendCurrentModeVersion(QString modVersion);
+    void localPlayerDroppedToObserver();
 
 private:
     void checkCurrentMode();
@@ -59,6 +60,9 @@ private:
     void missionOver();
     void missionStoped();
 
+    void setLocalPlayerName(QString str);
+    void playerDroppedToObserver(QString str);
+
     void readWinCondotions(QStringList *fileLines, int counter);
 
 private:
@@ -72,7 +76,7 @@ private:
 
     QString m_testStatsPath;
 
-    QString m_playerName;
+    QString m_localPlayerName;
 
     QVector<WinCondition> m_winCoditionsVector;
 
@@ -84,6 +88,7 @@ private:
     bool m_gameLounched = false;
     bool m_lastGameSettingsValide = false;
     bool m_gameWillBePlayedInOtherSession = false;
+    bool m_playerDroppedToObserver = false;
 
     int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
