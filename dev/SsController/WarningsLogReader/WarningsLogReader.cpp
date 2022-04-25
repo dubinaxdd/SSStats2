@@ -365,7 +365,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     if(duration <= 30)
     {
         checkFailed = true;
-        warning += "    Game have duration < 30 sec\n";
+        warning += "    Game duration less than 30 sec\n";
     }
 
     //Проверка на наличие победителя

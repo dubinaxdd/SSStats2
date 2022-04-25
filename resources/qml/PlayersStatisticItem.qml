@@ -38,35 +38,35 @@ Rectangle {
 
         if (playerMmr1v1 < 1700)
         {
-            rankImage.source = "qrc:/images/resources/images/rank1_200.png"
+            rankImage.source = "qrc:/images/resources/images/rank1_60.png"
             return;
         }
 
         if (playerMmr1v1 < 1900)
         {
-            rankImage.source = "qrc:/images/resources/images/rank2_200.png"
+            rankImage.source = "qrc:/images/resources/images/rank2_60.png"
             return;
         }
 
         if (playerMmr1v1 < 2100)
         {
-            rankImage.source = "qrc:/images/resources/images/rank3_200.png"
+            rankImage.source = "qrc:/images/resources/images/rank3_60.png"
             return;
         }
 
         if (playerMmr1v1 < 2300)
         {
-            rankImage.source = "qrc:/images/resources/images/rank4_200.png"
+            rankImage.source = "qrc:/images/resources/images/rank4_60.png"
             return;
         }
 
         if (playerMmr1v1 < 2500)
         {
-            rankImage.source = "qrc:/images/resources/images/rank5_200.png"
+            rankImage.source = "qrc:/images/resources/images/rank5_60.png"
             return;
         }
 
-        rankImage.source = "qrc:/images/resources/images/rank6_200.png"
+        rankImage.source = "qrc:/images/resources/images/rank6_60.png"
         return;
     }
 
@@ -252,7 +252,7 @@ Rectangle {
                         anchors.horizontalCenter: parent.horizontalCenter
                         fillMode: Image.PreserveAspectFit
 
-                        source: "qrc:/images/resources/images/rank1_200.png"
+                        source: "qrc:/images/resources/images/rank1_60.png"
                     }
                 }
             }

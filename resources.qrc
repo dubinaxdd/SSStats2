@@ -22,5 +22,10 @@
         <file>resources/images/readyImage.png</file>
         <file>resources/images/rank6_30.png</file>
         <file>resources/images/rank6_60.png</file>
+        <file>resources/images/rank1_60.png</file>
+        <file>resources/images/rank2_60.png</file>
+        <file>resources/images/rank3_60.png</file>
+        <file>resources/images/rank4_60.png</file>
+        <file>resources/images/rank5_60.png</file>
     </qresource>
 </RCC>

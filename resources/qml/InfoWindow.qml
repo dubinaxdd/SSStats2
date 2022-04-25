@@ -76,12 +76,12 @@ Rectangle {
                     <td><center>2500+</center></td>
                 </tr>
                 <tr>
-                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank1_200.png\" width=\"70\" height=\"70\"></td>
-                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank2_200.png\" width=\"70\" height=\"70\"></td>
-                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank3_200.png\" width=\"70\" height=\"70\"></td>
-                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank4_200.png\" width=\"70\" height=\"70\"></td>
-                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank5_200.png\" width=\"70\" height=\"70\"></td>
-                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank6_200.png\" width=\"70\" height=\"70\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank1_60.png\" width=\"60\" height=\"60\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank2_60.png\" width=\"60\" height=\"60\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank3_60.png\" width=\"60\" height=\"60\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank4_60.png\" width=\"60\" height=\"60\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank5_60.png\" width=\"60\" height=\"60\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank6_60.png\" width=\"60\" height=\"60\"></td>
                 </tr>
                 </table>
                 <br>
