@@ -411,9 +411,7 @@ void WarningsLogReader::readReplayDataAfterStop()
 
     for(int i = 0; i < playersCount; i++)
     {
-
         PlayerInfoForReplaySendong newPlayer;
-
         newPlayer.playerName = playerStats[i].name;
 
         //Берем сиды из последнего скана
@@ -595,12 +593,13 @@ void WarningsLogReader::receiveAverrageApm(int apm)
 void WarningsLogReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
 
-    if(m_missionCurrentState != SsMissionState::gameStoped && m_missionCurrentState != SsMissionState::unknown)
-        return;
+    //if(m_missionCurrentState != SsMissionState::gameStoped && m_missionCurrentState != SsMissionState::unknown)
+    //    return;
+
+    for (int i = 0; i < playersInfoFromScanner.count(); i++)
+        qDebug() << playersInfoFromScanner.at(i).name << playersInfoFromScanner.at(i).steamId;
 
     m_playersInfoFromScanner = playersInfoFromScanner;
-    m_playersCountFromScanner = playersCount;
-
 }
 
 void WarningsLogReader::onQuitParty()

@@ -53,7 +53,7 @@ private:
 
     QNetworkAccessManager *m_networkManager;
 
-   QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
+    QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
 
     QList<ServerPlayerStats*> m_playerStats;
 
