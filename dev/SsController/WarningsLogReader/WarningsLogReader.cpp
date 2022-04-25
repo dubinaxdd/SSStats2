@@ -831,7 +831,8 @@ void WarningsLogReader::missionLoad(QStringList* fileLines, int counter)
 
     if (m_missionCurrentState != SsMissionState::savedGameLoadStarted
         && m_missionCurrentState != SsMissionState::playbackLoadStarted
-        && m_missionCurrentState != SsMissionState::gameLoadStarted)
+        && m_missionCurrentState != SsMissionState::gameLoadStarted
+        && m_missionCurrentState != SsMissionState::unknown)
     {
         m_missionCurrentState = SsMissionState::gameLoadStarted;
         checkGameInitialize();
@@ -915,7 +916,8 @@ void WarningsLogReader::missionStoped()
     if (m_missionCurrentState != SsMissionState::gameStoped
         && m_missionCurrentState != SsMissionState::playbackStoped
         && m_missionCurrentState != SsMissionState::savedGameStoped
-        && m_missionCurrentState != SsMissionState::unknownGameStoped)
+        && m_missionCurrentState != SsMissionState::unknownGameStoped
+        && m_missionCurrentState != SsMissionState::unknown)
     {
         checkGameInitialize();
         readTestStatsTemp();

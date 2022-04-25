@@ -173,6 +173,7 @@ void StatsCollector::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerSta
 
         QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
             reply->deleteLater();
+            qWarning(logWarning()) << "Connection error:" << reply->errorString();
         });
     }
 }

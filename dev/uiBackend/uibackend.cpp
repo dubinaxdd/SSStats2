@@ -70,7 +70,9 @@ void UiBackend::loadStarted()
 
     m_headerVisible = false;
     m_patyStatisticVisible = false;
+    m_expand = false;
 
+    emit sendExpand(m_expand);
     emit headerPanelVisibleChanged();
     emit patyStatisticVisibleChanged();
 }

@@ -325,7 +325,7 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
 
                     newPlayerData.partyID = QString::number(playerDataJson.at(0).toInt());
                     newPlayerData.profileID = QString::number(playerDataJson.at(1).toInt());
-                    newPlayerData.position = playerDataJson.at(5).toInt();
+                    //newPlayerData.position = playerDataJson.at(5).toInt();
 
                     newPartyData.profilesIds.append(newPlayerData);
                 }
