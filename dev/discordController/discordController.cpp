@@ -6,7 +6,7 @@
 #include <QDebug>
 #include <defines.h>
 
-#define REQUEST_TIMER_INTERVAL 1000
+#define REQUEST_TIMER_INTERVAL 2000
 
 DiscordController::DiscordController(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -241,13 +241,13 @@ void DiscordController::receiveNews(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
 
@@ -269,13 +269,13 @@ void DiscordController::receiveEvents(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QList<DiscordMessage> eventsList = parseMessagesJson(replyByteArray);
 
@@ -297,11 +297,13 @@ void DiscordController::receiveNewsChannel(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
+
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -324,11 +326,13 @@ void DiscordController::receiveEventsChannel(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
+
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -379,7 +383,7 @@ void DiscordController::receiveAttachmentImage(QNetworkReply *reply, QString att
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QImage image = QImage::fromData(replyByteArray);
 
