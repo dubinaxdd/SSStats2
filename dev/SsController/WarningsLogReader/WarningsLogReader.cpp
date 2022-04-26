@@ -76,7 +76,7 @@ void WarningsLogReader::readGameInfo()
             }
 
             ///Проверка на достижение условия победы
-            if(line.contains("MOD -- Game Over at frame")||line.contains("storing simulation results for match"))
+            if(line.contains("MOD -- Game Over at frame")/*||line.contains("storing simulation results for match")*/)
             {
                 missionOver();
                 break;
@@ -595,12 +595,11 @@ void WarningsLogReader::receiveAverrageApm(int apm)
 
 void WarningsLogReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
-
     //if(m_missionCurrentState != SsMissionState::gameStoped && m_missionCurrentState != SsMissionState::unknown)
     //    return;
 
     for (int i = 0; i < playersInfoFromScanner.count(); i++)
-        qDebug() << playersInfoFromScanner.at(i).name << playersInfoFromScanner.at(i).steamId;
+        qInfo(logInfo()) << "Receive player data from DOW server:"<< playersInfoFromScanner.at(i).name << playersInfoFromScanner.at(i).steamId;
 
     m_playersInfoFromScanner = playersInfoFromScanner;
 }
@@ -885,6 +884,9 @@ void WarningsLogReader::missionStarted(QStringList* fileLines, int counter)
         readRacesTimerTimeout();
         emit sendCurrentMissionState(m_missionCurrentState);
 
+        if (fileLines->at(counter - 1).contains("GAME -- Local player"))
+            setLocalPlayerName(fileLines->at(counter - 1));
+
         if (m_playerDroppedToObserver)
             emit localPlayerDroppedToObserver();
 
@@ -963,6 +965,15 @@ void WarningsLogReader::setLocalPlayerName(QString str)
 {
     QString localPlayerName = str.right(str.length() - 37);
 
+    for(int i = localPlayerName.count() - 1; i != 0; i--)
+    {
+        if(localPlayerName.at(i) == ',')
+        {
+            localPlayerName = localPlayerName.left(i);
+            break;
+        }
+    }
+
     if(m_localPlayerName != localPlayerName)
     {
         m_localPlayerName = localPlayerName;
@@ -972,9 +983,12 @@ void WarningsLogReader::setLocalPlayerName(QString str)
 
 void WarningsLogReader::playerDroppedToObserver(QString str)
 {
+    if (m_playerDroppedToObserver)
+        return;
+
     QString playerName = str.right(str.length() - 29);
 
-    if (playerName == m_localPlayerName && !m_playerDroppedToObserver)
+    if (str.contains(m_localPlayerName))
     {
         m_playerDroppedToObserver = true;
         emit localPlayerDroppedToObserver();
