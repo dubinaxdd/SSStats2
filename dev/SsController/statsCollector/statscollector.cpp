@@ -192,6 +192,8 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedP
 
     if (!jsonDoc.isArray())
     {
+        qWarning(logWarning()) << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
+
         reply->deleteLater();
         return;
     }
