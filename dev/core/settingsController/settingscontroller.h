@@ -18,6 +18,7 @@ struct Settings
     bool gridHotkeysInstalled = false;
     bool overlayVisible = true;
     bool win7SupportMode = false;
+    bool skipIntroVideo = false;
 };
 
 class SettingsController : public QObject

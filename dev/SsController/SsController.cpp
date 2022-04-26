@@ -97,8 +97,13 @@ void SsController::launchSoulstorm()
 {
     if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
     {
+        QString params = "";
+
+        if (m_settingsController->getSettings()->skipIntroVideo)
+            params.append("-nomovies");
+
         m_soulstormProcess = new QProcess(this);
-        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {""});
+        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {params});
     }
 }
 
@@ -114,8 +119,13 @@ void SsController::launchSoulstormWithSupportMode()
 
     if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
     {
+        QString params = "";
+
+        if (m_settingsController->getSettings()->skipIntroVideo)
+            params.append("-nomovies");
+
         m_soulstormProcess = new QProcess(this);
-        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {""});
+        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {params});
         useWindows7SupportMode = true;
     }
 }

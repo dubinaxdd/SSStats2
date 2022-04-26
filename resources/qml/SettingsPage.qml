@@ -149,6 +149,18 @@ Rectangle {
                 model.win7SupportMode = checked;
             }
         }
+
+        Switch{
+            text: "Skip the intro video"
+            checked: model.skipIntroVideo
+
+            opacity: hovered? 1.0 : 0.8
+
+            onCheckedChanged: {
+                model.skipIntroVideo = checked;
+            }
+        }
+
 /*
         Switch{
             text: "No FOG"

@@ -31,6 +31,9 @@ void SettingsPageModel::onSettingsLoaded()
 
     m_win7SupportMode =  m_settingsController->getSettings()->win7SupportMode;
     emit win7SupportModeChanged();
+
+    m_skipIntroVideo =  m_settingsController->getSettings()->skipIntroVideo;
+    emit skipIntroVideoChanged();
 }
 
 void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
@@ -214,6 +217,23 @@ void SettingsPageModel::receiveGridHotkeysDownloadError()
     emit gridHotkeysInstallInProcessChanged();
 }
 
+bool SettingsPageModel::skipIntroVideo() const
+{
+    return m_skipIntroVideo;
+}
+
+void SettingsPageModel::setSkipIntroVideo(bool newSkipIntroVideo)
+{
+    if (m_skipIntroVideo ==  newSkipIntroVideo)
+        return;
+
+    m_skipIntroVideo = newSkipIntroVideo;
+    emit skipIntroVideoChanged();
+
+    m_settingsController->getSettings()->skipIntroVideo = m_skipIntroVideo;
+    m_settingsController->saveSettings();
+}
+
 bool SettingsPageModel::win7SupportMode() const
 {
     return m_win7SupportMode;
@@ -227,6 +247,7 @@ void SettingsPageModel::setWin7SupportMode(bool newWin7SupportMode)
     emit win7SupportModeChanged();
 
     m_settingsController->getSettings()->win7SupportMode = m_win7SupportMode;
+    m_settingsController->saveSettings();
 }
 
 bool SettingsPageModel::overlayVisible() const
@@ -242,6 +263,7 @@ void SettingsPageModel::setOverlayVisible(bool newOverlayVisible)
     emit overlayVisibleChanged();
 
     m_settingsController->getSettings()->overlayVisible = m_overlayVisible;
+    m_settingsController->saveSettings();
 }
 
 

@@ -23,6 +23,7 @@ class SettingsPageModel : public QObject
 
     Q_PROPERTY(bool overlayVisible READ overlayVisible WRITE setOverlayVisible NOTIFY overlayVisibleChanged)
     Q_PROPERTY(bool win7SupportMode READ win7SupportMode WRITE setWin7SupportMode NOTIFY win7SupportModeChanged)
+    Q_PROPERTY(bool skipIntroVideo READ skipIntroVideo WRITE setSkipIntroVideo NOTIFY skipIntroVideoChanged)
 
 
 public:
@@ -50,6 +51,7 @@ signals:
 
     void overlayVisibleChanged();
     void win7SupportModeChanged();
+    void skipIntroVideoChanged();
 
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
@@ -71,6 +73,9 @@ public:
 
     bool win7SupportMode() const;
     void setWin7SupportMode(bool newWin7SupportMode);
+
+    bool skipIntroVideo() const;
+    void setSkipIntroVideo(bool newSkipIntroVideo);
 
 private:
     void receiveRussianFontsDownloadProgress(int progress);
@@ -102,6 +107,7 @@ private:
 
     bool m_overlayVisible = true;
     bool m_win7SupportMode = false;
+    bool m_skipIntroVideo = false;
 
 };
 
