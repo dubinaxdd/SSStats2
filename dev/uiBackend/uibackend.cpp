@@ -113,8 +113,6 @@ void UiBackend::setNotificationVisible(bool newNotificationVisible)
 
     m_notificationVisible = newNotificationVisible;
     emit notificationVisibleChanged();
-
-    qDebug() << "ASDASFDFADFASDFSADFASDFASDf";
 }
 
 void UiBackend::setMissionCurrentState(SsMissionState gameCurrentState)
