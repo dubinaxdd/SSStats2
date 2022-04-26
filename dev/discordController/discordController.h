@@ -65,8 +65,10 @@ private:
     QString m_lastReadedEventMessageID = "";
 
     bool m_requestNewsNow = true;
-
     bool m_readyToRequest = true;
+
+    bool m_needRequestNews = true;
+    bool m_needRequestEvents = true;
 
 };
 

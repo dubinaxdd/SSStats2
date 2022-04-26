@@ -6,7 +6,7 @@
 #include <QDebug>
 #include <defines.h>
 
-#define REQUEST_TIMER_INTERVAL 1000
+#define REQUEST_TIMER_INTERVAL 2000
 #define REQUEST_TIMER_INTERVAL2 5000
 
 DiscordController::DiscordController(SettingsController* settingsController, QObject *parent)
@@ -333,7 +333,8 @@ void DiscordController::receiveNewsChannel(QNetworkReply *reply)
     if (lastMessageId != m_lastNewsMessageID)
     {
         m_lastNewsMessageID = lastMessageId;
-        requestNews();
+        //requestNews();
+        m_needRequestNews  = true;
     }
 }
 
@@ -362,7 +363,8 @@ void DiscordController::receiveEventsChannel(QNetworkReply *reply)
     if (lastMessageId != m_lastEventMessageID)
     {
         m_lastEventMessageID = lastMessageId;
-        requestEvents();
+        m_needRequestEvents = true;
+        //requestEvents();
     }
 }
 
@@ -420,13 +422,26 @@ void DiscordController::requestMessages()
     if (!m_readyToRequest)
         return;
 
+    if(m_needRequestNews)
+    {
+        requestNews();
+        m_needRequestNews = false;
+        return;
+    }
+
+    if(m_needRequestEvents)
+    {
+        requestEvents();
+        m_needRequestEvents = false;
+        return;
+    }
+
+    m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
+
     if(m_requestNewsNow)
         requestNewsChannel();
     else
-    {
         requestEventsChannel();
-        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
-    }
 
     m_requestNewsNow = !m_requestNewsNow;
 }

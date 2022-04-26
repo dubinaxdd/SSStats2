@@ -406,7 +406,7 @@ void WarningsLogReader::readReplayDataAfterStop()
         PlayerInfoForReplaySendong newPlayer;
         newPlayer.playerName = playerStats[i].name;
 
-        bool badName = true;
+        //bool badName = true;
 
         //Берем сиды из последнего скана
         for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
@@ -414,18 +414,18 @@ void WarningsLogReader::readReplayDataAfterStop()
             if(newPlayer.playerName == m_playersInfoFromScanner[j].name)
             {
                 newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
-                badName = false;
+                //badName = false;
                 break;
             }
         }
 
         //Если не нашлось соответствия имени то светим ошибку
-        if (badName && !computersFinded)
+       /* if (badName && !computersFinded)
         {
             checkFailed = true;
             warning += "    Bad name: " + newPlayer.playerName + "\n";
         }
-
+*/
         if (playerStats[i].race == "guard_race")
             newPlayer.playerRace = Race::ImperialGuard;
         if (playerStats[i].race == "tau_race")
