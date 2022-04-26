@@ -409,14 +409,24 @@ void WarningsLogReader::readReplayDataAfterStop()
         PlayerInfoForReplaySendong newPlayer;
         newPlayer.playerName = playerStats[i].name;
 
+        bool badName = true;
+
         //Берем сиды из последнего скана
         for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
         {
             if(newPlayer.playerName == m_playersInfoFromScanner[j].name)
             {
                 newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
+                badName = false;
                 break;
             }
+        }
+
+        //Если не нашлось соответствия имени то светим ошибку
+        if (badName)
+        {
+            checkFailed = true;
+            warning += "    Bad name: " + newPlayer.playerName + "\n";
         }
 
         if (playerStats[i].race == "guard_race")

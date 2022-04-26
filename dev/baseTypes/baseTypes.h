@@ -213,7 +213,7 @@ static const quint32 CRC32Table[256] =
 struct PlayerInfoForReplaySendong
 {
     QString playerName;
-    QString playerSid;
+    QString playerSid = "";
     Race playerRace;
     bool isWinner;
 };
