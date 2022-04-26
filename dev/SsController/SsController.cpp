@@ -95,6 +95,9 @@ void SsController::blockSsWindowInput(bool state)
 
 void SsController::launchSoulstorm()
 {
+    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+    ssSettings->setValue("global/screenwindowed", 0);
+
     if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
     {
         QString params = "";
@@ -104,6 +107,7 @@ void SsController::launchSoulstorm()
 
         m_soulstormProcess = new QProcess(this);
         m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {params});
+        useWindows7SupportMode = false;
     }
 }
 

@@ -180,6 +180,7 @@ private:
 
     QString m_lastNotification;
     bool m_lastNotificationIsWarning = false;
+    bool m_notificationVisible = false;
 };
 
 #endif // UIBACKEND_H
