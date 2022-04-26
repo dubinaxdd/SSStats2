@@ -398,9 +398,6 @@ void WarningsLogReader::readReplayDataAfterStop()
         warning += "    No game winner has been determined\n";
     }
 
-
-
-
     //Отправка реплея
     SendingReplayInfo replayInfo;
 
@@ -423,7 +420,7 @@ void WarningsLogReader::readReplayDataAfterStop()
         }
 
         //Если не нашлось соответствия имени то светим ошибку
-        if (badName)
+        if (badName && !computersFinded)
         {
             checkFailed = true;
             warning += "    Bad name: " + newPlayer.playerName + "\n";
