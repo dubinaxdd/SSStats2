@@ -12,6 +12,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_newsPage(new MessagesPage(this))
     , m_eventsPage(new MessagesPage(this))
     , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
+    , m_notificationVisibleTimer(new QTimer(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");
@@ -19,7 +20,11 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     m_ssStatsVersion.append(".");
     m_ssStatsVersion.append(GIT_REL);
 
+    m_notificationVisibleTimer->setInterval(7000);
+    m_notificationVisibleTimer->setSingleShot(true);
+
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &UiBackend::onSettingsLoaded, Qt::QueuedConnection);
+    QObject::connect(m_notificationVisibleTimer, &QTimer::timeout, this, [=]{setNotificationVisible(false);}, Qt::QueuedConnection);
 
     emit gamePanelInitialized();
     emit statisticPanelInitialized();
@@ -94,6 +99,22 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+bool UiBackend::notificationVisible() const
+{
+    return m_notificationVisible;
+}
+
+void UiBackend::setNotificationVisible(bool newNotificationVisible)
+{
+    if(m_notificationVisible == newNotificationVisible)
+        return;
+
+    m_notificationVisible = newNotificationVisible;
+    emit notificationVisibleChanged();
+
+    qDebug() << "ASDASFDFADFASDFSADFASDFASDf";
+}
+
 void UiBackend::setMissionCurrentState(SsMissionState gameCurrentState)
 {
     if (m_gameCurrentState == gameCurrentState)
@@ -136,6 +157,8 @@ void UiBackend::receiveNotification(QString notify, bool isWarning)
     m_lastNotification = notify;
     m_lastNotificationIsWarning = isWarning;
     emit updateNotification();
+    m_notificationVisibleTimer->start();
+    setNotificationVisible(true);
 }
 
 void UiBackend::onExit()

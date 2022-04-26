@@ -44,6 +44,7 @@ class UiBackend : public QObject
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
+    Q_PROPERTY(bool notificationVisible READ notificationVisible WRITE setNotificationVisible NOTIFY notificationVisibleChanged)
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -78,6 +79,9 @@ public:
 
     SettingsPageModel *settingsPageModel() const;
 
+    bool notificationVisible() const;
+    void setNotificationVisible(bool newNotificationVisible);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -110,6 +114,7 @@ signals:
 
     void expandButtonPressed();
     void updateNotification();
+    void notificationVisibleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -145,6 +150,8 @@ private:
     MessagesPage* m_newsPage;
     MessagesPage* m_eventsPage;
     SettingsPageModel* m_settingsPageModel;
+
+    QTimer* m_notificationVisibleTimer;
 
     QString m_ssStatsVersion;
 
