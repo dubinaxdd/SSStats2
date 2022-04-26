@@ -33,8 +33,8 @@ Rectangle {
 
             if(_uiBackend.gamePanel.gamePanelVisible)
             {
-                expandButtonRectangle.howeredState = true;
-                _uiBackend.expandKeyPressed();
+                //expandButtonRectangle.howeredState = true;
+                //_uiBackend.expandKeyPressed();
             }
         }
 
@@ -140,6 +140,8 @@ Rectangle {
 
                     Rectangle {
                         id: expandButtonRectangle
+
+                        visible: false
 
                         property bool howeredState: false
 

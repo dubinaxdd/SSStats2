@@ -77,7 +77,9 @@ void UiBackend::loadStarted()
     m_patyStatisticVisible = false;
     m_expand = false;
 
-    emit sendExpand(m_expand);
+    if(m_settingsPageModel->overlayVisible())
+        emit sendExpand(m_expand);
+
     emit headerPanelVisibleChanged();
     emit patyStatisticVisibleChanged();
 }
@@ -280,7 +282,9 @@ bool UiBackend::expand() const
 void UiBackend::setExpand(bool newExpand)
 {
     m_expand = newExpand;
-    emit sendExpand(m_expand);
+
+    if(m_settingsPageModel->overlayVisible())
+        emit sendExpand(m_expand);
 
     if (m_missionStarted)
     {
