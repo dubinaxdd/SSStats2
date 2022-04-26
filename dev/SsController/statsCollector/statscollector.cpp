@@ -268,8 +268,8 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
 
         if (replayInfo.playersInfo[i].playerSid == "")
         {
-            qWarning() << "Player" << replayInfo.playersInfo[i].playerName << "have not steam id, replay not sended";
-            emit sendNotification("Player " + replayInfo.playersInfo[i].playerName + " have not steam id, replay not sended", true);
+            qWarning() << "Player" << replayInfo.playersInfo[i].playerName << "does not have a steam id, the replay has not been uploaded to the server";
+            emit sendNotification("Player " + replayInfo.playersInfo[i].playerName + " does not have a steam id, the replay has not been uploaded to the server", true);
             return;
         }
     }
@@ -370,9 +370,9 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     request.setRawHeader("User-Agent", "");
 
     QNetworkReply *reply = m_networkManager->post(request, postData);
-    qInfo(logInfo()) << "The replay has been sent to the server";
+    qInfo(logInfo()) << "The replay has been uploaded to the server";
 
-    emit sendNotification("The replay has been sent to the server", false);
+    emit sendNotification("The replay has been uploaded to the server", false);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();

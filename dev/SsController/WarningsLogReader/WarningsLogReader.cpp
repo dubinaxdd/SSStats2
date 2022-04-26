@@ -268,7 +268,7 @@ void WarningsLogReader::readReplayDataAfterStop()
 
     QString warning;
 
-    warning += "    Raplay not sended!\n";
+    warning += "    The replay has not been uploaded to the server!\n";
 
     bool checkFailed = false;
 
@@ -276,7 +276,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     if (computersFinded)
     {
         checkFailed = true;
-        warning += "    Game have AI\n";
+        warning += "    There was AI in the game\n";
     }
 
     //Выводим информацию об игре
@@ -303,7 +303,7 @@ void WarningsLogReader::readReplayDataAfterStop()
         if (!isStdWinConditions)
         {
             checkFailed = true;
-            warning += "    Game have not standard win conditions\n";
+            warning += "    Standard winning conditions were not set up for the game\n";
         }
     }
     else
@@ -319,7 +319,7 @@ void WarningsLogReader::readReplayDataAfterStop()
         if (!isStdWinConditions)
         {
             checkFailed = true;
-            warning += "    Game have not standard win conditions\n";
+            warning += "    Standard winning conditions were not set up for the game\n";
         }
     }
 
@@ -341,7 +341,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     if (teamsCount > 2)
     {
         checkFailed = true;
-        warning += "    Game have more then 2 teams\n";
+        warning += "    There were more than two teams in the game\n";
     }
 
     //Проверка на равенство команд
@@ -361,7 +361,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     else
     {
         checkFailed = true;
-        warning += "    Game have 0 teams\n";
+        warning += "    Team identification failure occured\n";
     }
 
     for (int i = 0; i < teamsCounter.count(); i++)
@@ -369,7 +369,7 @@ void WarningsLogReader::readReplayDataAfterStop()
         if (teamsCounter.values().at(i) != count)
         {
             checkFailed = true;
-            warning += "    Game have not equal teams\n";
+            warning += "    Teams didn't have an equal number of playersn";
         }
     }
 
@@ -377,7 +377,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     if(duration <= 30)
     {
         checkFailed = true;
-        warning += "    Game duration less than 30 sec\n";
+        warning += "    Game lasted less than 30 seconds\n";
     }
 
     //Проверка на наличие победителя
@@ -395,16 +395,11 @@ void WarningsLogReader::readReplayDataAfterStop()
     if (!winnerAccepted)
     {
         checkFailed = true;
-        warning += "    Game not have winner\n";
+        warning += "    No game winner has been determined\n";
     }
 
 
-    if (checkFailed)
-    {
-        emit sendNotification(warning, true);
-        qWarning(logWarning()) << warning;
-        return;
-    }
+
 
     //Отправка реплея
     SendingReplayInfo replayInfo;
@@ -464,10 +459,18 @@ void WarningsLogReader::readReplayDataAfterStop()
 
     m_lastGameSettingsValide = checkMissionSettingsValide(replayInfo.gameType);
 
-    qInfo(logInfo()) << "Game settings valide:" << m_lastGameSettingsValide;
-
     if (!m_lastGameSettingsValide)
+    {
+        checkFailed = true;
+        warning += "    Game settings not valide\n";
+    }
+
+    if (checkFailed)
+    {
+        emit sendNotification(warning, true);
+        qWarning(logWarning()) << warning;
         return;
+    }
 
     replayInfo.mapName = scenario;
     replayInfo.gameTime = duration;
@@ -483,7 +486,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     emit sendReplayToServer(std::move(replayInfo));
 
     //m_allPlayersInfoFromScanner.clear();
-    qInfo(logInfo()) << "Players history cleared";
+    //qInfo(logInfo()) << "Players history cleared";
 
     qInfo(logInfo()) << "Readed played game settings";
 }

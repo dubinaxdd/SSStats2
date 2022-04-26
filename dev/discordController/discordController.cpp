@@ -6,7 +6,8 @@
 #include <QDebug>
 #include <defines.h>
 
-#define REQUEST_TIMER_INTERVAL 3000
+#define REQUEST_TIMER_INTERVAL 1000
+#define REQUEST_TIMER_INTERVAL2 5000
 
 DiscordController::DiscordController(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -33,14 +34,18 @@ void DiscordController::requestNews()
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
 
+    m_readyToRequest = false;
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveNews(reply);
+        m_readyToRequest = true;
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         reply->deleteLater();
+        m_readyToRequest = true;
     });
 
 }
@@ -57,14 +62,18 @@ void DiscordController::requestEvents()
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
 
+    m_readyToRequest = false;
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveEvents(reply);
+        m_readyToRequest = true;
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         reply->deleteLater();
+        m_readyToRequest = true;
     });
 }
 
@@ -80,14 +89,18 @@ void DiscordController::requestNewsChannel()
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
 
+    m_readyToRequest = false;
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveNewsChannel(reply);
+        m_readyToRequest = true;
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         reply->deleteLater();
+        m_readyToRequest = true;
     });
 }
 
@@ -103,20 +116,23 @@ void DiscordController::requestEventsChannel()
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
 
+    m_readyToRequest = false;
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveEventsChannel(reply);
+        m_readyToRequest = true;
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         reply->deleteLater();
+        m_readyToRequest = true;
     });
 }
 
 void DiscordController::requestUserAvatar(QString userId, QString avatarId)
 {
-
     QNetworkRequest newRequest;
 
     newRequest.setUrl(QUrl("https://cdn.discordapp.com/avatars/" + userId + "/" + avatarId + ".png"));
@@ -401,10 +417,16 @@ void DiscordController::onSettingsLoaded()
 
 void DiscordController::requestMessages()
 {
+    if (!m_readyToRequest)
+        return;
+
     if(m_requestNewsNow)
         requestNewsChannel();
     else
+    {
         requestEventsChannel();
+        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
+    }
 
     m_requestNewsNow = !m_requestNewsNow;
 }

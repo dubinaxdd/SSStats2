@@ -66,6 +66,8 @@ private:
 
     bool m_requestNewsNow = true;
 
+    bool m_readyToRequest = true;
+
 };
 
 #endif // DISCORDCONTROLLER_H
