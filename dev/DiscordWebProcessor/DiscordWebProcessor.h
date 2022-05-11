@@ -17,6 +17,7 @@ public:
 private:
     void requestNews();
     void requestEvents();
+    void requestUnreadedNews();
     void requestNewsChannel();
     void requestEventsChannel();
 
@@ -67,8 +68,8 @@ private:
     bool m_requestNewsNow = true;
     bool m_readyToRequest = true;
 
-    bool m_needRequestNews = true;
-    bool m_needRequestEvents = true;
+    bool m_needRequestNews = false;
+    bool m_needRequestEvents = false;
 
 };
 
