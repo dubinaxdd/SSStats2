@@ -1,5 +1,5 @@
-#ifndef DISCORDCONTROLLER_H
-#define DISCORDCONTROLLER_H
+#ifndef DISCORDWEBPROCESSOR_H
+#define DISCORDWEBPROCESSOR_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -8,11 +8,11 @@
 #include <QTimer>
 #include <settingscontroller.h>
 
-class DiscordController : public QObject
+class DiscordWebProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit DiscordController(SettingsController* settingsController, QObject *parent = nullptr);
+    explicit DiscordWebProcessor(SettingsController* settingsController, QObject *parent = nullptr);
 
 private:
     void requestNews();
@@ -72,4 +72,4 @@ private:
 
 };
 
-#endif // DISCORDCONTROLLER_H
+#endif // DISCORDWEBPROCESSOR_H

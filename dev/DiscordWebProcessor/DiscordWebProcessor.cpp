@@ -1,4 +1,4 @@
-#include "discordController.h"
+#include "DiscordWebProcessor.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -9,20 +9,20 @@
 #define REQUEST_TIMER_INTERVAL 2000
 #define REQUEST_TIMER_INTERVAL2 5000
 
-DiscordController::DiscordController(SettingsController* settingsController, QObject *parent)
+DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
     , m_requestTimer(new QTimer(this))
     , m_settingsController(settingsController)
 {
-    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordController::onSettingsLoaded, Qt::QueuedConnection);
-    QObject::connect(m_requestTimer, &QTimer::timeout, this, &DiscordController::requestMessages, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordWebProcessor::onSettingsLoaded, Qt::QueuedConnection);
+    QObject::connect(m_requestTimer, &QTimer::timeout, this, &DiscordWebProcessor::requestMessages, Qt::QueuedConnection);
 
     m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL);
     m_requestTimer->start();
 }
 
-void DiscordController::requestNews()
+void DiscordWebProcessor::requestNews()
 {
     QNetworkRequest newRequest;
 
@@ -50,7 +50,7 @@ void DiscordController::requestNews()
 
 }
 
-void DiscordController::requestEvents()
+void DiscordWebProcessor::requestEvents()
 {
     QNetworkRequest newRequest;
 
@@ -77,7 +77,7 @@ void DiscordController::requestEvents()
     });
 }
 
-void DiscordController::requestNewsChannel()
+void DiscordWebProcessor::requestNewsChannel()
 {
     QNetworkRequest newRequest;
 
@@ -104,7 +104,7 @@ void DiscordController::requestNewsChannel()
     });
 }
 
-void DiscordController::requestEventsChannel()
+void DiscordWebProcessor::requestEventsChannel()
 {
     QNetworkRequest newRequest;
 
@@ -131,7 +131,7 @@ void DiscordController::requestEventsChannel()
     });
 }
 
-void DiscordController::requestUserAvatar(QString userId, QString avatarId)
+void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
 {
     QNetworkRequest newRequest;
 
@@ -148,7 +148,7 @@ void DiscordController::requestUserAvatar(QString userId, QString avatarId)
     });
 }
 
-void DiscordController::requestAttachmentImage(QString attachmentId, QString url)
+void DiscordWebProcessor::requestAttachmentImage(QString attachmentId, QString url)
 {
     QNetworkRequest newRequest;
 
@@ -165,7 +165,7 @@ void DiscordController::requestAttachmentImage(QString attachmentId, QString url
     });
 }
 
-QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
+QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArray)
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(byteArray);
 
@@ -240,19 +240,21 @@ QList<DiscordMessage> DiscordController::parseMessagesJson(QByteArray byteArray)
     return std::move(discordNewsList);
 }
 
-void DiscordController::setLastReadedNewsMessageID(QString id)
+void DiscordWebProcessor::setLastReadedNewsMessageID(QString id)
 {
     m_lastReadedNewsMessageID = id;
     m_settingsController->getSettings()->lastReadedNewsMessageID = m_lastReadedNewsMessageID;
+    m_settingsController->saveSettings();
 }
 
-void DiscordController::setLastReadedEventsMessageID(QString id)
+void DiscordWebProcessor::setLastReadedEventsMessageID(QString id)
 {
     m_lastReadedEventMessageID = id;
     m_settingsController->getSettings()->lastReadedEventsMessageID = m_lastReadedEventMessageID;
+    m_settingsController->saveSettings();
 }
 
-void DiscordController::receiveNews(QNetworkReply *reply)
+void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -280,7 +282,7 @@ void DiscordController::receiveNews(QNetworkReply *reply)
     emit sendNews(std::move(newsList));
 }
 
-void DiscordController::receiveEvents(QNetworkReply *reply)
+void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -308,7 +310,7 @@ void DiscordController::receiveEvents(QNetworkReply *reply)
     emit sendEvents(std::move(eventsList));
 }
 
-void DiscordController::receiveNewsChannel(QNetworkReply *reply)
+void DiscordWebProcessor::receiveNewsChannel(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -338,7 +340,7 @@ void DiscordController::receiveNewsChannel(QNetworkReply *reply)
     }
 }
 
-void DiscordController::receiveEventsChannel(QNetworkReply *reply)
+void DiscordWebProcessor::receiveEventsChannel(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -368,7 +370,7 @@ void DiscordController::receiveEventsChannel(QNetworkReply *reply)
     }
 }
 
-void DiscordController::receiveUserAvatar(QNetworkReply *reply, QString avatarId)
+void DiscordWebProcessor::receiveUserAvatar(QNetworkReply *reply, QString avatarId)
 {
 
     if (reply->error() != QNetworkReply::NoError)
@@ -390,7 +392,7 @@ void DiscordController::receiveUserAvatar(QNetworkReply *reply, QString avatarId
     emit sendAvatar(avatarId, std::move(avatar));
 }
 
-void DiscordController::receiveAttachmentImage(QNetworkReply *reply, QString attachmentId)
+void DiscordWebProcessor::receiveAttachmentImage(QNetworkReply *reply, QString attachmentId)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -411,13 +413,13 @@ void DiscordController::receiveAttachmentImage(QNetworkReply *reply, QString att
     emit sendAttachmentImage(attachmentId, std::move(image));
 }
 
-void DiscordController::onSettingsLoaded()
+void DiscordWebProcessor::onSettingsLoaded()
 {
     m_lastReadedNewsMessageID = m_settingsController->getSettings()->lastReadedNewsMessageID;
     m_lastReadedEventMessageID = m_settingsController->getSettings()->lastReadedEventsMessageID;
 }
 
-void DiscordController::requestMessages()
+void DiscordWebProcessor::requestMessages()
 {
     if (!m_readyToRequest)
         return;

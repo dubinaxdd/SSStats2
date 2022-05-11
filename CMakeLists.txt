@@ -76,8 +76,8 @@ set(PROJECT_SOURCES
         dev/uiBackend/statisticPanel/statisticpanelitem.cpp
         dev/core/logger/logger.h
         dev/core/logger/logger.cpp
-        dev/discordController/discordController.h
-        dev/discordController/discordController.cpp
+        dev/DiscordWebProcessor/DiscordWebProcessor.h
+        dev/DiscordWebProcessor/DiscordWebProcessor.cpp
         dev/uiBackend/MessagesPage/MessagesPage.h
         dev/uiBackend/MessagesPage/MessagesPage.cpp
         dev/ModsProcessor/ModsProcessor.h
@@ -200,7 +200,7 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/logger    
     ${CMAKE_CURRENT_SOURCE_DIR}/externals/ReplayReaderLibrary
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/discordController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/DiscordWebProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/MessagesPage
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsDownloader

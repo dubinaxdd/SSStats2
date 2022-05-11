@@ -10,7 +10,7 @@
 #include <settingscontroller.h>
 #include <uibackend.h>
 #include <SsController.h>
-#include <discordController.h>
+#include <DiscordWebProcessor.h>
 #include <logger.h>
 #include <ModsProcessor.h>
 
@@ -57,7 +57,7 @@ private:
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
     SsController* m_ssController;
-    DiscordController* m_discordController;
+    DiscordWebProcessor* m_discordWebProcessor;
     ModsProcessor* m_modsProcessor;
 
     int m_defaultWidth;
