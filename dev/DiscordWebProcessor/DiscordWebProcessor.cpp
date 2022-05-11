@@ -26,7 +26,16 @@ void DiscordWebProcessor::requestNews()
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit() + "/messages";
+    QString urlString = "";
+
+    if (m_isFirstNewsRequest)
+        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit() + "/messages";
+    else
+        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit() + "/messages?after=" + m_afterNewsMessageID;
+
+    qDebug() << urlString;
+
+    m_isFirstNewsRequest = false;
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -47,14 +56,22 @@ void DiscordWebProcessor::requestNews()
         reply->deleteLater();
         m_readyToRequest = true;
     });
-
 }
 
 void DiscordWebProcessor::requestEvents()
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*EVENTS_CHANNEL_ID*/).toLocal8Bit() + "/messages";
+    QString urlString = "";
+
+    if (m_isFirstEventsRequest)
+        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*EVENTS_CHANNEL_ID*/).toLocal8Bit() + "/messages";
+    else
+        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*EVENTS_CHANNEL_ID*/).toLocal8Bit() + "/messages?after=" + m_afterEventsMessageID;
+
+    qDebug() << urlString;
+
+    m_isFirstEventsRequest = false;
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -75,11 +92,6 @@ void DiscordWebProcessor::requestEvents()
         reply->deleteLater();
         m_readyToRequest = true;
     });
-}
-
-void DiscordWebProcessor::requestUnreadedNews()
-{
-
 }
 
 void DiscordWebProcessor::requestNewsChannel()
@@ -345,6 +357,7 @@ void DiscordWebProcessor::receiveNewsChannel(QNetworkReply *reply)
     {
         qInfo(logInfo()) << "Request NEWS" << lastMessageId << m_lastNewsMessageID;
 
+        m_afterNewsMessageID = m_lastNewsMessageID;
         m_lastNewsMessageID = lastMessageId;
         m_needRequestNews  = true;
     }
@@ -380,6 +393,7 @@ void DiscordWebProcessor::receiveEventsChannel(QNetworkReply *reply)
     {
         qInfo(logInfo()) << "Request EVENTS" << lastMessageId << m_lastEventMessageID;
 
+        m_afterEventsMessageID = m_lastEventMessageID;
         m_lastEventMessageID = lastMessageId;
         m_needRequestEvents = true;
     }
@@ -450,7 +464,7 @@ void DiscordWebProcessor::requestMessages()
     {
         m_needRequestEvents = false;
         requestEvents();
-        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
+        //m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
         return;
     }
 

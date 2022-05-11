@@ -17,7 +17,6 @@ public:
 private:
     void requestNews();
     void requestEvents();
-    void requestUnreadedNews();
     void requestNewsChannel();
     void requestEventsChannel();
 
@@ -59,6 +58,9 @@ private:
     QNetworkAccessManager *m_networkManager;
     QList<QString> m_avatarIdList;
 
+    QString m_afterNewsMessageID = "";
+    QString m_afterEventsMessageID = "";
+
     QString m_lastNewsMessageID = "";
     QString m_lastEventMessageID = "";
 
@@ -70,6 +72,10 @@ private:
 
     bool m_needRequestNews = false;
     bool m_needRequestEvents = false;
+
+    bool m_isFirstNewsRequest = true;
+    bool m_isFirstEventsRequest = true;
+
 
 };
 
