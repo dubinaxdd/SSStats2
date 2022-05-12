@@ -9,7 +9,7 @@
 #include <QQmlContext>
 #include <settingscontroller.h>
 #include <uibackend.h>
-#include <SsController.h>
+#include <SoulstormController.h>
 #include <DiscordWebProcessor.h>
 #include <logger.h>
 #include <ModsProcessor.h>
@@ -24,7 +24,7 @@ public:
     bool event(QEvent *event) override;
     void grubStatsWindow();
 
-    SsController *ssController() const;
+    SoulstormController *soulstormController() const;
     SettingsController *settingsController() const;
     UiBackend *uiBackend() const;
 	
@@ -56,7 +56,7 @@ private:
     SettingsController* m_settingsController;
     KeyboardProcessor* m_keyboardProcessor;
     UiBackend* m_uiBackend;
-    SsController* m_ssController;
+    SoulstormController* m_soulstormController;
     DiscordWebProcessor* m_discordWebProcessor;
     ModsProcessor* m_modsProcessor;
 

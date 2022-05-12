@@ -49,22 +49,22 @@ set(PROJECT_SOURCES
         dev/keyboardProcessor/keyboardprocessor.cpp
         dev/uiBackend/uibackend.h
         dev/uiBackend/uibackend.cpp
-        dev/SsController/SsController.h
-        dev/SsController/SsController.cpp
-        dev/SsController/WarningsLogReader/WarningsLogReader.h
-        dev/SsController/WarningsLogReader/WarningsLogReader.cpp
-        dev/SsController/playerSteamScanner/playerssteamscanner.h
-        dev/SsController/playerSteamScanner/playerssteamscanner.cpp
-        dev/SsController/memoryController/memorycontroller.h
-        dev/SsController/memoryController/memorycontroller.cpp
-        dev/SsController/statsCollector/statscollector.h
-        dev/SsController/statsCollector/statscollector.cpp
-        dev/SsController/apmMeter/apmmeter.h
-        dev/SsController/apmMeter/apmmeter.cpp
-        dev/SsController/lobbyEventReader/lobbyeventreader.h
-        dev/SsController/lobbyEventReader/lobbyeventreader.cpp
-        dev/SsController/dowServerProcessor/DowServerProcessor.h
-        dev/SsController/dowServerProcessor/DowServerProcessor.cpp
+        dev/SoulstormController/SoulstormController.h
+        dev/SoulstormController/SoulstormController.cpp
+        dev/SoulstormController/WarningsLogReader/WarningsLogReader.h
+        dev/SoulstormController/WarningsLogReader/WarningsLogReader.cpp
+        dev/SoulstormController/SoulstormMemoryReader/SoulstormMemoryReader.h
+        dev/SoulstormController/SoulstormMemoryReader/SoulstormMemoryReader.cpp
+        dev/SoulstormController/SoulstormMemoryController/SoulstormMemoryController.h
+        dev/SoulstormController/SoulstormMemoryController/SoulstormMemoryController.cpp
+        dev/SoulstormController/StatsServerProcessor/StatsServerProcessor.h
+        dev/SoulstormController/StatsServerProcessor/StatsServerProcessor.cpp
+        dev/SoulstormController/apmMeter/ApmMeter.h
+        dev/SoulstormController/apmMeter/ApmMeter.cpp
+        dev/SoulstormController/LobbyEventReader/LobbyEventReader.h
+        dev/SoulstormController/LobbyEventReader/LobbyEventReader.cpp
+        dev/SoulstormController/DowServerProcessor/DowServerProcessor.h
+        dev/SoulstormController/DowServerProcessor/DowServerProcessor.cpp
         dev/uiBackend/statisticPanel/statisticpanel.h
         dev/uiBackend/statisticPanel/statisticpanel.cpp
         dev/uiBackend/gamePanel/gamepanel.h
@@ -88,7 +88,6 @@ set(PROJECT_SOURCES
         dev/ModsProcessor/ModsInstaller/ModsInstaller.cpp
         dev/uiBackend/SettingsPage/SettingsPageModel.h
         dev/uiBackend/SettingsPage/SettingsPageModel.cpp
-
 
         defines.h
         qml.qrc
@@ -185,14 +184,14 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/hookManager
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/keyboardProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/WarningsLogReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/playerSteamScanner
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/memoryController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/statsCollector
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/apmMeter
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/lobbyEventReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SsController/dowServerProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/WarningsLogReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/SoulstormMemoryReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/SoulstormMemoryController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/StatsServerProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/apmMeter
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/LobbyEventReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/DowServerProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/gamePanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/imageProvider

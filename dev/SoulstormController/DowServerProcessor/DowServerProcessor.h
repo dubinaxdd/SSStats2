@@ -61,11 +61,8 @@ private:
 
     QVector<QueryType> m_requestsQueue;
     QTimer *m_queueTimer;
-
     QTimer *m_requestDataAftrePlayerDiscoonectTimer;
-
     QVector<PlayerData> m_profileIdsForQueue;
-
 
     QNetworkAccessManager *m_networkManager;
     QString m_sessionID = "";
@@ -76,7 +73,6 @@ private:
     QString m_modVersion = "1.0";
 
     bool m_needUpdateLatter = false;
-
 };
 
 #endif // DOWSERVERPROCESSOR_H

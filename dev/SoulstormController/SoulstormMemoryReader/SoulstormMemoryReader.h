@@ -1,6 +1,5 @@
-#ifndef PLAYERSSTEAMSCANNER_H
-#define PLAYERSSTEAMSCANNER_H
-
+#ifndef SOULSTORMMEMORYREADER_H
+#define SOULSTORMMEMORYREADER_H
 
 #include <QObject>
 #include <QCoreApplication>
@@ -10,12 +9,11 @@
 #include <baseTypes.h>
 #include <QMutex>
 
-
-class PlayersSteamScanner : public QObject
+class SoulstormMemoryReader : public QObject
 {
     Q_OBJECT
 public:
-    explicit PlayersSteamScanner(QObject *parent = nullptr);
+    explicit SoulstormMemoryReader(QObject *parent = nullptr);
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
 
@@ -46,4 +44,4 @@ private:
     HWND m_soulstormHwnd = NULL;
     QMutex m_playersSteamScannerMutex;
 };
-#endif // PLAYERSSTEAMSCANNER_H
+#endif // SOULSTORMMEMORYREADER_H

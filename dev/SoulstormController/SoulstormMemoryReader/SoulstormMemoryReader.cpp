@@ -1,4 +1,4 @@
-#include <playerssteamscanner.h>
+#include <SoulstormMemoryReader.h>
 #include <QVariantList>
 #include <QDebug>
 #include <iostream>
@@ -13,7 +13,7 @@
 using namespace std;
 
 
-PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
+SoulstormMemoryReader::SoulstormMemoryReader(QObject *parent)
     : QObject(parent)
 {
     m_scanTimer = new QTimer(this);
@@ -21,11 +21,11 @@ PlayersSteamScanner::PlayersSteamScanner(QObject *parent)
 
     m_scanTimer->setSingleShot(true);
 
-    QObject::connect(m_scanTimer, &QTimer::timeout, this, &PlayersSteamScanner::refreshSteamPlayersInfo, Qt::QueuedConnection );
+    QObject::connect(m_scanTimer, &QTimer::timeout, this, &SoulstormMemoryReader::refreshSteamPlayersInfo, Qt::QueuedConnection );
     // m_scanTimer->start();
 }
 
-void PlayersSteamScanner::refreshSteamPlayersInfo()
+void SoulstormMemoryReader::refreshSteamPlayersInfo()
 {
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
@@ -267,12 +267,12 @@ void PlayersSteamScanner::refreshSteamPlayersInfo()
 }
 
 
-QTimer *PlayersSteamScanner::scanTimer() const
+QTimer *SoulstormMemoryReader::scanTimer() const
 {
     return m_scanTimer;
 }
 
-void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
+void SoulstormMemoryReader::setSoulstormHwnd(HWND newSoulstormHwnd)
 {
     m_soulstormHwnd = newSoulstormHwnd;
 }
@@ -282,7 +282,7 @@ void PlayersSteamScanner::setSoulstormHwnd(HWND newSoulstormHwnd)
 /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
+void SoulstormMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
@@ -392,7 +392,7 @@ void PlayersSteamScanner::findPlayerBySsId(int ssId, int playerPosititon)
     }
 }
 
-void PlayersSteamScanner::findSessionId()
+void SoulstormMemoryReader::findSessionId()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");

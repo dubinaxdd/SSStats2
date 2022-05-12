@@ -1,4 +1,4 @@
-#include <apmmeter.h>
+#include <ApmMeter.h>
 #include <QDebug>
 
 #define TICKS_FOR_ANALYSE 20

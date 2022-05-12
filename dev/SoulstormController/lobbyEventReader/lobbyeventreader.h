@@ -5,6 +5,7 @@
 #include <QTimer>
 #include <logger.h>
 #include <baseTypes.h>
+
 enum eventType
 {
     playerConnected,
@@ -12,7 +13,6 @@ enum eventType
     hostedGame,
     quitGame
 };
-
 
 class LobbyEventReader : public QObject
 {

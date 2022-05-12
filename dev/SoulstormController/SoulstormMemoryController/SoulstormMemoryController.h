@@ -1,5 +1,5 @@
-#ifndef MEMORYCONTROLLER_H
-#define MEMORYCONTROLLER_H
+#ifndef SOULSTORMMEMORYCONTROLLER_H
+#define SOULSTORMMEMORYCONTROLLER_H
 
 #include <QObject>
 #include <QDebug>
@@ -9,11 +9,11 @@
 #include <logger.h>
 #include <settingscontroller.h>
 
-class MemoryController : public QObject
+class SoulstormMemoryController : public QObject
 {
     Q_OBJECT
 public:
-    explicit MemoryController(SettingsController* settingsController, QObject *parent = nullptr);
+    explicit SoulstormMemoryController(SettingsController* settingsController, QObject *parent = nullptr);
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
 
@@ -32,4 +32,4 @@ private:
     SettingsController* m_settingsController;
 };
 
-#endif // MEMORYCONTROLLER_H
+#endif // SOULSTORMMEMORYCONTROLLER_H

@@ -1,4 +1,4 @@
-#include <statscollector.h>
+#include <StatsServerProcessor.h>
 #include <QFile>
 #include <QTextStream>
 #include <defines.h>
@@ -17,7 +17,7 @@
 
 using namespace ReplayReader;
 
-StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *parent)
+StatsServerProcessor::StatsServerProcessor(QString ssPath, QString steamPath, QObject *parent)
     : QObject(parent)
     , m_ssPath(ssPath)
     , m_steamPath(steamPath)
@@ -27,7 +27,7 @@ StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *paren
 
     m_currentPlayerStatsRequestTimer = new QTimer(this);
     m_currentPlayerStatsRequestTimer->setInterval(CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL);
-    connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsCollector::currentPlayerStatsRequestTimerTimeout, Qt::QueuedConnection);
+    connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::currentPlayerStatsRequestTimerTimeout, Qt::QueuedConnection);
 
     m_currentPlayerStatsRequestTimer->start();
 
@@ -40,7 +40,7 @@ StatsCollector::StatsCollector(QString ssPath, QString steamPath, QObject *paren
 
 }
 
-void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
+void StatsServerProcessor::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
 {
     emit sendPlayersCount(playersCount);
     emit sendCurrentPlayerHostState(false);
@@ -60,7 +60,7 @@ void StatsCollector::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInf
     getPlayerStatsFromServer(playersInfo);
 }
 
-void StatsCollector::parseCurrentPlayerSteamId()
+void StatsServerProcessor::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");
 
@@ -134,7 +134,7 @@ void StatsCollector::parseCurrentPlayerSteamId()
     }
 }
 
-void StatsCollector::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayerStats>> playersInfo)
+void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayerStats>> playersInfo)
 {
     QString sidsString;
 
@@ -160,7 +160,7 @@ void StatsCollector::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayer
     });
 }
 
-void StatsCollector::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo)
+void StatsServerProcessor::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo)
 {
     for (int i = 0; i < playersInfo.data()->count(); i++)
     {
@@ -178,7 +178,7 @@ void StatsCollector::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerSta
     }
 }
 
-void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer <QList<ServerPlayerStats>> playersInfo)
+void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer <QList<ServerPlayerStats>> playersInfo)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -225,7 +225,7 @@ void StatsCollector::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedP
     reply->deleteLater();
 }
 
-void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
+void StatsServerProcessor::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -252,13 +252,13 @@ void StatsCollector::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPoin
     reply->deleteLater();
 }
 
-void StatsCollector::currentPlayerStatsRequestTimerTimeout()
+void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
 {
     if (!m_currentPlayerStats.data()->isEmpty() && !m_currentPlayerStats.data()->at(0).steamId.isEmpty())
         getPlayerStatsFromServer(m_currentPlayerStats);
 }
 
-void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
+void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 {
     if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8)
         return;
@@ -381,7 +381,7 @@ void StatsCollector::sendReplayToServer(SendingReplayInfo replayInfo)
     });
 }
 
-QString StatsCollector::GetRandomString() const
+QString StatsServerProcessor::GetRandomString() const
 {
    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
    const int randomStringLength = 12; // assuming you want random strings of 12 characters
@@ -396,7 +396,7 @@ QString StatsCollector::GetRandomString() const
    return randomString;
 }
 
-QString StatsCollector::CRC32fromByteArray( const QByteArray & array )
+QString StatsServerProcessor::CRC32fromByteArray( const QByteArray & array )
 {
     quint32 crc32 = 0xffffffff;
     QByteArray buf(256, 0);
@@ -413,13 +413,13 @@ QString StatsCollector::CRC32fromByteArray( const QByteArray & array )
     return QString("%1").arg(crc32, 8, 16, QChar('0'));
 }
 
-void StatsCollector::setCurrentPlayerAccepted(bool newCurrentPlayerAccepted)
+void StatsServerProcessor::setCurrentPlayerAccepted(bool newCurrentPlayerAccepted)
 {
     m_currentPlayerAccepted = newCurrentPlayerAccepted;
 }
 
 
-void StatsCollector::registerPlayer(QString name, QString sid, bool init)
+void StatsServerProcessor::registerPlayer(QString name, QString sid, bool init)
 {
     QByteArray enc_name = QUrl::toPercentEncoding(name.toLocal8Bit(),""," ");
     QString reg_url = QString::fromStdString(SERVER_ADDRESS)+"/regplayer.php?name="+enc_name+"&sid="+sid+"&version="+m_clientVersion+"&sender_sid="+m_currentPlayerStats.data()->at(0).steamId+"&";

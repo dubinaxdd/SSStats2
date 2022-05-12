@@ -14,9 +14,9 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_settingsController(new SettingsController(this))
     , m_uiBackend(new UiBackend(m_settingsController, context))
-    , m_ssController(new SsController(m_settingsController, this))
+    , m_soulstormController(new SoulstormController(m_settingsController, this))
     , m_discordWebProcessor(new DiscordWebProcessor(m_settingsController, this))
-    , m_modsProcessor(new ModsProcessor(m_ssController->ssPath(), this))
+    , m_modsProcessor(new ModsProcessor(m_soulstormController->ssPath(), this))
 {
     registerTypes();
 
@@ -35,32 +35,32 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
-    QObject::connect(m_ssController,                    &SsController::ssMaximized,                     this,                           &Core::ssMaximized,                             Qt::DirectConnection);
-    QObject::connect(m_ssController,                    &SsController::ssLaunchStateChanged,            this,                           &Core::ssLaunched,                              Qt::QueuedConnection);
-    QObject::connect(m_ssController,                    &SsController::ssLaunchStateChanged,            m_uiBackend,                    &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
-    QObject::connect(m_ssController,                    &SsController::ssMaximized,                     m_uiBackend,                    &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
-    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
-    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendCurrentPlayerHostState,    m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState, Qt::QueuedConnection);
-    QObject::connect(m_ssController->statsCollector(),  &StatsCollector::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
-    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::gameInitialized,         this,                       &Core::gameInitialized,                  Qt::DirectConnection);
-    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::ssShutdown,              this,                       &Core::onSsShutdowned,                   Qt::QueuedConnection);
-    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
-    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
-    QObject::connect(m_ssController->warningsLogReader(),   &WarningsLogReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     this,                           &Core::ssMaximized,                             Qt::DirectConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            this,                           &Core::ssLaunched,                              Qt::QueuedConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_uiBackend,                    &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_uiBackend,                    &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->statsServerProcessor(),  &StatsServerProcessor::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->statsServerProcessor(),  &StatsServerProcessor::sendCurrentPlayerHostState,    m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->statsServerProcessor(),  &StatsServerProcessor::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::gameInitialized,         this,                       &Core::gameInitialized,                  Qt::DirectConnection);
+    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::ssShutdown,              this,                       &Core::onSsShutdowned,                   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
 
-    QObject::connect(m_ssController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
-    QObject::connect(m_ssController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
-    QObject::connect(m_ssController, &SsController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_ssController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController, &SoulstormController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
-    QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_ssController, &SsController::minimizeSsWithWin7Support, Qt::QueuedConnection);
+    QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_soulstormController, &SoulstormController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
-    QObject::connect(m_uiBackend,                       &UiBackend::sendExpand,                         m_ssController,                     &SsController::blockSsWindowInput,                  Qt::QueuedConnection);
-    QObject::connect(m_uiBackend,                       &UiBackend::noFogStateChanged,                  m_ssController->memoryController(), &MemoryController::onNoFogStateChanged,             Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::sendExpand,                         m_soulstormController,                     &SoulstormController::blockSsWindowInput,                  Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::noFogStateChanged,                  m_soulstormController->soulstormMemoryController(), &SoulstormMemoryController::onNoFogStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::sendExit,                           this,                               &Core::onExit,                                      Qt::QueuedConnection);
-    QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstormWithSupportMode, m_ssController,                     &SsController::launchSoulstormWithSupportMode,      Qt::QueuedConnection);
-    QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_ssController,                     &SsController::launchSoulstorm,                     Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstormWithSupportMode, m_soulstormController,                     &SoulstormController::launchSoulstormWithSupportMode,      Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_soulstormController,                     &SoulstormController::launchSoulstorm,                     Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAttachments,              m_uiBackend->newsPage(),            &MessagesPage::onAttachmetImagesUpdate,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAttachments,              m_uiBackend->eventsPage(),          &MessagesPage::onAttachmetImagesUpdate,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAvatars,                  m_uiBackend->newsPage(),            &MessagesPage::onAvatarUpdate,                      Qt::QueuedConnection);
@@ -92,36 +92,36 @@ void Core::topmostTimerTimout()
     //Соответственно затираем флаг и выставлем заного по таймеру.
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
 
-    if (m_ssController->warningsLogReader()->getGameInitialized())
+    if (m_soulstormController->warningsLogReader()->getGameInitialized())
     {
         if (m_ssStatsHwnd)
         {
-            if (m_ssController->ssWindowed())
+            if (m_soulstormController->ssWindowed())
             {
                 RECT ssRect;
-                if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+                if (GetWindowRect(m_soulstormController->soulstormHwnd(), &ssRect))
                 {
 
                     if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                     {
                         m_ssRect = ssRect;
-                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+                        SetWindowPos(m_ssStatsHwnd, m_soulstormController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
                         m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                     }
 
 
-                    LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
-                    SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    LONG ssLong = GetWindowLongPtr(m_soulstormController->soulstormHwnd(), 0);
+                    SetWindowPos(m_soulstormController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
 
-                    m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
+                    m_uiBackend->setSsWindowed(m_soulstormController->ssWindowed());
                 }
             }
             else
             {
                 RECT ssRect;
                 {
-                    if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+                    if (GetWindowRect(m_soulstormController->soulstormHwnd(), &ssRect))
                     {
                         if (m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left)
                         {
@@ -149,35 +149,35 @@ void Core::ssMaximized(bool maximized)
 
         m_uiBackend->setMouseArea(width, height);
 
-        if (!m_ssController->ssWindowed())
+        if (!m_soulstormController->ssWindowed())
         {
             RECT ssRect;
-            if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+            if (GetWindowRect(m_soulstormController->soulstormHwnd(), &ssRect))
             {
                 m_ssRect = ssRect;
                 SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
                 m_uiBackend->setWindowTopmost(true);
             }
             m_topmostTimer->start();
-            m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
+            m_uiBackend->setSsWindowed(m_soulstormController->ssWindowed());
         }
         else
         {
             RECT ssRect;
-            if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+            if (GetWindowRect(m_soulstormController->soulstormHwnd(), &ssRect))
             {
                 if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                 {
                         m_ssRect = ssRect;
-                        SetWindowPos(m_ssStatsHwnd, m_ssController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+                        SetWindowPos(m_ssStatsHwnd, m_soulstormController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
-                        LONG ssLong = GetWindowLongPtr(m_ssController->soulstormHwnd(), 0);
-                        SetWindowPos(m_ssController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
+                        LONG ssLong = GetWindowLongPtr(m_soulstormController->soulstormHwnd(), 0);
+                        SetWindowPos(m_soulstormController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
 
                         m_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
                 }
             }
-            m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
+            m_uiBackend->setSsWindowed(m_soulstormController->ssWindowed());
         }
 
         m_topmostTimer->start();
@@ -189,7 +189,7 @@ void Core::ssMaximized(bool maximized)
         m_uiBackend->setWindowTopmost(false);
     }
 
-    m_uiBackend->setSsWindowed(m_ssController->ssWindowed());
+    m_uiBackend->setSsWindowed(m_soulstormController->ssWindowed());
 }
 
 void Core::gameInitialized()
@@ -198,7 +198,7 @@ void Core::gameInitialized()
 
     m_topmostTimer->start();
 
-    if(m_ssController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
+    if(m_soulstormController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
     {
         ssMaximized(true);
     }
@@ -226,15 +226,15 @@ void Core::onExit()
     ssMaximized(false);
 
 
-    if(m_ssController->soulstormHwnd())
+    if(m_soulstormController->soulstormHwnd())
     {
         RECT ssRect;
-        if (GetWindowRect(m_ssController->soulstormHwnd(), &ssRect))
+        if (GetWindowRect(m_soulstormController->soulstormHwnd(), &ssRect))
         {
-            SetWindowPos(m_ssController->soulstormHwnd(), HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_ssController->defaultSoulstormWindowLong() );
+            SetWindowPos(m_soulstormController->soulstormHwnd(), HWND_TOPMOST, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, m_soulstormController->defaultSoulstormWindowLong() );
         }
 
-        BringWindowToTop(m_ssController->soulstormHwnd());
+        BringWindowToTop(m_soulstormController->soulstormHwnd());
     }
 
     qInfo(logInfo()) << "DowStats2 сlosed";
@@ -266,9 +266,9 @@ UiBackend *Core::uiBackend() const
     return m_uiBackend;
 }
 
-SsController *Core::ssController() const
+SoulstormController *Core::soulstormController() const
 {
-    return m_ssController;
+    return m_soulstormController;
 }
 
 SettingsController *Core::settingsController() const
@@ -282,7 +282,7 @@ bool Core::event(QEvent *event)
     {
         QKeyEvent* keyEvent = dynamic_cast<QKeyEvent*>(event);
         m_keyboardProcessor->keyPressEvent(keyEvent);
-        m_ssController->apmMeter()->onKeyPressEvent(keyEvent);
+        m_soulstormController->apmMeter()->onKeyPressEvent(keyEvent);
         delete keyEvent;
         return true;
     }
@@ -291,7 +291,7 @@ bool Core::event(QEvent *event)
     {
         QMouseEvent* mouseEvent = dynamic_cast<QMouseEvent*>(event);
         m_uiBackend->mousePressEvent(mouseEvent->pos());
-        m_ssController->apmMeter()->onMousePressEvent(mouseEvent->pos());
+        m_soulstormController->apmMeter()->onMousePressEvent(mouseEvent->pos());
         delete mouseEvent;
         return true;
     }
@@ -315,7 +315,7 @@ void Core::onKeyEvent(QKeyEvent event)
         if (event.type() == QEvent::KeyPress && m_keyboardProcessor)
         {
             m_keyboardProcessor->keyPressEvent(std::move(event));
-            m_ssController->apmMeter()->onKeyPressEvent();
+            m_soulstormController->apmMeter()->onKeyPressEvent();
         }
     }
 }
@@ -326,7 +326,7 @@ void Core::onMouseEvent(QMouseEvent event)
         if (event.type() == QEvent::MouseButtonPress)
         {
             m_uiBackend->mousePressEvent(event.pos());
-            m_ssController->apmMeter()->onMousePressEvent();
+            m_soulstormController->apmMeter()->onMousePressEvent();
         }
         else if (event.type() == QEvent::MouseMove)
         {

@@ -5,31 +5,31 @@
 #include "Windows.h"
 #include <QTimer>
 #include <WarningsLogReader.h>
-#include <playerssteamscanner.h>
+#include <SoulstormMemoryReader.h>
 #include <baseTypes.h>
 #include <QVector>
-#include <statscollector.h>
-#include <memorycontroller.h>
-#include <apmmeter.h>
+#include <StatsServerProcessor.h>
+#include <SoulstormMemoryController.h>
+#include <ApmMeter.h>
 #include <QThread>
 #include <logger.h>
 #include <settingscontroller.h>
-#include <lobbyeventreader.h>
+#include <LobbyEventReader.h>
 #include <DowServerProcessor.h>
 #include <QProcess>
 
-class SsController : public QObject
+class SoulstormController : public QObject
 {
     Q_OBJECT
 public:
-    explicit SsController(SettingsController* settingsController, QObject *parent = nullptr);
-    ~SsController();
+    explicit SoulstormController(SettingsController* settingsController, QObject *parent = nullptr);
+    ~SoulstormController();
 
     WarningsLogReader   *warningsLogReader()    const;
-    StatsCollector      *statsCollector()       const;
-    MemoryController    *memoryController()     const;
+    StatsServerProcessor *statsServerProcessor()       const;
+    SoulstormMemoryController    *soulstormMemoryController()     const;
     APMMeter            *apmMeter()             const;
-    PlayersSteamScanner *playersSteamScanner()  const;
+    SoulstormMemoryReader *soulstormMemoryReader()  const;
     LobbyEventReader    *lobbyEventReader()     const;
     DowServerProcessor  *dowServerProcessor()   const;
 
@@ -91,13 +91,13 @@ private:
     WarningsLogReader* m_warningsLogReader;
     LobbyEventReader* m_lobbyEventReader;
 
-    PlayersSteamScanner* m_playersSteamScanner;
+    SoulstormMemoryReader* m_soulstormMemoryReader;
 
-    QThread m_playersSteamScannerThread;
+    QThread m_soulstormMemoryReaderThread;
 
     APMMeter* m_apmMeter;
-    StatsCollector* m_statsCollector;
-    MemoryController* m_memoryController;
+    StatsServerProcessor* m_statsServerProcessor;
+    SoulstormMemoryController* m_soulstormMemoryController;
     SettingsController* m_settingsController;
     DowServerProcessor* m_dowServerProcessor;
 

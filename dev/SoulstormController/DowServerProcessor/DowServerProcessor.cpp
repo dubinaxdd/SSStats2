@@ -199,7 +199,6 @@ void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
     {
         addQuery(QueryType::ProfileID);
     }
-
 }
 
 void DowServerProcessor::setCurrentModVersion(QString modVersion)

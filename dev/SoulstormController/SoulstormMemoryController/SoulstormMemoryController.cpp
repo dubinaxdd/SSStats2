@@ -1,4 +1,4 @@
-#include <memorycontroller.h>
+#include <SoulstormMemoryController.h>
 
 PVOID FogAddr = (PVOID)0x008282F0;
 PVOID MapSkyDistanceAddr = (PVOID)0x0082A33A;
@@ -17,14 +17,14 @@ BYTE temp6_2[6] = {0};
 
 BYTE temp4[6] = {0};
 
-MemoryController::MemoryController(SettingsController* settingsController, QObject *parent)
+SoulstormMemoryController::SoulstormMemoryController(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
     , m_settingsController(settingsController)
 {
-    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MemoryController::onSettingsLoaded,Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &SoulstormMemoryController::onSettingsLoaded,Qt::QueuedConnection);
 }
 
-void MemoryController::onSsLaunchStateChanged(bool state)
+void SoulstormMemoryController::onSsLaunchStateChanged(bool state)
 {
     m_ssLaunchState = state;
 
@@ -34,18 +34,18 @@ void MemoryController::onSsLaunchStateChanged(bool state)
     onNoFogStateChanged(currentNoFog && m_ssLaunchState);
 }
 
-void MemoryController::onSettingsLoaded()
+void SoulstormMemoryController::onSettingsLoaded()
 {
     currentNoFog = m_settingsController->getSettings()->noFog;
     onNoFogStateChanged(currentNoFog && m_ssLaunchState);
 }
 
-void MemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
+void SoulstormMemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
 {
     m_soulstormHwnd = newSoulstormHwnd;
 }
 
-void MemoryController::onNoFogStateChanged(bool state)
+void SoulstormMemoryController::onNoFogStateChanged(bool state)
 {
     //qInfo(logInfo()) << "Fog state: " <<  state;
 

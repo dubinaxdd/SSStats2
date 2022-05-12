@@ -1,5 +1,5 @@
-#ifndef STATSCOLLECTOR_H
-#define STATSCOLLECTOR_H
+#ifndef STATSSERVERPROCESSOR_H
+#define STATSSERVERPROCESSOR_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -9,11 +9,11 @@
 #include <QTimer>
 #include <logger.h>
 
-class StatsCollector : public QObject
+class StatsServerProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit StatsCollector(QString ssPath, QString steamPath, QObject *parent = nullptr);
+    explicit StatsServerProcessor(QString ssPath, QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
     void getPlayerStatsFromServer(QSharedPointer<QList<ServerPlayerStats> > playersInfo);
@@ -43,22 +43,15 @@ private:
     QString CRC32fromByteArray( const QByteArray & array );
 
 private:
-
     QTimer *m_currentPlayerStatsRequestTimer;
-
     QString m_steamPath;
     QString m_ssPath;
+    QString m_clientVersion;
     bool m_currentPlayerAccepted = false;
     QMap<QString, QString> AllPlayersInfo;
-
     QNetworkAccessManager *m_networkManager;
-
     QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
-
     QList<ServerPlayerStats*> m_playerStats;
-
-    QString m_clientVersion;
-
 };
 
-#endif // STATSCOLLECTOR_H
+#endif // STATSSERVERPROCESSOR_H

@@ -1,4 +1,4 @@
-#include "SsController.h"
+#include "SoulstormController.h"
 #include <QTextCodec>
 #include <QDebug>
 #include <QGuiApplication>
@@ -13,10 +13,10 @@
 #define WINDOW_STATE_CHECK_INTERVAL 1000
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
-SsController::SsController(SettingsController *settingsController, QObject *parent)
+SoulstormController::SoulstormController(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
     , m_settingsController(settingsController)
-    , m_memoryController(new MemoryController(settingsController, this))
+    , m_soulstormMemoryController(new SoulstormMemoryController(settingsController, this))
     , m_apmMeter(new APMMeter(this))
     , m_dowServerProcessor(new DowServerProcessor(this))
     , m_soulstormProcess(nullptr)
@@ -28,62 +28,62 @@ SsController::SsController(SettingsController *settingsController, QObject *pare
     m_warningsLogReader = new WarningsLogReader(m_ssPath, this);
     m_lobbyEventReader = new LobbyEventReader(m_ssPath, this);
     m_steamPath = getSteamPathFromRegistry();
-    m_statsCollector = new StatsCollector(m_ssPath, m_steamPath, this);
+    m_statsServerProcessor = new StatsServerProcessor(m_ssPath, m_steamPath, this);
 
-    m_playersSteamScanner = new PlayersSteamScanner(/*this*/);
+    m_soulstormMemoryReader = new SoulstormMemoryReader(/*this*/);
 
     m_ssWindowControllTimer = new QTimer(this);
     m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
 
 
-    QObject::connect(this, &SsController::ssLaunchStateChanged, m_memoryController, &MemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
+    QObject::connect(this, &SoulstormController::ssLaunchStateChanged, m_soulstormMemoryController, &SoulstormMemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &SsController::checkWindowState, Qt::QueuedConnection);
+    QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &SoulstormController::checkWindowState, Qt::QueuedConnection);
 
-    QObject::connect(m_warningsLogReader, &WarningsLogReader::gameInitialized,          this, &SsController::gameInitialized, Qt::QueuedConnection);
-    QObject::connect(m_warningsLogReader, &WarningsLogReader::gameInitialized,          m_playersSteamScanner, &PlayersSteamScanner::findSessionId, Qt::QueuedConnection);
-    QObject::connect(m_warningsLogReader, &WarningsLogReader::ssShutdown,               this, &SsController::ssShutdown, Qt::QueuedConnection);
+    QObject::connect(m_warningsLogReader, &WarningsLogReader::gameInitialized,          this, &SoulstormController::gameInitialized, Qt::QueuedConnection);
+    QObject::connect(m_warningsLogReader, &WarningsLogReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
+    QObject::connect(m_warningsLogReader, &WarningsLogReader::ssShutdown,               this, &SoulstormController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_warningsLogReader, &WarningsLogReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
     QObject::connect(m_warningsLogReader, &WarningsLogReader::sendCurrentMissionState,  m_lobbyEventReader, &LobbyEventReader::receiveCurrentMissionState,   Qt::QueuedConnection);
     QObject::connect(m_warningsLogReader, &WarningsLogReader::sendCurrentModeVersion,   m_dowServerProcessor, &DowServerProcessor::setCurrentModVersion, Qt::QueuedConnection);
-    QObject::connect(m_warningsLogReader, &WarningsLogReader::sendReplayToServer,       m_statsCollector, &StatsCollector::sendReplayToServer,   Qt::QueuedConnection);
+    QObject::connect(m_warningsLogReader, &WarningsLogReader::sendReplayToServer,       m_statsServerProcessor, &StatsServerProcessor::sendReplayToServer,   Qt::QueuedConnection);
 
     QObject::connect(m_warningsLogReader, &WarningsLogReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
 
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_playersSteamScanner, &PlayersSteamScanner::findSessionId, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_warningsLogReader,  &WarningsLogReader::onQuitParty, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
 
-    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_statsCollector, &StatsCollector::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_statsServerProcessor, &StatsServerProcessor::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_warningsLogReader, &WarningsLogReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_warningsLogReader,  &WarningsLogReader::receiveAverrageApm,       Qt::QueuedConnection);
 
-    QObject::connect(m_playersSteamScanner, &PlayersSteamScanner::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
+    QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
 
-    QObject::connect(m_statsCollector, &StatsCollector::sendCurrentPlayerSteamID, m_dowServerProcessor, &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_dowServerProcessor, &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 
-    m_playersSteamScanner->moveToThread(&m_playersSteamScannerThread);
-    m_playersSteamScannerThread.start();
+    m_soulstormMemoryReader->moveToThread(&m_soulstormMemoryReaderThread);
+    m_soulstormMemoryReaderThread.start();
     m_ssWindowControllTimer->start();
 
-    m_statsCollector->parseCurrentPlayerSteamId();
+    m_statsServerProcessor->parseCurrentPlayerSteamId();
 }
 
-SsController::~SsController()
+SoulstormController::~SoulstormController()
 {
-    m_playersSteamScannerThread.quit();
-    m_playersSteamScannerThread.wait();
+    m_soulstormMemoryReaderThread.quit();
+    m_soulstormMemoryReaderThread.wait();
 
-    m_playersSteamScannerThread.deleteLater();
-    m_playersSteamScanner->deleteLater();
+    m_soulstormMemoryReaderThread.deleteLater();
+    m_soulstormMemoryReader->deleteLater();
 }
 
-void SsController::blockSsWindowInput(bool state)
+void SoulstormController::blockSsWindowInput(bool state)
 {
     if (m_soulstormHwnd)
     {
@@ -93,7 +93,7 @@ void SsController::blockSsWindowInput(bool state)
     }
 }
 
-void SsController::launchSoulstorm()
+void SoulstormController::launchSoulstorm()
 {
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     ssSettings->setValue("global/screenwindowed", 0);
@@ -111,7 +111,7 @@ void SsController::launchSoulstorm()
     }
 }
 
-void SsController::launchSoulstormWithSupportMode()
+void SoulstormController::launchSoulstormWithSupportMode()
 {
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
@@ -134,12 +134,12 @@ void SsController::launchSoulstormWithSupportMode()
     }
 }
 
-void SsController::minimizeSsWithWin7Support()
+void SoulstormController::minimizeSsWithWin7Support()
 {
     minimizeSoulstorm();
 }
 
-void SsController::checkWindowState()
+void SoulstormController::checkWindowState()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
@@ -147,7 +147,7 @@ void SsController::checkWindowState()
 
     m_soulstormHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
 
-    m_memoryController->setSoulstormHwnd(m_soulstormHwnd);
+    m_soulstormMemoryController->setSoulstormHwnd(m_soulstormHwnd);
     m_warningsLogReader->setGameLounched(m_soulstormHwnd);
 
     if (m_soulstormHwnd && !m_ssWindowCreated)
@@ -231,7 +231,7 @@ void SsController::checkWindowState()
     {
         if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
         {
-            m_statsCollector->setCurrentPlayerAccepted(false);
+            m_statsServerProcessor->setCurrentPlayerAccepted(false);
             useWindows7SupportMode = false;
             m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
             m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
@@ -254,19 +254,19 @@ void SsController::checkWindowState()
     }
 }
 
-void SsController::gameInitialized()
+void SoulstormController::gameInitialized()
 {
     parseSsSettings();
-    m_statsCollector->parseCurrentPlayerSteamId();
+    m_statsServerProcessor->parseCurrentPlayerSteamId();
     m_lobbyEventReader->activateReading(true);
 }
 
-void SsController::ssShutdown()
+void SoulstormController::ssShutdown()
 {
     m_lobbyEventReader->activateReading(false);
 }
 
-QString SsController::getSsPathFromRegistry()
+QString SoulstormController::getSsPathFromRegistry()
 {
     QString path = QCoreApplication::applicationDirPath();
     if(QFile::exists(path+"/Soulstorm.exe"))
@@ -297,7 +297,7 @@ QString SsController::getSsPathFromRegistry()
     return path;
 }
 
-QString SsController::getSteamPathFromRegistry()
+QString SoulstormController::getSteamPathFromRegistry()
 {
     QSettings settings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam\\", QSettings::NativeFormat);
 
@@ -312,7 +312,7 @@ QString SsController::getSteamPathFromRegistry()
     return steam_path;
 }
 
-void SsController::parseSsSettings()
+void SoulstormController::parseSsSettings()
 {
 
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
@@ -327,12 +327,12 @@ void SsController::parseSsSettings()
     delete ssSettings;
 }
 
-DowServerProcessor *SsController::dowServerProcessor() const
+DowServerProcessor *SoulstormController::dowServerProcessor() const
 {
     return m_dowServerProcessor;
 }
 
-void SsController::fullscrenizeSoulstorm()
+void SoulstormController::fullscrenizeSoulstorm()
 {
     if(m_soulstormHwnd)
     {
@@ -357,7 +357,7 @@ void SsController::fullscrenizeSoulstorm()
     }
 }
 
-void SsController::minimizeSoulstorm()
+void SoulstormController::minimizeSoulstorm()
 {
     if (!useWindows7SupportMode)
         return;
@@ -370,67 +370,67 @@ void SsController::minimizeSoulstorm()
     qInfo(logInfo()) << "Soulstorm minimized with win7 support mode";
 }
 
-bool SsController::getUseWindows7SupportMode() const
+bool SoulstormController::getUseWindows7SupportMode() const
 {
     return useWindows7SupportMode;
 }
 
-LobbyEventReader *SsController::lobbyEventReader() const
+LobbyEventReader *SoulstormController::lobbyEventReader() const
 {
     return m_lobbyEventReader;
 }
 
-LONG SsController::defaultSoulstormWindowLong() const
+LONG SoulstormController::defaultSoulstormWindowLong() const
 {
     return m_defaultSoulstormWindowLong;
 }
 
-PlayersSteamScanner *SsController::playersSteamScanner() const
+SoulstormMemoryReader *SoulstormController::soulstormMemoryReader() const
 {
-    return m_playersSteamScanner;
+    return m_soulstormMemoryReader;
 }
 
-APMMeter *SsController::apmMeter() const
+APMMeter *SoulstormController::apmMeter() const
 {
     return m_apmMeter;
 }
 
-MemoryController *SsController::memoryController() const
+SoulstormMemoryController *SoulstormController::soulstormMemoryController() const
 {
-    return m_memoryController;
+    return m_soulstormMemoryController;
 }
 
-StatsCollector *SsController::statsCollector() const
+StatsServerProcessor *SoulstormController::statsServerProcessor() const
 {
-    return m_statsCollector;
+    return m_statsServerProcessor;
 }
 
-HWND SsController::soulstormHwnd() const
+HWND SoulstormController::soulstormHwnd() const
 {
     return m_soulstormHwnd;
 }
 
-bool SsController::ssWindowed() const
+bool SoulstormController::ssWindowed() const
 {
     return m_ssWindowed && !useWindows7SupportMode;
 }
 
-WarningsLogReader *SsController::warningsLogReader() const
+WarningsLogReader *SoulstormController::warningsLogReader() const
 {
     return m_warningsLogReader;
 }
 
-const QString &SsController::ssPath() const
+const QString &SoulstormController::ssPath() const
 {
     return m_ssPath;
 }
 
-bool SsController::getSsMaximized()
+bool SoulstormController::getSsMaximized()
 {
     return m_ssMaximized;
 }
 
-bool SsController::getInputBlocked() const
+bool SoulstormController::getInputBlocked() const
 {
     return inputBlocked;
 }
