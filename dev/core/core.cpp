@@ -2,7 +2,7 @@
 #include <QDebug>
 #include <QFile>
 #include <WarningsLogReader.h>
-#include <lobbyeventreader.h>
+#include <LobbyEventReader.h>
 #include <baseTypes.h>
 #include <hookmanager.h>
 #include <winuser.h>
