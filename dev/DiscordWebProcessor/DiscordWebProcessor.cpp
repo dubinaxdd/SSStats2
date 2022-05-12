@@ -29,11 +29,9 @@ void DiscordWebProcessor::requestNews()
     QString urlString = "";
 
     if (m_isFirstNewsRequest)
-        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit() + "/messages";
+        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit() + "/messages";
     else
-        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit() + "/messages?after=" + m_afterNewsMessageID;
-
-    qDebug() << urlString;
+        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit() + "/messages?after=" + m_afterNewsMessageID;
 
     m_isFirstNewsRequest = false;
 
@@ -65,11 +63,9 @@ void DiscordWebProcessor::requestEvents()
     QString urlString = "";
 
     if (m_isFirstEventsRequest)
-        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*EVENTS_CHANNEL_ID*/).toLocal8Bit() + "/messages";
+        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit() + "/messages";
     else
-        urlString = "https://discord.com/api/v9/channels/" + QString(TEST_CHANNEL_ID/*EVENTS_CHANNEL_ID*/).toLocal8Bit() + "/messages?after=" + m_afterEventsMessageID;
-
-    qDebug() << urlString;
+        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit() + "/messages?after=" + m_afterEventsMessageID;
 
     m_isFirstEventsRequest = false;
 
@@ -98,7 +94,7 @@ void DiscordWebProcessor::requestNewsChannel()
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "https://discord.com/api/v9/channels/" + QString(/*NEWS_CHANNEL_ID*/TEST_CHANNEL_ID).toLocal8Bit();
+    QString urlString = "https://discord.com/api/v9/channels/" + QString(NEWS_CHANNEL_ID/*TEST_CHANNEL_ID*/).toLocal8Bit();
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -125,7 +121,7 @@ void DiscordWebProcessor::requestEventsChannel()
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "https://discord.com/api/v9/channels/" + QString(/*EVENTS_CHANNEL_ID*/TEST_CHANNEL_ID).toLocal8Bit();
+    QString urlString = "https://discord.com/api/v9/channels/" + QString(EVENTS_CHANNEL_ID/*TEST_CHANNEL_ID*/).toLocal8Bit();
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -337,10 +333,7 @@ void DiscordWebProcessor::receiveNewsChannel(QNetworkReply *reply)
     }
 
     QByteArray replyByteArray = reply->readAll();
-
     delete reply;
-
-    qDebug() << "receiveNewsChannel";
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -350,8 +343,6 @@ void DiscordWebProcessor::receiveNewsChannel(QNetworkReply *reply)
     QJsonObject newJsonObject = jsonDoc.object();
 
     QString lastMessageId = newJsonObject.value("last_message_id").toString();
-
-    qDebug() << lastMessageId << m_lastNewsMessageID;
 
     if (lastMessageId != m_lastNewsMessageID)
     {
@@ -373,10 +364,7 @@ void DiscordWebProcessor::receiveEventsChannel(QNetworkReply *reply)
     }
 
     QByteArray replyByteArray = reply->readAll();
-
     delete reply;
-
-    qDebug() << "receiveEventsChannel";
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -384,10 +372,7 @@ void DiscordWebProcessor::receiveEventsChannel(QNetworkReply *reply)
         return;
 
     QJsonObject newJsonObject = jsonDoc.object();
-
     QString lastMessageId = newJsonObject.value("last_message_id").toString();
-
-    qDebug() << lastMessageId << m_lastEventMessageID;
 
     if (lastMessageId != m_lastEventMessageID)
     {
@@ -469,15 +454,10 @@ void DiscordWebProcessor::requestMessages()
     }
 
     if(m_requestNewsNow)
-    {
-        qDebug() << "requestNewsChannel";
         requestNewsChannel();
-    }
+
     else
-    {
-        qDebug() << "requestEventsChannel";
         requestEventsChannel();
-    }
 
     m_requestNewsNow = !m_requestNewsNow;
 }
