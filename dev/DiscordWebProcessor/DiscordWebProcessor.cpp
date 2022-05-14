@@ -7,7 +7,7 @@
 #include <defines.h>
 
 #define REQUEST_TIMER_INTERVAL 2000
-#define REQUEST_TIMER_INTERVAL2 5000
+#define REQUEST_TIMER_INTERVAL2 4000
 
 DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -272,6 +272,7 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        m_needRequestNews = true;
         delete reply;
         return;
     }
@@ -300,6 +301,7 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        m_needRequestEvents = true;
         delete reply;
         return;
     }
@@ -449,7 +451,7 @@ void DiscordWebProcessor::requestMessages()
     {
         m_needRequestEvents = false;
         requestEvents();
-        //m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
+        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
         return;
     }
 
