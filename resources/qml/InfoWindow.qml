@@ -60,22 +60,28 @@ Rectangle {
                 <center><h2>Players are divided into the following ranks by Solo MMR</h2></center><br>
                 <table align=\"center\" style=\"margin: 0px auto;\">
                 <tr>
-                    <td><center>Scout</center></td>
-                    <td><center>Space Marine</center></td>
-                    <td><center>Sergeant</center></td>
-                    <td><center>Terminator</center></td>
-                    <td><center>Chaplain</center></td>
-                    <td><center>Force Commander</center></td>
+                    <td><center>Calibrate</center></td>
+                    <td><center>Division 7</center></td>
+                    <td><center>Division 6</center></td>
+                    <td><center>Division 5</center></td>
+                    <td><center>Division 4</center></td>
+                    <td><center>Division 3</center></td>
+                    <td><center>Division 2</center></td>
+                    <td><center>Division 1</center></td>
                 </tr>
                 <tr>
-                    <td><center>0 - 1699</center></td>
-                    <td><center>1700 - 1899</center></td>
-                    <td><center>1900 - 2099</center></td>
-                    <td><center>2100 - 2299</center></td>
-                    <td><center>2300 - 2499</center></td>
-                    <td><center>2500+</center></td>
+                    <td><center>-</center></td>
+                    <td><center>0 - 1399</center></td>
+                    <td><center>1400 - 1549</center></td>
+                    <td><center>1550 - 1649</center></td>
+                    <td><center>1650 - 1799</center></td>
+                    <td><center>1800 - 1999</center></td>
+                    <td><center>2000 - 2249</center></td>
+                    <td><center>2250+</center></td>
                 </tr>
                 <tr>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/calibrate_60.png\" width=\"70\" height=\"70\"></td>
+                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank0_60.png\" width=\"70\" height=\"70\"></td>
                     <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank1_60.png\" width=\"70\" height=\"70\"></td>
                     <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank2_60.png\" width=\"70\" height=\"70\"></td>
                     <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank3_60.png\" width=\"70\" height=\"70\"></td>

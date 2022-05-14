@@ -27,5 +27,7 @@
         <file>resources/images/rank3_60.png</file>
         <file>resources/images/rank4_60.png</file>
         <file>resources/images/rank5_60.png</file>
+        <file>resources/images/calibrate_60.png</file>
+        <file>resources/images/rank0_60.png</file>
     </qresource>
 </RCC>
