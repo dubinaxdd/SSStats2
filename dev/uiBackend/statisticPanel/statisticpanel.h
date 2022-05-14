@@ -29,6 +29,7 @@ public:
         PlayerIsBanned = Qt::UserRole + 8,
         PlayerAvatarId = Qt::UserRole + 9,
         SteamId = Qt::UserRole + 10,
+        CalibrateGamesLeft = Qt::UserRole + 11,
         PlayerVisible = Qt::UserRole
     };
 

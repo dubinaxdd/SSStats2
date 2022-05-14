@@ -19,7 +19,9 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(QString  playerApm        READ getPlayerApm          NOTIFY playersStatsChanged)
     Q_PROPERTY(bool     itemVisible      READ getVisible            NOTIFY itemVisibleChanged)
     Q_PROPERTY(QUrl     playerAvatarId   READ avatarId              NOTIFY playersStatsChanged)
-    Q_PROPERTY(QString  steamId        READ getSteamId              NOTIFY playersStatsChanged)
+    Q_PROPERTY(QString  steamId          READ getSteamId              NOTIFY playersStatsChanged)
+    Q_PROPERTY(int  calibrateGamesLeft   READ getCalibrateGamesLeft              NOTIFY playersStatsChanged)
+
 
 
 public:
@@ -46,7 +48,8 @@ public:
     bool    getVisible() const;
     int     getPosition() const;
     QImage  getAvatar() const;
-    QString getSteamId() const;
+    QString getSteamId() const;    
+    int getCalibrateGamesLeft() const;
 
     QString getRaceFromNumber(int raceNumber) const;
 

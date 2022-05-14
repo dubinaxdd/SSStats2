@@ -56,6 +56,7 @@ Rectangle {
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
                 steamId: model.curentPlayerStatsItem.steamId
+                calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
 
                 avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
 
@@ -84,6 +85,7 @@ Rectangle {
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
                     steamId: model.steamId
+                    calibrateGamesLeft: model.calibrateGamesLeft
 
                     avatarSource: "image://imageprovider/" + model.avatarId
 

@@ -131,6 +131,7 @@ struct ServerPlayerStats
     bool avatarAvailable = false;
     bool statsAvailable = false;
     int position = 0;
+    int calibrateGamesLeft = 0;
 };
 
 struct SearchStemIdPlayerInfo

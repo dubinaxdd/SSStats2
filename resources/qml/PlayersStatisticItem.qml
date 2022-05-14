@@ -17,6 +17,7 @@ Rectangle {
     property bool playerIsBanned
     property bool playerVisible
     property string steamId
+    property int calibrateGamesLeft
 
     property url avatarSource: ""
 
@@ -33,19 +34,21 @@ Rectangle {
     Layout.fillHeight: false
     Layout.fillWidth: true
 
-    onPlayerGamesCountChanged:
-    {
+    onCalibrateGamesLeftChanged: {
         changeRank();
     }
 
-    onPlayerMmr1v1Changed:
-    {
+    onPlayerGamesCountChanged:{
+        changeRank();
+    }
+
+    onPlayerMmr1v1Changed:{
         changeRank();
     }
 
     function changeRank()
     {
-        if (playerGamesCount < 20)
+        if (calibrateGamesLeft != 0)
         {
             rankImage.source = "qrc:/images/resources/images/calibrate_60.png"
             return;
@@ -200,7 +203,7 @@ Rectangle {
 
                     Label {
                         id: label2
-                        text: "MMR: " + (itemRectangle.playerGamesCount < 20 ? "Calibrate" : itemRectangle.playerMmr)
+                        text: "MMR: " + itemRectangle.playerMmr
                         font.pixelSize: 12 * sizeModifer
 
                         Layout.fillWidth: true
@@ -209,7 +212,7 @@ Rectangle {
 
                     Label {
                         id: label
-                        text: "Solo MMR: " + (itemRectangle.playerGamesCount < 20 ? "Calibrate" : itemRectangle.playerMmr1v1)
+                        text: "Solo MMR: " + (itemRectangle.calibrateGamesLeft != 0 ? ("Calibrate") : itemRectangle.playerMmr1v1)
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 12 * sizeModifer
@@ -248,32 +251,46 @@ Rectangle {
                     }
                 }
 
-
-                Rectangle
+                ColumnLayout
                 {
-                    Layout.maximumWidth: 60 * sizeModifer
-                    Layout.preferredHeight: 60 * sizeModifer
-                    Layout.preferredWidth: 60 * sizeModifer
-                    Layout.minimumHeight: 60 * sizeModifer
-                    Layout.minimumWidth: 60 * sizeModifer
-                    Layout.margins: 5 * sizeModifer
+                    spacing:0
 
-                    //color: "#b7b7b7"
-                    color: "#00000000"
-                    radius:5
-
-                    Image
+                    Rectangle
                     {
-                        id: rankImage
+                        Layout.maximumWidth: 50 * sizeModifer
+                        Layout.preferredHeight: 50 * sizeModifer
+                        Layout.preferredWidth: 50 * sizeModifer
+                        Layout.minimumHeight: 50 * sizeModifer
+                        Layout.minimumWidth: 50 * sizeModifer
+                        Layout.margins: 5 * sizeModifer
 
-                        cache: false
-                        width: 50 * sizeModifer
-                        height: 50 * sizeModifer
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        fillMode: Image.PreserveAspectFit
+                        //color: "#b7b7b7"
+                        color: "#00000000"
+                        radius:5
 
-                        source: "qrc:/images/resources/images/rank1_60.png"
+                        Image
+                        {
+                            id: rankImage
+
+                            cache: false
+                            width: 50 * sizeModifer
+                            height: 50 * sizeModifer
+                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.horizontalCenter: parent.horizontalCenter
+                            fillMode: Image.PreserveAspectFit
+
+                            source: "qrc:/images/resources/images/rank1_60.png"
+                        }
+                    }
+
+
+                    Label {
+                        id: label7
+                        visible: itemRectangle.calibrateGamesLeft != 0
+                        text: "1v1 calibrating\ngames left: " + itemRectangle.calibrateGamesLeft
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        font.pixelSize: 10 * sizeModifer
                     }
                 }
             }

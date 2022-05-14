@@ -55,22 +55,21 @@ Rectangle {
                 <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Anibus - dowstats web site main developer, DoW Stats 2 client developer </span></li>\n
                 <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">New - first client (SSStats) main developer</span></li>\n
                 <li style=\" font-size:x-large; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE, Nascent</span></li></ul>
-
-                 <br>
+                <br>
                 <center><h2>Players are divided into the following ranks by Solo MMR</h2></center><br>
                 <table align=\"center\" style=\"margin: 0px auto;\">
                 <tr>
                     <td><center>Calibrate</center></td>
-                    <td><center>Division 7</center></td>
-                    <td><center>Division 6</center></td>
-                    <td><center>Division 5</center></td>
-                    <td><center>Division 4</center></td>
-                    <td><center>Division 3</center></td>
-                    <td><center>Division 2</center></td>
-                    <td><center>Division 1</center></td>
+                    <td><center>Division VII</center></td>
+                    <td><center>Division VI</center></td>
+                    <td><center>Division V</center></td>
+                    <td><center>Division IV</center></td>
+                    <td><center>Division III</center></td>
+                    <td><center>Division II</center></td>
+                    <td><center>Division I</center></td>
                 </tr>
                 <tr>
-                    <td><center>&lt; 20 games</center></td>
+                    <td><center>-</center></td>
                     <td><center>0 - 1399</center></td>
                     <td><center>1400 - 1549</center></td>
                     <td><center>1550 - 1649</center></td>
@@ -91,6 +90,8 @@ Rectangle {
                 </tr>
                 </table>
                 <br>
+                <br>
+                <center>To receive a rank medal, a player must play 10 calibration games according to 1v1 rules.</center>
                 <br>
                 <br>
                 </body></html>

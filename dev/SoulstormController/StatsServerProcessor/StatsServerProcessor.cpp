@@ -212,6 +212,9 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).winRate = jsonArray.at(i)["winRate"].toInt();
         playersInfo.get()->operator[](i).winsCount = jsonArray.at(i)["winsCount"].toInt();
         playersInfo.get()->operator[](i).avatarUrl = jsonArray.at(i)["avatarUrl"].toString();
+        playersInfo.get()->operator[](i).calibrateGamesLeft = jsonArray.at(i)["calibrateGamesLeft"].toInt();
+
+        //playersInfo.get()->operator[](i).calibrateGamesLeft = 5;
 
         playersInfo.get()->operator[](i).statsAvailable = true;
 

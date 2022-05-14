@@ -29,6 +29,7 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case PlayerVisible: return item->getVisible();
         case PlayerAvatarId: return item->avatarId();
         case SteamId: return item->getSteamId();
+        case CalibrateGamesLeft: return item->getCalibrateGamesLeft();
     }
 
     return QVariant();
@@ -55,6 +56,7 @@ QHash<int, QByteArray> StatisticPanel::roleNames() const
     roles[PlayerVisible]    = "playerVisible";
     roles[PlayerAvatarId]   = "avatarId";
     roles[SteamId]          = "steamId";
+    roles[CalibrateGamesLeft] = "calibrateGamesLeft";
 
     return roles;
 }

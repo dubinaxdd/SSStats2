@@ -196,6 +196,7 @@ Rectangle {
                 playerApm: model.curentPlayerStatsItem.playerApm
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
+                calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
 
                 avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
                 sizeModifer: _uiBackend.sizeModifer
@@ -226,6 +227,7 @@ Rectangle {
                     playerApm: model.playerApm
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
+                    calibrateGamesLeft: model.calibrateGamesLeft
 
                     avatarSource: "image://imageprovider/" + model.avatarId
 

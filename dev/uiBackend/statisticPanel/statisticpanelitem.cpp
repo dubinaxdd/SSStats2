@@ -77,6 +77,11 @@ QString StatisticPanelItem::getSteamId() const
     return m_playersStats.steamId;
 }
 
+int StatisticPanelItem::getCalibrateGamesLeft() const
+{
+    return m_playersStats.calibrateGamesLeft;
+}
+
 void StatisticPanelItem::setPlayerSteamId(QString steamId)
 {
     tempSid = steamId;
