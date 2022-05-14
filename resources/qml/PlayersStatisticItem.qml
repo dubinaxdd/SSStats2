@@ -200,7 +200,7 @@ Rectangle {
 
                     Label {
                         id: label2
-                        text: "MMR: " + itemRectangle.playerMmr
+                        text: "MMR: " + (itemRectangle.playerGamesCount < 20 ? "Calibrate" : itemRectangle.playerMmr)
                         font.pixelSize: 12 * sizeModifer
 
                         Layout.fillWidth: true
@@ -209,7 +209,7 @@ Rectangle {
 
                     Label {
                         id: label
-                        text: "Solo MMR: " + itemRectangle.playerMmr1v1
+                        text: "Solo MMR: " + (itemRectangle.playerGamesCount < 20 ? "Calibrate" : itemRectangle.playerMmr1v1)
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 12 * sizeModifer
