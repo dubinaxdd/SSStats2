@@ -33,34 +33,55 @@ Rectangle {
     Layout.fillHeight: false
     Layout.fillWidth: true
 
+    onPlayerGamesCountChanged:
+    {
+        changeRank();
+    }
+
     onPlayerMmr1v1Changed:
     {
+        changeRank();
+    }
 
-        if (playerMmr1v1 < 1700)
+    function changeRank()
+    {
+        if (playerGamesCount < 20)
+        {
+            rankImage.source = "qrc:/images/resources/images/calibrate_60.png"
+            return;
+        }
+
+        if (playerMmr1v1 < 1400)
+        {
+            rankImage.source = "qrc:/images/resources/images/rank0_60.png"
+            return;
+        }
+
+        if (playerMmr1v1 < 1550)
         {
             rankImage.source = "qrc:/images/resources/images/rank1_60.png"
             return;
         }
 
-        if (playerMmr1v1 < 1900)
+        if (playerMmr1v1 < 1650)
         {
             rankImage.source = "qrc:/images/resources/images/rank2_60.png"
             return;
         }
 
-        if (playerMmr1v1 < 2100)
+        if (playerMmr1v1 < 1800)
         {
             rankImage.source = "qrc:/images/resources/images/rank3_60.png"
             return;
         }
 
-        if (playerMmr1v1 < 2300)
+        if (playerMmr1v1 < 2000)
         {
             rankImage.source = "qrc:/images/resources/images/rank4_60.png"
             return;
         }
 
-        if (playerMmr1v1 < 2500)
+        if (playerMmr1v1 < 2250)
         {
             rankImage.source = "qrc:/images/resources/images/rank5_60.png"
             return;

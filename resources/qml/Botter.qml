@@ -128,6 +128,36 @@ Rectangle {
             }
         }
 
+        Rectangle{
+            id: helpLinkRectangle
+            width: helpGuideLinkLabel.width + 30
+            height: 35
+            radius:5
+
+            color: "#D2691E"
+
+            Label{
+                id: helpGuideLinkLabel
+                text: "Help"
+                color: helpGuideLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                anchors.verticalCenter: parent.verticalCenter
+                font.pixelSize: 16
+                anchors.horizontalCenter: parent.horizontalCenter
+
+            }
+
+            MouseArea{
+                id: helpGuideLinkMouseArea
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+
+                onClicked: {
+                    Qt.openUrlExternally("https://dowstats.ru/support.php");
+                }
+            }
+        }
+
 
         Rectangle{
             Layout.fillWidth: true

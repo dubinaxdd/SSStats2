@@ -70,7 +70,7 @@ Rectangle {
                     <td><center>Division 1</center></td>
                 </tr>
                 <tr>
-                    <td><center>-</center></td>
+                    <td><center>&lt; 20 games</center></td>
                     <td><center>0 - 1399</center></td>
                     <td><center>1400 - 1549</center></td>
                     <td><center>1550 - 1649</center></td>
