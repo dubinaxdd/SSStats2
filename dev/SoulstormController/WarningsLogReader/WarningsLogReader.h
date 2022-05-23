@@ -60,6 +60,8 @@ private:
     void missionOver();
     void missionStoped();
 
+    void forceMissionStoped();
+
     void setLocalPlayerName(QString str);
     void playerDroppedToObserver(QString str);
 
