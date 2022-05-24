@@ -18,6 +18,8 @@ Rectangle {
 
     radius: 10
 
+    property bool readyToRequestNextMessages: false
+
     onVisibleChanged: {
         if (infoRectangle.visible == false)
         {
@@ -117,6 +119,8 @@ Rectangle {
 
             model: infoRectangle.model
 
+            //property double contentBottomPosition
+
             delegate: DiscordMessage{
                 width: messagesListView.width
 
@@ -135,6 +139,15 @@ Rectangle {
                     fullAttachmenImageRectangle.attachmentImageHeight = model.attachmentImageHeight;
                     fullAttachmenImageRectangle.attachmentId = model.attachmentId;
                 }
+            }
+
+            onAtYEndChanged: {
+                if (atYEnd && readyToRequestNextMessages)
+                {
+                    model.requestNextMessages();
+                }
+
+                readyToRequestNextMessages = true;
             }
         }
     }

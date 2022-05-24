@@ -70,11 +70,16 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::startInstall,               m_modsProcessor,                    &ModsProcessor::onModInstallRequest,                Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::startUninstall,             m_modsProcessor,                    &ModsProcessor::onUninstallRequest,                 Qt::QueuedConnection);
 
+    QObject::connect(m_uiBackend->newsPage(),        &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextNews,             Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->eventsPage(),      &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextEvents,             Qt::QueuedConnection);
+
 
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNews, m_uiBackend->newsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
+    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNextNews, m_uiBackend->newsPage(), &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
+    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNextEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
 
     QObject::connect(m_modsProcessor, &ModsProcessor::modInstallCompleeted, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveInstallCompleeted, Qt::QueuedConnection);
     QObject::connect(m_modsProcessor, &ModsProcessor::installProgress, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadProgress, Qt::QueuedConnection);

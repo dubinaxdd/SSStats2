@@ -29,10 +29,14 @@ private:
 public slots:
     void setLastReadedNewsMessageID(QString id);
     void setLastReadedEventsMessageID(QString id);
+    void requestNextNews(QString messageId);
+    void requestNextEvents(QString messageId);
 
 private slots:
     void receiveNews(QNetworkReply* reply);
+    void receiveNextNews(QNetworkReply* reply);
     void receiveEvents(QNetworkReply* reply);
+    void receiveNextEvents(QNetworkReply* reply);
     void receiveNewsChannel(QNetworkReply* reply);
     void receiveEventsChannel(QNetworkReply* reply);
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
@@ -44,7 +48,9 @@ private slots:
 
 signals:
     void sendNews(QList<DiscordMessage> news);
+    void sendNextNews(QList<DiscordMessage> news);
     void sendEvents(QList<DiscordMessage> news);
+    void sendNextEvents(QList<DiscordMessage> news);
     void sendAvatar(QString avatarId, QImage discordAvatar);
     void sendAttachmentImage(QString attachmentId, QImage attachmentImage);
 
@@ -67,6 +73,9 @@ private:
     QString m_lastReadedNewsMessageID = "";
     QString m_lastReadedEventMessageID = "";
 
+    QString m_newsChannelId;
+    QString m_eventsChannelId;
+
     bool m_requestNewsNow = true;
     bool m_readyToRequest = true;
 
@@ -76,6 +85,8 @@ private:
     bool m_isFirstNewsRequest = true;
     bool m_isFirstEventsRequest = true;
 
+    bool m_isNewNewsMessage = true;
+    bool m_isNewEventsMessage = true;
 
 };
 

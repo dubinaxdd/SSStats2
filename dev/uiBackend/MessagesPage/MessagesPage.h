@@ -29,22 +29,29 @@ public:
    int rowCount( const QModelIndex& parent ) const override;
 
    Q_INVOKABLE void messagesReaded();
+   Q_INVOKABLE void requestNextMessages();
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
 public slots:
     void receiveMessages(QList<DiscordMessage> news);
+    void receiveNextMessages(QList<DiscordMessage> news);
     void onAvatarUpdate();
     void onAttachmetImagesUpdate();
 
 signals:
     void newsAvailableChanged(bool);
     void sendLastReadedMessageId(QString id);
+    void sendNextMessagesRequest(QString messgaesBeforeId);
+
+private:
+    QList<DiscordMessage> formatingMessagesText(QList<DiscordMessage> messages);
 
 private:
     QList<DiscordMessage> m_news;
     bool m_newsAvailable = false;
+    bool m_requestingNextMessagesProcessed = false;
 
 };
 

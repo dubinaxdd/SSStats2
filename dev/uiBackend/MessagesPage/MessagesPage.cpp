@@ -56,9 +56,9 @@ void MessagesPage::receiveMessages(QList<DiscordMessage> news)
 {
     beginInsertRows(QModelIndex(), 0, news.count() - 1);
 
-    m_news = news + m_news;
+    m_news = formatingMessagesText(news) + m_news;
 
-    for (int i = 0; i < m_news.count(); i++)
+    /*for (int i = 0; i < m_news.count(); i++)
     {
         QString newText = m_news.at(i).content;
 
@@ -99,10 +99,71 @@ void MessagesPage::receiveMessages(QList<DiscordMessage> news)
         }
 
         m_news[i].content = newText;
-    }
+    }*/
 
     endInsertRows();
 }
+
+void MessagesPage::receiveNextMessages(QList<DiscordMessage> news)
+{
+    beginInsertRows(QModelIndex(), m_news.count(), m_news.count() + news.count() - 1);
+
+    m_news = m_news + formatingMessagesText(news);
+
+    endInsertRows();
+
+    m_requestingNextMessagesProcessed = false;
+}
+
+QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> messages)
+{
+    for (int i = 0; i < messages.count(); i++)
+    {
+        QString newText = messages.at(i).content;
+
+        newText.append('\0');
+
+        for (int j = 0; j < newText.count() - 8; j++)
+        {
+            if(newText.mid(j, 7) == "http://" || newText.mid(j, 8) == "https://")
+            {
+                for(int k = j; k < newText.count(); k++)
+                {
+                    if(  k == newText.count() - 1 ||
+                         newText.at(k) == ' ' ||
+                         newText.at(k) == '\n' ||
+                         newText.at(k) == '\0')
+                    {
+                        QString url = newText.mid(j, k - j);
+                        QString formattedUrl = "<a href=\"" + url + "\">" + url + "</a>";
+
+                        newText.replace(j, k-j, formattedUrl);
+                        j += formattedUrl.count();
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (int j = 0; j < newText.count(); j++)
+        {
+            if(newText.at(j) == '\n')
+                newText.replace(j, 1, "<br> ");
+        }
+
+        if ( messages.at(i).isNew)
+        {
+            m_newsAvailable = true;
+            emit newsAvailableChanged(m_newsAvailable);
+        }
+
+        messages[i].content = newText;
+    }
+
+    return messages;
+}
+
+
 
 void MessagesPage::onAvatarUpdate()
 {
@@ -155,4 +216,13 @@ void MessagesPage::messagesReaded()
 
     if(m_news.count() > 0)
         emit sendLastReadedMessageId(m_news[0].messageId);
+}
+
+void MessagesPage::requestNextMessages()
+{
+    if (m_news.count() > 0 && !m_requestingNextMessagesProcessed)
+    {
+        m_requestingNextMessagesProcessed = true;
+        emit sendNextMessagesRequest(m_news.last().messageId);
+    }
 }
