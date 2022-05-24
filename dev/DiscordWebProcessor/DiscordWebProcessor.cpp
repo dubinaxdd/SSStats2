@@ -15,7 +15,7 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     , m_requestTimer(new QTimer(this))
     , m_settingsController(settingsController)
 {
-    m_newsChannelId = QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit();
+    m_newsChannelId = QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit();
     m_eventsChannelId = QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit();
 
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordWebProcessor::onSettingsLoaded, Qt::QueuedConnection);
@@ -356,6 +356,7 @@ void DiscordWebProcessor::receiveNextNews(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        emit sendNextNews(QList<DiscordMessage>());
         delete reply;
         return;
     }
@@ -409,6 +410,7 @@ void DiscordWebProcessor::receiveNextEvents(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        emit sendNextEvents(QList<DiscordMessage>());
         delete reply;
         return;
     }
