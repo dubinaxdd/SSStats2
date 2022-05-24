@@ -24,6 +24,7 @@ Rectangle {
     property double sizeModifer: 1
 
     property var hoveredState
+    property bool hoverEnabled: true
 
     Layout.maximumWidth: 280 * sizeModifer
     Layout.maximumHeight: 120 * sizeModifer
@@ -95,7 +96,7 @@ Rectangle {
     }
 
 
-    color: itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff")
+    color: itemRectangle.hoverEnabled ? itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff") : "#ffffff"
     radius: 10 * sizeModifer
 
 

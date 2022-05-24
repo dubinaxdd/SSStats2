@@ -29,7 +29,7 @@ void DiscordWebProcessor::requestNews()
     QString urlString = "";
 
     if (m_isFirstNewsRequest)
-        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit() + "/messages";
+        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit() + "/messages?limit=5";
     else
         urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit() + "/messages?after=" + m_afterNewsMessageID;
 
@@ -63,7 +63,7 @@ void DiscordWebProcessor::requestEvents()
     QString urlString = "";
 
     if (m_isFirstEventsRequest)
-        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit() + "/messages";
+        urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit() + "/messages?limit=5";
     else
         urlString = "https://discord.com/api/v9/channels/" + QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit() + "/messages?after=" + m_afterEventsMessageID;
 

@@ -200,6 +200,7 @@ Rectangle {
 
                 avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
                 sizeModifer: _uiBackend.sizeModifer
+                hoverEnabled: false
 
             }
 
@@ -230,8 +231,8 @@ Rectangle {
                     calibrateGamesLeft: model.calibrateGamesLeft
 
                     avatarSource: "image://imageprovider/" + model.avatarId
-
                     sizeModifer: _uiBackend.sizeModifer
+                    hoverEnabled: false
 
                     height: 120 * _uiBackend.sizeModifer
                     width: 280 * _uiBackend.sizeModifer
