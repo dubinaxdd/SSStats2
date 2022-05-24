@@ -15,7 +15,7 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     , m_requestTimer(new QTimer(this))
     , m_settingsController(settingsController)
 {
-    m_newsChannelId = QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit();
+    m_newsChannelId = QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit();
     m_eventsChannelId = QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit();
 
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordWebProcessor::onSettingsLoaded, Qt::QueuedConnection);
@@ -34,7 +34,7 @@ void DiscordWebProcessor::requestNews()
     if (m_isFirstNewsRequest)
         urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5";
     else
-        urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?after=" + m_afterNewsMessageID;
+        urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?after=" + m_afterNewsMessageID + "&limit=5";
 
     m_isFirstNewsRequest = false;
 
@@ -68,7 +68,7 @@ void DiscordWebProcessor::requestEvents()
     if (m_isFirstEventsRequest)
         urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?limit=5";
     else
-        urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?after=" + m_afterEventsMessageID;
+        urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?after=" + m_afterEventsMessageID  + "&limit=5";
 
     m_isFirstEventsRequest = false;
 
@@ -329,7 +329,7 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        m_needRequestNews = true;
+        //m_needRequestNews = true;
         delete reply;
         return;
     }
@@ -340,12 +340,17 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
 
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
 
+    bool isNew = true;
+
     for(int i = 0; i < newsList.count(); i++)
     {
         if (newsList.at(i).messageId == m_lastReadedNewsMessageID)
+        {
+            isNew = false;
             m_isNewNewsMessage = false;
+        }
 
-        newsList[i].isNew = m_isNewNewsMessage;
+        newsList[i].isNew = isNew;
     }
 
     emit sendNews(std::move(newsList));
@@ -383,7 +388,7 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        m_needRequestEvents = true;
+        //m_needRequestEvents = true;
         delete reply;
         return;
     }
@@ -394,12 +399,18 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
 
     QList<DiscordMessage> eventsList = parseMessagesJson(replyByteArray);
 
+    bool isNew = true;
+
     for(int i = 0; i < eventsList.count(); i++)
     {
         if (eventsList.at(i).messageId == m_lastReadedEventMessageID)
-            m_isNewEventsMessage = false;
+        {
 
-        eventsList[i].isNew = m_isNewEventsMessage;
+            isNew = false;
+            m_isNewEventsMessage = false;
+        }
+
+        eventsList[i].isNew = isNew;
     }
 
     emit sendEvents(std::move(eventsList));
