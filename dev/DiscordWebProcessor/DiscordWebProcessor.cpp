@@ -15,7 +15,7 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     , m_requestTimer(new QTimer(this))
     , m_settingsController(settingsController)
 {
-    m_newsChannelId = QString(TEST_CHANNEL_ID/*NEWS_CHANNEL_ID*/).toLocal8Bit();
+    m_newsChannelId = QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit();
     m_eventsChannelId = QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit();
 
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordWebProcessor::onSettingsLoaded, Qt::QueuedConnection);
@@ -329,16 +329,24 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        //m_needRequestNews = true;
+
+        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2 * 2);
+        m_needRequestNews = true;
         delete reply;
         return;
     }
+    m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
 
     QByteArray replyByteArray = reply->readAll();
 
     delete reply;
 
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
+
+    if (newsList.count() == 0)
+        return;
+
+
 
     bool isNew = true;
 
@@ -388,16 +396,24 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        //m_needRequestEvents = true;
+        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2 * 2);
+        m_needRequestEvents = true;
         delete reply;
         return;
     }
+
+    m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
 
     QByteArray replyByteArray = reply->readAll();
 
     delete reply;
 
     QList<DiscordMessage> eventsList = parseMessagesJson(replyByteArray);
+
+    if (eventsList.count() == 0)
+        return;
+
+    m_lastEventMessageID = eventsList.first().messageId;
 
     bool isNew = true;
 
