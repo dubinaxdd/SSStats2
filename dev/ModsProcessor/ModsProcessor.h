@@ -21,6 +21,7 @@ signals:
 public slots:
     void onModInstallRequest(InstMod mod);
     void onUninstallRequest(InstMod mod);
+    void unlockRaces();
 
 private:
     ModsDownloader* m_modsDownloader;
