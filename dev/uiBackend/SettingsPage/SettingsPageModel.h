@@ -25,6 +25,8 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool win7SupportMode READ win7SupportMode WRITE setWin7SupportMode NOTIFY win7SupportModeChanged)
     Q_PROPERTY(bool skipIntroVideo READ skipIntroVideo WRITE setSkipIntroVideo NOTIFY skipIntroVideoChanged)
 
+    Q_PROPERTY(QString unlockRacesStatus MEMBER m_unlockRacesStatus NOTIFY unlockRacesStatusChanged)
+
 
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
@@ -53,10 +55,14 @@ signals:
     void win7SupportModeChanged();
     void skipIntroVideoChanged();
 
+    void sendUnlockRaces();
+    void unlockRacesStatusChanged();
+
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
     void receiveInstallCompleeted(InstMod mod);
     void receiveDownloadError(InstMod mod);
+    void receiveUnlockRacesStatus(bool status);
 
 private slots:
     void onSettingsLoaded();
@@ -70,6 +76,8 @@ public:
 
     Q_INVOKABLE void installGridHotkeys();
     Q_INVOKABLE void uninstallGridHotkeys();
+
+    Q_INVOKABLE void unlockRaces();
 
     bool win7SupportMode() const;
     void setWin7SupportMode(bool newWin7SupportMode);
@@ -108,6 +116,9 @@ private:
     bool m_overlayVisible = true;
     bool m_win7SupportMode = false;
     bool m_skipIntroVideo = false;
+
+
+    QString m_unlockRacesStatus = "";
 
 };
 

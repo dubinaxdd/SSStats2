@@ -16,8 +16,6 @@ ModsProcessor::ModsProcessor(QString ssPath, QObject *parent)
     QObject::connect(m_modsInstaller, &ModsInstaller::modInstalled, this, [&](InstMod mod){emit modInstallCompleeted(mod);}, Qt::QueuedConnection);
     QObject::connect(m_modsDownloader, &ModsDownloader::downloadError, this, [&](InstMod mod){emit downloadError(mod);}, Qt::QueuedConnection);
     QObject::connect(m_modsDownloader, &ModsDownloader::downladProgress, this, [&](InstMod mod, int progress){emit installProgress(mod, progress);}, Qt::QueuedConnection);
-
-    unlockRaces();
 }
 
 void ModsProcessor::onModInstallRequest(InstMod mod)
@@ -47,12 +45,21 @@ void ModsProcessor::unlockRaces()
 
     QFile gragicsConfig(m_ssPath + "\\GraphicsConfig.exe");
 
+    if(!gragicsConfig.open(QFile::ReadOnly))
+    {
+        qWarning(logWarning()) << "Races not unlocked";
+        emit sendUnlockRacesStatus(false);
+        return;
+    }
+
     QDir dir;
     dir.mkdir(m_ssPath + "\\DowStatsUnlocker");
 
     gragicsConfig.copy(m_ssPath + "\\DowStatsUnlocker\\DarkCrusade.exe");
     gragicsConfig.copy(m_ssPath + "\\DowStatsUnlocker\\W40k.exe");
     gragicsConfig.copy(m_ssPath + "\\DowStatsUnlocker\\W40kWA.exe");
+
+    gragicsConfig.close();
 
     QSettings vanilla_CDKEY("HKEY_LOCAL_MACHINE\\SOFTWARE\\" + systemPathPart + "THQ\\Dawn Of War", QSettings::NativeFormat);
     vanilla_CDKEY.setValue("CDKEY", VANILLA_CD_KEY);
@@ -77,4 +84,8 @@ void ModsProcessor::unlockRaces()
 
     QSettings dc_installlocation("HKEY_LOCAL_MACHINE\\SOFTWARE\\" + systemPathPart + "THQ\\Dawn Of War - Dark Crusade", QSettings::NativeFormat);
     dc_installlocation.setValue("installlocation", m_ssPath + "\\DowStatsUnlocker\\");
+
+    qInfo(logInfo()) << "Races unlocked";
+
+    emit sendUnlockRacesStatus(true);
 }

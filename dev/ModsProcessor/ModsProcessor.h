@@ -18,6 +18,8 @@ signals:
     void installProgress(InstMod, int);
     void downloadError(InstMod);
 
+    void sendUnlockRacesStatus(bool);
+
 public slots:
     void onModInstallRequest(InstMod mod);
     void onUninstallRequest(InstMod mod);

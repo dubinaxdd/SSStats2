@@ -63,6 +63,16 @@ void SettingsPageModel::receiveDownloadError(InstMod mod)
     }
 }
 
+void SettingsPageModel::receiveUnlockRacesStatus(bool status)
+{
+    if (status)
+        m_unlockRacesStatus = "Status: Races unlocked";
+    else
+        m_unlockRacesStatus = "Status: Unlock races error";
+
+    emit unlockRacesStatusChanged();
+}
+
 
 void SettingsPageModel::installRussianFonts()
 {
@@ -128,6 +138,14 @@ void SettingsPageModel::uninstallGridHotkeys()
     emit startUninstall(InstMod::GridHotkeys);
     emit gridHotkeysInstallProgressChanged();
     emit gridHotkeysInstallStatusChanged();
+}
+
+void SettingsPageModel::unlockRaces()
+{
+    m_unlockRacesStatus = "Status: Processed...";
+    emit unlockRacesStatusChanged();
+
+    emit sendUnlockRaces();
 }
 
 void SettingsPageModel::receiveRussianFontsDownloadProgress(int progress)

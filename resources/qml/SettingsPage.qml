@@ -17,6 +17,20 @@ Rectangle {
 
     property var model: _uiBackend.settingsPageModel
 
+
+
+
+    Connections {
+        target: model
+
+        function onUnlockRacesStatusChanged()
+        {
+            unlockRacesButton.enabled = true;
+        }
+
+    }
+
+
     ColumnLayout
     {
         anchors.margins: 15
@@ -25,6 +39,30 @@ Rectangle {
         GridLayout{
 
             columns: 4
+
+
+            Button{
+                id: unlockRacesButton
+                text: "Unlock races"
+                height: 15
+                opacity: hovered? 1.0 : 0.8
+                onClicked: {
+                    model.unlockRaces();
+                    enabled = false;
+                }
+            }
+
+            Label{
+                text: model.unlockRacesStatus
+            }
+
+            Label{
+                text: ""
+            }
+
+            Label{
+                text: ""
+            }
 
             //Шрифты
             Label{
