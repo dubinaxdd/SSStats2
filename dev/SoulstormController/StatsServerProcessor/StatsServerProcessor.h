@@ -52,6 +52,8 @@ private:
     QNetworkAccessManager *m_networkManager;
     QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
     QList<ServerPlayerStats*> m_playerStats;
+
+    QString m_machineUniqueId = "";
 };
 
 #endif // STATSSERVERPROCESSOR_H
