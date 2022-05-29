@@ -96,9 +96,9 @@ Rectangle {
     }
 
 
-    color: itemRectangle.hoverEnabled ? itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff") : "#ffffff"
-    radius: 10 * sizeModifer
+    color: itemRectangle.hoverEnabled ? ( itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff" )) : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff")
 
+    radius: 10 * sizeModifer
 
     RowLayout {
         id: rowLayout
