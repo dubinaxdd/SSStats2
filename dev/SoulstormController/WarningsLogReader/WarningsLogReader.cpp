@@ -92,8 +92,8 @@ void WarningsLogReader::readGameInfo()
             ///Проверка на принудительное окончание игры
             if(line.contains("Lobby - LIE_Back2FE"))
             {
-                forceMissionStoped();
-                break;
+                if (forceMissionStoped())
+                    break;
             }
 
             ///Проверка на старт миссии игры
@@ -975,8 +975,17 @@ void WarningsLogReader::missionStoped()
     }
 }
 
-void WarningsLogReader::forceMissionStoped()
+bool WarningsLogReader::forceMissionStoped()
 {
+    if(m_missionCurrentState == SsMissionState::unknownGameStoped
+            || m_missionCurrentState == SsMissionState::gameOver
+            || m_missionCurrentState == SsMissionState::gameStoped
+            || m_missionCurrentState == SsMissionState::savedGameOver
+            || m_missionCurrentState == SsMissionState::savedGameStoped
+            || m_missionCurrentState == SsMissionState::playbackOver
+            || m_missionCurrentState == SsMissionState::playbackStoped)
+        return false;
+
     checkGameInitialize();
     readTestStatsTemp();
 
@@ -984,6 +993,7 @@ void WarningsLogReader::forceMissionStoped()
 
     emit sendCurrentMissionState(m_missionCurrentState);
     qInfo(logInfo()) << "Force Mission Stoped";
+    return true;
 }
 
 void WarningsLogReader::setLocalPlayerName(QString str)
