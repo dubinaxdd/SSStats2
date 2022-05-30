@@ -150,7 +150,7 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats.php?sids=" + sidsString + "&version="+m_clientVersion+"&sender_sid="+ m_currentPlayerStats.data()->at(0).steamId));
     newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
-    newRequest.setRawHeader("machine_unique_id", m_machineUniqueId.toLatin1());
+    newRequest.setRawHeader("machineUniqueId", m_machineUniqueId.toLatin1());
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -343,7 +343,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     QNetworkRequest request = QNetworkRequest(QUrl(url));
 
     request.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
-    request.setRawHeader("machine_unique_id", m_machineUniqueId.toLatin1());
+    request.setRawHeader("machineUniqueId", m_machineUniqueId.toLatin1());
 
     QByteArray postData, boundary="1BEF0A57BE110FD467A";
     //параметр 2 - файл
