@@ -31,8 +31,8 @@ exec_program(
 configure_file( "${CMAKE_SOURCE_DIR}/version.h.template" "${CMAKE_SOURCE_DIR}/version.h" )
 
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
 
 #set(TS_FILES DowStats2_en_GB.ts)
 
@@ -88,6 +88,8 @@ set(PROJECT_SOURCES
         dev/ModsProcessor/ModsInstaller/ModsInstaller.cpp
         dev/uiBackend/SettingsPage/SettingsPageModel.h
         dev/uiBackend/SettingsPage/SettingsPageModel.cpp
+        dev/SoundProcessor/SoundProcessor.h
+        dev/SoundProcessor/SoundProcessor.cpp
 
         defines.h
         qml.qrc
@@ -141,6 +143,7 @@ target_link_libraries(DowStats2
                         Qt${QT_VERSION_MAJOR}::QuickControls2
                         Qt${QT_VERSION_MAJOR}::Network
                         Qt${QT_VERSION_MAJOR}::Widgets
+                        Qt${QT_VERSION_MAJOR}::Multimedia
                         OpenSSL::SSL
                         OpenSSL::Crypto
                         QuaZip::QuaZip
@@ -205,4 +208,5 @@ include_directories(DowStats2
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsDownloader
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsInstaller
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/SettingsPage/
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoundProcessor
 )

@@ -13,6 +13,7 @@
 #include <DiscordWebProcessor.h>
 #include <logger.h>
 #include <ModsProcessor.h>
+#include <SoundProcessor.h>
 
 
 class Core : public QObject
@@ -59,6 +60,7 @@ private:
     SoulstormController* m_soulstormController;
     DiscordWebProcessor* m_discordWebProcessor;
     ModsProcessor* m_modsProcessor;
+    SoundProcessor* m_soundProcessor;
 
     int m_defaultWidth;
     int m_defaultHeight;

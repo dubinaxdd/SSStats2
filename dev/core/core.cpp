@@ -17,6 +17,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_soulstormController(new SoulstormController(m_settingsController, this))
     , m_discordWebProcessor(new DiscordWebProcessor(m_settingsController, this))
     , m_modsProcessor(new ModsProcessor(m_soulstormController->ssPath(), this))
+    , m_soundProcessor(new SoundProcessor(this))
 {
     registerTypes();
 
@@ -36,6 +37,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_topmostTimer, &QTimer::timeout, this, &Core::topmostTimerTimout, Qt::QueuedConnection);
 
     QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     this,                           &Core::ssMaximized,                             Qt::DirectConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_soundProcessor,               &SoundProcessor::setSoulstormMaximized,                             Qt::DirectConnection);
+
     QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            this,                           &Core::ssLaunched,                              Qt::QueuedConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_uiBackend,                    &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_uiBackend,                    &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
@@ -45,11 +48,20 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::gameInitialized,         this,                       &Core::gameInitialized,                  Qt::DirectConnection);
     QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::ssShutdown,              this,                       &Core::onSsShutdowned,                   Qt::QueuedConnection);
     QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
     QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
     QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
 
     QObject::connect(m_soulstormController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
     QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
+
+    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,      m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::hostParty,      m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::playerConnected,    m_soundProcessor,  &SoundProcessor::playPlayerJoinSound,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::playerDisconnected, m_soundProcessor,  &SoundProcessor::playPlayerLeftSound,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::playerKicked,       m_soundProcessor,  &SoundProcessor::playPlayerLeftSound,  Qt::QueuedConnection);
+
+
     QObject::connect(m_soulstormController, &SoulstormController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
     QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 

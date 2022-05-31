@@ -30,4 +30,9 @@
         <file>resources/images/calibrate_60.png</file>
         <file>resources/images/rank0_60.png</file>
     </qresource>
+    <qresource prefix="/sounds">
+        <file>resources/sounds/game_started.wav</file>
+        <file>resources/sounds/player_joined.wav</file>
+        <file>resources/sounds/player_left.wav</file>
+    </qresource>
 </RCC>
