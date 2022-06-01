@@ -36,30 +36,6 @@ Rectangle {
 
             columns: 4
 
-
-            Button{
-                id: unlockRacesButton
-                text: "Unlock races"
-                height: 15
-                opacity: hovered? 1.0 : 0.8
-                onClicked: {
-                    model.unlockRaces();
-                    enabled = false;
-                }
-            }
-
-            Label{
-                text: model.unlockRacesStatus
-            }
-
-            Label{
-                text: ""
-            }
-
-            Label{
-                text: ""
-            }
-
             //Шрифты
             Label{
                 text: "Russian fonts:"
@@ -216,6 +192,30 @@ Rectangle {
             onCheckedChanged: {
                 model.enableEventsSoundWhenGameMaximized = checked;
             }
+        }
+
+
+        RowLayout
+        {
+            Label{
+                text: "Race unlocker:"
+            }
+
+            Button{
+                id: unlockRacesButton
+                text: "Unlock races"
+                height: 15
+                opacity: hovered? 1.0 : 0.8
+                onClicked: {
+                    model.unlockRaces();
+                    enabled = false;
+                }
+            }
+
+            Label{
+                text: model.unlockRacesStatus
+            }
+
         }
 
 
