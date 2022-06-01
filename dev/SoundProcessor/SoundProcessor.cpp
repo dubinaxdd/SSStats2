@@ -1,5 +1,6 @@
 #include "SoundProcessor.h"
 #include <QSound>
+#include <QDebug>
 
 SoundProcessor::SoundProcessor(QObject *parent) : QObject(parent)
 {
@@ -57,4 +58,14 @@ void SoundProcessor::receiveCurrentMissionState(SsMissionState gameCurrentState)
 {
     if (gameCurrentState == SsMissionState::gameLoadStarted)
         playGameStartSound();
+}
+
+void SoundProcessor::setEnableSoundsWhenGameMaximized(bool newEnableSoundsWhenGameMaximized)
+{
+    m_enableSoundsWhenGameMaximized = newEnableSoundsWhenGameMaximized;
+}
+
+void SoundProcessor::setEnableSoundsWhenGameMinimized(bool newEnableSoundsWhenGameMinimized)
+{
+    m_enableSoundsWhenGameMinimized = newEnableSoundsWhenGameMinimized;
 }

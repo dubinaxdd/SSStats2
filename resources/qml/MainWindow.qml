@@ -6,14 +6,14 @@ import Qt.labs.platform 1.1
 import QtGraphicalEffects 1.15
 
 Window {
-    width: 1200
+    width: 1000
     height: 700
     title: "DoW Stats 2"
     color: "#eaeaea"
     flags: Qt.Window
     visibility: Window.Maximized
 
-    minimumWidth: 1200
+    minimumWidth: 1000
     minimumHeight: 700
 
     ColumnLayout {

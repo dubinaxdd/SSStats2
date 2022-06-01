@@ -10,6 +10,12 @@ SettingsPageModel::SettingsPageModel(SettingsController *settingsController, QOb
 
 void SettingsPageModel::onSettingsLoaded()
 {
+    m_enableEventsSoundWhenGameMinimized = m_settingsController->getSettings()->enableEventsSoundWhenGameMinimized;
+    emit enableEventsSoundWhenGameMinimizedChanged(m_enableEventsSoundWhenGameMinimized);
+
+    m_enableEventsSoundWhenGameMaximized = m_settingsController->getSettings()->enableEventsSoundWhenGameMaximized;
+    emit enableEventsSoundWhenGameMaximizedChanged(m_enableEventsSoundWhenGameMaximized);
+
     m_russianFontsInstalledStatus = m_settingsController->getSettings()->russianFontsInstalled;
     m_russianFontsInstallProgress = m_russianFontsInstalledStatus ? "Installed" : "Not installed";
     emit russianFontsInstallStatusChanged();
@@ -234,6 +240,40 @@ void SettingsPageModel::receiveGridHotkeysDownloadError()
     m_gridHotkeysInstallInProcess = false;
     emit gridHotkeysInstallInProcessChanged();
 }
+
+bool SettingsPageModel::enableEventsSoundWhenGameMaximized() const
+{
+    return m_enableEventsSoundWhenGameMaximized;
+}
+
+void SettingsPageModel::setEnableEventsSoundWhenGameMaximized(bool newEnableEventsSoundWhenGameMaximized)
+{
+    if (m_enableEventsSoundWhenGameMaximized == newEnableEventsSoundWhenGameMaximized)
+        return;
+    m_enableEventsSoundWhenGameMaximized = newEnableEventsSoundWhenGameMaximized;
+    emit enableEventsSoundWhenGameMaximizedChanged(m_enableEventsSoundWhenGameMaximized);
+
+    m_settingsController->getSettings()->enableEventsSoundWhenGameMaximized = m_enableEventsSoundWhenGameMaximized;
+    m_settingsController->saveSettings();
+}
+
+bool SettingsPageModel::enableEventsSoundWhenGameMinimized() const
+{
+    return m_enableEventsSoundWhenGameMinimized;
+}
+
+void SettingsPageModel::setEnableEventsSoundWhenGameMinimized(bool newEnableEventsSoundWhenGameMinimized)
+{
+    if (m_enableEventsSoundWhenGameMinimized == newEnableEventsSoundWhenGameMinimized)
+        return;
+
+    m_enableEventsSoundWhenGameMinimized = newEnableEventsSoundWhenGameMinimized;
+    emit enableEventsSoundWhenGameMinimizedChanged(m_enableEventsSoundWhenGameMinimized);
+
+    m_settingsController->getSettings()->enableEventsSoundWhenGameMinimized = m_enableEventsSoundWhenGameMinimized;
+    m_settingsController->saveSettings();
+}
+
 
 bool SettingsPageModel::skipIntroVideo() const
 {

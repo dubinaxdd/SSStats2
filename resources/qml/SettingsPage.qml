@@ -17,9 +17,6 @@ Rectangle {
 
     property var model: _uiBackend.settingsPageModel
 
-
-
-
     Connections {
         target: model
 
@@ -27,7 +24,6 @@ Rectangle {
         {
             unlockRacesButton.enabled = true;
         }
-
     }
 
 
@@ -198,6 +194,30 @@ Rectangle {
                 model.skipIntroVideo = checked;
             }
         }
+
+
+        Switch {
+            text: "Enable events sounds when the game is minimized"
+            checked: model.enableEventsSoundWhenGameMinimized
+
+            opacity: hovered ? 1.0 : 0.8
+
+            onCheckedChanged: {
+                model.enableEventsSoundWhenGameMinimized = checked;
+            }
+        }
+
+        Switch {
+            text: "Enable events sounds when the game is maximized"
+            checked: model.enableEventsSoundWhenGameMaximized
+
+            opacity: hovered ? 1.0 : 0.8
+
+            onCheckedChanged: {
+                model.enableEventsSoundWhenGameMaximized = checked;
+            }
+        }
+
 
 /*
         Switch{

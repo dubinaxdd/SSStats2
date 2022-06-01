@@ -11,6 +11,9 @@ public:
     explicit SoundProcessor(QObject *parent = nullptr);
 
 public slots:
+    void setEnableSoundsWhenGameMinimized(bool newEnableSoundsWhenGameMinimized);
+    void setEnableSoundsWhenGameMaximized(bool newEnableSoundsWhenGameMaximized);
+
     void playPlayerJoinSound();
     void playPlayerLeftSound();
     void playGameStartSound();

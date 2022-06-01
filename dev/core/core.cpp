@@ -99,7 +99,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_modsProcessor, &ModsProcessor::downloadError, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadError, Qt::QueuedConnection);
     QObject::connect(m_modsProcessor, &ModsProcessor::sendUnlockRacesStatus, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveUnlockRacesStatus, Qt::QueuedConnection);
 
-
+    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMaximizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMaximized, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMinimizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMinimized, Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
 }

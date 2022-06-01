@@ -25,8 +25,10 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool win7SupportMode READ win7SupportMode WRITE setWin7SupportMode NOTIFY win7SupportModeChanged)
     Q_PROPERTY(bool skipIntroVideo READ skipIntroVideo WRITE setSkipIntroVideo NOTIFY skipIntroVideoChanged)
 
-    Q_PROPERTY(QString unlockRacesStatus MEMBER m_unlockRacesStatus NOTIFY unlockRacesStatusChanged)
+    Q_PROPERTY(bool enableEventsSoundWhenGameMinimized READ enableEventsSoundWhenGameMinimized WRITE setEnableEventsSoundWhenGameMinimized NOTIFY enableEventsSoundWhenGameMinimizedChanged)
+    Q_PROPERTY(bool enableEventsSoundWhenGameMaximized READ enableEventsSoundWhenGameMaximized WRITE setEnableEventsSoundWhenGameMaximized NOTIFY enableEventsSoundWhenGameMaximizedChanged)
 
+    Q_PROPERTY(QString unlockRacesStatus MEMBER m_unlockRacesStatus NOTIFY unlockRacesStatusChanged)
 
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
@@ -58,6 +60,9 @@ signals:
     void sendUnlockRaces();
     void unlockRacesStatusChanged();
 
+    void enableEventsSoundWhenGameMinimizedChanged(bool state);
+    void enableEventsSoundWhenGameMaximizedChanged(bool state);
+
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
     void receiveInstallCompleeted(InstMod mod);
@@ -84,6 +89,12 @@ public:
 
     bool skipIntroVideo() const;
     void setSkipIntroVideo(bool newSkipIntroVideo);
+
+    bool enableEventsSoundWhenGameMinimized() const;
+    void setEnableEventsSoundWhenGameMinimized(bool newEnableEventsSoundWhenGameMinimized);
+
+    bool enableEventsSoundWhenGameMaximized() const;
+    void setEnableEventsSoundWhenGameMaximized(bool newEnableEventsSoundWhenGameMaximized);
 
 private:
     void receiveRussianFontsDownloadProgress(int progress);
@@ -116,10 +127,11 @@ private:
     bool m_overlayVisible = true;
     bool m_win7SupportMode = false;
     bool m_skipIntroVideo = false;
+    bool m_enableEventsSoundWhenGameMinimized = true;
+    bool m_enableEventsSoundWhenGameMaximized = true;
 
 
     QString m_unlockRacesStatus = "";
-
 };
 
 #endif // SETTINGSPAGEMODEL_H

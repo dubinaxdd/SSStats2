@@ -19,6 +19,8 @@ struct Settings
     bool overlayVisible = true;
     bool win7SupportMode = false;
     bool skipIntroVideo = false;
+    bool enableEventsSoundWhenGameMaximized = false;
+    bool enableEventsSoundWhenGameMinimized = false;
 };
 
 class SettingsController : public QObject
