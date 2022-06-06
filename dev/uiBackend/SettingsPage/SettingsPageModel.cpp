@@ -16,6 +16,11 @@ void SettingsPageModel::onSettingsLoaded()
     m_enableEventsSoundWhenGameMaximized = m_settingsController->getSettings()->enableEventsSoundWhenGameMaximized;
     emit enableEventsSoundWhenGameMaximizedChanged(m_enableEventsSoundWhenGameMaximized);
 
+    m_enableGameLoadEventSound = m_settingsController->getSettings()->enableGameLoadEventSound;
+    m_enableGameStartEventSound = m_settingsController->getSettings()->enableGameStartEventSound;
+    emit enableGameLoadEventSoundChanged(m_enableGameLoadEventSound);
+    emit enableGameStartEventSoundChanged(m_enableGameStartEventSound);
+
     m_russianFontsInstalledStatus = m_settingsController->getSettings()->russianFontsInstalled;
     m_russianFontsInstallProgress = m_russianFontsInstalledStatus ? "Installed" : "Not installed";
     emit russianFontsInstallStatusChanged();
@@ -25,7 +30,6 @@ void SettingsPageModel::onSettingsLoaded()
     m_cameraModInstallProgress = m_cameraModInstalledStatus ? "Installed" : "Not installed";
     emit cameraModInstallStatusChanged();
     emit cameraModInstallProgressChanged();
-
 
     m_gridHotkeysInstalledStatus = m_settingsController->getSettings()->gridHotkeysInstalled;
     m_gridHotkeysInstallProgress = m_gridHotkeysInstalledStatus ? "Installed" : "Not installed";
@@ -252,6 +256,9 @@ void SettingsPageModel::setEnableGameStartEventSound(bool newEnableGameStartEven
         return;
     m_enableGameStartEventSound = newEnableGameStartEventSound;
     emit enableGameStartEventSoundChanged(m_enableGameStartEventSound);
+
+    m_settingsController->getSettings()->enableGameStartEventSound = m_enableGameStartEventSound;
+    m_settingsController->saveSettings();
 }
 
 bool SettingsPageModel::enableGameLoadEventSound() const
@@ -265,6 +272,9 @@ void SettingsPageModel::setEnableGameLoadEventSound(bool newEnableGameLoadEventS
         return;
     m_enableGameLoadEventSound = newEnableGameLoadEventSound;
     emit enableGameLoadEventSoundChanged(m_enableGameLoadEventSound);
+
+    m_settingsController->getSettings()->enableGameLoadEventSound = m_enableGameLoadEventSound;
+    m_settingsController->saveSettings();
 }
 
 bool SettingsPageModel::enableEventsSoundWhenGameMaximized() const

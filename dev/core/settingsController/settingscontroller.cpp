@@ -33,6 +33,8 @@ void SettingsController::initializeSettings()
     m_settings->skipIntroVideo = ss_stats_settings->value("game/skip_intro_video", false).toBool();
     m_settings->enableEventsSoundWhenGameMaximized = ss_stats_settings->value("client/enable_events_sound_when_game_maximized", true).toBool();
     m_settings->enableEventsSoundWhenGameMinimized = ss_stats_settings->value("client/enable_events_sound_when_game_minimized", true).toBool();
+    m_settings->enableGameLoadEventSound = ss_stats_settings->value("client/enable_game_load_event_sound", true).toBool();
+    m_settings->enableGameStartEventSound = ss_stats_settings->value("client/enable_game_start_event_sound", true).toBool();
 
     emit settingsLoaded();
 
@@ -55,6 +57,8 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("game/skip_intro_video", m_settings->skipIntroVideo);
     ss_stats_settings->setValue("client/enable_events_sound_when_game_maximized", m_settings->enableEventsSoundWhenGameMaximized);
     ss_stats_settings->setValue("client/enable_events_sound_when_game_minimized", m_settings->enableEventsSoundWhenGameMinimized);
+    ss_stats_settings->setValue("client/enable_game_load_event_sound", m_settings->enableGameLoadEventSound);
+    ss_stats_settings->setValue("client/enable_game_start_event_sound", m_settings->enableGameStartEventSound);
 
     ss_stats_settings->sync();
 }

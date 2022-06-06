@@ -21,6 +21,8 @@ struct Settings
     bool skipIntroVideo = false;
     bool enableEventsSoundWhenGameMaximized = false;
     bool enableEventsSoundWhenGameMinimized = false;
+    bool enableGameLoadEventSound = false;
+    bool enableGameStartEventSound = false;
 };
 
 class SettingsController : public QObject

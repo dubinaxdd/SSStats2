@@ -69,7 +69,6 @@ signals:
     void enableGameLoadEventSoundChanged(bool state);
     void enableGameStartEventSoundChanged(bool state);
 
-
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
     void receiveInstallCompleeted(InstMod mod);
