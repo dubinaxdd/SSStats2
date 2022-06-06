@@ -44,6 +44,15 @@ void SoundProcessor::playGameStartSound()
         QSound::play(":/sounds/resources/sounds/game_started.wav");
 }
 
+void SoundProcessor::playGameLoadSound()
+{
+    if ((m_soulstormMaximized && !m_enableSoundsWhenGameMaximized) || (!m_soulstormMaximized && !m_enableSoundsWhenGameMinimized))
+        return;
+
+    if ((m_enableSoundsWhenGameMinimized || m_enableSoundsWhenGameMaximized))
+        QSound::play(":/sounds/resources/sounds/game_loading.wav");
+}
+
 void SoundProcessor::setSoulstormMaximized(bool isMaximized)
 {
     m_soulstormMaximized = isMaximized;
@@ -57,6 +66,9 @@ void SoundProcessor::activeIsFirstConnection()
 void SoundProcessor::receiveCurrentMissionState(SsMissionState gameCurrentState)
 {
     if (gameCurrentState == SsMissionState::gameLoadStarted)
+        playGameLoadSound();
+
+    if (gameCurrentState == SsMissionState::gameStarted)
         playGameStartSound();
 }
 

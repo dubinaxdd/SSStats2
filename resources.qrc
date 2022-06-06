@@ -34,5 +34,6 @@
         <file>resources/sounds/game_started.wav</file>
         <file>resources/sounds/player_joined.wav</file>
         <file>resources/sounds/player_left.wav</file>
+        <file>resources/sounds/game_loading.wav</file>
     </qresource>
 </RCC>

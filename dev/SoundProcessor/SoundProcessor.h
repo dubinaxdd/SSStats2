@@ -17,6 +17,7 @@ public slots:
     void playPlayerJoinSound();
     void playPlayerLeftSound();
     void playGameStartSound();
+    void playGameLoadSound();
 
     void setSoulstormMaximized(bool isMaximized);
 
