@@ -101,6 +101,10 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMaximizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMaximized, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMinimizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMinimized, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameLoadEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameLoadEventSound, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameStartEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameStartEventSound, Qt::QueuedConnection);
+
+
 
     m_settingsController->initializeSettings();
 }

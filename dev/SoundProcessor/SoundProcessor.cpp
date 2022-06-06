@@ -37,6 +37,9 @@ void SoundProcessor::playPlayerLeftSound()
 
 void SoundProcessor::playGameStartSound()
 {
+    if(!m_enableGameStartEventSound)
+        return;
+
     if ((m_soulstormMaximized && !m_enableSoundsWhenGameMaximized) || (!m_soulstormMaximized && !m_enableSoundsWhenGameMinimized))
         return;
 
@@ -46,6 +49,9 @@ void SoundProcessor::playGameStartSound()
 
 void SoundProcessor::playGameLoadSound()
 {
+    if(!m_enableGameLoadEventSound)
+        return;
+
     if ((m_soulstormMaximized && !m_enableSoundsWhenGameMaximized) || (!m_soulstormMaximized && !m_enableSoundsWhenGameMinimized))
         return;
 
@@ -70,6 +76,16 @@ void SoundProcessor::receiveCurrentMissionState(SsMissionState gameCurrentState)
 
     if (gameCurrentState == SsMissionState::gameStarted)
         playGameStartSound();
+}
+
+void SoundProcessor::setEnableGameStartEventSound(bool newEnableGameStartEventSound)
+{
+    m_enableGameStartEventSound = newEnableGameStartEventSound;
+}
+
+void SoundProcessor::setEnableGameLoadEventSound(bool newEnableGameLoadEventSound)
+{
+    m_enableGameLoadEventSound = newEnableGameLoadEventSound;
 }
 
 void SoundProcessor::setEnableSoundsWhenGameMaximized(bool newEnableSoundsWhenGameMaximized)

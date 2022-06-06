@@ -28,6 +28,9 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool enableEventsSoundWhenGameMinimized READ enableEventsSoundWhenGameMinimized WRITE setEnableEventsSoundWhenGameMinimized NOTIFY enableEventsSoundWhenGameMinimizedChanged)
     Q_PROPERTY(bool enableEventsSoundWhenGameMaximized READ enableEventsSoundWhenGameMaximized WRITE setEnableEventsSoundWhenGameMaximized NOTIFY enableEventsSoundWhenGameMaximizedChanged)
 
+    Q_PROPERTY(bool enableGameLoadEventSound READ enableGameLoadEventSound WRITE setEnableGameLoadEventSound NOTIFY enableGameLoadEventSoundChanged)
+    Q_PROPERTY(bool enableGameStartEventSound READ enableGameStartEventSound WRITE setEnableGameStartEventSound NOTIFY enableGameStartEventSoundChanged)
+
     Q_PROPERTY(QString unlockRacesStatus MEMBER m_unlockRacesStatus NOTIFY unlockRacesStatusChanged)
 
 public:
@@ -63,6 +66,10 @@ signals:
     void enableEventsSoundWhenGameMinimizedChanged(bool state);
     void enableEventsSoundWhenGameMaximizedChanged(bool state);
 
+    void enableGameLoadEventSoundChanged(bool state);
+    void enableGameStartEventSoundChanged(bool state);
+
+
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
     void receiveInstallCompleeted(InstMod mod);
@@ -95,6 +102,12 @@ public:
 
     bool enableEventsSoundWhenGameMaximized() const;
     void setEnableEventsSoundWhenGameMaximized(bool newEnableEventsSoundWhenGameMaximized);
+
+    bool enableGameLoadEventSound() const;
+    void setEnableGameLoadEventSound(bool newEnableGameLoadEventSound);
+
+    bool enableGameStartEventSound() const;
+    void setEnableGameStartEventSound(bool newEnableGameStartEventSound);
 
 private:
     void receiveRussianFontsDownloadProgress(int progress);
@@ -129,7 +142,8 @@ private:
     bool m_skipIntroVideo = false;
     bool m_enableEventsSoundWhenGameMinimized = true;
     bool m_enableEventsSoundWhenGameMaximized = true;
-
+    bool m_enableGameLoadEventSound = true;
+    bool m_enableGameStartEventSound = true;
 
     QString m_unlockRacesStatus = "";
 };

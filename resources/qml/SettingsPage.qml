@@ -173,6 +173,7 @@ Rectangle {
 
 
         Switch {
+            id: enableEventsSoundsEhenGameMinimized
             text: "Enable events sounds when the game is minimized"
             checked: model.enableEventsSoundWhenGameMinimized
 
@@ -184,6 +185,7 @@ Rectangle {
         }
 
         Switch {
+            id: enableEventsSoundsEhenGameMaximized
             text: "Enable events sounds when the game is maximized"
             checked: model.enableEventsSoundWhenGameMaximized
 
@@ -191,6 +193,34 @@ Rectangle {
 
             onCheckedChanged: {
                 model.enableEventsSoundWhenGameMaximized = checked;
+            }
+        }
+
+        Switch {
+            enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
+
+            text: "Enable game load event sound"
+            checked: model.enableGameLoadEventSound
+
+            opacity: hovered ? 1.0 : 0.8
+
+            onCheckedChanged: {
+                model.enableGameLoadEventSound = checked;
+            }
+        }
+
+        Switch {
+
+            enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
+
+            text: "Enable game start event sound"
+
+            checked: model.enableGameStartEventSound
+
+            opacity: hovered ? 1.0 : 0.8
+
+            onCheckedChanged: {
+                model.enableGameStartEventSound = checked;
             }
         }
 

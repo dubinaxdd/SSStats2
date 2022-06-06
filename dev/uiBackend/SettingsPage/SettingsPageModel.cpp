@@ -241,6 +241,32 @@ void SettingsPageModel::receiveGridHotkeysDownloadError()
     emit gridHotkeysInstallInProcessChanged();
 }
 
+bool SettingsPageModel::enableGameStartEventSound() const
+{
+    return m_enableGameStartEventSound;
+}
+
+void SettingsPageModel::setEnableGameStartEventSound(bool newEnableGameStartEventSound)
+{
+    if (m_enableGameStartEventSound == newEnableGameStartEventSound)
+        return;
+    m_enableGameStartEventSound = newEnableGameStartEventSound;
+    emit enableGameStartEventSoundChanged(m_enableGameStartEventSound);
+}
+
+bool SettingsPageModel::enableGameLoadEventSound() const
+{
+    return m_enableGameLoadEventSound;
+}
+
+void SettingsPageModel::setEnableGameLoadEventSound(bool newEnableGameLoadEventSound)
+{
+    if (m_enableGameLoadEventSound == newEnableGameLoadEventSound)
+        return;
+    m_enableGameLoadEventSound = newEnableGameLoadEventSound;
+    emit enableGameLoadEventSoundChanged(m_enableGameLoadEventSound);
+}
+
 bool SettingsPageModel::enableEventsSoundWhenGameMaximized() const
 {
     return m_enableEventsSoundWhenGameMaximized;

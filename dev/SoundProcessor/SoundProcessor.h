@@ -10,9 +10,13 @@ class SoundProcessor : public QObject
 public:
     explicit SoundProcessor(QObject *parent = nullptr);
 
+
+
 public slots:
     void setEnableSoundsWhenGameMinimized(bool newEnableSoundsWhenGameMinimized);
     void setEnableSoundsWhenGameMaximized(bool newEnableSoundsWhenGameMaximized);
+    void setEnableGameLoadEventSound(bool newEnableGameLoadEventSound);
+    void setEnableGameStartEventSound(bool newEnableGameStartEventSound);
 
     void playPlayerJoinSound();
     void playPlayerLeftSound();
@@ -28,6 +32,10 @@ public slots:
 private:
     bool m_enableSoundsWhenGameMinimized = true;
     bool m_enableSoundsWhenGameMaximized = true;
+
+    bool m_enableGameLoadEventSound = true;
+    bool m_enableGameStartEventSound = true;
+
     bool m_isFirstConnection = true;
     bool m_soulstormMaximized = false;
 
