@@ -284,7 +284,8 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     QString url;
 
-    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
+    //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
+    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay2.php?";
 
     int winnerCount = 0;
 
@@ -307,6 +308,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "gtime=" +  QString::number(replayInfo.gameTime) + "&";
     url += "sid=" + m_currentPlayerStats.data()->at(0).steamId + "&";
     url += "mod=" + replayInfo.mod + "&";
+    url += "isFullStdGame=" + QString::number(0) + "&";
 
     QString winCondition;
 
