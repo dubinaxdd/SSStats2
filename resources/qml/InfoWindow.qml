@@ -37,8 +37,8 @@ Rectangle {
               <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">
                 <p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large; font-weight:600; color:#333333; background-color:#ffffff;\">Standard game settings for sending statistics:</span></p>\n
                 <ul style=\"margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;\">
-                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">1v1 Game rules: Annihilate, Control Area, Game Timer (optional), Take and Hold.</span></li>\n
-                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">2v2, 3v3, 4v4 Game rules: Annihilate, Control Area (optional), Game Timer (optional), Take and Hold (optional).</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Solo MMR game rules: 1v1 game, Annihilate, Control Area, Game Timer (optional), Take and Hold.</span></li>\n
+                <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">MMR game rules: Annihilate, Control Area (optional), Game Timer (optional), Take and Hold (optional).</span></li>\n
                 <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Ai difficulty (optional), if there is AI in the game, statistics are not sent.</span></li>\n
                 <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Starting resources: Standard</span></li>\n
                 <li style=\" font-size:12pt; color:#333333; background-color:#ffffff;\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:x-large;\">Lock teams: Yes</span></li>\n
@@ -91,7 +91,7 @@ Rectangle {
                 </table>
                 <br>
                 <br>
-                <center>To receive a rank medal, a player must play 10 calibration games according to 1v1 rules.</center>
+                <center>To receive a rank medal, a player must play 10 calibration games according to Solo MMR game rules.</center>
                 <br>
                 <br>
                 </body></html>
