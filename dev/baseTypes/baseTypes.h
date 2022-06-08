@@ -228,6 +228,7 @@ struct SendingReplayInfo
     int gameTime;
     QString mod;
     WinCondition winBy;
+    bool isFullStdGame = false;
 };
 
 

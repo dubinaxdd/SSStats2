@@ -296,6 +296,36 @@ void WarningsLogReader::readReplayDataAfterStop()
     qInfo(logInfo()) << "APM:" << m_lastAverrageApm;
 
 
+    bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
+                           && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
+                           && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
+                           && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
+                           && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
+
+    if (!isStdWinConditions)
+    {
+        checkFailed = true;
+        warning += "    Standard winning conditions were not set up for the game\n";
+    }
+
+    bool isFullStdGame = false;
+
+    if (playersCount == 2)
+    {
+        //Проверка условий победы для игр 1х1
+        isFullStdGame = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
+                               && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
+                               && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
+                               && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
+                               && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
+                               && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
+                               && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
+    }
+
+
+
+
+/*
     if (playersCount == 2)
     {
         //Проверка условий победы для игр 1х1
@@ -328,7 +358,7 @@ void WarningsLogReader::readReplayDataAfterStop()
             checkFailed = true;
             warning += "    Standard winning conditions were not set up for the game\n";
         }
-    }
+    }*/
 
     //Выводим в лог информацию о состоянии игрока
     for(int i = 0; i < playerStats.count(); i++)
@@ -489,6 +519,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     replayInfo.mapName = scenario;
     replayInfo.gameTime = duration;
     replayInfo.mod = m_currentMode;
+    replayInfo.isFullStdGame = isFullStdGame;
 
     if (winBy == "ANNIHILATE")
         replayInfo.winBy = WinCondition::ANNIHILATE;

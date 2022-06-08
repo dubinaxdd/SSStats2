@@ -308,7 +308,11 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "gtime=" +  QString::number(replayInfo.gameTime) + "&";
     url += "sid=" + m_currentPlayerStats.data()->at(0).steamId + "&";
     url += "mod=" + replayInfo.mod + "&";
-    url += "isFullStdGame=" + QString::number(0) + "&";
+
+    if (replayInfo.isFullStdGame)
+        url += "isFullStdGame=" + QString::number(1) + "&";
+    else
+        url += "isFullStdGame=" + QString::number(0) + "&";
 
     QString winCondition;
 
