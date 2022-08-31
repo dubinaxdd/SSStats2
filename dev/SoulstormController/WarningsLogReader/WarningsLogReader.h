@@ -67,6 +67,11 @@ private:
 
     void readWinCondotions(QStringList *fileLines, int counter);
 
+    bool checkEqualNames(QStringList* playerNames);
+    bool checkAi(QVector<PlayerStats> *playerStats);
+    bool checkWinner(QVector<PlayerStats> *playerStats);
+    bool checkEqualNamesInStats();
+
 private:
     QTimer* m_gameInfoReadTimer;
     QTimer* m_readRacesSingleShootTimer;

@@ -233,6 +233,30 @@ void WarningsLogReader::readReplayDataAfterStop()
         }
     }
 
+    QString warning = "    The replay has not been uploaded to the server!\n";
+
+    bool checkFailed = false;
+
+    bool haveEqualNames = checkEqualNames(&playerNames);
+
+    //Проверка на одинаковые никнеймы
+    if (haveEqualNames)
+    {
+        checkFailed = true;
+        warning += "    The players have equal names\n";
+    }
+
+    bool haveEqualNamesForStats = false;
+
+    if (!haveEqualNames)
+        haveEqualNamesForStats = checkEqualNamesInStats();
+
+    if (haveEqualNamesForStats)
+    {
+        checkFailed = true;
+        warning += "    The observer have equal name with other player\n";
+    }
+
     QVector<PlayerStats> playerStats;
 
     for(int i = 0; i < playersCount; i++ )
@@ -262,22 +286,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     }
 
     //Проверка на наличие компьютера
-    bool computersFinded = false;
-
-    for(int i = 0; i < playerNames.count(); i++ )
-    {
-        if (playerStats[i].pHuman == false)
-        {
-            computersFinded = true;
-            break;
-        }
-    }
-
-    QString warning;
-
-    warning += "    The replay has not been uploaded to the server!\n";
-
-    bool checkFailed = false;
+    bool computersFinded = checkAi(&playerStats);
 
     //Проверка на наличие ИИ
     if (computersFinded)
@@ -323,43 +332,6 @@ void WarningsLogReader::readReplayDataAfterStop()
     }
 
 
-
-
-/*
-    if (playersCount == 2)
-    {
-        //Проверка условий победы для игр 1х1
-        bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
-                               && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
-                               && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
-                               && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
-                               && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
-                               && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
-                               && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
-
-        if (!isStdWinConditions)
-        {
-            checkFailed = true;
-            warning += "    Standard winning conditions were not set up for the game\n";
-        }
-    }
-    else
-    {
-        //Проверка условий победы для игр больше чем 1х1
-
-        bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
-                               && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
-                               && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
-                               && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
-                               && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
-
-        if (!isStdWinConditions)
-        {
-            checkFailed = true;
-            warning += "    Standard winning conditions were not set up for the game\n";
-        }
-    }*/
-
     //Выводим в лог информацию о состоянии игрока
     for(int i = 0; i < playerStats.count(); i++)
     {
@@ -393,8 +365,10 @@ void WarningsLogReader::readReplayDataAfterStop()
     }
 
     int count = 0;
+
     if (teamsCounter.count() > 0)
         count = teamsCounter.first();
+
     else
     {
         checkFailed = true;
@@ -418,16 +392,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     }
 
     //Проверка на наличие победителя
-    bool winnerAccepted = false;
-
-    for(int i = 0; i < playersCount; i++)
-    {
-        if(playerStats[i].finalState == FinalState::winner)
-        {
-            winnerAccepted = true;
-            break;
-        }
-    }
+    bool winnerAccepted = checkWinner(&playerStats);
 
     if (!winnerAccepted)
     {
@@ -443,26 +408,16 @@ void WarningsLogReader::readReplayDataAfterStop()
         PlayerInfoForReplaySendong newPlayer;
         newPlayer.playerName = playerStats[i].name;
 
-        //bool badName = true;
-
         //Берем сиды из последнего скана
         for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
         {
-            if(newPlayer.playerName == m_playersInfoFromScanner[j].name)
+            if(newPlayer.playerName == m_playersInfoFromScanner[j].name || newPlayer.playerName == "[" + m_playersInfoFromScanner[j].name + "]")
             {
                 newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
-                //badName = false;
                 break;
             }
         }
 
-        //Если не нашлось соответствия имени то светим ошибку
-       /* if (badName && !computersFinded)
-        {
-            checkFailed = true;
-            warning += "    Bad name: " + newPlayer.playerName + "\n";
-        }
-*/
         if (playerStats[i].race == "guard_race")
             newPlayer.playerRace = Race::ImperialGuard;
         if (playerStats[i].race == "tau_race")
@@ -640,9 +595,6 @@ void WarningsLogReader::receiveAverrageApm(int apm)
 
 void WarningsLogReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
-    //if(m_missionCurrentState != SsMissionState::gameStoped && m_missionCurrentState != SsMissionState::unknown)
-    //    return;
-
     for (int i = 0; i < playersInfoFromScanner.count(); i++)
         qInfo(logInfo()) << "Receive player data from DOW server:"<< playersInfoFromScanner.at(i).name << playersInfoFromScanner.at(i).steamId;
 
@@ -1120,5 +1072,92 @@ void WarningsLogReader::readWinCondotions(QStringList *fileLines, int counter)
 
         winConditionsReadCounter--;
     }
+}
+
+bool WarningsLogReader::checkEqualNames(QStringList *playerNames)
+{
+    bool haveEqualNames = false;
+
+    for (int i = 0; i < playerNames->count(); i++ )
+    {
+        for (int j = 0; j < playerNames->count(); j++ )
+        {
+            if (i == j)
+                continue;
+
+            if (playerNames->at(i) == playerNames->at(j))
+            {
+                haveEqualNames = true;
+                break;
+            }
+        }
+
+        if (haveEqualNames)
+            break;
+    }
+
+    return haveEqualNames;
+}
+
+bool WarningsLogReader::checkAi(QVector<PlayerStats> *playerStats)
+{
+    bool computersFinded = false;
+
+    for(int i = 0; i < playerStats->count(); i++ )
+    {
+        if (playerStats->at(i).pHuman == false)
+        {
+            computersFinded = true;
+            break;
+        }
+    }
+
+    return computersFinded;
+}
+
+bool WarningsLogReader::checkWinner(QVector<PlayerStats> *playerStats)
+{
+    bool winnerAccepted = false;
+
+    for(int i = 0; i < playerStats->count(); i++)
+    {
+        if(playerStats->at(i).finalState == FinalState::winner)
+        {
+            winnerAccepted = true;
+            break;
+        }
+    }
+
+    return winnerAccepted;
+}
+
+bool WarningsLogReader::checkEqualNamesInStats()
+{
+    bool haveEqualNames = false;
+
+    for (int i = 0; i < m_playersInfoFromScanner.count(); i++ )
+    {
+        qDebug() << "ASDASDASDASD" << m_playersInfoFromScanner.at(i).name << m_playersInfoFromScanner.at(i).steamId;
+    }
+
+    for (int i = 0; i < m_playersInfoFromScanner.count(); i++ )
+    {
+        for (int j = 0; j < m_playersInfoFromScanner.count(); j++ )
+        {
+            if (i == j)
+                continue;
+
+            if (m_playersInfoFromScanner.at(i).name == m_playersInfoFromScanner.at(j).name)
+            {
+                haveEqualNames = true;
+                break;
+            }
+        }
+
+        if (haveEqualNames)
+            break;
+    }
+
+    return haveEqualNames;
 }
 
