@@ -97,7 +97,6 @@ private:
     bool m_gameWillBePlayedInOtherSession = false;
     bool m_playerDroppedToObserver = false;
 
-    int m_playersCountFromScanner;
     QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
 
     QStringList testStatsTemp;

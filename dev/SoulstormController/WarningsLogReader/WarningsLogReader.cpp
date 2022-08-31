@@ -411,6 +411,9 @@ void WarningsLogReader::readReplayDataAfterStop()
         //Берем сиды из последнего скана
         for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
         {
+            if(m_playersInfoFromScanner[j].isCurrentPlayer)
+                continue;
+
             if(newPlayer.playerName == m_playersInfoFromScanner[j].name || newPlayer.playerName == "[" + m_playersInfoFromScanner[j].name + "]")
             {
                 newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;

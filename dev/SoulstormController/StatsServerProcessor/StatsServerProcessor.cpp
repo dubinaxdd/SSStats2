@@ -44,13 +44,16 @@ StatsServerProcessor::StatsServerProcessor(QString ssPath, QString steamPath, QO
 
 void StatsServerProcessor::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
 {
-    emit sendPlayersCount(playersCount);
+    emit sendPlayersCount(playersCount - 1);
     emit sendCurrentPlayerHostState(false);
 
     QSharedPointer <QList<ServerPlayerStats>> playersInfo(new QList<ServerPlayerStats>);
 
     for(int i = 0; i < playersInfoFromScanner.count(); i++)
     {
+        if (playersInfoFromScanner[i].isCurrentPlayer)
+            continue;
+
         ServerPlayerStats newPlayerInfo;
 
         newPlayerInfo.steamId = playersInfoFromScanner.at(i).steamId;

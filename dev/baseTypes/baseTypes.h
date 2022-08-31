@@ -140,6 +140,7 @@ struct SearchStemIdPlayerInfo
     QString steamId;
     int position;
     QString name;
+    bool isCurrentPlayer = false;
     bool closeConnection = false;
 };
 

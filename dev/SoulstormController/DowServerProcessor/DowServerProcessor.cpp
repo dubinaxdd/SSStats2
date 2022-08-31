@@ -377,7 +377,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
                 newPlayerInfo.steamId = needPlayerJson.at(2).toString().right(17);
 
                 if (newPlayerInfo.steamId == m_steamID)
-                    continue;
+                    newPlayerInfo.isCurrentPlayer = true;
 
                 newPlayerInfo.playerID = QString::number(needPlayerJson.at(1).toInt());
                 newPlayerInfo.closeConnection = false;

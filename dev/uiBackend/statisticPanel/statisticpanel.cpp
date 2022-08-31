@@ -110,10 +110,13 @@ void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerIn
 
     endRemoveRows();
 
-    beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-1);
+    beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-2);
 
     for(int i = 0; i < m_playersInfo.count(); i++)
     {
+        if(m_playersInfo[i].isCurrentPlayer)
+            continue;
+
         StatisticPanelItem* newItem = new StatisticPanelItem(this);
         newItem->setPlayerSteamId(m_playersInfo.at(i).steamId);
         m_playersStatsItems.append(newItem);
