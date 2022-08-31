@@ -3,6 +3,8 @@ cmake_policy(SET CMP0048 NEW)
 
 project(DowStats2 VERSION 2.1 LANGUAGES CXX)
 
+set(TARGET_NAME DowStats2)
+
 #set(PROJECT_VERSION_MAJOR "0")
 #set(PROJECT_VERSION_MINOR "1")
 
@@ -99,29 +101,9 @@ set(PROJECT_SOURCES
 set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
 
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(DowStats2 WIN32
-        MANUAL_FINALIZATION
-        ${PROJECT_SOURCES}
-        ${APP_ICON_RESOURCE_WINDOWS}
-    )
+add_executable(${TARGET_NAME} WIN32 ${PROJECT_SOURCES} ${APP_ICON_RESOURCE_WINDOWS})
 
-    qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-else()
-    if(ANDROID)
-        add_library(DowStats2 SHARED
-            ${PROJECT_SOURCES}
-        )
-    else()
-        add_executable(DowStats2 WIN32
-          ${PROJECT_SOURCES}
-          ${APP_ICON_RESOURCE_WINDOWS}
-        )
-    endif()
-
-    qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
-endif()
-
+qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 #set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x86")
 
@@ -134,9 +116,9 @@ message (FATAL_ERROR "OpenSSL Not found.")
     endif()
 
 
-target_compile_definitions(DowStats2
-  PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
-target_link_libraries(DowStats2
+target_compile_definitions(${TARGET_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
+
+target_link_libraries(${TARGET_NAME}
                         PRIVATE
                         Qt${QT_VERSION_MAJOR}::Core
                         Qt${QT_VERSION_MAJOR}::Quick
@@ -148,19 +130,6 @@ target_link_libraries(DowStats2
                         OpenSSL::Crypto
                         QuaZip::QuaZip
                         ReplayReaderLibrary)
-
-
-set_target_properties(DowStats2 PROPERTIES
-    MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com
-    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
-    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}
-)
-
-if(QT_VERSION_MAJOR EQUAL 6)
-    qt_import_qml_plugins(DowStats2)
-    qt_finalize_executable(DowStats2)
-endif()
-
 
 if(CMAKE_BUILD_TYPE STREQUAL Release)
 
@@ -174,14 +143,14 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
     endif()
 
     add_custom_command(
-        TARGET DowStats2
+        TARGET ${TARGET_NAME}
         POST_BUILD
         COMMAND ${WINSDK_MT_DIR}mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${CMAKE_BINARY_DIR}/DowStats2.exe
         COMMENT "Adding administator manifest."
     )
 endif()
 
-include_directories(DowStats2
+include_directories(${TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/settingsController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/hookManager
