@@ -107,8 +107,6 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormController,   &SoulstormController::ssLaunchStateChanged,   m_statsServerProcessor,  &StatsServerProcessor::receiveGameLaunchedState, Qt::QueuedConnection);
-
     m_statsServerProcessor->parseCurrentPlayerSteamId();
 
     m_settingsController->initializeSettings();

@@ -396,12 +396,6 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     });
 }
 
-void StatsServerProcessor::receiveGameLaunchedState(bool gameLaunched)
-{
-    if (!gameLaunched)
-        setCurrentPlayerAccepted(false);
-}
-
 QString StatsServerProcessor::GetRandomString() const
 {
    const QString possibleCharacters("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
@@ -433,12 +427,6 @@ QString StatsServerProcessor::CRC32fromByteArray( const QByteArray & array )
     crc32 ^= 0xffffffff;
     return QString("%1").arg(crc32, 8, 16, QChar('0'));
 }
-
-void StatsServerProcessor::setCurrentPlayerAccepted(bool newCurrentPlayerAccepted)
-{
-    m_currentPlayerAccepted = newCurrentPlayerAccepted;
-}
-
 
 void StatsServerProcessor::registerPlayer(QString name, QString sid, bool init)
 {

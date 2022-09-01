@@ -30,14 +30,11 @@ signals:
 public slots:
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
     void sendReplayToServer(SendingReplayInfo replayInfo);
-    void receiveGameLaunchedState(bool gameLaunched);
 
 private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
     void currentPlayerStatsRequestTimerTimeout();
-
-
 
 private:
     void registerPlayer(QString name, QString sid, bool init);
@@ -49,7 +46,6 @@ private:
     QString m_steamPath;
     QString m_ssPath;
     QString m_clientVersion;
-    bool m_currentPlayerAccepted = false;
     QMap<QString, QString> AllPlayersInfo;
     QNetworkAccessManager *m_networkManager;
     QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
