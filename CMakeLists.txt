@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0048 NEW)
 
-project(DowStats2 VERSION 2.1 LANGUAGES CXX)
+project(DowStats2 VERSION 2.2 LANGUAGES CXX)
 
 set(TARGET_NAME DowStats2)
 
@@ -183,6 +183,4 @@ include_directories(${TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsDownloader
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsInstaller
-    
-    ${CMAKE_CURRENT_SOURCE_DIR}/externals/replayReaderLibrary
 )
