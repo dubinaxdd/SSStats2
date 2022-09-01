@@ -504,11 +504,11 @@ void ReplayDataCollector::receiveCurrentMode(QString currentMode)
     m_currentMode = currentMode;
 }
 
-void ReplayDataCollector::receiveCurrentWinConditions(QVector<WinCondition> winCondotoins)
+void ReplayDataCollector::receiveCurrentWinConditions(QVector<WinCondition> winConditions)
 {
-    m_winCoditionsVector = winCondotoins;
+    m_winCoditionsVector = winConditions;
 
-    if (winCondotoins.count() > 0)
+    if (winConditions.count() > 0)
         m_gameWillBePlayedInOtherSession = false;
 }
 

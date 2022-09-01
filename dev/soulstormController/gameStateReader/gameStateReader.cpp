@@ -596,6 +596,7 @@ void GameStateReader::playerDroppedToObserver(QString str)
 void GameStateReader::readWinConditions(QStringList *fileLines, int counter)
 {
     QVector<WinCondition> winCoditionsVector;
+    winCoditionsVector.resize(0);
 
     int winConditionsReadCounter = counter;
     QString winConditionsReadLine;

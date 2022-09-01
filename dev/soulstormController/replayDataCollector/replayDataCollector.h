@@ -18,7 +18,7 @@ public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer , int playersCount);
     void onQuitParty();
     void receiveCurrentMode(QString currentMode);
-    void receiveCurrentWinConditions(QVector<WinCondition> winCondotoins);
+    void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
 
 
 signals:

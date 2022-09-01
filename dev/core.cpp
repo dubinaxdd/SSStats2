@@ -127,6 +127,7 @@ void Core::registerTypes()
     qRegisterMetaType<QVector<PartyData>>("QVector<PartyData>");
     qRegisterMetaType<PartyData>("PartyData");
     qRegisterMetaType<InstMod>("InstMod");
+    qRegisterMetaType<QVector<WinCondition>>("QVector<WinCondition>");
 }
 
 OverlayWindowController *Core::overlayWindowController() const
