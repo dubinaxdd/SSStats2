@@ -96,7 +96,7 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
     }
 }
 
-void StatisticPanel::receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount)
+void StatisticPanel::receivePlayersInfoMapFromScanner(QList<PlayerInfoFromDowServer> playersInfo, int playersCount)
 {
     Q_UNUSED(playersCount);
 

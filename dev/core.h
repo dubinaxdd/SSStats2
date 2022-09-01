@@ -22,7 +22,6 @@ public:
 
     bool event(QEvent *event) override;
     UiBackend *uiBackend() const;
-
     OverlayWindowController *overlayWindowController() const;
 
 signals:

@@ -50,7 +50,7 @@ signals:
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
-    void receivePlayersInfoMapFromScanner(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
+    void receivePlayersInfoMapFromScanner(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
     void receiveCurrentPlayerHostState(bool isHost);
     void onQuitParty();
 
@@ -62,8 +62,8 @@ private:
     StatisticPanelItem* m_curentPlayerStatsItem;
     QVector<StatisticPanelItem*> m_playersStatsItems;
 
-    SearchStemIdPlayerInfo m_crrentPlayerInfo;
-    QList<SearchStemIdPlayerInfo> m_playersInfo;
+    PlayerInfoFromDowServer m_crrentPlayerInfo;
+    QList<PlayerInfoFromDowServer> m_playersInfo;
 
     ImageProvider *m_imageProvider;
     int m_playersCount = 0;

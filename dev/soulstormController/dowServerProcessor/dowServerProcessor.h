@@ -55,7 +55,7 @@ private slots:
 
 signals:
     void sendPartysArray(QVector<PartyData> partyDataArray);
-    void sendSteamIds(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount );
+    void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo, int playersCount );
 
 private:
 

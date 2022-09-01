@@ -20,9 +20,9 @@ public:
     QTimer *scanTimer() const;
 
 signals:
-    void sendSteamPlayersInfoMap(QList<SearchStemIdPlayerInfo> playersInfo, int playersCount);
+    void sendSteamPlayersInfoMap(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
 
-    void sendSteamPlayerInfoForHostedGame(SearchStemIdPlayerInfo playersInfo);
+    void sendSteamPlayerInfoForHostedGame(PlayerInfoFromDowServer playersInfo);
 
     void sendSessionId(QString sessionId);
 

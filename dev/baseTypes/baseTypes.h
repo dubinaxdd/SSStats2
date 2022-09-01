@@ -134,7 +134,7 @@ struct ServerPlayerStats
     int calibrateGamesLeft = 0;
 };
 
-struct SearchStemIdPlayerInfo
+struct PlayerInfoFromDowServer
 {
     QString playerID;
     QString steamId;

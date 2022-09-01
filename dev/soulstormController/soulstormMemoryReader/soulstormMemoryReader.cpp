@@ -49,7 +49,7 @@ void SoulstormMemoryReader::refreshSteamPlayersInfo()
     //qInfo(logInfo()) << "Scan started";
 
 
-    QMap<QString, SearchStemIdPlayerInfo> allPlayersInfo;
+    QMap<QString, PlayerInfoFromDowServer> allPlayersInfo;
 
     int playersCount = 0;
 
@@ -213,7 +213,7 @@ void SoulstormMemoryReader::refreshSteamPlayersInfo()
 
                 if(!allPlayersInfo.contains(steamIdStr)){
 
-                    SearchStemIdPlayerInfo newPlayerInPaty;
+                    PlayerInfoFromDowServer newPlayerInPaty;
 
                     newPlayerInPaty.steamId = steamIdStr;
                     newPlayerInPaty.name = nick;
@@ -248,7 +248,7 @@ void SoulstormMemoryReader::refreshSteamPlayersInfo()
     }
 
 
-    QList<SearchStemIdPlayerInfo> playersList;
+    QList<PlayerInfoFromDowServer> playersList;
 
     for(int i = 0; i < allPlayersInfo.values().size(); i++)
     {
@@ -301,7 +301,7 @@ void SoulstormMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
     if(hProcess==nullptr)
         return;
 
-    SearchStemIdPlayerInfo playerInfo;
+    PlayerInfoFromDowServer playerInfo;
 
     int playersCount = 0;
 
@@ -411,7 +411,7 @@ void SoulstormMemoryReader::findSessionId()
     if(hProcess==nullptr)
         return;
 
-    SearchStemIdPlayerInfo playerInfo;
+    PlayerInfoFromDowServer playerInfo;
 
     int playersCount = 0;
 

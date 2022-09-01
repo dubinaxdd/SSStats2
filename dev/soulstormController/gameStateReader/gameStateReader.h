@@ -22,38 +22,26 @@ public:
 
 private slots:
     void readGameInfo();
-    void readReplayDataAfterStop();
     void readRacesTimerTimeout();
 
-public slots:
-    void receiveAverrageApm(int apm);
-    void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
-    void onQuitParty();
-
 signals:
-    /*void loadStarted(SsGameState gameCurrentState);       //Сигнал о начале загрузки игры/реплея/сохраненки
-    void startingMission(SsGameState gameCurrentState);     //Сигнал о старте миссии после загрузки
-    void gameOver();                                        //Сигнал о победе какой-то из сторон
-    void gameStopped();                                     //Сигнал о завершении игры и выхода в меню
- */
     void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
     void ssShutdown();                                      //Сигнал о выключении игры
 
-
-    void sendCurrentMissionState(SsMissionState gameCurrentState);
+    void sendCurrentMissionState(SsMissionState missionCurrentState);
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
-    void sendReplayToServer(SendingReplayInfo replayInfo);
-    void sendNotification(QString warningString, bool isWarning);
+    void sendCurrentMode(QString currentMod);
     void sendCurrentModeVersion(QString modVersion);
     void localPlayerDroppedToObserver();
 
+    void sendCurrentWinConditions(QVector<WinCondition>);
+
 private:
     void checkCurrentMode();
-    bool checkMissionSettingsValide(int gameType);
     void readTestStatsTemp();
     void parseSsSettings(); 
 
-    QString updaTetestStatsFilePath();
+    QString updateTestStatsFilePath();
 
     void missionLoad(QStringList* fileLines, int counter);
     void missionStarted(QStringList *fileLines, int counter);
@@ -65,12 +53,7 @@ private:
     void setLocalPlayerName(QString str);
     void playerDroppedToObserver(QString str);
 
-    void readWinCondotions(QStringList *fileLines, int counter);
-
-    bool checkEqualNames(QStringList* playerNames);
-    bool checkAi(QVector<PlayerStats> *playerStats);
-    bool checkWinner(QVector<PlayerStats> *playerStats);
-    bool checkEqualNamesInStats();
+    void readWinConditions(QStringList *fileLines, int counter);
 
 private:
     QTimer* m_gameInfoReadTimer;
@@ -78,26 +61,15 @@ private:
 
     QString m_ssPath;
     QString m_currentProfile;
-    QString m_currentMode;
     QString m_currentModeVersion;
-
     QString m_testStatsPath;
-
     QString m_localPlayerName;
-
-    QVector<WinCondition> m_winCoditionsVector;
 
     SsState m_ssCurrentState = SsState::ssShutdowned;
     SsMissionState m_missionCurrentState = SsMissionState::unknown;
 
-    int m_lastAverrageApm = 0;
-
     bool m_gameLounched = false;
-    bool m_lastGameSettingsValide = false;
-    bool m_gameWillBePlayedInOtherSession = false;
     bool m_playerDroppedToObserver = false;
-
-    QList<SearchStemIdPlayerInfo> m_playersInfoFromScanner;
 
     QStringList testStatsTemp;
 };

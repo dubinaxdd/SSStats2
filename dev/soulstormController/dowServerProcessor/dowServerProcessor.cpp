@@ -351,7 +351,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
 
     //qDebug() << jsonDoc;
 
-    QList<SearchStemIdPlayerInfo> playersInfo;
+    QList<PlayerInfoFromDowServer> playersInfo;
 
 
     if (jsonDoc.isArray())
@@ -372,7 +372,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
                 if (needPlayerJson.count() != 8)
                     continue;
 
-                SearchStemIdPlayerInfo newPlayerInfo;
+                PlayerInfoFromDowServer newPlayerInfo;
 
                 newPlayerInfo.steamId = needPlayerJson.at(2).toString().right(17);
 
@@ -403,7 +403,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
    // for (int i = 0; i < playersInfo.count(); i++)
    //     playersInfo[i].position = i+1;
 
-    emit sendSteamIds(playersInfo, playersInfo.count() + 1);
+    emit sendPlayersInfoFromDowServer(playersInfo, playersInfo.count() + 1);
 }
 
 void DowServerProcessor::asdTimerTimeout()

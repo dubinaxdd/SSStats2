@@ -27,7 +27,7 @@ signals:
     void sendNotification(QString text, bool isWarning);
 
 public slots:
-    void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
+    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);
     void sendReplayToServer(SendingReplayInfo replayInfo);
 
 private slots:

@@ -41,22 +41,22 @@ StatsServerProcessor::StatsServerProcessor(QString ssPath, QString steamPath, QO
     qInfo(logInfo()) << "Protocol version:" << m_clientVersion;
 }
 
-void StatsServerProcessor::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
+void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer, int playersCount )
 {
     emit sendPlayersCount(playersCount - 1);
     emit sendCurrentPlayerHostState(false);
 
     QSharedPointer <QList<ServerPlayerStats>> playersInfo(new QList<ServerPlayerStats>);
 
-    for(int i = 0; i < playersInfoFromScanner.count(); i++)
+    for(int i = 0; i < playersInfoInfoFromDowServer.count(); i++)
     {
-        if (playersInfoFromScanner[i].isCurrentPlayer)
+        if (playersInfoInfoFromDowServer[i].isCurrentPlayer)
             continue;
 
         ServerPlayerStats newPlayerInfo;
 
-        newPlayerInfo.steamId = playersInfoFromScanner.at(i).steamId;
-        newPlayerInfo.position = playersInfoFromScanner.at(i).position;
+        newPlayerInfo.steamId = playersInfoInfoFromDowServer.at(i).steamId;
+        newPlayerInfo.position = playersInfoInfoFromDowServer.at(i).position;
 
         playersInfo.data()->append(newPlayerInfo);
     }

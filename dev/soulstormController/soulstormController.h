@@ -15,6 +15,7 @@
 #include <settingsController.h>
 #include <lobbyEventReader.h>
 #include <dowServerProcessor.h>
+#include <replayDataCollector.h>
 #include <QProcess>
 
 class SoulstormController : public QObject
@@ -44,6 +45,8 @@ public:
 
 
     const QString &steamPath() const;
+
+    ReplayDataCollector *replayDataCollector() const;
 
 public slots:
     void blockSsWindowInput(bool state);
@@ -99,6 +102,7 @@ private:
     SoulstormMemoryController* m_soulstormMemoryController;
     SettingsController* m_settingsController;
     DowServerProcessor* m_dowServerProcessor;
+    ReplayDataCollector* m_replayDataCollector;
 
     QProcess *m_soulstormProcess;
     bool m_useWindows7SupportMode = false;

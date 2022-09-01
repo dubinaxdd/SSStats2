@@ -6,11 +6,7 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QSettings>
-#include <repreader.h>
 #include <QDir>
-
-using namespace ReplayReader;
-
 
 GameStateReader::GameStateReader(QString sspath, QObject *parent)
     : QObject(parent)
@@ -117,388 +113,13 @@ void GameStateReader::readGameInfo()
     }
 }
 
-void GameStateReader::readReplayDataAfterStop()
-{
-    if (!m_gameWillBePlayedInOtherSession)
-    {
-        qWarning(logWarning()) << "Game will be played in other session, replay not sended";
-        return;
-    }
-    m_testStatsPath = updaTetestStatsFilePath();
 
-    qInfo(logInfo()) << "teststats.lua path: " << m_testStatsPath;
-
-    QFile file(m_testStatsPath);
-
-    if(!file.open(QIODevice::ReadOnly))
-        return;
-    if(!file.isReadable())
-        return;
-
-    // в начале файла лежат байты из-за этого корневой ключ может не читаться
-    int k=0;
-    while(file.read(1)!="G")
-        k++;
-    file.seek(k);
-
-    //QByteArray testStats = file.readAll();
-
-    QTextStream textStream(&file);
-    QStringList fileLines = textStream.readAll().split("\r");
-
-    file.close();
-
-    int playersCount = 0;
-    QString winBy;
-    int teamsCount = 0;
-    int duration = 0;
-    QString scenario;
-
-    QStringList playerNames;
-    QStringList playerRaces;
-    QStringList playerTeams;
-    QList<int> playerFinalStates;
-    QList<bool> playerHumanFlags;
-
-    for(int i = 0; i < fileLines.size(); i++ )
-    {
-        if (fileLines[i].contains("Players"))
-        {
-            QString temp = fileLines[i].right(fileLines[i].length() - 12);
-            temp = temp.left(temp.length() - 1);
-            playersCount = temp.toInt();
-        }
-
-        if (fileLines[i].contains("WinBy"))
-        {
-            QString temp = fileLines[i].right(fileLines[i].length() - 11);
-            winBy = temp.left(temp.length() - 2);
-        }
-
-        if (fileLines[i].contains("Teams"))
-        {
-            QString temp = fileLines[i].right(fileLines[i].length() - 10);
-            temp = temp.left(temp.length() - 1);
-            teamsCount = temp.toInt();
-        }
-
-        if (fileLines[i].contains("PFnlState"))
-        {
-            QString temp = fileLines[i].right(fileLines[i].length() - 15);
-            temp = temp.left(temp.length() - 1);
-            playerFinalStates.append(temp.toInt());
-        }
-
-        if (fileLines[i].contains("Duration"))
-        {
-            QString temp = fileLines[i].right(fileLines[i].length() - 13);
-            temp = temp.left(temp.length() - 1);
-            duration = temp.toInt();
-        }
-
-
-        if (fileLines[i].contains("PName"))
-        {
-            QString name = fileLines[i].right(fileLines[i].length() - 12);
-            name = name.left(name.length() - 2);
-            playerNames.append(name);
-        }
-
-        if (fileLines[i].contains("PRace"))
-        {
-            QString race = fileLines[i].right(fileLines[i].length() - 12);
-            race = race.left(race.length() - 2);
-            playerRaces.append(race);
-        }
-
-
-        if (fileLines[i].contains("PTeam"))
-        {
-            QString team = fileLines[i].right(fileLines[i].length() - 11);
-            team = team.left(team.length() - 1);
-            playerTeams.append(team);
-        }
-
-        if (fileLines[i].contains("PHuman"))
-        {
-            QString playerHumanFlag = fileLines[i].right(fileLines[i].length() - 12);
-            playerHumanFlag = playerHumanFlag.left(playerHumanFlag.length() - 1);
-            playerHumanFlags.append(playerHumanFlag.toInt());
-        }
-
-        if (fileLines[i].contains("Scenario"))
-        {
-            QString temp = fileLines[i].right(fileLines[i].length() - 14);
-            scenario = temp.left(temp.length() - 2);
-        }
-    }
-
-    QString warning = "    The replay has not been uploaded to the server!\n";
-
-    bool checkFailed = false;
-
-    bool haveEqualNames = checkEqualNames(&playerNames);
-
-    //Проверка на одинаковые никнеймы
-    if (haveEqualNames)
-    {
-        checkFailed = true;
-        warning += "    The players have equal names\n";
-    }
-
-    bool haveEqualNamesForStats = false;
-
-    if (!haveEqualNames)
-        haveEqualNamesForStats = checkEqualNamesInStats();
-
-    if (haveEqualNamesForStats)
-    {
-        checkFailed = true;
-        warning += "    The observer have equal name with other player\n";
-    }
-
-    QVector<PlayerStats> playerStats;
-
-    for(int i = 0; i < playersCount; i++ )
-    {
-        PlayerStats newPlayerStats;
-        newPlayerStats.name = playerNames.at(i).toLocal8Bit();
-        newPlayerStats.race = playerRaces.at(i);
-        newPlayerStats.team = playerTeams.at(i);
-        newPlayerStats.pHuman = playerHumanFlags.at(i);
-        newPlayerStats.finalState = static_cast<FinalState>(playerFinalStates.at(i));
-
-        playerStats.append(newPlayerStats);
-    }
-
-    //Сортировка игроков по команде
-    for(int i = 0; i < playerStats.count(); i++)
-    {
-        for(int j = 0; j < playerStats.count() - 1; j++)
-        {
-            if(playerStats[j].team > playerStats[j + 1].team)
-            {
-                auto buffer = playerStats[j];
-                playerStats[j] = playerStats[j + 1];
-                playerStats[j + 1] = buffer;
-            }
-        }
-    }
-
-    //Проверка на наличие компьютера
-    bool computersFinded = checkAi(&playerStats);
-
-    //Проверка на наличие ИИ
-    if (computersFinded)
-    {
-        checkFailed = true;
-        warning += "    There was AI in the game\n";
-    }
-
-    //Выводим информацию об игре
-    qInfo(logInfo()) << "Players count:" << playersCount;
-    qInfo(logInfo()) << "Computers finded:" << computersFinded;
-    qInfo(logInfo()) << "Teams count:" << teamsCount;
-    qInfo(logInfo()) << "Duration:" << duration;
-    qInfo(logInfo()) << "Win by:" << winBy;
-    qInfo(logInfo()) << "Scenario:" << scenario;
-    qInfo(logInfo()) << "APM:" << m_lastAverrageApm;
-
-
-    bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
-                           && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
-                           && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
-                           && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
-                           && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
-
-    if (!isStdWinConditions)
-    {
-        checkFailed = true;
-        warning += "    Standard winning conditions were not set up for the game\n";
-    }
-
-    bool isFullStdGame = false;
-
-    if (playersCount == 2)
-    {
-        //Проверка условий победы для игр 1х1
-        isFullStdGame = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
-                               && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
-                               && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
-                               && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
-                               && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
-                               && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
-                               && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
-    }
-
-
-    //Выводим в лог информацию о состоянии игрока
-    for(int i = 0; i < playerStats.count(); i++)
-    {
-        qInfo(logInfo()) << "Player name:" << playerStats.at(i).name;
-
-        switch (playerStats.at(i).finalState)
-        {
-            case inGame: qInfo(logInfo()) << "State In Game"; break;
-            case winner: qInfo(logInfo()) << "State Winner";  break;
-            case loser: qInfo(logInfo()) << "State Looser";   break;
-            default: qInfo(logInfo()) << "State Unknown";     break;
-        }
-    }
-
-    //Проверка на количество команд
-    if (teamsCount > 2)
-    {
-        checkFailed = true;
-        warning += "    There were more than two teams in the game\n";
-    }
-
-    //Проверка на равенство команд
-    QMap<QString, int> teamsCounter;
-
-    for (int i = 0; i < playerStats.count(); i++)
-    {
-        if (teamsCounter.contains(playerStats.at(i).team))
-           teamsCounter.insert(playerStats.at(i).team, teamsCounter.value(playerStats.at(i).team) + 1);
-        else
-            teamsCounter.insert(playerStats.at(i).team, 1);
-    }
-
-    int count = 0;
-
-    if (teamsCounter.count() > 0)
-        count = teamsCounter.first();
-
-    else
-    {
-        checkFailed = true;
-        warning += "    Team identification failure occured\n";
-    }
-
-    for (int i = 0; i < teamsCounter.count(); i++)
-    {
-        if (teamsCounter.values().at(i) != count)
-        {
-            checkFailed = true;
-            warning += "    Teams didn't have an equal number of playersn";
-        }
-    }
-
-    //Проверка на длительность игры
-    if(duration <= 30)
-    {
-        checkFailed = true;
-        warning += "    Game lasted less than 30 seconds\n";
-    }
-
-    //Проверка на наличие победителя
-    bool winnerAccepted = checkWinner(&playerStats);
-
-    if (!winnerAccepted)
-    {
-        checkFailed = true;
-        warning += "    No game winner has been determined\n";
-    }
-
-    //Отправка реплея
-    SendingReplayInfo replayInfo;
-
-    for(int i = 0; i < playersCount; i++)
-    {
-        PlayerInfoForReplaySendong newPlayer;
-        newPlayer.playerName = playerStats[i].name;
-
-        //Берем сиды из последнего скана
-        for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
-        {
-            if(m_playersInfoFromScanner[j].isCurrentPlayer)
-                continue;
-
-            if(newPlayer.playerName == m_playersInfoFromScanner[j].name || newPlayer.playerName == "[" + m_playersInfoFromScanner[j].name + "]")
-            {
-                newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
-                break;
-            }
-        }
-
-        if (playerStats[i].race == "guard_race")
-            newPlayer.playerRace = Race::ImperialGuard;
-        if (playerStats[i].race == "tau_race")
-            newPlayer.playerRace = Race::TauEmpire;
-        if (playerStats[i].race == "ork_race")
-            newPlayer.playerRace = Race::Orks;
-        if (playerStats[i].race == "chaos_marine_race")
-            newPlayer.playerRace = Race::ChaosMarines;
-        if (playerStats[i].race == "necron_race")
-            newPlayer.playerRace = Race::Necrons;
-        if (playerStats[i].race == "space_marine_race")
-            newPlayer.playerRace = Race::SpaceMarines;
-        if (playerStats[i].race == "sisters_race")
-            newPlayer.playerRace = Race::SistersOfBattle;
-        if (playerStats[i].race == "dark_eldar_race")
-            newPlayer.playerRace = Race::DarkEldar;
-        if (playerStats[i].race == "eldar_race")
-            newPlayer.playerRace = Race::Eldar;
-
-        newPlayer.isWinner = playerStats[i].finalState == FinalState::winner;
-
-        replayInfo.playersInfo.append(newPlayer);
-    }
-
-    replayInfo.apm = m_lastAverrageApm;
-
-    switch (playersCount)
-    {
-        case 1: return;
-        case 2: replayInfo.gameType = GameTypeForReplaySending::GameType1x1; break;
-        case 3: return;
-        case 4: replayInfo.gameType = GameTypeForReplaySending::GameType2x2; break;
-        case 5: return;
-        case 6: replayInfo.gameType = GameTypeForReplaySending::GameType3x3; break;
-        case 7: return;
-        case 8: replayInfo.gameType = GameTypeForReplaySending::GameType4x4; break;
-    }
-
-    m_lastGameSettingsValide = checkMissionSettingsValide(replayInfo.gameType);
-
-    if (!m_lastGameSettingsValide)
-    {
-        checkFailed = true;
-        warning += "    Game settings not valide\n";
-    }
-
-    if (checkFailed)
-    {
-        emit sendNotification(warning, true);
-        qWarning(logWarning()) << warning;
-        return;
-    }
-
-    replayInfo.mapName = scenario;
-    replayInfo.gameTime = duration;
-    replayInfo.mod = m_currentMode;
-    replayInfo.isFullStdGame = isFullStdGame;
-
-    if (winBy == "ANNIHILATE")
-        replayInfo.winBy = WinCondition::ANNIHILATE;
-    if (winBy == "CONTROLAREA")
-        replayInfo.winBy = WinCondition::CONTROLAREA;
-    if (winBy == "STRATEGICOBJECTIVE")
-        replayInfo.winBy = WinCondition::STRATEGICOBJECTIVE;
-
-    emit sendReplayToServer(std::move(replayInfo));
-
-    //m_allPlayersInfoFromScanner.clear();
-    //qInfo(logInfo()) << "Players history cleared";
-
-    qInfo(logInfo()) << "Readed played game settings";
-}
 
 void GameStateReader::readRacesTimerTimeout()
 {
     m_readRacesSingleShootTimer->stop();
 
-    m_testStatsPath = updaTetestStatsFilePath();
+    m_testStatsPath = updateTestStatsFilePath();
 
     QFile file(m_testStatsPath);
 
@@ -591,24 +212,6 @@ void GameStateReader::readRacesTimerTimeout()
     emit sendPlayersTestStats(playerStats);
 }
 
-void GameStateReader::receiveAverrageApm(int apm)
-{
-    m_lastAverrageApm = apm;
-}
-
-void GameStateReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
-{
-    for (int i = 0; i < playersInfoFromScanner.count(); i++)
-        qInfo(logInfo()) << "Receive player data from DOW server:"<< playersInfoFromScanner.at(i).name << playersInfoFromScanner.at(i).steamId;
-
-    m_playersInfoFromScanner = playersInfoFromScanner;
-}
-
-void GameStateReader::onQuitParty()
-{
-    m_playersInfoFromScanner.clear();
-}
-
 void GameStateReader::setGameLounched(bool newGameLounched)
 {
     if (m_gameLounched == newGameLounched)
@@ -691,20 +294,23 @@ void GameStateReader::checkCurrentMode()
             ///Дергаем текущий мод
             if(line.contains("MOD -- Initializing Mod"))
             {
-                m_currentMode = line.right(line.size() - 39);
+                QString currentMode;
 
-                for (int i = 0; i < m_currentMode.size(); i++)
+                currentMode = line.right(line.size() - 39);
+
+                for (int i = 0; i < currentMode.size(); i++)
                 {
-                    if(m_currentMode.at(i) == ',')
+                    if(currentMode.at(i) == ',')
                     {
-                        m_currentModeVersion  = m_currentMode.right(m_currentMode.size() - i - 2);
-                        m_currentMode = m_currentMode.left(i);
+                        m_currentModeVersion  = currentMode.right(currentMode.size() - i - 2);
+                        currentMode = currentMode.left(i);
                     }
                 }
 
-                qInfo(logInfo()) << "Current mode:" << m_currentMode;
+                qInfo(logInfo()) << "Current mode:" << currentMode;
                 qInfo(logInfo()) << "Current mode version:" << m_currentModeVersion;
 
+                emit sendCurrentMode(currentMode);
                 emit sendCurrentModeVersion(m_currentModeVersion);
 
                 break;
@@ -715,40 +321,10 @@ void GameStateReader::checkCurrentMode()
     }
 }
 
-bool GameStateReader::checkMissionSettingsValide(int gameType)
-{
-    //QByteArray playback;
-   // QString mod_name;
-    //QString playback_name;
-
-
-    RepReader repReader(m_ssPath+"/Playback/temp.rec");
-
-    return repReader.isStandart(gameType);
-
-   // if(!repReader.isStandart(gameType))
-    //    return 17;
-    // конвертируем реплей в стимовскую версию
-   /* repReader.convertReplayToSteamVersion();
-
-    mod_name = repReader.replay.MOD;
-
-    QString new_name = repReader.RenameReplay();
-    // переименовываем название реплея в игре по стандарту
-    if(!new_name.isEmpty())
-        playback_name = new_name+".rec";
-    else
-        qDebug() << "Could not change playback name";
-
-    playback = repReader.getReplayData();*/
-
-
-}
-
 void GameStateReader::readTestStatsTemp()
 {
 
-    m_testStatsPath = updaTetestStatsFilePath();
+    m_testStatsPath = updateTestStatsFilePath();
     QFile file(m_testStatsPath);
 
     if(!file.open(QIODevice::ReadOnly))
@@ -777,7 +353,7 @@ void GameStateReader::parseSsSettings()
     delete ssSettings;
 }
 
-QString GameStateReader::updaTetestStatsFilePath()
+QString GameStateReader::updateTestStatsFilePath()
 {
     QDir dir(m_ssPath + "\\Profiles\\");
 
@@ -866,7 +442,7 @@ void GameStateReader::missionStarted(QStringList* fileLines, int counter)
         if(m_missionCurrentState == SsMissionState::gameLoadStarted)
         {
             m_missionCurrentState = SsMissionState::gameStarted;
-            readWinCondotions(fileLines, counter);
+            readWinConditions(fileLines, counter);
             qInfo(logInfo()) << "Starting game mission";
         }
         else if (m_missionCurrentState == SsMissionState::playbackLoadStarted)
@@ -945,7 +521,7 @@ void GameStateReader::missionStoped()
         switch(m_missionCurrentState)
         {
             case SsMissionState::gameOver :
-            case SsMissionState::gameStarted : m_missionCurrentState = SsMissionState::gameStoped; readReplayDataAfterStop(); break;
+            case SsMissionState::gameStarted : m_missionCurrentState = SsMissionState::gameStoped; break;
             case SsMissionState::playbackOver :
             case SsMissionState::playbackStarted : m_missionCurrentState = SsMissionState::playbackStoped; break;
             case SsMissionState::savedGameOver :
@@ -1017,150 +593,64 @@ void GameStateReader::playerDroppedToObserver(QString str)
     }
 }
 
-void GameStateReader::readWinCondotions(QStringList *fileLines, int counter)
+void GameStateReader::readWinConditions(QStringList *fileLines, int counter)
 {
-    m_winCoditionsVector.clear();
+    QVector<WinCondition> winCoditionsVector;
 
     int winConditionsReadCounter = counter;
     QString winConditionsReadLine;
 
     while (!winConditionsReadLine.contains("APP -- Game Start"))
     {
-        m_gameWillBePlayedInOtherSession = true;
+        //m_gameWillBePlayedInOtherSession = true;
 
         winConditionsReadLine = fileLines->at(winConditionsReadCounter-1);
 
         if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
         {
             if(winConditionsReadLine.contains("ANNIHILATE")){
-                m_winCoditionsVector.append(WinCondition::ANNIHILATE);
+                winCoditionsVector.append(WinCondition::ANNIHILATE);
                 qInfo(logInfo()) << "Loaded ANNIHILATE";
             }
 
             if(winConditionsReadLine.contains("ASSASSINATE")){
-                m_winCoditionsVector.append(WinCondition::ASSASSINATE);
+                winCoditionsVector.append(WinCondition::ASSASSINATE);
                 qInfo(logInfo()) << "Loaded ASSASSINATE";
             }
 
             if(winConditionsReadLine.contains("CONTROLAREA")){
-                m_winCoditionsVector.append(WinCondition::CONTROLAREA);
+                winCoditionsVector.append(WinCondition::CONTROLAREA);
                 qInfo(logInfo()) << "Loaded CONTROLAREA";
             }
 
             if(winConditionsReadLine.contains("DESTROYHQ")){
-                m_winCoditionsVector.append(WinCondition::DESTROYHQ);
+                winCoditionsVector.append(WinCondition::DESTROYHQ);
                 qInfo(logInfo()) << "Loaded DESTROYHQ";
             }
 
             if(winConditionsReadLine.contains("ECONOMICVICTORY")){
-                m_winCoditionsVector.append(WinCondition::ECONOMICVICTORY);
+                winCoditionsVector.append(WinCondition::ECONOMICVICTORY);
                 qInfo(logInfo()) << "Loaded ECONOMICVICTORY";
             }
 
             if(winConditionsReadLine.contains("GAMETIMER")){
-                m_winCoditionsVector.append(WinCondition::GAMETIMER);
+                winCoditionsVector.append(WinCondition::GAMETIMER);
                 qInfo(logInfo()) << "Loaded GAMETIMER";
             }
 
             if(winConditionsReadLine.contains("STRATEGICOBJECTIVE")){
-                m_winCoditionsVector.append(WinCondition::STRATEGICOBJECTIVE);
+                winCoditionsVector.append(WinCondition::STRATEGICOBJECTIVE);
                 qInfo(logInfo()) << "Loaded STRATEGICOBJECTIVE";
             }
 
             if(winConditionsReadLine.contains("SUDDENDEATH")){
-                m_winCoditionsVector.append(WinCondition::SUDDENDEATH);
+                winCoditionsVector.append(WinCondition::SUDDENDEATH);
                 qInfo(logInfo()) << "Loaded SUDDENDEATH";
             }
         }
 
         winConditionsReadCounter--;
     }
+
+    emit sendCurrentWinConditions(winCoditionsVector);
 }
-
-bool GameStateReader::checkEqualNames(QStringList *playerNames)
-{
-    bool haveEqualNames = false;
-
-    for (int i = 0; i < playerNames->count(); i++ )
-    {
-        for (int j = 0; j < playerNames->count(); j++ )
-        {
-            if (i == j)
-                continue;
-
-            if (playerNames->at(i) == playerNames->at(j))
-            {
-                haveEqualNames = true;
-                break;
-            }
-        }
-
-        if (haveEqualNames)
-            break;
-    }
-
-    return haveEqualNames;
-}
-
-bool GameStateReader::checkAi(QVector<PlayerStats> *playerStats)
-{
-    bool computersFinded = false;
-
-    for(int i = 0; i < playerStats->count(); i++ )
-    {
-        if (playerStats->at(i).pHuman == false)
-        {
-            computersFinded = true;
-            break;
-        }
-    }
-
-    return computersFinded;
-}
-
-bool GameStateReader::checkWinner(QVector<PlayerStats> *playerStats)
-{
-    bool winnerAccepted = false;
-
-    for(int i = 0; i < playerStats->count(); i++)
-    {
-        if(playerStats->at(i).finalState == FinalState::winner)
-        {
-            winnerAccepted = true;
-            break;
-        }
-    }
-
-    return winnerAccepted;
-}
-
-bool GameStateReader::checkEqualNamesInStats()
-{
-    bool haveEqualNames = false;
-
-    for (int i = 0; i < m_playersInfoFromScanner.count(); i++ )
-    {
-        qDebug() << "ASDASDASDASD" << m_playersInfoFromScanner.at(i).name << m_playersInfoFromScanner.at(i).steamId;
-    }
-
-    for (int i = 0; i < m_playersInfoFromScanner.count(); i++ )
-    {
-        for (int j = 0; j < m_playersInfoFromScanner.count(); j++ )
-        {
-            if (i == j)
-                continue;
-
-            if (m_playersInfoFromScanner.at(i).name == m_playersInfoFromScanner.at(j).name)
-            {
-                haveEqualNames = true;
-                break;
-            }
-        }
-
-        if (haveEqualNames)
-            break;
-    }
-
-    return haveEqualNames;
-}
-

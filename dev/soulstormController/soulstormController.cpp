@@ -27,6 +27,8 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
 
     m_gameStateReader = new GameStateReader(m_ssPath, this);
     m_lobbyEventReader = new LobbyEventReader(m_ssPath, this);
+    m_replayDataCollector = new ReplayDataCollector(m_ssPath, this);
+
     m_steamPath = getSteamPathFromRegistry();
 
     m_soulstormMemoryReader = new SoulstormMemoryReader(/*this*/);
@@ -45,19 +47,18 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_lobbyEventReader, &LobbyEventReader::receiveCurrentMissionState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentModeVersion,   m_dowServerProcessor, &DowServerProcessor::setCurrentModVersion, Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMode,   m_replayDataCollector, &ReplayDataCollector::receiveCurrentMode, Qt::QueuedConnection);
 
     QObject::connect(m_gameStateReader, &GameStateReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
-
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_gameStateReader,    &GameStateReader::onQuitParty, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_replayDataCollector,    &ReplayDataCollector::onQuitParty, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
 
+    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
 
-    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_gameStateReader, &GameStateReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
-
-    QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_gameStateReader,  &GameStateReader::receiveAverrageApm,       Qt::QueuedConnection);
+    QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_replayDataCollector,  &ReplayDataCollector::receiveAverrageApm,       Qt::QueuedConnection);
 
     QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
 
@@ -317,6 +318,11 @@ void SoulstormController::parseSsSettings()
     qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
 
     delete ssSettings;
+}
+
+ReplayDataCollector *SoulstormController::replayDataCollector() const
+{
+    return m_replayDataCollector;
 }
 
 const QString &SoulstormController::steamPath() const

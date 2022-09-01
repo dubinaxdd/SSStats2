@@ -47,7 +47,6 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,                   Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
 
     QObject::connect(m_soulstormController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
@@ -61,7 +60,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
 
     QObject::connect(m_soulstormController, &SoulstormController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendSteamIds,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
 
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_soulstormController, &SoulstormController::minimizeSsWithWin7Support, Qt::QueuedConnection);
@@ -101,9 +100,11 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameLoadEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameLoadEventSound, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameStartEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameStartEventSound, Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormController->gameStateReader(), &GameStateReader::sendReplayToServer,       m_statsServerProcessor, &StatsServerProcessor::sendReplayToServer,   Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->dowServerProcessor(), &DowServerProcessor::sendSteamIds, m_statsServerProcessor, &StatsServerProcessor::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->replayDataCollector(), &ReplayDataCollector::sendReplayToServer,       m_statsServerProcessor, &StatsServerProcessor::sendReplayToServer,   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, m_statsServerProcessor, &StatsServerProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_soulstormController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
+
+    QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
 
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
 
@@ -116,10 +117,10 @@ void Core::registerTypes()
 {
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
-    qRegisterMetaType<QList<SearchStemIdPlayerInfo>>("QList<SearchStemIdPlayerInfo>");
+    qRegisterMetaType<QList<PlayerInfoFromDowServer>>("QList<PlayerInfoFromDowServer>");
     qRegisterMetaType<SsMissionState>("SsMissionState");
     qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
-    qRegisterMetaType<SearchStemIdPlayerInfo>("SearchStemIdPlayerInfo");
+    qRegisterMetaType<PlayerInfoFromDowServer>("PlayerInfoFromDowServer");
     qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");
     qRegisterMetaType<QMap<QString, QImage>>("QMap<QString, QImage>");
     qRegisterMetaType<DiscordMessage>("DiscordMessage");
