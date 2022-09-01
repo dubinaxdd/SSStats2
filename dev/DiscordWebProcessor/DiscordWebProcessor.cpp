@@ -1,4 +1,4 @@
-#include "DiscordWebProcessor.h"
+#include "discordWebProcessor.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>

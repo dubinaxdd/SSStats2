@@ -1,7 +1,7 @@
 #define GAME_INFO_READER_TIMER_INTERVAL 1000
 #define RACES_READ_TIMER_INTERVAL 100
 
-#include <WarningsLogReader.h>
+#include <gameStateReader.h>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
@@ -12,23 +12,23 @@
 using namespace ReplayReader;
 
 
-WarningsLogReader::WarningsLogReader(QString sspath, QObject *parent)
+GameStateReader::GameStateReader(QString sspath, QObject *parent)
     : QObject(parent)
     , m_ssPath(sspath)
 
 {
     m_readRacesSingleShootTimer = new QTimer(this);
     m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
-    QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &WarningsLogReader::readRacesTimerTimeout, Qt::QueuedConnection );
+    QObject::connect(m_readRacesSingleShootTimer, &QTimer::timeout, this, &GameStateReader::readRacesTimerTimeout, Qt::QueuedConnection );
 
     m_gameInfoReadTimer = new QTimer(this);
     m_gameInfoReadTimer->setInterval(GAME_INFO_READER_TIMER_INTERVAL);
-    QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &WarningsLogReader::readGameInfo, Qt::QueuedConnection );
+    QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &GameStateReader::readGameInfo, Qt::QueuedConnection );
 
     m_gameInfoReadTimer->start();
 }
 
-void WarningsLogReader::readGameInfo()
+void GameStateReader::readGameInfo()
 {
     if (!m_gameLounched)
         return;
@@ -117,7 +117,7 @@ void WarningsLogReader::readGameInfo()
     }
 }
 
-void WarningsLogReader::readReplayDataAfterStop()
+void GameStateReader::readReplayDataAfterStop()
 {
     if (!m_gameWillBePlayedInOtherSession)
     {
@@ -494,7 +494,7 @@ void WarningsLogReader::readReplayDataAfterStop()
     qInfo(logInfo()) << "Readed played game settings";
 }
 
-void WarningsLogReader::readRacesTimerTimeout()
+void GameStateReader::readRacesTimerTimeout()
 {
     m_readRacesSingleShootTimer->stop();
 
@@ -591,12 +591,12 @@ void WarningsLogReader::readRacesTimerTimeout()
     emit sendPlayersTestStats(playerStats);
 }
 
-void WarningsLogReader::receiveAverrageApm(int apm)
+void GameStateReader::receiveAverrageApm(int apm)
 {
     m_lastAverrageApm = apm;
 }
 
-void WarningsLogReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
+void GameStateReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount)
 {
     for (int i = 0; i < playersInfoFromScanner.count(); i++)
         qInfo(logInfo()) << "Receive player data from DOW server:"<< playersInfoFromScanner.at(i).name << playersInfoFromScanner.at(i).steamId;
@@ -604,12 +604,12 @@ void WarningsLogReader::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayer
     m_playersInfoFromScanner = playersInfoFromScanner;
 }
 
-void WarningsLogReader::onQuitParty()
+void GameStateReader::onQuitParty()
 {
     m_playersInfoFromScanner.clear();
 }
 
-void WarningsLogReader::setGameLounched(bool newGameLounched)
+void GameStateReader::setGameLounched(bool newGameLounched)
 {
     if (m_gameLounched == newGameLounched)
         return;
@@ -622,7 +622,7 @@ void WarningsLogReader::setGameLounched(bool newGameLounched)
         ssWindowClosed();
 }
 
-void WarningsLogReader::stopedGame()
+void GameStateReader::stopedGame()
 {
     if (m_missionCurrentState != SsMissionState::gameStoped
             && m_missionCurrentState != SsMissionState::playbackStoped
@@ -635,12 +635,12 @@ void WarningsLogReader::stopedGame()
     }
 }
 
-void WarningsLogReader::setCurrentProfile(const QString &newCurrentProfile)
+void GameStateReader::setCurrentProfile(const QString &newCurrentProfile)
 {
     m_currentProfile = newCurrentProfile;
 }
 
-void WarningsLogReader::ssWindowClosed()
+void GameStateReader::ssWindowClosed()
 {
     stopedGame();
 
@@ -652,7 +652,7 @@ void WarningsLogReader::ssWindowClosed()
     qInfo(logInfo()) << "SS Shutdown";
 }
 
-bool WarningsLogReader::getGameInitialized()
+bool GameStateReader::getGameInitialized()
 {
     if (m_ssCurrentState == SsState::ssInitialized)
         return true;
@@ -660,7 +660,7 @@ bool WarningsLogReader::getGameInitialized()
         return false;
 }
 
-void WarningsLogReader::checkGameInitialize()
+void GameStateReader::checkGameInitialize()
 {
     if(m_ssCurrentState != SsState::ssInitialized)
     {
@@ -673,7 +673,7 @@ void WarningsLogReader::checkGameInitialize()
     }
 }
 
-void WarningsLogReader::checkCurrentMode()
+void GameStateReader::checkCurrentMode()
 {
     QFile file(m_ssPath+"\\warnings.log");
 
@@ -715,7 +715,7 @@ void WarningsLogReader::checkCurrentMode()
     }
 }
 
-bool WarningsLogReader::checkMissionSettingsValide(int gameType)
+bool GameStateReader::checkMissionSettingsValide(int gameType)
 {
     //QByteArray playback;
    // QString mod_name;
@@ -745,7 +745,7 @@ bool WarningsLogReader::checkMissionSettingsValide(int gameType)
 
 }
 
-void WarningsLogReader::readTestStatsTemp()
+void GameStateReader::readTestStatsTemp()
 {
 
     m_testStatsPath = updaTetestStatsFilePath();
@@ -770,14 +770,14 @@ void WarningsLogReader::readTestStatsTemp()
     qInfo(logInfo()) << "testStats temp readed in" << m_testStatsPath;
 }
 
-void WarningsLogReader::parseSsSettings()
+void GameStateReader::parseSsSettings()
 {
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
     delete ssSettings;
 }
 
-QString WarningsLogReader::updaTetestStatsFilePath()
+QString GameStateReader::updaTetestStatsFilePath()
 {
     QDir dir(m_ssPath + "\\Profiles\\");
 
@@ -802,7 +802,7 @@ QString WarningsLogReader::updaTetestStatsFilePath()
     return statsPath;
 }
 
-void WarningsLogReader::missionLoad(QStringList* fileLines, int counter)
+void GameStateReader::missionLoad(QStringList* fileLines, int counter)
 {
     //Что бы точно понять норм игра это или долбаный реплей чекаем ближайшие строки
     int checkCounter = counter - 1;
@@ -857,7 +857,7 @@ void WarningsLogReader::missionLoad(QStringList* fileLines, int counter)
     }
 }
 
-void WarningsLogReader::missionStarted(QStringList* fileLines, int counter)
+void GameStateReader::missionStarted(QStringList* fileLines, int counter)
 {
     if(m_missionCurrentState == SsMissionState::gameLoadStarted
        || m_missionCurrentState == SsMissionState::playbackLoadStarted
@@ -906,7 +906,7 @@ void WarningsLogReader::missionStarted(QStringList* fileLines, int counter)
     }
 }
 
-void WarningsLogReader::missionOver()
+void GameStateReader::missionOver()
 {
     if (m_missionCurrentState != SsMissionState::gameOver
             && m_missionCurrentState != SsMissionState::playbackOver
@@ -932,7 +932,7 @@ void WarningsLogReader::missionOver()
     }
 }
 
-void WarningsLogReader::missionStoped()
+void GameStateReader::missionStoped()
 {
     if (m_missionCurrentState != SsMissionState::gameStoped
         && m_missionCurrentState != SsMissionState::playbackStoped
@@ -961,7 +961,7 @@ void WarningsLogReader::missionStoped()
     }
 }
 
-bool WarningsLogReader::forceMissionStoped()
+bool GameStateReader::forceMissionStoped()
 {
     if(m_missionCurrentState == SsMissionState::unknownGameStoped
             || m_missionCurrentState == SsMissionState::gameOver
@@ -982,7 +982,7 @@ bool WarningsLogReader::forceMissionStoped()
     return true;
 }
 
-void WarningsLogReader::setLocalPlayerName(QString str)
+void GameStateReader::setLocalPlayerName(QString str)
 {
     QString localPlayerName = str.right(str.length() - 37);
 
@@ -1002,7 +1002,7 @@ void WarningsLogReader::setLocalPlayerName(QString str)
     }
 }
 
-void WarningsLogReader::playerDroppedToObserver(QString str)
+void GameStateReader::playerDroppedToObserver(QString str)
 {
     if (m_playerDroppedToObserver)
         return;
@@ -1017,7 +1017,7 @@ void WarningsLogReader::playerDroppedToObserver(QString str)
     }
 }
 
-void WarningsLogReader::readWinCondotions(QStringList *fileLines, int counter)
+void GameStateReader::readWinCondotions(QStringList *fileLines, int counter)
 {
     m_winCoditionsVector.clear();
 
@@ -1077,7 +1077,7 @@ void WarningsLogReader::readWinCondotions(QStringList *fileLines, int counter)
     }
 }
 
-bool WarningsLogReader::checkEqualNames(QStringList *playerNames)
+bool GameStateReader::checkEqualNames(QStringList *playerNames)
 {
     bool haveEqualNames = false;
 
@@ -1102,7 +1102,7 @@ bool WarningsLogReader::checkEqualNames(QStringList *playerNames)
     return haveEqualNames;
 }
 
-bool WarningsLogReader::checkAi(QVector<PlayerStats> *playerStats)
+bool GameStateReader::checkAi(QVector<PlayerStats> *playerStats)
 {
     bool computersFinded = false;
 
@@ -1118,7 +1118,7 @@ bool WarningsLogReader::checkAi(QVector<PlayerStats> *playerStats)
     return computersFinded;
 }
 
-bool WarningsLogReader::checkWinner(QVector<PlayerStats> *playerStats)
+bool GameStateReader::checkWinner(QVector<PlayerStats> *playerStats)
 {
     bool winnerAccepted = false;
 
@@ -1134,7 +1134,7 @@ bool WarningsLogReader::checkWinner(QVector<PlayerStats> *playerStats)
     return winnerAccepted;
 }
 
-bool WarningsLogReader::checkEqualNamesInStats()
+bool GameStateReader::checkEqualNamesInStats()
 {
     bool haveEqualNames = false;
 

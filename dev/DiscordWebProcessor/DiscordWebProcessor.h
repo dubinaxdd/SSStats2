@@ -6,7 +6,7 @@
 #include <logger.h>
 #include <baseTypes.h>
 #include <QTimer>
-#include <settingscontroller.h>
+#include <settingsController.h>
 
 class DiscordWebProcessor : public QObject
 {

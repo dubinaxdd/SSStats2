@@ -1,4 +1,4 @@
-#include "DowServerProcessor.h"
+#include "dowServerProcessor.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>

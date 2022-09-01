@@ -5,14 +5,14 @@
 
 #include <QLocale>
 #include <QTranslator>
-#include "dev/core/core.h"
+#include <dev/core.h>
 #include <QDebug>
 
 #include <QSystemSemaphore>
 #include <QSharedMemory>
 #include <QMessageBox>
 
-#include "dev/core/hookManager/hookmanager.h"
+#include "dev/hookManager/hookManager.h"
 
 
 // Запускает программу автообновления, которая возвращает exitCode в зависимости от наличия обновлений

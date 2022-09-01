@@ -41,57 +41,61 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Linguist
 
 set(PROJECT_SOURCES
         main.cpp
-        dev/core/core.h
-        dev/core/core.cpp
-        dev/core/settingsController/settingscontroller.h
-        dev/core/settingsController/settingscontroller.cpp
-        dev/core/hookManager/hookmanager.h
-        dev/core/hookManager/hookmanager.cpp
-        dev/keyboardProcessor/keyboardprocessor.h
-        dev/keyboardProcessor/keyboardprocessor.cpp
-        dev/uiBackend/uibackend.h
-        dev/uiBackend/uibackend.cpp
-        dev/SoulstormController/SoulstormController.h
-        dev/SoulstormController/SoulstormController.cpp
-        dev/SoulstormController/WarningsLogReader/WarningsLogReader.h
-        dev/SoulstormController/WarningsLogReader/WarningsLogReader.cpp
-        dev/SoulstormController/SoulstormMemoryReader/SoulstormMemoryReader.h
-        dev/SoulstormController/SoulstormMemoryReader/SoulstormMemoryReader.cpp
-        dev/SoulstormController/SoulstormMemoryController/SoulstormMemoryController.h
-        dev/SoulstormController/SoulstormMemoryController/SoulstormMemoryController.cpp
-        dev/SoulstormController/StatsServerProcessor/StatsServerProcessor.h
-        dev/SoulstormController/StatsServerProcessor/StatsServerProcessor.cpp
-        dev/SoulstormController/apmMeter/ApmMeter.h
-        dev/SoulstormController/apmMeter/ApmMeter.cpp
-        dev/SoulstormController/LobbyEventReader/LobbyEventReader.h
-        dev/SoulstormController/LobbyEventReader/LobbyEventReader.cpp
-        dev/SoulstormController/DowServerProcessor/DowServerProcessor.h
-        dev/SoulstormController/DowServerProcessor/DowServerProcessor.cpp
-        dev/uiBackend/statisticPanel/statisticpanel.h
-        dev/uiBackend/statisticPanel/statisticpanel.cpp
-        dev/uiBackend/gamePanel/gamepanel.h
-        dev/uiBackend/gamePanel/gamepanel.cpp
-        dev/uiBackend/imageProvider/imageprovider.h
-        dev/uiBackend/imageProvider/imageprovider.cpp
+        dev/core.h
+        dev/core.cpp
+        dev/settingsController/settingsController.h
+        dev/settingsController/settingsController.cpp
+        dev/hookManager/hookManager.h
+        dev/hookManager/hookManager.cpp
+        dev/keyboardProcessor/keyboardProcessor.h
+        dev/keyboardProcessor/keyboardProcessor.cpp
+        dev/uiBackend/uiBackend.h
+        dev/uiBackend/uiBackend.cpp
+        dev/soulstormController/soulstormController.h
+        dev/soulstormController/soulstormController.cpp
+        dev/soulstormController/gameStateReader/gameStateReader.h
+        dev/soulstormController/gameStateReader/gameStateReader.cpp
+        dev/soulstormController/soulstormMemoryReader/soulstormMemoryReader.h
+        dev/soulstormController/soulstormMemoryReader/soulstormMemoryReader.cpp
+        dev/soulstormController/soulstormMemoryController/soulstormMemoryController.h
+        dev/soulstormController/soulstormMemoryController/soulstormMemoryController.cpp
+        dev/soulstormController/apmMeter/apmMeter.h
+        dev/soulstormController/apmMeter/apmMeter.cpp
+        dev/soulstormController/lobbyEventReader/lobbyEventReader.h
+        dev/soulstormController/lobbyEventReader/lobbyEventReader.cpp
+        dev/soulstormController/dowServerProcessor/dowServerProcessor.h
+        dev/soulstormController/dowServerProcessor/dowServerProcessor.cpp
+        dev/statsServerProcessor/statsServerProcessor.h
+        dev/statsServerProcessor/statsServerProcessor.cpp
+        dev/uiBackend/statisticPanel/statisticPanel.h
+        dev/uiBackend/statisticPanel/statisticPanel.cpp
+        dev/uiBackend/statisticPanel/statisticPanelItem.h
+        dev/uiBackend/statisticPanel/statisticPanelItem.cpp
+        dev/uiBackend/imageProvider/imageProvider.h
+        dev/uiBackend/imageProvider/imageProvider.cpp
+        dev/uiBackend/gamePanel/gamePanel.h
+        dev/uiBackend/gamePanel/gamePanel.cpp
         dev/baseTypes/baseTypes.h
-        dev/uiBackend/statisticPanel/statisticpanelitem.h
-        dev/uiBackend/statisticPanel/statisticpanelitem.cpp
-        dev/core/logger/logger.h
-        dev/core/logger/logger.cpp
-        dev/DiscordWebProcessor/DiscordWebProcessor.h
-        dev/DiscordWebProcessor/DiscordWebProcessor.cpp
-        dev/uiBackend/MessagesPage/MessagesPage.h
-        dev/uiBackend/MessagesPage/MessagesPage.cpp
-        dev/ModsProcessor/ModsProcessor.h
-        dev/ModsProcessor/ModsProcessor.cpp
-        dev/ModsProcessor/ModsDownloader/ModsDownloader.h
-        dev/ModsProcessor/ModsDownloader/ModsDownloader.cpp
-        dev/ModsProcessor/ModsInstaller/ModsInstaller.h
-        dev/ModsProcessor/ModsInstaller/ModsInstaller.cpp
-        dev/uiBackend/SettingsPage/SettingsPageModel.h
-        dev/uiBackend/SettingsPage/SettingsPageModel.cpp
-        dev/SoundProcessor/SoundProcessor.h
-        dev/SoundProcessor/SoundProcessor.cpp
+        dev/logger/logger.h
+        dev/logger/logger.cpp
+        dev/discordWebProcessor/discordWebProcessor.h
+        dev/discordWebProcessor/discordWebProcessor.cpp
+        dev/uiBackend/messagesPage/messagesPage.h
+        dev/uiBackend/messagesPage/messagesPage.cpp
+        dev/modsProcessor/modsProcessor.h
+        dev/modsProcessor/modsProcessor.cpp
+        dev/modsProcessor/modsDownloader/modsDownloader.h
+        dev/modsProcessor/modsDownloader/modsDownloader.cpp
+        dev/modsProcessor/modsInstaller/modsInstaller.h
+        dev/modsProcessor/modsInstaller/modsInstaller.cpp
+        dev/uiBackend/settingsPage/settingsPageModel.h
+        dev/uiBackend/settingsPage/settingsPageModel.cpp
+        dev/soundProcessor/soundProcessor.h
+        dev/soundProcessor/soundProcessor.cpp
+        dev/soulstormController/replayDataCollector/replayDataCollector.h
+        dev/soulstormController/replayDataCollector/replayDataCollector.cpp
+        dev/overlayWindowController/overlayWindowController.h
+        dev/overlayWindowController/overlayWindowController.cpp
 
         defines.h
         qml.qrc
@@ -151,31 +155,34 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
 endif()
 
 include_directories(${TARGET_NAME}
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/settingsController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/hookManager
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/baseTypes
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/settingsController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/hookManager
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/keyboardProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/discordWebProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soundProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/logger
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/statsServerProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/gameStateReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/soulstormMemoryReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/soulstormMemoryController
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/apmMeter
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/lobbyEventReader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/dowServerProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/replayDataCollector
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/replayDataCollector
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/WarningsLogReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/SoulstormMemoryReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/SoulstormMemoryController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/StatsServerProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/apmMeter
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/LobbyEventReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoulstormController/DowServerProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/gamePanel
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/imageProvider
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/baseTypes
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/settingsPage
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/messagesPage
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/core/logger    
-    ${CMAKE_CURRENT_SOURCE_DIR}/externals/ReplayReaderLibrary
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/DiscordWebProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/MessagesPage
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsDownloader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/ModsProcessor/ModsInstaller
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/SettingsPage/
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/SoundProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsDownloader
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsInstaller
+    
+    ${CMAKE_CURRENT_SOURCE_DIR}/externals/replayReaderLibrary
 )

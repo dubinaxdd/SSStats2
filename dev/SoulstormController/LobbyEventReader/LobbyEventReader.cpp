@@ -1,4 +1,4 @@
-#include <LobbyEventReader.h>
+#include <lobbyEventReader.h>
 #include <QTextStream>
 #include <QFile>
 #include <QDebug>

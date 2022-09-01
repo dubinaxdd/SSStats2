@@ -1,4 +1,4 @@
-#include "keyboardprocessor.h"
+#include "keyboardProcessor.h"
 #include <QDebug>
 
 KeyboardProcessor::KeyboardProcessor(QObject* parent)

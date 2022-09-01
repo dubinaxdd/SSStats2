@@ -1,4 +1,4 @@
-#include <SoulstormMemoryReader.h>
+#include <soulstormMemoryReader.h>
 #include <QVariantList>
 #include <QDebug>
 #include <iostream>

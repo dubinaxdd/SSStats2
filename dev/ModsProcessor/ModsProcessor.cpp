@@ -1,4 +1,4 @@
-#include "ModsProcessor.h"
+#include "modsProcessor.h"
 #include "windows.h"
 #include <QSettings>
 #include <logger.h>

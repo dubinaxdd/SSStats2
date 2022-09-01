@@ -7,7 +7,7 @@
 
 #include <Windows.h>
 #include <logger.h>
-#include <settingscontroller.h>
+#include <settingsController.h>
 
 class SoulstormMemoryController : public QObject
 {

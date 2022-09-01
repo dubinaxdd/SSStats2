@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0048 NEW)
 
 project(ReplayReaderLibrary VERSION 1.0 LANGUAGES CXX)
+set(TARGET_NAME ReplayReaderLibrary)
 
 #set(PROJECT_VERSION_MAJOR "1")
 #set(PROJECT_VERSION_MINOR "0")
@@ -33,14 +34,10 @@ set(PROJECT_SOURCES
         ${CMAKE_CURRENT_SOURCE_DIR}/repreader.cpp
 )
 
-add_library(ReplayReaderLibrary STATIC ${PROJECT_SOURCES})
+add_library(${TARGET_NAME} STATIC ${PROJECT_SOURCES})
 
-target_link_libraries(ReplayReaderLibrary
-                        PRIVATE
-                        Qt${QT_VERSION_MAJOR}::Core
-                        )
+target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core)
 
-
-include_directories(ReplayReaderLibrary
+target_include_directories(${TARGET_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
 )

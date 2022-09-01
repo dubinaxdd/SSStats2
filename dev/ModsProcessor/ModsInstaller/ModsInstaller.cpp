@@ -1,4 +1,4 @@
-#include "ModsInstaller.h"
+#include "modsInstaller.h"
 #include "QFile"
 #include "JlCompress.h"
 #include "QDir"

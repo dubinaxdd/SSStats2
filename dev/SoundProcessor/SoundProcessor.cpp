@@ -1,4 +1,4 @@
-#include "SoundProcessor.h"
+#include "soundProcessor.h"
 #include <QSound>
 #include <QDebug>
 

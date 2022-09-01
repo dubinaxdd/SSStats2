@@ -2,8 +2,8 @@
 #define MODSPROCESSOR_H
 
 #include <QObject>
-#include <ModsDownloader.h>
-#include <ModsInstaller.h>
+#include <modsDownloader.h>
+#include <modsInstaller.h>
 #include <baseTypes.h>
 
 

@@ -1,4 +1,4 @@
-#include "ModsDownloader.h"
+#include "modsDownloader.h"
 #include <QNetworkReply>
 #include <QDir>
 #include <QDataStream>

@@ -1,4 +1,4 @@
-#include <StatsServerProcessor.h>
+#include <statsServerProcessor.h>
 #include <QFile>
 #include <QTextStream>
 #include <defines.h>

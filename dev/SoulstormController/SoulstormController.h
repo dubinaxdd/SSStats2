@@ -4,18 +4,18 @@
 #include <QObject>
 #include "Windows.h"
 #include <QTimer>
-#include <WarningsLogReader.h>
-#include <SoulstormMemoryReader.h>
+#include <gameStateReader.h>
+#include <soulstormMemoryReader.h>
 #include <baseTypes.h>
 #include <QVector>
-#include <StatsServerProcessor.h>
-#include <SoulstormMemoryController.h>
-#include <ApmMeter.h>
+#include <statsServerProcessor.h>
+#include <soulstormMemoryController.h>
+#include <apmMeter.h>
 #include <QThread>
 #include <logger.h>
-#include <settingscontroller.h>
-#include <LobbyEventReader.h>
-#include <DowServerProcessor.h>
+#include <settingsController.h>
+#include <lobbyEventReader.h>
+#include <dowServerProcessor.h>
 #include <QProcess>
 
 class SoulstormController : public QObject
@@ -25,7 +25,7 @@ public:
     explicit SoulstormController(SettingsController* settingsController, QObject *parent = nullptr);
     ~SoulstormController();
 
-    WarningsLogReader   *warningsLogReader()    const;
+    GameStateReader   *gameStateReader()    const;
     StatsServerProcessor *statsServerProcessor()       const;
     SoulstormMemoryController    *soulstormMemoryController()     const;
     APMMeter            *apmMeter()             const;
@@ -88,7 +88,7 @@ private:
     bool m_gameInitialized = false;
     bool m_ssWindowCreated = false;
 
-    WarningsLogReader* m_warningsLogReader;
+    GameStateReader* m_gameStateReader;
     LobbyEventReader* m_lobbyEventReader;
 
     SoulstormMemoryReader* m_soulstormMemoryReader;
@@ -102,7 +102,7 @@ private:
     DowServerProcessor* m_dowServerProcessor;
 
     QProcess *m_soulstormProcess;
-    bool useWindows7SupportMode = false;
+    bool m_useWindows7SupportMode = false;
 
     int m_ssWindowWidth = 0;
     int m_ssWindowHeight = 0;

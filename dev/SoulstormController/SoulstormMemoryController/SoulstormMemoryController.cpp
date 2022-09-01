@@ -1,4 +1,4 @@
-#include <SoulstormMemoryController.h>
+#include <soulstormMemoryController.h>
 
 PVOID FogAddr = (PVOID)0x008282F0;
 PVOID MapSkyDistanceAddr = (PVOID)0x0082A33A;

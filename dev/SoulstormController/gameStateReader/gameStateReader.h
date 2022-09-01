@@ -1,16 +1,16 @@
-#ifndef WARNINGSLOGREADER_H
-#define WARNINGSLOGREADER_H
+#ifndef GAMESTATEREADER_H
+#define GAMESTATEREADER_H
 
 #include <QObject>
 #include <QTimer>
 #include <baseTypes.h>
 #include <logger.h>
 
-class WarningsLogReader : public QObject
+class GameStateReader : public QObject
 { 
     Q_OBJECT
 public:
-    explicit WarningsLogReader(QString sspath, QObject *parent = nullptr);
+    explicit GameStateReader(QString sspath, QObject *parent = nullptr);
 
     void ssWindowClosed();
     bool getGameInitialized();
@@ -102,4 +102,4 @@ private:
     QStringList testStatsTemp;
 };
 
-#endif // WARNINGSLOGREADER_H
+#endif // GAMESTATEREADER_H

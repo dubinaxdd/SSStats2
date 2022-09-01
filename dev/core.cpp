@@ -1,10 +1,10 @@
 #include <core.h>
 #include <QDebug>
 #include <QFile>
-#include <WarningsLogReader.h>
-#include <LobbyEventReader.h>
+#include <gameStateReader.h>
+#include <lobbyEventReader.h>
 #include <baseTypes.h>
-#include <hookmanager.h>
+#include <hookManager.h>
 #include <winuser.h>
 #include <version.h>
 
@@ -45,12 +45,12 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_soulstormController->statsServerProcessor(),  &StatsServerProcessor::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_soulstormController->statsServerProcessor(),  &StatsServerProcessor::sendCurrentPlayerHostState,    m_uiBackend->statisticPanel(),  &StatisticPanel::receiveCurrentPlayerHostState, Qt::QueuedConnection);
     QObject::connect(m_soulstormController->statsServerProcessor(),  &StatsServerProcessor::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::gameInitialized,         this,                       &Core::gameInitialized,                  Qt::DirectConnection);
-    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::ssShutdown,              this,                       &Core::onSsShutdowned,                   Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->warningsLogReader(),   &WarningsLogReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::gameInitialized,         this,                       &Core::gameInitialized,                  Qt::DirectConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::ssShutdown,              this,                       &Core::onSsShutdowned,                   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
 
     QObject::connect(m_soulstormController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
     QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
@@ -118,7 +118,7 @@ void Core::topmostTimerTimout()
     //Соответственно затираем флаг и выставлем заного по таймеру.
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
 
-    if (m_soulstormController->warningsLogReader()->getGameInitialized())
+    if (m_soulstormController->gameStateReader()->getGameInitialized())
     {
         if (m_ssStatsHwnd)
         {

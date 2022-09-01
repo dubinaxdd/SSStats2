@@ -1,4 +1,4 @@
-#include <settingscontroller.h>
+#include <settingsController.h>
 #include <logger.h>
 
 SettingsController::SettingsController(QObject *parent) : QObject(parent)
