@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
         engine.removeImageProvider("imageprovider");
         app.exit(0);});
 
-    core->grubStatsWindow();
+    core->overlayWindowController()->grubStatsWindow();
 
     return app.exec();
 }

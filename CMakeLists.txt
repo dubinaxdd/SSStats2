@@ -164,6 +164,7 @@ include_directories(${TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/soundProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/logger
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/statsServerProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/overlayWindowController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/gameStateReader
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/soulstormMemoryReader
