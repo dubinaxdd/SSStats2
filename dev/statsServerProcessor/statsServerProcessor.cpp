@@ -39,7 +39,6 @@ StatsServerProcessor::StatsServerProcessor(QString ssPath, QString steamPath, QO
 
     qInfo(logInfo()) << "OpenSSL available:" << QSslSocket::supportsSsl() << QSslSocket::sslLibraryBuildVersionString() << QSslSocket::sslLibraryVersionString();
     qInfo(logInfo()) << "Protocol version:" << m_clientVersion;
-
 }
 
 void StatsServerProcessor::receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner, int playersCount )
@@ -395,6 +394,12 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
     });
+}
+
+void StatsServerProcessor::receiveGameLaunchedState(bool gameLaunched)
+{
+    if (!gameLaunched)
+        setCurrentPlayerAccepted(false);
 }
 
 QString StatsServerProcessor::GetRandomString() const

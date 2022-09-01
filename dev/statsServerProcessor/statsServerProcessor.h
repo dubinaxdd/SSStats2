@@ -30,11 +30,13 @@ signals:
 public slots:
     void receivePlayresStemIdFromScanner(QList<SearchStemIdPlayerInfo> playersInfoFromScanner , int playersCount);
     void sendReplayToServer(SendingReplayInfo replayInfo);
+    void receiveGameLaunchedState(bool gameLaunched);
 
 private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
     void currentPlayerStatsRequestTimerTimeout();
+
 
 
 private:

@@ -8,7 +8,6 @@
 #include <soulstormMemoryReader.h>
 #include <baseTypes.h>
 #include <QVector>
-#include <statsServerProcessor.h>
 #include <soulstormMemoryController.h>
 #include <apmMeter.h>
 #include <QThread>
@@ -26,7 +25,6 @@ public:
     ~SoulstormController();
 
     GameStateReader   *gameStateReader()    const;
-    StatsServerProcessor *statsServerProcessor()       const;
     SoulstormMemoryController    *soulstormMemoryController()     const;
     APMMeter            *apmMeter()             const;
     SoulstormMemoryReader *soulstormMemoryReader()  const;
@@ -44,6 +42,8 @@ public:
     bool getUseWindows7SupportMode() const;
 
 
+
+    const QString &steamPath() const;
 
 public slots:
     void blockSsWindowInput(bool state);
@@ -96,7 +96,6 @@ private:
     QThread m_soulstormMemoryReaderThread;
 
     APMMeter* m_apmMeter;
-    StatsServerProcessor* m_statsServerProcessor;
     SoulstormMemoryController* m_soulstormMemoryController;
     SettingsController* m_settingsController;
     DowServerProcessor* m_dowServerProcessor;

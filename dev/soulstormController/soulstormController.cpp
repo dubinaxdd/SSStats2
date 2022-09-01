@@ -28,7 +28,6 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     m_gameStateReader = new GameStateReader(m_ssPath, this);
     m_lobbyEventReader = new LobbyEventReader(m_ssPath, this);
     m_steamPath = getSteamPathFromRegistry();
-    m_statsServerProcessor = new StatsServerProcessor(m_ssPath, m_steamPath, this);
 
     m_soulstormMemoryReader = new SoulstormMemoryReader(/*this*/);
 
@@ -46,7 +45,6 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_lobbyEventReader, &LobbyEventReader::receiveCurrentMissionState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentModeVersion,   m_dowServerProcessor, &DowServerProcessor::setCurrentModVersion, Qt::QueuedConnection);
-    QObject::connect(m_gameStateReader, &GameStateReader::sendReplayToServer,       m_statsServerProcessor, &StatsServerProcessor::sendReplayToServer,   Qt::QueuedConnection);
 
     QObject::connect(m_gameStateReader, &GameStateReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
 
@@ -56,22 +54,18 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
 
-    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_statsServerProcessor, &StatsServerProcessor::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
+
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendSteamIds, m_gameStateReader, &GameStateReader::receivePlayresStemIdFromScanner, Qt::QueuedConnection);
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_gameStateReader,  &GameStateReader::receiveAverrageApm,       Qt::QueuedConnection);
 
     QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
 
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_dowServerProcessor, &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
-
     m_lobbyEventReader->checkPatyState();
 
     m_soulstormMemoryReader->moveToThread(&m_soulstormMemoryReaderThread);
     m_soulstormMemoryReaderThread.start();
     m_ssWindowControllTimer->start();
-
-    m_statsServerProcessor->parseCurrentPlayerSteamId();
 }
 
 SoulstormController::~SoulstormController()
@@ -231,7 +225,6 @@ void SoulstormController::checkWindowState()
     {
         if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
         {
-            m_statsServerProcessor->setCurrentPlayerAccepted(false);
             m_useWindows7SupportMode = false;
             m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
             m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
@@ -257,7 +250,6 @@ void SoulstormController::checkWindowState()
 void SoulstormController::gameInitialized()
 {
     parseSsSettings();
-    m_statsServerProcessor->parseCurrentPlayerSteamId();
     m_lobbyEventReader->activateReading(true);
 }
 
@@ -325,6 +317,11 @@ void SoulstormController::parseSsSettings()
     qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
 
     delete ssSettings;
+}
+
+const QString &SoulstormController::steamPath() const
+{
+    return m_steamPath;
 }
 
 DowServerProcessor *SoulstormController::dowServerProcessor() const
@@ -398,11 +395,6 @@ APMMeter *SoulstormController::apmMeter() const
 SoulstormMemoryController *SoulstormController::soulstormMemoryController() const
 {
     return m_soulstormMemoryController;
-}
-
-StatsServerProcessor *SoulstormController::statsServerProcessor() const
-{
-    return m_statsServerProcessor;
 }
 
 HWND SoulstormController::soulstormHwnd() const

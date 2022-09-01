@@ -12,6 +12,7 @@
 #include <modsProcessor.h>
 #include <soundProcessor.h>
 #include <overlayWindowController.h>
+#include <statsServerProcessor.h>
 
 class Core : public QObject
 {
@@ -48,6 +49,7 @@ private:
     DiscordWebProcessor* m_discordWebProcessor;
     ModsProcessor* m_modsProcessor;
     SoundProcessor* m_soundProcessor;
+    StatsServerProcessor* m_statsServerProcessor;
 };
 
 //Q_DECLARE_METATYPE(Core);
