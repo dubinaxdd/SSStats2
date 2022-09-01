@@ -1,4 +1,4 @@
-# SSStats2
+# DowStats2
 Client for collecting statistics Dawn of War Soulstorm
 
 C++
