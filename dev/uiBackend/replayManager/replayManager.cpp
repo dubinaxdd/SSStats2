@@ -80,7 +80,15 @@ void ReplayManager::getReplaysDirs()
         ReplayListInfo newReplayInfo;
 
         newReplayInfo.name = newRepReader.replay.Name;
-        newReplayInfo.map = newRepReader.replay.Map;
+
+        QString mapSourceUrl = "qrc:/maps/resources/maps/" + newRepReader.replay.Map.toLower() + ".jpg";
+
+        QFile checkFile(m_mapSourceUrl.right(m_mapSourceUrl.count() - 3));
+
+        if(!checkFile.exists())
+            m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
+
+        newReplayInfo.mapUrl = mapSourceUrl;
         newReplayInfo.mod = newRepReader.replay.MOD;
         newReplayInfo.fileName = fileName;
 

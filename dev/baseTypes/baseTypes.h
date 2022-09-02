@@ -251,7 +251,7 @@ struct ReplayListInfo
 {
     QString fileName;
     QString name;
-    QString map;
+    QString mapUrl;
     QString mod;
 };
 

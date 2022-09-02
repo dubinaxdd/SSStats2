@@ -18,7 +18,7 @@ QVariant ReplaysListModel::data(const QModelIndex &index, int role) const
     else if (role == Name)
         return replayInfo.name;
     else if (role == Map)
-        return replayInfo.map;
+        return replayInfo.mapUrl;
     else if (role == Mod)
         return replayInfo.mod;
 

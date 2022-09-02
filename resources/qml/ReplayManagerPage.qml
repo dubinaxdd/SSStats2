@@ -169,31 +169,72 @@ Rectangle {
                     delegate: Rectangle{
 
                         width: replaysListView.width
-                        height: 90
+                        height: 70
                         radius: 10
 
                         color: delegateMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
 
-                        ColumnLayout
+                        RowLayout
                         {
+
                             anchors.fill: parent
                             anchors.margins: 10
                             clip: true
+                            spacing: 10
 
-                            Label{
-                                text: "File name: " + model.fileName
+                            Layout.alignment: Qt.AlignLeft
+
+                            Rectangle
+                            {
+                                Layout.preferredWidth: 40
+                                Layout.preferredHeight: 40
+                                color: "#112332"
+                                radius: 10
+                                clip: true
+
+                                Image{
+                                    id: mapImage2
+                                    anchors.fill: parent
+                                    source: model.map
+                                    cache: false
+                                    visible:false
+                                    fillMode: Image.PreserveAspectFit
+                                }
+
+                                Rectangle {
+                                    id: maskRectangle2
+
+                                    anchors.fill: parent
+                                    radius: 10
+                                    visible: false
+
+                                }
+
+                                OpacityMask {
+                                    id: opacityMask2
+                                    anchors.fill: mapImage2
+                                    source: mapImage2
+                                    maskSource: maskRectangle2
+                                }
                             }
 
-                            Label{
-                                text: "Replay name: " + model.name
+                            ColumnLayout
+                            {
+                                Label{
+                                    text: "File name: " + model.fileName
+                                }
+
+                                Label{
+                                    text: "Replay name: " + model.name
+                                }
+
+                                Label{
+                                    text: "Mod: " + model.mod
+                                }
                             }
 
-                            Label{
-                                text: "Map: " + model.map
-                            }
-
-                            Label{
-                                text: "Mod: " + model.mod
+                            Rectangle{
+                                Layout.fillWidth: true
                             }
                         }
 
