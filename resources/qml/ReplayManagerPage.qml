@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtGraphicalEffects 1.15
 
 Rectangle {
     id: infoRectangle
@@ -43,6 +44,34 @@ Rectangle {
                         color: "#112332"
                         radius: 10
 
+                        clip: true
+
+
+                        Image{
+                            id: mapImage
+                            anchors.fill: parent
+                            source: _uiBackend.replayManager.mapSourceUrl
+                            cache: false
+                            visible:false
+                            fillMode: Image.PreserveAspectFit
+                        }
+
+                        Rectangle {
+                            id: maskRectangle
+
+                            anchors.fill: parent
+                            radius: 10
+                            visible: false
+
+                        }
+
+                        OpacityMask {
+                            id: opacityMask
+                            anchors.fill: mapImage
+                            source: mapImage
+                            maskSource: maskRectangle
+                        }
+
                     }
 
                     Label{
@@ -54,7 +83,6 @@ Rectangle {
 
                 ColumnLayout
                 {
-                    //Layout.fillWidth: true
                     Layout.maximumWidth: 340
                     clip: true
 

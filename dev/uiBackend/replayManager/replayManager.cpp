@@ -5,6 +5,7 @@
 #include <repreader.h>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QFile>
 
 using namespace ReplayReader;
 
@@ -46,6 +47,14 @@ void ReplayManager::openPlayback(QString fileName)
     m_currentPlayerCount = newRepReader.replay.PlayerCount;
     m_currentTeamsCount = newRepReader.replay.getTeamsCount();
     m_currentMapSize = newRepReader.replay.MapSize;
+
+    m_mapSourceUrl = "qrc:/maps/resources/maps/" + m_currentMap.toLower() + ".jpg";
+
+    QFile checkFile(m_mapSourceUrl.right(m_mapSourceUrl.count() - 3));
+
+    if(!checkFile.exists())
+        m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
+
 
     emit updateReplayInfo();
 }
