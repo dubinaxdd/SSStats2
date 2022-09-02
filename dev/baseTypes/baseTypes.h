@@ -252,6 +252,7 @@ struct ReplayListInfo
     QString folderName;
     QString name;
     QString map;
+    QString mod;
 };
 
 #endif // BASETYPES_H

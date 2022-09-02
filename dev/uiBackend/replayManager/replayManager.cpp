@@ -6,9 +6,11 @@
 
 using namespace ReplayReader;
 
-ReplayManager::ReplayManager(QObject *parent) : QObject(parent)
+ReplayManager::ReplayManager(QObject *parent)
+    : QObject(parent)
+    , m_replaysListModel( new ReplaysListModel(this))
 {
-
+    emit replaysListModelSetded();
 }
 
 void ReplayManager::setSsPath(const QString &newSsPath)
@@ -26,10 +28,23 @@ void ReplayManager::getReplaysDirs()
 
     QFileInfoList dirContent = dir.entryInfoList(QStringList() << "*.rec", QDir::Files | QDir::NoDotAndDotDot);
 
+    QVector<ReplayListInfo> replaysInfo;
+
     for (int i = 0; i < dirContent.count(); i++)
     {
-        qDebug() << dirContent.at(i).fileName() << dirContent.at(i);
+        QString folderName = dirContent.at(i).fileName();
 
-      //  RepReader(dirContent.at(i));
+        RepReader newRepReader(path + QDir::separator() + folderName);
+
+        ReplayListInfo newReplayInfo;
+
+        newReplayInfo.name = newRepReader.replay.Name;
+        newReplayInfo.map = newRepReader.replay.Map;
+        newReplayInfo.mod = newRepReader.replay.MOD;
+        newReplayInfo.folderName = folderName;
+
+        replaysInfo.append(newReplayInfo);
     }
+
+    m_replaysListModel->setReplaysList(std::move(replaysInfo));
 }

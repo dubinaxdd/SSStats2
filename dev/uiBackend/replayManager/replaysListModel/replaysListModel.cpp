@@ -11,12 +11,15 @@ QVariant ReplaysListModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     const ReplayListInfo &replayInfo = replaysList[index.row()];
+
     if (role == FolderName)
         return replayInfo.folderName;
     else if (role == Name)
         return replayInfo.name;
     else if (role == Map)
         return replayInfo.map;
+    else if (role == Mod)
+        return replayInfo.mod;
 
     return QVariant();
 }
@@ -33,6 +36,7 @@ QHash<int, QByteArray> ReplaysListModel::roleNames() const
     roles[FolderName] = "folderName";
     roles[Name] = "name";
     roles[Map] = "map";
+    roles[Mod] = "mod";
 
     return roles;
 }

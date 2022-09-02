@@ -2,6 +2,7 @@
 #define REPLAYMANAGER_H
 
 #include <QObject>
+#include <replaysListModel.h>
 
 class ReplayManager : public QObject
 {
@@ -9,13 +10,20 @@ class ReplayManager : public QObject
 public:
     explicit ReplayManager(QObject *parent = nullptr);
 
+    Q_PROPERTY(ReplaysListModel* replaysListModel MEMBER m_replaysListModel NOTIFY replaysListModelSetded)
+
     void setSsPath(const QString &newSsPath);
+
+signals:
+    void replaysListModelSetded();
 
 private:
     void getReplaysDirs();
 
 private:
     QString m_ssPath;
+    ReplaysListModel* m_replaysListModel;
+
 
 };
 
