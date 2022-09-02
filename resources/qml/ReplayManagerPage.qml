@@ -168,7 +168,7 @@ Rectangle {
                 height: 35
                 radius:5
 
-                Layout.rightMargin: 15
+                //Layout.rightMargin: 15
 
                 gradient: Gradient {
                     GradientStop {
