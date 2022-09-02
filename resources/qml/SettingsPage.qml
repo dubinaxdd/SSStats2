@@ -14,6 +14,7 @@ Rectangle {
     Layout.fillHeight: true
     transformOrigin: Item.BottomRight
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
+    radius: 10
 
     property var model: _uiBackend.settingsPageModel
 
@@ -297,6 +298,4 @@ Rectangle {
     //Отключтить туман
     //Включить игровую панель
     //Масштаб оверлея
-
-    radius: 10
 }

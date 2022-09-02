@@ -1,7 +1,6 @@
-#include <uibackend.h>
+#include <uiBackend.h>
 #include <QDebug>
 #include <version.h>
-#include <settingscontroller.h>
 
 UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -13,6 +12,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_eventsPage(new MessagesPage(this))
     , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
     , m_notificationVisibleTimer(new QTimer(this))
+    , m_replayManager(new ReplayManager(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");
@@ -99,6 +99,11 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(SsMissionState::gameOver);
+}
+
+ReplayManager *UiBackend::replayManager() const
+{
+    return m_replayManager;
 }
 
 bool UiBackend::notificationVisible() const

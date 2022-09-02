@@ -5,12 +5,13 @@
 #include <QPoint>
 #include <QTimer>
 
-#include <gamepanel.h>
-#include <statisticpanel.h>
-#include <imageprovider.h>
-#include <settingscontroller.h>
-#include <MessagesPage.h>
-#include <SettingsPageModel.h>
+#include <gamePanel.h>
+#include <statisticPanel.h>
+#include <imageProvider.h>
+#include <settingsController.h>
+#include <messagesPage.h>
+#include <settingsPageModel.h>
+#include <replayManager.h>
 
 class UiBackend : public QObject
 {
@@ -41,6 +42,7 @@ class UiBackend : public QObject
     Q_PROPERTY(MessagesPage* newsPage MEMBER m_newsPage NOTIFY statisticPanelInitialized)
     Q_PROPERTY(MessagesPage* eventsPage MEMBER m_eventsPage NOTIFY statisticPanelInitialized)
     Q_PROPERTY(SettingsPageModel* settingsPageModel MEMBER m_settingsPageModel NOTIFY statisticPanelInitialized)
+    Q_PROPERTY(ReplayManager* replayManager MEMBER m_replayManager NOTIFY statisticPanelInitialized)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -74,10 +76,10 @@ public:
     ImageProvider *imageProvider() const;
     MessagesPage *newsPage() const;
     MessagesPage *eventsPage() const;
+    ReplayManager *replayManager() const;
+    SettingsPageModel *settingsPageModel() const;
 
     Q_INVOKABLE void launchSoulstorm();
-
-    SettingsPageModel *settingsPageModel() const;
 
     bool notificationVisible() const;
     void setNotificationVisible(bool newNotificationVisible);
@@ -150,6 +152,7 @@ private:
     MessagesPage* m_newsPage;
     MessagesPage* m_eventsPage;
     SettingsPageModel* m_settingsPageModel;
+    ReplayManager* m_replayManager;
 
     QTimer* m_notificationVisibleTimer;
 
@@ -188,6 +191,8 @@ private:
     QString m_lastNotification;
     bool m_lastNotificationIsWarning = false;
     bool m_notificationVisible = false;
+
+
 };
 
 #endif // UIBACKEND_H

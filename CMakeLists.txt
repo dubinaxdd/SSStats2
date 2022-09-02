@@ -96,6 +96,10 @@ set(PROJECT_SOURCES
         dev/soulstormController/replayDataCollector/replayDataCollector.cpp
         dev/overlayWindowController/overlayWindowController.h
         dev/overlayWindowController/overlayWindowController.cpp
+        dev/uiBackend/replayManager/replayManager.h
+        dev/uiBackend/replayManager/replayManager.cpp
+        dev/uiBackend/replayManager/replaysListModel/replaysListModel.h
+        dev/uiBackend/replayManager/replaysListModel/replaysListModel.cpp
 
         defines.h
         qml.qrc
@@ -181,7 +185,9 @@ include_directories(${TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/settingsPage
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/messagesPage
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsDownloader
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsInstaller
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/replaysListModel
 )

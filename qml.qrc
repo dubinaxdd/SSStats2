@@ -18,5 +18,6 @@
         <file>resources/qml/Notification.qml</file>
         <file>resources/qml/SettingsPage.qml</file>
         <file>resources/qml/PlayersStatistic.qml</file>
+        <file>resources/qml/ReplayManagerPage.qml</file>
     </qresource>
 </RCC>

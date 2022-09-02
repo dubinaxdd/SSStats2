@@ -6,8 +6,8 @@ import Qt.labs.platform 1.1
 import QtGraphicalEffects 1.15
 
 Window {
-    width: 1000
-    height: 700
+    width: 1200
+    height: 900
     title: "DoW Stats 2"
     color: "#eaeaea"
     flags: Qt.Window
@@ -168,6 +168,7 @@ Window {
                         newsButton.pressedState = false;
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;
+                        replayManagerButton.pressedState = false;
                     }
                 }
 
@@ -180,6 +181,7 @@ Window {
                         newsButton.pressedState = false;
                         eventsButton.pressedState = false;
                         settingsButton.pressedState = false;
+                        replayManagerButton.pressedState = false;
                     }
                 }
 
@@ -191,6 +193,20 @@ Window {
                         newsButton.pressedState = false;
                         eventsButton.pressedState = false;
                         infoButton.pressedState = false;
+                        replayManagerButton.pressedState = false;
+                    }
+                }
+
+                HeaderButton{
+                    id: replayManagerButton
+                    text: "Replay manager"
+                    width: 160
+
+                    onClicked: {
+                        newsButton.pressedState = false;
+                        eventsButton.pressedState = false;
+                        infoButton.pressedState = false;
+                        settingsButton.pressedState = false;
                     }
                 }
 
@@ -247,6 +263,14 @@ Window {
                     id: settingsPage
                     visible: settingsButton.pressedState
                     anchors.fill: parent
+                }
+
+
+                ReplayManagerPage {
+                    id: replayManagerPage
+                    visible: replayManagerButton.pressedState
+                    anchors.fill: parent
+
                 }
             }
 

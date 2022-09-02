@@ -247,4 +247,11 @@ struct DiscordMessage
     bool isNew = true;
 };
 
+struct ReplayListInfo
+{
+    QString folderName;
+    QString name;
+    QString map;
+};
+
 #endif // BASETYPES_H
