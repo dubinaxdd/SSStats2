@@ -101,6 +101,10 @@ Rectangle {
                     }
 
                     Label{
+                        text: "Creation time: " + _uiBackend.replayManager.currentReplayTime
+                    }
+
+                    Label{
                         text: "Duration: " + _uiBackend.replayManager.currentDuration
                     }
 

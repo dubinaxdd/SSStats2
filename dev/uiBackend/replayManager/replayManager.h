@@ -15,6 +15,7 @@ class ReplayManager : public QObject
     Q_PROPERTY(QString currentMap MEMBER m_currentMap NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentDuration MEMBER m_currentDuration NOTIFY updateReplayInfo)
     Q_PROPERTY(QString mapSourceUrl MEMBER m_mapSourceUrl NOTIFY updateReplayInfo)
+    Q_PROPERTY(QString currentReplayTime MEMBER m_currentReplayTime NOTIFY updateReplayInfo)
 
     Q_PROPERTY(int currentPlayerCount MEMBER m_currentPlayerCount NOTIFY updateReplayInfo)
     Q_PROPERTY(int currentTeamsCount MEMBER m_currentTeamsCount NOTIFY updateReplayInfo)
@@ -47,6 +48,7 @@ private:
     QString m_currentModVersion;
     QString m_currentMap;
     QString m_currentDuration;
+    QString m_currentReplayTime;
 
     int m_currentPlayerCount;
     int m_currentTeamsCount;

@@ -33,6 +33,13 @@ void ReplayManager::openPlayback(QString fileName)
     QDir dir(m_ssPath + QDir::separator() + "Playback");
     QString path = dir.absolutePath();
 
+    QFileInfo replayFile(path + QDir::separator() + fileName);
+
+    if(!replayFile.exists())
+        return;
+
+    m_currentReplayTime = replayFile.birthTime().toString("dd.MM.yyyy hh:mm");
+
     RepReader newRepReader(path + QDir::separator() + fileName);
 
     m_currentReplayName = newRepReader.replay.Name;
