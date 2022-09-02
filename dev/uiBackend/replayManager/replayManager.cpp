@@ -27,30 +27,58 @@ void ReplayManager::openPlaybackFolder()
     QDesktopServices::openUrl(QUrl::fromLocalFile(m_ssPath + QDir::separator() + "Playback"));
 }
 
+void ReplayManager::openPlayback(QString fileName)
+{
+    QDir dir(m_ssPath + QDir::separator() + "Playback");
+    QString path = dir.absolutePath();
+
+    RepReader newRepReader(path + QDir::separator() + fileName);
+
+    m_currentReplayName = newRepReader.replay.Name;
+    m_currentFileName = fileName;
+    m_currentMod = newRepReader.replay.MOD;
+    m_currentModVersion = newRepReader.replay.Version;
+    m_currentMap = newRepReader.replay.Map;
+
+    int duration = newRepReader.replay.Duration;
+
+    m_currentDuration = QString::number(duration / 60) + ":" + QString::number(duration - ((duration / 60) * 60));
+    m_currentPlayerCount = newRepReader.replay.PlayerCount;
+    m_currentTeamsCount = newRepReader.replay.getTeamsCount();
+    m_currentMapSize = newRepReader.replay.MapSize;
+
+    emit updateReplayInfo();
+}
+
 void ReplayManager::getReplaysDirs()
 {
     QDir dir(m_ssPath + QDir::separator() + "Playback");
-
     QString path = dir.absolutePath();
 
     QFileInfoList dirContent = dir.entryInfoList(QStringList() << "*.rec", QDir::Files | QDir::NoDotAndDotDot);
+
+    if (dirContent.count() == 0)
+        return;
 
     QVector<ReplayListInfo> replaysInfo;
 
     for (int i = 0; i < dirContent.count(); i++)
     {
-        QString folderName = dirContent.at(i).fileName();
+        QString fileName = dirContent.at(i).fileName();
 
-        RepReader newRepReader(path + QDir::separator() + folderName);
+        RepReader newRepReader(path + QDir::separator() + fileName);
 
         ReplayListInfo newReplayInfo;
 
         newReplayInfo.name = newRepReader.replay.Name;
         newReplayInfo.map = newRepReader.replay.Map;
         newReplayInfo.mod = newRepReader.replay.MOD;
-        newReplayInfo.folderName = folderName;
+        newReplayInfo.fileName = fileName;
 
         replaysInfo.append(newReplayInfo);
+
+        if (i == 0)
+            openPlayback(fileName);
     }
 
     m_replaysListModel->setReplaysList(std::move(replaysInfo));

@@ -12,7 +12,7 @@ public:
     explicit ReplaysListModel(QObject *parent = nullptr);
 
     enum DataRoles {
-            FolderName = Qt::UserRole + 1,
+            FileName = Qt::UserRole + 1,
             Name = Qt::UserRole + 2,
             Mod = Qt::UserRole + 3,
             Map

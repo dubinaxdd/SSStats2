@@ -43,14 +43,10 @@ Rectangle {
                         color: "#112332"
                         radius: 10
 
-                        Label{
-                             anchors.fill: parent
-                             text: "Map"
-                         }
                     }
 
                     Label{
-                        text: "Map_name"
+                        text: _uiBackend.replayManager.currentMap
                         Layout.alignment: Qt.AlignCenter
                     }
 
@@ -58,34 +54,47 @@ Rectangle {
 
                 ColumnLayout
                 {
-                    Layout.fillWidth: true
+                    //Layout.fillWidth: true
+                    Layout.maximumWidth: 340
+                    clip: true
 
                     Label{
-                        text: "Name"
-                        font.pixelSize: 30
+                        text: _uiBackend.replayManager.currentReplayName
+                        font.pixelSize: 20
+
                     }
 
                     Label{
-                        text: "mod"
+                        text: "File name: " + _uiBackend.replayManager.currentFileName
                     }
 
                     Label{
-                        text: "version"
+                        text: "Mod: " + _uiBackend.replayManager.currentMod
                     }
 
                     Label{
-                        text: "duration"
+                        text: "Duration: " + _uiBackend.replayManager.currentDuration
                     }
 
                     Label{
-                        text: "settings"
+                        text: "Players count: " + _uiBackend.replayManager.currentPlayerCount
                     }
 
                     Label{
-                        text: "win conditions"
+                        text: "Teams count: " + _uiBackend.replayManager.currentTeamsCount
+                    }
+
+                    Label{
+                        text: "Map size: " + _uiBackend.replayManager.currentMapSize
                     }
                 }
             }
+
+            Rectangle
+            {
+                Layout.fillHeight: true
+            }
+
 /*
             ListView {
                 width: 180; height: 200
@@ -144,7 +153,7 @@ Rectangle {
                             clip: true
 
                             Label{
-                                text: "File name: " + model.folderName
+                                text: "File name: " + model.fileName
                             }
 
                             Label{
@@ -167,7 +176,7 @@ Rectangle {
                             hoverEnabled: true
 
                             onClicked: {
-                                //_uiBackend.replayManager.openPlaybackFolder();
+                                _uiBackend.replayManager.openPlayback(model.fileName);
                             }
                         }
                     }

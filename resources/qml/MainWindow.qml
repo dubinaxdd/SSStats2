@@ -13,7 +13,7 @@ Window {
     flags: Qt.Window
     visibility: Window.Maximized
 
-    minimumWidth: 1000
+    minimumWidth: 1200
     minimumHeight: 700
 
     ColumnLayout {

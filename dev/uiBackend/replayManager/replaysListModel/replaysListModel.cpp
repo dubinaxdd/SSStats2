@@ -1,4 +1,5 @@
 #include "replaysListModel.h"
+#include <QDebug>
 
 ReplaysListModel::ReplaysListModel(QObject *parent) : QAbstractListModel(parent)
 {
@@ -12,8 +13,8 @@ QVariant ReplaysListModel::data(const QModelIndex &index, int role) const
 
     const ReplayListInfo &replayInfo = replaysList[index.row()];
 
-    if (role == FolderName)
-        return replayInfo.folderName;
+    if (role == FileName)
+        return replayInfo.fileName;
     else if (role == Name)
         return replayInfo.name;
     else if (role == Map)
@@ -33,7 +34,7 @@ int ReplaysListModel::rowCount(const QModelIndex &parent) const
 QHash<int, QByteArray> ReplaysListModel::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[FolderName] = "folderName";
+    roles[FileName] = "fileName";
     roles[Name] = "name";
     roles[Map] = "map";
     roles[Mod] = "mod";

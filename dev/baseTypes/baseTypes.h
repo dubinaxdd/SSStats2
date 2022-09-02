@@ -249,7 +249,7 @@ struct DiscordMessage
 
 struct ReplayListInfo
 {
-    QString folderName;
+    QString fileName;
     QString name;
     QString map;
     QString mod;
