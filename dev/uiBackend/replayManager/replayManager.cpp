@@ -43,7 +43,13 @@ void ReplayManager::openPlayback(QString fileName)
 
     int duration = newRepReader.replay.Duration;
 
-    m_currentDuration = QString::number(duration / 60) + ":" + QString::number(duration - ((duration / 60) * 60));
+    QString minutes = QString::number(duration / 60);
+    QString secs = QString::number(duration - ((duration / 60) * 60));
+
+    if(secs.count() == 1)
+        secs = "0" + secs;
+
+    m_currentDuration = minutes + ":" + secs;
     m_currentPlayerCount = newRepReader.replay.PlayerCount;
     m_currentTeamsCount = newRepReader.replay.getTeamsCount();
     m_currentMapSize = newRepReader.replay.MapSize;
