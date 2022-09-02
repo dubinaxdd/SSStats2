@@ -3,6 +3,8 @@
 #include <QDebug>
 #include <baseTypes.h>
 #include <repreader.h>
+#include <QDesktopServices>
+#include <QUrl>
 
 using namespace ReplayReader;
 
@@ -20,9 +22,14 @@ void ReplayManager::setSsPath(const QString &newSsPath)
     getReplaysDirs();
 }
 
+void ReplayManager::openPlaybackFolder()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_ssPath + QDir::separator() + "Playback"));
+}
+
 void ReplayManager::getReplaysDirs()
 {
-    QDir dir(m_ssPath + QDir::separator() + "playback");
+    QDir dir(m_ssPath + QDir::separator() + "Playback");
 
     QString path = dir.absolutePath();
 

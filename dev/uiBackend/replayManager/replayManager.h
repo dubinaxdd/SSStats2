@@ -14,6 +14,8 @@ public:
 
     void setSsPath(const QString &newSsPath);
 
+    Q_INVOKABLE void openPlaybackFolder();
+
 signals:
     void replaysListModelSetded();
 

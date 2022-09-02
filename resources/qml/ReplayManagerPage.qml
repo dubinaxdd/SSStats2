@@ -135,6 +135,8 @@ Rectangle {
                         height: 90
                         radius: 10
 
+                        color: delegateMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+
                         ColumnLayout
                         {
                             anchors.fill: parent
@@ -157,6 +159,17 @@ Rectangle {
                                 text: "Mod: " + model.mod
                             }
                         }
+
+                        MouseArea{
+                            id: delegateMouseArea
+                            anchors.fill: parent
+                            cursorShape: Qt.PointingHandCursor
+                            hoverEnabled: true
+
+                            onClicked: {
+                                //_uiBackend.replayManager.openPlaybackFolder();
+                            }
+                        }
                     }
                 }
             }
@@ -167,8 +180,6 @@ Rectangle {
                 width: 300
                 height: 35
                 radius:5
-
-                //Layout.rightMargin: 15
 
                 gradient: Gradient {
                     GradientStop {
@@ -221,7 +232,7 @@ Rectangle {
                     hoverEnabled: true
 
                     onClicked: {
-                        //open folder here
+                        _uiBackend.replayManager.openPlaybackFolder();
                     }
                 }
             }
