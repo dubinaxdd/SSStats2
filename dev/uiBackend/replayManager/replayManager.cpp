@@ -11,7 +11,9 @@ using namespace ReplayReader;
 
 ReplayManager::ReplayManager(QObject *parent)
     : QObject(parent)
+    , m_playersListModel( new PlayersListModel(this))
     , m_replaysListModel( new ReplaysListModel(this))
+
 {
     emit replaysListModelSetded();
 }
@@ -70,6 +72,43 @@ void ReplayManager::openPlayback(QString fileName)
 
 
     emit updateReplayInfo();
+
+
+    QVector<ReplayPlayer> replayPlayers;
+
+    QList<Player*> players = newRepReader.replay.Players;
+
+    for(int i = 0; i < players.count(); i++)
+    {
+        if (players[i]->Type == 7 || players[i]->Type > 11)
+            continue;
+
+        ReplayPlayer newPlayer;
+
+        newPlayer.name = players[i]->Name;
+        newPlayer.team = QString::number(players[i]->Team);
+
+        switch(players[i]->Type)
+        {
+            case(0): newPlayer.type = "Player"; break;
+            case(1): newPlayer.type = "Computer"; break;
+            case(2): newPlayer.type = "Player"; break;
+            case(3): newPlayer.type = "Computer"; break;
+            case(4): newPlayer.type = "Observer"; break;
+            case(11): newPlayer.type = "Computer"; break;
+            default: newPlayer.type =  "EmptySlot"; break;
+        }
+
+        if (players[i]->isSpectator())
+            newPlayer.type = "Observer";
+
+        newPlayer.race = players[i]->Race;
+
+        replayPlayers.append(newPlayer);
+
+    }
+
+    m_playersListModel->setPlayersList(std::move(replayPlayers));
 }
 
 void ReplayManager::update()

@@ -51,11 +51,12 @@ void ReplaysListModel::replace(int index)
 
 void ReplaysListModel::setReplaysList(const QVector<ReplayListInfo> &newReplaysList)
 {
+    beginRemoveRows(QModelIndex(), 0, replaysList.count() - 1);
+    replaysList.clear();
+    endRemoveRows();
 
     beginInsertRows(QModelIndex(), 0, newReplaysList.count() - 1);
-
     replaysList = newReplaysList;
-
     endInsertRows();
 
     sort();

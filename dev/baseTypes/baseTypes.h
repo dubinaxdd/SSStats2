@@ -257,6 +257,14 @@ struct ReplayListInfo
     QDateTime time;
 };
 
+struct ReplayPlayer
+{
+    QString name;
+    QString team;
+    QString type;
+    QString race;
+};
+
 enum SortType : int
 {
     SortByFileName = 0,

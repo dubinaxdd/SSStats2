@@ -100,6 +100,8 @@ set(PROJECT_SOURCES
         dev/uiBackend/replayManager/replayManager.cpp
         dev/uiBackend/replayManager/replaysListModel/replaysListModel.h
         dev/uiBackend/replayManager/replaysListModel/replaysListModel.cpp
+        dev/uiBackend/replayManager/playersListModel/playersListModel.h
+        dev/uiBackend/replayManager/playersListModel/playersListModel.cpp
 
         defines.h
         qml.qrc
@@ -190,4 +192,5 @@ include_directories(${TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsDownloader
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsInstaller
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/replaysListModel
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/playersListModel
 )

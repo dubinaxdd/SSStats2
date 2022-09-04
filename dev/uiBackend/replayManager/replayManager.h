@@ -3,10 +3,13 @@
 
 #include <QObject>
 #include <replaysListModel.h>
+#include <playersListModel.h>
 
 class ReplayManager : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(ReplaysListModel* replaysListModel MEMBER m_replaysListModel NOTIFY replaysListModelSetded)
+    Q_PROPERTY(PlayersListModel* playersListModel MEMBER m_playersListModel NOTIFY replaysListModelSetded)
 
     Q_PROPERTY(QString currentReplayName MEMBER m_currentReplayName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentFileName MEMBER m_currentFileName NOTIFY updateReplayInfo)
@@ -24,7 +27,7 @@ class ReplayManager : public QObject
 public:
     explicit ReplayManager(QObject *parent = nullptr);
 
-    Q_PROPERTY(ReplaysListModel* replaysListModel MEMBER m_replaysListModel NOTIFY replaysListModelSetded)
+
 
     void setSsPath(const QString &newSsPath);
 
@@ -43,6 +46,7 @@ private:
 private:
     QString m_ssPath;
     ReplaysListModel* m_replaysListModel;
+    PlayersListModel* m_playersListModel;
 
     QString m_currentReplayName;
     QString m_currentFileName;

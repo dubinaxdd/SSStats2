@@ -34,6 +34,8 @@ Rectangle {
 
                 spacing: 30
 
+                Layout.preferredHeight: 140
+
                 ColumnLayout
                 {
                     Rectangle
@@ -121,23 +123,58 @@ Rectangle {
                     }
                 }
             }
-
+/*
             Rectangle
             {
                 Layout.fillHeight: true
             }
+*/
 
-/*
             ListView {
-                width: 180; height: 200
+                id: playersListView
 
-                model: asd
+                Layout.topMargin: 20
 
+                Layout.fillWidth: true
+                Layout.fillHeight: true
 
-                delegate: Text {
-                    text: name + ": " + number
+                clip: true
+
+                model: _uiBackend.replayManager.playersListModel
+
+                spacing: 5
+
+                delegate:  Rectangle {
+
+                    width: playersListView.width
+                    height: 50
+                    radius: 10
+
+                    color: "#DCDCDC"
+
+                    RowLayout
+                    {
+                        anchors.fill: parent
+                        anchors.margins: 10
+
+                        Label {
+                            text: "Type :" + model.type
+                        }
+
+                        Label {
+                            text: "Name: " + model.name
+                        }
+
+                        Label {
+                            text: "Race :" + model.race
+                        }
+
+                        Label {
+                            text: "Team :" + model.team
+                        }
+                    }
                 }
-            }*/
+            }
         }
 
         Rectangle
