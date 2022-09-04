@@ -106,7 +106,7 @@ void ReplayManager::getReplaysData()
         if(!checkFile.exists())
             m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
 
-        newReplayInfo.map = newRepReader.replay.Map;
+        newReplayInfo.map = newRepReader.replay.Map.toUpper();
         newReplayInfo.mapUrl = mapSourceUrl;
         newReplayInfo.mod = newRepReader.replay.MOD;
         newReplayInfo.fileName = fileName;
