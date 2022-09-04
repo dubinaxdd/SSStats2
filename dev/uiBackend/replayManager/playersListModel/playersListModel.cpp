@@ -20,6 +20,8 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
         return player.type;
     else if (role == Race)
         return player.race;
+    else if (role == Color)
+        return player.color;
 
     return QVariant();
 }
@@ -48,6 +50,7 @@ QHash<int, QByteArray> PlayersListModel::roleNames() const
     roles[Team] = "team";
     roles[Type] = "type";
     roles[Race] = "race";
+    roles[Color] = "color";
 
     return roles;
 }

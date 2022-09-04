@@ -15,6 +15,7 @@ public:
             Name = Qt::UserRole + 1,
             Team = Qt::UserRole + 2,
             Type = Qt::UserRole + 3,
+            Color = Qt::UserRole + 4,
             Race
     };
 

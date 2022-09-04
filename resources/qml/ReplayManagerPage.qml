@@ -150,27 +150,42 @@ Rectangle {
                     height: 50
                     radius: 10
 
-                    color: "#DCDCDC"
+                    color: model.type === "Observer" ? "#DCDCDC" : model.color
 
-                    RowLayout
+
+                    GridLayout
                     {
                         anchors.fill: parent
                         anchors.margins: 10
 
+                        columns: 4
+                        rows: 1
+
                         Label {
-                            text: "Type :" + model.type
+                            text: "Type: " + model.type
+                            Layout.alignment: Qt.AlignLeft
+
+                            Layout.preferredWidth: 60
                         }
 
                         Label {
                             text: "Name: " + model.name
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.preferredWidth: 200
                         }
 
                         Label {
-                            text: "Race :" + model.race
+                            text: "Race: " + model.race
+                            visible: model.type !== "Observer"
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.preferredWidth: 100
                         }
 
                         Label {
-                            text: "Team :" + model.team
+                            text: "Team: " + model.team
+                            visible: model.type !== "Observer"
+                            Layout.alignment: Qt.AlignLeft
+                            Layout.preferredWidth: 60
                         }
                     }
                 }

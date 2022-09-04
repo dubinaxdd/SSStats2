@@ -263,6 +263,7 @@ struct ReplayPlayer
     QString team;
     QString type;
     QString race;
+    QString color;
 };
 
 enum SortType : int

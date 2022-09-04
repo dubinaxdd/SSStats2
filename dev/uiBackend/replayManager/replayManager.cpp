@@ -102,7 +102,11 @@ void ReplayManager::openPlayback(QString fileName)
         if (players[i]->isSpectator())
             newPlayer.type = "Observer";
 
-        newPlayer.race = players[i]->Race;
+        QString race = players[i]->Race;
+        replaceRaceKeyword(&race);
+        newPlayer.race = race;
+
+        newPlayer.color = chooseColorForPlayer(players[i]->Team - 1);
 
         replayPlayers.append(newPlayer);
 
@@ -164,4 +168,77 @@ void ReplayManager::getReplaysData()
     }
 
     m_replaysListModel->setReplaysList(std::move(replaysInfo));
+}
+
+void ReplayManager::replaceRaceKeyword(QString *raceString)
+{
+    if (raceString->contains("guard_race"))
+    {
+        raceString->replace("guard_race", "Imperial Guard");
+        return;
+    }
+
+    if (raceString->contains("tau_race"))
+    {
+        raceString->replace("tau_race", "Tau Empire");
+        return;
+    }
+
+    if (raceString->contains("ork_race"))
+    {
+        raceString->replace("ork_race", "Orks");
+        return;
+    }
+
+    if (raceString->contains("chaos_marine_race"))
+    {
+        raceString->replace("chaos_marine_race", "Chaos");
+        return;
+    }
+
+    if (raceString->contains("necron_race"))
+    {
+        raceString->replace("necron_race", "Necrons");
+        return;
+    }
+
+    if (raceString->contains("space_marine_race"))
+    {
+        raceString->replace("space_marine_race", "Space Marines");
+        return;
+    }
+
+    if (raceString->contains("sisters_race"))
+    {
+        raceString->replace("sisters_race", "Sisters of Battle");
+        return;
+    }
+
+    if (raceString->contains("dark_eldar_race"))
+    {
+        raceString->replace("dark_eldar_race", "Dark Eldar");
+        return;
+    }
+
+    if (raceString->contains("eldar_race"))
+    {
+        raceString->replace("eldar_race", "Eldar");
+        return;
+    }
+}
+
+QString ReplayManager::chooseColorForPlayer(uint team)
+{
+    switch (team)
+    {
+        case 0 : return "#b3ea0000";
+        case 1 : return "#b30469ee";
+        case 2 : return "#b3dacfcf";
+        case 3 : return "#b3f6f200";
+        case 4 : return "#b30dff1e";
+        case 5 : return "#b3f71df4";
+        case 6 : return "#b300e6d9";
+        case 7 : return "#b3f97dfd";
+    }
+    return "";
 }

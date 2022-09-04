@@ -27,8 +27,6 @@ class ReplayManager : public QObject
 public:
     explicit ReplayManager(QObject *parent = nullptr);
 
-
-
     void setSsPath(const QString &newSsPath);
 
     Q_INVOKABLE void openPlaybackFolder();
@@ -42,6 +40,8 @@ signals:
 
 private:
     void getReplaysData();
+    void replaceRaceKeyword(QString *raceString);
+    QString chooseColorForPlayer(uint team);
 
 private:
     QString m_ssPath;
