@@ -86,6 +86,10 @@ void ReplayManager::openPlayback(QString fileName)
         ReplayPlayer newPlayer;
 
         newPlayer.name = players[i]->Name;
+
+        if (newPlayer.name.isEmpty())
+            continue;
+
         newPlayer.team = QString::number(players[i]->Team);
 
         switch(players[i]->Type)
@@ -100,7 +104,10 @@ void ReplayManager::openPlayback(QString fileName)
         }
 
         if (players[i]->isSpectator())
+        {
             newPlayer.type = "Observer";
+            newPlayer.team = "9";
+        }
 
         QString race = players[i]->Race;
         replaceRaceKeyword(&race);
@@ -110,6 +117,19 @@ void ReplayManager::openPlayback(QString fileName)
 
         replayPlayers.append(newPlayer);
 
+    }
+
+    for(int i = 0; i < replayPlayers.count(); i++)
+    {
+        for(int j = 0; j < replayPlayers.count()-1; j++)
+        {
+            if (replayPlayers.at(j).team > replayPlayers.at(j+1).team)
+            {
+                ReplayPlayer buffer = replayPlayers.at(j);
+                replayPlayers[j] = replayPlayers[j+1];
+                replayPlayers[j+1] = buffer;
+            }
+        }
     }
 
     m_playersListModel->setPlayersList(std::move(replayPlayers));
@@ -240,5 +260,5 @@ QString ReplayManager::chooseColorForPlayer(uint team)
         case 6 : return "#b300e6d9";
         case 7 : return "#b3f97dfd";
     }
-    return "";
+    return "#DCDCDC";
 }

@@ -149,7 +149,6 @@ Rectangle {
                     width: playersListView.width
                     height: 50
                     radius: 10
-
                     color: model.type === "Observer" ? "#DCDCDC" : model.color
 
 
@@ -165,7 +164,7 @@ Rectangle {
                             text: "Type: " + model.type
                             Layout.alignment: Qt.AlignLeft
 
-                            Layout.preferredWidth: 60
+                            Layout.preferredWidth: 70
                         }
 
                         Label {
@@ -175,15 +174,13 @@ Rectangle {
                         }
 
                         Label {
-                            text: "Race: " + model.race
-                            visible: model.type !== "Observer"
+                            text: model.type === "Observer" ? "" : "Race: " + model.race
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 100
                         }
 
                         Label {
-                            text: "Team: " + model.team
-                            visible: model.type !== "Observer"
+                            text: model.type === "Observer" ? "" : "Team: " + model.team
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 60
                         }
