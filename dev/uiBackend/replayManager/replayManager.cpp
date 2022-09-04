@@ -101,9 +101,17 @@ void ReplayManager::getReplaysDirs()
         if(!checkFile.exists())
             m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
 
+        newReplayInfo.map = newRepReader.replay.Map;
         newReplayInfo.mapUrl = mapSourceUrl;
         newReplayInfo.mod = newRepReader.replay.MOD;
         newReplayInfo.fileName = fileName;
+
+        QFileInfo replayFile(path + QDir::separator() + fileName);
+
+        if(!replayFile.exists())
+            continue;
+
+        newReplayInfo.time = replayFile.birthTime();
 
         replaysInfo.append(newReplayInfo);
 

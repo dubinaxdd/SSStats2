@@ -23,13 +23,21 @@ public:
 
     void setReplaysList(const QVector<ReplayListInfo> &newReplaysList);
 
+    void sort();
+
+    Q_INVOKABLE void setSortType(int sortType);
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
 signals:
 
 private:
+   void replace(int index);
+
+private:
     QVector<ReplayListInfo> replaysList;
+    SortType m_sortType = SortType::SortByFileName;
 
 };
 

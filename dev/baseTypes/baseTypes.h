@@ -251,8 +251,19 @@ struct ReplayListInfo
 {
     QString fileName;
     QString name;
+    QString map;
     QString mapUrl;
     QString mod;
+    QDateTime time;
+};
+
+enum SortType : int
+{
+    SortByFileName = 0,
+    SortByName = 1,
+    SortByMod = 2,
+    SortByMap = 3,
+    SortByTime = 4
 };
 
 #endif // BASETYPES_H
