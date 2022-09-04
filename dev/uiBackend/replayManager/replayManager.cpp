@@ -20,7 +20,7 @@ void ReplayManager::setSsPath(const QString &newSsPath)
 {
     m_ssPath = newSsPath;
 
-    getReplaysDirs();
+    getReplaysData();
 }
 
 void ReplayManager::openPlaybackFolder()
@@ -72,7 +72,12 @@ void ReplayManager::openPlayback(QString fileName)
     emit updateReplayInfo();
 }
 
-void ReplayManager::getReplaysDirs()
+void ReplayManager::update()
+{
+    getReplaysData();
+}
+
+void ReplayManager::getReplaysData()
 {
     QDir dir(m_ssPath + QDir::separator() + "Playback");
     QString path = dir.absolutePath();

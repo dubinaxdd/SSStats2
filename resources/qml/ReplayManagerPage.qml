@@ -158,15 +158,15 @@ Rectangle {
                     Layout.preferredWidth: 225
                     model: ["Sort by file name", "Sort by name", "Sort by mod", "Sort by map", "Sort by time" ]
 
-                    onCurrentIndexChanged: {
-                        _uiBackend.replayManager.replaysListModel.setSortType(currentIndex);
-                    }
+                    onCurrentIndexChanged: _uiBackend.replayManager.replaysListModel.setSortType(currentIndex);
                 }
 
                 Button
                 {
                     Layout.preferredWidth: 70
                     text: "Update"
+
+                    onClicked: _uiBackend.replayManager.update();
                 }
             }
 

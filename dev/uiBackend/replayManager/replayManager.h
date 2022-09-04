@@ -31,12 +31,14 @@ public:
     Q_INVOKABLE void openPlaybackFolder();
     Q_INVOKABLE void openPlayback(QString fileName);
 
+    Q_INVOKABLE void update();
+
 signals:
     void replaysListModelSetded();
     void updateReplayInfo();
 
 private:
-    void getReplaysDirs();
+    void getReplaysData();
 
 private:
     QString m_ssPath;
