@@ -95,6 +95,7 @@ Rectangle {
                     }
 
                     Label{
+                        id: fileNameLabel
                         text: "File name: " + _uiBackend.replayManager.currentFileName
                     }
 
@@ -185,6 +186,26 @@ Rectangle {
                             Layout.preferredWidth: 60
                         }
                     }
+                }
+            }
+
+            RowLayout
+            {
+                Button{
+                    text: "Delete"
+
+                    onClicked: {
+                        _uiBackend.replayManager.removeReplay(_uiBackend.replayManager.currentFileName);
+                    }
+                }
+
+                Button{
+                    text: "Save as..."
+                }
+
+                Rectangle
+                {
+                    Layout.fillWidth: true
                 }
             }
         }

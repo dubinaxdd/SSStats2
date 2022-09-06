@@ -141,6 +141,20 @@ void ReplayManager::update()
     getReplaysData();
 }
 
+void ReplayManager::removeReplay(QString fileName)
+{
+    QDir dir(m_ssPath + QDir::separator() + "Playback");
+    QString path = dir.absolutePath();
+
+    qDebug() << path + QDir::separator() + fileName;
+
+    QFile replayFile(path + QDir::separator() + fileName);
+
+    replayFile.remove();
+
+    update();
+}
+
 void ReplayManager::getReplaysData()
 {
     QDir dir(m_ssPath + QDir::separator() + "Playback");

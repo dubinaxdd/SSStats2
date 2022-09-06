@@ -33,6 +33,7 @@ public:
     //Q_INVOKABLE void openPlayback(QString fileName);
 
     Q_INVOKABLE void update();
+    Q_INVOKABLE void removeReplay(QString fileName);
 
 public slots:
     void openPlayback(QString fileName);
