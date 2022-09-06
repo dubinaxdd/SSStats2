@@ -132,7 +132,6 @@ void ReplaysListModel::sort()
 
     if(replaysList.count() > 0)
         setSelected(0);
-
 }
 
 void ReplaysListModel::setSortType(int sortType)
