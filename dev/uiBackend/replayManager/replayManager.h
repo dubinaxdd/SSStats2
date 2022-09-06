@@ -11,6 +11,7 @@ class ReplayManager : public QObject
     Q_PROPERTY(ReplaysListModel* replaysListModel MEMBER m_replaysListModel NOTIFY replaysListModelSetded)
     Q_PROPERTY(PlayersListModel* playersListModel MEMBER m_playersListModel NOTIFY replaysListModelSetded)
 
+    Q_PROPERTY(QString currentFilePath MEMBER m_currentFilePath NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentReplayName MEMBER m_currentReplayName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentFileName MEMBER m_currentFileName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentMod MEMBER m_currentMod NOTIFY updateReplayInfo)
@@ -52,6 +53,7 @@ private:
     ReplaysListModel* m_replaysListModel;
     PlayersListModel* m_playersListModel;
 
+    QString m_currentFilePath;
     QString m_currentReplayName;
     QString m_currentFileName;
     QString m_currentMod;

@@ -2,6 +2,8 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.15
+//import QtQuick.Dialogs 1.3
+import Qt.labs.platform 1.1
 
 Rectangle {
     id: infoRectangle
@@ -201,6 +203,31 @@ Rectangle {
 
                 Button{
                     text: "Save as..."
+
+                    onClicked: {
+                        saveFileDialog.visible = true;
+                    }
+                }
+
+                FileDialog {
+                    id: saveFileDialog
+                    title: "Please choose a file"
+                    //folder: shortcuts.desktop
+                    fileMode: FileDialog.SaveFile
+                    //currentFile: "file:///" + _uiBackend.replayManager.currentFilePath
+                    folder: _uiBackend.replayManager.currentFilePath
+                    currentFile: _uiBackend.replayManager.currentFileName
+                    nameFilters: [ "Replay files (*.rec)" ]
+                    visible: false
+                    onAccepted: {
+                        //console.log("You chose: " + fileDialog.fileUrls)
+                        visible =  false
+                    }
+                    onRejected: {
+                        //console.log("Canceled")
+
+                        visible =  false
+                    }
                 }
 
                 Rectangle
@@ -339,8 +366,6 @@ Rectangle {
 
                             onClicked: {
                                 _uiBackend.replayManager.replaysListModel.setSelected(model.index);
-                               // model.selected = true;
-                                //_uiBackend.replayManager.openPlayback(model.fileName);
                             }
                         }
                     }
