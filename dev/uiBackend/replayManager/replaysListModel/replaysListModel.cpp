@@ -21,6 +21,8 @@ QVariant ReplaysListModel::data(const QModelIndex &index, int role) const
         return replayInfo.mapUrl;
     else if (role == Mod)
         return replayInfo.mod;
+    else if (role == Selected)
+        return replayInfo.selected;
 
     return QVariant();
 }
@@ -38,6 +40,7 @@ QHash<int, QByteArray> ReplaysListModel::roleNames() const
     roles[Name] = "name";
     roles[Map] = "map";
     roles[Mod] = "mod";
+    roles[Selected] = "selected";
 
     return roles;
 }
@@ -127,16 +130,28 @@ void ReplaysListModel::sort()
         }
     }
 
-    QModelIndex first = QAbstractItemModel::createIndex(0,0);
-    QModelIndex last = QAbstractItemModel::createIndex(replaysList.count() - 1, 0);
-
-    emit dataChanged(first, last);
+    if(replaysList.count() > 0)
+        setSelected(0);
 
 }
 
 void ReplaysListModel::setSortType(int sortType)
 {
     m_sortType = static_cast<SortType>(sortType);
-
     sort();
+}
+
+void ReplaysListModel::setSelected(int index)
+{
+    for(int i = 0; i < replaysList.count(); i++)
+        replaysList[i].selected = false;
+
+    replaysList[index].selected = true;
+
+    emit select(replaysList[index].fileName);
+
+    QModelIndex first = QAbstractItemModel::createIndex(0,0);
+    QModelIndex last = QAbstractItemModel::createIndex(replaysList.count() - 1, 0);
+
+    emit dataChanged(first, last);
 }

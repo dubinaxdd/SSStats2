@@ -255,6 +255,7 @@ struct ReplayListInfo
     QString mapUrl;
     QString mod;
     QDateTime time;
+    bool selected = false;
 };
 
 struct ReplayPlayer

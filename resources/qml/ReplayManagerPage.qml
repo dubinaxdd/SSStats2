@@ -244,7 +244,7 @@ Rectangle {
                         height: 70
                         radius: 10
 
-                        color: delegateMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                        color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
 
                         RowLayout
                         {
@@ -317,7 +317,9 @@ Rectangle {
                             hoverEnabled: true
 
                             onClicked: {
-                                _uiBackend.replayManager.openPlayback(model.fileName);
+                                _uiBackend.replayManager.replaysListModel.setSelected(model.index);
+                               // model.selected = true;
+                                //_uiBackend.replayManager.openPlayback(model.fileName);
                             }
                         }
                     }

@@ -30,9 +30,12 @@ public:
     void setSsPath(const QString &newSsPath);
 
     Q_INVOKABLE void openPlaybackFolder();
-    Q_INVOKABLE void openPlayback(QString fileName);
+    //Q_INVOKABLE void openPlayback(QString fileName);
 
     Q_INVOKABLE void update();
+
+public slots:
+    void openPlayback(QString fileName);
 
 signals:
     void replaysListModelSetded();

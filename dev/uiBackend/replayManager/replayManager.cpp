@@ -15,6 +15,7 @@ ReplayManager::ReplayManager(QObject *parent)
     , m_replaysListModel( new ReplaysListModel(this))
 
 {
+    QObject::connect(m_replaysListModel, &ReplaysListModel::select, this, &ReplayManager::openPlayback, Qt::QueuedConnection);
     emit replaysListModelSetded();
 }
 
@@ -182,9 +183,6 @@ void ReplayManager::getReplaysData()
         newReplayInfo.time = replayFile.birthTime();
 
         replaysInfo.append(newReplayInfo);
-
-        if (i == 0)
-            openPlayback(fileName);
     }
 
     m_replaysListModel->setReplaysList(std::move(replaysInfo));

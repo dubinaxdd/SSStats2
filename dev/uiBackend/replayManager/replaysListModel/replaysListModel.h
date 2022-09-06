@@ -15,6 +15,7 @@ public:
             FileName = Qt::UserRole + 1,
             Name = Qt::UserRole + 2,
             Mod = Qt::UserRole + 3,
+            Selected = Qt::UserRole + 4,
             Map
     };
 
@@ -26,11 +27,13 @@ public:
     void sort();
 
     Q_INVOKABLE void setSortType(int sortType);
+    Q_INVOKABLE void setSelected(int index);
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
 signals:
+   void select(QString fileName);
 
 private:
    void replace(int index);
