@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.15
-//import QtQuick.Dialogs 1.3
+import QtQuick.Dialogs 1.2
 import Qt.labs.platform 1.1
 
 Rectangle {
@@ -197,6 +197,7 @@ Rectangle {
                     text: "Delete"
 
                     onClicked: {
+
                         _uiBackend.replayManager.removeReplay(_uiBackend.replayManager.currentFileName);
                     }
                 }
@@ -205,28 +206,25 @@ Rectangle {
                     text: "Save as..."
 
                     onClicked: {
+                        saveFileDialog.currentFile =  "file:///" + _uiBackend.replayManager.currentFileName.replace('#', '');
                         saveFileDialog.visible = true;
                     }
                 }
 
                 FileDialog {
                     id: saveFileDialog
-                    title: "Please choose a file"
-                    //folder: shortcuts.desktop
                     fileMode: FileDialog.SaveFile
-                    //currentFile: "file:///" + _uiBackend.replayManager.currentFilePath
                     folder: _uiBackend.replayManager.currentFilePath
-                    currentFile: _uiBackend.replayManager.currentFileName
                     nameFilters: [ "Replay files (*.rec)" ]
                     visible: false
+                    defaultSuffix: ""
+
                     onAccepted: {
-                        //console.log("You chose: " + fileDialog.fileUrls)
-                        visible =  false
+                        _uiBackend.replayManager.saveReplay(currentFile);
+                        visible = false;
                     }
                     onRejected: {
-                        //console.log("Canceled")
-
-                        visible =  false
+                        visible =  false;
                     }
                 }
 

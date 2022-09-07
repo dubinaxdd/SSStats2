@@ -4,7 +4,7 @@
 #include <baseTypes.h>
 #include <repreader.h>
 #include <QDesktopServices>
-#include <QUrl>
+
 #include <QFile>
 #include <logger.h>
 
@@ -46,7 +46,7 @@ void ReplayManager::openPlayback(QString fileName)
 
     RepReader newRepReader(path + QDir::separator() + fileName);
 
-    m_currentFilePath = QUrl(path + QDir::separator() + fileName).toDisplayString();
+    m_currentFilePath = QUrl::fromLocalFile(path);
     m_currentReplayName = newRepReader.replay.Name;
     m_currentFileName = fileName;
     m_currentMod = newRepReader.replay.MOD;
@@ -156,6 +156,12 @@ void ReplayManager::removeReplay(QString fileName)
         qWarning(logWarning()) << "Remove replay FAILED from " + path + QDir::separator() + fileName;
 
     update();
+}
+
+void ReplayManager::saveReplay( QString fileName)
+{
+    QString path = m_currentFilePath.toString().replace("file:///","") + QDir::separator() + m_currentFileName;
+    QFile::copy(path, fileName.replace("file:///",""));
 }
 
 void ReplayManager::getReplaysData()

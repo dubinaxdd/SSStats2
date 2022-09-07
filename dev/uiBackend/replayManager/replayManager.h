@@ -4,6 +4,7 @@
 #include <QObject>
 #include <replaysListModel.h>
 #include <playersListModel.h>
+#include <QUrl>
 
 class ReplayManager : public QObject
 {
@@ -11,7 +12,7 @@ class ReplayManager : public QObject
     Q_PROPERTY(ReplaysListModel* replaysListModel MEMBER m_replaysListModel NOTIFY replaysListModelSetded)
     Q_PROPERTY(PlayersListModel* playersListModel MEMBER m_playersListModel NOTIFY replaysListModelSetded)
 
-    Q_PROPERTY(QString currentFilePath MEMBER m_currentFilePath NOTIFY updateReplayInfo)
+    Q_PROPERTY(QUrl currentFilePath MEMBER m_currentFilePath NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentReplayName MEMBER m_currentReplayName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentFileName MEMBER m_currentFileName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentMod MEMBER m_currentMod NOTIFY updateReplayInfo)
@@ -35,6 +36,7 @@ public:
 
     Q_INVOKABLE void update();
     Q_INVOKABLE void removeReplay(QString fileName);
+    Q_INVOKABLE void saveReplay(QString fileName);
 
 public slots:
     void openPlayback(QString fileName);
@@ -53,7 +55,7 @@ private:
     ReplaysListModel* m_replaysListModel;
     PlayersListModel* m_playersListModel;
 
-    QString m_currentFilePath;
+    QUrl m_currentFilePath;
     QString m_currentReplayName;
     QString m_currentFileName;
     QString m_currentMod;
