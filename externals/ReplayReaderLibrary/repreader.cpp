@@ -248,7 +248,7 @@ Player *RepReader::ReadPlayer()
 
                         QImage newImage(width, height, QImage::Format::Format_ARGB32);
 
-                        for (int y = 0; y < height; y++)
+                        for (int y = height - 1; y >= 0 ; y--)
                         {
                             for (int x = 0; x < width; x++)
                             {
@@ -297,9 +297,9 @@ Player *RepReader::ReadPlayer()
                         BinReader->ReadInt32();
                         BinReader->ReadInt32();
 
-                        QImage newImage(width, height, QImage::Format::Format_ARGB32);
+                        QImage newImage(width, height, QImage::Format::Format_BGR30);
 
-                        for (int y = 0; y < height; y++)
+                        for (int y = height - 1; y >= 0 ; y--)
                         {
                             for (int x = 0; x < width; x++)
                             {
