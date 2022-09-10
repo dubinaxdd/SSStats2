@@ -5,6 +5,7 @@
 #include <replaysListModel.h>
 #include <playersListModel.h>
 #include <QUrl>
+#include <imageProvider.h>
 
 class ReplayManager : public QObject
 {
@@ -27,7 +28,7 @@ class ReplayManager : public QObject
     Q_PROPERTY(int currentMapSize MEMBER m_currentMapSize NOTIFY updateReplayInfo)
 
 public:
-    explicit ReplayManager(QObject *parent = nullptr);
+    explicit ReplayManager(ImageProvider* imageProvider, QObject *parent = nullptr);
 
     void setSsPath(const QString &newSsPath);
 
@@ -54,6 +55,8 @@ private:
     QString m_ssPath;
     ReplaysListModel* m_replaysListModel;
     PlayersListModel* m_playersListModel;
+
+    ImageProvider* p_imageProvider;
 
     QUrl m_currentFilePath;
     QString m_currentReplayName;

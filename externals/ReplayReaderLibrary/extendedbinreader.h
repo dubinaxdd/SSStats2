@@ -17,6 +17,7 @@ public:
     qint64 pos();
     qint16 ReadInt16();
     qint32 ReadInt32();
+    qint64 ReadInt64();
     void WriteInt32(int num);
 
     char ReadChar();

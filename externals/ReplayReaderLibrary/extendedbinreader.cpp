@@ -39,6 +39,13 @@ qint32 ExtendedBinReader::ReadInt32()
     return temp;
 }
 
+qint64 ExtendedBinReader::ReadInt64()
+{
+    qint64 temp;
+    *this >> temp;
+    return temp;
+}
+
 char ExtendedBinReader::ReadChar()
 {
     char temp;

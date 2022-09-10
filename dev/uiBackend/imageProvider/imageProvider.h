@@ -25,6 +25,7 @@ public:
 signals:
     void updateAvatars();
     void updateAttachments();
+    void updateBanners();
 
 public slots:
     void addDiscordAvatar(QString avatarId, QImage discordAvatar);
@@ -32,6 +33,7 @@ public slots:
     void addPlayerAvatar(QString avatarId, QImage image);
 
     void addAttachmentImage(QString attachmentId, QImage image);
+    void addReplayPlayerBanner(QString attachmentId, QImage image);
 
 private:
     QImage m_currentPlayerAvatarMedium;
@@ -39,6 +41,7 @@ private:
     QMap <QString, QImage> m_playerStatsAvatars;
     QMap <QString, QImage> m_discordAvatars;
     QMap <QString, QImage> m_attachmentImages;
+    QMap <QString, QImage> m_replayPlayerBanners;
 };
 
 #endif // IMAGEPROVIDER_H

@@ -1,4 +1,4 @@
-#include <imageprovider.h>
+#include <imageProvider.h>
 #include <QDebug>
 
 ImageProvider::ImageProvider(QObject *parent)
@@ -26,6 +26,9 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     if (m_playerStatsAvatars.contains(id) && !m_playerStatsAvatars.value(id).isNull())
         return m_playerStatsAvatars.value(id);
 
+    if (m_replayPlayerBanners.contains(id) && !m_replayPlayerBanners.value(id).isNull())
+        return m_replayPlayerBanners.value(id);
+
     //если ничего не нашлось возвращаем черную картинку
     QImage image(60,60, QImage::Format_ARGB32);
     image.fill(QColor(0,0,0).rgba());
@@ -52,6 +55,12 @@ void ImageProvider::addAttachmentImage(QString attachmentId, QImage image)
 {
     m_attachmentImages.insert(attachmentId, image);
     emit updateAttachments();
+}
+
+void ImageProvider::addReplayPlayerBanner(QString attachmentId, QImage image)
+{
+    m_replayPlayerBanners.insert(attachmentId, image);
+    emit updateBanners();
 }
 
 

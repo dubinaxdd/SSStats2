@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #include <QString>
+#include <QImage>
 
 namespace ReplayReader{
 
@@ -43,6 +44,9 @@ public:
 
     QString Bytes;
     ulong LenghtFOLDGPLY;
+
+    QImage badge;
+    QImage banner;
 
     QString getShortRaceName() const;
     QString getVeryShortRaceName() const;

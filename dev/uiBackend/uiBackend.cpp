@@ -12,7 +12,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_eventsPage(new MessagesPage(this))
     , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
     , m_notificationVisibleTimer(new QTimer(this))
-    , m_replayManager(new ReplayManager(this))
+    , m_replayManager(new ReplayManager(m_imageProvider, this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");

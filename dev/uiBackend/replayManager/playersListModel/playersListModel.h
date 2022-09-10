@@ -16,6 +16,8 @@ public:
             Team = Qt::UserRole + 2,
             Type = Qt::UserRole + 3,
             Color = Qt::UserRole + 4,
+            BadgeUrl = Qt::UserRole + 5,
+            BannerUrl = Qt::UserRole + 6,
             Race
     };
 

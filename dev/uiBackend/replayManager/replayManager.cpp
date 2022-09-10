@@ -10,11 +10,11 @@
 
 using namespace ReplayReader;
 
-ReplayManager::ReplayManager(QObject *parent)
+ReplayManager::ReplayManager(ImageProvider* imageProvider, QObject *parent)
     : QObject(parent)
     , m_playersListModel( new PlayersListModel(this))
     , m_replaysListModel( new ReplaysListModel(this))
-
+    , p_imageProvider(imageProvider)
 {
     QObject::connect(m_replaysListModel, &ReplaysListModel::select, this, &ReplayManager::openPlayback, Qt::QueuedConnection);
     emit replaysListModelSetded();
@@ -111,6 +111,12 @@ void ReplayManager::openPlayback(QString fileName)
             newPlayer.type = "Observer";
             newPlayer.team = "9";
         }
+
+        p_imageProvider->addReplayPlayerBanner("playerBanner" + QString::number(i), players[i]->banner);
+        p_imageProvider->addReplayPlayerBanner("playerBadge" + QString::number(i), players[i]->badge);
+
+        newPlayer.bannerUrl = "playerBanner" + QString::number(i);
+        newPlayer.badgeUrl = "playerBadge" + QString::number(i);
 
         QString race = players[i]->Race;
         replaceRaceKeyword(&race);

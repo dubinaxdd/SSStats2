@@ -22,6 +22,10 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
         return player.race;
     else if (role == Color)
         return player.color;
+    else if (role == BadgeUrl)
+        return player.badgeUrl;
+    else if (role == BannerUrl)
+        return player.bannerUrl;
 
     return QVariant();
 }
@@ -51,6 +55,8 @@ QHash<int, QByteArray> PlayersListModel::roleNames() const
     roles[Type] = "type";
     roles[Race] = "race";
     roles[Color] = "color";
+    roles[BadgeUrl] = "badgeUrl";
+    roles[BannerUrl] = "bannerUrl";
 
     return roles;
 }

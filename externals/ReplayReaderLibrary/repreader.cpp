@@ -6,6 +6,7 @@
 #include <QStringList>
 #include <QTextCodec>
 #include <QDir>
+#include <QImage>
 
 using namespace ReplayReader;
 
@@ -210,29 +211,111 @@ Player *RepReader::ReadPlayer()
                 for (int bannerbadge = 0; bannerbadge < 2; bannerbadge++)
                 {
                     readerString = BinReader->ReadStringUTF8(8);
+
                     if (readerString == "FOLDTCBD")
                     {
-//                        qDebug() << readerString << BinReader->pos();
-                        BinReader->skipRawData(4);
-                        BinReader->skipRawData(BinReader->ReadInt32()+4);
-//                        // "Высота бэйджа"
-//                        int height = BinReader->ReadInt32();
-//                        // "Ширина бэйджа"
-//                        int width = BinReader->ReadInt32();
-//                        BinReader->skipRawData(24);
-//                        BinReader->skipRawData(height*width*4);
+
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+
+                        readerString = BinReader->ReadStringUTF8(8);
+
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+
+                        int tempValue = BinReader->ReadInt32();
+                        readerString = BinReader->ReadStringUTF8(tempValue);
+
+
+                        readerString = BinReader->ReadStringUTF8(8);
+
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+
+                        int width = BinReader->ReadInt32();
+                        int height = BinReader->ReadInt32();
+
+                        BinReader->ReadInt32();
+
+                        QString readerString3 = BinReader->ReadStringUTF8(8);
+
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+
+                        QImage newImage(width, height, QImage::Format::Format_ARGB32);
+
+                        for (int y = 0; y < height; y++)
+                        {
+                            for (int x = 0; x < width; x++)
+                            {
+                                QByteArray colorBytes = BinReader->ReadBytesArray(4);
+
+                                int r = (quint8)colorBytes[2];
+                                int g = (quint8)colorBytes[1];
+                                int b = (quint8)colorBytes[0];
+                                int a = (quint8)colorBytes[3];
+
+                                QColor color = QColor(r, g, b, a); //Возможно нужно инвертировать порядок байтов
+                                newImage.setPixelColor(x,y, color);
+                            }
+                        }
+
+                        player->badge = newImage;
+
                     }
                     else if (readerString == "FOLDTCBN")
                     {
-//                        qDebug() << readerString << BinReader->pos();
-                        BinReader->skipRawData(4);
-                        BinReader->skipRawData(BinReader->ReadInt32()+4);
-//                        // "Ширина баннера"
-//                        int width = BinReader->ReadInt32();
-//                        // "Высота баннера"
-//                        int height = BinReader->ReadInt32();
-//                        BinReader->skipRawData(24);
-//                        BinReader->skipRawData(height*width*4);
+
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt64();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+
+                        int tempValue = BinReader->ReadInt32();
+
+                        readerString = BinReader->ReadStringUTF8(tempValue);
+
+                        BinReader->ReadInt64();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+
+                        int width = BinReader->ReadInt32();
+                        int height = BinReader->ReadInt32();
+
+                        BinReader->ReadInt32();
+
+                        BinReader->ReadInt64();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+                        BinReader->ReadInt32();
+
+                        QImage newImage(width, height, QImage::Format::Format_ARGB32);
+
+                        for (int y = 0; y < height; y++)
+                        {
+                            for (int x = 0; x < width; x++)
+                            {
+                                QByteArray colorBytes = BinReader->ReadBytesArray(4);
+
+                                int r = (quint8)colorBytes[2];
+                                int g = (quint8)colorBytes[1];
+                                int b = (quint8)colorBytes[0];
+                                int a = (quint8)colorBytes[3];
+
+                                QColor color = QColor(r, g, b, a); //Возможно нужно инвертировать порядок байтов
+                                newImage.setPixelColor(x,y, color);
+                            }
+                        }
+
+                        player->banner = newImage;
                     }
                     else
                     {

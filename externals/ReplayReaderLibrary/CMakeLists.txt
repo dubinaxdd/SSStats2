@@ -16,8 +16,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Gui REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui  REQUIRED)
 
 
 set(PROJECT_SOURCES
@@ -36,7 +36,7 @@ set(PROJECT_SOURCES
 
 add_library(${TARGET_NAME} STATIC ${PROJECT_SOURCES})
 
-target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core)
+target_link_libraries(${TARGET_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui)
 
 target_include_directories(${TARGET_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}

@@ -160,7 +160,7 @@ Rectangle {
                         anchors.fill: parent
                         anchors.margins: 10
 
-                        columns: 4
+                        columns: 6
                         rows: 1
 
                         Label {
@@ -186,6 +186,26 @@ Rectangle {
                             text: model.type === "Observer" ? "" : "Team: " + model.team
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 60
+                        }
+
+                        Image
+                        {
+                            Layout.preferredWidth:30
+                            Layout.preferredHeight: 30
+                            cache: false
+                            visible: model.type === "Observer" ? "" : "Team: " + model.team
+
+                            source: "image://imageprovider/" + model.badgeUrl
+                        }
+
+                        Image
+                        {
+                            Layout.preferredWidth:20
+                            Layout.preferredHeight: 30
+                            cache: false
+                            visible: model.type === "Observer" ? "" : "Team: " + model.team
+
+                            source: "image://imageprovider/" + model.bannerUrl
                         }
                     }
                 }

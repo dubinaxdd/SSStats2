@@ -37,6 +37,7 @@ private:
 
     int _lastTick;
     ExtendedBinReader *BinReader;
+
 };
 }
 #endif //REPREADER_H
