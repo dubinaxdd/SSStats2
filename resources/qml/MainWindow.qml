@@ -146,6 +146,7 @@ Window {
                         eventsButton.pressedState = false;
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;
+                        replayManagerButton.pressedState = false;
 
                     }
                 }
