@@ -205,7 +205,7 @@ Rectangle {
                         Label {
                             text: model.type === "Observer" ? "" : "Race: " + model.race
                             Layout.alignment: Qt.AlignLeft
-                            Layout.preferredWidth: 100
+                            Layout.preferredWidth: 120
                         }
 
                         Label {
