@@ -191,7 +191,7 @@ Rectangle {
                             text: "Type: " + model.type
                             Layout.alignment: Qt.AlignLeft
 
-                            Layout.preferredWidth: 70
+                            Layout.preferredWidth: 80
                         }
 
                         Label {
