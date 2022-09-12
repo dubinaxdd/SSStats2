@@ -23,6 +23,9 @@ class ReplayManager : public QObject
     Q_PROPERTY(QString mapSourceUrl MEMBER m_mapSourceUrl NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentReplayTime MEMBER m_currentReplayTime NOTIFY updateReplayInfo)
 
+    Q_PROPERTY(QString winConditions READ winConditions WRITE setWinConditions NOTIFY winConditionsChanged)
+    Q_PROPERTY(QString gameSettings READ gameSettings WRITE setGameSettings NOTIFY gameSettingsChanged)
+
     Q_PROPERTY(int currentPlayerCount MEMBER m_currentPlayerCount NOTIFY updateReplayInfo)
     Q_PROPERTY(int currentTeamsCount MEMBER m_currentTeamsCount NOTIFY updateReplayInfo)
     Q_PROPERTY(int currentMapSize MEMBER m_currentMapSize NOTIFY updateReplayInfo)
@@ -33,11 +36,16 @@ public:
     void setSsPath(const QString &newSsPath);
 
     Q_INVOKABLE void openPlaybackFolder();
-    //Q_INVOKABLE void openPlayback(QString fileName);
 
     Q_INVOKABLE void update();
     Q_INVOKABLE void removeReplay(QString fileName);
     Q_INVOKABLE void saveReplay(QString fileName);
+
+    const QString &winConditions() const;
+    void setWinConditions(const QString &newWinConditions);
+
+    const QString &gameSettings() const;
+    void setGameSettings(const QString &newGameSettings);
 
 public slots:
     void openPlayback(QString fileName);
@@ -45,6 +53,8 @@ public slots:
 signals:
     void replaysListModelSetded();
     void updateReplayInfo();
+    void winConditionsChanged();
+    void gameSettingsChanged();
 
 private:
     void getReplaysData();
@@ -67,11 +77,15 @@ private:
     QString m_currentDuration;
     QString m_currentReplayTime;
 
+    QString m_winConditions;
+    QString m_gameSettings;
+
     int m_currentPlayerCount;
     int m_currentTeamsCount;
     int m_currentMapSize;
 
     QString m_mapSourceUrl;
+
 };
 
 #endif // REPLAYMANAGER_H

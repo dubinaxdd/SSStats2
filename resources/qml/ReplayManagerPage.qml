@@ -38,6 +38,8 @@ Rectangle {
 
                 Layout.preferredHeight: 140
 
+                Layout.bottomMargin: 15
+
                 ColumnLayout
                 {
                     Rectangle
@@ -126,12 +128,32 @@ Rectangle {
                     }
                 }
             }
-/*
-            Rectangle
+
+
+            RowLayout
             {
-                Layout.fillHeight: true
+                Layout.alignment: Qt.AlignTop
+
+                spacing: 30
+
+                Label
+                {
+                    Layout.alignment: Qt.AlignTop
+                    text: "AI difficulty: \nStarting resources: \nLock teams: \nEnable cheats: \nStarting location: \nGame speed: \nResource sharing: \nResource rate"
+                }
+
+                Label
+                {
+                    Layout.alignment: Qt.AlignTop
+                    text: _uiBackend.replayManager.gameSettings
+                }
+
+                Label
+                {
+                    Layout.alignment: Qt.AlignTop
+                    text: _uiBackend.replayManager.winConditions
+                }
             }
-*/
 
             ListView {
                 id: playersListView

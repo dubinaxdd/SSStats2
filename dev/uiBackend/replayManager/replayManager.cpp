@@ -73,8 +73,53 @@ void ReplayManager::openPlayback(QString fileName)
     if(!checkFile.exists())
         m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
 
-
     emit updateReplayInfo();
+
+
+
+    QString winConditions;
+
+    if(newRepReader.replay.hasAnnihilate)
+        winConditions += "\nAnnihilate ";
+
+    if(newRepReader.replay.hasTakeAndHold)
+        winConditions += "\nTake And Hold ";
+
+    if(newRepReader.replay.hasDestroyHQ)
+        winConditions += "\nDestroy HQ ";
+
+    if(newRepReader.replay.hasControlArea)
+        winConditions += "\nControl Area ";
+
+    if(newRepReader.replay.hasEconomicVictory)
+        winConditions += "\nEconomic Victory ";
+
+    if(newRepReader.replay.hasSuddenDeath)
+        winConditions += "\nSudden Death ";
+
+    if(newRepReader.replay.hasAssassinate)
+        winConditions += "\nAssassinate ";
+
+    if(newRepReader.replay.hasGameTimer)
+        winConditions += "\nGame Timer ";
+
+    winConditions.remove(0, 1);
+
+    setWinConditions(winConditions);
+
+
+    QString gameSettings;
+
+    gameSettings += newRepReader.replay.settings.getResolvedAIDiff();
+    gameSettings += "\n" + newRepReader.replay.settings.getResolvedResources();
+    gameSettings += "\n" + newRepReader.replay.settings.getResolvedLockTeams();
+    gameSettings += "\n" + newRepReader.replay.settings.getResolvedCheats();
+    gameSettings += "\n" + newRepReader.replay.settings.getResolvedPositions();
+    gameSettings += "\n" + newRepReader.replay.settings.getResolvedGameSpeed();
+    gameSettings += "\n" + newRepReader.replay.settings.getResolvedResourceSharing();
+    gameSettings += "\n" + newRepReader.replay.settings.getResolvedResourceSpeed();
+
+    setGameSettings(gameSettings);
 
 
     QVector<ReplayPlayer> replayPlayers;
@@ -300,4 +345,30 @@ QString ReplayManager::chooseColorForPlayer(uint team)
         case 7 : return "#55f97dfd";
     }
     return "#DCDCDC";
+}
+
+const QString &ReplayManager::gameSettings() const
+{
+    return m_gameSettings;
+}
+
+void ReplayManager::setGameSettings(const QString &newGameSettings)
+{
+    if (m_gameSettings == newGameSettings)
+        return;
+    m_gameSettings = newGameSettings;
+    emit gameSettingsChanged();
+}
+
+const QString &ReplayManager::winConditions() const
+{
+    return m_winConditions;
+}
+
+void ReplayManager::setWinConditions(const QString &newWinConditions)
+{
+    if (m_winConditions == newWinConditions)
+        return;
+    m_winConditions = newWinConditions;
+    emit winConditionsChanged();
 }
