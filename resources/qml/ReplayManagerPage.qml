@@ -234,6 +234,21 @@ Rectangle {
                             source: "image://imageprovider/" + model.bannerUrl
                         }
                     }
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+
+                        onClicked:
+                        {
+                            fullBadgesImagesRectangle.badgeUrl = ""
+                            fullBadgesImagesRectangle.bannerUrl = ""
+                            fullBadgesImagesRectangle.badgeUrl = model.badgeUrl
+                            fullBadgesImagesRectangle.bannerUrl = model.bannerUrl
+                            fullBadgesImagesRectangle.visible = true;
+                        }
+                    }
                 }
             }
 
@@ -480,4 +495,62 @@ Rectangle {
             }
         }
     }
+
+
+    Rectangle{
+
+        id: fullBadgesImagesRectangle
+
+        anchors.fill: parent
+        visible: false
+        color: "#cf1a1919"
+        radius: 10
+
+        z: 10
+
+        property string badgeUrl
+        property string bannerUrl
+
+        MouseArea {
+            anchors.fill: parent
+            cursorShape: Qt.PointingHandCursor
+
+            onClicked: {
+                fullBadgesImagesRectangle.visible = false;
+            }
+        }
+
+        RowLayout {
+            id: attachmentRectangle
+
+            //color: "00000000"
+
+            spacing:30
+
+            anchors.horizontalCenter: fullBadgesImagesRectangle.horizontalCenter
+            anchors.verticalCenter: fullBadgesImagesRectangle.verticalCenter
+
+            width: 120 + 120 +30
+            height: 180
+
+            Image {
+                id: badgeImage
+                cache: false
+                source: "image://imageprovider/" + fullBadgesImagesRectangle.badgeUrl
+
+                Layout.preferredWidth:120
+                Layout.preferredHeight: 120
+            }
+
+            Image {
+                id: bannerImage
+                cache: false
+                source: "image://imageprovider/" + fullBadgesImagesRectangle.bannerUrl
+
+                Layout.preferredWidth:120
+                Layout.preferredHeight: 180
+            }
+        }
+    }
+
 }
