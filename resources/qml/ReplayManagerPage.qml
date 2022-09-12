@@ -182,6 +182,8 @@ Rectangle {
                         anchors.fill: parent
                         anchors.margins: 10
 
+                        columnSpacing: 10
+
                         columns: 6
                         rows: 1
 
@@ -195,7 +197,9 @@ Rectangle {
                         Label {
                             text: "Name: " + model.name
                             Layout.alignment: Qt.AlignLeft
-                            Layout.preferredWidth: 200
+                            //Layout.preferredWidth: 150
+                            Layout.fillWidth: true
+                            clip:true
                         }
 
                         Label {
