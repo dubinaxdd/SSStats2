@@ -297,7 +297,7 @@ Player *RepReader::ReadPlayer()
                         BinReader->ReadInt32();
                         BinReader->ReadInt32();
 
-                        QImage newImage(width, height, QImage::Format::Format_BGR30);
+                        QImage newImage(width, height, QImage::Format::Format_ARGB32);
 
                         for (int y = height - 1; y >= 0 ; y--)
                         {
@@ -311,6 +311,7 @@ Player *RepReader::ReadPlayer()
                                 int a = (quint8)colorBytes[3];
 
                                 QColor color = QColor(r, g, b, a); //Возможно нужно инвертировать порядок байтов
+
                                 newImage.setPixelColor(x,y, color);
                             }
                         }

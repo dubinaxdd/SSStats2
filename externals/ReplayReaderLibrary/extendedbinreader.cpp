@@ -82,5 +82,5 @@ QByteArray ExtendedBinReader::ReadBytesArray(int count)
     memset(temp, 0, count);
     temp[count] = {0};
     readRawData(temp, count);
-    return QByteArray(temp);
+    return QByteArray(temp, count);
 }
