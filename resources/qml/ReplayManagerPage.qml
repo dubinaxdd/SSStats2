@@ -139,7 +139,7 @@ Rectangle {
                 Label
                 {
                     Layout.alignment: Qt.AlignTop
-                    text: "AI difficulty: \nStarting resources: \nLock teams: \nEnable cheats: \nStarting location: \nGame speed: \nResource sharing: \nResource rate"
+                    text: "AI difficulty: \nStarting resources: \nLock teams: \nEnable cheats: \nStarting location: \nGame speed: \nResource sharing: \nResource rate:"
                 }
 
                 Label
