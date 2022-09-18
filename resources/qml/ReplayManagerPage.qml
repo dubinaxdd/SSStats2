@@ -247,6 +247,7 @@ Rectangle {
                             fullBadgesImagesRectangle.badgeUrl = model.badgeUrl
                             fullBadgesImagesRectangle.bannerUrl = model.bannerUrl
                             fullBadgesImagesRectangle.visible = true;
+                            fullBadgesImagesRectangle.playerName = model.name
                         }
                     }
                 }
@@ -505,6 +506,7 @@ Rectangle {
         visible: false
         color: "#cf1a1919"
         radius: 10
+        property string playerName: "UnknownPlayer";
 
         z: 10
 
@@ -520,35 +522,118 @@ Rectangle {
             }
         }
 
-        RowLayout {
-            id: attachmentRectangle
-
-            //color: "00000000"
-
-            spacing:30
-
+        Rectangle
+        {
+            color: "#ffffff"
+            radius: 10
+            width:400
+            height: 300
             anchors.horizontalCenter: fullBadgesImagesRectangle.horizontalCenter
             anchors.verticalCenter: fullBadgesImagesRectangle.verticalCenter
 
-            width: 120 + 120 +30
-            height: 180
 
-            Image {
-                id: badgeImage
-                cache: false
-                source: "image://imageprovider/" + fullBadgesImagesRectangle.badgeUrl
 
-                Layout.preferredWidth:120
-                Layout.preferredHeight: 120
-            }
+            ColumnLayout
+            {
+                anchors.fill: parent
 
-            Image {
-                id: bannerImage
-                cache: false
-                source: "image://imageprovider/" + fullBadgesImagesRectangle.bannerUrl
+                Rectangle
+                {
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    Layout.topMargin: 15
+                    color: "#eaeaea"
+                    radius: 10
+                    width:300
+                    height: 200
 
-                Layout.preferredWidth:120
-                Layout.preferredHeight: 180
+                    RowLayout {
+                        id: attachmentRectangle
+
+                        anchors.fill:parent
+                        anchors.leftMargin: 15
+
+                        spacing:15
+
+                        Image {
+                            id: badgeImage
+                            cache: false
+                            source: "image://imageprovider/" + fullBadgesImagesRectangle.badgeUrl
+
+                            Layout.preferredWidth:120
+                            Layout.preferredHeight: 120
+                        }
+
+                        Image {
+                            id: bannerImage
+                            cache: false
+                            source: "image://imageprovider/" + fullBadgesImagesRectangle.bannerUrl
+
+                            Layout.preferredWidth:120
+                            Layout.preferredHeight: 180
+                        }
+                    }
+                }
+
+                RowLayout
+                {
+                    Layout.alignment: Qt.AlignHCenter
+                    Layout.bottomMargin: 15
+
+                    Button
+                    {
+                        text: "Save badge"
+
+                        onClicked:
+                        {
+                            saveBadgesDialog.imageUrl = fullBadgesImagesRectangle.badgeUrl
+                            saveBadgesDialog.imgWidth = 64
+                            saveBadgesDialog.imgHeight = 64
+                            saveBadgesDialog.folder = _uiBackend.replayManager.ssUrlPathPath + "/Badges"
+                            saveBadgesDialog.currentFile = "file:///" + _uiBackend.replayManager.ssUrlPathPath + "/Banners/" + fullBadgesImagesRectangle.playerName.replace(" ", "_") +"_badge.tga"
+                            saveBadgesDialog.visible = true;
+                        }
+                    }
+
+                    Button
+                    {
+                        text: "Save banner"
+
+                        onClicked:
+                        {
+                            saveBadgesDialog.imageUrl = fullBadgesImagesRectangle.bannerUrl
+                            saveBadgesDialog.imgWidth = 64
+                            saveBadgesDialog.imgHeight = 96
+                            saveBadgesDialog.folder = _uiBackend.replayManager.ssUrlPathPath + "/Banners"
+                            saveBadgesDialog.currentFile = "file:///" + _uiBackend.replayManager.ssUrlPathPath + "/Banners/" + fullBadgesImagesRectangle.playerName.replace(" ", "_") +"_banner.tga"
+                            saveBadgesDialog.visible = true;
+                        }
+                    }
+                }
+
+
+                FileDialog
+                {
+                    id: saveBadgesDialog
+
+                    property string imageUrl: " "
+                    property int imgWidth: 0;
+                    property int imgHeight: 0;
+
+                    fileMode: FileDialog.SaveFile
+
+                    nameFilters: [ "TGA (*.tga)" ]
+                    defaultSuffix: ""
+
+                    visible: false
+
+                    onAccepted: {
+                        _uiBackend.replayManager.saveBadges(saveBadgesDialog.currentFile, imageUrl, imgWidth, imgHeight)
+                    }
+
+                    onRejected: {
+                        visible =  false;
+                    }
+                }
             }
         }
     }

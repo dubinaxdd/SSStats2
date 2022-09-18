@@ -4,6 +4,8 @@
 #include <baseTypes.h>
 #include <repreader.h>
 #include <QDesktopServices>
+#include <QByteArray>
+#include <QColor>
 
 #include <QFile>
 #include <logger.h>
@@ -23,7 +25,7 @@ ReplayManager::ReplayManager(ImageProvider* imageProvider, QObject *parent)
 void ReplayManager::setSsPath(const QString &newSsPath)
 {
     m_ssPath = newSsPath;
-
+    m_ssUrlPathPath = QUrl::fromLocalFile(m_ssPath);
     getReplaysData();
 }
 
@@ -213,6 +215,54 @@ void ReplayManager::saveReplay( QString fileName)
 {
     QString path = m_currentFilePath.toString().replace("file:///","") + QDir::separator() + m_currentFileName;
     QFile::copy(path, fileName.replace("file:///",""));
+}
+
+void ReplayManager::saveBadges(QString filePath, QString imageUrl, int width, int height)
+{
+    QSize imgSize(width, height);
+    QImage savedImage = p_imageProvider->requestImage(imageUrl, &imgSize, imgSize);
+
+    QByteArray imageByteArray;
+    imageByteArray.resize(18);
+
+    imageByteArray[0] = 0x00;
+    imageByteArray[1] = 0x00;
+    imageByteArray[2] = 0x02;
+    imageByteArray[3] = 0x00;
+    imageByteArray[4] = 0x00;
+    imageByteArray[5] = 0x00;
+    imageByteArray[6] = 0x00;
+    imageByteArray[7] = 0x00;
+    imageByteArray[8] = 0x00;
+    imageByteArray[9] = 0x00;
+    imageByteArray[10] = 0x00;
+    imageByteArray[11] = 0x00;
+    imageByteArray[12] = static_cast<quint8>(width);
+    imageByteArray[13] = 0x00;
+    imageByteArray[14] = static_cast<quint8>(height);
+    imageByteArray[15] = 0x00;
+    imageByteArray[16] = 0x20;
+    imageByteArray[17] = 0x08;
+
+    for (int y = height - 1; y >= 0 ; y--)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            QColor color = savedImage.pixelColor(x,y);
+
+            imageByteArray.append(static_cast<quint8>(color.blue()));
+            imageByteArray.append(static_cast<quint8>(color.green()));
+            imageByteArray.append(static_cast<quint8>(color.red()));
+            imageByteArray.append(static_cast<quint8>(color.alpha()));
+        }
+    }
+
+    QFile file(filePath.replace("file:///",""));
+
+    if (!file.open(QFile::WriteOnly))
+        return;
+
+    file.write(imageByteArray);
 }
 
 void ReplayManager::getReplaysData()

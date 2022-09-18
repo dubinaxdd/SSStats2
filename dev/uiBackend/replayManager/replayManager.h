@@ -14,6 +14,7 @@ class ReplayManager : public QObject
     Q_PROPERTY(PlayersListModel* playersListModel MEMBER m_playersListModel NOTIFY replaysListModelSetded)
 
     Q_PROPERTY(QUrl currentFilePath MEMBER m_currentFilePath NOTIFY updateReplayInfo)
+    Q_PROPERTY(QUrl ssUrlPathPath MEMBER m_ssUrlPathPath NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentReplayName MEMBER m_currentReplayName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentFileName MEMBER m_currentFileName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentMod MEMBER m_currentMod NOTIFY updateReplayInfo)
@@ -40,6 +41,8 @@ public:
     Q_INVOKABLE void update();
     Q_INVOKABLE void removeReplay(QString fileName);
     Q_INVOKABLE void saveReplay(QString fileName);
+
+    Q_INVOKABLE void saveBadges(QString filePath, QString imageUrl, int width, int height);
 
     const QString &winConditions() const;
     void setWinConditions(const QString &newWinConditions);
@@ -69,6 +72,7 @@ private:
     ImageProvider* p_imageProvider;
 
     QUrl m_currentFilePath;
+    QUrl m_ssUrlPathPath;
     QString m_currentReplayName;
     QString m_currentFileName;
     QString m_currentMod;
