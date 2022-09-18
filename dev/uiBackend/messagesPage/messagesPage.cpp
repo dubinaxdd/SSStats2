@@ -28,6 +28,13 @@ QVariant MessagesPage::data(const QModelIndex &index, int role) const
         return message.attachmentImageHeight;
     else if (role == IsNew)
         return message.isNew;
+    else if (role == YoutubeId)
+        return message.youtubeId;
+    else if (role == YoutubeImageWidth)
+        return 480;
+    else if (role == YoutubeImageHeight)
+        return 360;
+
     return QVariant();
 }
 
@@ -48,6 +55,9 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
     roles[AttachmentImageWidth] = "attachmentImageWidth";
     roles[AttachmentImageHeight] = "attachmentImageHeight";
     roles[IsNew] = "isNew";
+    roles[YoutubeId] = "youtubeId";
+    roles[YoutubeImageWidth] = "youtubeImageWidth";
+    roles[YoutubeImageHeight] = "youtubeImageHeight";
 
     return roles;
 }
@@ -117,7 +127,7 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
 
         //Курсивный шрифт
         formate(&newText, "*", "<i>", "</i>");
-        formate(&newText, "_", "<i>", "</i>");
+        //formate(&newText, "_", "<i>", "</i>");
 
         if ( messages.at(i).isNew)
         {
@@ -192,6 +202,24 @@ void MessagesPage::onAttachmetImagesUpdate()
         emit dataChanged(first, last);
 
         m_news[i].attachmentId = temp;
+        emit dataChanged(first, last);
+    }
+}
+
+void MessagesPage::onYoutubeImagesUpdate()
+{
+    for(int i = 0; i < m_news.count(); i++)
+    {
+        QString temp = m_news.at(i).youtubeId;
+
+        m_news[i].youtubeId = "";
+
+        QModelIndex first = QAbstractItemModel::createIndex(i, 0);
+        QModelIndex last = QAbstractItemModel::createIndex(i, 0);
+
+        emit dataChanged(first, last);
+
+        m_news[i].youtubeId = temp;
         emit dataChanged(first, last);
     }
 }

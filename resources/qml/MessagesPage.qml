@@ -119,8 +119,6 @@ Rectangle {
 
             model: infoRectangle.model
 
-            //property double contentBottomPosition
-
             delegate: DiscordMessage{
                 width: messagesListView.width
 
@@ -132,6 +130,9 @@ Rectangle {
                 attachmentImageWidth: model.attachmentImageWidth
                 attachmentImageHeight: model.attachmentImageHeight
                 isNew: model.isNew
+                youtubeId: model.youtubeId
+                youtubeImageWidth: model.youtubeImageWidth
+                youtubeImageHeight: model.youtubeImageHeight
 
                 onAttachmentImageClicked: {
                     fullAttachmenImageRectangle.visible = true;

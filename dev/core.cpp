@@ -73,6 +73,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_soulstormController,              &SoulstormController::launchSoulstorm,                     Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAttachments,              m_uiBackend->newsPage(),            &MessagesPage::onAttachmetImagesUpdate,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAttachments,              m_uiBackend->eventsPage(),          &MessagesPage::onAttachmetImagesUpdate,             Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateYoutubeImages,            m_uiBackend->newsPage(),            &MessagesPage::onYoutubeImagesUpdate,             Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateYoutubeImages,            m_uiBackend->eventsPage(),          &MessagesPage::onYoutubeImagesUpdate,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAvatars,                  m_uiBackend->newsPage(),            &MessagesPage::onAvatarUpdate,                      Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAvatars,                  m_uiBackend->eventsPage(),          &MessagesPage::onAvatarUpdate,                      Qt::QueuedConnection);
     QObject::connect(m_uiBackend->newsPage(),           &MessagesPage::sendLastReadedMessageId,         m_discordWebProcessor,              &DiscordWebProcessor::setLastReadedNewsMessageID,     Qt::QueuedConnection);
@@ -86,6 +88,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
+    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendYoutubeImage, m_uiBackend->imageProvider(), &ImageProvider::addYoutubeImage, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNews, m_uiBackend->newsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNextNews, m_uiBackend->newsPage(), &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);

@@ -21,6 +21,9 @@ public:
             AttachmentImageWidth = Qt::UserRole + 5,
             AttachmentImageHeight = Qt::UserRole + 6,
             IsNew = Qt::UserRole + 7,
+            YoutubeId = Qt::UserRole + 8,
+            YoutubeImageWidth = Qt::UserRole + 9,
+            YoutubeImageHeight = Qt::UserRole + 10,
             TimesTamp
     };
 
@@ -39,6 +42,7 @@ public slots:
     void receiveNextMessages(QList<DiscordMessage> news);
     void onAvatarUpdate();
     void onAttachmetImagesUpdate();
+    void onYoutubeImagesUpdate();
 
 signals:
     void newsAvailableChanged(bool);

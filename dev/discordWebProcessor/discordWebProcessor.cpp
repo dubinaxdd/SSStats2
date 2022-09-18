@@ -181,6 +181,23 @@ void DiscordWebProcessor::requestAttachmentImage(QString attachmentId, QString u
     });
 }
 
+void DiscordWebProcessor::requestYoutubeImage(QString youtubeId, QString url)
+{
+    QNetworkRequest newRequest;
+
+    newRequest.setUrl(QUrl(url));
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveYoutubeImage(reply, youtubeId);
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
+}
+
 QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArray)
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(byteArray);
@@ -248,6 +265,33 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
         {
             m_avatarIdList.append(newDiscordMessage.avatarId);
             requestUserAvatar(newDiscordMessage.userId, newDiscordMessage.avatarId);
+        }
+
+        //Дергаем превьюху ютубовских видосов
+        if (newDiscordMessage.content.contains("https://youtu.be/"))
+        {
+            QString youtubeLink = "";
+
+            for(int i = 0; i < newDiscordMessage.content.count(); i++)
+            {
+                if ( newDiscordMessage.content.mid(i, 17) == "https://youtu.be/")
+                {
+
+
+                    for(int j = i; j < newDiscordMessage.content.count(); j++)
+                    {
+                        if(newDiscordMessage.content[j] != '\n' && newDiscordMessage.content[j] != ' ' && newDiscordMessage.content[j] != '\0' )
+                            youtubeLink.append(newDiscordMessage.content[j]);
+                        else
+                            break;
+                    }
+                    break;
+                }
+            }
+
+            newDiscordMessage.youtubeId = youtubeLink.replace("https://youtu.be/", "");
+
+            requestYoutubeImage(newDiscordMessage.youtubeId, "https://img.youtube.com/vi/" + newDiscordMessage.youtubeId +"/0.jpg");
         }
 
         discordNewsList.append(std::move(newDiscordMessage));
@@ -561,6 +605,27 @@ void DiscordWebProcessor::receiveAttachmentImage(QNetworkReply *reply, QString a
         return;
 
     emit sendAttachmentImage(attachmentId, std::move(image));
+}
+
+void DiscordWebProcessor::receiveYoutubeImage(QNetworkReply *reply, QString youtubeId)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    delete reply;
+
+    QImage image = QImage::fromData(replyByteArray);
+
+    if (image.isNull())
+        return;
+
+    emit sendYoutubeImage(youtubeId, std::move(image));
 }
 
 void DiscordWebProcessor::onSettingsLoaded()

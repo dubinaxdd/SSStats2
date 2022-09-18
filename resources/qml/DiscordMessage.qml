@@ -17,6 +17,8 @@ Rectangle {
                + (contentTextArea.visible ? contentTextArea.height : 0)
                + (attachmentRectangle.visible ? 15 : 0)
                + (attachmentRectangle.visible ? attachmentRectangle.height : 0)
+               + (fullYoutubeRectangle.visible ? 15 : 0)
+               + (fullYoutubeRectangle.visible ? fullYoutubeRectangle.height : 0)
                + bottomSpacerRectangle.height
 
     property string userName: "Unknown user"
@@ -24,8 +26,11 @@ Rectangle {
     property string timesTamp: "00-00-0000 00:00"
     property string avatarId : ""
     property string attachmentId : ""
+    property string youtubeId : ""
     property int attachmentImageWidth: 0
     property int attachmentImageHeight: 0
+    property int youtubeImageWidth: 0
+    property int youtubeImageHeight: 0
     property bool isNew: false
 
     color: "#eaeaea"
@@ -224,6 +229,100 @@ Rectangle {
                  source: attachmentImage
                  maskSource: attachmentMaskRectangle
              }
+        }
+
+        Rectangle
+        {
+           id: fullYoutubeRectangle
+           visible: mainRectangle.youtubeId != ""
+
+           Layout.leftMargin: 15
+           Layout.topMargin: contentTextArea.visible ? 15 : 0
+
+           radius: 10
+           Layout.rightMargin: 15
+
+           color: "#ffffff"
+
+           width: youtubeRectangle.width
+           height: youtubeRectangle.height + 40
+
+           ColumnLayout
+           {
+               anchors.fill: parent
+
+                Image {
+                    source: "qrc:/images/resources/images/YouTube_Logo.png"
+                    Layout.preferredWidth: 112
+                    Layout.preferredHeight: 25
+
+                    Layout.topMargin: 7
+                    Layout.leftMargin: 7
+
+                    Layout.alignment: Qt.AlignVCenter
+                }
+
+                Rectangle {
+                    id: youtubeRectangle
+
+                    radius: 10
+
+                    Layout.alignment: Qt.AlignBottom
+
+
+
+                    Image {
+                        id: youtubeImage
+                        cache: false
+                        anchors.fill: parent
+                        source: "image://imageprovider/" + mainRectangle.youtubeId
+                        visible: false
+
+                        onSourceChanged: {
+                            if (mainRectangle.youtubeImageHeight > mainRectangle.youtubeImageWidth)
+                            {
+                                youtubeRectangle.height = 400;
+                                youtubeRectangle.width = (youtubeRectangle.height * mainRectangle.youtubeImageWidth / mainRectangle.youtubetImageHeight);
+                            }
+                            else
+                            {
+                                youtubeRectangle.width = 400;
+                                youtubeRectangle.height = (youtubeRectangle.width * mainRectangle.youtubeImageHeight / mainRectangle.youtubeImageWidth);
+                            }
+                        }
+                    }
+
+                     Rectangle {
+                         id: youtubeMaskRectangle
+                         anchors.fill: parent
+                         radius: 10
+                         visible: false
+
+                     }
+
+                     OpacityMask {
+                         id: youtubeOpacityMask
+                         anchors.fill: youtubeImage
+                         source: youtubeImage
+                         maskSource: youtubeMaskRectangle
+                     }
+                }
+            }
+
+           Rectangle{
+
+               Layout.fillHeight: true
+           }
+
+           MouseArea
+           {
+               anchors.fill: parent
+               cursorShape: Qt.PointingHandCursor
+
+               onClicked: {
+                    Qt.openUrlExternally( "https://youtu.be/" + mainRectangle.youtubeId);
+               }
+           }
         }
 
         Rectangle{

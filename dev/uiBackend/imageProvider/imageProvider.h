@@ -26,6 +26,7 @@ signals:
     void updateAvatars();
     void updateAttachments();
     void updateBanners();
+    void updateYoutubeImages();
 
 public slots:
     void addDiscordAvatar(QString avatarId, QImage discordAvatar);
@@ -33,6 +34,7 @@ public slots:
     void addPlayerAvatar(QString avatarId, QImage image);
 
     void addAttachmentImage(QString attachmentId, QImage image);
+    void addYoutubeImage(QString youtubeId, QImage image);
     void addReplayPlayerBanner(QString attachmentId, QImage image);
 
 private:
@@ -41,6 +43,7 @@ private:
     QMap <QString, QImage> m_playerStatsAvatars;
     QMap <QString, QImage> m_discordAvatars;
     QMap <QString, QImage> m_attachmentImages;
+    QMap <QString, QImage> m_youtubeImages;
     QMap <QString, QImage> m_replayPlayerBanners;
 };
 

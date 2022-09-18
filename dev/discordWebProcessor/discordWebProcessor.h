@@ -22,6 +22,7 @@ private:
 
     void requestUserAvatar(QString userId, QString avatarId);
     void requestAttachmentImage(QString attachmentId, QString url);
+    void requestYoutubeImage(QString youtubeId, QString url);
 
     QList<DiscordMessage> parseMessagesJson(QByteArray byteArray);
 
@@ -41,6 +42,7 @@ private slots:
     void receiveEventsChannel(QNetworkReply* reply);
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
     void receiveAttachmentImage(QNetworkReply* reply, QString attachmentId);
+    void receiveYoutubeImage(QNetworkReply* reply, QString youtubeId);
     void onSettingsLoaded();
 
     void requestMessages();
@@ -53,7 +55,7 @@ signals:
     void sendNextEvents(QList<DiscordMessage> news);
     void sendAvatar(QString avatarId, QImage discordAvatar);
     void sendAttachmentImage(QString attachmentId, QImage attachmentImage);
-
+    void sendYoutubeImage(QString url, QImage attachmentImage);
 
 private:
 

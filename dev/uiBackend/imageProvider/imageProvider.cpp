@@ -29,6 +29,9 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     if (m_replayPlayerBanners.contains(id) && !m_replayPlayerBanners.value(id).isNull())
         return m_replayPlayerBanners.value(id);
 
+    if (m_youtubeImages.contains(id) && !m_youtubeImages.value(id).isNull())
+        return m_youtubeImages.value(id);
+
     //если ничего не нашлось возвращаем черную картинку
     QImage image(60,60, QImage::Format_ARGB32);
     image.fill(QColor(0,0,0).rgba());
@@ -55,6 +58,12 @@ void ImageProvider::addAttachmentImage(QString attachmentId, QImage image)
 {
     m_attachmentImages.insert(attachmentId, image);
     emit updateAttachments();
+}
+
+void ImageProvider::addYoutubeImage(QString youtubeId, QImage image)
+{
+    m_youtubeImages.insert(youtubeId, image);
+    emit updateYoutubeImages();
 }
 
 void ImageProvider::addReplayPlayerBanner(QString attachmentId, QImage image)
