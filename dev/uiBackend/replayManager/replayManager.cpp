@@ -26,6 +26,8 @@ void ReplayManager::setSsPath(const QString &newSsPath)
 {
     m_ssPath = newSsPath;
     m_ssUrlPathPath = QUrl::fromLocalFile(m_ssPath);
+    m_playbackFolder = m_ssPath + QDir::separator() + "Playback";
+
     getReplaysData();
 }
 
@@ -36,7 +38,7 @@ void ReplayManager::openPlaybackFolder()
 
 void ReplayManager::openPlayback(QString fileName)
 {
-    QDir dir(m_ssPath + QDir::separator() + "Playback");
+    QDir dir(m_playbackFolder);
     QString path = dir.absolutePath();
 
     QFileInfo replayFile(path + QDir::separator() + fileName);
@@ -198,7 +200,7 @@ void ReplayManager::update()
 
 void ReplayManager::removeReplay(QString fileName)
 {
-    QDir dir(m_ssPath + QDir::separator() + "Playback");
+    QDir dir(m_playbackFolder);
     QString path = dir.absolutePath();
 
     QFile replayFile(path + QDir::separator() + fileName);
@@ -265,9 +267,21 @@ void ReplayManager::saveBadges(QString filePath, QString imageUrl, int width, in
     file.write(imageByteArray);
 }
 
+void ReplayManager::choiseOtherPlaybackFolder(QString folder)
+{
+    m_playbackFolder = folder.replace("file:///","");
+    getReplaysData();
+}
+
+void ReplayManager::choiseDefaultPlaybackFolder()
+{
+    m_playbackFolder = m_ssPath + QDir::separator() + "Playback";
+    getReplaysData();
+}
+
 void ReplayManager::getReplaysData()
 {
-    QDir dir(m_ssPath + QDir::separator() + "Playback");
+    QDir dir(m_playbackFolder);
     QString path = dir.absolutePath();
 
     QFileInfoList dirContent = dir.entryInfoList(QStringList() << "*.rec", QDir::Files | QDir::NoDotAndDotDot);

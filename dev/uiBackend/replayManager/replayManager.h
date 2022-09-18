@@ -44,6 +44,9 @@ public:
 
     Q_INVOKABLE void saveBadges(QString filePath, QString imageUrl, int width, int height);
 
+    Q_INVOKABLE void choiseOtherPlaybackFolder(QString folder);
+    Q_INVOKABLE void choiseDefaultPlaybackFolder();
+
     const QString &winConditions() const;
     void setWinConditions(const QString &newWinConditions);
 
@@ -65,6 +68,7 @@ private:
     QString chooseColorForPlayer(uint team);
 
 private:
+    QString m_playbackFolder;
     QString m_ssPath;
     ReplaysListModel* m_replaysListModel;
     PlayersListModel* m_playersListModel;

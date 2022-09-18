@@ -273,6 +273,23 @@ Rectangle {
                     }
                 }
 
+
+                Button{
+                    text: "Choise other playback folder"
+
+                    onClicked: {
+                        choiseFolderDialog.visible = true
+                    }
+                }
+
+                Button{
+                    text: "Choise default playback folder"
+
+                    onClicked: {
+                        _uiBackend.replayManager.choiseDefaultPlaybackFolder();
+                    }
+                }
+
                 FileDialog {
                     id: saveFileDialog
                     fileMode: FileDialog.SaveFile
@@ -285,6 +302,20 @@ Rectangle {
                         _uiBackend.replayManager.saveReplay(currentFile);
                         visible = false;
                     }
+                    onRejected: {
+                        visible =  false;
+                    }
+                }
+
+                FolderDialog
+                {
+                    id: choiseFolderDialog
+
+                    onAccepted: {
+                        _uiBackend.replayManager.choiseOtherPlaybackFolder(folder);
+                        visible = false;
+                    }
+
                     onRejected: {
                         visible =  false;
                     }
@@ -530,8 +561,6 @@ Rectangle {
             height: 300
             anchors.horizontalCenter: fullBadgesImagesRectangle.horizontalCenter
             anchors.verticalCenter: fullBadgesImagesRectangle.verticalCenter
-
-
 
             ColumnLayout
             {
