@@ -48,6 +48,8 @@ signals:
 private:
     QList<DiscordMessage> formatingMessagesText(QList<DiscordMessage> messages);
 
+    void formate(QString* text, QString discordTag, QString openTag, QString closeTag);
+
 private:
     QList<DiscordMessage> m_news;
     bool m_newsAvailable = false;

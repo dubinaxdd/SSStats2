@@ -55,52 +55,7 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
 void MessagesPage::receiveMessages(QList<DiscordMessage> news)
 {
     beginInsertRows(QModelIndex(), 0, news.count() - 1);
-
     m_news = formatingMessagesText(news) + m_news;
-
-    /*for (int i = 0; i < m_news.count(); i++)
-    {
-        QString newText = m_news.at(i).content;
-
-        newText.append('\0');
-
-        for (int j = 0; j < newText.count() - 8; j++)
-        {
-            if(newText.mid(j, 7) == "http://" || newText.mid(j, 8) == "https://")
-            {
-                for(int k = j; k < newText.count(); k++)
-                {
-                    if(  k == newText.count() - 1 ||
-                         newText.at(k) == ' ' ||
-                         newText.at(k) == '\n' ||
-                         newText.at(k) == '\0')
-                    {
-                        QString url = newText.mid(j, k - j);
-                        QString formattedUrl = "<a href=\"" + url + "\">" + url + "</a>";
-
-                        newText.replace(j, k-j, formattedUrl);
-                        j += formattedUrl.count();
-                        break;
-                    }
-                }
-            }
-        }
-
-        for (int j = 0; j < newText.count(); j++)
-        {
-            if(newText.at(j) == '\n')
-                newText.replace(j, 1, "<br> ");
-        }
-
-        if ( m_news.at(i).isNew)
-        {
-            m_newsAvailable = true;
-            emit newsAvailableChanged(m_newsAvailable);
-        }
-
-        m_news[i].content = newText;
-    }*/
-
     endInsertRows();
 }
 
@@ -151,6 +106,19 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
                 newText.replace(j, 1, "<br> ");
         }
 
+        //Жирный шрифт
+        formate(&newText, "**", "<b>", "</b>");
+
+        //Подчеркнутый шрифт
+        formate(&newText, "__", "<u>", "</u>");
+
+        //Зачеркнутый шрифт
+        formate(&newText, "~~", "<s>", "</s>");
+
+        //Курсивный шрифт
+        formate(&newText, "*", "<i>", "</i>");
+        formate(&newText, "_", "<i>", "</i>");
+
         if ( messages.at(i).isNew)
         {
             m_newsAvailable = true;
@@ -161,6 +129,33 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
     }
 
     return messages;
+}
+
+void MessagesPage::formate(QString *text, QString discordTag, QString openTag, QString closeTag)
+{
+    //Подчеркнутый шрифт
+    bool endString = false;
+    int firstIndex = 0;
+    int tagLength = discordTag.count() - 1;
+
+    for (int j = 0; j < text->count() - tagLength; j++)
+    {
+        if(text->mid(j, discordTag.count()) == discordTag)
+        {
+            if (endString)
+                text->replace(j, discordTag.count(), closeTag);
+            else
+            {
+                text->replace(j, discordTag.count(), openTag);
+                firstIndex = j;
+            }
+
+            endString = !endString;
+        }
+    }
+
+    if (endString)
+        text->replace(firstIndex, 3, discordTag);
 }
 
 
