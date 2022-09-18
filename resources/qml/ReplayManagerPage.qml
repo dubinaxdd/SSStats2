@@ -375,6 +375,8 @@ Rectangle {
                     clip: true
                     spacing: 5
 
+                    ScrollBar.vertical: ScrollBar { }
+
                     model: _uiBackend.replayManager.replaysListModel
 
                     delegate: Rectangle{
