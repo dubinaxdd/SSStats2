@@ -19,6 +19,11 @@ Rectangle {
     property int relativeMouseX
     property int relativeMouseY
 
+    function resetScrollView()
+    {
+        scrollView.setDefault();
+    }
+
     function mouseClick(x, y)
     {
         relativeMouseX = x
@@ -93,40 +98,7 @@ Rectangle {
             curentPlayer.avatarSource = "";
             curentPlayer.avatarSource = oldSource;
         }
-/*
-        function onPlayersStatsChanged()
-        {
-            var oldSource = player2.avatarSource;
-            player2.avatarSource = "";
-            player2.avatarSource = oldSource;
-
-            oldSource = player3.avatarSource;
-            player3.avatarSource = "";
-            player3.avatarSource = oldSource;
-
-            oldSource = player4.avatarSource;
-            player4.avatarSource = "";
-            player4.avatarSource = oldSource;
-
-            oldSource = player5.avatarSource;
-            player5.avatarSource = "";
-            player5.avatarSource = oldSource;
-
-            oldSource = player6.avatarSource;
-            player6.avatarSource = "";
-            player6.avatarSource = oldSource;
-
-            oldSource = player7.avatarSource;
-            player7.avatarSource = "";
-            player7.avatarSource = oldSource;
-
-            oldSource = player8.avatarSource;
-            player8.avatarSource = "";
-            player8.avatarSource = oldSource;
-        }*/
     }
-
-
 
     Connections
     {
@@ -202,29 +174,6 @@ Rectangle {
                 hoverEnabled: false
 
             }
-
-/*
-            Rectangle
-            {
-                Layout.maximumWidth: 280 * _uiBackend.sizeModifer
-                Layout.maximumHeight: 50 * _uiBackend.sizeModifer
-                Layout.minimumWidth: 280 * _uiBackend.sizeModifer
-                Layout.minimumHeight: 50 * _uiBackend.sizeModifer
-                height: 50 * _uiBackend.sizeModifer
-                Layout.alignment: Qt.AlignRight | Qt.AlignTop
-                Layout.fillHeight: false
-                Layout.fillWidth: true
-                color: "#ffffff"
-                radius: 10 * _uiBackend.sizeModifer
-
-                Switch
-                {
-                    anchors.fill: parent
-                    text: "Training mode"
-                }
-            }
-*/
-
 
             ListView
             {

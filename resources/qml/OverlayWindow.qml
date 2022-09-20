@@ -19,6 +19,10 @@ Window {
     property var mouseAreaWidth
     property var mouseAreaHeight
 
+    onVisibilityChanged: {
+        patyStatistic.resetScrollView();
+    }
+
     Connections{
         target: _uiBackend
 
@@ -233,6 +237,8 @@ Window {
                         z: 2
 
                         Layout.fillHeight: true
+
+
                     }
                 }
             }
