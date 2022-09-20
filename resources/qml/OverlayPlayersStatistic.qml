@@ -181,7 +181,6 @@ Rectangle {
 
             spacing: 5 * _uiBackend.sizeModifer
 
-
             PlayersStatisticItem
             {
                 id:curentPlayer
@@ -203,6 +202,29 @@ Rectangle {
                 hoverEnabled: false
 
             }
+
+/*
+            Rectangle
+            {
+                Layout.maximumWidth: 280 * _uiBackend.sizeModifer
+                Layout.maximumHeight: 50 * _uiBackend.sizeModifer
+                Layout.minimumWidth: 280 * _uiBackend.sizeModifer
+                Layout.minimumHeight: 50 * _uiBackend.sizeModifer
+                height: 50 * _uiBackend.sizeModifer
+                Layout.alignment: Qt.AlignRight | Qt.AlignTop
+                Layout.fillHeight: false
+                Layout.fillWidth: true
+                color: "#ffffff"
+                radius: 10 * _uiBackend.sizeModifer
+
+                Switch
+                {
+                    anchors.fill: parent
+                    text: "Training mode"
+                }
+            }
+*/
+
 
             ListView
             {

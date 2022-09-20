@@ -53,6 +53,8 @@ Window {
 
             patyStatistic.mouseClick(xMousePos - columnLayout3.x - patyStatistic.x, yMousePos - columnLayout3.y - patyStatistic.y);
 
+            statsHeader.mouseClick(xMousePos - statsHeader.x - columnLayout3.x, yMousePos - statsHeader.y - columnLayout3.y)
+
 
             if(_uiBackend.gamePanel.showGamePannelPreset)
             {
@@ -118,6 +120,8 @@ Window {
             }
 
             patyStatistic.mouseHover(xMousePos - patyStatistic.x - columnLayout3.x, yMousePos - patyStatistic.y - columnLayout3.y );
+
+            statsHeader.mouseHover(xMousePos - statsHeader.x - columnLayout3.x, yMousePos - statsHeader.y - columnLayout3.y)
 
             if(_uiBackend.expand)
             {
@@ -217,6 +221,7 @@ Window {
                         Layout.fillHeight: true
                         visible: _uiBackend.headerVisible
                         z: 3
+                        showTrainingModeSwitch: true
                     }
 
                     OverlayPlayersStatistic

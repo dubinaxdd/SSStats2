@@ -48,6 +48,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
     Q_PROPERTY(bool notificationVisible READ notificationVisible WRITE setNotificationVisible NOTIFY notificationVisibleChanged)
 
+    Q_PROPERTY(bool trainingModeState READ trainingModeState WRITE setTrainingModeState NOTIFY trainingModeStateChanged)
+
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -84,6 +86,9 @@ public:
     bool notificationVisible() const;
     void setNotificationVisible(bool newNotificationVisible);
 
+    bool trainingModeState() const;
+    void setTrainingModeState(bool newTrainingModeState);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -117,6 +122,8 @@ signals:
     void expandButtonPressed();
     void updateNotification();
     void notificationVisibleChanged();
+
+    void trainingModeStateChanged();
 
 public slots:
     void expandKeyPressed();
@@ -186,13 +193,13 @@ private:
 
     bool m_noFogState = false;
 
+    bool m_trainingModeState = false;
+
     float m_sizeModifer = 2.0;
 
     QString m_lastNotification;
     bool m_lastNotificationIsWarning = false;
     bool m_notificationVisible = false;
-
-
 };
 
 #endif // UIBACKEND_H

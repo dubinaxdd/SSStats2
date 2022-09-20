@@ -34,6 +34,8 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignTop
     Layout.fillHeight: false
     Layout.fillWidth: true
+    color: itemRectangle.hoverEnabled ? ( itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff" )) : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff")
+    radius: 10 * sizeModifer
 
     onCalibrateGamesLeftChanged: {
         changeRank();
@@ -94,11 +96,6 @@ Rectangle {
         rankImage.source = "qrc:/images/resources/images/rank6_60.png"
         return;
     }
-
-
-    color: itemRectangle.hoverEnabled ? ( itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff" )) : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff")
-
-    radius: 10 * sizeModifer
 
     RowLayout {
         id: rowLayout

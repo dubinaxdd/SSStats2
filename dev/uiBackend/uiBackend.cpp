@@ -101,6 +101,19 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+bool UiBackend::trainingModeState() const
+{
+    return m_trainingModeState;
+}
+
+void UiBackend::setTrainingModeState(bool newTrainingModeState)
+{
+    if (m_trainingModeState == newTrainingModeState)
+        return;
+    m_trainingModeState = newTrainingModeState;
+    emit trainingModeStateChanged();
+}
+
 ReplayManager *UiBackend::replayManager() const
 {
     return m_replayManager;

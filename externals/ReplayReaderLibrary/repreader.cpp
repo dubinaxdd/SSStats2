@@ -17,8 +17,8 @@ RepReader::RepReader(QString fileName)
         BinReader = new ExtendedBinReader(pfile);
         replay.setFileName(fileName);
         ReadReplayFully();
-    }else
-        qDebug() << "Could not open file" << fileName   ;
+    }//else
+        //qDebug() << "Could not open file" << fileName   ;
 }
 
 RepReader::~RepReader()
@@ -129,9 +129,9 @@ bool RepReader::ReadHeader()
     int nameLength = BinReader->ReadInt32();
 
 //    qDebug() << nameLength << BinReader->pos();
-    if (nameLength <= 0 || nameLength > 48)
-        qDebug() << "Could not read replay name";
-    else
+    if (!(nameLength <= 0 || nameLength > 48))
+        //qDebug() << "Could not read replay name";
+    //else
         replay.Name = BinReader->ReadStringUTF16(nameLength);
 //    qDebug() << replay.Name;
     BinReader->skipRawData(4);
