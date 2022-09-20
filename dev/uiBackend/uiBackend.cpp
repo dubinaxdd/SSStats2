@@ -73,6 +73,8 @@ void UiBackend::loadStarted()
     m_gamePanel->onGameStopped();
     m_statisticPanel->setBlockUpdate(true);
 
+    setEnableTrainingModeSwitch(false);
+
     m_headerVisible = false;
     m_patyStatisticVisible = false;
     m_expand = false;
@@ -99,6 +101,19 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(SsMissionState::gameOver);
+}
+
+bool UiBackend::enableTrainingModeSwitch() const
+{
+    return m_enableTrainingModeSwitch;
+}
+
+void UiBackend::setEnableTrainingModeSwitch(bool newEnableTrainingModeSwitch)
+{
+    if (m_enableTrainingModeSwitch == newEnableTrainingModeSwitch)
+        return;
+    m_enableTrainingModeSwitch = newEnableTrainingModeSwitch;
+    emit enableTrainingModeSwitchChanged();
 }
 
 bool UiBackend::trainingModeState() const
@@ -381,6 +396,8 @@ void UiBackend::gameStopped()
     m_missionStarted = false;
     m_gamePanel->onGameStopped();
     m_statisticPanel->setBlockUpdate(false);
+
+    setEnableTrainingModeSwitch(true);
 
     if(m_patyStatisticVisibleButtonPressedState)
     {

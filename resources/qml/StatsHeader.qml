@@ -7,6 +7,7 @@ ColumnLayout
     spacing: 0
     property Rectangle expandButtonRectangle : expandButtonRectangle
     property bool showTrainingModeSwitch: true
+    property bool enableTrainingModeSwitch: _uiBackend.enableTrainingModeSwitch
 
     property int relativeMouseX
     property int relativeMouseY
@@ -17,7 +18,8 @@ ColumnLayout
         relativeMouseY = y
 
         // Переключатель "No Fog"
-        if (showTrainingModeSwitch &&
+        if (enableTrainingModeSwitch &&
+                showTrainingModeSwitch &&
                 relativeMouseX >= trainingModeSwitch.x + headerRectangle.x &&
                 relativeMouseX <= trainingModeSwitch.x + headerRectangle.x + trainingModeSwitch.width &&
                 relativeMouseY >= trainingModeSwitch.y + headerRectangle.height &&
@@ -34,7 +36,8 @@ ColumnLayout
         relativeMouseY = y
 
         // Переключатель "No Fog"
-        if (showTrainingModeSwitch &&
+        if (enableTrainingModeSwitch &&
+                showTrainingModeSwitch &&
                 relativeMouseX >= trainingModeSwitch.x + headerRectangle.x &&
                 relativeMouseX <= trainingModeSwitch.x + headerRectangle.x + trainingModeSwitch.width &&
                 relativeMouseY >= trainingModeSwitch.y + headerRectangle.height &&

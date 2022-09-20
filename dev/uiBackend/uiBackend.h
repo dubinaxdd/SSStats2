@@ -49,6 +49,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool notificationVisible READ notificationVisible WRITE setNotificationVisible NOTIFY notificationVisibleChanged)
 
     Q_PROPERTY(bool trainingModeState READ trainingModeState WRITE setTrainingModeState NOTIFY trainingModeStateChanged)
+    Q_PROPERTY(bool enableTrainingModeSwitch READ enableTrainingModeSwitch WRITE setEnableTrainingModeSwitch NOTIFY enableTrainingModeSwitchChanged)
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -89,6 +90,9 @@ public:
     bool trainingModeState() const;
     void setTrainingModeState(bool newTrainingModeState);
 
+    bool enableTrainingModeSwitch() const;
+    void setEnableTrainingModeSwitch(bool newEnableTrainingModeSwitch);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -124,6 +128,8 @@ signals:
     void notificationVisibleChanged();
 
     void trainingModeStateChanged();
+
+    void enableTrainingModeSwitchChanged();
 
 public slots:
     void expandKeyPressed();
@@ -194,6 +200,7 @@ private:
     bool m_noFogState = false;
 
     bool m_trainingModeState = false;
+    bool m_enableTrainingModeSwitch = true;
 
     float m_sizeModifer = 2.0;
 
