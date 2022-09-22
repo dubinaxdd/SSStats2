@@ -147,6 +147,7 @@ Window {
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;
                         replayManagerButton.pressedState = false;
+                        modsButton.pressedState = false
 
                     }
                 }
@@ -170,6 +171,7 @@ Window {
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;
                         replayManagerButton.pressedState = false;
+                        modsButton.pressedState = false
                     }
                 }
 
@@ -183,18 +185,7 @@ Window {
                         eventsButton.pressedState = false;
                         settingsButton.pressedState = false;
                         replayManagerButton.pressedState = false;
-                    }
-                }
-
-                HeaderButton{
-                    id: settingsButton
-                    text: "Settings"
-
-                    onClicked: {
-                        newsButton.pressedState = false;
-                        eventsButton.pressedState = false;
-                        infoButton.pressedState = false;
-                        replayManagerButton.pressedState = false;
+                        modsButton.pressedState = false
                     }
                 }
 
@@ -208,6 +199,34 @@ Window {
                         eventsButton.pressedState = false;
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;
+                        modsButton.pressedState = false
+                    }
+                }
+
+                HeaderButton{
+                    id: modsButton
+                    text: "Mods"
+
+                    onClicked: {
+                        newsButton.pressedState = false;
+                        eventsButton.pressedState = false;
+                        infoButton.pressedState = false;
+                        replayManagerButton.pressedState = false;
+                        settingsButton.pressedState = false;
+
+                    }
+                }
+
+                HeaderButton{
+                    id: settingsButton
+                    text: "Settings"
+
+                    onClicked: {
+                        newsButton.pressedState = false;
+                        eventsButton.pressedState = false;
+                        infoButton.pressedState = false;
+                        replayManagerButton.pressedState = false;
+                        modsButton.pressedState = false
                     }
                 }
 
@@ -260,18 +279,23 @@ Window {
                     anchors.fill: parent
                 }
 
-                SettingsPage {
-                    id: settingsPage
-                    visible: settingsButton.pressedState
-                    anchors.fill: parent
-                }
-
-
                 ReplayManagerPage {
                     id: replayManagerPage
                     visible: replayManagerButton.pressedState
                     anchors.fill: parent
 
+                }
+
+                ModsPage{
+                    id: modsPage
+                    visible: modsButton.pressedState
+                    anchors.fill: parent
+                }
+
+                SettingsPage {
+                    id: settingsPage
+                    visible: settingsButton.pressedState
+                    anchors.fill: parent
                 }
             }
 

@@ -19,5 +19,6 @@
         <file>resources/qml/SettingsPage.qml</file>
         <file>resources/qml/PlayersStatistic.qml</file>
         <file>resources/qml/ReplayManagerPage.qml</file>
+        <file>resources/qml/ModsPage.qml</file>
     </qresource>
 </RCC>

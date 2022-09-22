@@ -18,125 +18,10 @@ Rectangle {
 
     property var model: _uiBackend.settingsPageModel
 
-    Connections {
-        target: model
-
-        function onUnlockRacesStatusChanged()
-        {
-            unlockRacesButton.enabled = true;
-        }
-    }
-
-
     ColumnLayout
     {
         anchors.margins: 15
         anchors.fill: parent
-
-        GridLayout{
-
-            columns: 4
-
-            //Шрифты
-            Label{
-                text: "Russian fonts:"
-            }
-
-            Label{
-                id: progressLabel0;
-                text: model.russianFontsInstallProgress
-            }
-
-            Button{
-                text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
-                enabled: !model.russianFontsInstallInProcess
-                height: 15
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.installRussianFonts();
-                }
-            }
-
-            Button{
-                text: "Delete"
-                height: 15
-                enabled: model.russianFontsInstalledStatus
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.uninstallRussianFonts();
-                }
-            }
-
-            //Камера мод
-            Label{
-                text: "Advanced camera mod:"
-            }
-
-            Label{
-                id: progressLabel1;
-                text: model.cameraModInstallProgress
-            }
-
-            Button{
-                text: model.cameraModInstalledStatus ? "Reinstall" : "Install"
-                enabled: !model.cameraModInstallInProcess
-                height: 15
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.installCameraMod();
-                }
-            }
-
-            Button{
-                text: "Delete"
-                height: 15
-                enabled: model.cameraModInstalledStatus
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.uninstallCameraMod();
-                }
-            }
-
-
-            //Хоткеи
-            Label{
-                text: "Grid hotkeys:"
-            }
-
-            Label{
-                id: progressLabel2;
-                text: model.gridHotkeysInstallProgress
-            }
-
-            Button{
-                text: model.gridHotkeysInstalledStatus ? "Reinstall" : "Install"
-                enabled: !model.gridHotkeysInstallInProcess
-                height: 15
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.installGridHotkeys();
-                }
-            }
-
-            Button{
-                text: "Delete"
-                height: 15
-                enabled: model.gridHotkeysInstalledStatus
-                opacity: hovered? 1.0 : 0.8
-                onClicked: {
-                    model.uninstallGridHotkeys();
-                }
-            }
-/*
-            Switch{
-                text: "Unlock races"
-            }*/
-        }
 
         Switch{
             text: "Show overlay"
@@ -224,31 +109,6 @@ Rectangle {
                 model.enableGameStartEventSound = checked;
             }
         }
-
-
-        RowLayout
-        {
-            Label{
-                text: "Race unlocker:"
-            }
-
-            Button{
-                id: unlockRacesButton
-                text: "Unlock races"
-                height: 15
-                opacity: hovered? 1.0 : 0.8
-                onClicked: {
-                    model.unlockRaces();
-                    enabled = false;
-                }
-            }
-
-            Label{
-                text: model.unlockRacesStatus
-            }
-
-        }
-
 
 /*
         Switch{
