@@ -6,8 +6,11 @@
 #include <QDebug>
 #include <defines.h>
 
-#define REQUEST_TIMER_INTERVAL 2000
-#define REQUEST_TIMER_INTERVAL2 4000
+//#define REQUEST_TIMER_INTERVAL 2000
+//#define REQUEST_TIMER_INTERVAL2 4000
+
+#define REQUEST_TIMER_INTERVAL 500
+#define REQUEST_TIMER_INTERVAL2 500
 
 DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -30,19 +33,25 @@ void DiscordWebProcessor::requestNews()
     QNetworkRequest newRequest;
 
     QString urlString = "";
-
+/*
     if (m_isFirstNewsRequest)
         urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5";
     else
         urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?after=" + m_afterNewsMessageID + "&limit=5";
+*/
+    if (m_isFirstNewsRequest)
+        urlString = "http://crosspick.ru:8080/news/messages?limit=5";
+    else
+        urlString = "http://crosspick.ru:8080/news/messages?after=" + m_afterNewsMessageID + "&limit=5";
+
 
     m_isFirstNewsRequest = false;
 
     newRequest.setUrl(QUrl(urlString));
-    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
-    newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStats2");
-    newRequest.setRawHeader("Content-Type","application/json");
+    //newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
+    //newRequest.setRawHeader("Host", "discord.com");
+    //newRequest.setRawHeader("User-Agent", "DowStats2");
+    //newRequest.setRawHeader("Content-Type","application/json");
 
     m_readyToRequest = false;
 
@@ -64,11 +73,17 @@ void DiscordWebProcessor::requestEvents()
     QNetworkRequest newRequest;
 
     QString urlString = "";
-
+/*
     if (m_isFirstEventsRequest)
         urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?limit=5";
     else
         urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?after=" + m_afterEventsMessageID  + "&limit=5";
+*/
+    if (m_isFirstNewsRequest)
+        urlString = "http://crosspick.ru:8080/events/messages?limit=5";
+    else
+        urlString = "http://crosspick.ru:8080/events/messages?after=" + m_afterNewsMessageID + "&limit=5";
+
 
     m_isFirstEventsRequest = false;
 
@@ -147,6 +162,52 @@ void DiscordWebProcessor::requestEventsChannel()
     });
 }
 
+void DiscordWebProcessor::requestNewsLastMessageId()
+{
+    QNetworkRequest newRequest;
+
+    QString urlString = "http://crosspick.ru:8080/news/lastmessageid";
+
+    newRequest.setUrl(QUrl(urlString));
+
+    m_readyToRequest = false;
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveNewsLastMessageId(reply);
+        m_readyToRequest = true;
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+        m_readyToRequest = true;
+    });
+}
+
+void DiscordWebProcessor::requestEventsLastMessageId()
+{
+    QNetworkRequest newRequest;
+
+    QString urlString = "http://crosspick.ru:8080/events/lastmessageid";
+
+    newRequest.setUrl(QUrl(urlString));
+
+    m_readyToRequest = false;
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveEventsLastMessageId(reply);
+        m_readyToRequest = true;
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+        m_readyToRequest = true;
+    });
+}
+
 void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
 {
     QNetworkRequest newRequest;
@@ -204,6 +265,7 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
 
     if(!jsonDoc.isArray())
         return QList<DiscordMessage>();
+
 
     QJsonArray replyJsonArray = jsonDoc.array();
 
@@ -318,7 +380,9 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5&before=" + messageId;
+    //QString urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5&before=" + messageId;
+
+    QString urlString = "http://crosspick.ru:8080/news/message?limit=5&before=" + messageId;
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -345,7 +409,9 @@ void DiscordWebProcessor::requestNextEvents(QString messageId)
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?limit=5&before=" + messageId;
+    //QString urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?limit=5&before=" + messageId;
+
+    QString urlString = "http://crosspick.ru:8080/news/message?limit=5&before=" + messageId;
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -379,6 +445,7 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
         delete reply;
         return;
     }
+
     m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
 
     QByteArray replyByteArray = reply->readAll();
@@ -388,8 +455,8 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
 
     if (newsList.count() == 0)
-        return;
 
+        return;
 
 
     bool isNew = true;
@@ -534,6 +601,30 @@ void DiscordWebProcessor::receiveNewsChannel(QNetworkReply *reply)
     }
 }
 
+void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        delete reply;
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+    delete reply;
+
+    QString lastMessageId = QString::fromStdString(replyByteArray.toStdString());
+
+    if (lastMessageId != m_lastNewsMessageID)
+    {
+        qInfo(logInfo()) << "Request NEWS" << lastMessageId << m_lastNewsMessageID;
+
+        m_afterNewsMessageID = m_lastNewsMessageID;
+        m_lastNewsMessageID = lastMessageId;
+        m_needRequestNews  = true;
+    }
+}
+
 void DiscordWebProcessor::receiveEventsChannel(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
@@ -553,6 +644,30 @@ void DiscordWebProcessor::receiveEventsChannel(QNetworkReply *reply)
 
     QJsonObject newJsonObject = jsonDoc.object();
     QString lastMessageId = newJsonObject.value("last_message_id").toString();
+
+    if (lastMessageId != m_lastEventMessageID)
+    {
+        qInfo(logInfo()) << "Request EVENTS" << lastMessageId << m_lastEventMessageID;
+
+        m_afterEventsMessageID = m_lastEventMessageID;
+        m_lastEventMessageID = lastMessageId;
+        m_needRequestEvents = true;
+    }
+}
+
+void DiscordWebProcessor::receiveEventsLastMessageId(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        delete reply;
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+    delete reply;
+
+    QString lastMessageId = QString::fromStdString(replyByteArray.toStdString());
 
     if (lastMessageId != m_lastEventMessageID)
     {
@@ -655,10 +770,12 @@ void DiscordWebProcessor::requestMessages()
     }
 
     if(m_requestNewsNow)
-        requestNewsChannel();
+        //requestNewsChannel();
+        requestNewsLastMessageId();
 
     else
-        requestEventsChannel();
+        //requestEventsChannel();
+        requestEventsLastMessageId();
 
     m_requestNewsNow = !m_requestNewsNow;
 }
