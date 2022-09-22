@@ -88,11 +88,11 @@ void DiscordWebProcessor::requestEvents()
     m_isFirstEventsRequest = false;
 
     newRequest.setUrl(QUrl(urlString));
-    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
+    /*newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", "discord.com");
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
-
+*/
     m_readyToRequest = false;
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -385,11 +385,11 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
     QString urlString = "http://crosspick.ru:8080/news/message?limit=5&before=" + messageId;
 
     newRequest.setUrl(QUrl(urlString));
-    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
+    /*newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", "discord.com");
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
-
+*/
     m_readyToRequest = false;
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -414,11 +414,11 @@ void DiscordWebProcessor::requestNextEvents(QString messageId)
     QString urlString = "http://crosspick.ru:8080/news/message?limit=5&before=" + messageId;
 
     newRequest.setUrl(QUrl(urlString));
-    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
+   /* newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", "discord.com");
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
-
+*/
     m_readyToRequest = false;
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
