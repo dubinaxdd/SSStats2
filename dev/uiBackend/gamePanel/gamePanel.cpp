@@ -99,7 +99,7 @@ void GamePanel::onGameStarted(SsMissionState gameCurrentState)
 
     if (gameCurrentState == SsMissionState::gameStarted)
     {
-        m_gameLeaveTimeLeft = 30;
+        m_gameLeaveTimeLeft = 45;
         emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);
         m_gameLeaveTimer->start();
         m_gameLeaveTimerVisible = true;

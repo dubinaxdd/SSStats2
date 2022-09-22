@@ -290,10 +290,10 @@ void ReplayDataCollector::readReplayData()
     }
 
     //Проверка на длительность игры
-    if(duration <= 30)
+    if(duration <= 45)
     {
         checkFailed = true;
-        warning += "    Game lasted less than 30 seconds\n";
+        warning += "    Game lasted less than 45 seconds\n";
     }
 
     //Проверка на наличие победителя

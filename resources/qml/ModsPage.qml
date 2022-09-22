@@ -32,6 +32,7 @@ Rectangle {
         anchors.margins: 15
         anchors.fill: parent
 
+        spacing: 30
 
         Rectangle
         {
