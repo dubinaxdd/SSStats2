@@ -19,6 +19,36 @@ Rectangle {
     property int relativeMouseX
     property int relativeMouseY
 
+    Connections
+    {
+        target: _uiBackend
+
+        function onNoFogStateChanged()
+        {
+            noFogSwitch.checkedState = _uiBackend.noFogState;
+        }
+    }
+
+    Connections
+    {
+        target: _uiBackend.gamePanel
+
+        function onShowGamePannelPresetChanged()
+        {
+            showGamePannelPresetSwitch.checkedState =  _uiBackend.gamePanel.showGamePannelPreset;
+        }
+    }
+
+    Connections
+    {
+        target: _uiBackend.gamePanel
+
+        function onSmallPannelActiveChanged()
+        {
+            smallGamePanelActivateSwitch.checkedState = _uiBackend.gamePanel.smallPannelActive;
+        }
+    }
+
 
     function mouseClick(x, y)
     {

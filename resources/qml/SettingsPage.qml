@@ -18,6 +18,36 @@ Rectangle {
 
     property var model: _uiBackend.settingsPageModel
 
+    Connections
+    {
+        target: _uiBackend
+
+        function onNoFogStateChanged()
+        {
+            noFogSwitch.checked = _uiBackend.noFogState;
+        }
+    }
+
+    Connections
+    {
+        target: _uiBackend.gamePanel
+
+        function onShowGamePannelPresetChanged()
+        {
+            showGamePannelSwitch.checked =  _uiBackend.gamePanel.showGamePannelPreset;
+        }
+    }
+
+    Connections
+    {
+        target: _uiBackend.gamePanel
+
+        function onSmallPannelActiveChanged()
+        {
+            smallPannelActiveSwitch.checked = _uiBackend.gamePanel.smallPannelActive;
+        }
+    }
+
     ColumnLayout
     {
         anchors.margins: 15
@@ -57,6 +87,38 @@ Rectangle {
             }
         }
 
+        Switch{
+            id: noFogSwitch
+            text: "No FOG"
+            opacity: hovered ? 1.0 : 0.8
+
+            onCheckedChanged:
+            {
+                _uiBackend.noFogState = checked;
+            }
+        }
+
+        Switch{
+            id: showGamePannelSwitch
+            text: "APM panel visible in game"
+            opacity: hovered ? 1.0 : 0.8
+
+            onCheckedChanged: {
+                _uiBackend.gamePanel.showGamePannelPreset = checked;
+            }
+        }
+
+        Switch{
+            id: smallPannelActiveSwitch
+            text: "Small APM panel in game"
+            //checked: _uiBackend.gamePanel.smallPannelActive
+            opacity: hovered ? 1.0 : 0.8
+
+            onCheckedChanged: {
+                _uiBackend.gamePanel.smallPannelActive = checked;
+            }
+
+        }
 
         Switch {
             id: enableEventsSoundsEhenGameMinimized
@@ -110,52 +172,10 @@ Rectangle {
             }
         }
 
-/*
-        Switch{
-            text: "No FOG"
-            checked: _uiBackend.noFogState
-
-            onCheckedChanged: {
-                //_uiBackend.noFogState = checked;
-
-                _uiBackend.setNoFogWithoutSignal(checked);
-            }
-        }
-
-        Switch{
-            text: "APM panel visible in game"
-            checked: _uiBackend.gamePanel.showGamePannelPreset
-
-            onCheckedChanged: {
-                _uiBackend.gamePanel.showGamePannelPreset = checked;
-            }
-        }
-
-        Switch{
-            text: "Small APM panel in game"
-            checked: _uiBackend.gamePanel.smallPannelActive
-
-            onCheckedChanged: {
-                _uiBackend.gamePanel.smallPannelActive = checked;
-            }
-        }
-*/
         Rectangle
         {
             Layout.fillHeight: true
         }
 
     }
-
-    //Режим совместимости с win7
-    //Установить русские шрифты
-    //Установить QWER хоткеи
-    //Установить камерамод
-    //Разблокировать расы
-
-    //Включить оверлей в игре
-    //Маленькая игровая панель
-    //Отключтить туман
-    //Включить игровую панель
-    //Масштаб оверлея
 }
