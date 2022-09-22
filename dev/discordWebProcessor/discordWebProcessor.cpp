@@ -79,10 +79,10 @@ void DiscordWebProcessor::requestEvents()
     else
         urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?after=" + m_afterEventsMessageID  + "&limit=5";
 */
-    if (m_isFirstNewsRequest)
+    if (m_isFirstEventsRequest)
         urlString = "http://crosspick.ru:8080/events/messages?limit=5";
     else
-        urlString = "http://crosspick.ru:8080/events/messages?after=" + m_afterNewsMessageID + "&limit=5";
+        urlString = "http://crosspick.ru:8080/events/messages?after=" + m_afterEventsMessageID + "&limit=5";
 
 
     m_isFirstEventsRequest = false;
@@ -382,7 +382,7 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
 
     //QString urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5&before=" + messageId;
 
-    QString urlString = "http://crosspick.ru:8080/news/message?limit=5&before=" + messageId;
+    QString urlString = "http://crosspick.ru:8080/news/messages?limit=5&before=" + messageId;
 
     newRequest.setUrl(QUrl(urlString));
     /*newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -390,6 +390,7 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
     newRequest.setRawHeader("User-Agent", "DowStats2");
     newRequest.setRawHeader("Content-Type","application/json");
 */
+
     m_readyToRequest = false;
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -411,7 +412,7 @@ void DiscordWebProcessor::requestNextEvents(QString messageId)
 
     //QString urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?limit=5&before=" + messageId;
 
-    QString urlString = "http://crosspick.ru:8080/news/message?limit=5&before=" + messageId;
+    QString urlString = "http://crosspick.ru:8080/events/messages?limit=5&before=" + messageId;
 
     newRequest.setUrl(QUrl(urlString));
    /* newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
@@ -485,8 +486,8 @@ void DiscordWebProcessor::receiveNextNews(QNetworkReply *reply)
         return;
     }
 
-    QByteArray replyByteArray = reply->readAll();
 
+    QByteArray replyByteArray = reply->readAll();
     delete reply;
 
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
