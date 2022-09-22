@@ -91,6 +91,9 @@ void ModsInstaller::uninstallCameraMod()
 
     QFile tempfile3(m_ssPath + "\\Engine\\Data\\camera_low.lua");
     tempfile3.remove();
+
+    QFile tempfile4(m_ssPath + "\\Engine\\Data\\camera_me.lua");
+    tempfile4.remove();
 }
 
 void ModsInstaller::installGridHotkeys(QString path)
