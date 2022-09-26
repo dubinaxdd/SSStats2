@@ -21,8 +21,8 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(QUrl     playerAvatarId   READ avatarId              NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  steamId          READ getSteamId              NOTIFY playersStatsChanged)
     Q_PROPERTY(int  calibrateGamesLeft   READ getCalibrateGamesLeft              NOTIFY playersStatsChanged)
-
-
+    Q_PROPERTY(bool isRanked READ getIsRanked WRITE setIsRanked NOTIFY isRankedChanged)
+    Q_PROPERTY(bool isOnline READ getIsOnline WRITE setIsOnline NOTIFY isOnlineChanged)
 
 public:
     explicit StatisticPanelItem(QObject *parent = nullptr);
@@ -35,6 +35,10 @@ public:
 signals:
     void playersStatsChanged();
     void itemVisibleChanged();
+
+    void isRankedChanged();
+
+    void isOnlineChanged();
 
 public:
     QString getPlayerName() const;
@@ -58,13 +62,19 @@ public:
     const QString &avatarId() const;
     void setAvatarId(const QString &newAvatarId);
 
+    bool getIsRanked() const;
+    void setIsRanked(bool newIsRanked);
+
+    bool getIsOnline() const;
+    void setIsOnline(bool newIsOnline);
+
 private:
     ServerPlayerStats m_playersStats;
     QString tempSid = "";
     QString m_avatarId = "";
     bool m_visible = false;
-
-
+    bool isRanked = true;
+    bool isOnline = false;
 };
 
 #endif // STATISTICPANELITEM_H

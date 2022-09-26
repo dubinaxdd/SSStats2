@@ -4,8 +4,8 @@
 #include <baseTypes.h>
 #include <QObject>
 #include <QImage>
-#include <imageprovider.h>
-#include <statisticpanelitem.h>
+#include <imageProvider.h>
+#include <statisticPanelItem.h>
 #include <QAbstractListModel>
 
 class StatisticPanel :  public QAbstractListModel
@@ -30,6 +30,8 @@ public:
         PlayerAvatarId = Qt::UserRole + 9,
         SteamId = Qt::UserRole + 10,
         CalibrateGamesLeft = Qt::UserRole + 11,
+        IsOnline = Qt::UserRole + 12,
+        IsRanked = Qt::UserRole + 13,
         PlayerVisible = Qt::UserRole
     };
 
@@ -52,6 +54,8 @@ public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
     void receivePlayersInfoMapFromScanner(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
     void receiveCurrentPlayerHostState(bool isHost);
+    void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
+
     void onQuitParty();
 
 private:

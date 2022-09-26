@@ -26,7 +26,7 @@ ColumnLayout
                 relativeMouseY <= trainingModeSwitch.y + headerRectangle.height + trainingModeSwitch.height)
         {
             trainingModeSwitch.checkedState = !trainingModeSwitch.checkedState;
-            _uiBackend.trainingModeState = trainingModeSwitch.checkedState;
+            _uiBackend.rankedModeState = trainingModeSwitch.checkedState;
         }
     }
 
@@ -218,7 +218,7 @@ ColumnLayout
         Layout.fillWidth: true
        // color: "#ffffff"
 
-        color: trainingModeSwitch.checked ? "#ffa9a9" : "#00ff99";
+        color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
         radius: 10 * _uiBackend.sizeModifer
 
         visible: showTrainingModeSwitch
@@ -227,17 +227,17 @@ ColumnLayout
             width: parent.width
             height: 10 * _uiBackend.sizeModifer
 
-            color: trainingModeSwitch.checked ? "#ffa9a9" : "#00ff99";
+            color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
         }
 
         Switch
         {
             id: trainingModeSwitch
             anchors.fill: parent
-            text: "Training mode"
+            text: "Ranked mode"
 
             property bool hoverState : false
-            property bool checkedState : _uiBackend.trainingModeState
+            property bool checkedState : _uiBackend.rankedModeState
 
             font.pixelSize: 15 * _uiBackend.sizeModifer
             opacity: hoverState ? 1.0 : 0.8

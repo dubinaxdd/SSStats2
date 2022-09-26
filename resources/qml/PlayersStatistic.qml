@@ -59,6 +59,8 @@ Rectangle {
                 playerVisible: model.curentPlayerStatsItem.itemVisible
                 steamId: model.curentPlayerStatsItem.steamId
                 calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
+                isRanked: model.curentPlayerStatsItem.isRanked
+                isOnline: model.curentPlayerStatsItem.isOnline
 
                 avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
 
@@ -88,6 +90,8 @@ Rectangle {
                     playerVisible: model.playerVisible
                     steamId: model.steamId
                     calibrateGamesLeft: model.calibrateGamesLeft
+                    isRanked: model.isRanked
+                    isOnline: model.isOnline
 
                     avatarSource: "image://imageprovider/" + model.avatarId
 

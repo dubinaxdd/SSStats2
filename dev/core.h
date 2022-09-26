@@ -13,6 +13,7 @@
 #include <soundProcessor.h>
 #include <overlayWindowController.h>
 #include <statsServerProcessor.h>
+#include <rankedModServiceProcessor.h>
 
 class Core : public QObject
 {
@@ -49,6 +50,7 @@ private:
     ModsProcessor* m_modsProcessor;
     SoundProcessor* m_soundProcessor;
     StatsServerProcessor* m_statsServerProcessor;
+    RankedModServiceProcessor* m_rankedModServiceProcessor;
 };
 
 //Q_DECLARE_METATYPE(Core);

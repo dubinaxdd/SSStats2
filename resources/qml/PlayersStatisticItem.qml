@@ -18,6 +18,8 @@ Rectangle {
     property bool playerVisible
     property string steamId
     property int calibrateGamesLeft
+    property bool isOnline: false
+    property bool isRanked: false
 
     property url avatarSource: ""
 
@@ -161,6 +163,46 @@ Rectangle {
                 }
             }
 
+            RowLayout
+            {
+                Layout.leftMargin: 10 * sizeModifer
+                visible: !itemRectangle.playerIsBanned
+
+                Rectangle{
+                    radius:5 * sizeModifer
+
+                    Layout.preferredHeight: 10 * sizeModifer
+                    Layout.preferredWidth: 10 * sizeModifer
+
+                    color:  itemRectangle.isOnline ? "#00ff99" : "#ffa9a9"
+                }
+
+                Label{
+                    text: itemRectangle.isOnline ? "Online" : "Offline"
+                }
+            }
+
+
+            RowLayout
+            {
+                Layout.leftMargin: 10 * sizeModifer
+
+                visible: !itemRectangle.playerIsBanned
+
+                Rectangle{
+                    radius:5 * sizeModifer
+
+                    Layout.preferredHeight: 10 * sizeModifer
+                    Layout.preferredWidth: 10 * sizeModifer
+
+                    color:  itemRectangle.isRanked ? "#00ff99" : "#ffa9a9"
+                }
+
+                Label{
+                    text: itemRectangle.isRanked ? "Ranked" : "Unranked"
+                }
+            }
+
             Label {
                 id: statusLabel
                 visible: itemRectangle.playerIsBanned
@@ -169,6 +211,12 @@ Rectangle {
 
                 Layout.bottomMargin: 10 * sizeModifer
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            }
+
+
+            Rectangle
+            {
+                Layout.fillHeight: true
             }
         }
 

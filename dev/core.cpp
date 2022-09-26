@@ -19,7 +19,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_discordWebProcessor(new DiscordWebProcessor(m_settingsController, this))
     , m_modsProcessor(new ModsProcessor(m_soulstormController->ssPath(), this))
     , m_soundProcessor(new SoundProcessor(this))
-    ,m_statsServerProcessor ( new StatsServerProcessor(m_soulstormController->ssPath(), m_soulstormController->steamPath(), this))
+    , m_statsServerProcessor ( new StatsServerProcessor(m_soulstormController->ssPath(), m_soulstormController->steamPath(), this))
+    , m_rankedModServiceProcessor(new RankedModServiceProcessor(this))
 {
     registerTypes();
 
@@ -108,9 +109,18 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_soulstormController->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, m_statsServerProcessor, &StatsServerProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_soulstormController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
 
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayersInfoMapFromScanner,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, m_rankedModServiceProcessor, &RankedModServiceProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
+
     QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
 
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
+
+    QObject::connect(m_uiBackend,   &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
+
+    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
+
 
     m_statsServerProcessor->parseCurrentPlayerSteamId();
 
@@ -132,6 +142,8 @@ void Core::registerTypes()
     qRegisterMetaType<PartyData>("PartyData");
     qRegisterMetaType<InstMod>("InstMod");
     qRegisterMetaType<QVector<WinCondition>>("QVector<WinCondition>");
+    qRegisterMetaType<QVector<PlyersRankedState>>("QVector<PlyersRankedState>");
+
 }
 
 OverlayWindowController *Core::overlayWindowController() const

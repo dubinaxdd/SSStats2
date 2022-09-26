@@ -48,7 +48,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
     Q_PROPERTY(bool notificationVisible READ notificationVisible WRITE setNotificationVisible NOTIFY notificationVisibleChanged)
 
-    Q_PROPERTY(bool trainingModeState READ trainingModeState WRITE setTrainingModeState NOTIFY trainingModeStateChanged)
+    Q_PROPERTY(bool rankedModeState READ rankedModeState WRITE setRankedModeState NOTIFY rankedModeStateChanged)
     Q_PROPERTY(bool enableTrainingModeSwitch READ enableTrainingModeSwitch WRITE setEnableTrainingModeSwitch NOTIFY enableTrainingModeSwitchChanged)
 
 public:
@@ -87,8 +87,8 @@ public:
     bool notificationVisible() const;
     void setNotificationVisible(bool newNotificationVisible);
 
-    bool trainingModeState() const;
-    void setTrainingModeState(bool newTrainingModeState);
+    bool rankedModeState() const;
+    void setRankedModeState(bool newRankedModeState);
 
     bool enableTrainingModeSwitch() const;
     void setEnableTrainingModeSwitch(bool newEnableTrainingModeSwitch);
@@ -127,7 +127,7 @@ signals:
     void updateNotification();
     void notificationVisibleChanged();
 
-    void trainingModeStateChanged();
+    void rankedModeStateChanged(bool trainingMode);
 
     void enableTrainingModeSwitchChanged();
 
@@ -199,7 +199,7 @@ private:
 
     bool m_noFogState = false;
 
-    bool m_trainingModeState = false;
+    bool m_rankedModeState = true;
     bool m_enableTrainingModeSwitch = true;
 
     float m_sizeModifer = 2.0;

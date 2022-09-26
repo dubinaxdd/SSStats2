@@ -168,6 +168,8 @@ Rectangle {
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
                 calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
+                isRanked: model.curentPlayerStatsItem.isRanked
+                isOnline: model.curentPlayerStatsItem.isOnline
 
                 avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
                 sizeModifer: _uiBackend.sizeModifer
@@ -200,6 +202,8 @@ Rectangle {
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
                     calibrateGamesLeft: model.calibrateGamesLeft
+                    isRanked: model.isRanked
+                    isOnline: model.isOnline
 
                     avatarSource: "image://imageprovider/" + model.avatarId
                     sizeModifer: _uiBackend.sizeModifer

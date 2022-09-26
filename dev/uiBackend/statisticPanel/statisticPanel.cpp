@@ -1,4 +1,4 @@
-#include <statisticpanel.h>
+#include <statisticPanel.h>
 #include <QDebug>
 
 StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
@@ -30,6 +30,8 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case PlayerAvatarId: return item->avatarId();
         case SteamId: return item->getSteamId();
         case CalibrateGamesLeft: return item->getCalibrateGamesLeft();
+        case IsOnline: return item->getIsOnline();
+        case IsRanked: return item->getIsRanked();
     }
 
     return QVariant();
@@ -57,6 +59,8 @@ QHash<int, QByteArray> StatisticPanel::roleNames() const
     roles[PlayerAvatarId]   = "avatarId";
     roles[SteamId]          = "steamId";
     roles[CalibrateGamesLeft] = "calibrateGamesLeft";
+    roles[IsOnline] = "isOnline";
+    roles[IsRanked] = "isRanked";
 
     return roles;
 }
@@ -131,6 +135,38 @@ void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
         m_playersCount = 1;
 
     currentPlayerIsHost = isHost;
+}
+
+void StatisticPanel::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
+{
+    for (int i = 0; i < m_playersStatsItems.count(); i++)
+    {
+        for (int j = 0; j < plyersRankedState.count(); j++)
+        {
+            if (plyersRankedState.at(j).steamId == m_playersStatsItems.at(i)->getSteamId())
+            {
+                m_playersStatsItems[i]->setIsOnline(plyersRankedState.at(j).isOnline);
+                m_playersStatsItems[i]->setIsRanked(plyersRankedState.at(j).isRanked);
+            }
+        }
+    }
+
+    for (int j = 0; j < plyersRankedState.count(); j++)
+    {
+        if (plyersRankedState.at(j).steamId == m_curentPlayerStatsItem->getSteamId())
+        {
+            m_curentPlayerStatsItem->setIsOnline(plyersRankedState.at(j).isOnline);
+            m_curentPlayerStatsItem->setIsRanked(plyersRankedState.at(j).isRanked);
+
+            emit currentPlayerStatsChanged();
+        }
+    }
+
+    QModelIndex first = QAbstractItemModel::createIndex(0, 0);
+    QModelIndex last = QAbstractItemModel::createIndex(m_playersStatsItems.count() - 1, 0);
+
+    emit dataChanged(first, last);
+
 }
 
 void StatisticPanel::onQuitParty()

@@ -279,4 +279,11 @@ enum SortType : int
     SortByTime = 4
 };
 
+struct PlyersRankedState
+{
+    QString steamId = "";
+    bool isRanked = true;
+    bool isOnline = false;
+};
+
 #endif // BASETYPES_H

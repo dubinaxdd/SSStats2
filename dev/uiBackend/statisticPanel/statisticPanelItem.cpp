@@ -1,4 +1,4 @@
-#include <statisticpanelitem.h>
+#include <statisticPanelItem.h>
 
 StatisticPanelItem::StatisticPanelItem(QObject *parent) : QObject(parent)
 {
@@ -45,6 +45,33 @@ void StatisticPanelItem::setAvatarId(const QString &newAvatarId)
     m_avatarId = newAvatarId;
     emit playersStatsChanged();
 }
+
+bool StatisticPanelItem::getIsRanked() const
+{
+    return isRanked;
+}
+
+void StatisticPanelItem::setIsRanked(bool newIsRanked)
+{
+    if (isRanked == newIsRanked)
+        return;
+    isRanked = newIsRanked;
+    emit isRankedChanged();
+}
+
+bool StatisticPanelItem::getIsOnline() const
+{
+    return isOnline;
+}
+
+void StatisticPanelItem::setIsOnline(bool newIsOnline)
+{
+    if (isOnline == newIsOnline)
+        return;
+    isOnline = newIsOnline;
+    emit isOnlineChanged();
+}
+
 
 ServerPlayerStats StatisticPanelItem::playersStats()
 {

@@ -116,17 +116,17 @@ void UiBackend::setEnableTrainingModeSwitch(bool newEnableTrainingModeSwitch)
     emit enableTrainingModeSwitchChanged();
 }
 
-bool UiBackend::trainingModeState() const
+bool UiBackend::rankedModeState() const
 {
-    return m_trainingModeState;
+    return m_rankedModeState;
 }
 
-void UiBackend::setTrainingModeState(bool newTrainingModeState)
+void UiBackend::setRankedModeState(bool newRankedModeState)
 {
-    if (m_trainingModeState == newTrainingModeState)
+    if (m_rankedModeState == newRankedModeState)
         return;
-    m_trainingModeState = newTrainingModeState;
-    emit trainingModeStateChanged();
+    m_rankedModeState = newRankedModeState;
+    emit rankedModeStateChanged(m_rankedModeState);
 }
 
 ReplayManager *UiBackend::replayManager() const
