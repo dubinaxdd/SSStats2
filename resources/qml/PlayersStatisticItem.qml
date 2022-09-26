@@ -179,6 +179,7 @@ Rectangle {
 
                 Label{
                     text: itemRectangle.isOnline ? "Online" : "Offline"
+                    font.pixelSize: 11 * sizeModifer
                 }
             }
 
@@ -200,6 +201,7 @@ Rectangle {
 
                 Label{
                     text: itemRectangle.isRanked ? "Ranked" : "Unranked"
+                    font.pixelSize: 11 * sizeModifer
                 }
             }
 
