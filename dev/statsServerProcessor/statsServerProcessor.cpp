@@ -357,9 +357,9 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "version=" + m_clientVersion + "&";
 
     if (m_rankedMode)
-        url += "is_ranked=1";
+        url += "isRanked=1";
     else
-        url += "is_ranked=0";
+        url += "isRanked=0";
 
     qInfo(logInfo()) << "Replay sending url:" << url;
 
