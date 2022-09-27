@@ -120,6 +120,10 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend,   &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
+    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_statsServerProcessor, &StatsServerProcessor::receivePlyersRankedState , Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_statsServerProcessor, &StatsServerProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
+
+    QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendLockRanked, m_statsServerProcessor, &StatsServerProcessor::receiveLockRanked,         Qt::QueuedConnection);
 
 
     m_statsServerProcessor->parseCurrentPlayerSteamId();

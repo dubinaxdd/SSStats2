@@ -16,18 +16,24 @@ void ReplayDataCollector::receiveCurrentMissionState(SsMissionState missionCurre
 {
     switch (missionCurrentState)
     {
-        case SsMissionState::gameStoped : readReplayData(); break;
+        case SsMissionState::gameStoped :
+        {
+            if (!readReplayData())
+                emit sendLockRanked(false);
+
+            break;
+        }
         default: break;
     }
 }
 
 
-void ReplayDataCollector::readReplayData()
+bool ReplayDataCollector::readReplayData()
 {
     if (m_gameWillBePlayedInOtherSession)
     {
         qWarning(logWarning()) << "Game will be played in other session, replay not sended";
-        return;
+        return false;
     }
     m_testStatsPath = updateTestStatsFilePath();
 
@@ -36,9 +42,9 @@ void ReplayDataCollector::readReplayData()
     QFile file(m_testStatsPath);
 
     if(!file.open(QIODevice::ReadOnly))
-        return;
+        return false;
     if(!file.isReadable())
-        return;
+        return false;
 
     // в начале файла лежат байты из-за этого корневой ключ может не читаться
     int k=0;
@@ -354,13 +360,13 @@ void ReplayDataCollector::readReplayData()
 
     switch (playersCount)
     {
-        case 1: return;
+        case 1: return false;
         case 2: replayInfo.gameType = GameTypeForReplaySending::GameType1x1; break;
-        case 3: return;
+        case 3: return false;
         case 4: replayInfo.gameType = GameTypeForReplaySending::GameType2x2; break;
-        case 5: return;
+        case 5: return false;
         case 6: replayInfo.gameType = GameTypeForReplaySending::GameType3x3; break;
-        case 7: return;
+        case 7: return false;
         case 8: replayInfo.gameType = GameTypeForReplaySending::GameType4x4; break;
     }
 
@@ -376,7 +382,7 @@ void ReplayDataCollector::readReplayData()
     {
         emit sendNotification(warning, true);
         qWarning(logWarning()) << warning;
-        return;
+        return false;
     }
 
     replayInfo.mapName = scenario;
@@ -397,6 +403,8 @@ void ReplayDataCollector::readReplayData()
     //qInfo(logInfo()) << "Players history cleared";
 
     qInfo(logInfo()) << "Readed played game settings";
+
+    return true;
 }
 
 void ReplayDataCollector::receiveAverrageApm(int apm)

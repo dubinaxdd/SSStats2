@@ -10,8 +10,6 @@ class ReplayDataCollector : public QObject
 public:
     explicit ReplayDataCollector(QString ssPath, QObject *parent = nullptr);
 
-    void readReplayData();
-
 public slots:
     void receiveCurrentMissionState(SsMissionState missionCurrentState);
     void receiveAverrageApm(int apm);
@@ -24,12 +22,14 @@ public slots:
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void sendNotification(QString warningString, bool isWarning);
+    void sendLockRanked(bool lockRanked);
 
 private:
     bool checkEqualNames(QStringList* playerNames);
     bool checkAi(QVector<PlayerStats> *playerStats);
     bool checkWinner(QVector<PlayerStats> *playerStats);
     bool checkEqualNamesInStats();
+    bool readReplayData();
 
     bool checkMissionSettingsValide(int gameType);
     QString updateTestStatsFilePath();

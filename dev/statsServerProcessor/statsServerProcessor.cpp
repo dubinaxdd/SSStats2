@@ -64,6 +64,25 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
     getPlayerStatsFromServer(playersInfo);
 }
 
+void StatsServerProcessor::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
+{
+    if(m_lockRanked)
+        return;
+
+    bool isRanked = false;
+
+    for (int i = 0; i < plyersRankedState.count(); i++)
+    {
+        if (plyersRankedState.at(i).isRanked)
+        {
+            isRanked = true;
+            break;
+        }
+    }
+
+    m_rankedMode = isRanked;
+}
+
 void StatsServerProcessor::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");
@@ -284,10 +303,13 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
         }
     }
 
+    m_lockRanked = true;
+
     QString url;
 
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
-    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay2.php?";
+    //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay2.php?";
+    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay3.php?";
 
     int winnerCount = 0;
 
@@ -334,9 +356,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     url += "version=" + m_clientVersion + "&";
 
+    if (m_rankedMode)
+        url += "is_ranked=1";
+    else
+        url += "is_ranked=0";
+
     qInfo(logInfo()) << "Replay sending url:" << url;
 
-    url += "key=" + QLatin1String(SERVER_KEY);
+   // url += "key=" + QLatin1String(SERVER_KEY);
 
 
     RepReader repReader(m_ssPath+"/Playback/temp.rec");
@@ -394,6 +421,13 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
     });
+
+    m_lockRanked = false;
+}
+
+void StatsServerProcessor::receiveLockRanked(bool lockRanked)
+{
+    m_lockRanked = lockRanked;
 }
 
 QString StatsServerProcessor::GetRandomString() const
@@ -447,6 +481,17 @@ void StatsServerProcessor::registerPlayer(QString name, QString sid, bool init)
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         reply->deleteLater();
     });
+}
+
+void StatsServerProcessor::receiveCurrentMissionState(SsMissionState missionCurrentState)
+{
+    switch (missionCurrentState)
+    {
+        case SsMissionState::gameLoadStarted : m_lockRanked = true; break;
+        //case SsMissionState::unknownGameStoped:
+        //case SsMissionState::gameStoped : m_lockRanked = false; break;
+        default: break;
+    }
 }
 
 
