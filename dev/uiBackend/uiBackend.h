@@ -50,6 +50,7 @@ class UiBackend : public QObject
 
     Q_PROPERTY(bool rankedModeState READ rankedModeState WRITE setRankedModeState NOTIFY rankedModeStateChanged)
     Q_PROPERTY(bool enableTrainingModeSwitch READ enableTrainingModeSwitch WRITE setEnableTrainingModeSwitch NOTIFY enableTrainingModeSwitchChanged)
+    Q_PROPERTY(bool gameRankedMode READ gameRankedMode WRITE setGameRankedMode NOTIFY gameRankedModeChanged)
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -93,6 +94,9 @@ public:
     bool enableTrainingModeSwitch() const;
     void setEnableTrainingModeSwitch(bool newEnableTrainingModeSwitch);
 
+    bool gameRankedMode() const;
+    void setGameRankedMode(bool newGameRankedMode);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -130,6 +134,8 @@ signals:
     void rankedModeStateChanged(bool trainingMode);
 
     void enableTrainingModeSwitchChanged();
+
+    void gameRankedModeChanged();
 
 public slots:
     void expandKeyPressed();
@@ -202,11 +208,14 @@ private:
     bool m_rankedModeState = true;
     bool m_enableTrainingModeSwitch = true;
 
+    bool m_gameRankedMode = true;
+
     float m_sizeModifer = 2.0;
 
     QString m_lastNotification;
     bool m_lastNotificationIsWarning = false;
     bool m_notificationVisible = false;
+
 };
 
 #endif // UIBACKEND_H

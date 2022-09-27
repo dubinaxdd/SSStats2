@@ -278,6 +278,31 @@ Rectangle {
                     anchors.fill: parent
 
                     Rectangle {
+                        id: rankedModeRectangle
+                        width: 200 * _uiBackend.sizeModifer
+                        height: 20 * _uiBackend.sizeModifer
+                        opacity: 1
+                        color: _uiBackend.gameRankedMode ? "#00ff99" : "#ffa9a9";
+                        Layout.maximumHeight: 20 * _uiBackend.sizeModifer
+                        Layout.fillWidth: true
+                        Layout.fillHeight: false
+                        visible: model.racePanelVisible && model.smallPannelActive
+                        radius: 5 * _uiBackend.sizeModifer
+
+                        Label {
+                            id: rankedModeLabel
+                            height: 20 * _uiBackend.sizeModifer
+                            text: _uiBackend.gameRankedMode ? "Ranked mode" : "Unranked mode"
+                            anchors.fill: parent
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                            color: "#000000"
+
+                            font.pixelSize: 12 * _uiBackend.sizeModifer
+                        }
+                    }
+
+                    Rectangle {
                         id: rectangle8
                         width: 200 * _uiBackend.sizeModifer
                         height: 200 * _uiBackend.sizeModifer

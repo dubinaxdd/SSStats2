@@ -23,6 +23,9 @@ void ReplayDataCollector::receiveCurrentMissionState(SsMissionState missionCurre
 
             break;
         }
+
+        case SsMissionState::unknownGameStoped: emit sendLockRanked(false); break;
+
         default: break;
     }
 }

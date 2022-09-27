@@ -81,6 +81,8 @@ void StatsServerProcessor::receivePlyersRankedState(QVector<PlyersRankedState> p
     }
 
     m_rankedMode = isRanked;
+
+    emit sendGameRankedMode(m_rankedMode);
 }
 
 void StatsServerProcessor::parseCurrentPlayerSteamId()
