@@ -242,12 +242,15 @@ Rectangle {
 
                         onClicked:
                         {
-                            fullBadgesImagesRectangle.badgeUrl = ""
-                            fullBadgesImagesRectangle.bannerUrl = ""
-                            fullBadgesImagesRectangle.badgeUrl = model.badgeUrl
-                            fullBadgesImagesRectangle.bannerUrl = model.bannerUrl
-                            fullBadgesImagesRectangle.visible = true;
-                            fullBadgesImagesRectangle.playerName = model.name
+                            if (model.type !== "Observer")
+                            {
+                                fullBadgesImagesRectangle.badgeUrl = ""
+                                fullBadgesImagesRectangle.bannerUrl = ""
+                                fullBadgesImagesRectangle.badgeUrl = model.badgeUrl
+                                fullBadgesImagesRectangle.bannerUrl = model.bannerUrl
+                                fullBadgesImagesRectangle.visible = true;
+                                fullBadgesImagesRectangle.playerName = model.name
+                            }
                         }
                     }
                 }
