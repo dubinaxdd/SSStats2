@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <defines.h>
 
 RankedModServiceProcessor::RankedModServiceProcessor(QObject *parent) : QObject(parent)
 {
@@ -53,6 +54,7 @@ void RankedModServiceProcessor::sendRankedMode(bool rankedMode)
     QString urlString = "http://crosspick.ru:8081/setRankedMode?sid=" + m_currentPlayerSteamId + "&rankedMode=" +ranked ;
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
+    newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -74,6 +76,7 @@ void RankedModServiceProcessor::pingTimerTimeout()
     QString urlString = "http://crosspick.ru:8081/pingRequest?sid=" + m_currentPlayerSteamId;
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
+    newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -111,8 +114,8 @@ void RankedModServiceProcessor::rankedStateTimerTimeout()
 
     QString urlString = "http://crosspick.ru:8081/getRankedMode?sid=" + sidsListString;
 
-
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
+    newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
