@@ -414,9 +414,18 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     request.setRawHeader("User-Agent", "");
 
     QNetworkReply *reply = m_networkManager->post(request, postData);
-    qInfo(logInfo()) << "The replay has been uploaded to the server";
 
-    emit sendNotification("The replay has been uploaded to the server", false);
+
+    if (m_rankedMode)
+    {
+        qInfo(logInfo()) << "The ranked game has been uploaded to the server";
+        emit sendNotification("The ranked game has been uploaded to the server", false);
+    }
+    else
+    {
+        qInfo(logInfo()) << "The unranked game has been uploaded to the server";
+        emit sendNotification("The unranked game has been uploaded to the server", false);
+    }
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
