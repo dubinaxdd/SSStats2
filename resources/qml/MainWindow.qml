@@ -314,6 +314,10 @@ Window {
 
             ColumnLayout
             {
+                id: patyStatisticColumnLayout
+
+                visible: _uiBackend.statisticPanel.curentPlayerStatsItem.itemVisible && _uiBackend.statisticPanel.curentPlayerStatsItem.playerName !== ""
+
                 Rectangle
                 {
                     Layout.maximumWidth: 280
@@ -336,22 +340,7 @@ Window {
 
                         color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
                     }
-/*
-                    Switch
-                    {
-                        id: trainingModeSwitch
-                        anchors.fill: parent
-                        text: "Ranked mode"
 
-                        property bool hoverState : false
-                        property bool checkedState : _uiBackend.rankedModeState
-
-                        font.pixelSize: 15
-                        opacity: hoverState ? 1.0 : 0.8
-                        checked: checkedState
-                        leftPadding: 10
-                    }
-*/
                     Switch {
                         id: trainingModeSwitch
                         text: "Ranked mode"
@@ -365,8 +354,6 @@ Window {
                             _uiBackend.rankedModeState = checked;
                         }
                     }
-
-
                 }
 
                 PlayersStatistic
@@ -377,6 +364,10 @@ Window {
                     Layout.fillHeight: true
                     Layout.rightMargin: 5
                     Layout.leftMargin: 0
+/*
+                    onVisibleChanged: {
+                         patyStatisticColumnLayout.visible = patyStatistic.visible;
+                    }*/
                 }
             }
         }
