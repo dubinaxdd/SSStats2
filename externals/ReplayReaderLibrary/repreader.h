@@ -30,6 +30,8 @@ public:
     static QString getReplayMod(QString replay);
     static QString getReplayMap(QString replay);
 
+    bool isValide() const;
+
 private:
 
     Player *ReadPlayer();
@@ -37,6 +39,8 @@ private:
 
     int _lastTick;
     ExtendedBinReader *BinReader;
+
+    bool m_valide = true;
 
 };
 }

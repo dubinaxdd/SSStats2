@@ -16,7 +16,9 @@ RepReader::RepReader(QString fileName)
     if(pfile->open(QIODevice::ReadWrite)){
         BinReader = new ExtendedBinReader(pfile);
         replay.setFileName(fileName);
-        ReadReplayFully();
+
+        if (!ReadReplayFully())
+            m_valide = false;
     }//else
         //qDebug() << "Could not open file" << fileName   ;
 }
@@ -70,8 +72,14 @@ bool RepReader::ReadHeader()
     replay.PlayerCount = BinReader->ReadInt32();
     // размер карты в ячейках
     replay.MapSize = BinReader->ReadInt32();
+
+    int nameLegth = BinReader->ReadInt32();
+
+    if (nameLegth < 0 || nameLegth > 300)
+        return false;
+
     // имя файла локали в котором хранится ссылка на локализованное имя карты
-    /*qDebug() <<*/ BinReader->ReadStringUTF8(BinReader->ReadInt32());
+    /*qDebug() <<*/ BinReader->ReadStringUTF8(nameLegth);
     // локализованное имя карты
     replay.MapLocale = BinReader->ReadStringUTF16(BinReader->ReadInt32());
 //    qDebug() << replay.MapLocale;
@@ -455,6 +463,11 @@ void RepReader::ReadActionDetail()
         else
             BinReader->skipRawData(action1Len);
     }
+}
+
+bool RepReader::isValide() const
+{
+    return m_valide;
 }
 
 bool RepReader::convertReplayToSteamVersion()

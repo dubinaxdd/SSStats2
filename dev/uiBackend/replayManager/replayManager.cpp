@@ -28,6 +28,8 @@ void ReplayManager::setSsPath(const QString &newSsPath)
     m_ssUrlPathPath = QUrl::fromLocalFile(m_ssPath);
     m_playbackFolder = m_ssPath + QDir::separator() + "Playback";
 
+    qInfo(logInfo()) << "Default playback folder: " << m_playbackFolder;
+
     getReplaysData();
 }
 
@@ -283,7 +285,6 @@ void ReplayManager::getReplaysData()
 {
     QDir dir(m_playbackFolder);
     QString path = dir.absolutePath();
-
     QFileInfoList dirContent = dir.entryInfoList(QStringList() << "*.rec", QDir::Files | QDir::NoDotAndDotDot);
 
     if (dirContent.count() == 0)
@@ -294,15 +295,16 @@ void ReplayManager::getReplaysData()
     for (int i = 0; i < dirContent.count(); i++)
     {
         QString fileName = dirContent.at(i).fileName();
-
         RepReader newRepReader(path + QDir::separator() + fileName);
+
+        if (!newRepReader.isValide())
+            continue;
 
         ReplayListInfo newReplayInfo;
 
         newReplayInfo.name = newRepReader.replay.Name;
 
-        QString mapSourceUrl = "qrc:/maps/resources/maps/" + newRepReader.replay.Map.toLower() + ".jpg";
-
+        QString mapSourceUrl = "qrc:/maps/resources/maps/" + newRepReader.replay.Map.toLower() + ".jpg";;
         QFile checkFile(m_mapSourceUrl.right(m_mapSourceUrl.count() - 3));
 
         if(!checkFile.exists())
