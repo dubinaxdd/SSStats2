@@ -12,6 +12,16 @@ ColumnLayout
     property int relativeMouseX
     property int relativeMouseY
 
+    Connections
+    {
+        target: _uiBackend
+
+        function onRankedModeStateChanged()
+        {
+            trainingModeSwitch.checked = _uiBackend.rankedModeState;
+        }
+    }
+
     function mouseClick(x, y)
     {
         relativeMouseX = x

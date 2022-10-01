@@ -28,8 +28,6 @@ Rectangle {
         }
     }
 
-
-
     ScrollView {
         id: scrollView
 
@@ -106,6 +104,7 @@ Rectangle {
             }
         }
     }
+
 }
 
 

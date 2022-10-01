@@ -16,15 +16,28 @@ Window {
     minimumWidth: 1200
     minimumHeight: 700
 
+    Connections
+    {
+        target: _uiBackend
+
+        function onRankedModeStateChanged()
+        {
+            trainingModeSwitch.checked = _uiBackend.rankedModeState;
+        }
+    }
+
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
+
+        spacing: 0
 
         Rectangle {
             id: header
             color: "#333333"
             Layout.fillWidth: true
             Layout.minimumHeight: 60
+
             gradient: Gradient {
                 GradientStop {
                     position: 0
@@ -251,7 +264,7 @@ Window {
                 Layout.rightMargin: 10
                 Layout.bottomMargin: 10
                 Layout.leftMargin: 10
-                Layout.topMargin: 0
+                Layout.topMargin: 5
                 Layout.preferredHeight: 0
                 Layout.preferredWidth: 0
                 Layout.fillWidth: true
@@ -299,14 +312,72 @@ Window {
                 }
             }
 
-            PlayersStatistic
+            ColumnLayout
             {
-                id: patyStatistic
-                Layout.alignment: Qt.AlignTop
-                model: _uiBackend.statisticPanel
-                Layout.fillHeight: true
-                Layout.rightMargin: 5
-                Layout.leftMargin: 0
+                Rectangle
+                {
+                    Layout.maximumWidth: 280
+                    Layout.maximumHeight: 40
+                    Layout.minimumWidth: 280
+                    Layout.minimumHeight: 40
+                    Layout.rightMargin: 5
+                    height: 40
+                    Layout.alignment: Qt.AlignRight | Qt.AlignTop
+                    Layout.fillHeight: false
+                    Layout.fillWidth: true
+                   // color: "#ffffff"
+
+                    color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
+                    radius: 10
+
+                    Rectangle{
+                        width: parent.width
+                        height: 10
+
+                        color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
+                    }
+/*
+                    Switch
+                    {
+                        id: trainingModeSwitch
+                        anchors.fill: parent
+                        text: "Ranked mode"
+
+                        property bool hoverState : false
+                        property bool checkedState : _uiBackend.rankedModeState
+
+                        font.pixelSize: 15
+                        opacity: hoverState ? 1.0 : 0.8
+                        checked: checkedState
+                        leftPadding: 10
+                    }
+*/
+                    Switch {
+                        id: trainingModeSwitch
+                        text: "Ranked mode"
+                        checked: _uiBackend.rankedModeState
+                        anchors.fill: parent
+
+                        opacity: hovered ? 1.0 : 0.8
+                        font.pixelSize: 15
+
+                        onCheckedChanged: {
+                            _uiBackend.rankedModeState = checked;
+                        }
+                    }
+
+
+                }
+
+                PlayersStatistic
+                {
+                    id: patyStatistic
+                    Layout.alignment: Qt.AlignTop
+                    model: _uiBackend.statisticPanel
+                    Layout.fillHeight: true
+                    Layout.rightMargin: 5
+                    Layout.leftMargin: 0
+                }
             }
         }
 
