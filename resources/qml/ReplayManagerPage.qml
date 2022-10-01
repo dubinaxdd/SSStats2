@@ -83,6 +83,7 @@ Rectangle {
                     Label{
                         text: _uiBackend.replayManager.currentMap
                         Layout.alignment: Qt.AlignCenter
+                        font.pixelSize: 11
                     }
 
                 }
@@ -91,6 +92,10 @@ Rectangle {
                 {
                     Layout.maximumWidth: 340
                     clip: true
+
+                    Layout.alignment: Qt.AlignTop
+
+                    spacing: 2
 
                     Label{
                         text: _uiBackend.replayManager.currentReplayName
@@ -101,30 +106,37 @@ Rectangle {
                     Label{
                         id: fileNameLabel
                         text: "File name: " + _uiBackend.replayManager.currentFileName
+                        font.pixelSize: 11
                     }
 
                     Label{
                         text: "Mod: " + _uiBackend.replayManager.currentMod
+                        font.pixelSize: 11
                     }
 
                     Label{
                         text: "Creation time: " + _uiBackend.replayManager.currentReplayTime
+                        font.pixelSize: 11
                     }
 
                     Label{
                         text: "Duration: " + _uiBackend.replayManager.currentDuration
+                        font.pixelSize: 11
                     }
 
                     Label{
                         text: "Players count: " + _uiBackend.replayManager.currentPlayerCount
+                        font.pixelSize: 11
                     }
 
                     Label{
                         text: "Teams count: " + _uiBackend.replayManager.currentTeamsCount
+                        font.pixelSize: 11
                     }
 
                     Label{
                         text: "Map size: " + _uiBackend.replayManager.currentMapSize
+                        font.pixelSize: 11
                     }
                 }
             }
@@ -140,18 +152,21 @@ Rectangle {
                 {
                     Layout.alignment: Qt.AlignTop
                     text: "AI difficulty: \nStarting resources: \nLock teams: \nEnable cheats: \nStarting location: \nGame speed: \nResource sharing: \nResource rate:"
+                    font.pixelSize: 11
                 }
 
                 Label
                 {
                     Layout.alignment: Qt.AlignTop
                     text: _uiBackend.replayManager.gameSettings
+                    font.pixelSize: 11
                 }
 
                 Label
                 {
                     Layout.alignment: Qt.AlignTop
                     text: _uiBackend.replayManager.winConditions
+                    font.pixelSize: 11
                 }
             }
 
@@ -190,8 +205,8 @@ Rectangle {
                         Label {
                             text: "Type: " + model.type
                             Layout.alignment: Qt.AlignLeft
-
                             Layout.preferredWidth: 80
+                            font.pixelSize: 11
                         }
 
                         Label {
@@ -200,18 +215,21 @@ Rectangle {
                             //Layout.preferredWidth: 150
                             Layout.fillWidth: true
                             clip:true
+                            font.pixelSize: 11
                         }
 
                         Label {
                             text: model.type === "Observer" ? "" : "Race: " + model.race
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 120
+                            font.pixelSize: 11
                         }
 
                         Label {
                             text: model.type === "Observer" ? "" : "Team: " + model.team
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 60
+                            font.pixelSize: 11
                         }
 
                         Image
@@ -436,16 +454,21 @@ Rectangle {
 
                             ColumnLayout
                             {
+                                spacing: 2
+
                                 Label{
                                     text: "File name: " + model.fileName
+                                    font.pixelSize: 11
                                 }
 
                                 Label{
                                     text: "Replay name: " + model.name
+                                    font.pixelSize: 11
                                 }
 
                                 Label{
                                     text: "Mod: " + model.mod
+                                    font.pixelSize: 11
                                 }
                             }
 
