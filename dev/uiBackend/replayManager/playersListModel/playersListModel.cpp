@@ -38,13 +38,19 @@ int PlayersListModel::rowCount(const QModelIndex &parent) const
 
 void PlayersListModel::setPlayersList(QVector<ReplayPlayer> players)
 {
-    beginRemoveRows(QModelIndex(), 0, m_players.count() - 1);
-    m_players.clear();
-    endRemoveRows();
+    if (m_players.count() > 0)
+    {
+        beginRemoveRows(QModelIndex(), 0, m_players.count() - 1);
+        m_players.clear();
+        endRemoveRows();
+    }
 
-    beginInsertRows(QModelIndex(), 0, players.count() - 1);
-    m_players = players;
-    endInsertRows();
+    if (players.count() > 0)
+    {
+        beginInsertRows(QModelIndex(), 0, players.count() - 1);
+        m_players = players;
+        endInsertRows();
+    }
 }
 
 QHash<int, QByteArray> PlayersListModel::roleNames() const

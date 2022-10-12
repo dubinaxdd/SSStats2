@@ -21,7 +21,7 @@ public:
     void WriteInt32(int num);
 
     char ReadChar();
-    QString ReadStringUTF8(int count);
+    QString ReadStringUTF8(int  count);
     QString ReadStringUTF16(int count);
     QByteArray ReadBytesArray(int count);
 };

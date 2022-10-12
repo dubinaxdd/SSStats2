@@ -661,11 +661,15 @@ QString RepReader::getReplayMap(QString replay)
         out.skipRawData(count);
         out >> count;
 //        qDebug() << count << out.device()->pos();
-        char temp[count*2+2];
-        memset(temp, 0, count*2+2);
+
+        QVector<char> temp;
+        temp.resize(count*2+2);
+
+        //char temp[count*2+2];
+        memset(temp.data(), 0, count*2+2);
         temp[count*2+2]={0};
-        out.readRawData(temp, count*2);
-        mapName = QString::fromUtf16((ushort*)temp);
+        out.readRawData(temp.data(), count*2);
+        mapName = QString::fromUtf16((ushort*)temp.data());
         file.close();
     }
     return mapName;
