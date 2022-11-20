@@ -78,8 +78,8 @@ set(PROJECT_SOURCES
         dev/baseTypes/baseTypes.h
         dev/logger/logger.h
         dev/logger/logger.cpp
-        dev/discordWebProcessor/discordWebProcessor.h
-        dev/discordWebProcessor/discordWebProcessor.cpp
+        dev/newsServiceWebProcessor/newsServiceWebProcessor.h
+        dev/newsServiceWebProcessor/newsServiceWebProcessor.cpp
         dev/uiBackend/messagesPage/messagesPage.h
         dev/uiBackend/messagesPage/messagesPage.cpp
         dev/modsProcessor/modsProcessor.h
@@ -168,7 +168,7 @@ include_directories(${TARGET_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/settingsController
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/hookManager
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/keyboardProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/discordWebProcessor
+    ${CMAKE_CURRENT_SOURCE_DIR}/dev/newsServiceWebProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/soundProcessor
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/logger
     ${CMAKE_CURRENT_SOURCE_DIR}/dev/statsServerProcessor

@@ -7,7 +7,7 @@
 #include <settingsController.h>
 #include <uiBackend.h>
 #include <soulstormController.h>
-#include <discordWebProcessor.h>
+#include <newsServiceWebProcessor.h>
 #include <logger.h>
 #include <modsProcessor.h>
 #include <soundProcessor.h>

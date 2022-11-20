@@ -1,4 +1,4 @@
-#include "discordWebProcessor.h"
+#include "newsServiceWebProcessor.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -14,9 +14,9 @@
 
 DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
-    , m_networkManager(new QNetworkAccessManager(this))
-    , m_requestTimer(new QTimer(this))
     , m_settingsController(settingsController)
+    , m_requestTimer(new QTimer(this))
+    , m_networkManager(new QNetworkAccessManager(this))
 {
     m_newsChannelId = QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit();
     m_eventsChannelId = QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit();
@@ -99,60 +99,6 @@ void DiscordWebProcessor::requestEvents()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveEvents(reply);
-        m_readyToRequest = true;
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-        m_readyToRequest = true;
-    });
-}
-
-void DiscordWebProcessor::requestNewsChannel()
-{
-    QNetworkRequest newRequest;
-
-    QString urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId;
-
-    newRequest.setUrl(QUrl(urlString));
-    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
-    newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStats2");
-    newRequest.setRawHeader("Content-Type","application/json");
-
-    m_readyToRequest = false;
-
-    QNetworkReply *reply = m_networkManager->get(newRequest);
-
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveNewsChannel(reply);
-        m_readyToRequest = true;
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-        m_readyToRequest = true;
-    });
-}
-
-void DiscordWebProcessor::requestEventsChannel()
-{
-    QNetworkRequest newRequest;
-
-    QString urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId;
-
-    newRequest.setUrl(QUrl(urlString));
-    newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
-    newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStats2");
-    newRequest.setRawHeader("Content-Type","application/json");
-
-    m_readyToRequest = false;
-
-    QNetworkReply *reply = m_networkManager->get(newRequest);
-
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveEventsChannel(reply);
         m_readyToRequest = true;
     });
 
@@ -359,7 +305,7 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
         discordNewsList.append(std::move(newDiscordMessage));
     }
 
-    return std::move(discordNewsList);
+    return discordNewsList;
 }
 
 void DiscordWebProcessor::setLastReadedNewsMessageID(QString id)
@@ -571,37 +517,6 @@ void DiscordWebProcessor::receiveNextEvents(QNetworkReply *reply)
     emit sendNextEvents(std::move(eventsList));
 }
 
-void DiscordWebProcessor::receiveNewsChannel(QNetworkReply *reply)
-{
-    if (reply->error() != QNetworkReply::NoError)
-    {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        delete reply;
-        return;
-    }
-
-    QByteArray replyByteArray = reply->readAll();
-    delete reply;
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
-
-    if(!jsonDoc.isObject())
-        return;
-
-    QJsonObject newJsonObject = jsonDoc.object();
-
-    QString lastMessageId = newJsonObject.value("last_message_id").toString();
-
-    if (lastMessageId != m_lastNewsMessageID)
-    {
-        qInfo(logInfo()) << "Request NEWS" << lastMessageId << m_lastNewsMessageID;
-
-        m_afterNewsMessageID = m_lastNewsMessageID;
-        m_lastNewsMessageID = lastMessageId;
-        m_needRequestNews  = true;
-    }
-}
-
 void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
@@ -623,36 +538,6 @@ void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
         m_afterNewsMessageID = m_lastNewsMessageID;
         m_lastNewsMessageID = lastMessageId;
         m_needRequestNews  = true;
-    }
-}
-
-void DiscordWebProcessor::receiveEventsChannel(QNetworkReply *reply)
-{
-    if (reply->error() != QNetworkReply::NoError)
-    {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        delete reply;
-        return;
-    }
-
-    QByteArray replyByteArray = reply->readAll();
-    delete reply;
-
-    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
-
-    if(!jsonDoc.isObject())
-        return;
-
-    QJsonObject newJsonObject = jsonDoc.object();
-    QString lastMessageId = newJsonObject.value("last_message_id").toString();
-
-    if (lastMessageId != m_lastEventMessageID)
-    {
-        qInfo(logInfo()) << "Request EVENTS" << lastMessageId << m_lastEventMessageID;
-
-        m_afterEventsMessageID = m_lastEventMessageID;
-        m_lastEventMessageID = lastMessageId;
-        m_needRequestEvents = true;
     }
 }
 
@@ -771,11 +656,8 @@ void DiscordWebProcessor::requestMessages()
     }
 
     if(m_requestNewsNow)
-        //requestNewsChannel();
         requestNewsLastMessageId();
-
     else
-        //requestEventsChannel();
         requestEventsLastMessageId();
 
     m_requestNewsNow = !m_requestNewsNow;

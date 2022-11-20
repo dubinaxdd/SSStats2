@@ -17,8 +17,6 @@ public:
 private:
     void requestNews();
     void requestEvents();
-    void requestNewsChannel();
-    void requestEventsChannel();
     void requestNewsLastMessageId();
     void requestEventsLastMessageId();
 
@@ -40,9 +38,7 @@ private slots:
     void receiveNextNews(QNetworkReply* reply);
     void receiveEvents(QNetworkReply* reply);
     void receiveNextEvents(QNetworkReply* reply);
-    void receiveNewsChannel(QNetworkReply* reply);
     void receiveNewsLastMessageId(QNetworkReply* reply);
-    void receiveEventsChannel(QNetworkReply* reply);
     void receiveEventsLastMessageId(QNetworkReply* reply);
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
     void receiveAttachmentImage(QNetworkReply* reply, QString attachmentId);
