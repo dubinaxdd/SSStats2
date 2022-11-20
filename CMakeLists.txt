@@ -24,6 +24,23 @@ add_subdirectory(externals/quazip)
 set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
+set(DowStats2_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
+set(DowStats2_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)
+
+message(STATUS "DowStats2_INSTALATION_DIR: " ${DowStats2_INSTALATION_DIR})
+message(STATUS "DowStats2_LIBRARY_DIR: " ${DowStats2_LIBRARY_DIR})
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${DowStats2_INSTALATION_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${DowStats2_LIBRARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${DowStats2_LIBRARY_DIR})
+
+file(MAKE_DIRECTORY ${DowStats2_INSTALATION_DIR})
+file(MAKE_DIRECTORY ${DowStats2_LIBRARY_DIR})
+
+link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
+
+set(DEPLOY_DIR ${DowStats2_INSTALATION_DIR})
+
 exec_program(
       "git"
       ${CMAKE_CURRENT_SOURCE_DIR}
@@ -38,82 +55,23 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Linguist
 
 #set(TS_FILES DowStats2_en_GB.ts)
 
+file(GLOB_RECURSE HEADERS_FILES dev/*.h)
+file(GLOB_RECURSE SOURCES_FILES dev/*.cpp)
 
-set(PROJECT_SOURCES
+set(HEADERS_FILES ${HEADERS_FILES})
+set(SOURCES_FILES ${SOURCES_FILES})
+
+set(SOURCES_FILES
         main.cpp
-        dev/core.h
-        dev/core.cpp
-        dev/settingsController/settingsController.h
-        dev/settingsController/settingsController.cpp
-        dev/hookManager/hookManager.h
-        dev/hookManager/hookManager.cpp
-        dev/keyboardProcessor/keyboardProcessor.h
-        dev/keyboardProcessor/keyboardProcessor.cpp
-        dev/uiBackend/uiBackend.h
-        dev/uiBackend/uiBackend.cpp
-        dev/soulstormController/soulstormController.h
-        dev/soulstormController/soulstormController.cpp
-        dev/soulstormController/gameStateReader/gameStateReader.h
-        dev/soulstormController/gameStateReader/gameStateReader.cpp
-        dev/soulstormController/soulstormMemoryReader/soulstormMemoryReader.h
-        dev/soulstormController/soulstormMemoryReader/soulstormMemoryReader.cpp
-        dev/soulstormController/soulstormMemoryController/soulstormMemoryController.h
-        dev/soulstormController/soulstormMemoryController/soulstormMemoryController.cpp
-        dev/soulstormController/apmMeter/apmMeter.h
-        dev/soulstormController/apmMeter/apmMeter.cpp
-        dev/soulstormController/lobbyEventReader/lobbyEventReader.h
-        dev/soulstormController/lobbyEventReader/lobbyEventReader.cpp
-        dev/soulstormController/dowServerProcessor/dowServerProcessor.h
-        dev/soulstormController/dowServerProcessor/dowServerProcessor.cpp
-        dev/statsServerProcessor/statsServerProcessor.h
-        dev/statsServerProcessor/statsServerProcessor.cpp
-        dev/uiBackend/statisticPanel/statisticPanel.h
-        dev/uiBackend/statisticPanel/statisticPanel.cpp
-        dev/uiBackend/statisticPanel/statisticPanelItem.h
-        dev/uiBackend/statisticPanel/statisticPanelItem.cpp
-        dev/uiBackend/imageProvider/imageProvider.h
-        dev/uiBackend/imageProvider/imageProvider.cpp
-        dev/uiBackend/gamePanel/gamePanel.h
-        dev/uiBackend/gamePanel/gamePanel.cpp
-        dev/baseTypes/baseTypes.h
-        dev/logger/logger.h
-        dev/logger/logger.cpp
-        dev/newsServiceWebProcessor/newsServiceWebProcessor.h
-        dev/newsServiceWebProcessor/newsServiceWebProcessor.cpp
-        dev/uiBackend/messagesPage/messagesPage.h
-        dev/uiBackend/messagesPage/messagesPage.cpp
-        dev/modsProcessor/modsProcessor.h
-        dev/modsProcessor/modsProcessor.cpp
-        dev/modsProcessor/modsDownloader/modsDownloader.h
-        dev/modsProcessor/modsDownloader/modsDownloader.cpp
-        dev/modsProcessor/modsInstaller/modsInstaller.h
-        dev/modsProcessor/modsInstaller/modsInstaller.cpp
-        dev/uiBackend/settingsPage/settingsPageModel.h
-        dev/uiBackend/settingsPage/settingsPageModel.cpp
-        dev/soundProcessor/soundProcessor.h
-        dev/soundProcessor/soundProcessor.cpp
-        dev/soulstormController/replayDataCollector/replayDataCollector.h
-        dev/soulstormController/replayDataCollector/replayDataCollector.cpp
-        dev/overlayWindowController/overlayWindowController.h
-        dev/overlayWindowController/overlayWindowController.cpp
-        dev/uiBackend/replayManager/replayManager.h
-        dev/uiBackend/replayManager/replayManager.cpp
-        dev/uiBackend/replayManager/replaysListModel/replaysListModel.h
-        dev/uiBackend/replayManager/replaysListModel/replaysListModel.cpp
-        dev/uiBackend/replayManager/playersListModel/playersListModel.h
-        dev/uiBackend/replayManager/playersListModel/playersListModel.cpp
-        dev/rankedModServiceProcessor/rankedModServiceProcessor.h
-        dev/rankedModServiceProcessor/rankedModServiceProcessor.cpp
-
         defines.h
         qml.qrc
         resources.qrc
+        ${SOURCES_FILES}
 )
 
 set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
 
-
-add_executable(${TARGET_NAME} WIN32 ${PROJECT_SOURCES} ${APP_ICON_RESOURCE_WINDOWS})
+add_executable(${TARGET_NAME} WIN32 ${HEADERS_FILES} ${SOURCES_FILES} ${APP_ICON_RESOURCE_WINDOWS})
 
 qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
@@ -143,12 +101,13 @@ target_link_libraries(${TARGET_NAME}
                         QuaZip::QuaZip
                         ReplayReaderLibrary)
 
+
 if(CMAKE_BUILD_TYPE STREQUAL Release)
 
-    set(WINSDK_MT_DIR "${WINSDK_MT_DIR}")
+    set(WINSDK_MT_DIR ${WINSDK_MT_DIR})
 
-    if("${WINSDK_MT_DIR}" STREQUAL "")
-        message (FATAL_ERROR "WinSDK mt.exe path is empty, please set cmake option DWINSDK_MT_DIR, for example: \"-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/\".")
+    if(${WINSDK_MT_DIR} STREQUAL "")
+        message (FATAL_ERROR "WinSDK mt.exe path is empty, please set cmake option -DWINSDK_MT_DIR, for example: \"-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/\".")
     else()
         message (STATUS "WINSDK_MT_DIR: " ${WINSDK_MT_DIR})
         message(STATUS "Build dir: " ${CMAKE_BINARY_DIR})
@@ -157,43 +116,56 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
     add_custom_command(
         TARGET ${TARGET_NAME}
         POST_BUILD
-        COMMAND ${WINSDK_MT_DIR}mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${CMAKE_BINARY_DIR}/DowStats2.exe
+        COMMAND ${WINSDK_MT_DIR}/mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${DowStats2_INSTALATION_DIR}/DowStats2.exe
         COMMENT "Adding administator manifest."
     )
 endif()
 
-include_directories(${TARGET_NAME}
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/baseTypes
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/settingsController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/hookManager
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/keyboardProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/newsServiceWebProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soundProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/logger
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/statsServerProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/overlayWindowController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/gameStateReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/soulstormMemoryReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/soulstormMemoryController
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/apmMeter
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/lobbyEventReader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/dowServerProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/replayDataCollector
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/replayDataCollector
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/gamePanel
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/imageProvider
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/settingsPage
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/messagesPage
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/statisticPanel
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsDownloader
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/modsInstaller
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/replaysListModel
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/playersListModel
-    ${CMAKE_CURRENT_SOURCE_DIR}/dev/rankedModServiceProcessor
+file(GLOB  dev_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev ${CMAKE_CURRENT_SOURCE_DIR}/dev/*)
+set(dev_DIR ${dev_DIR})
+
+file(GLOB  soulstormController_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/*)
+set(soulstormController_DIR ${soulstormController_DIR})
+
+file(GLOB  uiBackend_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/*)
+set(uiBackend_DIR ${uiBackend_DIR})
+
+file(GLOB  modsProcessor_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/*)
+set(modsProcessor_DIR ${modsProcessor_DIR})
+
+file(GLOB  replayManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/*)
+set(replayManager_DIR ${replayManager_DIR})
+
+set(SOURCE_DIRECTORIES
+    ${dev_DIR}
+    ${soulstormController_DIR}
+    ${uiBackend_DIR}
+    ${modsProcessor_DIR}
+    ${replayManager_DIR}
+)
+
+#message(STATUS "SOURCE_DIRECTORIES: " ${SOURCE_DIRECTORIES})
+
+target_include_directories(${TARGET_NAME} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${SOURCE_DIRECTORIES}
+)
+
+install(TARGETS ${TARGET_NAME} DESTINATION .)
+
+get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
+get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
+find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
+    ARGS --no-translations
+    --compiler-runtime
+    --plugindir "${DEPLOY_DIR}/plugins"
+    --dir "${DEPLOY_DIR}"
+    --libdir "${DEPLOY_DIR}"
+    --qmldir "${_qt_bin_dir}/../qml"
+    $<TARGET_FILE:${TARGET_NAME}>
+    COMMENT "Running windeployqt for DowStats2..."
 )

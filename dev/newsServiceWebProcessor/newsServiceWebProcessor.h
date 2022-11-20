@@ -1,5 +1,5 @@
-#ifndef DISCORDWEBPROCESSOR_H
-#define DISCORDWEBPROCESSOR_H
+#ifndef NEWSSERVICEWEBPROCESSOR_H
+#define NEWSSERVICEWEBPROCESSOR_H
 
 #include <QObject>
 #include <QNetworkAccessManager>
@@ -92,4 +92,4 @@ private:
 
 };
 
-#endif // DISCORDWEBPROCESSOR_H
+#endif // NEWSSERVICEWEBPROCESSOR_H
