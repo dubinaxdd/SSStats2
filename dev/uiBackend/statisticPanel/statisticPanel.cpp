@@ -93,10 +93,12 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
         sortStatsBySoloMmr();
 
-        QModelIndex first = QAbstractItemModel::createIndex(0, 0);
-        QModelIndex last = QAbstractItemModel::createIndex(m_playersStatsItems.count() -1, 0);
-        emit dataChanged(first, last);
-
+        if (m_playersStatsItems.count() > 0)
+        {
+            QModelIndex first = QAbstractItemModel::createIndex(0, 0);
+            QModelIndex last = QAbstractItemModel::createIndex(m_playersStatsItems.count() -1, 0);
+            emit dataChanged(first, last);
+        }
     }
 }
 
@@ -106,27 +108,33 @@ void StatisticPanel::receivePlayersInfoMapFromScanner(QList<PlayerInfoFromDowSer
 
     m_playersInfo = playersInfo;
 
-    beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
-    for(int i = 0; i < m_playersStatsItems.count(); i++)
-        delete m_playersStatsItems.at(i);
-
-    m_playersStatsItems.clear();
-
-    endRemoveRows();
-
-    beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-2);
-
-    for(int i = 0; i < m_playersInfo.count(); i++)
+    if (m_playersStatsItems.count() > 0)
     {
-        if(m_playersInfo[i].isCurrentPlayer)
-            continue;
+        beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
+        for(int i = 0; i < m_playersStatsItems.count(); i++)
+            delete m_playersStatsItems.at(i);
 
-        StatisticPanelItem* newItem = new StatisticPanelItem(this);
-        newItem->setPlayerSteamId(m_playersInfo.at(i).steamId);
-        m_playersStatsItems.append(newItem);
+        m_playersStatsItems.clear();
+
+        endRemoveRows();
     }
 
-    endInsertRows();
+    if(m_playersInfo.count() > 0)
+    {
+        beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-2);
+
+        for(int i = 0; i < m_playersInfo.count(); i++)
+        {
+            if(m_playersInfo[i].isCurrentPlayer)
+                continue;
+
+            StatisticPanelItem* newItem = new StatisticPanelItem(this);
+            newItem->setPlayerSteamId(m_playersInfo.at(i).steamId);
+            m_playersStatsItems.append(newItem);
+        }
+
+        endInsertRows();
+    }
 }
 
 void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
@@ -171,6 +179,9 @@ void StatisticPanel::receivePlyersRankedState(QVector<PlyersRankedState> plyersR
 
 void StatisticPanel::onQuitParty()
 {
+    if (m_playersStatsItems.count() < 1)
+        return;
+
     beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
 
     for(int i = 0; i < m_playersStatsItems.count(); i++)
