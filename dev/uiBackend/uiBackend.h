@@ -51,6 +51,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool rankedModeState READ rankedModeState WRITE setRankedModeState NOTIFY rankedModeStateChanged)
     Q_PROPERTY(bool enableTrainingModeSwitch READ enableTrainingModeSwitch WRITE setEnableTrainingModeSwitch NOTIFY enableTrainingModeSwitchChanged)
     Q_PROPERTY(bool gameRankedMode READ gameRankedMode WRITE setGameRankedMode NOTIFY gameRankedModeChanged)
+    Q_PROPERTY(int onlineCount READ onlineCount WRITE setOnlineCount NOTIFY onlineCountChanged)
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -97,6 +98,9 @@ public:
     bool gameRankedMode() const;
     void setGameRankedMode(bool newGameRankedMode);
 
+    int onlineCount() const;
+    void setOnlineCount(int newOnlineCount);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -137,6 +141,8 @@ signals:
 
     void gameRankedModeChanged();
 
+    void onlineCountChanged();
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
@@ -147,6 +153,8 @@ public slots:
     void setMissionCurrentState(SsMissionState gameCurrentState);
 
     void receiveNotification(QString notify, bool isWarning);
+
+    void receiveOnlineCount(int onlineCount);
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
@@ -215,6 +223,8 @@ private:
     QString m_lastNotification;
     bool m_lastNotificationIsWarning = false;
     bool m_notificationVisible = false;
+
+    int m_onlineCount = 0;
 
 };
 

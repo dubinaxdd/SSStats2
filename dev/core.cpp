@@ -126,6 +126,9 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendLockRanked, m_statsServerProcessor, &StatsServerProcessor::receiveLockRanked,         Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor,   &StatsServerProcessor::sendGameRankedMode, m_uiBackend, [&](bool gameRankedMode){ m_uiBackend->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
 
+    QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
+
+
     m_statsServerProcessor->parseCurrentPlayerSteamId();
 
     m_settingsController->initializeSettings();

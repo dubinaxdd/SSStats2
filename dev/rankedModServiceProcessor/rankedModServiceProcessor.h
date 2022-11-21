@@ -15,6 +15,7 @@ public:
 
 signals:
     void sendPlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
+    void sendOnlineCount(int onlineCount);
 
 public slots:
     void setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId);
@@ -27,7 +28,7 @@ private slots:
     void rankedStateTimerTimeout();
 
     void receiveRankedState(QNetworkReply *reply, QVector<PlyersRankedState> plyersRankedState);
-
+    void receivePingRecponce(QNetworkReply *reply);
 
 private:
     bool checkReplyErrors(QNetworkReply *reply);

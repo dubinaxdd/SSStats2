@@ -4,15 +4,15 @@
 
 UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
-    , m_settingsController(settingsController)
     , m_imageProvider(new ImageProvider(this))
     , m_gamePanel(new GamePanel(settingsController, this))
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
+    , m_settingsController(settingsController)
     , m_newsPage(new MessagesPage(this))
     , m_eventsPage(new MessagesPage(this))
     , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
-    , m_notificationVisibleTimer(new QTimer(this))
     , m_replayManager(new ReplayManager(m_imageProvider, this))
+    , m_notificationVisibleTimer(new QTimer(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");
@@ -101,6 +101,19 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(SsMissionState::gameOver);
+}
+
+int UiBackend::onlineCount() const
+{
+    return m_onlineCount;
+}
+
+void UiBackend::setOnlineCount(int newOnlineCount)
+{
+    if (m_onlineCount == newOnlineCount)
+        return;
+    m_onlineCount = newOnlineCount;
+    emit onlineCountChanged();
 }
 
 bool UiBackend::gameRankedMode() const
@@ -205,6 +218,12 @@ void UiBackend::receiveNotification(QString notify, bool isWarning)
     emit updateNotification();
     m_notificationVisibleTimer->start();
     setNotificationVisible(true);
+}
+
+void UiBackend::receiveOnlineCount(int onlineCount)
+{
+    m_onlineCount = onlineCount;
+    emit onlineCountChanged();
 }
 
 void UiBackend::onExit()

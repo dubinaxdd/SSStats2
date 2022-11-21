@@ -229,22 +229,83 @@ Window {
                     }
                 }
 
-                HeaderButton{
-                    id: settingsButton
-                    text: "Settings"
-
-                    onClicked: {
-                        newsButton.pressedState = false;
-                        eventsButton.pressedState = false;
-                        infoButton.pressedState = false;
-                        replayManagerButton.pressedState = false;
-                        modsButton.pressedState = false
-                    }
+                Rectangle
+                {
+                    Layout.fillWidth: true
                 }
 
                 Rectangle
                 {
-                    Layout.fillWidth: true
+                    id: settingsButton
+                    width: 30
+                    height: 30
+                    color:"#00000000"
+
+                    Layout.rightMargin: 15
+                    property bool pressedState: false
+
+                    MouseArea
+                    {
+                        id: settingsButtonMouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        onClicked:
+                        {
+                            settingsButton.pressedState = true;
+                            newsButton.pressedState = false;
+                            eventsButton.pressedState = false;
+                            infoButton.pressedState = false;
+                            replayManagerButton.pressedState = false;
+                            modsButton.pressedState = false
+                        }
+
+                        ToolTip.visible: containsMouse
+                        ToolTip.delay: 1000
+                        ToolTip.text: ("Settings")
+                    }
+
+                    Image {
+
+                       anchors.fill: parent
+                       source: settingsButtonMouseArea.containsMouse || settingsButton.pressedState ? "qrc:/images/resources/images/gear.svg" : "qrc:/images/resources/images/gear2.svg"
+                       sourceSize.width: 30
+                       sourceSize.height: 30
+                    }
+
+
+                }
+
+                Rectangle
+                {
+                    width: 25
+                    height: 25
+                    color:"#00000000"
+
+                    Image {
+                       anchors.fill: parent
+                       source: "qrc:/images/resources/images/man_user.svg"
+                       sourceSize.width: 25
+                       sourceSize.height: 25
+                    }
+
+                    MouseArea
+                    {
+                        anchors.fill: parent
+                        hoverEnabled: true
+
+                        ToolTip.visible: containsMouse
+                        ToolTip.delay: 1000
+                        ToolTip.text: ("Online DowStats users")
+                    }
+                }
+
+                Label
+                {
+                    text: _uiBackend.onlineCount
+                    font.pixelSize: 15
+                    color: "#ffffff"
+                    Layout.rightMargin: 15
                 }
             }
         }
