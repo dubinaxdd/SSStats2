@@ -17,12 +17,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "" FORCE)
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
-
-set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "" FORCE)
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
 set(DowStats2_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
 set(DowStats2_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)
@@ -209,4 +208,18 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     copy
     ${_qt_bin_dir}/../qml/Qt/labs/platform/plugins.qmltypes
     ${DEPLOY_DIR}/Qt/labs/platform/plugins.qmltypes
+)
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1.dll
+    ${DEPLOY_DIR}/libcrypto-1_1.dll
+)
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${OPENSSL_ROOT_DIR}/bin/libssl-1_1.dll
+    ${DEPLOY_DIR}/libssl-1_1.dll
 )

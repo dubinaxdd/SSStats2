@@ -1,21 +1,22 @@
-Чтоб собрать смотри README.md
+C++
+Qt 5.15.2
+CMake 3.14
+MingGW 8.1.0 32-bit / MSVC19 X86
+OpenSSL
+WinSDK (for manifest)
 
-Dubina_xdd:
-C:\Qt\5.15.2\mingw81_32\bin\windeployqt.exe C:\build\SSStats2Release\SSStats2.exe -qmldir C:\Qt\5.15.2\mingw81_32\qml -verbose=2
+Если собираем командной строкой:
+CMake optoins example:
+-DCMAKE_PREFIX_PATH:= "C:\Qt\5.15.2\mingw81_32\lib\cmake;"
+-DOPENSSL_ROOT_DIR:=C:/Qt/Tools/OpenSSL/Win_x86
+-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/
 
-C:\Qt\5.15.2\msvc2019\bin\windeployqt.exe C:\build\DowStats2Release_MSVC19\DowStats2.exe -qmldir C:\Qt\5.15.2\msvc2019\qml -verbose=2
+Если используем QtCreator
+-DOPENSSL_ROOT_DIR:=C:/Qt/Tools/OpenSSL/Win_x86
+-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/
 
-Anibus:
-E:\Qt\5.15.2\mingw81_32\bin\windeployqt.exe C:\projects\build-SSStats2-Desktop_Qt_5_15_2_MinGW_32_bit-Release\SSStats2.exe -qmldir E:\Qt\5.15.2\mingw81_32\qml -verbose=2
+Сборка прокекта производится в папку bin по указанной директории сборки в настройках проекта.
 
-Если не додеплоилось пихаем папку C:\Qt\5.15.2\mingw81_32\qml\Qt\labs\platform руками так чтоб в папке с релизом была папка Qt\labs\platform
-
-OpenSSL брать от сюда, в папку с релизом копируем содержимое из папки bin опенссселя
+OpenSSL брать от сюда
 https://slproweb.com/products/Win32OpenSSL.html
-
-
-Даем права администратора:
-В консоли перемещаемся в директорию исходников статки и вводим команду:
-"C:\Windows Kits\10\bin\10.0.22000.0\x86\mt.exe" -manifest manifest.xml -outputresource:C:\build\SSStats2ReleaseRelease\SSStats2.exe
-Для выполнения этой команды, нужно установить Windows SDK (если его нет.)
-После можно выполнить команду
+Путь до папки указываем настройках проекта используя -DOPENSSL_ROOT_DIR. В релизную сборку либы задиплоятся автоматически
