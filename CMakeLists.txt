@@ -184,7 +184,6 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     --dir "${DEPLOY_DIR}"
     --libdir "${DEPLOY_DIR}"
     --qmldir "${_qt_bin_dir}/../qml"
-    --qmlimport "${_qt_bin_dir}/../qml/Qt/labs/platform/"
     ${BUILD_TYPE_ARG}
     $<TARGET_FILE:${TARGET_NAME}>
     COMMENT "Running windeployqt for DowStats2..."
