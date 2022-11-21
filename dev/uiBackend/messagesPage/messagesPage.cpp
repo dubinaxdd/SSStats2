@@ -103,10 +103,21 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
                          newText.at(k) == '\n' ||
                          newText.at(k) == '\0')
                     {
-                        QString url = newText.mid(j, k - j);
+                        QString url = "";
+
+                        if (k == newText.count() - 1)
+                            url = newText.mid(j, k - j + 1);
+                        else
+                            url = newText.mid(j, k - j);
+
                         QString formattedUrl = "<a href=\"" + url + "\">" + url + "</a>";
 
-                        newText.replace(j, k-j, formattedUrl);
+
+                        if (k == newText.count() - 1)
+                            newText.replace(j, k-j+1, formattedUrl);
+                        else
+                            newText.replace(j, k-j, formattedUrl);
+
                         j += formattedUrl.count();
                         break;
                     }
