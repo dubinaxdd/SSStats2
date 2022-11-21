@@ -535,7 +535,10 @@ Rectangle {
                         Image{
                             id: iconImage
                             anchors.fill: parent
-                            source: "qrc:/images/resources/images/folder.png"
+                            source: "qrc:/images/resources/images/folder_white.svg"
+
+                            sourceSize.width: 30
+                            sourceSize.height: 30
                         }
                     }
 
