@@ -20,5 +20,6 @@
         <file>resources/qml/PlayersStatistic.qml</file>
         <file>resources/qml/ReplayManagerPage.qml</file>
         <file>resources/qml/ModsPage.qml</file>
+        <file>resources/qml/IconButton.qml</file>
     </qresource>
 </RCC>

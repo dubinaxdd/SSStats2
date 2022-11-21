@@ -36,6 +36,8 @@
         <file>resources/images/gear2.svg</file>
         <file>resources/images/delete.svg</file>
         <file>resources/images/save.svg</file>
+        <file>resources/images/reset.svg</file>
+        <file>resources/images/folder.svg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>resources/sounds/game_started.wav</file>

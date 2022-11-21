@@ -276,92 +276,41 @@ Rectangle {
 
             RowLayout
             {
-
-                Rectangle
+                IconButton
                 {
-                    id: deleteReplayButton
+                    sourceUrl: "qrc:/images/resources/images/save.svg"
+                    toolTipText: "Save as..."
 
-                    width: 40
-                    height: 40
-                    color: deleteReplayButtonMouseArea.containsMouse ? "#A9A9A9" : "#E0E0E0"
-                    radius: 5
-
-                    Image {
-                       anchors.fill: parent
-
-                       anchors.margins: 5
-
-                       source: "qrc:/images/resources/images/delete.svg"
-                       sourceSize.width: 30
-                       sourceSize.height: 30
-                    }
-
-                    MouseArea
-                    {
-                        id: deleteReplayButtonMouseArea
-
-                        anchors.fill: parent
-                        hoverEnabled: true
-
-                        ToolTip.visible: containsMouse
-                        ToolTip.delay: 1000
-                        ToolTip.text: ("Delete replay")
-
-                        onClicked:
-                        {
-                            _uiBackend.replayManager.removeReplay(_uiBackend.replayManager.currentFileName);
-                        }
+                    onClicked: {
+                        saveFileDialog.currentFile =  "file:///" + _uiBackend.replayManager.currentFileName.replace('#', '');
+                        saveFileDialog.visible = true;
                     }
                 }
 
-                Rectangle
+                IconButton
                 {
-                    id: saveAsReplayButton
+                    sourceUrl: "qrc:/images/resources/images/delete.svg"
+                    toolTipText: "Delete replay"
 
-                    width: 40
-                    height: 40
-                    color: saveAsReplayButtonMouseArea.containsMouse ? "#A9A9A9" : "#E0E0E0"
-                    radius: 5
-
-                    Image {
-                       anchors.fill: parent
-
-                       anchors.margins: 5
-
-                       source: "qrc:/images/resources/images/save.svg"
-                       sourceSize.width: 30
-                       sourceSize.height: 30
-                    }
-
-                    MouseArea
-                    {
-                        id: saveAsReplayButtonMouseArea
-
-                        anchors.fill: parent
-                        hoverEnabled: true
-
-                        ToolTip.visible: containsMouse
-                        ToolTip.delay: 1000
-                        ToolTip.text: ("Save as...")
-
-                        onClicked:
-                        {
-                            saveFileDialog.currentFile =  "file:///" + _uiBackend.replayManager.currentFileName.replace('#', '');
-                            saveFileDialog.visible = true;
-                        }
+                    onClicked: {
+                        _uiBackend.replayManager.removeReplay(_uiBackend.replayManager.currentFileName);
                     }
                 }
 
-                Button{
-                    text: "Choise other playback folder"
+                IconButton
+                {
+                    sourceUrl: "qrc:/images/resources/images/folder.svg"
+                    toolTipText: "Choise other playback folder"
 
                     onClicked: {
                         choiseFolderDialog.visible = true
                     }
                 }
 
-                Button{
-                    text: "Choise default playback folder"
+                IconButton
+                {
+                    sourceUrl: "qrc:/images/resources/images/reset.svg"
+                    toolTipText: "Choise default playback folder"
 
                     onClicked: {
                         _uiBackend.replayManager.choiseDefaultPlaybackFolder();
