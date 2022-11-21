@@ -18,7 +18,7 @@ Rectangle {
 
     Text {
         id: buttonInfoLabel
-        color: mouseArea.containsMouse ? "#ffffff" : "#999999"
+        color: mouseArea.containsMouse || pressedState  ? "#ffffff" : "#999999"
         //opacity: 1
         text: mainRectangle.text
         anchors.fill: parent
