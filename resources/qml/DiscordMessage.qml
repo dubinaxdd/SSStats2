@@ -250,16 +250,21 @@ Rectangle {
            {
                anchors.fill: parent
 
-                Image {
-                    source: "qrc:/images/resources/images/YouTube_Logo.png"
-                    Layout.preferredWidth: 112
-                    Layout.preferredHeight: 25
 
-                    Layout.topMargin: 7
-                    Layout.leftMargin: 7
+               Image {
+                   source: "qrc:/images/resources/images/youtube.svg"
+                   Layout.preferredWidth: 100
+                   Layout.preferredHeight: 40
 
-                    Layout.alignment: Qt.AlignVCenter
-                }
+                   Layout.topMargin: 7
+                   Layout.leftMargin: 7
+                   Layout.alignment: Qt.AlignVCenter
+
+                   sourceSize.width: 100
+                   sourceSize.height: 40
+
+                   z: 1
+               }
 
                 Rectangle {
                     id: youtubeRectangle
@@ -267,8 +272,6 @@ Rectangle {
                     radius: 10
 
                     Layout.alignment: Qt.AlignBottom
-
-
 
                     Image {
                         id: youtubeImage
