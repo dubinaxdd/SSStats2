@@ -63,7 +63,7 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
 
     getPlayerStatsFromServer(playersInfo);
 }
-
+/*
 void StatsServerProcessor::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
 {
     if(m_lockRanked)
@@ -84,7 +84,7 @@ void StatsServerProcessor::receivePlyersRankedState(QVector<PlyersRankedState> p
 
     emit sendGameRankedMode(m_rankedMode);
 }
-
+*/
 void StatsServerProcessor::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");
@@ -305,7 +305,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
         }
     }
 
-    m_lockRanked = true;
+    //m_lockRanked = true;
 
     QString url;
 
@@ -433,13 +433,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
         reply->deleteLater();
     });
 
-    m_lockRanked = false;
+   // m_lockRanked = false;
 }
 
-void StatsServerProcessor::receiveLockRanked(bool lockRanked)
+void StatsServerProcessor::receiveRankedMode(bool reankedMode)
 {
-    m_lockRanked = lockRanked;
+    m_rankedMode = reankedMode;
 }
+
 
 QString StatsServerProcessor::GetRandomString() const
 {
@@ -498,7 +499,7 @@ void StatsServerProcessor::receiveCurrentMissionState(SsMissionState missionCurr
 {
     switch (missionCurrentState)
     {
-        case SsMissionState::gameLoadStarted : m_lockRanked = true; break;
+        //case SsMissionState::gameLoadStarted : m_lockRanked = true; break;
         //case SsMissionState::unknownGameStoped:
         //case SsMissionState::gameStoped : m_lockRanked = false; break;
         default: break;

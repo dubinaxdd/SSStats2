@@ -25,18 +25,11 @@ RankedModServiceProcessor::RankedModServiceProcessor(QObject *parent) : QObject(
 void RankedModServiceProcessor::setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId)
 {
     m_currentPlayerSteamId = currentPlayerSteamId;
-
-    if(m_playersSteamIds.isEmpty())
-        m_playersSteamIds.append(m_currentPlayerSteamId);
 }
 
 void RankedModServiceProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer, int playersCount)
 {
-    m_playersSteamIds.clear();
-
-    for (int i = 0; i < playersInfoInfoFromDowServer.count(); i++)
-        m_playersSteamIds.append(playersInfoInfoFromDowServer.at(i).steamId);
-
+    m_playersInfoInfoFromDowServer = playersInfoInfoFromDowServer;
 }
 
 void RankedModServiceProcessor::sendRankedMode(bool rankedMode)
@@ -92,22 +85,31 @@ void RankedModServiceProcessor::pingTimerTimeout()
 
 void RankedModServiceProcessor::rankedStateTimerTimeout()
 {
-    if (m_playersSteamIds.isEmpty())
-        return;
+    if (m_playersInfoInfoFromDowServer.isEmpty())
+    {
+        if(m_currentPlayerSteamId.isEmpty())
+            return;
+
+        PlayerInfoFromDowServer newPlayer;
+        newPlayer.steamId = m_currentPlayerSteamId;
+
+        m_playersInfoInfoFromDowServer.append(newPlayer);
+    }
 
     QString sidsListString = "";
 
     QVector<PlyersRankedState> plyersRankedState;
 
-    for (int i = 0; i < m_playersSteamIds.count(); i++)
+    for (int i = 0; i < m_playersInfoInfoFromDowServer.count(); i++)
     {
-        sidsListString.append(m_playersSteamIds.at(i));
+        sidsListString.append(m_playersInfoInfoFromDowServer.at(i).steamId);
 
-        if (i != m_playersSteamIds.count() - 1)
+        if (i != m_playersInfoInfoFromDowServer.count() - 1)
             sidsListString.append(',');
 
         PlyersRankedState newPlyersRankedState;
-        newPlyersRankedState.steamId = m_playersSteamIds.at(i);
+        newPlyersRankedState.steamId = m_playersInfoInfoFromDowServer.at(i).steamId;
+        newPlyersRankedState.name = m_playersInfoInfoFromDowServer.at(i).name;
 
         plyersRankedState.append(newPlyersRankedState);
     }
@@ -160,6 +162,7 @@ void RankedModServiceProcessor::receiveRankedState(QNetworkReply *reply, QVector
             {
                 PlyersRankedState newPlyersRankedState;
 
+                newPlyersRankedState.name = plyersRankedState.at(j).name;
                 newPlyersRankedState.steamId = plyersRankedState.at(j).steamId;
                 newPlyersRankedState.isRanked = jsonArray.at(i)["Ranked"].toBool();
                 newPlyersRankedState.isOnline = jsonArray.at(i)["Online"].toBool();

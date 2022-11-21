@@ -210,6 +210,40 @@ void GameStateReader::readRacesTimerTimeout()
     }
 
     emit sendPlayersTestStats(playerStats);
+
+
+
+    if(m_lockRanked)
+        return;
+
+    bool isRanked = false;
+
+    for (int i = 0; i < m_plyersRankedState.count(); i++)
+    {
+        if (m_plyersRankedState.at(i).isRanked)
+        {
+            bool finded = false;
+
+            for(int j = 0; j < playerStats.count(); j++)
+            {
+                if (playerStats.at(j).name == m_plyersRankedState.at(i).name)
+                {
+                    finded = true;
+                    break;
+                }
+            }
+
+            if(!finded)
+                continue;
+
+            isRanked = true;
+            break;
+        }
+    }
+
+    m_rankedMode = isRanked;
+
+    emit sendGameRankedMode(m_rankedMode);
 }
 
 void GameStateReader::setGameLounched(bool newGameLounched)
@@ -236,6 +270,16 @@ void GameStateReader::stopedGame()
         m_missionCurrentState = SsMissionState::gameStoped;
         emit sendCurrentMissionState(m_missionCurrentState);
     }
+}
+
+void GameStateReader::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
+{
+    m_plyersRankedState = plyersRankedState;
+}
+
+void GameStateReader::receiveLockRanked(bool lockRanked)
+{
+     m_lockRanked = lockRanked;
 }
 
 void GameStateReader::setCurrentProfile(const QString &newCurrentProfile)

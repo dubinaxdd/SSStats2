@@ -39,9 +39,7 @@ private:
     QNetworkAccessManager *m_networkManager;
 
     QString m_currentPlayerSteamId = "";
-    QVector<QString> m_playersSteamIds;
-
-
+    QList<PlayerInfoFromDowServer> m_playersInfoInfoFromDowServer;
 };
 
 #endif // RANKEDMODSERVICEPROCESSOR_H

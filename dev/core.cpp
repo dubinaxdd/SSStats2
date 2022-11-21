@@ -120,11 +120,15 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend,   &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
-    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_statsServerProcessor, &StatsServerProcessor::receivePlyersRankedState , Qt::QueuedConnection);
+
+    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_soulstormController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
+
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_statsServerProcessor, &StatsServerProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendLockRanked, m_statsServerProcessor, &StatsServerProcessor::receiveLockRanked,         Qt::QueuedConnection);
-    QObject::connect(m_statsServerProcessor,   &StatsServerProcessor::sendGameRankedMode, m_uiBackend, [&](bool gameRankedMode){ m_uiBackend->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendLockRanked, m_soulstormController->gameStateReader(), &GameStateReader::receiveLockRanked,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendGameRankedMode, m_uiBackend, [&](bool gameRankedMode){ m_uiBackend->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
+
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendGameRankedMode, m_statsServerProcessor, &StatsServerProcessor::receiveRankedMode, Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
 

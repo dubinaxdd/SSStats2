@@ -20,6 +20,10 @@ public:
     void setGameLounched(bool newGameLounched);
     void stopedGame();
 
+public slots:
+    void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
+    void receiveLockRanked(bool lockRanked);
+
 private slots:
     void readGameInfo();
     void readRacesTimerTimeout();
@@ -35,6 +39,7 @@ signals:
     void localPlayerDroppedToObserver();
 
     void sendCurrentWinConditions(QVector<WinCondition>);
+    void sendGameRankedMode(bool gameRankedMode);
 
 private:
     void checkCurrentMode();
@@ -72,6 +77,10 @@ private:
     bool m_playerDroppedToObserver = false;
 
     QStringList testStatsTemp;
+
+    QVector<PlyersRankedState> m_plyersRankedState;
+    bool m_lockRanked = false;
+    bool m_rankedMode = true;
 };
 
 #endif // GAMESTATEREADER_H

@@ -25,14 +25,12 @@ signals:
     void sendCurrentPlayerHostState(bool);
     void sendCurrentPlayerSteamID(QString steamID);
     void sendNotification(QString text, bool isWarning);
-    void sendGameRankedMode(bool gameRankedMode);
 
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);
-    void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
     void receiveCurrentMissionState(SsMissionState missionCurrentState);
     void sendReplayToServer(SendingReplayInfo replayInfo);
-    void receiveLockRanked(bool lockRanked);
+    void receiveRankedMode(bool reankedMode);
 
 private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
@@ -54,7 +52,6 @@ private:
     QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
     QList<ServerPlayerStats*> m_playerStats;
     bool m_rankedMode = true;
-    bool m_lockRanked = false;
 
     QString m_machineUniqueId = "";
 };

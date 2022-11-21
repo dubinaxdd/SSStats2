@@ -281,6 +281,7 @@ enum SortType : int
 
 struct PlyersRankedState
 {
+    QString name = "";
     QString steamId = "";
     bool isRanked = true;
     bool isOnline = false;
