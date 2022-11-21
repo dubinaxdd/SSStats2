@@ -223,3 +223,26 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     ${OPENSSL_ROOT_DIR}/bin/libssl-1_1.dll
     ${DEPLOY_DIR}/libssl-1_1.dll
 )
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/externals/bin/updater/Downloader.exe
+    ${DEPLOY_DIR}/Downloader.exe
+)
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/externals/bin/updater/Updater.exe
+    ${DEPLOY_DIR}/Updater.exe
+)
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/externals/bin/updater/Updater.ini
+    ${DEPLOY_DIR}/Updater.ini
+)
+
+
