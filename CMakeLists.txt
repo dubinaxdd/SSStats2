@@ -119,6 +119,13 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
         COMMAND ${WINSDK_MT_DIR}/mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${DowStats2_INSTALATION_DIR}/DowStats2.exe
         COMMENT "Adding administator manifest."
     )
+
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E
+        remove
+        ${DEPLOY_DIR}/DowStats2.exe.manifest
+    )
+
 endif()
 
 file(GLOB  dev_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev ${CMAKE_CURRENT_SOURCE_DIR}/dev/*)
@@ -157,6 +164,17 @@ get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
 get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
 find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
 
+
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+    set(BUILD_TYPE_ARG --debug)
+    set(PLATFORM_LIB_NAME qtlabsplatformplugind.dll)
+else()
+    set(BUILD_TYPE_ARG --release)
+    set(PLATFORM_LIB_NAME qtlabsplatformplugin.dll)
+endif()
+
+
+
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E
     env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
@@ -166,6 +184,30 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     --dir "${DEPLOY_DIR}"
     --libdir "${DEPLOY_DIR}"
     --qmldir "${_qt_bin_dir}/../qml"
+    --qmlimport "${_qt_bin_dir}/../qml/Qt/labs/platform/"
+    ${BUILD_TYPE_ARG}
     $<TARGET_FILE:${TARGET_NAME}>
     COMMENT "Running windeployqt for DowStats2..."
+)
+
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${_qt_bin_dir}/../qml/Qt/labs/platform/${PLATFORM_LIB_NAME}
+    ${DEPLOY_DIR}/Qt/labs/platform/${PLATFORM_LIB_NAME}
+)
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${_qt_bin_dir}/../qml/Qt/labs/platform/qmldir
+    ${DEPLOY_DIR}/Qt/labs/platform/qmldir
+)
+
+add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+    COMMAND "${CMAKE_COMMAND}" -E
+    copy
+    ${_qt_bin_dir}/../qml/Qt/labs/platform/plugins.qmltypes
+    ${DEPLOY_DIR}/Qt/labs/platform/plugins.qmltypes
 )
