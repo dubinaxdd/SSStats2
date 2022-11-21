@@ -4,6 +4,8 @@
 
 SoundProcessor::SoundProcessor(QObject *parent) : QObject(parent)
 {
+    m_player = new QMediaPlayer(this);
+
 
 }
 
@@ -16,9 +18,11 @@ void SoundProcessor::playPlayerJoinSound()
     }
 
     if ((m_enableSoundsWhenGameMinimized || m_enableSoundsWhenGameMaximized) && !m_isFirstConnection)
-        QSound::play(":/sounds/resources/sounds/player_joined.wav");
+        playAudio("qrc:/sounds/resources/sounds/player_joined.wav");
 
     m_isFirstConnection = false;
+
+
 }
 
 void SoundProcessor::playPlayerLeftSound()
@@ -30,7 +34,7 @@ void SoundProcessor::playPlayerLeftSound()
     }
 
     if ((m_enableSoundsWhenGameMinimized || m_enableSoundsWhenGameMaximized) && !m_isFirstConnection)
-        QSound::play(":/sounds/resources/sounds/player_left.wav");
+        playAudio("qrc:/sounds/resources/sounds/player_left.wav");
 
      m_isFirstConnection = false;
 }
@@ -44,7 +48,7 @@ void SoundProcessor::playGameStartSound()
         return;
 
     if ((m_enableSoundsWhenGameMinimized || m_enableSoundsWhenGameMaximized))
-        QSound::play(":/sounds/resources/sounds/game_started.wav");
+        playAudio("qrc:/sounds/resources/sounds/game_started.wav");
 }
 
 void SoundProcessor::playGameLoadSound()
@@ -56,7 +60,7 @@ void SoundProcessor::playGameLoadSound()
         return;
 
     if ((m_enableSoundsWhenGameMinimized || m_enableSoundsWhenGameMaximized))
-        QSound::play(":/sounds/resources/sounds/game_loading.wav");
+        playAudio("qrc:/sounds/resources/sounds/game_loading.wav");
 }
 
 void SoundProcessor::setSoulstormMaximized(bool isMaximized)
@@ -76,6 +80,18 @@ void SoundProcessor::receiveCurrentMissionState(SsMissionState gameCurrentState)
 
     if (gameCurrentState == SsMissionState::gameStarted)
         playGameStartSound();
+}
+
+void SoundProcessor::setVolume(int volume)
+{
+    m_player->setVolume(volume);
+}
+
+void SoundProcessor::playAudio(QString url)
+{
+    m_player->stop();
+    m_player->setMedia(QUrl(url));
+    m_player->play();
 }
 
 void SoundProcessor::setEnableGameStartEventSound(bool newEnableGameStartEventSound)

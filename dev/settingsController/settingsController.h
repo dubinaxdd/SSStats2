@@ -23,6 +23,7 @@ struct Settings
     bool enableEventsSoundWhenGameMinimized = false;
     bool enableGameLoadEventSound = false;
     bool enableGameStartEventSound = false;
+    int  volume = 100;
 };
 
 class SettingsController : public QObject

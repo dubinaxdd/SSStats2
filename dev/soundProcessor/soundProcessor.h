@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <baseTypes.h>
+#include <QMediaPlayer>
 
 class SoundProcessor : public QObject
 {
@@ -29,6 +30,11 @@ public slots:
 
     void receiveCurrentMissionState(SsMissionState gameCurrentState);
 
+    void setVolume(int volume);
+
+private:
+    void playAudio(QString url);
+
 private:
     bool m_enableSoundsWhenGameMinimized = true;
     bool m_enableSoundsWhenGameMaximized = true;
@@ -38,6 +44,8 @@ private:
 
     bool m_isFirstConnection = true;
     bool m_soulstormMaximized = false;
+
+    QMediaPlayer* m_player;
 
 };
 

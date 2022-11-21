@@ -172,6 +172,27 @@ Rectangle {
             }
         }
 
+        RowLayout
+        {
+            Label
+            {
+                text: "Events volume:"
+                opacity: 0.8
+                font.pixelSize: 12
+            }
+
+
+            Slider {
+                from: 0
+                value: model.volume
+                to: 100
+
+                opacity: hovered ? 1.0 : 0.8
+
+                onValueChanged: model.volume = value;
+            }
+        }
+
         Rectangle
         {
             Layout.fillHeight: true

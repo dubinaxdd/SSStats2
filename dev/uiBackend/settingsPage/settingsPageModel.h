@@ -2,7 +2,7 @@
 #define SETTINGSPAGEMODEL_H
 
 #include <QObject>
-#include <settingscontroller.h>
+#include <settingsController.h>
 #include <baseTypes.h>
 
 class SettingsPageModel : public QObject
@@ -32,6 +32,8 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool enableGameStartEventSound READ enableGameStartEventSound WRITE setEnableGameStartEventSound NOTIFY enableGameStartEventSoundChanged)
 
     Q_PROPERTY(QString unlockRacesStatus MEMBER m_unlockRacesStatus NOTIFY unlockRacesStatusChanged)
+
+    Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
 
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
@@ -68,6 +70,8 @@ signals:
 
     void enableGameLoadEventSoundChanged(bool state);
     void enableGameStartEventSoundChanged(bool state);
+
+    void volumeChanged(int volume);
 
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
@@ -108,6 +112,9 @@ public:
     bool enableGameStartEventSound() const;
     void setEnableGameStartEventSound(bool newEnableGameStartEventSound);
 
+    int volume() const;
+    void setVolume(int newVolume);
+
 private:
     void receiveRussianFontsDownloadProgress(int progress);
     void receiveRussianFontsInstallCompleeted();
@@ -143,6 +150,8 @@ private:
     bool m_enableEventsSoundWhenGameMaximized = true;
     bool m_enableGameLoadEventSound = true;
     bool m_enableGameStartEventSound = true;
+
+    int m_volume = 100;
 
     QString m_unlockRacesStatus = "";
 };

@@ -63,28 +63,7 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
 
     getPlayerStatsFromServer(playersInfo);
 }
-/*
-void StatsServerProcessor::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
-{
-    if(m_lockRanked)
-        return;
 
-    bool isRanked = false;
-
-    for (int i = 0; i < plyersRankedState.count(); i++)
-    {
-        if (plyersRankedState.at(i).isRanked)
-        {
-            isRanked = true;
-            break;
-        }
-    }
-
-    m_rankedMode = isRanked;
-
-    emit sendGameRankedMode(m_rankedMode);
-}
-*/
 void StatsServerProcessor::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");

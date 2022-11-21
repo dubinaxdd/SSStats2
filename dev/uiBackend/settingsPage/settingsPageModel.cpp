@@ -44,6 +44,9 @@ void SettingsPageModel::onSettingsLoaded()
 
     m_skipIntroVideo =  m_settingsController->getSettings()->skipIntroVideo;
     emit skipIntroVideoChanged();
+
+    m_volume = m_settingsController->getSettings()->volume;
+    emit volumeChanged(m_volume);
 }
 
 void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
@@ -243,6 +246,22 @@ void SettingsPageModel::receiveGridHotkeysDownloadError()
 
     m_gridHotkeysInstallInProcess = false;
     emit gridHotkeysInstallInProcessChanged();
+}
+
+int SettingsPageModel::volume() const
+{
+    return m_volume;
+}
+
+void SettingsPageModel::setVolume(int newVolume)
+{
+    if (m_volume == newVolume)
+        return;
+    m_volume = newVolume;
+    emit volumeChanged(m_volume);
+
+    m_settingsController->getSettings()->volume = m_volume;
+    m_settingsController->saveSettings();
 }
 
 bool SettingsPageModel::enableGameStartEventSound() const

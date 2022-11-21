@@ -35,6 +35,7 @@ void SettingsController::initializeSettings()
     m_settings->enableEventsSoundWhenGameMinimized = ss_stats_settings->value("client/enable_events_sound_when_game_minimized", true).toBool();
     m_settings->enableGameLoadEventSound = ss_stats_settings->value("client/enable_game_load_event_sound", true).toBool();
     m_settings->enableGameStartEventSound = ss_stats_settings->value("client/enable_game_start_event_sound", true).toBool();
+    m_settings->volume = ss_stats_settings->value("client/volume", 100).toInt();
 
     emit settingsLoaded();
 
@@ -59,6 +60,7 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("client/enable_events_sound_when_game_minimized", m_settings->enableEventsSoundWhenGameMinimized);
     ss_stats_settings->setValue("client/enable_game_load_event_sound", m_settings->enableGameLoadEventSound);
     ss_stats_settings->setValue("client/enable_game_start_event_sound", m_settings->enableGameStartEventSound);
+    ss_stats_settings->setValue("client/volume", m_settings->volume);
 
     ss_stats_settings->sync();
 }

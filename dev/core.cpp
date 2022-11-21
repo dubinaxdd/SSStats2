@@ -132,6 +132,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
 
+    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::volumeChanged, m_soundProcessor, &SoundProcessor::setVolume, Qt::QueuedConnection);
 
     m_statsServerProcessor->parseCurrentPlayerSteamId();
 
