@@ -38,6 +38,7 @@
         <file>resources/images/reset.svg</file>
         <file>resources/images/folder.svg</file>
         <file>resources/images/youtube.svg</file>
+        <file>resources/images/update.svg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>resources/sounds/game_started.wav</file>

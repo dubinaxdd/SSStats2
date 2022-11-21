@@ -370,18 +370,20 @@ Rectangle {
             {
                 ComboBox{
 
-                    Layout.preferredWidth: 225
+                    Layout.preferredWidth: 255
                     model: ["Sort by file name", "Sort by name", "Sort by mod", "Sort by map", "Sort by time" ]
 
                     onCurrentIndexChanged: _uiBackend.replayManager.replaysListModel.setSortType(currentIndex);
                 }
 
-                Button
+                IconButton
                 {
-                    Layout.preferredWidth: 70
-                    text: "Update"
+                    sourceUrl: "qrc:/images/resources/images/update.svg"
+                    toolTipText: "Update"
 
-                    onClicked: _uiBackend.replayManager.update();
+                    onClicked: {
+                        _uiBackend.replayManager.update();
+                    }
                 }
             }
 
