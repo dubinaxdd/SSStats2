@@ -46,6 +46,11 @@ Rectangle {
                     Layout.fillWidth: true
                     selectByMouse: true
 
+                    onAccepted: {
+                        findTextField.editingFinished();
+                        _uiBackend.replayManager.findReplays(findTextField.text);
+                    }
+
                     onEditingFinished:
                     {
                         focus = false;
@@ -415,6 +420,7 @@ Rectangle {
                     toolTipText: "Update"
 
                     onClicked: {
+                        findTextField.text = "";
                         _uiBackend.replayManager.update();
                     }
                 }

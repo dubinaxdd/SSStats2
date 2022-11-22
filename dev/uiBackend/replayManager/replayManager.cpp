@@ -376,18 +376,6 @@ QString ReplayManager::chooseColorForPlayer(uint team)
 {
     switch (team)
     {
-      /*  case 0 : return "#b3ea0000";
-        case 1 : return "#b30469ee";
-        case 2 : return "#b3dacfcf";
-        case 3 : return "#b3f6f200";
-        case 4 : return "#b30dff1e";
-        case 5 : return "#b3f71df4";
-        case 6 : return "#b300e6d9";
-        case 7 : return "#b3f97dfd";
-
-        */
-
-
         case 0 : return "#55ea0000";
         case 1 : return "#550469ee";
         case 2 : return "#55dacfcf";
