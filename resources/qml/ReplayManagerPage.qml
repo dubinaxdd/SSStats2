@@ -33,9 +33,7 @@ Rectangle {
         {
             Layout.fillWidth: true
             Layout.fillHeight: true
-
-            Layout.margins: 15
-
+            Layout.margins: 10
 
             RowLayout
             {
@@ -71,11 +69,8 @@ Rectangle {
 
             RowLayout
             {
-
                 spacing: 30
-
                 Layout.preferredHeight: 140
-
                 Layout.bottomMargin: 15
 
                 ColumnLayout
@@ -87,9 +82,7 @@ Rectangle {
 
                         color: "#112332"
                         radius: 10
-
                         clip: true
-
 
                         Image{
                             id: mapImage
