@@ -299,10 +299,31 @@ void ReplayManager::choiseDefaultPlaybackFolder()
 
 void ReplayManager::getReplaysData()
 {
+    QVector<ReplayListInfo> newReplaysList;
+    m_replaysListModel->setReplaysList(std::move(newReplaysList));
+
+    m_currentReplayTime = "";
+    m_currentFilePath = "";
+    m_currentReplayName = "";
+    m_currentFileName = "";
+    m_currentMod = "";
+    m_currentModVersion = "";
+    m_currentMap = "";
+    m_currentDuration = "";
+    m_currentPlayerCount = 0;
+    m_currentTeamsCount = 0;
+    m_currentMapSize = 0;
+
+    setWinConditions("");
+    setGameSettings("");
+
+    QVector<ReplayPlayer> replayPlayers;
+    m_playersListModel->setPlayersList(std::move(replayPlayers));
+
+    m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
+    emit updateReplayInfo();
 
     emit requestReplaysInfo(m_playbackFolder);
-
-    //m_asyncReplayReader->readReplaysList(m_playbackFolder);
 }
 
 
