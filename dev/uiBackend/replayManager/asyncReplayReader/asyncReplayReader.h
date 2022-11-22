@@ -12,7 +12,7 @@ public:
     explicit AsyncReplayReader(QObject *parent = nullptr);
 
 public slots:
-    void readReplaysList(QString playbackFolder);
+    void readReplaysList(QString playbackFolder, QString findText);
 
 signals:
     void sendReplaysInfo(QVector<ReplayListInfo> newReplaysList);

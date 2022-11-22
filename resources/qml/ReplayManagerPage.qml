@@ -19,6 +19,11 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     radius: 10
 
+    onVisibleChanged:
+    {
+        findTextField.focus = false;
+    }
+
 
     RowLayout
     {
@@ -30,6 +35,34 @@ Rectangle {
             Layout.fillHeight: true
 
             Layout.margins: 15
+
+
+            RowLayout
+            {
+                TextField
+                {
+                    id: findTextField
+
+                    Layout.fillWidth: true
+                    selectByMouse: true
+
+                    onEditingFinished:
+                    {
+                        focus = false;
+                    }
+                }
+
+                IconButton
+                {
+                    sourceUrl: "qrc:/images/resources/images/find.svg"
+                    toolTipText: "Find"
+
+                    onClicked: {
+                        findTextField.editingFinished();
+                        _uiBackend.replayManager.findReplays(findTextField.text);
+                    }
+                }
+            }
 
             RowLayout
             {

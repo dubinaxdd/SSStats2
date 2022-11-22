@@ -50,6 +50,8 @@ public:
     Q_INVOKABLE void choiseOtherPlaybackFolder(QString folder);
     Q_INVOKABLE void choiseDefaultPlaybackFolder();
 
+    Q_INVOKABLE void findReplays(QString findText);
+
     const QString &winConditions() const;
     void setWinConditions(const QString &newWinConditions);
 
@@ -68,12 +70,14 @@ signals:
     void winConditionsChanged();
     void gameSettingsChanged();
 
-    void requestReplaysInfo(QString playbackFolder);
+    void requestReplaysInfo(QString playbackFolder, QString findText);
 
 private:
     void getReplaysData();
     void replaceRaceKeyword(QString *raceString);
     QString chooseColorForPlayer(uint team);
+
+    void resetView();
 
 private:
     QString m_playbackFolder;

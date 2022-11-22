@@ -297,33 +297,16 @@ void ReplayManager::choiseDefaultPlaybackFolder()
     getReplaysData();
 }
 
+void ReplayManager::findReplays(QString findText)
+{
+    resetView();
+    emit requestReplaysInfo(m_playbackFolder, findText);
+}
+
 void ReplayManager::getReplaysData()
 {
-    QVector<ReplayListInfo> newReplaysList;
-    m_replaysListModel->setReplaysList(std::move(newReplaysList));
-
-    m_currentReplayTime = "";
-    m_currentFilePath = "";
-    m_currentReplayName = "";
-    m_currentFileName = "";
-    m_currentMod = "";
-    m_currentModVersion = "";
-    m_currentMap = "";
-    m_currentDuration = "";
-    m_currentPlayerCount = 0;
-    m_currentTeamsCount = 0;
-    m_currentMapSize = 0;
-
-    setWinConditions("");
-    setGameSettings("");
-
-    QVector<ReplayPlayer> replayPlayers;
-    m_playersListModel->setPlayersList(std::move(replayPlayers));
-
-    m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
-    emit updateReplayInfo();
-
-    emit requestReplaysInfo(m_playbackFolder);
+    resetView();
+    emit requestReplaysInfo(m_playbackFolder, "");
 }
 
 
@@ -415,6 +398,33 @@ QString ReplayManager::chooseColorForPlayer(uint team)
         case 7 : return "#55f97dfd";
     }
     return "#DCDCDC";
+}
+
+void ReplayManager::resetView()
+{
+    QVector<ReplayListInfo> newReplaysList;
+    m_replaysListModel->setReplaysList(std::move(newReplaysList));
+
+    m_currentReplayTime = "";
+    m_currentFilePath = "";
+    m_currentReplayName = "";
+    m_currentFileName = "";
+    m_currentMod = "";
+    m_currentModVersion = "";
+    m_currentMap = "";
+    m_currentDuration = "";
+    m_currentPlayerCount = 0;
+    m_currentTeamsCount = 0;
+    m_currentMapSize = 0;
+
+    setWinConditions("");
+    setGameSettings("");
+
+    QVector<ReplayPlayer> replayPlayers;
+    m_playersListModel->setPlayersList(std::move(replayPlayers));
+
+    m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
+    emit updateReplayInfo();
 }
 
 const QString &ReplayManager::gameSettings() const

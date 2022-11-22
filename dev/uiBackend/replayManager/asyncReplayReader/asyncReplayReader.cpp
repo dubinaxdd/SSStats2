@@ -11,7 +11,7 @@ AsyncReplayReader::AsyncReplayReader(QObject *parent)
 
 }
 
-void AsyncReplayReader::readReplaysList(QString playbackFolder)
+void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText)
 {
     QDir dir(playbackFolder);
     QString path = dir.absolutePath();
@@ -52,7 +52,27 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder)
 
         newReplayInfo.time = replayFile.birthTime();
 
-        replaysInfo.append(newReplayInfo);
+        bool isContainsFindText = false;
+
+        if(newReplayInfo.name.toUpper().contains(findText.toUpper())
+                || newReplayInfo.map.toUpper().contains(findText.toUpper())
+                || newReplayInfo.mod.toUpper().contains(findText.toUpper())
+                || newReplayInfo.fileName.toUpper().contains(findText.toUpper())
+                || newReplayInfo.time.toString("dd.MM.yyyy hh:mm").contains(findText.toUpper())
+                )
+            isContainsFindText = true;
+
+
+        QList<Player*> players = newRepReader.replay.Players;
+
+        for(int i = 0; i < players.count(); i++)
+        {
+            if (players[i]->Name.toUpper().contains(findText.toUpper()))
+                isContainsFindText = true;
+        }
+
+        if(isContainsFindText)
+            replaysInfo.append(newReplayInfo);
     }
 
     emit sendReplaysInfo(replaysInfo);
