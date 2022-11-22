@@ -155,7 +155,7 @@ void Core::registerTypes()
     qRegisterMetaType<InstMod>("InstMod");
     qRegisterMetaType<QVector<WinCondition>>("QVector<WinCondition>");
     qRegisterMetaType<QVector<PlyersRankedState>>("QVector<PlyersRankedState>");
-
+    qRegisterMetaType<QVector<ReplayListInfo>>("QVector<ReplayListInfo>");
 }
 
 OverlayWindowController *Core::overlayWindowController() const

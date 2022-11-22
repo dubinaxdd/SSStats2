@@ -6,6 +6,8 @@
 #include <playersListModel.h>
 #include <QUrl>
 #include <imageProvider.h>
+#include <asyncReplayReader.h>
+#include <QThread>
 
 class ReplayManager : public QObject
 {
@@ -33,6 +35,7 @@ class ReplayManager : public QObject
 
 public:
     explicit ReplayManager(ImageProvider* imageProvider, QObject *parent = nullptr);
+    ~ReplayManager();
 
     void setSsPath(const QString &newSsPath);
 
@@ -56,11 +59,16 @@ public:
 public slots:
     void openPlayback(QString fileName);
 
+private slots:
+    void receiveReplaysInfo(QVector<ReplayListInfo> newReplaysList);
+
 signals:
     void replaysListModelSetded();
     void updateReplayInfo();
     void winConditionsChanged();
     void gameSettingsChanged();
+
+    void requestReplaysInfo(QString playbackFolder);
 
 private:
     void getReplaysData();
@@ -74,6 +82,8 @@ private:
     PlayersListModel* m_playersListModel;
 
     ImageProvider* p_imageProvider;
+    AsyncReplayReader* m_asyncReplayReader;
+    QThread* m_asyncReplayReaderThread;
 
     QUrl m_currentFilePath;
     QUrl m_ssUrlPathPath;

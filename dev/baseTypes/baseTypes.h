@@ -5,6 +5,7 @@
 #include <QString>
 #include <QImage>
 #include <QDateTime>
+#include <QUrl>
 
 enum InstMod
 {

@@ -14,12 +14,28 @@ using namespace ReplayReader;
 
 ReplayManager::ReplayManager(ImageProvider* imageProvider, QObject *parent)
     : QObject(parent)
-    , m_playersListModel( new PlayersListModel(this))
     , m_replaysListModel( new ReplaysListModel(this))
+    , m_playersListModel( new PlayersListModel(this))
     , p_imageProvider(imageProvider)
+    , m_asyncReplayReader(new AsyncReplayReader())
+    , m_asyncReplayReaderThread(new QThread(this))
 {
     QObject::connect(m_replaysListModel, &ReplaysListModel::select, this, &ReplayManager::openPlayback, Qt::QueuedConnection);
+    QObject::connect(m_asyncReplayReader, &AsyncReplayReader::sendReplaysInfo, this, &ReplayManager::receiveReplaysInfo, Qt::QueuedConnection);
+    QObject::connect(this, &ReplayManager::requestReplaysInfo, m_asyncReplayReader, &AsyncReplayReader::readReplaysList, Qt::QueuedConnection);
+
     emit replaysListModelSetded();
+
+    m_asyncReplayReader->moveToThread(m_asyncReplayReaderThread);
+    m_asyncReplayReaderThread->start();
+}
+
+ReplayManager::~ReplayManager()
+{
+    m_asyncReplayReaderThread->quit();
+    m_asyncReplayReaderThread->wait();
+
+    delete m_asyncReplayReader;
 }
 
 void ReplayManager::setSsPath(const QString &newSsPath)
@@ -283,49 +299,16 @@ void ReplayManager::choiseDefaultPlaybackFolder()
 
 void ReplayManager::getReplaysData()
 {
-    QDir dir(m_playbackFolder);
-    QString path = dir.absolutePath();
-    QFileInfoList dirContent = dir.entryInfoList(QStringList() << "*.rec", QDir::Files | QDir::NoDotAndDotDot);
 
-    if (dirContent.count() == 0)
-        return;
+    emit requestReplaysInfo(m_playbackFolder);
 
-    QVector<ReplayListInfo> replaysInfo;
+    //m_asyncReplayReader->readReplaysList(m_playbackFolder);
+}
 
-    for (int i = 0; i < dirContent.count(); i++)
-    {
-        QString fileName = dirContent.at(i).fileName();
-        RepReader newRepReader(path + QDir::separator() + fileName);
 
-        if (!newRepReader.isValide())
-            continue;
-
-        ReplayListInfo newReplayInfo;
-
-        newReplayInfo.name = newRepReader.replay.Name;
-
-        QString mapSourceUrl = "qrc:/maps/resources/maps/" + newRepReader.replay.Map.toLower() + ".jpg";;
-        QFile checkFile(m_mapSourceUrl.right(m_mapSourceUrl.count() - 3));
-
-        if(!checkFile.exists())
-            m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
-
-        newReplayInfo.map = newRepReader.replay.Map.toUpper();
-        newReplayInfo.mapUrl = mapSourceUrl;
-        newReplayInfo.mod = newRepReader.replay.MOD;
-        newReplayInfo.fileName = fileName;
-
-        QFileInfo replayFile(path + QDir::separator() + fileName);
-
-        if(!replayFile.exists())
-            continue;
-
-        newReplayInfo.time = replayFile.birthTime();
-
-        replaysInfo.append(newReplayInfo);
-    }
-
-    m_replaysListModel->setReplaysList(std::move(replaysInfo));
+void ReplayManager::receiveReplaysInfo(QVector<ReplayListInfo> newReplaysList)
+{
+    m_replaysListModel->setReplaysList(std::move(newReplaysList));
 }
 
 void ReplayManager::replaceRaceKeyword(QString *raceString)
