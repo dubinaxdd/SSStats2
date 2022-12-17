@@ -152,7 +152,6 @@ void RankedModServiceProcessor::receiveRankedState(QNetworkReply *reply, QVector
 
     QVector<PlyersRankedState> newPlyersRankedStateArray;
 
-
     for(int i = 0; i < jsonArray.count(); i++)
     {
 

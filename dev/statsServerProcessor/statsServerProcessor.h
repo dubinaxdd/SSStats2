@@ -28,7 +28,6 @@ signals:
 
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);
-    void receiveCurrentMissionState(SsMissionState missionCurrentState);
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void receiveRankedMode(bool reankedMode);
 

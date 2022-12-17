@@ -284,8 +284,6 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
         }
     }
 
-    //m_lockRanked = true;
-
     QString url;
 
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
@@ -411,8 +409,6 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
     });
-
-   // m_lockRanked = false;
 }
 
 void StatsServerProcessor::receiveRankedMode(bool reankedMode)
@@ -473,16 +469,3 @@ void StatsServerProcessor::registerPlayer(QString name, QString sid, bool init)
         reply->deleteLater();
     });
 }
-
-void StatsServerProcessor::receiveCurrentMissionState(SsMissionState missionCurrentState)
-{
-    switch (missionCurrentState)
-    {
-        //case SsMissionState::gameLoadStarted : m_lockRanked = true; break;
-        //case SsMissionState::unknownGameStoped:
-        //case SsMissionState::gameStoped : m_lockRanked = false; break;
-        default: break;
-    }
-}
-
-
