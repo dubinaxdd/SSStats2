@@ -282,7 +282,7 @@ Rectangle {
                         width: 200 * _uiBackend.sizeModifer
                         height: 20 * _uiBackend.sizeModifer
                         opacity: 1
-                        color: _uiBackend.gameRankedMode ? "#00ff99" : "#ffa9a9";
+                        color: _uiBackend.gamePanel.gameRankedMode ? "#00ff99" : "#ffa9a9";
                         Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                         Layout.fillWidth: true
                         Layout.fillHeight: false
@@ -292,7 +292,7 @@ Rectangle {
                         Label {
                             id: rankedModeLabel
                             height: 20 * _uiBackend.sizeModifer
-                            text: _uiBackend.gameRankedMode ? "Ranked mode" : "Unranked mode"
+                            text: _uiBackend.gamePanel.gameRankedMode ? "Ranked mode" : "Unranked mode"
                             anchors.fill: parent
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter

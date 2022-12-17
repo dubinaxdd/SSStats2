@@ -116,19 +116,6 @@ void UiBackend::setOnlineCount(int newOnlineCount)
     emit onlineCountChanged();
 }
 
-bool UiBackend::gameRankedMode() const
-{
-    return m_gameRankedMode;
-}
-
-void UiBackend::setGameRankedMode(bool newGameRankedMode)
-{
-    if (m_gameRankedMode == newGameRankedMode)
-        return;
-    m_gameRankedMode = newGameRankedMode;
-    emit gameRankedModeChanged();
-}
-
 bool UiBackend::enableTrainingModeSwitch() const
 {
     return m_enableTrainingModeSwitch;

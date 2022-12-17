@@ -51,7 +51,6 @@ class UiBackend : public QObject
 
     Q_PROPERTY(bool rankedModeState READ rankedModeState WRITE setRankedModeState NOTIFY rankedModeStateChanged)
     Q_PROPERTY(bool enableTrainingModeSwitch READ enableTrainingModeSwitch WRITE setEnableTrainingModeSwitch NOTIFY enableTrainingModeSwitchChanged)
-    Q_PROPERTY(bool gameRankedMode READ gameRankedMode WRITE setGameRankedMode NOTIFY gameRankedModeChanged)
     Q_PROPERTY(int onlineCount READ onlineCount WRITE setOnlineCount NOTIFY onlineCountChanged)
 
 public:
@@ -96,9 +95,6 @@ public:
     bool enableTrainingModeSwitch() const;
     void setEnableTrainingModeSwitch(bool newEnableTrainingModeSwitch);
 
-    bool gameRankedMode() const;
-    void setGameRankedMode(bool newGameRankedMode);
-
     int onlineCount() const;
     void setOnlineCount(int newOnlineCount);
 
@@ -137,11 +133,7 @@ signals:
     void notificationVisibleChanged();
 
     void rankedModeStateChanged(bool trainingMode);
-
     void enableTrainingModeSwitchChanged();
-
-    void gameRankedModeChanged();
-
     void onlineCountChanged();
 
 public slots:
@@ -216,8 +208,6 @@ private:
 
     bool m_rankedModeState = true;
     bool m_enableTrainingModeSwitch = true;
-
-    bool m_gameRankedMode = true;
 
     float m_sizeModifer = 2.0;
 

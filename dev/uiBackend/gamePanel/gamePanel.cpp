@@ -345,3 +345,15 @@ bool GamePanel::getSmallGamePanelActive()
     return m_smallPannelActive;
 }
 
+bool GamePanel::gameRankedMode() const
+{
+    return m_gameRankedMode;
+}
+
+void GamePanel::setGameRankedMode(bool newGameRankedMode)
+{
+    if (m_gameRankedMode == newGameRankedMode)
+        return;
+    m_gameRankedMode = newGameRankedMode;
+    emit gameRankedModeChanged();
+}
