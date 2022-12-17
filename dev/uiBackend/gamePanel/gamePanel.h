@@ -24,6 +24,7 @@ class GamePanel : public QObject
     Q_PROPERTY(bool showGamePannelPreset READ showGamePannelPreset WRITE setShowGamePannelPreset NOTIFY showGamePanelPresetChanged)
 
     Q_PROPERTY(bool gameRankedMode READ gameRankedMode WRITE setGameRankedMode NOTIFY gameRankedModeChanged)
+    Q_PROPERTY(bool rankedModePanelVisible READ rankedModePanelVisible WRITE setRankedModePanelVisible NOTIFY rankedModePanelVisibleChanged)
 
     Q_PROPERTY(QString player0Race MEMBER m_player0Race NOTIFY playerTestStatsUpdate)
     Q_PROPERTY(QString player1Race MEMBER m_player1Race NOTIFY playerTestStatsUpdate)
@@ -61,6 +62,9 @@ public:
     bool gameRankedMode() const;
     void setGameRankedMode(bool newGameRankedMode);
 
+    bool rankedModePanelVisible() const;
+    void setRankedModePanelVisible(bool newRankedModePanelVisible);
+
 signals:
     void apmUpdate();
 
@@ -74,6 +78,8 @@ signals:
     void showGamePanelPresetChanged(bool);
 
     void gameRankedModeChanged();
+
+    void rankedModePanelVisibleChanged();
 
 public slots:
     void onApmChanged(int capm, int aapm);
@@ -112,6 +118,7 @@ private:
     bool m_racePanelVisisble = false;
 
     bool m_gameRankedMode = true;
+    bool m_rankedModePanelVisible = true;
 
     QString m_currentApm = "-";
     QString m_averageApm = "-";

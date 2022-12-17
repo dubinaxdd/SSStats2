@@ -98,6 +98,8 @@ public:
     int onlineCount() const;
     void setOnlineCount(int newOnlineCount);
 
+    void determinateRankedModePanelVisisble();
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 

@@ -286,7 +286,7 @@ Rectangle {
                         Layout.maximumHeight: 20 * _uiBackend.sizeModifer
                         Layout.fillWidth: true
                         Layout.fillHeight: false
-                        visible: model.racePanelVisible && model.smallPannelActive
+                        visible: model.racePanelVisible && model.smallPannelActive && _uiBackend.gamePanel.rankedModePanelVisible
                         radius: 5 * _uiBackend.sizeModifer
 
                         Label {

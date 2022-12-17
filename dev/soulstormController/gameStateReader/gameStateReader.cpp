@@ -699,6 +699,9 @@ void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
     m_rankedMode = isRanked;
 
     if (m_missionCurrentState == SsMissionState::unknown
+        ||  m_missionCurrentState == SsMissionState::unknownGameStarted
+        ||  m_missionCurrentState == SsMissionState::unknownGameStoped
+        ||  m_missionCurrentState == SsMissionState::gameOver
         ||  m_missionCurrentState == SsMissionState::playbackLoadStarted
         ||  m_missionCurrentState == SsMissionState::savedGameLoadStarted
         )

@@ -301,6 +301,19 @@ void GamePanel::updatePlayerRaces()
     emit playerTestStatsUpdate();
 }
 
+bool GamePanel::rankedModePanelVisible() const
+{
+    return m_rankedModePanelVisible;
+}
+
+void GamePanel::setRankedModePanelVisible(bool newRankedModePanelVisible)
+{
+    if (m_rankedModePanelVisible == newRankedModePanelVisible)
+        return;
+    m_rankedModePanelVisible = newRankedModePanelVisible;
+    emit rankedModePanelVisibleChanged();
+}
+
 const QString &GamePanel::averageApm() const
 {
     return m_averageApm;
@@ -354,6 +367,7 @@ void GamePanel::setGameRankedMode(bool newGameRankedMode)
 {
     if (m_gameRankedMode == newGameRankedMode)
         return;
+
     m_gameRankedMode = newGameRankedMode;
     emit gameRankedModeChanged();
 }

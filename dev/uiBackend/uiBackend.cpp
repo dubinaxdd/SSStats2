@@ -116,6 +116,23 @@ void UiBackend::setOnlineCount(int newOnlineCount)
     emit onlineCountChanged();
 }
 
+void UiBackend::determinateRankedModePanelVisisble()
+{
+    if (m_gameCurrentState == SsMissionState::playbackLoadStarted
+        || m_gameCurrentState == SsMissionState::playbackStarted
+        || m_gameCurrentState == SsMissionState::playbackOver
+        || m_gameCurrentState == SsMissionState::savedGameLoadStarted
+        || m_gameCurrentState == SsMissionState::savedGameStarted
+        || m_gameCurrentState == SsMissionState::savedGameOver
+        || m_gameCurrentState == SsMissionState::unknown
+        || m_gameCurrentState == SsMissionState::unknownGameStarted
+        || m_gameCurrentState == SsMissionState::unknownGameOver
+            )
+        m_gamePanel->setRankedModePanelVisible(false);
+    else
+        m_gamePanel->setRankedModePanelVisible(true);
+}
+
 bool UiBackend::enableTrainingModeSwitch() const
 {
     return m_enableTrainingModeSwitch;
@@ -194,6 +211,8 @@ void UiBackend::setMissionCurrentState(SsMissionState gameCurrentState)
 
         default: break;
     }
+
+    determinateRankedModePanelVisisble();
 }
 
 void UiBackend::receiveNotification(QString notify, bool isWarning)
