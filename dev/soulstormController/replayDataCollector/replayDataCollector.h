@@ -22,7 +22,6 @@ public slots:
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void sendNotification(QString warningString, bool isWarning);
-    void sendLockRanked(bool lockRanked);
 
 private:
     bool checkEqualNames(QStringList* playerNames);

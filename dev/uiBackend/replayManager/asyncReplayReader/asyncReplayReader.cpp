@@ -25,6 +25,10 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText
     for (int i = 0; i < dirContent.count(); i++)
     {
         QString fileName = dirContent.at(i).fileName();
+
+        if(fileName == "temp.rec")
+            continue;
+
         RepReader newRepReader(path + QDir::separator() + fileName);
 
         if (!newRepReader.isValide())

@@ -211,39 +211,7 @@ void GameStateReader::readRacesTimerTimeout()
 
     emit sendPlayersTestStats(playerStats);
 
-
-
-    if(m_lockRanked)
-        return;
-
-    bool isRanked = false;
-
-    for (int i = 0; i < m_plyersRankedState.count(); i++)
-    {
-        if (m_plyersRankedState.at(i).isRanked)
-        {
-            bool finded = false;
-
-            for(int j = 0; j < playerStats.count(); j++)
-            {
-                if (playerStats.at(j).name == m_plyersRankedState.at(i).name)
-                {
-                    finded = true;
-                    break;
-                }
-            }
-
-            if(!finded)
-                continue;
-
-            isRanked = true;
-            break;
-        }
-    }
-
-    m_rankedMode = isRanked;
-
-    emit sendGameRankedMode(m_rankedMode);
+    determinateRankedMode(playerStats);
 }
 
 void GameStateReader::setGameLounched(bool newGameLounched)
@@ -275,11 +243,6 @@ void GameStateReader::stopedGame()
 void GameStateReader::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
 {
     m_plyersRankedState = plyersRankedState;
-}
-
-void GameStateReader::receiveLockRanked(bool lockRanked)
-{
-     m_lockRanked = lockRanked;
 }
 
 void GameStateReader::setCurrentProfile(const QString &newCurrentProfile)
@@ -464,6 +427,7 @@ void GameStateReader::missionLoad(QStringList* fileLines, int counter)
         checkCounter--;
     }
 
+    ///Проверка на обычную игру
     if (m_missionCurrentState != SsMissionState::savedGameLoadStarted
         && m_missionCurrentState != SsMissionState::playbackLoadStarted
         && m_missionCurrentState != SsMissionState::gameLoadStarted)
@@ -576,6 +540,7 @@ void GameStateReader::missionStoped()
             default: break;
         }
 
+        m_lockRanked = false;
         emit sendCurrentMissionState(m_missionCurrentState);
         qInfo(logInfo()) << "Mission Stoped";
     }
@@ -596,6 +561,7 @@ bool GameStateReader::forceMissionStoped()
     readTestStatsTemp();
 
     m_missionCurrentState = SsMissionState::unknownGameStoped;
+    m_lockRanked = false;
 
     emit sendCurrentMissionState(m_missionCurrentState);
     qInfo(logInfo()) << "Force Mission Stoped";
@@ -698,4 +664,47 @@ void GameStateReader::readWinConditions(QStringList *fileLines, int counter)
     }
 
     emit sendCurrentWinConditions(winCoditionsVector);
+}
+
+void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
+{
+    if(m_lockRanked)
+        return;
+
+    bool isRanked = false;
+
+    for (int i = 0; i < m_plyersRankedState.count(); i++)
+    {
+        if (m_plyersRankedState.at(i).isRanked)
+        {
+            bool finded = false;
+
+            for(int j = 0; j < playerStats.count(); j++)
+            {
+                if (playerStats.at(j).name == m_plyersRankedState.at(i).name || playerStats.at(j).name == "[" + m_plyersRankedState.at(i).name + "]")
+                {
+                    finded = true;
+                    break;
+                }
+            }
+
+            if(!finded)
+                continue;
+
+            isRanked = true;
+            break;
+        }
+    }
+
+    m_rankedMode = isRanked;
+
+    if (m_missionCurrentState == SsMissionState::unknown
+        ||  m_missionCurrentState == SsMissionState::playbackLoadStarted
+        ||  m_missionCurrentState == SsMissionState::savedGameLoadStarted
+        )
+        m_rankedMode = false;
+
+    m_lockRanked = true;
+
+    emit sendGameRankedMode(m_rankedMode);
 }

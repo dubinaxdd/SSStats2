@@ -22,7 +22,6 @@ public:
 
 public slots:
     void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
-    void receiveLockRanked(bool lockRanked);
 
 private slots:
     void readGameInfo();
@@ -59,6 +58,8 @@ private:
     void playerDroppedToObserver(QString str);
 
     void readWinConditions(QStringList *fileLines, int counter);
+
+    void determinateRankedMode(QVector<PlayerStats> playerStats);
 
 private:
     QTimer* m_gameInfoReadTimer;

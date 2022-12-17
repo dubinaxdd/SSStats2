@@ -213,7 +213,7 @@ static const quint32 CRC32Table[256] =
     0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
-struct PlayerInfoForReplaySendong
+struct PlayerInfoForReplaySending
 {
     QString playerName;
     QString playerSid = "";
@@ -223,7 +223,7 @@ struct PlayerInfoForReplaySendong
 
 struct SendingReplayInfo
 {
-    QList<PlayerInfoForReplaySendong> playersInfo;
+    QList<PlayerInfoForReplaySending> playersInfo;
     int apm;
     GameTypeForReplaySending gameType;
     QString mapName;

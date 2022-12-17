@@ -16,16 +16,7 @@ void ReplayDataCollector::receiveCurrentMissionState(SsMissionState missionCurre
 {
     switch (missionCurrentState)
     {
-        case SsMissionState::gameStoped :
-        {
-            if (!readReplayData())
-                emit sendLockRanked(false);
-
-            break;
-        }
-
-        case SsMissionState::unknownGameStoped: emit sendLockRanked(false); break;
-
+        case SsMissionState::gameStoped : readReplayData(); break;
         default: break;
     }
 }
@@ -319,7 +310,7 @@ bool ReplayDataCollector::readReplayData()
 
     for(int i = 0; i < playersCount; i++)
     {
-        PlayerInfoForReplaySendong newPlayer;
+        PlayerInfoForReplaySending newPlayer;
         newPlayer.playerName = playerStats[i].name;
 
         //Берем сиды из последнего скана
