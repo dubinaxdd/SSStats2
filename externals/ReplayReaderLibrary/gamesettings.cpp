@@ -33,10 +33,10 @@ bool GameSettings::isStandart(int game_type)
         qDebug() << "Enable cheats:" << getResolvedCheats();
         return false;
     }
-    if(game_type!=1&&StartLocation!=0){
+    /*if(game_type!=1&&StartLocation!=0){
         qDebug() << "Start location:" << getResolvedPositions();
         return false;
-    }
+    }*/
     if(GameSpeed    !=2){
         qDebug() << "Game speed:" << getResolvedGameSpeed();
         return false;
