@@ -21,5 +21,9 @@
         <file>resources/qml/ReplayManagerPage.qml</file>
         <file>resources/qml/ModsPage.qml</file>
         <file>resources/qml/IconButton.qml</file>
+        <file>resources/qml/OtherModsSubPage.qml</file>
+        <file>resources/qml/DowStatsModSubPage.qml</file>
+        <file>resources/qml/SubPageMenuButton.qml</file>
+        <file>resources/qml/MapsSubPage.qml</file>
     </qresource>
 </RCC>

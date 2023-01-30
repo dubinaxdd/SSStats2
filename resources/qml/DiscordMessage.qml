@@ -113,7 +113,7 @@ Rectangle {
                         Layout.rightMargin: 15
                         color: "#26282a"
                         text: mainRectangle.userName
-                        font.pixelSize: 22
+                        font.pixelSize: 18
                     }
                 }
             }
@@ -135,7 +135,7 @@ Rectangle {
                 id: dateTimeLabel
                 color: "#26282a"
                 text: mainRectangle.timesTamp
-                font.pixelSize: 18
+                font.pixelSize: 16
                 Layout.rightMargin: 15
             }
         }
@@ -151,7 +151,7 @@ Rectangle {
             text: mainRectangle.content
             wrapMode: Text.Wrap
             color: "#26282a"
-            font.pixelSize: 16
+            font.pixelSize: 14
             textFormat: Text.RichText
 
             visible: mainRectangle.content != "\0"
