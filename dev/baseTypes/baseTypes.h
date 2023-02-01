@@ -288,4 +288,19 @@ struct PlyersRankedState
     bool isOnline = false;
 };
 
+struct MapItem
+{
+    QString id;
+    QString authors;
+    QString description;
+    QString size;
+    QString webPage;
+    QString mapName;
+    QString modContentHash;
+    long int unpackedSize;
+    long int packedSize;
+    int type;
+    QList<QString> tags;
+};
+
 #endif // BASETYPES_H

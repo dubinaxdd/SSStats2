@@ -11,8 +11,8 @@
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
     , m_logger(new Logger(this))
-    , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_settingsController(new SettingsController(this))
+    , m_keyboardProcessor(new KeyboardProcessor(this))
     , m_uiBackend(new UiBackend(m_settingsController, context))
     , m_soulstormController(new SoulstormController(m_settingsController, this))
     , m_overlayWindowController(new OverlayWindowController(m_uiBackend, m_soulstormController, this))
@@ -21,6 +21,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_soundProcessor(new SoundProcessor(this))
     , m_statsServerProcessor ( new StatsServerProcessor(m_soulstormController->ssPath(), m_soulstormController->steamPath(), this))
     , m_rankedModServiceProcessor(new RankedModServiceProcessor(this))
+    , m_mapManager(new MapManager(this))
 {
     registerTypes();
 

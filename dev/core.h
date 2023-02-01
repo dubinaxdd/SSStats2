@@ -14,6 +14,7 @@
 #include <overlayWindowController.h>
 #include <statsServerProcessor.h>
 #include <rankedModServiceProcessor.h>
+#include <mapManager.h>
 
 class Core : public QObject
 {
@@ -51,6 +52,7 @@ private:
     SoundProcessor* m_soundProcessor;
     StatsServerProcessor* m_statsServerProcessor;
     RankedModServiceProcessor* m_rankedModServiceProcessor;
+    MapManager* m_mapManager;
 };
 
 //Q_DECLARE_METATYPE(Core);
