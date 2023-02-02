@@ -8,19 +8,29 @@
 #include <zconf.h>
 #include <QtZlib/zlib.h>
 #include "JlCompress.h"
+#include <QCryptographicHash>
 
 #define GZIP_WINDOWS_BIT 15 + 16
 #define GZIP_CHUNK_SIZE 32 * 1024
 
-MapManager::MapManager(QObject *parent) : QObject(parent)
+MapManager::MapManager(QString ssPath, QObject *parent)
+    : QObject(parent)
+    , m_ssPath(ssPath)
 {
      m_networkManager = new QNetworkAccessManager(this);
 
+     getLocalMapFilesList();
      requestMapList();
 }
 
 void MapManager::requestMapList()
 {
+
+    if(m_blockInfoUpdate)
+        return;
+
+    m_blockInfoUpdate = true;
+
     QString url = "https://dowonline.ru/api/Mods/list?ModType=2";
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(url));
@@ -57,7 +67,11 @@ void MapManager::receiveMapList(QNetworkReply *reply)
 
     QJsonArray replyJsonArray = jsonDoc.array();
 
-    QList<MapItem> mapItemArray;
+    //TODO: Возможен баг так как другие методы могут обращаться по указателям к уже не существующим элементам массива
+    //m_blockInfoUpdate должен помочь
+
+    m_mapItemArray.clear();
+    m_requestetMapInfoCount = 0;
 
     for (int i = 0; i < replyJsonArray.count(); i++)
     {
@@ -87,27 +101,27 @@ void MapManager::receiveMapList(QNetworkReply *reply)
         for (int j = 0; j < tagsJsonArray.count(); j++)
             newMapItem.tags.append(tagsJsonArray.at(j).toString());
 
-        mapItemArray.append(std::move(newMapItem));
-
+        m_mapItemArray.append(std::move(newMapItem));
     }
 
-    qDebug() << mapItemArray.at(0).id << "\n"
-            << mapItemArray.at(0).authors << "\n"
-            << mapItemArray.at(0).description << "\n"
-            << mapItemArray.at(0).size << "\n"
-            << mapItemArray.at(0).webPage << "\n"
-            << mapItemArray.at(0).mapName << "\n"
-            << mapItemArray.at(0).modContentHash << "\n"
-            << mapItemArray.at(0).unpackedSize << "\n"
-            << mapItemArray.at(0).packedSize << "\n"
-            << mapItemArray.at(0).type << "\n";
+   /* qDebug() << m_mapItemArray.at(0).id << "\n"
+            << m_mapItemArray.at(0).authors << "\n"
+            << m_mapItemArray.at(0).description << "\n"
+            << m_mapItemArray.at(0).size << "\n"
+            << m_mapItemArray.at(0).webPage << "\n"
+            << m_mapItemArray.at(0).mapName << "\n"
+            << m_mapItemArray.at(0).modContentHash << "\n"
+            << m_mapItemArray.at(0).unpackedSize << "\n"
+            << m_mapItemArray.at(0).packedSize << "\n"
+            << m_mapItemArray.at(0).type << "\n";*/
 
-    requestMapInfo(mapItemArray.at(0));
+    for(int i = 0; i < m_mapItemArray.count(); i++)
+        requestMapInfo( &m_mapItemArray[i] );
 }
 
-void MapManager::requestMapInfo(MapItem mapItem)
+void MapManager::requestMapInfo(MapItem *mapItem)
 {
-    QString url = getUrl(mapItem.modContentHash);
+    QString url = getUrl(mapItem->modContentHash);
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(url));
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -119,10 +133,11 @@ void MapManager::requestMapInfo(MapItem mapItem)
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
         reply->deleteLater();
+        m_requestetMapInfoCount++;
     });
 }
 
-void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem mapItem)
+void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -149,13 +164,32 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem mapItem)
 
     QStringList keys = filesInfoObject.keys();
 
+    QList<MapFileHash> newFileHashArray;
+
     for(int i = 0; i < keys.count(); i++)
     {
         QJsonObject fileObject = filesInfoObject.value(keys.at(i)).toObject();
         QString hash = fileObject.value("fullFileHash").toString();
 
-        requestFile(keys.at(i), hash);
+
+        MapFileHash newFileHash;
+
+        newFileHash.fileName = keys.at(i);
+        newFileHash.hash = hash;
+
+        newFileHashArray.append(newFileHash);
     }
+
+    mapItem->filesList = newFileHashArray;
+
+    checkLocalFilesState(mapItem);
+
+    m_requestetMapInfoCount++;
+
+    emit sendMapInfo(mapItem);
+
+    if(m_requestetMapInfoCount == m_mapItemArray.count())
+        m_blockInfoUpdate = false;
 }
 
 void MapManager::requestFile(QString fileName, QString fileHash)
@@ -200,6 +234,31 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName)
 
 }
 
+void MapManager::getLocalMapFilesList()
+{
+    QDir dir(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp");
+    QFileInfoList dirContent = dir.entryInfoList(QDir::Files);
+
+    for (int i = 0; i < dirContent.count(); i++)
+    {
+
+        MapFileHash newMapFileHash;
+        newMapFileHash.fileName = dirContent.at(i).fileName();
+
+        QFile file(dirContent.at(i).filePath());
+
+        if (file.open(QFile::ReadOnly))
+        {
+            QCryptographicHash hash(QCryptographicHash::Algorithm::Sha256);
+
+            if (hash.addData(&file))
+                newMapFileHash.hash = hash.result().toBase64();
+        }
+
+        m_localMapFilesHashes.append(newMapFileHash);
+    }
+}
+
 QString MapManager::getUrl(QString mapHash)
 {
 
@@ -211,6 +270,38 @@ QString MapManager::getUrl(QString mapHash)
     QString url = "https://dowonline.ru/Storage/" + hexStr.mid(0, 2) + "/" + hexStr.mid(2, 2) + "/" + hexStr + ".gz";
 
     return url;
+}
+
+
+void MapManager::checkLocalFilesState(MapItem *mapItem)
+{
+
+    bool needInstall = true;
+    bool needUpdate = false;
+    int foundedFiles = 0;
+
+    for(int i = 0; i < mapItem->filesList.count(); i++)
+    {
+        for(int j = 0; j < m_localMapFilesHashes.count(); j++)
+        {
+            if (mapItem->filesList.at(i).fileName == m_localMapFilesHashes.at(j).fileName)
+            {
+                needInstall = false;
+                foundedFiles++;
+
+                if (mapItem->filesList.at(i).hash != m_localMapFilesHashes.at(j).hash)
+                    needUpdate = true;
+
+                continue;
+            }
+        }
+    }
+
+    if (foundedFiles < mapItem->filesList.count())
+        needUpdate = true;
+
+    mapItem->needUpdate = needUpdate;
+    mapItem->needInstall = needInstall;
 }
 
 bool MapManager::uncompressGz(QByteArray input, QByteArray &output)

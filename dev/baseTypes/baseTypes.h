@@ -288,6 +288,12 @@ struct PlyersRankedState
     bool isOnline = false;
 };
 
+struct MapFileHash
+{
+    QString fileName = "";
+    QString hash = "";
+};
+
 struct MapItem
 {
     QString id;
@@ -301,6 +307,13 @@ struct MapItem
     long int packedSize;
     int type;
     QList<QString> tags;
+
+    QList<MapFileHash> filesList;
+
+    bool needInstall = false;
+    bool needUpdate = false;
 };
+
+
 
 #endif // BASETYPES_H
