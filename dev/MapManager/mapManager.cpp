@@ -226,12 +226,11 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName)
     if (!uncompressGz(replyByteArray, uncompressedByteArray))
         return;
 
-    QFile newFile( QDir::currentPath() + QDir::separator() + fileName );
+    QFile newFile( m_ssPath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
     if( newFile.open( QIODevice::WriteOnly ) ) {
         newFile.write(uncompressedByteArray);
         newFile.close();
     }
-
 }
 
 void MapManager::getLocalMapFilesList()
