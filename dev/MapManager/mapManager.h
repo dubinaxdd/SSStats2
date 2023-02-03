@@ -25,7 +25,7 @@ public:
     void getLocalMapFilesList();
 
 signals:
-    void sendMapInfo(MapItem *mapItem);
+    void sendMapItem(MapItem *mapItem);
 
 private:
     QString getUrl(QString mapHash);

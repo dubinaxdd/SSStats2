@@ -130,6 +130,9 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::volumeChanged, m_soundProcessor, &SoundProcessor::setVolume, Qt::QueuedConnection);
 
+    QObject::connect(m_mapManager, &MapManager::sendMapItem, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapItem, Qt::QueuedConnection);
+
+
     m_statsServerProcessor->parseCurrentPlayerSteamId();
 
     m_settingsController->initializeSettings();
@@ -152,6 +155,7 @@ void Core::registerTypes()
     qRegisterMetaType<QVector<WinCondition>>("QVector<WinCondition>");
     qRegisterMetaType<QVector<PlyersRankedState>>("QVector<PlyersRankedState>");
     qRegisterMetaType<QVector<ReplayListInfo>>("QVector<ReplayListInfo>");
+    qRegisterMetaType<MapItem*>("MapItem*");
 }
 
 OverlayWindowController *Core::overlayWindowController() const

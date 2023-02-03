@@ -13,6 +13,8 @@
 #include <messagesPage.h>
 #include <settingsPageModel.h>
 #include <replayManager.h>
+#include <mapManagerPage.h>
+
 
 class UiBackend : public QObject
 {
@@ -100,6 +102,8 @@ public:
 
     void determinateRankedModePanelVisisble();
 
+    MapManagerPage *mapManagerPage() const;
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -175,6 +179,7 @@ private:
     MessagesPage* m_eventsPage;
     SettingsPageModel* m_settingsPageModel;
     ReplayManager* m_replayManager;
+    MapManagerPage* m_mapManagerPage;
 
     QTimer* m_notificationVisibleTimer;
 

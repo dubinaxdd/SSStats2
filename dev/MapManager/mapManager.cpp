@@ -186,7 +186,7 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
 
     m_requestetMapInfoCount++;
 
-    emit sendMapInfo(mapItem);
+    emit sendMapItem(mapItem);
 
     if(m_requestetMapInfoCount == m_mapItemArray.count())
         m_blockInfoUpdate = false;

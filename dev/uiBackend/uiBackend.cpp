@@ -12,6 +12,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_eventsPage(new MessagesPage(this))
     , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
     , m_replayManager(new ReplayManager(m_imageProvider, this))
+    , m_mapManagerPage(new MapManagerPage(this))
     , m_notificationVisibleTimer(new QTimer(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
@@ -101,6 +102,11 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(SsMissionState::gameOver);
+}
+
+MapManagerPage *UiBackend::mapManagerPage() const
+{
+    return m_mapManagerPage;
 }
 
 int UiBackend::onlineCount() const
