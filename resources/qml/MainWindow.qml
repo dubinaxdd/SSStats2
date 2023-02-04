@@ -218,6 +218,7 @@ Window {
                 HeaderButton{
                     id: modsButton
                     text: "Mods"
+                    newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
 
                     onClicked: {
                         newsButton.pressedState = false;

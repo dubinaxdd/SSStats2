@@ -25,5 +25,6 @@
         <file>resources/qml/DowStatsModSubPage.qml</file>
         <file>resources/qml/SubPageMenuButton.qml</file>
         <file>resources/qml/MapsSubPage.qml</file>
+        <file>resources/qml/BlueButton.qml</file>
     </qresource>
 </RCC>

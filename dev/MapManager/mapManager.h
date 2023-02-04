@@ -24,6 +24,10 @@ public:
 
     void getLocalMapFilesList();
 
+public slots:
+    void receiveRemoveMap(MapItem *mapItem);
+    void receiveInstallMap(MapItem *mapItem);
+
 signals:
     void sendMapItem(MapItem *mapItem);
 

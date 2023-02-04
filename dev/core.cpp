@@ -131,10 +131,11 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::volumeChanged, m_soundProcessor, &SoundProcessor::setVolume, Qt::QueuedConnection);
 
     QObject::connect(m_mapManager, &MapManager::sendMapItem, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapItem, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendRemoveMap, m_mapManager, &MapManager::receiveRemoveMap,  Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallMap, m_mapManager, &MapManager::receiveInstallMap,  Qt::QueuedConnection);
 
 
     m_statsServerProcessor->parseCurrentPlayerSteamId();
-
     m_settingsController->initializeSettings();
 }
 

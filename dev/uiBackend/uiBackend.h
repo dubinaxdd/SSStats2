@@ -46,6 +46,7 @@ class UiBackend : public QObject
     Q_PROPERTY(MessagesPage* eventsPage MEMBER m_eventsPage NOTIFY statisticPanelInitialized)
     Q_PROPERTY(SettingsPageModel* settingsPageModel MEMBER m_settingsPageModel NOTIFY statisticPanelInitialized)
     Q_PROPERTY(ReplayManager* replayManager MEMBER m_replayManager NOTIFY statisticPanelInitialized)
+    Q_PROPERTY(MapManagerPage* mapManagerPage MEMBER m_mapManagerPage NOTIFY statisticPanelInitialized)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)

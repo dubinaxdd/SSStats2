@@ -299,7 +299,6 @@ struct MapItem
     QString id;
     QString authors;
     QString description;
-    QString size;
     QString webPage;
     QString mapName;
     QString modContentHash;

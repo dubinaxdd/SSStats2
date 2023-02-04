@@ -19,8 +19,6 @@ QVariant MapManagerPage::data(const QModelIndex &index, int role) const
         return mapItem->authors;
     else if (role == Description)
         return mapItem->description;
-    else if (role == Size)
-        return mapItem->size;
     else if (role == Tags)
     {
         QString tags;
@@ -46,6 +44,43 @@ int MapManagerPage::rowCount(const QModelIndex &parent) const
 
 void MapManagerPage::receiveMapItem(MapItem *mapItem)
 {
+    for (int i = 0; i < m_mapItemArray.count(); i++)
+    {
+        if(mapItem->modContentHash == m_mapItemArray.at(i)->modContentHash)
+        {
+            QModelIndex index = QAbstractItemModel::createIndex(i, 0);
+            //QModelIndex l = QAbstractItemModel::createIndex(i, 0);
+
+            emit dataChanged(index, index);
+
+            checkUpdates();
+            return;
+        }
+    }
+
+    beginInsertRows(QModelIndex(), m_mapItemArray.count(), m_mapItemArray.count());
+    m_mapItemArray.append(mapItem);
+    endInsertRows();
+
+    for(int i = 0; i < m_mapItemArray.count(); i++)
+    {
+        for(int j = 0; j < m_mapItemArray.count() - 1; j++)
+        {
+            if(m_mapItemArray.at(j)->mapName > m_mapItemArray.at(j+1)->mapName)
+            {
+                MapItem *buffer = m_mapItemArray.at(j+1);
+                m_mapItemArray[j+1] = m_mapItemArray.at(j);
+                m_mapItemArray[j] = buffer;
+            }
+        }
+    }
+
+    QModelIndex first = QAbstractItemModel::createIndex(0,0);
+    QModelIndex last = QAbstractItemModel::createIndex(m_mapItemArray.count() - 1, 0);
+
+    emit dataChanged(first, last);
+
+    checkUpdates();
 
 }
 
@@ -55,10 +90,45 @@ QHash<int, QByteArray> MapManagerPage::roleNames() const
     roles[MapName] = "mapName";
     roles[Authors] = "authors";
     roles[Description] = "description";
-    roles[Size] = "size";
     roles[Tags] = "tags";
     roles[NeedInstall] = "needInstall";
     roles[NeedUpdate] = "needUpdate";
 
     return roles;
+}
+
+void MapManagerPage::checkUpdates()
+{
+    m_updatesAvailable = false;
+
+    for (int i = 0; i < m_mapItemArray.count(); i++)
+    {
+        if (m_mapItemArray.at(i)->needInstall || m_mapItemArray.at(i)->needUpdate)
+            m_updatesAvailable = true;
+    }
+
+    emit updatesAvailableChanged();
+}
+
+bool MapManagerPage::updatesAvailable() const
+{
+    return m_updatesAvailable;
+}
+
+void MapManagerPage::setUpdatesAvailable(bool newUpdatesAvailable)
+{
+    if (m_updatesAvailable == newUpdatesAvailable)
+        return;
+    m_updatesAvailable = newUpdatesAvailable;
+    emit updatesAvailableChanged();
+}
+
+void MapManagerPage::removeMap(int index)
+{
+    emit sendRemoveMap(m_mapItemArray[index]);
+}
+
+void MapManagerPage::installMap(int index)
+{
+    emit sendInstallMap(m_mapItemArray[index]);
 }

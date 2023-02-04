@@ -84,8 +84,7 @@ void MapManager::receiveMapList(QNetworkReply *reply)
 
         newMapItem.id = newObject.value("id").toString();
         newMapItem.authors = newObject.value("authors").toString();
-        newMapItem.description = newObject.value("description").toString();
-        newMapItem.size = newObject.value("size").toString();
+        newMapItem.description = newObject.value("description").toString().replace("\n", " ");
         newMapItem.webPage = newObject.value("webPage").toString();
         newMapItem.mapName = newObject.value("modName").toString();
         newMapItem.modContentHash = newObject.value("modContentHash").toString();
@@ -103,17 +102,6 @@ void MapManager::receiveMapList(QNetworkReply *reply)
 
         m_mapItemArray.append(std::move(newMapItem));
     }
-
-   /* qDebug() << m_mapItemArray.at(0).id << "\n"
-            << m_mapItemArray.at(0).authors << "\n"
-            << m_mapItemArray.at(0).description << "\n"
-            << m_mapItemArray.at(0).size << "\n"
-            << m_mapItemArray.at(0).webPage << "\n"
-            << m_mapItemArray.at(0).mapName << "\n"
-            << m_mapItemArray.at(0).modContentHash << "\n"
-            << m_mapItemArray.at(0).unpackedSize << "\n"
-            << m_mapItemArray.at(0).packedSize << "\n"
-            << m_mapItemArray.at(0).type << "\n";*/
 
     for(int i = 0; i < m_mapItemArray.count(); i++)
         requestMapInfo( &m_mapItemArray[i] );
@@ -170,7 +158,6 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
     {
         QJsonObject fileObject = filesInfoObject.value(keys.at(i)).toObject();
         QString hash = fileObject.value("fullFileHash").toString();
-
 
         MapFileHash newFileHash;
 
@@ -256,6 +243,35 @@ void MapManager::getLocalMapFilesList()
 
         m_localMapFilesHashes.append(newMapFileHash);
     }
+}
+
+void MapManager::receiveRemoveMap(MapItem *mapItem)
+{
+    for (int i = 0; i < mapItem->filesList.count(); i++)
+    {
+        QString path = (m_ssPath + "\\DXP2\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
+
+        QFile tempfile(path);
+        tempfile.remove();
+
+        qInfo(logInfo()) <<  "Map file uninstalled from " << path;
+
+        mapItem->needInstall = true;
+        mapItem->needUpdate = true;
+
+        emit sendMapItem( mapItem );
+    }
+}
+
+void MapManager::receiveInstallMap(MapItem *mapItem)
+{
+    for(int i = 0; i < mapItem->filesList.count(); i++)
+        requestFile(mapItem->filesList.at(i).fileName, mapItem->filesList.at(i).hash);
+
+    mapItem->needInstall = false;
+    mapItem->needUpdate = false;
+
+    emit sendMapItem(mapItem);
 }
 
 QString MapManager::getUrl(QString mapHash)
