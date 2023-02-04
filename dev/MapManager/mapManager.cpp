@@ -230,7 +230,18 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
         mapItem->downloadProcessed = false;
         emit sendMapItem(mapItem);
 
-        m_blockInfoUpdate = false;
+        bool downloadProcessed = false;
+
+        for (int i = 0; i < m_mapItemArray.count(); i++)
+        {
+            if (m_mapItemArray.at(i).downloadProcessed)
+            {
+                 downloadProcessed = true;
+                 break;
+            }
+        }
+
+        m_blockInfoUpdate = downloadProcessed;
     }
 }
 
