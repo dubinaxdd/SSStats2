@@ -10,6 +10,12 @@ class MapManagerPage : public QAbstractListModel
     Q_OBJECT
     Q_PROPERTY(bool updatesAvailable READ updatesAvailable WRITE setUpdatesAvailable NOTIFY updatesAvailableChanged)
 
+    Q_PROPERTY(QString currentMapName READ currentMapName WRITE setCurrentMapName NOTIFY currentMapNameChanged)
+    Q_PROPERTY(QString currentMapAuthors READ currentMapAuthors WRITE setCurrentMapAuthors NOTIFY currentMapAuthorsChanged)
+    Q_PROPERTY(QString currentMapDescription READ currentMapDescription WRITE setCurrentMapDescription NOTIFY currentMapDescriptionChanged)
+    Q_PROPERTY(QString currentMapTags READ currentMapTags WRITE setCurrentMapTags NOTIFY currentMapTagsChanged)
+
+
 public:
     explicit MapManagerPage(QObject *parent = nullptr);
 
@@ -35,10 +41,27 @@ public:
     Q_INVOKABLE void selectMap(int index);
 
 
+    const QString &currentMapName() const;
+    void setCurrentMapName(const QString &newCurrentMapName);
+
+    const QString &currentMapAuthors() const;
+    void setCurrentMapAuthors(const QString &newCurrentMapAuthors);
+
+    const QString &currentMapDescription() const;
+    void setCurrentMapDescription(const QString &newCurrentMapDescription);
+
+    const QString &currentMapTags() const;
+    void setCurrentMapTags(const QString &newCurrentMapTags);
+
 signals:
     void updatesAvailableChanged();
     void sendRemoveMap(MapItem *mapItem);
     void sendInstallMap(MapItem *mapItem);
+
+    void currentMapNameChanged();
+    void currentMapAuthorsChanged();
+    void currentMapDescriptionChanged();
+    void currentMapTagsChanged();
 
 public slots:
     void receiveMapItem(MapItem *mapItem);
@@ -53,6 +76,10 @@ private:
     QList<MapItem*> m_mapItemArray;
     bool m_updatesAvailable = false;
 
- };
+    QString m_currentMapName = "";
+    QString m_currentMapAuthors = "";
+    QString m_currentMapDescription  = "";
+    QString m_currentMapTags = "";
+};
 
 #endif // MAPMANAGERPAGE_H

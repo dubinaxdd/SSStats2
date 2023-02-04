@@ -123,6 +123,58 @@ void MapManagerPage::checkUpdates()
     emit updatesAvailableChanged();
 }
 
+const QString &MapManagerPage::currentMapTags() const
+{
+    return m_currentMapTags;
+}
+
+void MapManagerPage::setCurrentMapTags(const QString &newCurrentMapTags)
+{
+    if (m_currentMapTags == newCurrentMapTags)
+        return;
+    m_currentMapTags = newCurrentMapTags;
+    emit currentMapTagsChanged();
+}
+
+const QString &MapManagerPage::currentMapDescription() const
+{
+    return m_currentMapDescription;
+}
+
+void MapManagerPage::setCurrentMapDescription(const QString &newCurrentMapDescription)
+{
+    if (m_currentMapDescription == newCurrentMapDescription)
+        return;
+    m_currentMapDescription = newCurrentMapDescription;
+    emit currentMapDescriptionChanged();
+}
+
+const QString &MapManagerPage::currentMapAuthors() const
+{
+    return m_currentMapAuthors;
+}
+
+void MapManagerPage::setCurrentMapAuthors(const QString &newCurrentMapAuthors)
+{
+    if (m_currentMapAuthors == newCurrentMapAuthors)
+        return;
+    m_currentMapAuthors = newCurrentMapAuthors;
+    emit currentMapAuthorsChanged();
+}
+
+const QString &MapManagerPage::currentMapName() const
+{
+    return m_currentMapName;
+}
+
+void MapManagerPage::setCurrentMapName(const QString &newCurrentMapName)
+{
+    if (m_currentMapName == newCurrentMapName)
+        return;
+    m_currentMapName = newCurrentMapName;
+    emit currentMapNameChanged();
+}
+
 bool MapManagerPage::updatesAvailable() const
 {
     return m_updatesAvailable;
@@ -164,4 +216,20 @@ void MapManagerPage::selectMap(int index)
     QModelIndex last = QAbstractItemModel::createIndex(m_mapItemArray.count() - 1, 0);
 
     emit dataChanged(first, last);
+
+    setCurrentMapName(m_mapItemArray[index]->mapName);
+    setCurrentMapAuthors(m_mapItemArray[index]->authors);
+    setCurrentMapDescription(m_mapItemArray[index]->description);
+
+    QString tags;
+
+    for(int i = 0; i < m_mapItemArray[index]->tags.count(); i++ )
+    {
+        tags += m_mapItemArray[index]->tags.at(i);
+
+        if (i != m_mapItemArray[index]->tags.count()-1)
+             tags += ", ";
+    }
+
+    setCurrentMapTags(tags);
 }

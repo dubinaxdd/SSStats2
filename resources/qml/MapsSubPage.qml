@@ -1,121 +1,211 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtGraphicalEffects 1.15
+import QtQuick.Dialogs 1.2
+import Qt.labs.platform 1.1
 
 Rectangle {
 
-    ListView {
-        id: mapsListView
+    ColumnLayout
+    {
         anchors.fill: parent
-        clip: true
-        ScrollBar.vertical: ScrollBar {
-            id: scrollBar
-            active: true
-            onActiveChanged: {
-                        active = true
+        spacing: 20
+
+        RowLayout
+        {
+            Layout.preferredHeight: miniMapRectangle.height
+            Layout.fillWidth: true
+
+            spacing: 20
+
+            Rectangle
+            {
+                id: miniMapRectangle
+
+                Layout.preferredWidth: 140
+                Layout.preferredHeight: 140
+
+                color: "#112332"
+                radius: 10
+                clip: true
+
+                Image{
+                    id: mapImage
+                    anchors.fill: parent
+                    //source: //_uiBackend.replayManager.mapSourceUrl
+                    cache: false
+                    visible:false
+                    fillMode: Image.PreserveAspectFit
+                }
+
+                Rectangle {
+                    id: maskRectangle
+
+                    anchors.fill: parent
+                    radius: 10
+                    visible: false
+
+                }
+
+                Label
+                {
+                    verticalAlignment: Qt.AlignVCenter
+                    horizontalAlignment: Qt.AlignHCenter
+
+                    anchors.fill: parent
+                    color: "#FFFFFF"
+                    text: "You need to\ndownload the map\nto show the image."
+                }
+
+                OpacityMask {
+                    id: opacityMask
+                    anchors.fill: mapImage
+                    source: mapImage
+                    maskSource: maskRectangle
+                }
+
+            }
+
+            ColumnLayout
+            {
+                Layout.alignment: Qt.AlignTop
+
+                Label{
+                    text: _uiBackend.mapManagerPage.currentMapName
+                    font.pixelSize: 20
+                }
+
+                Label{
+                    text: "Authors: " + _uiBackend.mapManagerPage.currentMapAuthors
+                }
+
+                Label{
+                    text: _uiBackend.mapManagerPage.currentMapDescription
+                }
+
+                Label{
+                    text: "Tags: " + _uiBackend.mapManagerPage.currentMapTags
+                }
             }
         }
 
-        model: _uiBackend.mapManagerPage
+        ListView {
+            id: mapsListView
 
-        spacing: 5
+            Layout.fillHeight: true
+            Layout.fillWidth: true
 
-        delegate:  Rectangle {
-
-            width: mapsListView.width - scrollBar.width
-            height: 50
-            radius: 10
-            color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#c8c8c8" : "#DCDCDC"
-            //color: "#DCDCDC"
-
-            MouseArea{
-                id: delegateMouseArea
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                hoverEnabled: true
-                z:0
-
-                onClicked: {
-                    _uiBackend.mapManagerPage.selectMap(model.index)
+            clip: true
+            ScrollBar.vertical: ScrollBar {
+                id: scrollBar
+                active: true
+                onActiveChanged: {
+                            active = true
                 }
             }
 
-            RowLayout
-            {
-                anchors.fill: parent
+            model: _uiBackend.mapManagerPage
 
-                anchors.margins: 10
+            spacing: 5
 
-                spacing: 10
+            delegate:  Rectangle {
 
-                Rectangle{
+                width: mapsListView.width - scrollBar.width
+                height: 50
+                radius: 10
+                color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#c8c8c8" : "#DCDCDC"
+                //color: "#DCDCDC"
 
-                    Layout.preferredWidth: 10
-                    Layout.preferredHeight: 10
-                    anchors.margins: 5
+                MouseArea{
+                    id: delegateMouseArea
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    hoverEnabled: true
+                    z:0
 
-                    color: "#00000000"
-
-                    Image {
-                        visible: model.needInstall || model.needUpdate
-                        anchors.fill: parent
-                        source: "qrc:/images/resources/images/redDot.png"
+                    onClicked: {
+                        _uiBackend.mapManagerPage.selectMap(model.index)
                     }
                 }
 
-                Label
+                RowLayout
                 {
-                    Layout.preferredWidth: 200
-                    text: model.mapName
-                }
+                    anchors.fill: parent
 
-                Label
-                {
-                    Layout.preferredWidth: 60
-                    text: model.description
-                    //visible: model.description !== ""
-                }
+                    anchors.margins: 10
 
-                Label
-                {
-                    Layout.preferredWidth: 100
-                    text: "Tags: " + model.tags
-                    visible: model.tags !== ""
-                }
+                    spacing: 10
 
-                Rectangle
-                {
-                    Layout.fillWidth: true
-                }
+                    Rectangle{
 
-                Label
-                {
-                    text: "Downloading processed..."
-                    visible: model.downloadingProcessed
-                }
+                        Layout.preferredWidth: 10
+                        Layout.preferredHeight: 10
+                        anchors.margins: 5
 
-                BlueButton{
-                    text: "Install"
-                    z:2
-                    visible: model.needInstall && !model.downloadingProcessed
+                        color: "#00000000"
 
-                    onClicked: _uiBackend.mapManagerPage.installMap(model.index)
-                }
+                        Image {
+                            visible: model.needInstall || model.needUpdate
+                            anchors.fill: parent
+                            source: "qrc:/images/resources/images/redDot.png"
+                        }
+                    }
 
-                BlueButton{
-                    text: "Update"
-                    z:2
-                    visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
+                    Label
+                    {
+                        Layout.preferredWidth: 200
+                        text: model.mapName
+                    }
 
-                    onClicked: _uiBackend.mapManagerPage.installMap(model.index)
-                }
+                    Label
+                    {
+                        Layout.preferredWidth: 60
+                        text: model.description
+                        //visible: model.description !== ""
+                    }
 
-                BlueButton{
-                    text: "Delete"
-                    z:2
-                    visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
+                    Label
+                    {
+                        Layout.preferredWidth: 100
+                        text: "Tags: " + model.tags
+                        visible: model.tags !== ""
+                    }
 
-                    onClicked: _uiBackend.mapManagerPage.removeMap(model.index);
+                    Rectangle
+                    {
+                        Layout.fillWidth: true
+                    }
+
+                    Label
+                    {
+                        text: "Downloading processed..."
+                        visible: model.downloadingProcessed
+                    }
+
+                    BlueButton{
+                        text: "Install"
+                        z:2
+                        visible: model.needInstall && !model.downloadingProcessed
+
+                        onClicked: _uiBackend.mapManagerPage.installMap(model.index)
+                    }
+
+                    BlueButton{
+                        text: "Update"
+                        z:2
+                        visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
+
+                        onClicked: _uiBackend.mapManagerPage.installMap(model.index)
+                    }
+
+                    BlueButton{
+                        text: "Delete"
+                        z:2
+                        visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
+
+                        onClicked: _uiBackend.mapManagerPage.removeMap(model.index);
+                    }
                 }
             }
         }
