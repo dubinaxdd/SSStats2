@@ -20,7 +20,8 @@ public:
             Tags = Qt::UserRole + 4,
             NeedInstall = Qt::UserRole + 5,
             NeedUpdate = Qt::UserRole + 6,
-            DownloadingProcessed = Qt::UserRole
+            DownloadingProcessed = Qt::UserRole + 7,
+            Selected = Qt::UserRole
     };
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -31,6 +32,8 @@ public:
 
     Q_INVOKABLE void removeMap(int index);
     Q_INVOKABLE void installMap(int index);
+    Q_INVOKABLE void selectMap(int index);
+
 
 signals:
     void updatesAvailableChanged();

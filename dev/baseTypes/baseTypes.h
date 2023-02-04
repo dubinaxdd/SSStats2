@@ -314,6 +314,8 @@ struct MapItem
 
     int downloadedFiles = 0;
     bool downloadProcessed = false;
+
+    bool selected = false;
 };
 
 

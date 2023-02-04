@@ -25,8 +25,8 @@ Rectangle {
             width: mapsListView.width - scrollBar.width
             height: 50
             radius: 10
-            //color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#DCDCDC" : "#DCDCDC"
-            color: "#DCDCDC"
+            color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#c8c8c8" : "#DCDCDC"
+            //color: "#DCDCDC"
 
             MouseArea{
                 id: delegateMouseArea
@@ -36,7 +36,7 @@ Rectangle {
                 z:0
 
                 onClicked: {
-                    //_uiBackend.replayManager.replaysListModel.setSelected(model.index);
+                    _uiBackend.mapManagerPage.selectMap(model.index)
                 }
             }
 
