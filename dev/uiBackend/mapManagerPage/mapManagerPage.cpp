@@ -1,7 +1,10 @@
 #include "mapManagerPage.h"
 #include <QDebug>
+#include <QFile>
 
-MapManagerPage::MapManagerPage(QObject *parent) : QAbstractListModel(parent)
+MapManagerPage::MapManagerPage(ImageProvider* imageProvider, QObject *parent)
+    : QAbstractListModel(parent)
+    , m_imageProvider(imageProvider)
 {
 
 }
@@ -92,7 +95,7 @@ void MapManagerPage::receiveMapItem(MapItem *mapItem)
 
     checkUpdates();
 
-    selectMap(0);
+    //selectMap(0);
 }
 
 QHash<int, QByteArray> MapManagerPage::roleNames() const
@@ -217,6 +220,19 @@ void MapManagerPage::selectMap(int index)
 
     emit dataChanged(first, last);
 
+
+    QImage minimap;
+    for(int i = 0; i < m_mapItemArray[index]->filesList.count(); i++)
+    {
+        if(m_mapItemArray[index]->filesList.at(i).fileName.contains("_icon.tga"))
+        {
+            minimap = loadMiniMapImage(m_mapItemArray[index]->filesList.at(i).fileName);
+            break;
+        }
+    }
+
+    m_imageProvider->setCurrentMiniMap(std::move(minimap));
+
     setCurrentMapName(m_mapItemArray[index]->mapName);
     setCurrentMapAuthors(m_mapItemArray[index]->authors);
     setCurrentMapDescription(m_mapItemArray[index]->description);
@@ -232,4 +248,59 @@ void MapManagerPage::selectMap(int index)
     }
 
     setCurrentMapTags(tags);
+}
+
+
+QImage MapManagerPage::loadMiniMapImage(QString fileName)
+{
+    QFile miniMapImageFile(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp\\" + fileName);
+
+    if (!miniMapImageFile.open(QIODevice::ReadOnly))
+            return QImage();
+
+    QByteArray imageBytes = miniMapImageFile.readAll();
+
+    QByteArray widthBytes;
+    widthBytes.append(imageBytes[13]);
+    widthBytes.append(imageBytes[12]);
+
+    QByteArray heightBytes;
+    heightBytes.append(imageBytes[15]);
+    heightBytes.append(imageBytes[14]);
+
+    bool ok;
+    int width = widthBytes.toHex().toInt(&ok, 16);
+    int height = heightBytes.toHex().toInt(&ok, 16);
+
+
+    qDebug() << width << height;
+
+    int byteIndex = 18;
+
+    QImage newImage(width, height, QImage::Format::Format_ARGB32);
+
+    for (int y = height - 1; y >= 0 ; y--)
+    {
+        for (int x = 0; x < width; x++)
+        {
+            QByteArray colorBytes = imageBytes.mid(byteIndex, 4);
+
+            int r = (quint8)colorBytes[2];
+            int g = (quint8)colorBytes[1];
+            int b = (quint8)colorBytes[0];
+            int a = 255/*(quint8)colorBytes[3]*/;
+
+            QColor color = QColor(r, g, b, a); //Возможно нужно инвертировать порядок байтов
+            newImage.setPixelColor(x,y, color);
+
+            byteIndex += 4;
+        }
+    }
+
+    return newImage;
+}
+
+void MapManagerPage::setSsPath(const QString &newSsPath)
+{
+    m_ssPath = newSsPath;
 }

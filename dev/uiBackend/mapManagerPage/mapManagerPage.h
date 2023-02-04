@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <baseTypes.h>
+#include <imageProvider.h>
 
 class MapManagerPage : public QAbstractListModel
 {
@@ -15,9 +16,8 @@ class MapManagerPage : public QAbstractListModel
     Q_PROPERTY(QString currentMapDescription READ currentMapDescription WRITE setCurrentMapDescription NOTIFY currentMapDescriptionChanged)
     Q_PROPERTY(QString currentMapTags READ currentMapTags WRITE setCurrentMapTags NOTIFY currentMapTagsChanged)
 
-
 public:
-    explicit MapManagerPage(QObject *parent = nullptr);
+    explicit MapManagerPage(ImageProvider* imageProvider, QObject *parent = nullptr);
 
     enum DataRoles {
             MapName = Qt::UserRole + 1,
@@ -53,6 +53,8 @@ public:
     const QString &currentMapTags() const;
     void setCurrentMapTags(const QString &newCurrentMapTags);
 
+    void setSsPath(const QString &newSsPath);
+
 signals:
     void updatesAvailableChanged();
     void sendRemoveMap(MapItem *mapItem);
@@ -71,8 +73,12 @@ protected:
 
 private:
     void checkUpdates();
+    QImage loadMiniMapImage(QString fileName);
 
 private:
+    ImageProvider* m_imageProvider;
+    QString m_ssPath = "";
+
     QList<MapItem*> m_mapItemArray;
     bool m_updatesAvailable = false;
 

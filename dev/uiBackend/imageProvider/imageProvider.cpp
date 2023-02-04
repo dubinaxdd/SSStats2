@@ -13,9 +13,11 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     Q_UNUSED(size)
     Q_UNUSED(requestedSize)
 
-
     if(id == "currentPlayerAvatarMedium" && !m_currentPlayerAvatarMedium.isNull())
         return m_currentPlayerAvatarMedium;
+
+    if(id == "currentMiniMap" && !m_currentMiniMap.isNull())
+        return m_currentMiniMap;
 
     if (m_discordAvatars.contains(id))
         return m_discordAvatars.value(id);
@@ -41,6 +43,12 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
 void ImageProvider::setCurrentPlayerAvatarMedium(QImage newCurrentPlayerAvatarMedium)
 {
     m_currentPlayerAvatarMedium = newCurrentPlayerAvatarMedium;
+}
+
+void ImageProvider::setCurrentMiniMap(QImage currentMiniMap)
+{
+    m_currentMiniMap = currentMiniMap;
+    emit updateMiniMapImage();
 }
 
 void ImageProvider::addDiscordAvatar(QString avatarId, QImage discordAvatar)

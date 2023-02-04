@@ -22,11 +22,14 @@ public:
     void setPlayer7AvatarMedium(QImage avatarMedium);
     void setPlayer8AvatarMedium(QImage avatarMedium);
 
+    void setCurrentMiniMap(QImage currentMiniMap);
+
 signals:
     void updateAvatars();
     void updateAttachments();
     void updateBanners();
     void updateYoutubeImages();
+    void updateMiniMapImage();
 
 public slots:
     void addDiscordAvatar(QString avatarId, QImage discordAvatar);
@@ -45,6 +48,8 @@ private:
     QMap <QString, QImage> m_attachmentImages;
     QMap <QString, QImage> m_youtubeImages;
     QMap <QString, QImage> m_replayPlayerBanners;
+
+    QImage m_currentMiniMap;
 };
 
 #endif // IMAGEPROVIDER_H

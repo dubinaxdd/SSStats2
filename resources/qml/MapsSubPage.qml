@@ -30,10 +30,22 @@ Rectangle {
                 radius: 10
                 clip: true
 
+                //Костыль для перезагрузки картинки, рил так на формух делают
+                Connections {
+                    target: _uiBackend.mapManagerPage
+
+                    function onCurrentMapNameChanged()
+                    {
+                        var oldSource = "image://imageprovider/currentMiniMap";
+                        mapImage.source = "";
+                        mapImage.source = "image://imageprovider/currentMiniMap";
+                    }
+                }
+
                 Image{
                     id: mapImage
                     anchors.fill: parent
-                    //source: //_uiBackend.replayManager.mapSourceUrl
+                    source: "image://imageprovider/currentMiniMap"
                     cache: false
                     visible:false
                     fillMode: Image.PreserveAspectFit
