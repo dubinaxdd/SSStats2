@@ -73,7 +73,7 @@ Rectangle {
                 {
                     Layout.preferredWidth: 60
                     text: model.description
-                    visible: model.description !== ""
+                    //visible: model.description !== ""
                 }
 
                 Label

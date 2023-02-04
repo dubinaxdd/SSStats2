@@ -24,7 +24,12 @@ QVariant MapManagerPage::data(const QModelIndex &index, int role) const
         QString tags;
 
         for(int i = 0; i < mapItem->tags.count(); i++ )
-            tags += mapItem->tags.at(i) + ", ";
+        {
+            tags += mapItem->tags.at(i);
+
+            if (i != mapItem->tags.count()-1)
+                 tags += ", ";
+        }
 
         return tags;
     }
