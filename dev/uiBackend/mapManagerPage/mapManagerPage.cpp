@@ -268,32 +268,58 @@ QImage MapManagerPage::loadMiniMapImage(QString fileName)
     heightBytes.append(imageBytes[15]);
     heightBytes.append(imageBytes[14]);
 
+
     bool ok;
     int width = widthBytes.toHex().toInt(&ok, 16);
     int height = heightBytes.toHex().toInt(&ok, 16);
 
+    int quality = imageBytes.mid(16,1).toHex().toInt(&ok, 16);
 
-    qDebug() << width << height;
+
+    qDebug() << width << height << quality;
 
     int byteIndex = 18;
 
     QImage newImage(width, height, QImage::Format::Format_ARGB32);
 
-    for (int y = height - 1; y >= 0 ; y--)
+    if (quality == 32)
     {
-        for (int x = 0; x < width; x++)
+        for (int y = height - 1; y >= 0 ; y--)
         {
-            QByteArray colorBytes = imageBytes.mid(byteIndex, 4);
+            for (int x = 0; x < width; x++)
+            {
+                QByteArray colorBytes = imageBytes.mid(byteIndex, 4);
 
-            int r = (quint8)colorBytes[2];
-            int g = (quint8)colorBytes[1];
-            int b = (quint8)colorBytes[0];
-            int a = 255/*(quint8)colorBytes[3]*/;
+                int r = (quint8)colorBytes[2];
+                int g = (quint8)colorBytes[1];
+                int b = (quint8)colorBytes[0];
+                int a = (quint8)colorBytes[3];
 
-            QColor color = QColor(r, g, b, a); //Возможно нужно инвертировать порядок байтов
-            newImage.setPixelColor(x,y, color);
+                QColor color = QColor(r, g, b, a);
+                newImage.setPixelColor(x,y, color);
 
-            byteIndex += 4;
+                byteIndex += 4;
+            }
+        }
+    }
+    else
+    {
+        for (int y = height - 1; y >= 0 ; y--)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                QByteArray colorBytes = imageBytes.mid(byteIndex, 3);
+
+                int r = (quint8)colorBytes[2];
+                int g = (quint8)colorBytes[1];
+                int b = (quint8)colorBytes[0];
+                int a = 255;//(quint8)colorBytes[3];
+
+                QColor color = QColor(r, g, b, a);
+                newImage.setPixelColor(x,y, color);
+
+                byteIndex += 3;
+            }
         }
     }
 
