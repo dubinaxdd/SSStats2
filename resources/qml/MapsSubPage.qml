@@ -88,10 +88,16 @@ Rectangle {
                     Layout.fillWidth: true
                 }
 
+                Label
+                {
+                    text: "Downloading processed..."
+                    visible: model.downloadingProcessed
+                }
+
                 BlueButton{
                     text: "Install"
                     z:2
-                    visible: model.needInstall
+                    visible: model.needInstall && !model.downloadingProcessed
 
                     onClicked: _uiBackend.mapManagerPage.installMap(model.index)
                 }
@@ -99,7 +105,7 @@ Rectangle {
                 BlueButton{
                     text: "Update"
                     z:2
-                    visible: !model.needInstall && model.needUpdate
+                    visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
 
                     onClicked: _uiBackend.mapManagerPage.installMap(model.index)
                 }
@@ -107,7 +113,7 @@ Rectangle {
                 BlueButton{
                     text: "Delete"
                     z:2
-                    visible: !model.needInstall && !model.needUpdate
+                    visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
 
                     onClicked: _uiBackend.mapManagerPage.removeMap(model.index);
                 }

@@ -179,15 +179,17 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
         m_blockInfoUpdate = false;
 }
 
-void MapManager::requestFile(QString fileName, QString fileHash)
+void MapManager::requestFile(QString fileName, QString fileHash, MapItem *mapItem)
 {
+    m_blockInfoUpdate = true;
+
     QString url = getUrl(fileHash);
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(url));
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveFile(reply, fileName);
+        receiveFile(reply, fileName, mapItem);
     });
 
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
@@ -196,7 +198,7 @@ void MapManager::requestFile(QString fileName, QString fileHash)
     });
 }
 
-void MapManager::receiveFile(QNetworkReply *reply, QString fileName)
+void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *mapItem)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -217,6 +219,18 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName)
     if( newFile.open( QIODevice::WriteOnly ) ) {
         newFile.write(uncompressedByteArray);
         newFile.close();
+    }
+
+    mapItem->downloadedFiles++;
+
+    if(mapItem->downloadedFiles == mapItem->filesList.count())
+    {
+        mapItem->needInstall = false;
+        mapItem->needUpdate = false;
+        mapItem->downloadProcessed = false;
+        emit sendMapItem(mapItem);
+
+        m_blockInfoUpdate = false;
     }
 }
 
@@ -265,13 +279,10 @@ void MapManager::receiveRemoveMap(MapItem *mapItem)
 
 void MapManager::receiveInstallMap(MapItem *mapItem)
 {
+    mapItem->downloadedFiles = 0;
+
     for(int i = 0; i < mapItem->filesList.count(); i++)
-        requestFile(mapItem->filesList.at(i).fileName, mapItem->filesList.at(i).hash);
-
-    mapItem->needInstall = false;
-    mapItem->needUpdate = false;
-
-    emit sendMapItem(mapItem);
+        requestFile(mapItem->filesList.at(i).fileName, mapItem->filesList.at(i).hash, mapItem);
 }
 
 QString MapManager::getUrl(QString mapHash)
@@ -305,7 +316,10 @@ void MapManager::checkLocalFilesState(MapItem *mapItem)
                 foundedFiles++;
 
                 if (mapItem->filesList.at(i).hash != m_localMapFilesHashes.at(j).hash)
+                {
                     needUpdate = true;
+                    mapItem->downloadedFiles++;
+                }
 
                 continue;
             }

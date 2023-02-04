@@ -311,6 +311,9 @@ struct MapItem
 
     bool needInstall = false;
     bool needUpdate = false;
+
+    int downloadedFiles = 0;
+    bool downloadProcessed = false;
 };
 
 

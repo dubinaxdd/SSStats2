@@ -32,6 +32,8 @@ QVariant MapManagerPage::data(const QModelIndex &index, int role) const
         return mapItem->needInstall;
     else if (role == NeedUpdate)
         return mapItem->needUpdate;
+    else if (role == DownloadingProcessed)
+        return mapItem->downloadProcessed;
 
     return QVariant();
 }
@@ -93,6 +95,7 @@ QHash<int, QByteArray> MapManagerPage::roleNames() const
     roles[Tags] = "tags";
     roles[NeedInstall] = "needInstall";
     roles[NeedUpdate] = "needUpdate";
+    roles[DownloadingProcessed] = "downloadingProcessed";
 
     return roles;
 }
@@ -130,5 +133,9 @@ void MapManagerPage::removeMap(int index)
 
 void MapManagerPage::installMap(int index)
 {
+    m_mapItemArray[index]->downloadProcessed = true;
+    QModelIndex needIndex = QAbstractItemModel::createIndex(index,0);
+    emit dataChanged(needIndex, needIndex);
+
     emit sendInstallMap(m_mapItemArray[index]);
 }

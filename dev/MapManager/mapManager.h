@@ -19,8 +19,8 @@ public:
     void requestMapInfo(MapItem *mapItem);
     void receiveMapInfo(QNetworkReply *reply, MapItem *mapItem);
 
-    void requestFile(QString fileName, QString fileHash);
-    void receiveFile(QNetworkReply *reply, QString fileName);
+    void requestFile(QString fileName, QString fileHash, MapItem *mapItem);
+    void receiveFile(QNetworkReply *reply, QString fileName, MapItem *mapItem);
 
     void getLocalMapFilesList();
 

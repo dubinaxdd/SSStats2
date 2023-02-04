@@ -19,7 +19,8 @@ public:
             Description = Qt::UserRole + 3,
             Tags = Qt::UserRole + 4,
             NeedInstall = Qt::UserRole + 5,
-            NeedUpdate = Qt::UserRole
+            NeedUpdate = Qt::UserRole + 6,
+            DownloadingProcessed = Qt::UserRole
     };
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
