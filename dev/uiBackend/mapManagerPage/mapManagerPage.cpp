@@ -51,8 +51,6 @@ void MapManagerPage::receiveMapItem(MapItem *mapItem)
         if(mapItem->modContentHash == m_mapItemArray.at(i)->modContentHash)
         {
             QModelIndex index = QAbstractItemModel::createIndex(i, 0);
-            //QModelIndex l = QAbstractItemModel::createIndex(i, 0);
-
             emit dataChanged(index, index);
 
             checkUpdates();
@@ -68,7 +66,10 @@ void MapManagerPage::receiveMapItem(MapItem *mapItem)
     {
         for(int j = 0; j < m_mapItemArray.count() - 1; j++)
         {
-            if(m_mapItemArray.at(j)->mapName > m_mapItemArray.at(j+1)->mapName)
+            QString name1 = m_mapItemArray.at(j)->mapName.right(3) + m_mapItemArray.at(j)->mapName;
+            QString name2 = m_mapItemArray.at(j+1)->mapName.right(3) + m_mapItemArray.at(j+1)->mapName;
+
+            if(name1 > name2)
             {
                 MapItem *buffer = m_mapItemArray.at(j+1);
                 m_mapItemArray[j+1] = m_mapItemArray.at(j);
