@@ -275,9 +275,6 @@ QImage MapManagerPage::loadMiniMapImage(QString fileName)
 
     int quality = imageBytes.mid(16,1).toHex().toInt(&ok, 16);
 
-
-    qDebug() << width << height << quality;
-
     int byteIndex = 18;
 
     QImage newImage(width, height, QImage::Format::Format_ARGB32);
