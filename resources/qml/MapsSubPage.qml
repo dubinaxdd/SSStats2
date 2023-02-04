@@ -6,10 +6,15 @@ Rectangle {
 
     ListView {
         id: mapsListView
-
         anchors.fill: parent
-
         clip: true
+        ScrollBar.vertical: ScrollBar {
+            id: scrollBar
+            active: true
+            onActiveChanged: {
+                        active = true
+            }
+        }
 
         model: _uiBackend.mapManagerPage
 
@@ -17,7 +22,7 @@ Rectangle {
 
         delegate:  Rectangle {
 
-            width: mapsListView.width
+            width: mapsListView.width - scrollBar.width
             height: 50
             radius: 10
             //color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#DCDCDC" : "#DCDCDC"

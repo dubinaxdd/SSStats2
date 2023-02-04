@@ -436,13 +436,19 @@ Rectangle {
                     clip: true
                     spacing: 5
 
-                    ScrollBar.vertical: ScrollBar { }
+                    ScrollBar.vertical: ScrollBar {
+                        id: scrollBar
+                        active: true
+                        onActiveChanged: {
+                                    active = true
+                        }
+                    }
 
                     model: _uiBackend.replayManager.replaysListModel
 
                     delegate: Rectangle{
 
-                        width: replaysListView.width
+                        width: replaysListView.width - scrollBar.width
                         height: 70
                         radius: 10
 
