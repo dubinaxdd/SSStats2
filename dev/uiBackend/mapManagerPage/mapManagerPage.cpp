@@ -76,8 +76,12 @@ void MapManagerPage::receiveMapItem(MapItem *mapItem)
     {
         for(int j = 0; j < m_mapItemArray.count() - 1; j++)
         {
-            QString name1 = m_mapItemArray.at(j)->mapName.right(3) + m_mapItemArray.at(j)->mapName;
-            QString name2 = m_mapItemArray.at(j+1)->mapName.right(3) + m_mapItemArray.at(j+1)->mapName;
+
+            QString tags1 = consolidateTags(m_mapItemArray.at(j)->tags);
+            QString tags2 = consolidateTags(m_mapItemArray.at(j + 1)->tags);
+
+            QString name1 = m_mapItemArray.at(j)->mapName.right(3) + (tags1.contains("default-map") ? "0" : "") + m_mapItemArray.at(j)->mapName;
+            QString name2 = m_mapItemArray.at(j+1)->mapName.right(3) + (tags2.contains("default-map") ? "0" : "") + m_mapItemArray.at(j+1)->mapName;
 
             if(name1 > name2)
             {
@@ -237,17 +241,7 @@ void MapManagerPage::selectMap(int index)
     setCurrentMapAuthors(m_mapItemArray[index]->authors);
     setCurrentMapDescription(m_mapItemArray[index]->description);
 
-    QString tags;
-
-    for(int i = 0; i < m_mapItemArray[index]->tags.count(); i++ )
-    {
-        tags += m_mapItemArray[index]->tags.at(i);
-
-        if (i != m_mapItemArray[index]->tags.count()-1)
-             tags += ", ";
-    }
-
-    setCurrentMapTags(tags);
+    setCurrentMapTags(consolidateTags(m_mapItemArray[index]->tags));
 }
 
 
@@ -321,6 +315,21 @@ QImage MapManagerPage::loadMiniMapImage(QString fileName)
     }
 
     return newImage;
+}
+
+QString MapManagerPage::consolidateTags(QList<QString> tags)
+{
+    QString tagsString;
+
+    for(int i = 0; i < tags.count(); i++ )
+    {
+        tagsString += tags.at(i);
+
+        if (i != tags.count()-1)
+             tagsString += ", ";
+    }
+
+    return tagsString;
 }
 
 void MapManagerPage::setSsPath(const QString &newSsPath)

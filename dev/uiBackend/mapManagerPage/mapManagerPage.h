@@ -74,6 +74,7 @@ protected:
 private:
     void checkUpdates();
     QImage loadMiniMapImage(QString fileName);
+    QString consolidateTags(QList<QString> tags);
 
 private:
     ImageProvider* m_imageProvider;
