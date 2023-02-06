@@ -53,7 +53,6 @@ Rectangle {
 
                 Rectangle {
                     id: maskRectangle
-
                     anchors.fill: parent
                     radius: 10
                     visible: false
@@ -68,6 +67,7 @@ Rectangle {
                     anchors.fill: parent
                     color: "#FFFFFF"
                     text: "You need to\ndownload the map\nto show the image."
+                    visible: _uiBackend.mapManagerPage.currentMapNeedInstall
                 }
 
                 OpacityMask {
