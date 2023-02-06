@@ -15,6 +15,7 @@ class MapManagerPage : public QAbstractListModel
     Q_PROPERTY(QString currentMapAuthors READ currentMapAuthors WRITE setCurrentMapAuthors NOTIFY currentMapAuthorsChanged)
     Q_PROPERTY(QString currentMapDescription READ currentMapDescription WRITE setCurrentMapDescription NOTIFY currentMapDescriptionChanged)
     Q_PROPERTY(QString currentMapTags READ currentMapTags WRITE setCurrentMapTags NOTIFY currentMapTagsChanged)
+    Q_PROPERTY(bool currentMapNeedInstall READ currentMapNeedInstall WRITE setCurrentMapNeedInstall NOTIFY currentMapNeedInstallChanged)
 
 public:
     explicit MapManagerPage(ImageProvider* imageProvider, QObject *parent = nullptr);
@@ -55,6 +56,9 @@ public:
 
     void setSsPath(const QString &newSsPath);
 
+    bool currentMapNeedInstall() const;
+    void setCurrentMapNeedInstall(bool newCurrentMapNeedInstall);
+
 signals:
     void updatesAvailableChanged();
     void sendRemoveMap(MapItem *mapItem);
@@ -64,6 +68,8 @@ signals:
     void currentMapAuthorsChanged();
     void currentMapDescriptionChanged();
     void currentMapTagsChanged();
+
+    void currentMapNeedInstallChanged();
 
 public slots:
     void receiveMapItem(MapItem *mapItem);
@@ -87,6 +93,7 @@ private:
     QString m_currentMapAuthors = "";
     QString m_currentMapDescription  = "";
     QString m_currentMapTags = "";
+    bool m_currentMapNeedInstall = true;
 };
 
 #endif // MAPMANAGERPAGE_H

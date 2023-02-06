@@ -240,8 +240,8 @@ void MapManagerPage::selectMap(int index)
     setCurrentMapName(m_mapItemArray[index]->mapName);
     setCurrentMapAuthors(m_mapItemArray[index]->authors);
     setCurrentMapDescription(m_mapItemArray[index]->description);
-
     setCurrentMapTags(consolidateTags(m_mapItemArray[index]->tags));
+    setCurrentMapNeedInstall(m_mapItemArray[index]->needInstall);
 }
 
 
@@ -330,6 +330,19 @@ QString MapManagerPage::consolidateTags(QList<QString> tags)
     }
 
     return tagsString;
+}
+
+bool MapManagerPage::currentMapNeedInstall() const
+{
+    return m_currentMapNeedInstall;
+}
+
+void MapManagerPage::setCurrentMapNeedInstall(bool newCurrentMapNeedInstall)
+{
+    if (m_currentMapNeedInstall == newCurrentMapNeedInstall)
+        return;
+    m_currentMapNeedInstall = newCurrentMapNeedInstall;
+    emit currentMapNeedInstallChanged();
 }
 
 void MapManagerPage::setSsPath(const QString &newSsPath)

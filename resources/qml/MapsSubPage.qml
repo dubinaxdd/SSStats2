@@ -75,6 +75,7 @@ Rectangle {
                     anchors.fill: mapImage
                     source: mapImage
                     maskSource: maskRectangle
+                    visible: !_uiBackend.mapManagerPage.currentMapNeedInstall
                 }
 
             }
