@@ -101,6 +101,36 @@ Rectangle {
                     text: "Tags: " + _uiBackend.mapManagerPage.currentMapTags
                 }
             }
+
+            Rectangle
+            {
+                Layout.fillWidth: true
+            }
+
+            ColumnLayout
+            {
+                Layout.alignment: Qt.AlignTop
+
+                BlueButton
+                {
+                    Layout.preferredWidth: 250
+                    text: "Install default maps"
+                }
+
+                BlueButton
+                {
+                    Layout.preferredWidth: 250
+                    text: "Install all maps"
+                }
+
+                Switch{
+                    text: "Auto-install default maps"
+                }
+
+                Switch{
+                    text: "Auto-install all maps"
+                }
+            }
         }
 
         ListView {

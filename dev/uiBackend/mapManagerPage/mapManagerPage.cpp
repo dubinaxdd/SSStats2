@@ -123,8 +123,11 @@ void MapManagerPage::checkUpdates()
 
     for (int i = 0; i < m_mapItemArray.count(); i++)
     {
-        if (m_mapItemArray.at(i)->needInstall || m_mapItemArray.at(i)->needUpdate)
+        if ((m_mapItemArray.at(i)->needInstall || m_mapItemArray.at(i)->needUpdate) && consolidateTags(m_mapItemArray.at(i)->tags).contains("default-map"))
+        {
             m_updatesAvailable = true;
+            break;
+        }
     }
 
     emit updatesAvailableChanged();
