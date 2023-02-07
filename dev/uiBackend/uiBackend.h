@@ -40,7 +40,7 @@ class UiBackend : public QObject
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
 
     Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
-    Q_PROPERTY(float sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
+    Q_PROPERTY(double sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
 
     Q_PROPERTY(MessagesPage* newsPage MEMBER m_newsPage NOTIFY statisticPanelInitialized)
     Q_PROPERTY(MessagesPage* eventsPage MEMBER m_eventsPage NOTIFY statisticPanelInitialized)
@@ -158,7 +158,7 @@ public slots:
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
-    Q_INVOKABLE void setSizeModifer(float size);
+    Q_INVOKABLE void setSizeModifer(double size);
 
 private slots:
     void onSettingsLoaded();
@@ -217,7 +217,7 @@ private:
     bool m_rankedModeState = true;
     bool m_enableTrainingModeSwitch = true;
 
-    float m_sizeModifer = 2.0;
+    double m_sizeModifer = 1.0;
 
     QString m_lastNotification;
     bool m_lastNotificationIsWarning = false;

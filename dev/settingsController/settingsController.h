@@ -10,7 +10,7 @@ struct Settings
     bool noFog = false;
     bool smallGamePanelActive = false;
     bool showGamePanelPreset = false;
-    float scale = 1.0;
+    double scale = 1.0;
     QString lastReadedNewsMessageID = "";
     QString lastReadedEventsMessageID = "";
     bool russianFontsInstalled = false;

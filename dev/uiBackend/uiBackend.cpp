@@ -253,7 +253,7 @@ void UiBackend::launchSoulstorm()
     emit sendLaunchSoulstorm();
 }
 
-void UiBackend::setSizeModifer(float size)
+void UiBackend::setSizeModifer(double size)
 {
     m_sizeModifer = size;
 
