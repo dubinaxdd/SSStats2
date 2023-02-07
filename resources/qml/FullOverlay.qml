@@ -107,6 +107,7 @@ Rectangle {
             Layout.maximumWidth: 26099
             Layout.fillHeight: false
 
+
             RowLayout
             {
                 anchors.fill: parent
@@ -117,7 +118,7 @@ Rectangle {
                     property bool hoverState : false
                     property bool pressedState : true
 
-                    width: 140 * _uiBackend.sizeModifer
+                    Layout.preferredWidth: 140 * _uiBackend.sizeModifer
                     color: pressedState ? "#ff080808" : "#00ffffff"
                     Layout.minimumWidth: 100 * _uiBackend.sizeModifer
                     Layout.minimumHeight: 60 * _uiBackend.sizeModifer
@@ -152,7 +153,7 @@ Rectangle {
                     property bool hoverState : false
                     property bool pressedState : false
 
-                    width: 140 * _uiBackend.sizeModifer
+                    Layout.preferredWidth: 140 * _uiBackend.sizeModifer
                     color: pressedState ? "#ff080808" : "#00ffffff"
                     Layout.minimumHeight: 60 * _uiBackend.sizeModifer
                     Layout.minimumWidth: 100 * _uiBackend.sizeModifer
