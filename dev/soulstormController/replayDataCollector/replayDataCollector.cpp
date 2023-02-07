@@ -384,7 +384,7 @@ bool ReplayDataCollector::readReplayData()
     replayInfo.mod = m_currentMode;
     replayInfo.isFullStdGame = isFullStdGame;
 
-    if (winBy == "ANNIHILATE")
+    if (winBy == "ANNIHILATE" || winBy == "annihilate" )
         replayInfo.winBy = WinCondition::ANNIHILATE;
     if (winBy == "CONTROLAREA")
         replayInfo.winBy = WinCondition::CONTROLAREA;

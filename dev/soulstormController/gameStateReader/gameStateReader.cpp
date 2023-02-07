@@ -619,7 +619,7 @@ void GameStateReader::readWinConditions(QStringList *fileLines, int counter)
 
         if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
         {
-            if(winConditionsReadLine.contains("ANNIHILATE")){
+            if(winConditionsReadLine.contains("ANNIHILATE") || winConditionsReadLine.contains("annihilate")){
                 winCoditionsVector.append(WinCondition::ANNIHILATE);
                 qInfo(logInfo()) << "Loaded ANNIHILATE";
             }

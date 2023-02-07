@@ -149,7 +149,7 @@ bool RepReader::ReadHeader()
     for(int i=0; i<count; ++i)
         win_conditions.append(BinReader->ReadInt32());
 
-    replay.hasAnnihilate = win_conditions.contains((int)Replay::Annihilate);
+    replay.hasAnnihilate = win_conditions.contains((int)Replay::Annihilate) || win_conditions.contains((int)Replay::Annihilate2);
     replay.hasSuddenDeath = win_conditions.contains((int)Replay::SuddenDeath);
     replay.hasAssassinate = win_conditions.contains((int)Replay::Assassinate);
     replay.hasEconomicVictory = win_conditions.contains((int)Replay::EconomicVictory);

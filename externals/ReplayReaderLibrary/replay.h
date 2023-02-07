@@ -29,6 +29,7 @@ public:
     enum ConditionValues
     {
         Annihilate = 1003066394, //767227721
+        Annihilate2 = 212133034,
         SuddenDeath = -1826760460,
         Assassinate = 200405640,
         EconomicVictory = -242444938,
