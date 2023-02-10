@@ -16,6 +16,9 @@ class MapManagerPage : public QAbstractListModel
     Q_PROPERTY(QString currentMapDescription READ currentMapDescription WRITE setCurrentMapDescription NOTIFY currentMapDescriptionChanged)
     Q_PROPERTY(QString currentMapTags READ currentMapTags WRITE setCurrentMapTags NOTIFY currentMapTagsChanged)
     Q_PROPERTY(bool currentMapNeedInstall READ currentMapNeedInstall WRITE setCurrentMapNeedInstall NOTIFY currentMapNeedInstallChanged)
+    Q_PROPERTY(int downloadedCount READ downloadedCount WRITE setDownloadedCount NOTIFY downloadedCountChanged)
+    Q_PROPERTY(int fullCount READ fullCount WRITE setFullCount NOTIFY fullCountChanged)
+    Q_PROPERTY(bool downloadedProcessed READ downloadedProcessed WRITE setDownloadedProcessed NOTIFY downloadedProcessedChanged)
 
 public:
     explicit MapManagerPage(ImageProvider* imageProvider, QObject *parent = nullptr);
@@ -40,6 +43,7 @@ public:
     Q_INVOKABLE void removeMap(int index);
     Q_INVOKABLE void installMap(int index);
     Q_INVOKABLE void selectMap(int index);
+    Q_INVOKABLE void installAllMaps();
 
 
     const QString &currentMapName() const;
@@ -59,10 +63,20 @@ public:
     bool currentMapNeedInstall() const;
     void setCurrentMapNeedInstall(bool newCurrentMapNeedInstall);
 
+    int downloadedCount() const;
+    void setDownloadedCount(int newDownloadedCount);
+
+    int fullCount() const;
+    void setFullCount(int newFullCount);
+
+    bool downloadedProcessed() const;
+    void setDownloadedProcessed(bool newDownloadedProcessed);
+
 signals:
     void updatesAvailableChanged();
     void sendRemoveMap(MapItem *mapItem);
     void sendInstallMap(MapItem *mapItem);
+    void sendInstallAllMaps();
 
     void currentMapNameChanged();
     void currentMapAuthorsChanged();
@@ -70,9 +84,13 @@ signals:
     void currentMapTagsChanged();
 
     void currentMapNeedInstallChanged();
+    void downloadedCountChanged();
+    void fullCountChanged();
+    void downloadedProcessedChanged();
 
 public slots:
     void receiveMapItem(MapItem *mapItem);
+    void receiveDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
@@ -94,6 +112,11 @@ private:
     QString m_currentMapDescription  = "";
     QString m_currentMapTags = "";
     bool m_currentMapNeedInstall = true;
+
+    int m_downloadedCount = 0;
+    int m_fullCount = 0;
+    bool m_downloadedProcessed = false;
+
 };
 
 #endif // MAPMANAGERPAGE_H

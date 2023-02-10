@@ -87,18 +87,22 @@ Rectangle {
                 Label{
                     text: _uiBackend.mapManagerPage.currentMapName
                     font.pixelSize: 20
+                    Layout.preferredWidth: 190
                 }
 
                 Label{
                     text: "Authors: " + _uiBackend.mapManagerPage.currentMapAuthors
+                    Layout.preferredWidth: 190
                 }
 
                 Label{
                     text: _uiBackend.mapManagerPage.currentMapDescription
+                    Layout.preferredWidth: 190
                 }
 
                 Label{
                     text: "Tags: " + _uiBackend.mapManagerPage.currentMapTags
+                    Layout.preferredWidth: 190
                 }
             }
 
@@ -121,6 +125,10 @@ Rectangle {
                 {
                     Layout.preferredWidth: 250
                     text: "Install all maps"
+
+                    onClicked: {
+                        _uiBackend.mapManagerPage.installAllMaps();
+                    }
                 }
 
                 Switch{
@@ -132,6 +140,14 @@ Rectangle {
                 }
             }
         }
+
+        Label
+        {
+            id: downloadingProgress
+            visible: _uiBackend.mapManagerPage.downloadedProcessed
+            text: "Downloading progress: " + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
+        }
+
 
         ListView {
             id: mapsListView

@@ -102,6 +102,13 @@ void MapManagerPage::receiveMapItem(MapItem *mapItem)
     //selectMap(0);
 }
 
+void MapManagerPage::receiveDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed)
+{
+    setDownloadedCount(downloadedCount);
+    setFullCount(fullCount);
+    setDownloadedProcessed(downloadedProcessed);
+}
+
 QHash<int, QByteArray> MapManagerPage::roleNames() const
 {
     QHash<int, QByteArray> roles;
@@ -247,6 +254,22 @@ void MapManagerPage::selectMap(int index)
     setCurrentMapNeedInstall(m_mapItemArray[index]->needInstall);
 }
 
+void MapManagerPage::installAllMaps()
+{
+    for(int i = 0; i < m_mapItemArray.count(); i++)
+    {
+        if (m_mapItemArray.at(i)->needInstall || m_mapItemArray.at(i)->needUpdate)
+            m_mapItemArray[i]->downloadProcessed = true;
+    }
+
+    QModelIndex first = QAbstractItemModel::createIndex(0,0);
+    QModelIndex last = QAbstractItemModel::createIndex(m_mapItemArray.count() - 1, 0);
+
+    emit dataChanged(first, last);
+
+    emit sendInstallAllMaps();
+}
+
 
 QImage MapManagerPage::loadMiniMapImage(QString fileName)
 {
@@ -333,6 +356,45 @@ QString MapManagerPage::consolidateTags(QList<QString> tags)
     }
 
     return tagsString;
+}
+
+bool MapManagerPage::downloadedProcessed() const
+{
+    return m_downloadedProcessed;
+}
+
+void MapManagerPage::setDownloadedProcessed(bool newDownloadedProcessed)
+{
+    if (m_downloadedProcessed == newDownloadedProcessed)
+        return;
+    m_downloadedProcessed = newDownloadedProcessed;
+    emit downloadedProcessedChanged();
+}
+
+int MapManagerPage::fullCount() const
+{
+    return m_fullCount;
+}
+
+void MapManagerPage::setFullCount(int newFullCount)
+{
+    if (m_fullCount == newFullCount)
+        return;
+    m_fullCount = newFullCount;
+    emit fullCountChanged();
+}
+
+int MapManagerPage::downloadedCount() const
+{
+    return m_downloadedCount;
+}
+
+void MapManagerPage::setDownloadedCount(int newDownloadedCount)
+{
+    if (m_downloadedCount == newDownloadedCount)
+        return;
+    m_downloadedCount = newDownloadedCount;
+    emit downloadedCountChanged();
 }
 
 bool MapManagerPage::currentMapNeedInstall() const

@@ -242,7 +242,10 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
         }
 
         m_blockInfoUpdate = downloadProcessed;
-    }
+
+        if (m_allMapsDownloadingProcessed)
+            downloadNextMap();
+    } 
 }
 
 void MapManager::getLocalMapFilesList()
@@ -270,6 +273,35 @@ void MapManager::getLocalMapFilesList()
     }
 }
 
+void MapManager::downloadNextMap()
+{
+    if (m_downloadedMapsCount == m_mapItemArray.count())
+    {
+        m_allMapsDownloadingProcessed = false;
+        emit sendDownloadingProgress(m_downloadedMapsCount, m_mapItemArray.count(), false);
+        return;
+    }
+
+    if( !(m_mapItemArray[m_downloadedMapsCount].needInstall || m_mapItemArray[m_downloadedMapsCount].needUpdate) )
+    {
+        m_downloadedMapsCount++;
+        downloadNextMap();
+        return;
+    }
+
+    emit sendDownloadingProgress(m_downloadedMapsCount, m_mapItemArray.count(), true);
+    installMap(&(m_mapItemArray[m_downloadedMapsCount]));
+    m_downloadedMapsCount++;
+}
+
+void MapManager::installMap(MapItem *mapItem)
+{
+    mapItem->downloadedFiles = 0;
+
+    for(int i = 0; i < mapItem->filesList.count(); i++)
+        requestFile(mapItem->filesList.at(i).fileName, mapItem->filesList.at(i).hash, mapItem);
+}
+
 void MapManager::receiveRemoveMap(MapItem *mapItem)
 {
     for (int i = 0; i < mapItem->filesList.count(); i++)
@@ -290,10 +322,21 @@ void MapManager::receiveRemoveMap(MapItem *mapItem)
 
 void MapManager::receiveInstallMap(MapItem *mapItem)
 {
-    mapItem->downloadedFiles = 0;
+    if (m_allMapsDownloadingProcessed)
+        return;
 
-    for(int i = 0; i < mapItem->filesList.count(); i++)
-        requestFile(mapItem->filesList.at(i).fileName, mapItem->filesList.at(i).hash, mapItem);
+    installMap(mapItem);
+}
+
+void MapManager::receiveInstallAllMaps()
+{
+    if (m_allMapsDownloadingProcessed)
+        return;
+
+    m_downloadedMapsCount = 0;
+    m_allMapsDownloadingProcessed = true;
+
+    downloadNextMap();
 }
 
 QString MapManager::getUrl(QString mapHash)

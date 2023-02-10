@@ -1,4 +1,4 @@
-#ifndef MAPMANAGER_H
+﻿#ifndef MAPMANAGER_H
 #define MAPMANAGER_H
 
 #include <QObject>
@@ -27,14 +27,19 @@ public:
 public slots:
     void receiveRemoveMap(MapItem *mapItem);
     void receiveInstallMap(MapItem *mapItem);
+    void receiveInstallAllMaps();
 
 signals:
     void sendMapItem(MapItem *mapItem);
+    void sendDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
 
 private:
     QString getUrl(QString mapHash);
     bool uncompressGz(QByteArray input, QByteArray &output);
     void checkLocalFilesState(MapItem *mapItem);
+
+    void downloadNextMap();
+    void installMap(MapItem *mapItem);
 
 private:
     QNetworkAccessManager *m_networkManager;
@@ -46,6 +51,8 @@ private:
     bool m_blockInfoUpdate = false;
     int m_requestetMapInfoCount = 0;
 
+    bool m_allMapsDownloadingProcessed = false;
+    int m_downloadedMapsCount = 0;
 };
 
 #endif // MAPMANAGER_H
