@@ -118,6 +118,17 @@ Rectangle {
                 BlueButton
                 {
                     Layout.preferredWidth: 250
+                    text: "Check updates"
+
+                    onClicked: {
+                        _uiBackend.mapManagerPage.loadMapsInfo();
+                    }
+                }
+
+
+                BlueButton
+                {
+                    Layout.preferredWidth: 250
                     text: "Install default maps"
                     enabled: !_uiBackend.mapManagerPage.downloadedProcessed
 

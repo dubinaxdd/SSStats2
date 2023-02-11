@@ -295,6 +295,11 @@ void MapManagerPage::installDefaultMaps()
     emit sendInstallDefaultMaps();
 }
 
+void MapManagerPage::loadMapsInfo()
+{
+    emit sendLoadMapsInfo();
+}
+
 QImage MapManagerPage::loadMiniMapImage(QString fileName)
 {
     QFile miniMapImageFile(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp\\" + fileName);

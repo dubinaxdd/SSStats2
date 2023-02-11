@@ -30,6 +30,7 @@ public slots:
     void receiveInstallMap(MapItem *mapItem);
     void receiveInstallAllMaps();
     void receiveInstallDefaultMaps();
+    void receiveLoadMapsInfo();
 
 private slots:
     void onSettingsLoaded();

@@ -389,6 +389,11 @@ void MapManager::receiveInstallDefaultMaps()
     downloadNextMap();
 }
 
+void MapManager::receiveLoadMapsInfo()
+{
+    requestMapList();
+}
+
 void MapManager::onSettingsLoaded()
 {
     requestMapList();
