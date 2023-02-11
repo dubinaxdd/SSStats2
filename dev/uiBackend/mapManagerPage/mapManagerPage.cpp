@@ -297,6 +297,10 @@ void MapManagerPage::installDefaultMaps()
 
 void MapManagerPage::loadMapsInfo()
 {
+    beginRemoveRows(QModelIndex(), 0, m_mapItemArray.count() - 1);
+    m_mapItemArray.clear();
+    endRemoveRows();
+
     emit sendLoadMapsInfo();
 }
 

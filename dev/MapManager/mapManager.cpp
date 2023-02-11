@@ -276,6 +276,8 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
 
 void MapManager::getLocalMapFilesList()
 {
+    m_localMapFilesHashes.clear();
+
     QDir dir(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp");
     QFileInfoList dirContent = dir.entryInfoList(QDir::Files);
 
@@ -391,6 +393,7 @@ void MapManager::receiveInstallDefaultMaps()
 
 void MapManager::receiveLoadMapsInfo()
 {
+    getLocalMapFilesList();
     requestMapList();
 }
 
