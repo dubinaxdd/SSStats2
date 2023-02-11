@@ -270,6 +270,23 @@ void MapManagerPage::installAllMaps()
     emit sendInstallAllMaps();
 }
 
+void MapManagerPage::installDefaultMaps()
+{
+    for(int i = 0; i < m_mapItemArray.count(); i++)
+    {
+        QString tags = consolidateTags(m_mapItemArray.at(i)->tags);
+
+        if ((m_mapItemArray.at(i)->needInstall || m_mapItemArray.at(i)->needUpdate) && tags.contains("default-map"))
+            m_mapItemArray[i]->downloadProcessed = true;
+    }
+
+    QModelIndex first = QAbstractItemModel::createIndex(0,0);
+    QModelIndex last = QAbstractItemModel::createIndex(m_mapItemArray.count() - 1, 0);
+
+    emit dataChanged(first, last);
+
+    emit sendInstallDefaultMaps();
+}
 
 QImage MapManagerPage::loadMiniMapImage(QString fileName)
 {

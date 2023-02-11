@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 
 Rectangle{
+
     property string text: ""
     signal clicked()
 
@@ -14,12 +15,12 @@ Rectangle{
     gradient: Gradient {
         GradientStop {
             position: 0
-            color: "#337ab7"
+            color: rootObject.enabled ? "#337ab7" : "#D3D3D3"
         }
 
         GradientStop {
             position: 1
-            color: "#245580"
+            color:  rootObject.enabled ? "#245580" : "#A9A9A9"
         }
     }
 
@@ -29,7 +30,7 @@ Rectangle{
         Label{
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             text: rootObject.text
-            color: buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+            color: buttonMouseArea.containsMouse && rootObject.enabled ? "#DCDCDC" : "#FFFFFF"
         }
     }
 
@@ -40,7 +41,8 @@ Rectangle{
         hoverEnabled: true
 
         onClicked: {
-            rootObject.clicked();
+            if (rootObject.enabled)
+                rootObject.clicked();
         }
     }
 }

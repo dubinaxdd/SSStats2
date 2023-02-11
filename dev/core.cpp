@@ -136,6 +136,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendRemoveMap, m_mapManager, &MapManager::receiveRemoveMap,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallMap, m_mapManager, &MapManager::receiveInstallMap,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallAllMaps, m_mapManager, &MapManager::receiveInstallAllMaps,  Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallDefaultMaps, m_mapManager, &MapManager::receiveInstallDefaultMaps,  Qt::QueuedConnection);
+
 
     m_statsServerProcessor->parseCurrentPlayerSteamId();
     m_settingsController->initializeSettings();

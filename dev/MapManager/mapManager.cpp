@@ -289,6 +289,16 @@ void MapManager::downloadNextMap()
         return;
     }
 
+    if(m_downloadOnlyDefaultMaps)
+    {
+        if( !consolidateTags(m_mapItemArray[m_downloadedMapsCount].tags).contains("default-map"))
+        {
+            m_downloadedMapsCount++;
+            downloadNextMap();
+            return;
+        }
+    }
+
     emit sendDownloadingProgress(m_downloadedMapsCount, m_mapItemArray.count(), true);
     installMap(&(m_mapItemArray[m_downloadedMapsCount]));
     m_downloadedMapsCount++;
@@ -336,6 +346,20 @@ void MapManager::receiveInstallAllMaps()
     m_downloadedMapsCount = 0;
     m_allMapsDownloadingProcessed = true;
 
+    m_downloadOnlyDefaultMaps = false;
+
+    downloadNextMap();
+}
+
+void MapManager::receiveInstallDefaultMaps()
+{
+    if (m_allMapsDownloadingProcessed)
+        return;
+
+    m_downloadedMapsCount = 0;
+    m_allMapsDownloadingProcessed = true;
+
+    m_downloadOnlyDefaultMaps = true;
     downloadNextMap();
 }
 
@@ -385,6 +409,21 @@ void MapManager::checkLocalFilesState(MapItem *mapItem)
 
     mapItem->needUpdate = needUpdate;
     mapItem->needInstall = needInstall;
+}
+
+QString MapManager::consolidateTags(QList<QString> tags)
+{
+    QString tagsString;
+
+    for(int i = 0; i < tags.count(); i++ )
+    {
+        tagsString += tags.at(i);
+
+        if (i != tags.count()-1)
+             tagsString += ", ";
+    }
+
+    return tagsString;
 }
 
 bool MapManager::uncompressGz(QByteArray input, QByteArray &output)

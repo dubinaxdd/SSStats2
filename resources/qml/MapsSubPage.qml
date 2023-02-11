@@ -119,12 +119,18 @@ Rectangle {
                 {
                     Layout.preferredWidth: 250
                     text: "Install default maps"
+                    enabled: !_uiBackend.mapManagerPage.downloadedProcessed
+
+                    onClicked: {
+                        _uiBackend.mapManagerPage.installDefaultMaps();
+                    }
                 }
 
                 BlueButton
                 {
                     Layout.preferredWidth: 250
                     text: "Install all maps"
+                    enabled: !_uiBackend.mapManagerPage.downloadedProcessed
 
                     onClicked: {
                         _uiBackend.mapManagerPage.installAllMaps();

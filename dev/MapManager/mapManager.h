@@ -28,6 +28,7 @@ public slots:
     void receiveRemoveMap(MapItem *mapItem);
     void receiveInstallMap(MapItem *mapItem);
     void receiveInstallAllMaps();
+    void receiveInstallDefaultMaps();
 
 signals:
     void sendMapItem(MapItem *mapItem);
@@ -41,6 +42,8 @@ private:
     void downloadNextMap();
     void installMap(MapItem *mapItem);
 
+    QString consolidateTags(QList<QString> tags);
+
 private:
     QNetworkAccessManager *m_networkManager;
     QString m_ssPath;
@@ -53,6 +56,7 @@ private:
 
     bool m_allMapsDownloadingProcessed = false;
     int m_downloadedMapsCount = 0;
+    int m_downloadOnlyDefaultMaps = false;
 };
 
 #endif // MAPMANAGER_H

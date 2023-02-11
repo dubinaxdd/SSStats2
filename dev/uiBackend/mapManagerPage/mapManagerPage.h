@@ -44,6 +44,7 @@ public:
     Q_INVOKABLE void installMap(int index);
     Q_INVOKABLE void selectMap(int index);
     Q_INVOKABLE void installAllMaps();
+    Q_INVOKABLE void installDefaultMaps();
 
 
     const QString &currentMapName() const;
@@ -77,6 +78,7 @@ signals:
     void sendRemoveMap(MapItem *mapItem);
     void sendInstallMap(MapItem *mapItem);
     void sendInstallAllMaps();
+    void sendInstallDefaultMaps();
 
     void currentMapNameChanged();
     void currentMapAuthorsChanged();
