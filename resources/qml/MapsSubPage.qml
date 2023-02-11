@@ -139,10 +139,16 @@ Rectangle {
 
                 Switch{
                     text: "Auto-install default maps"
+                    checked: _uiBackend.mapManagerPage.autoinstallDefaultMaps
+
+                    onCheckedChanged: _uiBackend.mapManagerPage.autoinstallDefaultMaps = checked
                 }
 
                 Switch{
                     text: "Auto-install all maps"
+                    checked: _uiBackend.mapManagerPage.autoinstallAllMaps
+
+                    onCheckedChanged: _uiBackend.mapManagerPage.autoinstallAllMaps = checked
                 }
             }
         }

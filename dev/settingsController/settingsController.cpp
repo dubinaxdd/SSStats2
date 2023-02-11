@@ -36,6 +36,8 @@ void SettingsController::initializeSettings()
     m_settings->enableGameLoadEventSound = ss_stats_settings->value("client/enable_game_load_event_sound", true).toBool();
     m_settings->enableGameStartEventSound = ss_stats_settings->value("client/enable_game_start_event_sound", true).toBool();
     m_settings->volume = ss_stats_settings->value("client/volume", 100).toInt();
+    m_settings->autoinstallDefaultMaps = ss_stats_settings->value("mods/autoinstall_default_maps", true).toBool();
+    m_settings->autoinstallAllMaps = ss_stats_settings->value("mods/autoinstall_all_maps", false).toBool();
 
     emit settingsLoaded();
 
@@ -61,6 +63,8 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("client/enable_game_load_event_sound", m_settings->enableGameLoadEventSound);
     ss_stats_settings->setValue("client/enable_game_start_event_sound", m_settings->enableGameStartEventSound);
     ss_stats_settings->setValue("client/volume", m_settings->volume);
+    ss_stats_settings->setValue("mods/autoinstall_default_maps", m_settings->autoinstallDefaultMaps);
+    ss_stats_settings->setValue("mods/autoinstall_all_maps", m_settings->autoinstallAllMaps);
 
     ss_stats_settings->sync();
 }

@@ -2,11 +2,12 @@
 #include <QDebug>
 #include <QFile>
 
-MapManagerPage::MapManagerPage(ImageProvider* imageProvider, QObject *parent)
+MapManagerPage::MapManagerPage(SettingsController* settingsController, ImageProvider* imageProvider, QObject *parent)
     : QAbstractListModel(parent)
+    , m_settingsController(settingsController)
     , m_imageProvider(imageProvider)
 {
-
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManagerPage::onSettingsLoaded, Qt::QueuedConnection );
 }
 
 QVariant MapManagerPage::data(const QModelIndex &index, int role) const
@@ -122,6 +123,12 @@ QHash<int, QByteArray> MapManagerPage::roleNames() const
     roles[Selected] = "selected";
 
     return roles;
+}
+
+void MapManagerPage::onSettingsLoaded()
+{
+    setAutoinstallDefaultMaps(m_settingsController->getSettings()->autoinstallDefaultMaps);
+    setAutoinstallAllMaps(m_settingsController->getSettings()->autoinstallAllMaps);
 }
 
 void MapManagerPage::checkUpdates()
@@ -373,6 +380,39 @@ QString MapManagerPage::consolidateTags(QList<QString> tags)
     }
 
     return tagsString;
+}
+
+bool MapManagerPage::autoinstallAllMaps() const
+{
+    return m_autoinstallAllMaps;
+}
+
+void MapManagerPage::setAutoinstallAllMaps(bool newAutoinstallAllMaps)
+{
+    if (m_autoinstallAllMaps == newAutoinstallAllMaps)
+        return;
+    m_autoinstallAllMaps = newAutoinstallAllMaps;
+    emit autoinstallAllMapsChanged();
+
+    m_settingsController->getSettings()->autoinstallAllMaps = m_autoinstallAllMaps;
+    m_settingsController->saveSettings();
+}
+
+bool MapManagerPage::autoinstallDefaultMaps() const
+{
+    return m_autoinstallDefaultMaps;
+}
+
+void MapManagerPage::setAutoinstallDefaultMaps(bool newAutoinstallDefaultMaps)
+{
+    if (m_autoinstallDefaultMaps == newAutoinstallDefaultMaps)
+        return;
+
+    m_autoinstallDefaultMaps = newAutoinstallDefaultMaps;
+    emit autoinstallDefaultMapsChanged();
+
+    m_settingsController->getSettings()->autoinstallDefaultMaps = m_autoinstallDefaultMaps;
+    m_settingsController->saveSettings();
 }
 
 bool MapManagerPage::downloadedProcessed() const

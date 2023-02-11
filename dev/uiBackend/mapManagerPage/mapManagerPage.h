@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <baseTypes.h>
 #include <imageProvider.h>
+#include <settingsController.h>
 
 class MapManagerPage : public QAbstractListModel
 {
@@ -19,9 +20,12 @@ class MapManagerPage : public QAbstractListModel
     Q_PROPERTY(int downloadedCount READ downloadedCount WRITE setDownloadedCount NOTIFY downloadedCountChanged)
     Q_PROPERTY(int fullCount READ fullCount WRITE setFullCount NOTIFY fullCountChanged)
     Q_PROPERTY(bool downloadedProcessed READ downloadedProcessed WRITE setDownloadedProcessed NOTIFY downloadedProcessedChanged)
+    Q_PROPERTY(bool autoinstallDefaultMaps READ autoinstallDefaultMaps WRITE setAutoinstallDefaultMaps NOTIFY autoinstallDefaultMapsChanged)
+    Q_PROPERTY(bool autoinstallAllMaps READ autoinstallAllMaps WRITE setAutoinstallAllMaps NOTIFY autoinstallAllMapsChanged)
+
 
 public:
-    explicit MapManagerPage(ImageProvider* imageProvider, QObject *parent = nullptr);
+    explicit MapManagerPage(SettingsController* settingsController, ImageProvider* imageProvider, QObject *parent = nullptr);
 
     enum DataRoles {
             MapName = Qt::UserRole + 1,
@@ -73,6 +77,12 @@ public:
     bool downloadedProcessed() const;
     void setDownloadedProcessed(bool newDownloadedProcessed);
 
+    bool autoinstallDefaultMaps() const;
+    void setAutoinstallDefaultMaps(bool newAutoinstallDefaultMaps);
+
+    bool autoinstallAllMaps() const;
+    void setAutoinstallAllMaps(bool newAutoinstallAllMaps);
+
 signals:
     void updatesAvailableChanged();
     void sendRemoveMap(MapItem *mapItem);
@@ -89,6 +99,8 @@ signals:
     void downloadedCountChanged();
     void fullCountChanged();
     void downloadedProcessedChanged();
+    void autoinstallDefaultMapsChanged();
+    void autoinstallAllMapsChanged();
 
 public slots:
     void receiveMapItem(MapItem *mapItem);
@@ -97,12 +109,17 @@ public slots:
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
+
+private slots:
+    void onSettingsLoaded();
+
 private:
     void checkUpdates();
     QImage loadMiniMapImage(QString fileName);
     QString consolidateTags(QList<QString> tags);
 
 private:
+    SettingsController* m_settingsController;
     ImageProvider* m_imageProvider;
     QString m_ssPath = "";
 
@@ -119,6 +136,8 @@ private:
     int m_fullCount = 0;
     bool m_downloadedProcessed = false;
 
+    bool m_autoinstallDefaultMaps = true;
+    bool m_autoinstallAllMaps = false;
 };
 
 #endif // MAPMANAGERPAGE_H

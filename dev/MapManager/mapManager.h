@@ -6,12 +6,13 @@
 #include <QNetworkReply>
 #include <logger.h>
 #include <baseTypes.h>
+#include <settingsController.h>
 
 class MapManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit MapManager(QString ssPath, QObject *parent = nullptr);
+    explicit MapManager(SettingsController* settingsController, QString ssPath, QObject *parent = nullptr);
 
     void requestMapList();
     void receiveMapList(QNetworkReply *reply);
@@ -30,6 +31,9 @@ public slots:
     void receiveInstallAllMaps();
     void receiveInstallDefaultMaps();
 
+private slots:
+    void onSettingsLoaded();
+
 signals:
     void sendMapItem(MapItem *mapItem);
     void sendDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
@@ -45,6 +49,7 @@ private:
     QString consolidateTags(QList<QString> tags);
 
 private:
+    SettingsController* m_settingsController;
     QNetworkAccessManager *m_networkManager;
     QString m_ssPath;
 

@@ -13,14 +13,17 @@
 #define GZIP_WINDOWS_BIT 15 + 16
 #define GZIP_CHUNK_SIZE 32 * 1024
 
-MapManager::MapManager(QString ssPath, QObject *parent)
+MapManager::MapManager(SettingsController *settingsController, QString ssPath, QObject *parent)
     : QObject(parent)
+    , m_settingsController(settingsController)
     , m_ssPath(ssPath)
 {
      m_networkManager = new QNetworkAccessManager(this);
 
+     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManager::onSettingsLoaded, Qt::QueuedConnection);
+
      getLocalMapFilesList();
-     requestMapList();
+     //requestMapList();
 }
 
 void MapManager::requestMapList()
@@ -171,12 +174,35 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
 
     checkLocalFilesState(mapItem);
 
+    if ((mapItem->needInstall || mapItem->needUpdate) )
+    {
+        if (m_settingsController->getSettings()->autoinstallAllMaps
+            || (m_settingsController->getSettings()->autoinstallDefaultMaps
+                && consolidateTags(mapItem->tags).contains("default-map"))
+                )
+            mapItem->downloadProcessed = true;
+    }
+
     m_requestetMapInfoCount++;
 
     emit sendMapItem(mapItem);
 
     if(m_requestetMapInfoCount == m_mapItemArray.count())
+    {
         m_blockInfoUpdate = false;
+
+        if( m_settingsController->getSettings()->autoinstallAllMaps)
+        {
+            receiveInstallAllMaps();
+            return;
+        }
+
+        if( m_settingsController->getSettings()->autoinstallDefaultMaps)
+        {
+            receiveInstallDefaultMaps();
+            return;
+        }
+    }
 }
 
 void MapManager::requestFile(QString fileName, QString fileHash, MapItem *mapItem)
@@ -361,6 +387,11 @@ void MapManager::receiveInstallDefaultMaps()
 
     m_downloadOnlyDefaultMaps = true;
     downloadNextMap();
+}
+
+void MapManager::onSettingsLoaded()
+{
+    requestMapList();
 }
 
 QString MapManager::getUrl(QString mapHash)

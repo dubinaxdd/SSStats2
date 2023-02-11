@@ -21,7 +21,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_soundProcessor(new SoundProcessor(this))
     , m_statsServerProcessor ( new StatsServerProcessor(m_soulstormController->ssPath(), m_soulstormController->steamPath(), this))
     , m_rankedModServiceProcessor(new RankedModServiceProcessor(this))
-    , m_mapManager(new MapManager(m_soulstormController->ssPath(), this))
+    , m_mapManager(new MapManager(m_settingsController, m_soulstormController->ssPath(), this))
 {
     registerTypes();
 

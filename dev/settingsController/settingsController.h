@@ -24,6 +24,8 @@ struct Settings
     bool enableGameLoadEventSound = false;
     bool enableGameStartEventSound = false;
     int  volume = 100;
+    bool autoinstallDefaultMaps = true;
+    bool autoinstallAllMaps = false;
 };
 
 class SettingsController : public QObject
