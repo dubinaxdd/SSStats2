@@ -19,65 +19,79 @@ Rectangle {
 
             spacing: 20
 
-            Rectangle
+            ColumnLayout
             {
-                id: miniMapRectangle
+                Layout.alignment: Qt.AlignTop
 
-                Layout.preferredWidth: 140
-                Layout.preferredHeight: 140
+                Rectangle
+                {
+                    id: miniMapRectangle
 
-                color: "#112332"
-                radius: 10
-                clip: true
+                    Layout.preferredWidth: 140
+                    Layout.preferredHeight: 140
 
-                //Костыль для перезагрузки картинки, рил так на формух делают
-                Connections {
-                    target: _uiBackend.mapManagerPage
+                    Layout.alignment: Qt.AlignTop
 
-                    function onCurrentMapNameChanged()
-                    {
-                        var oldSource = "image://imageprovider/currentMiniMap";
-                        mapImage.source = "";
-                        mapImage.source = "image://imageprovider/currentMiniMap";
-                    }
-                }
-
-                Image{
-                    id: mapImage
-                    anchors.fill: parent
-                    source: "image://imageprovider/currentMiniMap"
-                    cache: false
-                    visible:false
-                    fillMode: Image.PreserveAspectFit
-                }
-
-                Rectangle {
-                    id: maskRectangle
-                    anchors.fill: parent
+                    color: "#112332"
                     radius: 10
-                    visible: false
+                    clip: true
+
+                    //Костыль для перезагрузки картинки, рил так на формух делают
+                    Connections {
+                        target: _uiBackend.mapManagerPage
+
+                        function onCurrentMapNameChanged()
+                        {
+                            var oldSource = "image://imageprovider/currentMiniMap";
+                            mapImage.source = "";
+                            mapImage.source = "image://imageprovider/currentMiniMap";
+                        }
+                    }
+
+                    Image{
+                        id: mapImage
+                        anchors.fill: parent
+                        source: "image://imageprovider/currentMiniMap"
+                        cache: false
+                        visible:false
+                        fillMode: Image.PreserveAspectFit
+                    }
+
+                    Rectangle {
+                        id: maskRectangle
+                        anchors.fill: parent
+                        radius: 10
+                        visible: false
+
+                    }
+
+                    Label
+                    {
+                        verticalAlignment: Qt.AlignVCenter
+                        horizontalAlignment: Qt.AlignHCenter
+
+                        anchors.fill: parent
+                        color: "#FFFFFF"
+                        text: "You need to\ndownload the map\nto show the image."
+                        visible: _uiBackend.mapManagerPage.currentMapNeedInstall
+                    }
+
+                    OpacityMask {
+                        id: opacityMask
+                        anchors.fill: mapImage
+                        source: mapImage
+                        maskSource: maskRectangle
+                        visible: !_uiBackend.mapManagerPage.currentMapNeedInstall
+                    }
 
                 }
 
                 Label
                 {
-                    verticalAlignment: Qt.AlignVCenter
-                    horizontalAlignment: Qt.AlignHCenter
-
-                    anchors.fill: parent
-                    color: "#FFFFFF"
-                    text: "You need to\ndownload the map\nto show the image."
-                    visible: _uiBackend.mapManagerPage.currentMapNeedInstall
+                    id: downloadingProgress
+                    visible: _uiBackend.mapManagerPage.downloadedProcessed
+                    text: "Downloading progress: " + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
                 }
-
-                OpacityMask {
-                    id: opacityMask
-                    anchors.fill: mapImage
-                    source: mapImage
-                    maskSource: maskRectangle
-                    visible: !_uiBackend.mapManagerPage.currentMapNeedInstall
-                }
-
             }
 
             ColumnLayout
@@ -93,16 +107,19 @@ Rectangle {
                 Label{
                     text: "Authors: " + _uiBackend.mapManagerPage.currentMapAuthors
                     Layout.preferredWidth: 190
+                    visible: _uiBackend.mapManagerPage.currentMapAuthors !== ""
                 }
 
                 Label{
                     text: _uiBackend.mapManagerPage.currentMapDescription
                     Layout.preferredWidth: 190
+                    visible: _uiBackend.mapManagerPage.currentMapDescription !== ""
                 }
 
                 Label{
                     text: "Tags: " + _uiBackend.mapManagerPage.currentMapTags
                     Layout.preferredWidth: 190
+                    visible: _uiBackend.mapManagerPage.currentMapTags !== ""
                 }
             }
 
@@ -163,14 +180,6 @@ Rectangle {
                 }
             }
         }
-
-        Label
-        {
-            id: downloadingProgress
-            visible: _uiBackend.mapManagerPage.downloadedProcessed
-            text: "Downloading progress: " + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
-        }
-
 
         ListView {
             id: mapsListView
