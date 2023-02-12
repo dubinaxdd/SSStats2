@@ -7,12 +7,14 @@
 #include <logger.h>
 #include <baseTypes.h>
 #include <settingsController.h>
+#include <fileHashReader.h>
 
 class MapManager : public QObject
 {
     Q_OBJECT
 public:
     explicit MapManager(SettingsController* settingsController, QString ssPath, QObject *parent = nullptr);
+    ~MapManager();
 
     void requestMapList();
     void receiveMapList(QNetworkReply *reply);
@@ -23,8 +25,6 @@ public:
     void requestFile(QString fileName, QString fileHash, MapItem *mapItem);
     void receiveFile(QNetworkReply *reply, QString fileName, MapItem *mapItem);
 
-    void getLocalMapFilesList();
-
 public slots:
     void receiveRemoveMap(MapItem *mapItem);
     void receiveInstallMap(MapItem *mapItem);
@@ -34,10 +34,12 @@ public slots:
 
 private slots:
     void onSettingsLoaded();
+    void receiveLocalMapFilesList(QList<MapFileHash> localMapFilesList);
 
 signals:
     void sendMapItem(MapItem *mapItem);
     void sendDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
+    void requsetLocalMapFilesList();
 
 private:
     QString getUrl(QString mapHash);
@@ -53,6 +55,8 @@ private:
     SettingsController* m_settingsController;
     QNetworkAccessManager *m_networkManager;
     QString m_ssPath;
+    FileHashReader* m_fileHashReader;
+    QThread* m_fileHashReaderThread;
 
     QList<MapFileHash> m_localMapFilesHashes;
     QList<MapItem> m_mapItemArray;
@@ -63,6 +67,7 @@ private:
     bool m_allMapsDownloadingProcessed = false;
     int m_downloadedMapsCount = 0;
     int m_downloadOnlyDefaultMaps = false;
+    bool m_checkUpdatesProcessed = false;
 };
 
 #endif // MAPMANAGER_H

@@ -9,6 +9,7 @@
 #include <QtZlib/zlib.h>
 #include "JlCompress.h"
 #include <QCryptographicHash>
+#include <QtConcurrent/QtConcurrent>
 
 #define GZIP_WINDOWS_BIT 15 + 16
 #define GZIP_CHUNK_SIZE 32 * 1024
@@ -17,13 +18,26 @@ MapManager::MapManager(SettingsController *settingsController, QString ssPath, Q
     : QObject(parent)
     , m_settingsController(settingsController)
     , m_ssPath(ssPath)
+    , m_fileHashReader( new FileHashReader(m_ssPath))
+    , m_fileHashReaderThread(new QThread(this))
 {
      m_networkManager = new QNetworkAccessManager(this);
 
      QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManager::onSettingsLoaded, Qt::QueuedConnection);
 
-     getLocalMapFilesList();
-     //requestMapList();
+     QObject::connect(this, &MapManager::requsetLocalMapFilesList, m_fileHashReader, &FileHashReader::getLocalMapFilesList, Qt::QueuedConnection);
+     QObject::connect(m_fileHashReader, &FileHashReader::sendLocalMapFilesList, this, &MapManager::receiveLocalMapFilesList,  Qt::QueuedConnection);
+
+     m_fileHashReader->moveToThread(m_fileHashReaderThread);
+     m_fileHashReaderThread->start();
+}
+
+MapManager::~MapManager()
+{
+    m_fileHashReaderThread->quit();
+    m_fileHashReaderThread->wait();
+
+    delete m_fileHashReader;
 }
 
 void MapManager::requestMapList()
@@ -47,6 +61,7 @@ void MapManager::requestMapList()
     QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
         reply->deleteLater();
+        m_checkUpdatesProcessed = false;
     });
 }
 
@@ -108,6 +123,8 @@ void MapManager::receiveMapList(QNetworkReply *reply)
 
     for(int i = 0; i < m_mapItemArray.count(); i++)
         requestMapInfo( &m_mapItemArray[i] );
+
+    m_checkUpdatesProcessed = false;
 }
 
 void MapManager::requestMapInfo(MapItem *mapItem)
@@ -274,33 +291,6 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
     } 
 }
 
-void MapManager::getLocalMapFilesList()
-{
-    m_localMapFilesHashes.clear();
-
-    QDir dir(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp");
-    QFileInfoList dirContent = dir.entryInfoList(QDir::Files);
-
-    for (int i = 0; i < dirContent.count(); i++)
-    {
-
-        MapFileHash newMapFileHash;
-        newMapFileHash.fileName = dirContent.at(i).fileName();
-
-        QFile file(dirContent.at(i).filePath());
-
-        if (file.open(QFile::ReadOnly))
-        {
-            QCryptographicHash hash(QCryptographicHash::Algorithm::Sha256);
-
-            if (hash.addData(&file))
-                newMapFileHash.hash = hash.result().toBase64();
-        }
-
-        m_localMapFilesHashes.append(newMapFileHash);
-    }
-}
-
 void MapManager::downloadNextMap()
 {
     if (m_downloadedMapsCount == m_mapItemArray.count())
@@ -393,12 +383,22 @@ void MapManager::receiveInstallDefaultMaps()
 
 void MapManager::receiveLoadMapsInfo()
 {
-    getLocalMapFilesList();
-    requestMapList();
+    if (m_checkUpdatesProcessed)
+        return;
+
+    m_checkUpdatesProcessed = true;
+    emit requsetLocalMapFilesList();
 }
 
 void MapManager::onSettingsLoaded()
 {
+    m_checkUpdatesProcessed = true;
+    emit requsetLocalMapFilesList();
+}
+
+void MapManager::receiveLocalMapFilesList(QList<MapFileHash> localMapFilesList)
+{
+    m_localMapFilesHashes = localMapFilesList;
     requestMapList();
 }
 

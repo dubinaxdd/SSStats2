@@ -133,6 +133,9 @@ set(dev_DIR ${dev_DIR})
 file(GLOB  soulstormController_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/*)
 set(soulstormController_DIR ${soulstormController_DIR})
 
+file(GLOB  mapManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager/*)
+set(soulstormController_DIR ${soulstormController_DIR})
+
 file(GLOB  uiBackend_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/*)
 set(uiBackend_DIR ${uiBackend_DIR})
 
@@ -145,6 +148,7 @@ set(replayManager_DIR ${replayManager_DIR})
 set(SOURCE_DIRECTORIES
     ${dev_DIR}
     ${soulstormController_DIR}
+    ${mapManager_DIR}
     ${uiBackend_DIR}
     ${modsProcessor_DIR}
     ${replayManager_DIR}
