@@ -11,14 +11,7 @@ Rectangle {
     Layout.minimumWidth: 60
     Layout.minimumHeight: 60
 
-    height: 15 + messageHeader.height
-               + (contentTextArea.visible ? 15 : 0)
-               + (contentTextArea.visible ? contentTextArea.height : 0)
-               + (attachmentRectangle.visible ? 15 : 0)
-               + (attachmentRectangle.visible ? attachmentRectangle.height : 0)
-               + (fullYoutubeRectangle.visible ? 15 : 0)
-               + (fullYoutubeRectangle.visible ? fullYoutubeRectangle.height : 0)
-               + bottomSpacerRectangle.height
+    height: colomnLayot.height
 
     property string userName: "Unknown user"
     property string content: "Message text"
@@ -41,19 +34,13 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-/*
-        hoverEnabled: true
-
-        onHoveredChanged: {
-            mouseArea.cursorShape = Qt.IBeamCursor;
-        }*/
     }
 
     ColumnLayout
     {
-        anchors.fill: parent
-
-        spacing: 0
+        width: parent.width
+        id: colomnLayot
+        spacing: 15
 
         RowLayout
         {
@@ -64,7 +51,6 @@ Rectangle {
             Layout.topMargin: 15
             Layout.leftMargin: 15
             Layout.rightMargin: 15
-            Layout.bottomMargin: contentTextArea.visible ? 15 : 0
 
             Rectangle{
                 width: avatarRectangle.width + userNameLabel.width + 10 + 30
@@ -154,7 +140,7 @@ Rectangle {
             font.pixelSize: 14
             textFormat: Text.RichText
 
-            visible: mainRectangle.content != "\0"
+            visible: !(mainRectangle.content == "\0" || mainRectangle.content == "")
 
             selectByMouse: true
             readOnly: true
@@ -175,12 +161,9 @@ Rectangle {
             id: attachmentRectangle
 
             visible: mainRectangle.attachmentId != "0"
-
             Layout.leftMargin: 15
-            Layout.topMargin: contentTextArea.visible ? 15 : 0
-
-            radius: 10
             Layout.rightMargin: 15
+            radius: 10
 
             MouseArea
             {
@@ -236,20 +219,18 @@ Rectangle {
            visible: mainRectangle.youtubeId != ""
 
            Layout.leftMargin: 15
-           Layout.topMargin: contentTextArea.visible ? 15 : 0
-
-           radius: 10
            Layout.rightMargin: 15
+           radius: 10
+
 
            color: "#ffffff"
 
            width: youtubeRectangle.width
-           height: youtubeRectangle.height + 40
+           height: columnLayout3.height//youtubeRectangle.height + 40
 
            ColumnLayout
            {
-               anchors.fill: parent
-
+               id: columnLayout3
 
                Image {
                    source: "qrc:/images/resources/images/youtube.svg"
@@ -268,7 +249,6 @@ Rectangle {
 
                 Rectangle {
                     id: youtubeRectangle
-
                     radius: 10
 
                     Layout.alignment: Qt.AlignBottom
@@ -330,7 +310,7 @@ Rectangle {
         Rectangle{
             id: bottomSpacerRectangle
             Layout.fillWidth: true
-            height: 15
+            Layout.preferredHeight: 1
             color: "#00000000"
             border.color: "#00000000"
         }
