@@ -22,7 +22,7 @@ private:
 
     void requestUserAvatar(QString userId, QString avatarId);
     void requestAttachmentImage(QString attachmentId, QString url);
-    void requestYoutubeImage(QString youtubeId, QString url);
+    void requestYoutubeImage(QString youtubeId);
 
     QList<DiscordMessage> parseMessagesJson(QByteArray byteArray);
 

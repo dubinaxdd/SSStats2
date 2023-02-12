@@ -188,11 +188,11 @@ void DiscordWebProcessor::requestAttachmentImage(QString attachmentId, QString u
     });
 }
 
-void DiscordWebProcessor::requestYoutubeImage(QString youtubeId, QString url)
+void DiscordWebProcessor::requestYoutubeImage(QString youtubeId)
 {
     QNetworkRequest newRequest;
 
-    newRequest.setUrl(QUrl(url));
+    newRequest.setUrl(QUrl("https://img.youtube.com/vi/" + youtubeId +"/0.jpg"));
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -275,6 +275,8 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
             requestUserAvatar(newDiscordMessage.userId, newDiscordMessage.avatarId);
         }
 
+
+
         //Дергаем превьюху ютубовских видосов
         if (newDiscordMessage.content.contains("https://youtu.be/"))
         {
@@ -297,9 +299,21 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
                 }
             }
 
-            newDiscordMessage.youtubeId = youtubeLink.replace("https://youtu.be/", "");
+            if (!youtubeLink.isEmpty())
+            {
+                newDiscordMessage.youtubeId = youtubeLink.replace("https://youtu.be/", "").replace("https://www.youtube.com/watch?v=", "");
 
-            requestYoutubeImage(newDiscordMessage.youtubeId, "https://img.youtube.com/vi/" + newDiscordMessage.youtubeId +"/0.jpg");
+                for (int i = 0; i < newDiscordMessage.youtubeId.count(); i++)
+                {
+                    if (newDiscordMessage.youtubeId.at(i) == "?" || newDiscordMessage.youtubeId.at(i) == "&" )
+                    {
+                        newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.left(i);
+                        break;
+                    }
+                }
+
+                requestYoutubeImage(newDiscordMessage.youtubeId);
+            }
         }
 
         discordNewsList.append(std::move(newDiscordMessage));
