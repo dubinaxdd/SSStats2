@@ -45,6 +45,8 @@ QVariant MapManagerPage::data(const QModelIndex &index, int role) const
         return mapItem->downloadProcessed;
     else if (role == Selected)
         return mapItem->selected;
+    else if (role == MapId)
+        return mapItem->id;
 
     return QVariant();
 }
@@ -99,8 +101,6 @@ void MapManagerPage::receiveMapItem(MapItem *mapItem)
     emit dataChanged(first, last);
 
     checkUpdates();
-
-    //selectMap(0);
 }
 
 void MapManagerPage::receiveDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed)
@@ -108,6 +108,12 @@ void MapManagerPage::receiveDownloadingProgress(int downloadedCount, int fullCou
     setDownloadedCount(downloadedCount);
     setFullCount(fullCount);
     setDownloadedProcessed(downloadedProcessed);
+}
+
+void MapManagerPage::receiveMapsInfoLoaded()
+{
+    setLoadMapInfoProcessed(false);
+    selectMap(0);
 }
 
 QHash<int, QByteArray> MapManagerPage::roleNames() const
@@ -121,6 +127,7 @@ QHash<int, QByteArray> MapManagerPage::roleNames() const
     roles[NeedUpdate] = "needUpdate";
     roles[DownloadingProcessed] = "downloadingProcessed";
     roles[Selected] = "selected";
+    roles[MapId] = "mapId";
 
     return roles;
 }
@@ -254,11 +261,13 @@ void MapManagerPage::selectMap(int index)
 
     m_imageProvider->setCurrentMiniMap(std::move(minimap));
 
+    setCurrentMapNeedInstall(m_mapItemArray[index]->needInstall);
+    setCurrentMiniMapId("mapImage" + m_mapItemArray[index]->id);
     setCurrentMapName(m_mapItemArray[index]->mapName);
     setCurrentMapAuthors(m_mapItemArray[index]->authors);
     setCurrentMapDescription(m_mapItemArray[index]->description);
     setCurrentMapTags(consolidateTags(m_mapItemArray[index]->tags));
-    setCurrentMapNeedInstall(m_mapItemArray[index]->needInstall);
+
 }
 
 void MapManagerPage::installAllMaps()
@@ -297,6 +306,15 @@ void MapManagerPage::installDefaultMaps()
 
 void MapManagerPage::loadMapsInfo()
 {
+    setLoadMapInfoProcessed(true);
+
+    setCurrentMapNeedInstall("");
+    setCurrentMiniMapId("");
+    setCurrentMapName("");
+    setCurrentMapAuthors("");
+    setCurrentMapDescription("");
+    setCurrentMapTags("");
+
     beginRemoveRows(QModelIndex(), 0, m_mapItemArray.count() - 1);
     m_mapItemArray.clear();
     endRemoveRows();
@@ -389,6 +407,32 @@ QString MapManagerPage::consolidateTags(QList<QString> tags)
     }
 
     return tagsString;
+}
+
+bool MapManagerPage::loadMapInfoProcessed() const
+{
+    return m_loadMapInfoProcessed;
+}
+
+void MapManagerPage::setLoadMapInfoProcessed(bool newLoadMapInfoProcessed)
+{
+    if (m_loadMapInfoProcessed == newLoadMapInfoProcessed)
+        return;
+    m_loadMapInfoProcessed = newLoadMapInfoProcessed;
+    emit loadMapInfoProcessedChanged();
+}
+
+const QString &MapManagerPage::currentMiniMapId() const
+{
+    return m_currentMiniMapId;
+}
+
+void MapManagerPage::setCurrentMiniMapId(const QString &newCurrentMiniMapId)
+{
+    if (m_currentMiniMapId == newCurrentMiniMapId)
+        return;
+    m_currentMiniMapId = newCurrentMiniMapId;
+    emit currentMiniMapIdChanged();
 }
 
 bool MapManagerPage::autoinstallAllMaps() const

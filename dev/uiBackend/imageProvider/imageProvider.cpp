@@ -34,6 +34,9 @@ QImage ImageProvider::requestImage(const QString &id, QSize *size, const QSize &
     if (m_youtubeImages.contains(id) && !m_youtubeImages.value(id).isNull())
         return m_youtubeImages.value(id);
 
+    if (m_miniMapImages.contains(id) && !m_miniMapImages.value(id).isNull())
+        return m_miniMapImages.value(id);
+
     //если ничего не нашлось возвращаем черную картинку
     QImage image(60,60, QImage::Format_ARGB32);
     image.fill(QColor(0,0,0).rgba());
@@ -78,6 +81,12 @@ void ImageProvider::addReplayPlayerBanner(QString attachmentId, QImage image)
 {
     m_replayPlayerBanners.insert(attachmentId, image);
     emit updateBanners();
+}
+
+void ImageProvider::receiveMapImage(QImage mapImage, QString mapImageId)
+{
+    m_miniMapImages.insert(mapImageId, mapImage);
+    emit updateMiniMapImage();
 }
 
 

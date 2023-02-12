@@ -25,6 +25,9 @@ public:
     void requestFile(QString fileName, QString fileHash, MapItem *mapItem);
     void receiveFile(QNetworkReply *reply, QString fileName, MapItem *mapItem);
 
+    void requestMapImage(QString id);
+    void receiveMapImage(QNetworkReply *reply, QString id);
+
 public slots:
     void receiveRemoveMap(MapItem *mapItem);
     void receiveInstallMap(MapItem *mapItem);
@@ -40,6 +43,8 @@ signals:
     void sendMapItem(MapItem *mapItem);
     void sendDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
     void requsetLocalMapFilesList();
+    void sendMapImage(QImage mapImage, QString mapImageId);
+    void mapsInfoLoaded();
 
 private:
     QString getUrl(QString mapHash);

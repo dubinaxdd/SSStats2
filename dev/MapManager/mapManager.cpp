@@ -62,6 +62,7 @@ void MapManager::requestMapList()
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
         reply->deleteLater();
         m_checkUpdatesProcessed = false;
+        emit mapsInfoLoaded();
     });
 }
 
@@ -71,6 +72,7 @@ void MapManager::receiveMapList(QNetworkReply *reply)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
         reply->deleteLater();
+        emit mapsInfoLoaded();
         return;
     }
 
@@ -100,7 +102,7 @@ void MapManager::receiveMapList(QNetworkReply *reply)
 
         MapItem newMapItem;
 
-        newMapItem.id = newObject.value("id").toString();
+        newMapItem.id = QString::number(newObject.value("id").toInt());
         newMapItem.authors = newObject.value("authors").toString();
         newMapItem.description = newObject.value("description").toString().replace("\n", " ");
         newMapItem.webPage = newObject.value("webPage").toString();
@@ -122,7 +124,10 @@ void MapManager::receiveMapList(QNetworkReply *reply)
     }
 
     for(int i = 0; i < m_mapItemArray.count(); i++)
+    {
         requestMapInfo( &m_mapItemArray[i] );
+        requestMapImage(m_mapItemArray[i].id);
+    }
 
     m_checkUpdatesProcessed = false;
 }
@@ -142,6 +147,12 @@ void MapManager::requestMapInfo(MapItem *mapItem)
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
         reply->deleteLater();
         m_requestetMapInfoCount++;
+
+        if(m_requestetMapInfoCount == m_mapItemArray.count())
+        {
+            m_blockInfoUpdate = false;
+            emit mapsInfoLoaded();
+        }
     });
 }
 
@@ -207,6 +218,7 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
     if(m_requestetMapInfoCount == m_mapItemArray.count())
     {
         m_blockInfoUpdate = false;
+        emit mapsInfoLoaded();
 
         if( m_settingsController->getSettings()->autoinstallAllMaps)
         {
@@ -288,7 +300,45 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
 
         if (m_allMapsDownloadingProcessed)
             downloadNextMap();
-    } 
+    }
+}
+
+void MapManager::requestMapImage(QString id)
+{
+    QString url = "https://dowonline.ru/Storage/ModIcons/" + id + ".jpg";
+
+    QNetworkRequest newRequest = QNetworkRequest(QUrl(url));
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveMapImage(reply, id);
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+    });
+}
+
+void MapManager::receiveMapImage(QNetworkReply *reply, QString id)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    reply->deleteLater();
+
+    QImage mapImage = QImage::fromData(replyByteArray);
+
+    if (mapImage.isNull())
+        return;
+
+    emit sendMapImage(std::move(mapImage), "mapImage" + id);
 }
 
 void MapManager::downloadNextMap()

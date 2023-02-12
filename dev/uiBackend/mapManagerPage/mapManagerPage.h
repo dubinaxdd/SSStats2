@@ -16,18 +16,20 @@ class MapManagerPage : public QAbstractListModel
     Q_PROPERTY(QString currentMapAuthors READ currentMapAuthors WRITE setCurrentMapAuthors NOTIFY currentMapAuthorsChanged)
     Q_PROPERTY(QString currentMapDescription READ currentMapDescription WRITE setCurrentMapDescription NOTIFY currentMapDescriptionChanged)
     Q_PROPERTY(QString currentMapTags READ currentMapTags WRITE setCurrentMapTags NOTIFY currentMapTagsChanged)
+    Q_PROPERTY(QString currentMiniMapId READ currentMiniMapId WRITE setCurrentMiniMapId NOTIFY currentMiniMapIdChanged)
     Q_PROPERTY(bool currentMapNeedInstall READ currentMapNeedInstall WRITE setCurrentMapNeedInstall NOTIFY currentMapNeedInstallChanged)
     Q_PROPERTY(int downloadedCount READ downloadedCount WRITE setDownloadedCount NOTIFY downloadedCountChanged)
     Q_PROPERTY(int fullCount READ fullCount WRITE setFullCount NOTIFY fullCountChanged)
     Q_PROPERTY(bool downloadedProcessed READ downloadedProcessed WRITE setDownloadedProcessed NOTIFY downloadedProcessedChanged)
     Q_PROPERTY(bool autoinstallDefaultMaps READ autoinstallDefaultMaps WRITE setAutoinstallDefaultMaps NOTIFY autoinstallDefaultMapsChanged)
     Q_PROPERTY(bool autoinstallAllMaps READ autoinstallAllMaps WRITE setAutoinstallAllMaps NOTIFY autoinstallAllMapsChanged)
+    Q_PROPERTY(bool loadMapInfoProcessed READ loadMapInfoProcessed WRITE setLoadMapInfoProcessed NOTIFY loadMapInfoProcessedChanged)
 
 
 public:
     explicit MapManagerPage(SettingsController* settingsController, ImageProvider* imageProvider, QObject *parent = nullptr);
 
-    enum DataRoles {
+    enum DataRoles {   
             MapName = Qt::UserRole + 1,
             Authors = Qt::UserRole + 2,
             Description = Qt::UserRole + 3,
@@ -35,6 +37,7 @@ public:
             NeedInstall = Qt::UserRole + 5,
             NeedUpdate = Qt::UserRole + 6,
             DownloadingProcessed = Qt::UserRole + 7,
+            MapId = Qt::UserRole + 8,
             Selected = Qt::UserRole
     };
 
@@ -83,6 +86,12 @@ public:
     bool autoinstallAllMaps() const;
     void setAutoinstallAllMaps(bool newAutoinstallAllMaps);
 
+    const QString &currentMiniMapId() const;
+    void setCurrentMiniMapId(const QString &newCurrentMiniMapId);
+
+    bool loadMapInfoProcessed() const;
+    void setLoadMapInfoProcessed(bool newLoadMapInfoProcessed);
+
 signals:
     void updatesAvailableChanged();
     void sendRemoveMap(MapItem *mapItem);
@@ -95,6 +104,7 @@ signals:
     void currentMapAuthorsChanged();
     void currentMapDescriptionChanged();
     void currentMapTagsChanged();
+    void currentMiniMapIdChanged();
 
     void currentMapNeedInstallChanged();
     void downloadedCountChanged();
@@ -103,9 +113,12 @@ signals:
     void autoinstallDefaultMapsChanged();
     void autoinstallAllMapsChanged();
 
+    void loadMapInfoProcessedChanged();
+
 public slots:
     void receiveMapItem(MapItem *mapItem);
     void receiveDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
+    void receiveMapsInfoLoaded();
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
@@ -127,6 +140,7 @@ private:
     QList<MapItem*> m_mapItemArray;
     bool m_updatesAvailable = false;
 
+    QString m_currentMiniMapId = "";
     QString m_currentMapName = "";
     QString m_currentMapAuthors = "";
     QString m_currentMapDescription  = "";
@@ -139,6 +153,8 @@ private:
 
     bool m_autoinstallDefaultMaps = true;
     bool m_autoinstallAllMaps = false;
+
+    bool m_loadMapInfoProcessed = true;
 };
 
 #endif // MAPMANAGERPAGE_H

@@ -133,6 +133,8 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_mapManager, &MapManager::sendMapItem, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapItem, Qt::QueuedConnection);
     QObject::connect(m_mapManager, &MapManager::sendDownloadingProgress, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveDownloadingProgress, Qt::QueuedConnection);
+    QObject::connect(m_mapManager, &MapManager::sendMapImage, m_uiBackend->imageProvider(), &ImageProvider::receiveMapImage, Qt::QueuedConnection);
+    QObject::connect(m_mapManager, &MapManager::mapsInfoLoaded, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapsInfoLoaded, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendRemoveMap, m_mapManager, &MapManager::receiveRemoveMap,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallMap, m_mapManager, &MapManager::receiveInstallMap,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallAllMaps, m_mapManager, &MapManager::receiveInstallAllMaps,  Qt::QueuedConnection);

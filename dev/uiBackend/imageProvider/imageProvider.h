@@ -40,6 +40,8 @@ public slots:
     void addYoutubeImage(QString youtubeId, QImage image);
     void addReplayPlayerBanner(QString attachmentId, QImage image);
 
+    void receiveMapImage(QImage mapImage, QString mapImageId);
+
 private:
     QImage m_currentPlayerAvatarMedium;
 
@@ -48,6 +50,7 @@ private:
     QMap <QString, QImage> m_attachmentImages;
     QMap <QString, QImage> m_youtubeImages;
     QMap <QString, QImage> m_replayPlayerBanners;
+    QMap <QString, QImage> m_miniMapImages;
 
     QImage m_currentMiniMap;
 };

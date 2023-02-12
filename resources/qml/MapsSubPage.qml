@@ -42,9 +42,16 @@ Rectangle {
 
                         function onCurrentMapNameChanged()
                         {
-                            var oldSource = "image://imageprovider/currentMiniMap";
-                            mapImage.source = "";
-                            mapImage.source = "image://imageprovider/currentMiniMap";
+                            if (_uiBackend.mapManagerPage.currentMapNeedInstall)
+                            {
+                                mapImage.source = "";
+                                mapImage.source = "image://imageprovider/" + _uiBackend.mapManagerPage.currentMiniMapId;
+                            }
+                            else
+                            {
+                                mapImage.source = "";
+                                mapImage.source = "image://imageprovider/currentMiniMap";
+                            }
                         }
                     }
 
@@ -72,8 +79,8 @@ Rectangle {
 
                         anchors.fill: parent
                         color: "#FFFFFF"
-                        text: "You need to\ndownload the map\nto show the image."
-                        visible: _uiBackend.mapManagerPage.currentMapNeedInstall
+                        text: "Checking updates."
+                        visible: _uiBackend.mapManagerPage.loadMapInfoProcessed
                     }
 
                     OpacityMask {
@@ -81,7 +88,7 @@ Rectangle {
                         anchors.fill: mapImage
                         source: mapImage
                         maskSource: maskRectangle
-                        visible: !_uiBackend.mapManagerPage.currentMapNeedInstall
+                        visible: !_uiBackend.mapManagerPage.loadMapInfoProcessed
                     }
 
                 }
@@ -134,8 +141,9 @@ Rectangle {
 
                 BlueButton
                 {
-                    Layout.preferredWidth: 250
+                    Layout.preferredWidth: 220
                     text: "Check updates"
+                    enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
                         _uiBackend.mapManagerPage.loadMapsInfo();
@@ -145,9 +153,9 @@ Rectangle {
 
                 BlueButton
                 {
-                    Layout.preferredWidth: 250
+                    Layout.preferredWidth: 220
                     text: "Install default maps"
-                    enabled: !_uiBackend.mapManagerPage.downloadedProcessed
+                    enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
                         _uiBackend.mapManagerPage.installDefaultMaps();
@@ -156,9 +164,9 @@ Rectangle {
 
                 BlueButton
                 {
-                    Layout.preferredWidth: 250
+                    Layout.preferredWidth: 220
                     text: "Install all maps"
-                    enabled: !_uiBackend.mapManagerPage.downloadedProcessed
+                    enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
                         _uiBackend.mapManagerPage.installAllMaps();
