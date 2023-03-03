@@ -6,6 +6,7 @@
 #include <QNetworkAccessManager>
 #include <baseTypes.h>
 #include <QNetworkReply>
+#include <QMap>
 
 class RankedModServiceProcessor : public QObject
 {
@@ -16,6 +17,7 @@ public:
 signals:
     void sendPlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
     void sendOnlineCount(int onlineCount);
+    void sendModsOnlineCountMap(QMap<QString, int>);
 
 public slots:
     void setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId);
@@ -32,6 +34,7 @@ private slots:
 
 private:
     bool checkReplyErrors(QNetworkReply *reply);
+    void sendPingRequest();
 
 private:
     QTimer* m_pingTimer;

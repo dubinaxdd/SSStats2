@@ -63,24 +63,7 @@ void RankedModServiceProcessor::sendRankedMode(bool rankedMode)
 
 void RankedModServiceProcessor::pingTimerTimeout()
 {
-    if (m_currentPlayerSteamId.isEmpty())
-        return;
-
-    QString urlString = "http://crosspick.ru:8081/pingRequest?sid=" + m_currentPlayerSteamId;
-
-    QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
-    newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
-
-    QNetworkReply *reply = m_networkManager->get(newRequest);
-
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receivePingRecponce(reply);
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
-
+    sendPingRequest();
 }
 
 void RankedModServiceProcessor::rankedStateTimerTimeout()
@@ -195,7 +178,35 @@ void RankedModServiceProcessor::receivePingRecponce(QNetworkReply *reply)
 
     int onlineCount = jsonArray.at(0)["onlineCount"].toInt();
 
+
+    if (!jsonArray.at(0)["modArray"].isArray())
+    {
+        qWarning(logWarning()) << "RankedModServiceProcessor::receivePingRecponce: invalid mod array." << QString::fromStdString(replyByteArray.toStdString());
+        return;
+    }
+
+    QJsonArray modArray = jsonArray.at(0)["modArray"].toArray();
+
+    QMap<QString, int> modsMap;
+
+    for (std::size_t i = 0; i < modArray.count(); i++)
+    {
+        if (!modArray.at(i).isObject())
+        {
+            qWarning(logWarning()) << "RankedModServiceProcessor::receivePingRecponce: invalid mod object." << QString::fromStdString(replyByteArray.toStdString());
+            return;
+        }
+
+        QJsonObject modObject = modArray.at(i).toObject();
+
+        QString modName = modObject.value("ModName").toString();
+        int onlineCount = modObject.value("OnlineCount").toInt();
+
+        modsMap.insert(modName, onlineCount);
+    }
+
     emit sendOnlineCount(onlineCount);
+    emit sendModsOnlineCountMap(modsMap);
 }
 
 bool RankedModServiceProcessor::checkReplyErrors(QNetworkReply *reply)
@@ -208,4 +219,26 @@ bool RankedModServiceProcessor::checkReplyErrors(QNetworkReply *reply)
     }
 
     return false;
+}
+
+void RankedModServiceProcessor::sendPingRequest()
+{
+    if (m_currentPlayerSteamId.isEmpty())
+        return;
+
+    QString urlString = "http://crosspick.ru:8081/pingRequest?sid=" + m_currentPlayerSteamId;
+
+    QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
+    newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receivePingRecponce(reply);
+    });
+
+    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
+        reply->deleteLater();
+    });
+
 }
