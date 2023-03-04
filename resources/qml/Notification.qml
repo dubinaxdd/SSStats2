@@ -18,44 +18,6 @@ Rectangle{
 
     property bool isWarning: _uiBackend.lastNotificationIsWarning
 
-    function mouseClick(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        // Кнопка "Закрыть нотификацию"
-        if (relativeMouseX >= closeRectangle.x &&
-            relativeMouseX <= closeRectangle.x + closeRectangle.width &&
-            relativeMouseY >= closeRectangle.y  &&
-            relativeMouseY <= closeRectangle.y  + closeRectangle.height)
-        {
-            _uiBackend.notificationVisible = false
-
-            //mainRectangle.visible = false;
-        }
-
-    }
-
-    function mouseHover(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        // Кнопка "Закрыть нотификацию"
-        if (relativeMouseX >= closeRectangle.x &&
-            relativeMouseX <= closeRectangle.x + closeRectangle.width &&
-            relativeMouseY >= closeRectangle.y  &&
-            relativeMouseY <= closeRectangle.y  + closeRectangle.height)
-        {
-
-           closeRectangle.color = "#FFFFFF"
-        }
-        else
-        {
-            closeRectangle.color = "#00000000"
-        }
-    }
-
     RowLayout{
 
         id: mainRowLayout
@@ -125,6 +87,22 @@ Rectangle{
 
                 source: "qrc:/images/resources/images/closeButton.png"
                 fillMode: Image.PreserveAspectFit
+            }
+
+            GlobalMouseArea{
+                id: closeRectangleButton
+                anchors.fill: parent
+
+                onClicked: {
+                    _uiBackend.notificationVisible = false
+                }
+
+                onHoweredChanged: {
+                    if (howered)
+                        closeRectangle.color = "#FFFFFF"
+                    else
+                        closeRectangle.color = "#00000000"
+                }
             }
         }
     }

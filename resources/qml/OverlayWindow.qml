@@ -47,11 +47,6 @@ Window {
                     gamePanelSmall.mouseClick(xMousePos, yMousePos);
                 }
             }
-
-            if (notification.visible == true)
-            {
-                notification.mouseClick(xMousePos - notification.x, yMousePos - notification.y);
-            }
         }
 
         function onSendMouseMove(){
@@ -77,11 +72,6 @@ Window {
             else
             {
                 gamePanelSmall.mouseHover(xMousePos, yMousePos);
-            }
-
-            if (notification.visible == true)
-            {
-                notification.mouseHover(xMousePos - notification.x, yMousePos - notification.y);
             }
         }
 

@@ -35,7 +35,8 @@ Item {
         target: GlobalMouseProvider
 
         function onMouseClicked(){
-            mouseClicked();
+            if (root.height > 0 && root.width > 0 && root.visible)
+                mouseClicked();
         }
     }
 
