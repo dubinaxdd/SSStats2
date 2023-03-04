@@ -5,8 +5,7 @@ import QtGraphicalEffects 1.15
 
 Rectangle {
     id: fullOverlayRectangle
-    //width: 600 * _uiBackend.sizeModifer
-    //height: 600 * _uiBackend.sizeModifer
+
     opacity: 1
     color: "#00000000"
     border.color: "#00000000"
@@ -14,71 +13,6 @@ Rectangle {
     Layout.fillWidth: true
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     Layout.fillHeight: true
-
-    property int relativeMouseX
-    property int relativeMouseY
-
-    function mouseClick(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        if (buttonSettingsRectangle.pressedState)
-            overlaySettingsPage.mouseClick(relativeMouseX - overlaySettingsPage.x - mainContentContainerRectangle.x, relativeMouseY - overlaySettingsPage.y - mainContentContainerRectangle.y);
-
-        // Кнопка "Настройки" - отобразить окно с настройками
-        if (relativeMouseX >= buttonSettingsRectangle.x &&
-                relativeMouseX <= buttonSettingsRectangle.x + buttonSettingsRectangle.width &&
-                relativeMouseY >= buttonSettingsRectangle.y &&
-                relativeMouseY <= buttonSettingsRectangle.y + buttonSettingsRectangle.height)
-        {
-            buttonInfoRectangle.pressedState = false;
-            buttonSettingsRectangle.pressedState = !buttonSettingsRectangle.pressedState;
-        }
-
-        // Кнопка "Информация" - отобразить окно с информацией
-        if (relativeMouseX >= buttonInfoRectangle.x &&
-                relativeMouseX <= buttonInfoRectangle.x + buttonInfoRectangle.width &&
-                relativeMouseY >= buttonInfoRectangle.y &&
-                relativeMouseY <= buttonInfoRectangle.y + buttonInfoRectangle.height)
-        {
-            buttonSettingsRectangle.pressedState = false;
-            buttonInfoRectangle.pressedState = !buttonInfoRectangle.pressedState;
-        }
-
-    }
-
-    function mouseHover(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        if (buttonSettingsRectangle.pressedState)
-            overlaySettingsPage.mouseHover(relativeMouseX - overlaySettingsPage.x - mainContentContainerRectangle.x, relativeMouseY - overlaySettingsPage.y - mainContentContainerRectangle.y);
-
-        // Кнопка "Настройки"
-        if (relativeMouseX >= buttonSettingsRectangle.x &&
-                relativeMouseX <= buttonSettingsRectangle.x + buttonSettingsRectangle.width &&
-                relativeMouseY >= buttonSettingsRectangle.y &&
-                relativeMouseY <= buttonSettingsRectangle.y + buttonSettingsRectangle.height)
-        {
-            buttonSettingsRectangle.hoverState = true;
-        }else{
-            buttonSettingsRectangle.hoverState = false;
-        }
-
-        // Кнопка "Информация"
-        if (relativeMouseX >= buttonInfoRectangle.x &&
-                relativeMouseX <= buttonInfoRectangle.x + buttonInfoRectangle.width &&
-                relativeMouseY >= buttonInfoRectangle.y &&
-                relativeMouseY <= buttonInfoRectangle.y + buttonInfoRectangle.height)
-        {
-            buttonInfoRectangle.hoverState = true;
-        } else {
-            buttonInfoRectangle.hoverState = false;
-        }
-
-    }
 
     ColumnLayout {
         id: columnLayout
@@ -115,7 +49,7 @@ Rectangle {
                 Rectangle {
                     id: buttonInfoRectangle
 
-                    property bool hoverState : false
+                    property bool hoverState : buttonInfoMouseArea.howered
                     property bool pressedState : true
 
                     Layout.preferredWidth: 140 * _uiBackend.sizeModifer
@@ -145,12 +79,22 @@ Rectangle {
                             samples: 3 * _uiBackend.sizeModifer
                         }
                     }
+
+                    GlobalMouseArea{
+                        id: buttonInfoMouseArea
+                        anchors.fill: parent
+
+                        onClicked: {
+                            buttonSettingsRectangle.pressedState = false;
+                            buttonInfoRectangle.pressedState = !buttonInfoRectangle.pressedState;
+                        }
+                    }
                 }
 
                 Rectangle {
                     id: buttonSettingsRectangle
 
-                    property bool hoverState : false
+                    property bool hoverState : buttonSettingsMouseArea.howered
                     property bool pressedState : false
 
                     Layout.preferredWidth: 140 * _uiBackend.sizeModifer
@@ -175,6 +119,16 @@ Rectangle {
                             color: "#00000064"
                             radius: 1 * _uiBackend.sizeModifer
                             samples: 3 * _uiBackend.sizeModifer
+                        }
+                    }
+
+                    GlobalMouseArea{
+                        id: buttonSettingsMouseArea
+                        anchors.fill: parent
+
+                        onClicked: {
+                            buttonInfoRectangle.pressedState = false;
+                            buttonSettingsRectangle.pressedState = !buttonSettingsRectangle.pressedState;
                         }
                     }
                 }

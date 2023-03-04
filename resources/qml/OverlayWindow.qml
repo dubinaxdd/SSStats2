@@ -34,14 +34,6 @@ Window {
 
 
         function onSendMousePress(){
-            //Тут смотрим по какой кнопке пришолся клик, делаем это все "руками" тк оверлей игонирт события мыши и клавиатуры.
-          /*  console.log("Windowed mode: ", _uiBackend.ssWindowed, "xMousePos: ", xMousePos, "yMousePos: ", yMousePos,
-                        "Button position X: ", columnLayout3.x + statsHeader.expandButtonRectangle.x,
-                        "Button position Y: ",columnLayout3.y + statsHeader.expandButtonRectangle.y,
-                        "Window position X:", window.x, "Window position Y:", window.y,
-                        "Window wifth:",window.width, "Window height:", window.height ,
-                        "mouseAreaWidth:", mouseAreaWidth, "mouseAreaHeight:", mouseAreaHeight);*/
-
             GlobalMouseProvider.mouseClick();
 
             if(_uiBackend.gamePanel.showGamePannelPreset)
@@ -56,10 +48,6 @@ Window {
                 }
             }
 
-            if(_uiBackend.expand){
-                fullOverlay.mouseClick(xMousePos - fullOverlay.x , yMousePos - fullOverlay.y );
-            }
-
             if (notification.visible == true)
             {
                 notification.mouseClick(xMousePos - notification.x, yMousePos - notification.y);
@@ -72,18 +60,14 @@ Window {
             mouseAreaWidth = _uiBackend.mouseAreaWidth;
             mouseAreaHeight = _uiBackend.mouseAreaHeight;
 
-            GlobalMouseProvider.mouseX = xMousePos;
-            GlobalMouseProvider.mouseY = yMousePos;
-
             if (_uiBackend.ssWindowed)
             {
                 xMousePos = xMousePos - _uiBackend.ssWindowPositionX;
                 yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
             }
 
-            // Отлавливаем все координаты курсора при перемещении
-            //console.log("Позиция курсора Х: ", _uiBackend.ssWindowPositionX, "Позиция курсора У: ",_uiBackend.ssWindowPositionY,
-            //            "Оконный режим: ", _uiBackend.ssWindowed, "xMousePos: ", xMousePos, "yMousePos: ", yMousePos, fullOverlay.x + fullOverlay.buttonSettings.x, fullOverlay.y + fullOverlay.buttonSettings.y, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
+            GlobalMouseProvider.mouseX = xMousePos;
+            GlobalMouseProvider.mouseY = yMousePos;
 
             if (!_uiBackend.gamePanel.smallPannelActive)
             {
@@ -93,11 +77,6 @@ Window {
             else
             {
                 gamePanelSmall.mouseHover(xMousePos, yMousePos);
-            }
-
-            if(_uiBackend.expand)
-            {
-                fullOverlay.mouseHover(xMousePos - fullOverlay.x, yMousePos - fullOverlay.y );
             }
 
             if (notification.visible == true)
