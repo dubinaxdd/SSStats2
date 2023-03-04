@@ -10,7 +10,7 @@
 
 #define SS_FULLSCREENIZE_TIMER_INTERVAL 2000
 
-#define WINDOW_STATE_CHECK_INTERVAL 1000
+#define WINDOW_STATE_CHECK_INTERVAL 500
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
 SoulstormController::SoulstormController(SettingsController *settingsController, QObject *parent)
@@ -177,7 +177,7 @@ void SoulstormController::checkWindowState()
             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
             qInfo(logInfo()) << "Soulstorm window accepted";
 
-            if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
+            if( IsIconic(m_soulstormHwnd) || GetForegroundWindow() != m_soulstormHwnd)                      ///<Если игра свернута
             {
                 m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
                 emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
@@ -194,16 +194,16 @@ void SoulstormController::checkWindowState()
         {
             if (m_useWindows7SupportMode)
             {
-                if (!IsIconic(m_soulstormHwnd))
+                if (!IsIconic(m_soulstormHwnd) && GetForegroundWindow() == m_soulstormHwnd)
                 {
-                 if (!m_ssMaximized)
-                    fullscrenizeSoulstorm();
+                    if (!m_ssMaximized)
+                        fullscrenizeSoulstorm();
                 }
 
             }
             else
             {
-                if( IsIconic(m_soulstormHwnd))                      ///<Если игра свернута
+                if( IsIconic(m_soulstormHwnd) || GetForegroundWindow() != m_soulstormHwnd)                      ///<Если игра свернута
                 {
                     if(m_ssMaximized)                                   ///<Если перед этим игра была развернута
                     {

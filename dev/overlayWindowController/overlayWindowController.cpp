@@ -37,6 +37,11 @@ void OverlayWindowController::topmostTimerTimout()
     //Соответственно затираем флаг и выставлем заного по таймеру.
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
 
+    if (p_soulstormController->ssWindowed())
+        m_topmostTimer->setInterval(1500);
+    else
+        m_topmostTimer->setInterval(500);
+
     if (p_soulstormController->gameStateReader()->getGameInitialized())
     {
         if (m_ssStatsHwnd)
@@ -47,13 +52,13 @@ void OverlayWindowController::topmostTimerTimout()
                 if (GetWindowRect(p_soulstormController->soulstormHwnd(), &ssRect))
                 {
 
-                    if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
-                    {
+                    //if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
+                   // {
                         m_ssRect = ssRect;
-                        SetWindowPos(m_ssStatsHwnd, p_soulstormController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+                        SetWindowPos(m_ssStatsHwnd, HWND_TOP/*p_soulstormController->soulstormHwnd()*/, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
                         p_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
-                    }
+                   // }
 
 
                     LONG ssLong = GetWindowLongPtr(p_soulstormController->soulstormHwnd(), 0);
