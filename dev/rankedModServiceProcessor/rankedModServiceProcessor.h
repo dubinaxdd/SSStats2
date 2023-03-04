@@ -24,7 +24,7 @@ public slots:
     void setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId);
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);
     void sendRankedMode(bool rankedMode);
-    void receiveCurrentMode(QString modName);
+    void receiveCurrentMod(QString modName);
 
 private slots:
     void pingTimerTimeout();

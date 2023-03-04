@@ -210,7 +210,7 @@ void RankedModServiceProcessor::receivePingRecponce(QNetworkReply *reply)
     emit sendModsOnlineCountMap(modsMap);
 }
 
-void RankedModServiceProcessor::receiveCurrentMode(QString modName)
+void RankedModServiceProcessor::receiveCurrentMod(QString modName)
 {
     m_currentMod = modName;
 }

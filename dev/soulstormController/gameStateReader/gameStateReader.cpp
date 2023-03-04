@@ -321,8 +321,8 @@ void GameStateReader::checkCurrentMode()
                 m_settingsController->getSettings()->currentModVersion = m_currentModeVersion;
                 m_settingsController->saveSettings();
 
-                emit sendCurrentMode(currentMode);
-                emit sendCurrentModeVersion(m_currentModeVersion);
+                emit sendCurrentMod(currentMode);
+                emit sendCurrentModVersion(m_currentModeVersion);
 
                 break;
             }

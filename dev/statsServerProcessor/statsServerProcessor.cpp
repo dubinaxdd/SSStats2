@@ -17,10 +17,11 @@
 
 using namespace ReplayReader;
 
-StatsServerProcessor::StatsServerProcessor(QString ssPath, QString steamPath, QObject *parent)
+StatsServerProcessor::StatsServerProcessor(SettingsController *settingsController, QString ssPath, QString steamPath, QObject *parent)
     : QObject(parent)
-    , m_ssPath(ssPath)
+    , m_settingsController(settingsController)
     , m_steamPath(steamPath)
+    , m_ssPath(ssPath)
 {
     m_machineUniqueId = QSysInfo::machineUniqueId();
 
@@ -31,7 +32,7 @@ StatsServerProcessor::StatsServerProcessor(QString ssPath, QString steamPath, QO
     m_currentPlayerStatsRequestTimer->setInterval(CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL);
     connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::currentPlayerStatsRequestTimerTimeout, Qt::QueuedConnection);
 
-    m_currentPlayerStatsRequestTimer->start();
+    connect(m_settingsController, &SettingsController::settingsLoaded, this, &StatsServerProcessor::onSettingsLoaded, Qt::QueuedConnection);
 
     m_clientVersion.append(PROJECT_VERSION_MAJOR);
     m_clientVersion.append(PROJECT_VERSION_MINOR);
@@ -140,6 +141,9 @@ void StatsServerProcessor::parseCurrentPlayerSteamId()
 
 void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayerStats>> playersInfo)
 {
+    if (m_currentMode.isEmpty())
+        return;
+
     QString sidsString;
 
     for(int i = 0; i < playersInfo.data()->count(); i++)
@@ -150,7 +154,13 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
         sidsString += playersInfo.data()->at(i).steamId;
     }
 
-    QNetworkRequest newRequest = QNetworkRequest(QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats.php?sids=" + sidsString + "&version="+m_clientVersion+"&sender_sid="+ m_currentPlayerStats.data()->at(0).steamId));
+    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats2.php?sids=" + sidsString
+                    + "&version=" + m_clientVersion
+                    + "&sender_sid=" + m_currentPlayerStats.data()->at(0).steamId
+                    + "&mod_tech_name=" + m_currentMode);
+
+    QNetworkRequest newRequest = QNetworkRequest(url);
+
     newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
     newRequest.setRawHeader("machineUniqueId", m_machineUniqueId.toLatin1());
 
@@ -195,7 +205,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-    if (!jsonDoc.isArray())
+    if (!jsonDoc.isObject())
     {
         qWarning(logWarning()) << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
 
@@ -203,21 +213,26 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         return;
     }
 
-    QJsonArray jsonArray = jsonDoc.array();
+    QJsonObject jsonObject = jsonDoc.object();
 
-    for(int i = 0; i < jsonArray.count(); i++)
+    QString modName = jsonObject.value("modName").toString();
+    QString seasonName = jsonObject.value("seasonName").toString();
+
+    QJsonArray statsArray = jsonObject.value("stats").toArray();
+
+    for(int i = 0; i < statsArray.count(); i++)
     {
-        playersInfo.get()->operator[](i).apm = jsonArray.at(i)["apm"].toInt();
-        playersInfo.get()->operator[](i).gamesCount = jsonArray.at(i)["gamesCount"].toInt();
-        playersInfo.get()->operator[](i).mmr = jsonArray.at(i)["mmr"].toInt();
-        playersInfo.get()->operator[](i).mmr1v1 = jsonArray.at(i)["mmr1v1"].toInt();
-        playersInfo.get()->operator[](i).isBanned = jsonArray.at(i)["isBanned"].toBool();
-        playersInfo.get()->operator[](i).name = jsonArray.at(i)["name"].toString();
-        playersInfo.get()->operator[](i).race = jsonArray.at(i)["race"].toInt();
-        playersInfo.get()->operator[](i).winRate = jsonArray.at(i)["winRate"].toInt();
-        playersInfo.get()->operator[](i).winsCount = jsonArray.at(i)["winsCount"].toInt();
-        playersInfo.get()->operator[](i).avatarUrl = jsonArray.at(i)["avatarUrl"].toString();
-        playersInfo.get()->operator[](i).calibrateGamesLeft = jsonArray.at(i)["calibrateGamesLeft"].toInt();
+        playersInfo.get()->operator[](i).apm = statsArray.at(i)["apm"].toInt();
+        playersInfo.get()->operator[](i).gamesCount = statsArray.at(i)["gamesCount"].toInt();
+        playersInfo.get()->operator[](i).mmr = statsArray.at(i)["mmr"].toInt();
+        playersInfo.get()->operator[](i).mmr1v1 = statsArray.at(i)["mmr1v1"].toInt();
+        playersInfo.get()->operator[](i).isBanned = statsArray.at(i)["isBanned"].toBool();
+        playersInfo.get()->operator[](i).name = statsArray.at(i)["name"].toString();
+        playersInfo.get()->operator[](i).race = statsArray.at(i)["race"].toInt();
+        playersInfo.get()->operator[](i).winRate = statsArray.at(i)["winRate"].toInt();
+        playersInfo.get()->operator[](i).winsCount = statsArray.at(i)["winsCount"].toInt();
+        playersInfo.get()->operator[](i).avatarUrl = statsArray.at(i)["avatarUrl"].toString();
+        playersInfo.get()->operator[](i).calibrateGamesLeft = statsArray.at(i)["calibrateGamesLeft"].toInt();
 
         //playersInfo.get()->operator[](i).calibrateGamesLeft = 5;
 
@@ -264,6 +279,12 @@ void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
 {
     if (!m_currentPlayerStats.data()->isEmpty() && !m_currentPlayerStats.data()->at(0).steamId.isEmpty())
         getPlayerStatsFromServer(m_currentPlayerStats);
+}
+
+void StatsServerProcessor::onSettingsLoaded()
+{
+    m_currentMode = m_settingsController->getSettings()->currentMod;
+    m_currentPlayerStatsRequestTimer->start();
 }
 
 void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
@@ -416,6 +437,10 @@ void StatsServerProcessor::receiveRankedMode(bool reankedMode)
     m_rankedMode = reankedMode;
 }
 
+void StatsServerProcessor::receiveCurrentMod(QString modName)
+{
+    m_currentMode = modName;
+}
 
 QString StatsServerProcessor::GetRandomString() const
 {

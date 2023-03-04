@@ -8,12 +8,13 @@
 #include <QSharedPointer>
 #include <QTimer>
 #include <logger.h>
+#include <settingsController.h>
 
 class StatsServerProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit StatsServerProcessor(QString ssPath, QString steamPath, QObject *parent = nullptr);
+    explicit StatsServerProcessor(SettingsController* settingsController, QString ssPath, QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
     void getPlayerStatsFromServer(QSharedPointer<QList<ServerPlayerStats> > playersInfo);
@@ -30,11 +31,13 @@ public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void receiveRankedMode(bool reankedMode);
+    void receiveCurrentMod(QString modName);
 
 private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
     void currentPlayerStatsRequestTimerTimeout();
+    void onSettingsLoaded();
 
 private:
     void registerPlayer(QString name, QString sid, bool init);
@@ -42,6 +45,7 @@ private:
     QString CRC32fromByteArray( const QByteArray & array );
 
 private:
+    SettingsController* m_settingsController;
     QTimer *m_currentPlayerStatsRequestTimer;
     QString m_steamPath;
     QString m_ssPath;
@@ -53,6 +57,7 @@ private:
     bool m_rankedMode = true;
 
     QString m_machineUniqueId = "";
+    QString m_currentMode = "";
 };
 
 #endif // STATSSERVERPROCESSOR_H

@@ -19,7 +19,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_discordWebProcessor(new DiscordWebProcessor(m_settingsController, this))
     , m_modsProcessor(new ModsProcessor(m_soulstormController->ssPath(), this))
     , m_soundProcessor(new SoundProcessor(this))
-    , m_statsServerProcessor ( new StatsServerProcessor(m_soulstormController->ssPath(), m_soulstormController->steamPath(), this))
+    , m_statsServerProcessor ( new StatsServerProcessor(m_settingsController, m_soulstormController->ssPath(), m_soulstormController->steamPath(), this))
     , m_rankedModServiceProcessor(new RankedModServiceProcessor(m_settingsController, this))
     , m_mapManager(new MapManager(m_settingsController, m_soulstormController->ssPath(), this))
 {
@@ -53,7 +53,10 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMode,  m_rankedModServiceProcessor, &RankedModServiceProcessor::receiveCurrentMode,   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_rankedModServiceProcessor, &RankedModServiceProcessor::receiveCurrentMod,   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_statsServerProcessor, &StatsServerProcessor::receiveCurrentMod,   Qt::QueuedConnection);
+
+
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendGameRankedMode, m_uiBackend, [&](bool gameRankedMode){ m_uiBackend->gamePanel()->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendGameRankedMode, m_statsServerProcessor, &StatsServerProcessor::receiveRankedMode, Qt::QueuedConnection);
 

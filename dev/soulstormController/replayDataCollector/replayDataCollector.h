@@ -15,7 +15,7 @@ public slots:
     void receiveAverrageApm(int apm);
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer , int playersCount);
     void onQuitParty();
-    void receiveCurrentMode(QString currentMode);
+    void receiveCurrentMod(QString currentMode);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
 
 

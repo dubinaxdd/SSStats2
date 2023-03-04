@@ -501,7 +501,7 @@ void ReplayDataCollector::onQuitParty()
     m_playersInfoFromScanner.clear();
 }
 
-void ReplayDataCollector::receiveCurrentMode(QString currentMode)
+void ReplayDataCollector::receiveCurrentMod(QString currentMode)
 {
     m_currentMode = currentMode;
 }

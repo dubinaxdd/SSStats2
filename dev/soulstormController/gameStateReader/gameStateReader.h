@@ -34,8 +34,8 @@ signals:
 
     void sendCurrentMissionState(SsMissionState missionCurrentState);
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
-    void sendCurrentMode(QString currentMod);
-    void sendCurrentModeVersion(QString modVersion);
+    void sendCurrentMod(QString currentMod);
+    void sendCurrentModVersion(QString modVersion);
     void localPlayerDroppedToObserver();
 
     void sendCurrentWinConditions(QVector<WinCondition>);
