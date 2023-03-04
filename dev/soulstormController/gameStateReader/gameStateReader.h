@@ -5,12 +5,13 @@
 #include <QTimer>
 #include <baseTypes.h>
 #include <logger.h>
+#include <settingsController.h>
 
 class GameStateReader : public QObject
 { 
     Q_OBJECT
 public:
-    explicit GameStateReader(QString sspath, QObject *parent = nullptr);
+    explicit GameStateReader(SettingsController *settingsController, QString sspath, QObject *parent = nullptr);
 
     void ssWindowClosed();
     bool getGameInitialized();
@@ -62,6 +63,8 @@ private:
     void determinateRankedMode(QVector<PlayerStats> playerStats);
 
 private:
+    SettingsController *m_settingsController;
+
     QTimer* m_gameInfoReadTimer;
     QTimer* m_readRacesSingleShootTimer;
 

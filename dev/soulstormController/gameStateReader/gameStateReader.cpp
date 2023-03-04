@@ -8,10 +8,10 @@
 #include <QSettings>
 #include <QDir>
 
-GameStateReader::GameStateReader(QString sspath, QObject *parent)
+GameStateReader::GameStateReader(SettingsController *settingsController, QString sspath, QObject *parent)
     : QObject(parent)
+    , m_settingsController(settingsController)
     , m_ssPath(sspath)
-
 {
     m_readRacesSingleShootTimer = new QTimer(this);
     m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
@@ -280,7 +280,7 @@ void GameStateReader::checkGameInitialize()
         readTestStatsTemp();
         emit gameInitialized();
         checkCurrentMode();
-    }
+    }  
 }
 
 void GameStateReader::checkCurrentMode()
@@ -316,6 +316,10 @@ void GameStateReader::checkCurrentMode()
 
                 qInfo(logInfo()) << "Current mode:" << currentMode;
                 qInfo(logInfo()) << "Current mode version:" << m_currentModeVersion;
+
+                m_settingsController->getSettings()->currentMod = currentMode;
+                m_settingsController->getSettings()->currentModVersion = m_currentModeVersion;
+                m_settingsController->saveSettings();
 
                 emit sendCurrentMode(currentMode);
                 emit sendCurrentModeVersion(m_currentModeVersion);

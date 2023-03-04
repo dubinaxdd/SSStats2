@@ -26,6 +26,8 @@ struct Settings
     int  volume = 100;
     bool autoinstallDefaultMaps = true;
     bool autoinstallAllMaps = false;
+    QString currentMod = "dxp2";
+    QString currentModVersion = "1.0";
 };
 
 class SettingsController : public QObject

@@ -5,7 +5,10 @@
 #include <QJsonArray>
 #include <defines.h>
 
-RankedModServiceProcessor::RankedModServiceProcessor(QObject *parent) : QObject(parent)
+RankedModServiceProcessor::RankedModServiceProcessor(SettingsController *settingsController, QObject *parent)
+    : QObject(parent)
+    , m_settingsController(settingsController)
+
 {
     m_networkManager = new QNetworkAccessManager(this);
 
@@ -17,9 +20,7 @@ RankedModServiceProcessor::RankedModServiceProcessor(QObject *parent) : QObject(
 
     QObject::connect(m_pingTimer, &QTimer::timeout, this, &RankedModServiceProcessor::pingTimerTimeout, Qt::QueuedConnection);
     QObject::connect(m_rankedStateTimer, &QTimer::timeout, this, &RankedModServiceProcessor::rankedStateTimerTimeout, Qt::QueuedConnection);
-
-    m_pingTimer->start();
-    m_rankedStateTimer->start();
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &RankedModServiceProcessor::onSettingsLoaded, Qt::QueuedConnection);
 }
 
 void RankedModServiceProcessor::setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId)
@@ -209,6 +210,19 @@ void RankedModServiceProcessor::receivePingRecponce(QNetworkReply *reply)
     emit sendModsOnlineCountMap(modsMap);
 }
 
+void RankedModServiceProcessor::receiveCurrentMode(QString modName)
+{
+    m_currentMod = modName;
+}
+
+void RankedModServiceProcessor::onSettingsLoaded()
+{
+    m_currentMod = m_settingsController->getSettings()->currentMod;
+
+    m_pingTimer->start();
+    m_rankedStateTimer->start();
+}
+
 bool RankedModServiceProcessor::checkReplyErrors(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
@@ -226,7 +240,7 @@ void RankedModServiceProcessor::sendPingRequest()
     if (m_currentPlayerSteamId.isEmpty())
         return;
 
-    QString urlString = "http://crosspick.ru:8081/pingRequest?sid=" + m_currentPlayerSteamId;
+    QString urlString = "http://crosspick.ru:8081/pingRequest?sid=" + m_currentPlayerSteamId + "&gameMod=" + m_currentMod;
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
     newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());

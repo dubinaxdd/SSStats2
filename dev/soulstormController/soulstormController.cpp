@@ -15,9 +15,9 @@
 
 SoulstormController::SoulstormController(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
-    , m_settingsController(settingsController)
-    , m_soulstormMemoryController(new SoulstormMemoryController(settingsController, this))
     , m_apmMeter(new APMMeter(this))
+    , m_soulstormMemoryController(new SoulstormMemoryController(settingsController, this))
+    , m_settingsController(settingsController)
     , m_dowServerProcessor(new DowServerProcessor(this))
     , m_soulstormProcess(nullptr)
 {
@@ -25,7 +25,7 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     m_ssPath = getSsPathFromRegistry();
     qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
 
-    m_gameStateReader = new GameStateReader(m_ssPath, this);
+    m_gameStateReader = new GameStateReader(m_settingsController, m_ssPath, this);
     m_lobbyEventReader = new LobbyEventReader(m_ssPath, this);
     m_replayDataCollector = new ReplayDataCollector(m_ssPath, this);
 
