@@ -10,9 +10,6 @@ ColumnLayout
     property bool showTrainingModeSwitch: true
     property bool enableTrainingModeSwitch: _uiBackend.enableTrainingModeSwitch
 
-    property int relativeMouseX
-    property int relativeMouseY
-
     Connections
     {
         target: _uiBackend
@@ -20,43 +17,6 @@ ColumnLayout
         function onRankedModeStateChanged()
         {
             trainingModeSwitch.checked = _uiBackend.rankedModeState;
-        }
-    }
-
-    function mouseClick(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        // Переключатель "No Fog"
-        if (enableTrainingModeSwitch &&
-                showTrainingModeSwitch &&
-                relativeMouseX >= trainingModeSwitch.x + headerRectangle.x &&
-                relativeMouseX <= trainingModeSwitch.x + headerRectangle.x + trainingModeSwitch.width &&
-                relativeMouseY >= trainingModeSwitch.y + headerRectangle.height &&
-                relativeMouseY <= trainingModeSwitch.y + headerRectangle.height + trainingModeSwitch.height)
-        {
-            trainingModeSwitch.checkedState = !trainingModeSwitch.checkedState;
-            _uiBackend.rankedModeState = trainingModeSwitch.checkedState;
-        }
-    }
-
-    function mouseHover(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        // Переключатель "No Fog"
-        if (enableTrainingModeSwitch &&
-                showTrainingModeSwitch &&
-                relativeMouseX >= trainingModeSwitch.x + headerRectangle.x &&
-                relativeMouseX <= trainingModeSwitch.x + headerRectangle.x + trainingModeSwitch.width &&
-                relativeMouseY >= trainingModeSwitch.y + headerRectangle.height &&
-                relativeMouseY <= trainingModeSwitch.y + headerRectangle.height + trainingModeSwitch.height)
-        {
-            trainingModeSwitch.hoverState = true;
-        } else {
-            trainingModeSwitch.hoverState = false;
         }
     }
 
@@ -71,9 +31,7 @@ ColumnLayout
         Layout.maximumHeight: 60 * _uiBackend.sizeModifer
         Layout.maximumWidth: 280 * _uiBackend.sizeModifer
 
-
-
-        //function getObj() { return obj }
+        Layout.fillHeight: false
 
         gradient: Gradient {
             GradientStop {
@@ -87,12 +45,6 @@ ColumnLayout
                 //color: "#48cc11"
             }
         }
-
-        Layout.fillHeight: false
-
-
-
-
 
         RowLayout {
             id: rowLayout2
@@ -258,9 +210,19 @@ ColumnLayout
             property bool checkedState : _uiBackend.rankedModeState
 
             font.pixelSize: 15 * _uiBackend.sizeModifer
-            opacity: hoverState ? 1.0 : 0.8
+            opacity: trainingModeSwitchMouseArea.howered ? 1.0 : 0.8
             checked: checkedState
             leftPadding: 10 * _uiBackend.sizeModifer
+
+            GlobalMouseArea{
+                id: trainingModeSwitchMouseArea
+                anchors.fill: parent
+
+                onClicked: {
+                    trainingModeSwitch.checkedState = !trainingModeSwitch.checkedState;
+                    _uiBackend.rankedModeState = trainingModeSwitch.checkedState;
+                }
+            }
 
         }
     }

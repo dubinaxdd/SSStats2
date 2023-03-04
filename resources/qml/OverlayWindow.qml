@@ -44,8 +44,6 @@ Window {
 
             GlobalMouseProvider.mouseClick();
 
-            statsHeader.mouseClick(xMousePos - statsHeader.x - columnLayout3.x, yMousePos - statsHeader.y - columnLayout3.y)
-
             if(_uiBackend.gamePanel.showGamePannelPreset)
             {
                 if (!_uiBackend.gamePanel.smallPannelActive )
@@ -91,12 +89,11 @@ Window {
             {
                 gamePanel.mouseHover(xMousePos, yMousePos);
             }
+
             else
             {
                 gamePanelSmall.mouseHover(xMousePos, yMousePos);
             }
-
-            statsHeader.mouseHover(xMousePos - statsHeader.x - columnLayout3.x, yMousePos - statsHeader.y - columnLayout3.y)
 
             if(_uiBackend.expand)
             {
@@ -274,8 +271,6 @@ Window {
                         z: 2
 
                         Layout.fillHeight: true
-
-
                     }
                 }
             }
