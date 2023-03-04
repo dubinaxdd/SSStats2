@@ -134,7 +134,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_mapManager, &MapManager::sendMapImage, m_uiBackend->imageProvider(), &ImageProvider::receiveMapImage, Qt::QueuedConnection);
     QObject::connect(m_mapManager, &MapManager::mapsInfoLoaded, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapsInfoLoaded, Qt::QueuedConnection);
 
-    m_statsServerProcessor->parseCurrentPlayerSteamId();
+    //m_statsServerProcessor->parseCurrentPlayerSteamId();
     m_settingsController->initializeSettings();
 }
 

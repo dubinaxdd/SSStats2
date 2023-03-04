@@ -141,9 +141,6 @@ void StatsServerProcessor::parseCurrentPlayerSteamId()
 
 void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayerStats>> playersInfo)
 {
-    if (m_currentMode.isEmpty())
-        return;
-
     QString sidsString;
 
     for(int i = 0; i < playersInfo.data()->count(); i++)
@@ -283,6 +280,7 @@ void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
 void StatsServerProcessor::onSettingsLoaded()
 {
     m_currentMode = m_settingsController->getSettings()->currentMod;
+    parseCurrentPlayerSteamId();
     m_currentPlayerStatsRequestTimer->start();
 }
 
