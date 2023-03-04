@@ -4,8 +4,9 @@ import QtQuick.Layouts 1.12
 
 ColumnLayout
 {
+    id: root
     spacing: 0
-    property Rectangle expandButtonRectangle : expandButtonRectangle
+
     property bool showTrainingModeSwitch: true
     property bool enableTrainingModeSwitch: _uiBackend.enableTrainingModeSwitch
 
@@ -164,7 +165,14 @@ ColumnLayout
             Rectangle {
                 id: expandButtonRectangle
 
-                property bool howeredState: false
+                property bool howeredState: expandButtonMouseArea.howered
+
+                GlobalMouseArea
+                {
+                    id: expandButtonMouseArea
+                    anchors.fill: parent
+                    onClicked: _uiBackend.expandKeyPressed();
+                }
 
                 property Gradient grLight: Gradient {
                     GradientStop {

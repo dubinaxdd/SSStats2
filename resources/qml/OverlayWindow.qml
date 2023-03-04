@@ -18,8 +18,6 @@ Window {
     property real mouseAreaWidth
     property real mouseAreaHeight
 
-    //GlobalMouseProvider.rootElement: windowRectangle
-
     Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
 
     onVisibilityChanged: {
@@ -44,22 +42,7 @@ Window {
                         "Window wifth:",window.width, "Window height:", window.height ,
                         "mouseAreaWidth:", mouseAreaWidth, "mouseAreaHeight:", mouseAreaHeight);*/
 
-            // Кнопка "Развернуть оверлей"
-            if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangle.x &&
-                    xMousePos <= columnLayout3.x + statsHeader.expandButtonRectangle.x + statsHeader.expandButtonRectangle.width &&
-                    yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangle.y &&
-                    yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangle.y + statsHeader.expandButtonRectangle.height)
-            {
-                if(_uiBackend.headerVisible)
-                {
-                    _uiBackend.expandKeyPressed();
-                    statsHeader.expandButtonRectangle.howeredState = true;
-                }
-            }
-
             GlobalMouseProvider.mouseClick();
-
-            //expandButton.mouseClicked();
 
             statsHeader.mouseClick(xMousePos - statsHeader.x - columnLayout3.x, yMousePos - statsHeader.y - columnLayout3.y)
 
@@ -103,22 +86,6 @@ Window {
             // Отлавливаем все координаты курсора при перемещении
             //console.log("Позиция курсора Х: ", _uiBackend.ssWindowPositionX, "Позиция курсора У: ",_uiBackend.ssWindowPositionY,
             //            "Оконный режим: ", _uiBackend.ssWindowed, "xMousePos: ", xMousePos, "yMousePos: ", yMousePos, fullOverlay.x + fullOverlay.buttonSettings.x, fullOverlay.y + fullOverlay.buttonSettings.y, window.x, window.y, window.width, window.height , mouseAreaWidth, mouseAreaHeight);
-
-
-            // Кнопка "Развернуть оверлей"
-            if (xMousePos >= columnLayout3.x + statsHeader.expandButtonRectangle.x &&
-                    xMousePos <= columnLayout3.x + statsHeader.expandButtonRectangle.x + statsHeader.expandButtonRectangle.width &&
-                    yMousePos >= columnLayout3.y + statsHeader.expandButtonRectangle.y &&
-                    yMousePos <= columnLayout3.y + statsHeader.expandButtonRectangle.y + statsHeader.expandButtonRectangle.height)
-            {
-                if(!statsHeader.expandButtonRectangle.howeredState)
-                    statsHeader.expandButtonRectangle.howeredState = true;
-            }
-            else
-            {
-                if(statsHeader.expandButtonRectangle.howeredState)
-                    statsHeader.expandButtonRectangle.howeredState = false;
-            }
 
             if (!_uiBackend.gamePanel.smallPannelActive)
             {
@@ -291,9 +258,6 @@ Window {
                         GlobalMouseArea{
                             id: expandButton
                             anchors.fill: parent
-                            //rootElement: windowRectangle
-                            //mouseX: xMousePos
-                            //mouseY: yMousePos
 
                             onClicked: {
                                 _uiBackend.expandPatyStatisticButtonClick();

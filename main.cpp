@@ -94,7 +94,9 @@ int main(int argc, char *argv[])
             app.installTranslator(&translator);
             break;
         }
-    }
+    }  
+
+    qmlRegisterSingletonType(QUrl("qrc:/resources/qml/GlobalMouseProvider.qml"), "GlobalMouseProvider", 1, 0, "GlobalMouseProvider");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/resources/qml/main.qml"));

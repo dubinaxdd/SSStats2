@@ -65,6 +65,7 @@ set(SOURCES_FILES
         defines.h
         qml.qrc
         resources.qrc
+        resources/qml/qmldir
         ${SOURCES_FILES}
 )
 
