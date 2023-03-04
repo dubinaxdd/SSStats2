@@ -216,7 +216,8 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     QJsonObject jsonObject = jsonDoc.object();
 
     QString modName = jsonObject.value("modName").toString();
-    QString seasonName = jsonObject.value("seasonName").toString();
+    emit sendStatisticModName(modName);
+    //QString seasonName = jsonObject.value("seasonName").toString();
 
     QJsonArray statsArray = jsonObject.value("stats").toArray();
 
@@ -232,9 +233,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).winRate = statsArray.at(i)["winRate"].toInt();
         playersInfo.get()->operator[](i).winsCount = statsArray.at(i)["winsCount"].toInt();
         playersInfo.get()->operator[](i).avatarUrl = statsArray.at(i)["avatarUrl"].toString();
-        playersInfo.get()->operator[](i).calibrateGamesLeft = statsArray.at(i)["calibrateGamesLeft"].toInt();
-
-        //playersInfo.get()->operator[](i).calibrateGamesLeft = 5;
+        //playersInfo.get()->operator[](i).calibrateGamesLeft = statsArray.at(i)["calibrateGamesLeft"].toInt();
 
         playersInfo.get()->operator[](i).statsAvailable = true;
 

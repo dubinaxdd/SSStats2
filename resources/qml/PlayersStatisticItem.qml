@@ -17,7 +17,7 @@ Rectangle {
     property bool playerIsBanned
     property bool playerVisible
     property string steamId
-    property int calibrateGamesLeft
+    //property int calibrateGamesLeft
     property bool isOnline: false
     property bool isRanked: false
 
@@ -39,9 +39,9 @@ Rectangle {
     color: itemRectangle.hoverEnabled ? ( itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff" )) : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff")
     radius: 10 * sizeModifer
 
-    onCalibrateGamesLeftChanged: {
+   /* onCalibrateGamesLeftChanged: {
         changeRank();
-    }
+    }*/
 
     onPlayerGamesCountChanged:{
         changeRank();
@@ -53,11 +53,11 @@ Rectangle {
 
     function changeRank()
     {
-        if (calibrateGamesLeft != 0)
+       /* if (calibrateGamesLeft != 0)
         {
             rankImage.source = "qrc:/images/resources/images/calibrate_60.png"
             return;
-        }
+        }*/
 
         if (playerMmr1v1 < 1400)
         {
@@ -260,7 +260,8 @@ Rectangle {
 
                     Label {
                         id: label
-                        text: "Solo MMR: " + (itemRectangle.calibrateGamesLeft != 0 ? ("Calibrate") : itemRectangle.playerMmr1v1)
+                        //text: "Solo MMR: " + (itemRectangle.calibrateGamesLeft != 0 ? ("Calibrate") : itemRectangle.playerMmr1v1)
+                        text: "Solo MMR: " + itemRectangle.playerMmr1v1
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 12 * sizeModifer
@@ -331,7 +332,7 @@ Rectangle {
                         }
                     }
 
-
+                    /*
                     Label {
                         id: label7
                         visible: itemRectangle.calibrateGamesLeft != 0
@@ -339,7 +340,7 @@ Rectangle {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 10 * sizeModifer
-                    }
+                    }*/
                 }
             }
         }

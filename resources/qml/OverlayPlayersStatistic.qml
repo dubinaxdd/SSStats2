@@ -167,7 +167,7 @@ Rectangle {
                 playerApm: model.curentPlayerStatsItem.playerApm
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
-                calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
+                //calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
                 isRanked: model.curentPlayerStatsItem.isRanked
                 isOnline: model.curentPlayerStatsItem.isOnline
 
@@ -201,7 +201,7 @@ Rectangle {
                     playerApm: model.playerApm
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
-                    calibrateGamesLeft: model.calibrateGamesLeft
+                    //calibrateGamesLeft: model.calibrateGamesLeft
                     isRanked: model.isRanked
                     isOnline: model.isOnline
 

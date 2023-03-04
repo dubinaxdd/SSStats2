@@ -26,6 +26,7 @@ signals:
     void sendCurrentPlayerHostState(bool);
     void sendCurrentPlayerSteamID(QString steamID);
     void sendNotification(QString text, bool isWarning);
+    void sendStatisticModName(QString statisticModName);
 
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);

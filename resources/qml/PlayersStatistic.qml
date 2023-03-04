@@ -56,7 +56,7 @@ Rectangle {
                 playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
                 playerVisible: model.curentPlayerStatsItem.itemVisible
                 steamId: model.curentPlayerStatsItem.steamId
-                calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
+                //calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
                 isRanked: model.curentPlayerStatsItem.isRanked
                 isOnline: model.curentPlayerStatsItem.isOnline
 
@@ -87,7 +87,7 @@ Rectangle {
                     playerIsBanned: model.playerIsBanned
                     playerVisible: model.playerVisible
                     steamId: model.steamId
-                    calibrateGamesLeft: model.calibrateGamesLeft
+                    //calibrateGamesLeft: model.calibrateGamesLeft
                     isRanked: model.isRanked
                     isOnline: model.isOnline
 
