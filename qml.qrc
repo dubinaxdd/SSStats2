@@ -26,5 +26,6 @@
         <file>resources/qml/SubPageMenuButton.qml</file>
         <file>resources/qml/MapsSubPage.qml</file>
         <file>resources/qml/BlueButton.qml</file>
+        <file>resources/qml/GlobalMouseArea.qml</file>
     </qresource>
 </RCC>
