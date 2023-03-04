@@ -16,85 +16,6 @@ Rectangle {
             return "#b3ea0000"
     }
 
-    property int relativeMouseX
-    property int relativeMouseY
-
-    function mouseClick(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        // Кнопка "Развернуть оверлей в игровой панели"
-        if (relativeMouseX >= expandButtonRectangle.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandButtonRectangle.x + gamePanelRectangle.x + expandButtonRectangle.width &&
-                relativeMouseY >= expandButtonRectangle.y + gamePanelRectangle.y &&
-                relativeMouseY <= expandButtonRectangle.y + gamePanelRectangle.y + expandButtonRectangle.height)
-        {
-
-            if(_uiBackend.gamePanel.gamePanelVisible)
-            {
-                //expandButtonRectangle.howeredState = true;
-                //_uiBackend.expandKeyPressed();
-            }
-        }
-
-        // Кнопка "Развернуть панель с рассами игроков"
-        if (relativeMouseX >= expandPlayerRacesButton.x  + gamePanelRectangle.x &&
-                relativeMouseX <= expandPlayerRacesButton.x  + gamePanelRectangle.x + expandPlayerRacesButton.width &&
-                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y &&
-                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y + expandPlayerRacesButton.height)
-        {
-
-            if(_uiBackend.gamePanel.gamePanelVisible)
-            {
-                expandPlayerRacesButton.howeredState = true;
-                model.expandPlayerRacesButtonClick();
-            }
-        }
-
-    }
-
-    function mouseHover(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        // Кнопка "Развернуть оверлей в игровой панели"
-        if (relativeMouseX >= expandButtonRectangle.x + gamePanelRectangle.x &&
-                relativeMouseX <= expandButtonRectangle.x + gamePanelRectangle.x + expandButtonRectangle.width &&
-                relativeMouseY >= expandButtonRectangle.y + gamePanelRectangle.y + 5 &&
-                relativeMouseY <= expandButtonRectangle.y + gamePanelRectangle.y + 5 + expandButtonRectangle.height)
-        {
-
-            if(!expandButtonRectangle.howeredState)
-                expandButtonRectangle.howeredState = true;
-        }
-        else
-        {
-            if(expandButtonRectangle.howeredState)
-                expandButtonRectangle.howeredState = false;
-        }
-
-
-        // Кнопка "Развернуть панель с рассами игроков"
-        if (relativeMouseX >= expandPlayerRacesButton.x  + gamePanelRectangle.x &&
-                relativeMouseX <= expandPlayerRacesButton.x  + gamePanelRectangle.x + expandPlayerRacesButton.width &&
-                relativeMouseY >= expandPlayerRacesButton.y + gamePanelRectangle.y &&
-                relativeMouseY <= expandPlayerRacesButton.y + gamePanelRectangle.y + expandPlayerRacesButton.height)
-        {
-
-            if(!expandPlayerRacesButton.howeredState)
-                expandPlayerRacesButton.howeredState = true;
-        }
-        else
-        {
-            if(expandPlayerRacesButton.howeredState)
-               expandPlayerRacesButton.howeredState = false;
-        }
-    }
-
-
-
     Rectangle {
         id: gamePanelRectangle
         width: 550 * _uiBackend.sizeModifer
@@ -143,7 +64,7 @@ Rectangle {
 
                         visible: false
 
-                        property bool howeredState: false
+                        property bool howeredState: expandButtonMouseArea.howered
 
                         property Gradient grLight: Gradient {
                             GradientStop {
@@ -187,6 +108,16 @@ Rectangle {
                             id: borderImage
                             anchors.fill: parent
                             source: _uiBackend.expand ? "qrc:/images/resources/images/hide.png" : "qrc:/images/resources/images/expand.png"
+                        }
+
+
+                        GlobalMouseArea{
+                            id: expandButtonMouseArea
+                            anchors.fill: parent
+
+                            onClicked: {
+                                _uiBackend.expandKeyPressed();
+                            }
                         }
                     }
 
@@ -308,7 +239,7 @@ Rectangle {
                     Rectangle {
                         id: expandPlayerRacesButton
 
-                        property bool howeredState: false
+                        property bool howeredState: expandPlayerRacesMouseArea.howered
 
                         property Gradient grLight: Gradient {
                             GradientStop {
@@ -355,6 +286,15 @@ Rectangle {
                             anchors.fill: parent
                             source: "qrc:/images/resources/images/expandDots.png"
                             fillMode: Image.PreserveAspectFit
+                        }
+
+                        GlobalMouseArea{
+                            id: expandPlayerRacesMouseArea
+                            anchors.fill: parent
+
+                            onClicked: {
+                                model.expandPlayerRacesButtonClick();
+                            }
                         }
                     }
                 }

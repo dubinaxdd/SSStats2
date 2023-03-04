@@ -32,21 +32,8 @@ Window {
             patyStatistic.mouseWheel(delta);
         }
 
-
         function onSendMousePress(){
             GlobalMouseProvider.mouseClick();
-
-            if(_uiBackend.gamePanel.showGamePannelPreset)
-            {
-                if (!_uiBackend.gamePanel.smallPannelActive )
-                {
-                    gamePanel.mouseClick(xMousePos, yMousePos);
-                }
-                else
-                {
-                    gamePanelSmall.mouseClick(xMousePos, yMousePos);
-                }
-            }
         }
 
         function onSendMouseMove(){
@@ -63,16 +50,6 @@ Window {
 
             GlobalMouseProvider.mouseX = xMousePos;
             GlobalMouseProvider.mouseY = yMousePos;
-
-            if (!_uiBackend.gamePanel.smallPannelActive)
-            {
-                gamePanel.mouseHover(xMousePos, yMousePos);
-            }
-
-            else
-            {
-                gamePanelSmall.mouseHover(xMousePos, yMousePos);
-            }
         }
 
         function onWindowTopmostChanged(){
