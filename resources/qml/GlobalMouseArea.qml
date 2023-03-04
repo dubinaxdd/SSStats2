@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import GlobalMouseProvider 1.0
 
 Item {
 
@@ -7,9 +8,9 @@ Item {
 
     property bool howered: false
 
-    property var rootElement
-    property real mouseX: 0
-    property real mouseY: 0
+    property var rootElement: GlobalMouseProvider.rootElement
+    property real mouseX: GlobalMouseProvider.mouseX
+    property real mouseY: GlobalMouseProvider.mouseY
 
     signal clicked()
 
@@ -17,18 +18,22 @@ Item {
     onMouseYChanged: mouseCoordinatesChanged();
     Component.onCompleted: mouseCoordinatesChanged();
 
+    Connections{
+        target: GlobalMouseProvider
+
+        function onMouseClicked(){
+            mouseClicked();
+        }
+    }
+
     function updateCoordinates(){
         var globalCoordinares = expandPatyStatisticButtonRectangle.mapToItem(windowRectangle, 0, 0);
         globalX = globalCoordinares.x;
         globalY = globalCoordinares.y;
-
-        console.log("ASDASDASDADASDASDASD", globalX, globalY, x, y)
     }
 
     function mouseClicked()
     {
-
-
         if (mouseX >= globalX &&
                 mouseX <= globalX + width &&
                 mouseY >= globalY &&

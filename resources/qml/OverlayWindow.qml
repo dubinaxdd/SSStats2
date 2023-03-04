@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
+import GlobalMouseProvider 1.0
 
 Window {
     id: window
@@ -17,53 +18,14 @@ Window {
     property real mouseAreaWidth
     property real mouseAreaHeight
 
+    //GlobalMouseProvider.rootElement: windowRectangle
+
+    Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
+
     onVisibilityChanged: {
         patyStatistic.resetScrollView();
     }
-    /*
-    function mouseClick(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
 
-        if (relativeMouseX >= expandPatyStatisticButtonRectangle.x &&
-                    relativeMouseX <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
-                    relativeMouseY >= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) &&
-                    relativeMouseY <= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
-        {
-            if(!_uiBackend.gamePanel.gamePanelVisible && expandPatyStatisticButtonRectangle.visible == true && expandPatyStatisticButtonRectangle.height != 0)
-            {
-
-                expandPatyStatisticButtonRectangle.howeredState = true;
-                _uiBackend.expandPatyStatisticButtonClick();
-
-                scrollView.setDefault();
-
-            }
-        }
-    }
-
-    function mouseHover(x, y)
-    {
-        relativeMouseX = x
-        relativeMouseY = y
-
-        if (relativeMouseX >= expandPatyStatisticButtonRectangle.x &&
-                    relativeMouseX <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
-                    relativeMouseY >= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) &&
-                    relativeMouseY <= expandPatyStatisticButtonRectangle.y  - (scrollView.height * scrollViewPosition) + expandPatyStatisticButtonRectangle.height)
-        {
-
-            if(!expandPatyStatisticButtonRectangle.howeredState)
-                expandPatyStatisticButtonRectangle.howeredState = true;
-        }
-        else
-        {
-            if(expandPatyStatisticButtonRectangle.howeredState)
-                expandPatyStatisticButtonRectangle.howeredState = false;
-        }
-    }
-*/
     Connections{
         target: _uiBackend
 
@@ -95,21 +57,9 @@ Window {
                 }
             }
 
-            // Кнопка "Cкрыть колонку статистики"
-           /* if (xMousePos >= expandPatyStatisticButtonRectangle.x &&
-                    xMousePos <= expandPatyStatisticButtonRectangle.x + expandPatyStatisticButtonRectangle.width &&
-                    yMousePos >= expandPatyStatisticButtonRectangle.y &&
-                    yMousePos <= expandPatyStatisticButtonRectangle.y + expandPatyStatisticButtonRectangle.height)
-            {
-                if(!_uiBackend.gamePanel.gamePanelVisible && expandPatyStatisticButtonRectangle.visible == true && expandPatyStatisticButtonRectangle.height != 0)
-                {
-                    expandPatyStatisticButtonRectangle.howeredState = true;
-                    _uiBackend.expandPatyStatisticButtonClick();
-                    //scrollView.setDefault();
-                }
-            }*/
+            GlobalMouseProvider.mouseClick();
 
-            expandButton.mouseClicked();
+            //expandButton.mouseClicked();
 
             statsHeader.mouseClick(xMousePos - statsHeader.x - columnLayout3.x, yMousePos - statsHeader.y - columnLayout3.y)
 
@@ -141,6 +91,9 @@ Window {
             mouseAreaWidth = _uiBackend.mouseAreaWidth;
             mouseAreaHeight = _uiBackend.mouseAreaHeight;
 
+            GlobalMouseProvider.mouseX = xMousePos;
+            GlobalMouseProvider.mouseY = yMousePos;
+
             if (_uiBackend.ssWindowed)
             {
                 xMousePos = xMousePos - _uiBackend.ssWindowPositionX;
@@ -167,22 +120,6 @@ Window {
                     statsHeader.expandButtonRectangle.howeredState = false;
             }
 
-            // Кнопка "Cкрыть колонку статистики"
-         /*   if (xMousePos >= expandPatyStatisticButtonRectangle.globalX &&
-                    xMousePos <= expandPatyStatisticButtonRectangle.globalX + expandPatyStatisticButtonRectangle.width &&
-                    yMousePos >= expandPatyStatisticButtonRectangle.globalY &&
-                    yMousePos <= expandPatyStatisticButtonRectangle.globalY + expandPatyStatisticButtonRectangle.height)
-            {
-
-                if(!expandPatyStatisticButtonRectangle.howeredState)
-                    expandPatyStatisticButtonRectangle.howeredState = true;
-            }
-            else
-            {
-                if(expandPatyStatisticButtonRectangle.howeredState)
-                    expandPatyStatisticButtonRectangle.howeredState = false;
-            }*/
-
             if (!_uiBackend.gamePanel.smallPannelActive)
             {
                 gamePanel.mouseHover(xMousePos, yMousePos);
@@ -191,8 +128,6 @@ Window {
             {
                 gamePanelSmall.mouseHover(xMousePos, yMousePos);
             }
-
-            //patyStatistic.mouseHover(xMousePos - patyStatistic.x - columnLayout3.x, yMousePos - patyStatistic.y - columnLayout3.y );
 
             statsHeader.mouseHover(xMousePos - statsHeader.x - columnLayout3.x, yMousePos - statsHeader.y - columnLayout3.y)
 
@@ -242,9 +177,6 @@ Window {
         color: "#00000000"
         anchors.fill: parent
         visible: _uiBackend.showClient
-
-        //onWidthChanged: expandPatyStatisticButtonRectangle.updateCoordinates()
-        //onHeightChanged: expandPatyStatisticButtonRectangle.updateCoordinates()
 
         Rectangle {
             id: backgroundRectangle
@@ -303,21 +235,6 @@ Window {
                     Rectangle {
                         id: expandPatyStatisticButtonRectangle
 
-                       /* property var globalX
-                        property var globalY
-
-                        function updateCoordinates(){
-                            var globalCoordinares = expandPatyStatisticButtonRectangle.mapToItem(windowRectangle, 0, 0);
-                            globalX = globalCoordinares.x;
-                            globalY = globalCoordinares.y;
-
-                            console.log("ASDASDASDADASDASDASD", globalX, globalY, x, y)
-                        }
-
-                        onXChanged: updateCoordinates();
-                        onYChanged: updateCoordinates();
-                        Component.onCompleted: updateCoordinates();
-                            */
                         property bool howeredState: expandButton.howered
 
                         property Gradient grLight: Gradient {
@@ -374,9 +291,9 @@ Window {
                         GlobalMouseArea{
                             id: expandButton
                             anchors.fill: parent
-                            rootElement: windowRectangle
-                            mouseX: xMousePos
-                            mouseY: yMousePos
+                            //rootElement: windowRectangle
+                            //mouseX: xMousePos
+                            //mouseY: yMousePos
 
                             onClicked: {
                                 _uiBackend.expandPatyStatisticButtonClick();
