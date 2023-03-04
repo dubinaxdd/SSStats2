@@ -53,7 +53,6 @@ Rectangle {
                     }
                 }
 
-
                 RowLayout {
                     id: rowLayout
                     anchors.fill: parent
@@ -76,8 +75,6 @@ Rectangle {
                                 position: 1
                                 color: "#265a88"
                             }
-
-
                         }
 
                         property Gradient grDark: Gradient {
@@ -109,7 +106,6 @@ Rectangle {
                             anchors.fill: parent
                             source: _uiBackend.expand ? "qrc:/images/resources/images/hide.png" : "qrc:/images/resources/images/expand.png"
                         }
-
 
                         GlobalMouseArea{
                             id: expandButtonMouseArea
