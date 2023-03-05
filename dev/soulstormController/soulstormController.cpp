@@ -185,6 +185,8 @@ void SoulstormController::checkWindowState()
             }
             else                                                 ///<Если игра развернута
             {
+                if (getUseWindows7SupportMode())
+                    updateSoulstormWindow();
                 m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
                 emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
                 qInfo(logInfo()) << "Soulstorm fullscreenized";
@@ -320,6 +322,13 @@ void SoulstormController::parseSsSettings()
     qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
 
     delete ssSettings;
+}
+
+void SoulstormController::updateSoulstormWindow()
+{
+    minimizeSoulstorm();
+    fullscrenizeSoulstorm();
+    SetForegroundWindow(m_soulstormHwnd);
 }
 
 ReplayDataCollector *SoulstormController::replayDataCollector() const

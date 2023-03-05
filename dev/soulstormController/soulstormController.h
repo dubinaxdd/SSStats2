@@ -71,6 +71,7 @@ private:
     QString getSsPathFromRegistry();
     QString getSteamPathFromRegistry();
     void parseSsSettings();
+    void updateSoulstormWindow();
 
 private:
     HWND m_soulstormHwnd = NULL;
