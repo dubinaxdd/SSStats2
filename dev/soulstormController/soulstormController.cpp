@@ -177,6 +177,17 @@ void SoulstormController::checkWindowState()
             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
             qInfo(logInfo()) << "Soulstorm window accepted";
 
+            if (m_settingsController->getSettings()->win7SupportMode)
+            {
+                QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+                if( ssSettings->value("global/screenwindowed", 0).toInt() == 1)
+                {
+                    m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
+                    m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
+                    m_useWindows7SupportMode = true;
+                }
+            }
+
             if( IsIconic(m_soulstormHwnd) || GetForegroundWindow() != m_soulstormHwnd)                      ///<Если игра свернута
             {
                 m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
