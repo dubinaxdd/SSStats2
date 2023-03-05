@@ -171,20 +171,6 @@ Rectangle {
                 }
             }
 
-
-            Rectangle {
-                id: rectangle1
-                visible: _uiBackend.ssWindowed && !_uiBackend.headerVisible
-                color: "#00000000"
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-                Layout.preferredHeight: 25 * _uiBackend.sizeModifer
-                Layout.maximumHeight: 25 * _uiBackend.sizeModifer
-                Layout.minimumHeight: 25 * _uiBackend.sizeModifer
-                height: 25 * _uiBackend.sizeModifer
-                Layout.alignment: Qt.AlignRight | Qt.AlignTop
-            }
-
             Rectangle {
                 id: expandPatyStatisticButtonRectangle
 

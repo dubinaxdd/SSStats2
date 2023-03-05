@@ -52,12 +52,14 @@ void OverlayWindowController::topmostTimerTimout()
                 if (GetWindowRect(p_soulstormController->soulstormHwnd(), &ssRect))
                 {
 
+                   int titleBarHeight = getGameTitleBarHeight();
+
                     //if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                    // {
                         m_ssRect = ssRect;
-                        SetWindowPos(m_ssStatsHwnd, HWND_TOP/*p_soulstormController->soulstormHwnd()*/, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+                        SetWindowPos(m_ssStatsHwnd, HWND_TOP/*p_soulstormController->soulstormHwnd()*/, m_ssRect.left, m_ssRect.top + titleBarHeight, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top - titleBarHeight, m_defaultWindowLong );
 
-                        p_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
+                        p_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top + titleBarHeight);
                    // }
 
 
@@ -85,6 +87,29 @@ void OverlayWindowController::topmostTimerTimout()
             }
         }
     }
+}
+
+int OverlayWindowController::getGameTitleBarHeight()
+{
+    if (!p_soulstormController->soulstormHwnd())
+        return 0;
+
+    RECT ssRect;
+    if (GetWindowRect(p_soulstormController->soulstormHwnd(), &ssRect))
+    {
+
+        RECT crect;
+        GetClientRect( p_soulstormController->soulstormHwnd(), &crect );
+
+        int titleHeight = (ssRect.bottom - ssRect.top) - (crect.bottom - crect.top);
+
+        if (titleHeight > 4)
+            titleHeight = titleHeight - 4;
+
+        return titleHeight;
+    }
+
+    return 0;
 }
 
 void OverlayWindowController::ssMaximized(bool maximized)
@@ -118,13 +143,15 @@ void OverlayWindowController::ssMaximized(bool maximized)
             {
                 if(m_ssRect.bottom != ssRect.bottom || m_ssRect.top != ssRect.top || m_ssRect.right != ssRect.right || m_ssRect.left != ssRect.left)
                 {
-                        m_ssRect = ssRect;
-                        SetWindowPos(m_ssStatsHwnd, p_soulstormController->soulstormHwnd(), m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
+                    int titleBarHeight = getGameTitleBarHeight();
 
-                        LONG ssLong = GetWindowLongPtr(p_soulstormController->soulstormHwnd(), 0);
-                        SetWindowPos(p_soulstormController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
+                    m_ssRect = ssRect;
+                    SetWindowPos(m_ssStatsHwnd, p_soulstormController->soulstormHwnd(), m_ssRect.left, m_ssRect.top + titleBarHeight, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top - titleBarHeight, m_defaultWindowLong );
 
-                        p_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top);
+                    LONG ssLong = GetWindowLongPtr(p_soulstormController->soulstormHwnd(), 0);
+                    SetWindowPos(p_soulstormController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
+
+                    p_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top + titleBarHeight);
                 }
             }
             p_uiBackend->setSsWindowed(p_soulstormController->ssWindowed());

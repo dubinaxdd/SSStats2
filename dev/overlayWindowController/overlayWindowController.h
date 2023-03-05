@@ -26,6 +26,9 @@ private slots:
     void topmostTimerTimout();
 
 private:
+    int getGameTitleBarHeight();
+
+private:
     QTimer* m_topmostTimer;
 
     int m_defaultWidth;
