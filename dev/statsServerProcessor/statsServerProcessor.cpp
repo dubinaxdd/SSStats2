@@ -216,6 +216,13 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     emit sendStatisticModName(modName);
     //QString seasonName = jsonObject.value("seasonName").toString();
 
+    if(!jsonObject.value("stats").isArray())
+    {
+        qWarning(logWarning()) << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
+        reply->deleteLater();
+        return;
+    }
+
     QJsonArray statsArray = jsonObject.value("stats").toArray();
 
     for(int i = 0; i < statsArray.count(); i++)
