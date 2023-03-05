@@ -104,6 +104,19 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+const QString &UiBackend::currentModName() const
+{
+    return m_currentModName;
+}
+
+void UiBackend::setCurrentModName(const QString &newCurrentModName)
+{
+    if (m_currentModName == newCurrentModName)
+        return;
+    m_currentModName = newCurrentModName;
+    emit currentModNameChanged();
+}
+
 MapManagerPage *UiBackend::mapManagerPage() const
 {
     return m_mapManagerPage;
@@ -236,6 +249,11 @@ void UiBackend::receiveOnlineCount(int onlineCount)
 {
     m_onlineCount = onlineCount;
     emit onlineCountChanged();
+}
+
+void UiBackend::receiveCurrentModName(QString modName)
+{
+    setCurrentModName(modName);
 }
 
 void UiBackend::onExit()

@@ -56,6 +56,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool enableTrainingModeSwitch READ enableTrainingModeSwitch WRITE setEnableTrainingModeSwitch NOTIFY enableTrainingModeSwitchChanged)
     Q_PROPERTY(int onlineCount READ onlineCount WRITE setOnlineCount NOTIFY onlineCountChanged)
 
+    Q_PROPERTY(QString currentModName READ currentModName WRITE setCurrentModName NOTIFY currentModNameChanged)
+
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -105,6 +107,9 @@ public:
 
     MapManagerPage *mapManagerPage() const;
 
+    const QString &currentModName() const;
+    void setCurrentModName(const QString &newCurrentModName);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -143,6 +148,8 @@ signals:
     void enableTrainingModeSwitchChanged();
     void onlineCountChanged();
 
+    void currentModNameChanged();
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
@@ -155,6 +162,8 @@ public slots:
     void receiveNotification(QString notify, bool isWarning);
 
     void receiveOnlineCount(int onlineCount);
+
+    void receiveCurrentModName(QString modName);
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
@@ -225,6 +234,7 @@ private:
 
     int m_onlineCount = 0;
 
+    QString m_currentModName;
 };
 
 #endif // UIBACKEND_H

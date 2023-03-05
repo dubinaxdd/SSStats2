@@ -141,6 +141,29 @@ Window {
                         showTrainingModeSwitch: true
                     }
 
+                    Rectangle
+                    {
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredHeight: 30 * _uiBackend.sizeModifer
+                        Layout.minimumWidth: 280 * _uiBackend.sizeModifer
+                        Layout.maximumWidth: 280 * _uiBackend.sizeModifer
+                        radius: 10 * _uiBackend.sizeModifer
+                        color: "#ffffff"
+                        visible: _uiBackend.headerVisible
+
+                        ColumnLayout
+                        {
+                            anchors.fill: parent
+
+                            Label
+                            {
+                                Layout.alignment: Qt.AlignCenter
+                                text: _uiBackend.currentModName + " ladder"
+                                font.pixelSize: 15 * _uiBackend.sizeModifer
+                            }
+                        }
+                    }
+
                     OverlayPlayersStatistic
                     {
                         id: patyStatistic

@@ -422,6 +422,29 @@ Window {
                     }
                 }
 
+                Rectangle
+                {
+                    Layout.alignment: Qt.AlignCenter
+                    Layout.preferredHeight: 30
+                    Layout.minimumWidth: 280
+                    Layout.maximumWidth: 280
+                    Layout.rightMargin: 5
+                    radius: 10
+                    color: "#ffffff"
+
+                    ColumnLayout
+                    {
+                        anchors.fill: parent
+
+                        Label
+                        {
+                            Layout.alignment: Qt.AlignCenter
+                            text: _uiBackend.currentModName + " ladder" //"Current mode"
+                            font.pixelSize: 15
+                        }
+                    }
+                }
+
                 PlayersStatistic
                 {
                     id: patyStatistic
