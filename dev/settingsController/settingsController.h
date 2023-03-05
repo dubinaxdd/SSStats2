@@ -18,6 +18,7 @@ struct Settings
     bool gridHotkeysInstalled = false;
     bool overlayVisible = true;
     bool win7SupportMode = false;
+    bool launchGameInWindow = false;
     bool skipIntroVideo = false;
     bool enableEventsSoundWhenGameMaximized = false;
     bool enableEventsSoundWhenGameMinimized = false;

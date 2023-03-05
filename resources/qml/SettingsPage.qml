@@ -64,7 +64,6 @@ Rectangle {
             }
         }
 
-
         Switch{
             text: "Launch Soulstorm with Windows7 support mode"
             checked: model.win7SupportMode
@@ -73,6 +72,17 @@ Rectangle {
 
             onCheckedChanged: {
                 model.win7SupportMode = checked;
+            }
+        }
+
+        Switch{
+            text: "Launch Soulstorm in window"
+            checked: model.launchGameInWindow
+
+            opacity: hovered? 1.0 : 0.8
+
+            onCheckedChanged: {
+                model.launchGameInWindow = checked;
             }
         }
 

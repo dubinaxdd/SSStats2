@@ -47,6 +47,9 @@ void SettingsPageModel::onSettingsLoaded()
 
     m_volume = m_settingsController->getSettings()->volume;
     emit volumeChanged(m_volume);
+
+    m_launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
+    emit launchGameInWindowChanged();
 }
 
 void SettingsPageModel::receiveDownloadProgress(InstMod mod, int progress)
@@ -246,6 +249,22 @@ void SettingsPageModel::receiveGridHotkeysDownloadError()
 
     m_gridHotkeysInstallInProcess = false;
     emit gridHotkeysInstallInProcessChanged();
+}
+
+bool SettingsPageModel::launchGameInWindow() const
+{
+    return m_launchGameInWindow;
+}
+
+void SettingsPageModel::setLaunchGameInWindow(bool newLaunchGameInWindow)
+{
+    if (m_launchGameInWindow == newLaunchGameInWindow)
+        return;
+    m_launchGameInWindow = newLaunchGameInWindow;
+    emit launchGameInWindowChanged();
+
+    m_settingsController->getSettings()->launchGameInWindow = m_launchGameInWindow;
+    m_settingsController->saveSettings();
 }
 
 int SettingsPageModel::volume() const

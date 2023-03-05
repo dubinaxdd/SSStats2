@@ -40,6 +40,7 @@ void SettingsController::initializeSettings()
     m_settings->autoinstallAllMaps = ss_stats_settings->value("mods/autoinstall_all_maps", false).toBool();
     m_settings->currentMod = ss_stats_settings->value("game/current_mod", "dxp2").toString();
     m_settings->currentModVersion = ss_stats_settings->value("game/current_mod_version", "1.0").toString();
+    m_settings->launchGameInWindow = ss_stats_settings->value("game/launch_game_in_window", false).toBool();
 
     emit settingsLoaded();
 
@@ -69,6 +70,7 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("mods/autoinstall_all_maps", m_settings->autoinstallAllMaps);
     ss_stats_settings->setValue("game/current_mod", m_settings->currentMod);
     ss_stats_settings->setValue("game/current_mod_version", m_settings->currentModVersion);
+    ss_stats_settings->setValue("game/launch_game_in_window", m_settings->launchGameInWindow);
 
     ss_stats_settings->sync();
 }

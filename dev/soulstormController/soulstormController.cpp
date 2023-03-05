@@ -92,8 +92,14 @@ void SoulstormController::blockSsWindowInput(bool state)
 
 void SoulstormController::launchSoulstorm()
 {
+    bool launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
+
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
-    ssSettings->setValue("global/screenwindowed", 0);
+
+    if (launchGameInWindow)
+        ssSettings->setValue("global/screenwindowed", 1);
+    else
+        ssSettings->setValue("global/screenwindowed", 0);
 
     if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
     {
@@ -110,6 +116,14 @@ void SoulstormController::launchSoulstorm()
 
 void SoulstormController::launchSoulstormWithSupportMode()
 {
+    bool launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
+
+    if (launchGameInWindow)
+    {
+        launchSoulstorm();
+        return;
+    }
+
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
     m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
@@ -177,7 +191,7 @@ void SoulstormController::checkWindowState()
             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
             qInfo(logInfo()) << "Soulstorm window accepted";
 
-            if (m_settingsController->getSettings()->win7SupportMode)
+            if (m_settingsController->getSettings()->win7SupportMode && !m_settingsController->getSettings()->launchGameInWindow)
             {
                 QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
                 if( ssSettings->value("global/screenwindowed", 0).toInt() == 1)

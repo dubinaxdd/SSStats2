@@ -23,6 +23,7 @@ class SettingsPageModel : public QObject
 
     Q_PROPERTY(bool overlayVisible READ overlayVisible WRITE setOverlayVisible NOTIFY overlayVisibleChanged)
     Q_PROPERTY(bool win7SupportMode READ win7SupportMode WRITE setWin7SupportMode NOTIFY win7SupportModeChanged)
+    Q_PROPERTY(bool launchGameInWindow READ launchGameInWindow WRITE setLaunchGameInWindow NOTIFY launchGameInWindowChanged)
     Q_PROPERTY(bool skipIntroVideo READ skipIntroVideo WRITE setSkipIntroVideo NOTIFY skipIntroVideoChanged)
 
     Q_PROPERTY(bool enableEventsSoundWhenGameMinimized READ enableEventsSoundWhenGameMinimized WRITE setEnableEventsSoundWhenGameMinimized NOTIFY enableEventsSoundWhenGameMinimizedChanged)
@@ -73,6 +74,8 @@ signals:
 
     void volumeChanged(int volume);
 
+    void launchGameInWindowChanged();
+
 public slots:
     void receiveDownloadProgress(InstMod mod, int progress);
     void receiveInstallCompleeted(InstMod mod);
@@ -115,6 +118,9 @@ public:
     int volume() const;
     void setVolume(int newVolume);
 
+    bool launchGameInWindow() const;
+    void setLaunchGameInWindow(bool newLaunchGameInWindow);
+
 private:
     void receiveRussianFontsDownloadProgress(int progress);
     void receiveRussianFontsInstallCompleeted();
@@ -145,6 +151,7 @@ private:
 
     bool m_overlayVisible = true;
     bool m_win7SupportMode = false;
+    bool m_launchGameInWindow = false;
     bool m_skipIntroVideo = false;
     bool m_enableEventsSoundWhenGameMinimized = true;
     bool m_enableEventsSoundWhenGameMaximized = true;
