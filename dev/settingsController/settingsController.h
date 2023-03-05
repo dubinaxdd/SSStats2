@@ -24,7 +24,7 @@ struct Settings
     bool enableEventsSoundWhenGameMinimized = false;
     bool enableGameLoadEventSound = false;
     bool enableGameStartEventSound = false;
-    int  volume = 100;
+    int  volume = 50;
     bool autoinstallDefaultMaps = true;
     bool autoinstallAllMaps = false;
     QString currentMod = "dxp2";

@@ -35,7 +35,7 @@ void SettingsController::initializeSettings()
     m_settings->enableEventsSoundWhenGameMinimized = ss_stats_settings->value("client/enable_events_sound_when_game_minimized", true).toBool();
     m_settings->enableGameLoadEventSound = ss_stats_settings->value("client/enable_game_load_event_sound", true).toBool();
     m_settings->enableGameStartEventSound = ss_stats_settings->value("client/enable_game_start_event_sound", true).toBool();
-    m_settings->volume = ss_stats_settings->value("client/volume", 100).toInt();
+    m_settings->volume = ss_stats_settings->value("client/volume", 50).toInt();
     m_settings->autoinstallDefaultMaps = ss_stats_settings->value("mods/autoinstall_default_maps", true).toBool();
     m_settings->autoinstallAllMaps = ss_stats_settings->value("mods/autoinstall_all_maps", false).toBool();
     m_settings->currentMod = ss_stats_settings->value("game/current_mod", "dxp2").toString();
