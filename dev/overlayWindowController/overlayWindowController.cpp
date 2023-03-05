@@ -1,10 +1,11 @@
 #include "overlayWindowController.h"
 #include <QTextCodec>
 
-OverlayWindowController::OverlayWindowController(UiBackend* uiBackend, SoulstormController* soulstormController, QObject *parent)
+OverlayWindowController::OverlayWindowController(SettingsController *settingsController, UiBackend* uiBackend, SoulstormController* soulstormController, QObject *parent)
     : QObject(parent)
     , p_uiBackend(uiBackend)
     , p_soulstormController(soulstormController)
+    , p_settingsController(settingsController)
 {
     m_topmostTimer = new QTimer();
     m_topmostTimer->setInterval(500);
@@ -36,6 +37,8 @@ void OverlayWindowController::topmostTimerTimout()
     //установка флага Qt::WindowStaysOnTopHint на кородкое время выводет икно повер сса
     //Соответственно затираем флаг и выставлем заного по таймеру.
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
+    if (!p_settingsController->getSettings()->overlayVisible)
+        return;
 
     if (p_soulstormController->ssWindowed())
         m_topmostTimer->setInterval(1500);
@@ -114,6 +117,9 @@ int OverlayWindowController::getGameTitleBarHeight()
 
 void OverlayWindowController::ssMaximized(bool maximized)
 {
+    if (!p_settingsController->getSettings()->overlayVisible)
+        return;
+
     if (maximized)
     {
         int width =  GetSystemMetrics(SM_CXSCREEN);

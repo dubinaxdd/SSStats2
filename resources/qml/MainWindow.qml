@@ -5,6 +5,7 @@ import QtQuick.Window 2.15
 import QtGraphicalEffects 1.15
 
 Window {
+    id: root
     width: 1200
     height: 900
     title: "DoW Stats 2"
@@ -23,6 +24,10 @@ Window {
         {
             trainingModeSwitch.checked = _uiBackend.rankedModeState;
         }
+    }
+
+    onClosing: {
+            root.hide();
     }
 
     ColumnLayout {

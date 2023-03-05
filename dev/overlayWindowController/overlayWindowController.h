@@ -11,7 +11,7 @@ class OverlayWindowController : public QObject
 {
     Q_OBJECT
 public:
-    explicit OverlayWindowController(UiBackend* uiBackend, SoulstormController* soulstormController, QObject *parent = nullptr);
+    explicit OverlayWindowController(SettingsController* settingsController, UiBackend* uiBackend, SoulstormController* soulstormController, QObject *parent = nullptr);
     void grubStatsWindow();
     void onExit();
 
@@ -42,6 +42,7 @@ private:
 
     UiBackend* p_uiBackend;
     SoulstormController* p_soulstormController;
+    SettingsController* p_settingsController;
 
 
 };
