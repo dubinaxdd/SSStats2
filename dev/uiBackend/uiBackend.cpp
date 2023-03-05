@@ -104,6 +104,19 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+const QString &UiBackend::currentModTechnicalName() const
+{
+    return m_currentModTechnicalName;
+}
+
+void UiBackend::setCurrentModTechnicalName(const QString &newCurrentModTechnicalName)
+{
+    if (m_currentModTechnicalName == newCurrentModTechnicalName)
+        return;
+    m_currentModTechnicalName = newCurrentModTechnicalName;
+    emit currentModTechnicalNameChanged();
+}
+
 const QString &UiBackend::currentModName() const
 {
     return m_currentModName;
@@ -256,6 +269,11 @@ void UiBackend::receiveCurrentModName(QString modName)
     setCurrentModName(modName);
 }
 
+void UiBackend::receiveCurrentModTechnicalName(QString modName)
+{
+    setCurrentModTechnicalName(modName);
+}
+
 void UiBackend::onExit()
 {
     emit sendExit();
@@ -288,6 +306,9 @@ void UiBackend::onSettingsLoaded()
     m_sizeModifer = m_settingsController->getSettings()->scale;
     emit sizeModiferLoadedFromSettings(m_sizeModifer);
     emit sizeModiferChanged(m_sizeModifer);
+
+    setCurrentModTechnicalName(m_settingsController->getSettings()->currentMod);
+
 }
 
 void UiBackend::showClient()

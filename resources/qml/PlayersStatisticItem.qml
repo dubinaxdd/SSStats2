@@ -353,7 +353,7 @@ Rectangle {
         hoverEnabled: true
 
         onClicked: {
-            Qt.openUrlExternally("https://dowstats.ru/player.php?sid=" + itemRectangle.steamId + "&server=steam");
+            Qt.openUrlExternally("https://dowstats.ru/player.php?sid=" + itemRectangle.steamId + "&mod_tech_name=" + _uiBackend.currentModTechnicalName);
         }
 
         onContainsMouseChanged: {

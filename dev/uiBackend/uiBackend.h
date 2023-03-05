@@ -57,6 +57,7 @@ class UiBackend : public QObject
     Q_PROPERTY(int onlineCount READ onlineCount WRITE setOnlineCount NOTIFY onlineCountChanged)
 
     Q_PROPERTY(QString currentModName READ currentModName WRITE setCurrentModName NOTIFY currentModNameChanged)
+    Q_PROPERTY(QString currentModTechnicalName READ currentModTechnicalName WRITE setCurrentModTechnicalName NOTIFY currentModTechnicalNameChanged)
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -110,6 +111,9 @@ public:
     const QString &currentModName() const;
     void setCurrentModName(const QString &newCurrentModName);
 
+    const QString &currentModTechnicalName() const;
+    void setCurrentModTechnicalName(const QString &newCurrentModTechnicalName);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -150,6 +154,8 @@ signals:
 
     void currentModNameChanged();
 
+    void currentModTechnicalNameChanged();
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
@@ -164,6 +170,7 @@ public slots:
     void receiveOnlineCount(int onlineCount);
 
     void receiveCurrentModName(QString modName);
+    void receiveCurrentModTechnicalName(QString modName);
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
@@ -234,7 +241,8 @@ private:
 
     int m_onlineCount = 0;
 
-    QString m_currentModName;
+    QString m_currentModName = "";
+    QString m_currentModTechnicalName = "";
 };
 
 #endif // UIBACKEND_H
