@@ -24,28 +24,7 @@ Rectangle {
         scrollView.setDefault();
     }
 
-    function mouseWheel(delta)
-    {
-        //updateScrollViewHeight();
-
-        if (relativeMouseX >= scrollView.x &&
-            relativeMouseX <= scrollView.x + scrollView.width &&
-            relativeMouseY >= scrollView.y &&
-            relativeMouseY <= scrollView.y + scrollView.height
-                )
-        {
-
-            if (delta > 0)
-                scrollView.scrollToTop();
-
-            if (delta < 0)
-                scrollView.scrollToBottom()
-        }
-    }
-
-
     //Костыль для перезагрузки картинки, рил так на формух делают
-
     Connections {
         target: model
 
@@ -73,6 +52,20 @@ Rectangle {
 
         height: mainRectangle.height
         width: mainRectangle.width
+
+        GlobalMouseArea
+        {
+            id: scrollViewMouseArea
+            anchors.fill: parent
+
+            onWheel: {
+                if (delta > 0)
+                    scrollView.scrollToTop();
+
+                if (delta < 0)
+                    scrollView.scrollToBottom()
+            }
+        }
 
         function scrollToBottom() {
 
@@ -240,6 +233,7 @@ Rectangle {
             Rectangle {
                 Layout.fillHeight: true
                 Layout.fillWidth: true
+                color:"#00000000"
             }
         }
     }

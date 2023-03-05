@@ -14,6 +14,7 @@ Item {
     property real mouseY: GlobalMouseProvider.mouseY
 
     signal clicked()
+    signal wheel(int delta)
 
     onMouseXChanged: mouseCoordinatesChanged();
     onMouseYChanged: mouseCoordinatesChanged();
@@ -38,6 +39,11 @@ Item {
             if (root.height > 0 && root.width > 0 && root.visible)
                 mouseClicked();
         }
+
+        function onMouseWheel(delta){
+            if (root.height > 0 && root.width > 0 && root.visible)
+                mouseWheel(delta);
+        }
     }
 
     function updateCoordinates(){
@@ -54,6 +60,17 @@ Item {
                 mouseY <= globalY + height)
         {
             clicked();
+        }
+    }
+
+    function mouseWheel(delta)
+    {
+        if (mouseX >= globalX &&
+                mouseX <= globalX + width &&
+                mouseY >= globalY &&
+                mouseY <= globalY + height)
+        {
+            wheel(delta)
         }
     }
 

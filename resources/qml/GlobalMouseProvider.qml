@@ -8,8 +8,14 @@ QtObject {
     property real mouseY
 
     signal mouseClicked()
+    signal mouseWheel(int delta)
 
     function mouseClick(){
         mouseClicked();
+    }
+
+    function sendMouseWheel(delta)
+    {
+        mouseWheel(delta);
     }
 }

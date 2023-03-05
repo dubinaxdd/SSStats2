@@ -27,9 +27,8 @@ Window {
     Connections{
         target: _uiBackend
 
-        function onSendMouseWheel(delta)
-        {
-            patyStatistic.mouseWheel(delta);
+        function onSendMouseWheel(delta){
+            GlobalMouseProvider.sendMouseWheel(delta);
         }
 
         function onSendMousePress(){
