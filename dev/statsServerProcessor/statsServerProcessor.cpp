@@ -166,36 +166,14 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerStatsFromServer(reply, playersInfo);
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
-}
-
-void StatsServerProcessor::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo)
-{
-    for (int i = 0; i < playersInfo.data()->count(); i++)
-    {
-        QSharedPointer<ServerPlayerStats> playerInfo(new ServerPlayerStats(playersInfo.data()->at(i)));
-
-        QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(playerInfo.data()->avatarUrl)));
-        QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-            receivePlayerMediumAvatar(reply, playerInfo);
-        });
-
-        QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-            reply->deleteLater();
-            qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        });
-    }
 }
 
 void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer <QList<ServerPlayerStats>> playersInfo)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "receivePlayerStatsFromServer" << "Connection error:" << reply->errorString();
+        delete reply;
         return;
     }
 
@@ -204,9 +182,8 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 
     if (!jsonDoc.isObject())
     {
-        qWarning(logWarning()) << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
-
-        reply->deleteLater();
+        qWarning(logWarning()) << "receivePlayerStatsFromServer" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
+        delete reply;
         return;
     }
 
@@ -218,8 +195,8 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 
     if(!jsonObject.value("stats").isArray())
     {
-        qWarning(logWarning()) << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
-        reply->deleteLater();
+        qWarning(logWarning()) << "receivePlayerStatsFromServer" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
+        delete reply;
         return;
     }
 
@@ -248,34 +225,45 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     //    emit sendServerPlayrStats(*playerInfo.data());
 
     getPlayersMediumAvatar(playersInfo);
-    reply->deleteLater();
+    delete reply;
+}
+
+void StatsServerProcessor::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo)
+{
+    for (int i = 0; i < playersInfo.data()->count(); i++)
+    {
+        QSharedPointer<ServerPlayerStats> playerInfo(new ServerPlayerStats(playersInfo.data()->at(i)));
+
+        QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(playerInfo.data()->avatarUrl)));
+
+        QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+            receivePlayerMediumAvatar(reply, playerInfo);
+        });
+    }
 }
 
 void StatsServerProcessor::receivePlayerMediumAvatar(QNetworkReply *reply, QSharedPointer <ServerPlayerStats> playerInfo)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "receivePlayerMediumAvatar" << "Connection error:" << reply->errorString();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
     QImage avatarMedium = QImage::fromData(replyByteArray);
 
+    delete reply;
+
     if (avatarMedium.isNull())
-    {
-        reply->deleteLater();
         return;
-    }
 
     playerInfo->avatarAvailable = true;
     playerInfo->avatar = avatarMedium;
 
     if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
         emit sendServerPlayrStats(*playerInfo.data());
-
-    reply->deleteLater();
 }
 
 void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
@@ -432,7 +420,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     }
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
-        reply->deleteLater();
+        delete reply;
     });
 }
 
@@ -491,10 +479,6 @@ void StatsServerProcessor::registerPlayer(QString name, QString sid, bool init)
 
     QNetworkReply *reply = m_networkManager->get(QNetworkRequest(QUrl(reg_url)));
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        reply->deleteLater();
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
+        delete reply;
     });
 }
