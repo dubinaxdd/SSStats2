@@ -128,6 +128,46 @@ Rectangle {
             }
         }
 
+
+        Rectangle{
+            id: dowOnlineLinkRectangle
+            width: dowOnlineRowLayout.width + 30
+            height: 35
+            radius:5
+            color: "#D2691E"
+
+            RowLayout
+            {
+                id: dowOnlineRowLayout
+
+                Image{
+                    source: "qrc:/images/resources/images/dow_online.png"
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 30
+                    Layout.leftMargin: 15
+                    Layout.topMargin: 2.5
+                }
+
+                Label{
+                    id: dowOnlineLinkLabel
+                    text: "DowOnline"
+                    color: dowOnlineLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                    font.pixelSize: 16
+                }
+            }
+
+            MouseArea{
+                id: dowOnlineLinkMouseArea
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+
+                onClicked: {
+                    Qt.openUrlExternally("https://dowonline.ru");
+                }
+            }
+        }
+
         Rectangle{
             id: helpLinkRectangle
             width: helpGuideLinkLabel.width + 30
