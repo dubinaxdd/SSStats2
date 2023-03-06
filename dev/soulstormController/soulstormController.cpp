@@ -75,8 +75,6 @@ SoulstormController::~SoulstormController()
 {
     m_soulstormMemoryReaderThread.quit();
     m_soulstormMemoryReaderThread.wait();
-
-    m_soulstormMemoryReaderThread.deleteLater();
     m_soulstormMemoryReader->deleteLater();
 }
 

@@ -4,8 +4,6 @@
 #include <QObject>
 #include <QPoint>
 #include <QTimer>
-#include <QThread>
-
 #include <gamePanel.h>
 #include <statisticPanel.h>
 #include <imageProvider.h>

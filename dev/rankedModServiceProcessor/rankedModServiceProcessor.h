@@ -35,7 +35,7 @@ private slots:
     void onSettingsLoaded();
 
 private:
-    bool checkReplyErrors(QNetworkReply *reply);
+    bool checkReplyErrors(QString funcName, QNetworkReply *reply);
     void sendPingRequest();
 
 private:

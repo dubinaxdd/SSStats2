@@ -172,7 +172,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "receivePlayerStatsFromServer" << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "StatsServerProcessor::receivePlayerStatsFromServer:" << "Connection error:" << reply->errorString();
         delete reply;
         return;
     }
@@ -182,7 +182,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 
     if (!jsonDoc.isObject())
     {
-        qWarning(logWarning()) << "receivePlayerStatsFromServer" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
+        qWarning(logWarning()) << "StatsServerProcessor::receivePlayerStatsFromServer:" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
         delete reply;
         return;
     }
@@ -195,7 +195,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 
     if(!jsonObject.value("stats").isArray())
     {
-        qWarning(logWarning()) << "receivePlayerStatsFromServer" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
+        qWarning(logWarning()) << "StatsServerProcessor::receivePlayerStatsFromServer:" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
         delete reply;
         return;
     }
@@ -246,7 +246,7 @@ void StatsServerProcessor::receivePlayerMediumAvatar(QNetworkReply *reply, QShar
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "receivePlayerMediumAvatar" << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "StatsServerProcessor::receivePlayerMediumAvatar:" << "Connection error:" << reply->errorString();
         delete reply;
         return;
     }

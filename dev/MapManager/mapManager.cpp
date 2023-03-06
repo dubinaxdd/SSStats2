@@ -37,7 +37,7 @@ MapManager::~MapManager()
     m_fileHashReaderThread->quit();
     m_fileHashReaderThread->wait();
 
-    delete m_fileHashReader;
+    m_fileHashReader->deleteLater();
 }
 
 void MapManager::requestMapList()

@@ -53,13 +53,8 @@ void RankedModServiceProcessor::sendRankedMode(bool rankedMode)
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        reply->deleteLater();
+        delete reply;
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
-
 }
 
 void RankedModServiceProcessor::pingTimerTimeout()
@@ -108,27 +103,22 @@ void RankedModServiceProcessor::rankedStateTimerTimeout()
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveRankedState(reply, std::move(plyersRankedState));
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
-
 }
 
 void RankedModServiceProcessor::receiveRankedState(QNetworkReply *reply, QVector<PlyersRankedState> plyersRankedState)
 {
-    if (checkReplyErrors(reply))
+    if (checkReplyErrors("RankedModServiceProcessor::receiveRankedState", reply))
         return;
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
     if (!jsonDoc.isArray())
     {
-        qWarning(logWarning()) << "Bad reply from ranked microservice:" << QString::fromLatin1(replyByteArray);
+        qWarning(logWarning()) << "RankedModServiceProcessor::receiveRankedState:" << "Bad reply from ranked microservice:" << QString::fromLatin1(replyByteArray);
         return;
     }
 
@@ -160,18 +150,18 @@ void RankedModServiceProcessor::receiveRankedState(QNetworkReply *reply, QVector
 
 void RankedModServiceProcessor::receivePingRecponce(QNetworkReply *reply)
 {
-    if (checkReplyErrors(reply))
+    if (checkReplyErrors("RankedModServiceProcessor::receivePingRecponce", reply))
         return;
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
     if (!jsonDoc.isArray())
     {
-        qWarning(logWarning()) << "Bad reply from ranked microservice:" << QString::fromLatin1(replyByteArray);
+        qWarning(logWarning()) << "RankedModServiceProcessor::receivePingRecponce:" << "Bad reply from ranked microservice:" << QString::fromLatin1(replyByteArray);
         return;
     }
 
@@ -223,12 +213,12 @@ void RankedModServiceProcessor::onSettingsLoaded()
     m_rankedStateTimer->start();
 }
 
-bool RankedModServiceProcessor::checkReplyErrors(QNetworkReply *reply)
+bool RankedModServiceProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << funcName + ":" << "Connection error:" << reply->errorString();
+        delete reply;
         return true;
     }
 
@@ -250,9 +240,4 @@ void RankedModServiceProcessor::sendPingRequest()
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePingRecponce(reply);
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
-
 }

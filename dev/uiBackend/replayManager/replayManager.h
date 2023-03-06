@@ -87,7 +87,7 @@ private:
 
     ImageProvider* p_imageProvider;
     AsyncReplayReader* m_asyncReplayReader;
-    QThread* m_asyncReplayReaderThread;
+    QThread m_asyncReplayReaderThread;
 
     QUrl m_currentFilePath;
     QUrl m_ssUrlPathPath;

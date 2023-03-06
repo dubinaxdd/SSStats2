@@ -18,7 +18,6 @@ ReplayManager::ReplayManager(ImageProvider* imageProvider, QObject *parent)
     , m_playersListModel( new PlayersListModel(this))
     , p_imageProvider(imageProvider)
     , m_asyncReplayReader(new AsyncReplayReader())
-    , m_asyncReplayReaderThread(new QThread(this))
 {
     QObject::connect(m_replaysListModel, &ReplaysListModel::select, this, &ReplayManager::openPlayback, Qt::QueuedConnection);
     QObject::connect(m_asyncReplayReader, &AsyncReplayReader::sendReplaysInfo, this, &ReplayManager::receiveReplaysInfo, Qt::QueuedConnection);
@@ -26,16 +25,16 @@ ReplayManager::ReplayManager(ImageProvider* imageProvider, QObject *parent)
 
     emit replaysListModelSetded();
 
-    m_asyncReplayReader->moveToThread(m_asyncReplayReaderThread);
-    m_asyncReplayReaderThread->start();
+    m_asyncReplayReader->moveToThread(&m_asyncReplayReaderThread);
+    m_asyncReplayReaderThread.start();
 }
 
 ReplayManager::~ReplayManager()
 {
-    m_asyncReplayReaderThread->quit();
-    m_asyncReplayReaderThread->wait();
+    m_asyncReplayReaderThread.quit();
+    m_asyncReplayReaderThread.wait();
 
-    delete m_asyncReplayReader;
+    m_asyncReplayReader->deleteLater();
 }
 
 void ReplayManager::setSsPath(const QString &newSsPath)
