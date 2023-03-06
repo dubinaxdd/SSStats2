@@ -15,18 +15,14 @@ Rectangle
         }
     }
 
-    ColumnLayout
-    {
-        //anchors.margins: 15
+    ColumnLayout{
+        id: columnLayout
         anchors.fill: parent
-
-        spacing: 30
 
         Rectangle
         {
-            Layout.preferredWidth: grid.width
-            Layout.preferredHeight: 60
-
+            Layout.preferredHeight: 50
+            Layout.fillWidth: true
             radius: 10
             color: "#00ff99"
 
@@ -38,24 +34,14 @@ Rectangle
                 Label{
                     id: unlockerLabel
                     text: "Race unlocker:"
-                    font.pointSize: 15
-                }
-
-                Button{
-                    id: unlockRacesButton
-                    text: "Unlock races"
-                    height: 15
-
-                    opacity: hovered? 1.0 : 0.9
-                    onClicked: {
-                        model.unlockRaces();
-                        enabled = false;
-                    }
+                    font.pointSize: 12
+                    Layout.preferredWidth: 200
                 }
 
                 Label{
                     id: unlockerStateLabel
                     text: model.unlockRacesStatus
+                    Layout.preferredWidth: 200
                 }
 
                 Rectangle
@@ -63,107 +49,159 @@ Rectangle
                     Layout.fillWidth: true
                 }
 
+                BlueButton{
+                    id: unlockRacesButton
+                    text: "Unlock races"
+                    Layout.preferredWidth: 140 + columnLayout.spacing
+
+                    onClicked: {
+                        model.unlockRaces();
+                        enabled = false;
+                    }
+                }
             }
         }
 
-        GridLayout{
-            id: grid
+        Rectangle
+        {
+            Layout.preferredHeight: 50
+            Layout.fillWidth: true
+            color: "#DCDCDC"
+            radius: 10
 
-            columns: 4
+            RowLayout
+            {
+                anchors.fill: parent
+                anchors.margins: 10
 
-            //Шрифты
-            Label{
-                text: "Russian fonts:"
-            }
+                //Шрифты
+                Label{
+                    text: "Russian fonts:"
+                    Layout.preferredWidth: 200
+                }
 
-            Label{
-                id: progressLabel0;
-                text: model.russianFontsInstallProgress
-            }
+                Label{
+                    id: progressLabel0;
+                    text: model.russianFontsInstallProgress
+                    Layout.preferredWidth: 200
+                }
 
-            Button{
-                text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
-                enabled: !model.russianFontsInstallInProcess
-                height: 15
-                opacity: hovered? 1.0 : 0.8
+                Rectangle{
+                    Layout.fillWidth: true
+                }
 
-                onClicked: {
-                    model.installRussianFonts();
+                BlueButton{
+                    text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
+                    enabled: !model.russianFontsInstallInProcess
+
+                    onClicked: {
+                        model.installRussianFonts();
+                    }
+                }
+
+                BlueButton{
+                    text: "Delete"
+                    enabled: model.russianFontsInstalledStatus
+
+                    onClicked: {
+                        model.uninstallRussianFonts();
+                    }
                 }
             }
+        }
 
-            Button{
-                text: "Delete"
-                height: 15
-                enabled: model.russianFontsInstalledStatus
-                opacity: hovered? 1.0 : 0.8
+        Rectangle
+        {
+            Layout.preferredHeight: 50
+            Layout.fillWidth: true
+            color: "#DCDCDC"
+            radius: 10
 
-                onClicked: {
-                    model.uninstallRussianFonts();
+            RowLayout
+            {
+                anchors.fill: parent
+                anchors.margins: 10
+
+                //Камера мод
+                Label{
+                    text: "Advanced camera mod:"
+                    Layout.preferredWidth: 200
+                }
+
+                Label{
+                    id: progressLabel1;
+                    text: model.cameraModInstallProgress
+                    Layout.preferredWidth: 200
+                }
+
+                Rectangle{
+                    Layout.fillWidth: true
+                }
+
+                BlueButton{
+                    text: model.cameraModInstalledStatus ? "Reinstall" : "Install"
+                    enabled: !model.cameraModInstallInProcess
+
+                    onClicked: {
+                        model.installCameraMod();
+                    }
+                }
+
+                BlueButton{
+                    text: "Delete"
+                    enabled: model.cameraModInstalledStatus
+
+                    onClicked: {
+                        model.uninstallCameraMod();
+                    }
                 }
             }
+        }
 
-            //Камера мод
-            Label{
-                text: "Advanced camera mod:"
-            }
+        Rectangle
+        {
+            Layout.preferredHeight: 50
+            Layout.fillWidth: true
+            color: "#DCDCDC"
+            radius: 10
 
-            Label{
-                id: progressLabel1;
-                text: model.cameraModInstallProgress
-            }
+            RowLayout
+            {
+                anchors.fill: parent
+                anchors.margins: 10
 
-            Button{
-                text: model.cameraModInstalledStatus ? "Reinstall" : "Install"
-                enabled: !model.cameraModInstallInProcess
-                height: 15
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.installCameraMod();
+                //Хоткеи
+                Label{
+                    text: "Grid hotkeys:"
+                    Layout.preferredWidth: 200
                 }
-            }
 
-            Button{
-                text: "Delete"
-                height: 15
-                enabled: model.cameraModInstalledStatus
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.uninstallCameraMod();
+                Label{
+                    id: progressLabel2;
+                    text: model.gridHotkeysInstallProgress
+                    Layout.preferredWidth: 200
                 }
-            }
 
-
-            //Хоткеи
-            Label{
-                text: "Grid hotkeys:"
-            }
-
-            Label{
-                id: progressLabel2;
-                text: model.gridHotkeysInstallProgress
-            }
-
-            Button{
-                text: model.gridHotkeysInstalledStatus ? "Reinstall" : "Install"
-                enabled: !model.gridHotkeysInstallInProcess
-                height: 15
-                opacity: hovered? 1.0 : 0.8
-
-                onClicked: {
-                    model.installGridHotkeys();
+                Rectangle{
+                    Layout.fillWidth: true
                 }
-            }
 
-            Button{
-                text: "Delete"
-                height: 15
-                enabled: model.gridHotkeysInstalledStatus
-                opacity: hovered? 1.0 : 0.8
-                onClicked: {
-                    model.uninstallGridHotkeys();
+                BlueButton{
+                    text: model.gridHotkeysInstalledStatus ? "Reinstall" : "Install"
+                    enabled: !model.gridHotkeysInstallInProcess
+
+                    onClicked: {
+                        model.installGridHotkeys();
+                    }
+                }
+
+                BlueButton{
+                    text: "Delete"
+                    enabled: model.gridHotkeysInstalledStatus
+
+                    onClicked: {
+                        model.uninstallGridHotkeys();
+                    }
                 }
             }
         }
