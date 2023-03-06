@@ -157,7 +157,6 @@ void Core::registerTypes()
     qRegisterMetaType<QVector<WinCondition>>("QVector<WinCondition>");
     qRegisterMetaType<QVector<PlyersRankedState>>("QVector<PlyersRankedState>");
     qRegisterMetaType<QVector<ReplayListInfo>>("QVector<ReplayListInfo>");
-    qRegisterMetaType<MapItem*>("MapItem*");
     qRegisterMetaType<QList<MapFileHash>>("QList<MapFileHash>");
 }
 
