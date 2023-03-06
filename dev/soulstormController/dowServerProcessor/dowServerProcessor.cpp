@@ -27,12 +27,12 @@ DowServerProcessor::DowServerProcessor(QObject *parent)
     m_queueTimer->start();
 }
 
-bool DowServerProcessor::checkReplyErrors(QNetworkReply *reply)
+bool DowServerProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << funcName + ":" << "Connection error:" << reply->errorString();
+        delete reply;
         return true;
     }
 
@@ -93,10 +93,6 @@ void DowServerProcessor::rquestChannellData(int id)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveChannellData(reply, id);
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
 }
 
 void DowServerProcessor::requestProfileID(QString steamID)
@@ -110,10 +106,6 @@ void DowServerProcessor::requestProfileID(QString steamID)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveProfileID(reply, steamID);
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
     });
 }
 
@@ -134,10 +126,6 @@ void DowServerProcessor::requestFindAdvertisements()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveFindAdvertisements(reply);
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
     });
 }
 
@@ -166,10 +154,6 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayersSids(reply, profilesData);
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
     });
 }
 
@@ -216,11 +200,11 @@ void DowServerProcessor::requestPartysData()
 
 void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
 {
-    if (checkReplyErrors(reply))
+    if (checkReplyErrors("DowServerProcessor::receiveChannellData", reply))
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -232,11 +216,11 @@ void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
 
 void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
 {
-    if (checkReplyErrors(reply))
+    if (checkReplyErrors("DowServerProcessor::receiveProfileID", reply))
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -271,15 +255,13 @@ void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
 
 void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
 {
-    if (checkReplyErrors(reply))
+    if (checkReplyErrors("DowServerProcessor::receiveFindAdvertisements", reply))
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
-
-   // qDebug() << jsonDoc;
 
     if (jsonDoc.isArray())
     {
@@ -341,18 +323,15 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
 
 void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData)
 {
-    if (checkReplyErrors(reply))
+    if (checkReplyErrors("DowServerProcessor::receivePlayersSids", reply))
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-    //qDebug() << jsonDoc;
-
     QList<PlayerInfoFromDowServer> playersInfo;
-
 
     if (jsonDoc.isArray())
     {

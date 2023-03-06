@@ -23,7 +23,7 @@ public:
     };
 
 private:
-    bool checkReplyErrors(QNetworkReply *reply);
+    bool checkReplyErrors(QString funcName, QNetworkReply *reply);
     QNetworkRequest createDowServerRequest(QString url);
     QVector<PlayerData> getPlayersInCurrentRoom(QVector<PartyData> partyDataArray);
 
