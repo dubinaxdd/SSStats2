@@ -120,7 +120,7 @@ Rectangle {
             model: infoRectangle.model
 
             delegate: DiscordMessage{
-                width: messagesListView.width
+                width: messagesListView.width - (scrollBar.visible ?  scrollBar.width + 5 : 0)
 
                 userName: model.userName
                 content: model.content
@@ -140,6 +140,12 @@ Rectangle {
                     fullAttachmenImageRectangle.attachmentImageHeight = model.attachmentImageHeight;
                     fullAttachmenImageRectangle.attachmentId = model.attachmentId;
                 }
+            }
+
+            ScrollBar.vertical: ScrollBar {
+                id: scrollBar
+                visible: messagesListView.contentItem.height > messagesListView.height
+                policy: ScrollBar.AlwaysOn
             }
 
             onAtYEndChanged: {

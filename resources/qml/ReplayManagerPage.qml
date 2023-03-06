@@ -209,6 +209,12 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
+                ScrollBar.vertical: ScrollBar {
+                    id: scrollBar
+                    visible: playersListView.contentItem.height > playersListView.height
+                    policy: ScrollBar.AlwaysOn
+                }
+
                 clip: true
 
                 model: _uiBackend.replayManager.playersListModel
@@ -217,11 +223,10 @@ Rectangle {
 
                 delegate:  Rectangle {
 
-                    width: playersListView.width
+                    width: playersListView.width - (scrollBar.visible ? scrollBar.width + 5 : 0)
                     height: 50
                     radius: 10
                     color: model.type === "Observer" ? "#DCDCDC" : model.color
-
 
                     GridLayout
                     {
@@ -437,18 +442,16 @@ Rectangle {
                     spacing: 5
 
                     ScrollBar.vertical: ScrollBar {
-                        id: scrollBar
-                        active: true
-                        onActiveChanged: {
-                                    active = true
-                        }
+                        id: replaysScrollBar
+                        visible: replaysListView.contentItem.height > replaysListView.height
+                        policy: ScrollBar.AlwaysOn
                     }
 
                     model: _uiBackend.replayManager.replaysListModel
 
                     delegate: Rectangle{
 
-                        width: replaysListView.width - scrollBar.width
+                        width: replaysListView.width - (replaysScrollBar.visible ? replaysScrollBar.width + 5 : 0)
                         height: 70
                         radius: 10
 
