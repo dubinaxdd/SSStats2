@@ -61,11 +61,6 @@ void DiscordWebProcessor::requestNews()
         receiveNews(reply);
         m_readyToRequest = true;
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-        m_readyToRequest = true;
-    });
 }
 
 void DiscordWebProcessor::requestEvents()
@@ -101,11 +96,6 @@ void DiscordWebProcessor::requestEvents()
         receiveEvents(reply);
         m_readyToRequest = true;
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-        m_readyToRequest = true;
-    });
 }
 
 void DiscordWebProcessor::requestNewsLastMessageId()
@@ -122,11 +112,6 @@ void DiscordWebProcessor::requestNewsLastMessageId()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveNewsLastMessageId(reply);
-        m_readyToRequest = true;
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
         m_readyToRequest = true;
     });
 }
@@ -147,11 +132,6 @@ void DiscordWebProcessor::requestEventsLastMessageId()
         receiveEventsLastMessageId(reply);
         m_readyToRequest = true;
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-        m_readyToRequest = true;
-    });
 }
 
 void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
@@ -164,10 +144,6 @@ void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveUserAvatar(reply, avatarId);
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
     });
 }
 
@@ -182,10 +158,6 @@ void DiscordWebProcessor::requestAttachmentImage(QString attachmentId, QString u
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveAttachmentImage(reply, attachmentId);
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
 }
 
 void DiscordWebProcessor::requestYoutubeImage(QString youtubeId)
@@ -198,10 +170,6 @@ void DiscordWebProcessor::requestYoutubeImage(QString youtubeId)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveYoutubeImage(reply, youtubeId);
-    });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
     });
 }
 
@@ -359,11 +327,6 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
         receiveNextNews(reply);
         m_readyToRequest = true;
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-        m_readyToRequest = true;
-    });
 }
 
 void DiscordWebProcessor::requestNextEvents(QString messageId)
@@ -389,17 +352,13 @@ void DiscordWebProcessor::requestNextEvents(QString messageId)
         m_readyToRequest = true;
     });
 
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-        m_readyToRequest = true;
-    });
 }
 
 void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveNews:" << "Connection error:" << reply->errorString();
 
         m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2 * 2);
         m_needRequestNews = true;
@@ -440,7 +399,7 @@ void DiscordWebProcessor::receiveNextNews(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveNextNews:" << "Connection error:" << reply->errorString();
         emit sendNextNews(QList<DiscordMessage>());
         delete reply;
         return;
@@ -467,7 +426,7 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveEvents:" << "Connection error:" << reply->errorString();
         m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2 * 2);
         m_needRequestEvents = true;
         delete reply;
@@ -508,7 +467,7 @@ void DiscordWebProcessor::receiveNextEvents(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveNextEvents:" << "Connection error:" << reply->errorString();
         emit sendNextEvents(QList<DiscordMessage>());
         delete reply;
         return;
@@ -535,7 +494,7 @@ void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveNewsLastMessageId:" << "Connection error:" << reply->errorString();
         delete reply;
         return;
     }
@@ -559,7 +518,7 @@ void DiscordWebProcessor::receiveEventsLastMessageId(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveEventsLastMessageId:" << "Connection error:" << reply->errorString();
         delete reply;
         return;
     }
@@ -584,14 +543,14 @@ void DiscordWebProcessor::receiveUserAvatar(QNetworkReply *reply, QString avatar
 
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveUserAvatar:" << "Connection error:" << reply->errorString();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QImage avatar = QImage::fromData(replyByteArray);
 
@@ -605,8 +564,8 @@ void DiscordWebProcessor::receiveAttachmentImage(QNetworkReply *reply, QString a
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveAttachmentImage:" << "Connection error:" << reply->errorString();
+        delete reply;
         return;
     }
 
@@ -626,8 +585,8 @@ void DiscordWebProcessor::receiveYoutubeImage(QNetworkReply *reply, QString yout
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "DiscordWebProcessor::receiveYoutubeImage:" << "Connection error:" << reply->errorString();
+        delete reply;
         return;
     }
 
