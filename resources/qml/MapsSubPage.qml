@@ -196,12 +196,11 @@ Rectangle {
             Layout.fillWidth: true
 
             clip: true
+
             ScrollBar.vertical: ScrollBar {
                 id: scrollBar
-                active: true
-                onActiveChanged: {
-                            active = true
-                }
+                visible: mapsListView.contentItem.height > mapsListView.height
+                policy: ScrollBar.AlwaysOn
             }
 
             model: _uiBackend.mapManagerPage
