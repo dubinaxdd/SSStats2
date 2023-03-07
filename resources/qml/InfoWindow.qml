@@ -68,7 +68,6 @@ Rectangle {
                 <center><h2>Players are divided into the following ranks by Solo MMR</h2></center><br>
                 <table align=\"center\" style=\"margin: 0px auto;\">
                 <tr>
-                    <td><center>Calibrate</center></td>
                     <td><center>Division VII</center></td>
                     <td><center>Division VI</center></td>
                     <td><center>Division V</center></td>
@@ -78,7 +77,6 @@ Rectangle {
                     <td><center>Division I</center></td>
                 </tr>
                 <tr>
-                    <td><center>-</center></td>
                     <td><center>0 - 1399</center></td>
                     <td><center>1400 - 1549</center></td>
                     <td><center>1550 - 1649</center></td>
@@ -88,7 +86,6 @@ Rectangle {
                     <td><center>2250+</center></td>
                 </tr>
                 <tr>
-                    <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/calibrate_60.png\" width=\"70\" height=\"70\"></td>
                     <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank0_60.png\" width=\"70\" height=\"70\"></td>
                     <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank1_60.png\" width=\"70\" height=\"70\"></td>
                     <td style=\" padding: 0px 10px 0px 10px; width: 120px;\" ><img style=\" margin: 0px auto; \" src=\"qrc:/images/resources/images/rank2_60.png\" width=\"70\" height=\"70\"></td>
@@ -100,7 +97,6 @@ Rectangle {
                 </table>
                 <br>
                 <br>
-                <center>To receive a rank medal, a player must play 10 calibration games according to Solo MMR game rules.</center>
                 <br>
                 <br>
                 </body></html>
