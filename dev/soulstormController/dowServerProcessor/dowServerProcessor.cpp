@@ -175,6 +175,11 @@ void DowServerProcessor::setSessionID(QString sessionID)
     }
 }
 
+void DowServerProcessor::setAuthId(QString authId)
+{
+    m_authKey = authId;
+}
+
 void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
 {
     m_steamID = steamID;

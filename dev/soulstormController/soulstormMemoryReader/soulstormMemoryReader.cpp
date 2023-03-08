@@ -411,10 +411,6 @@ void SoulstormMemoryReader::findSessionId()
     if(hProcess==nullptr)
         return;
 
-    PlayerInfoFromDowServer playerInfo;
-
-    int playersCount = 0;
-
     QByteArray buffer(/*30400*/100000, 0);
 
 
@@ -435,7 +431,6 @@ void SoulstormMemoryReader::findSessionId()
             }
         }
 
-        //Ищем игроков в патиблоке
         for (int i = 100; i < static_cast<int>(bytesRead) - 44; i++)
         {
             bool match = false;
@@ -465,6 +460,90 @@ void SoulstormMemoryReader::findSessionId()
         }
 
         ptr1Count += 100000;
+    }
+}
+
+void SoulstormMemoryReader::findAuthKey()
+{
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
+    LPCWSTR lps = (LPCWSTR)ss.utf16();
+
+    m_soulstormHwnd = FindWindowW(NULL, lps);
+
+    if(!m_soulstormHwnd)
+        return;
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_soulstormHwnd, &PID);
+
+    // Получение дескриптора процесса
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+    if(hProcess==nullptr)
+        return;
+
+    QByteArray buffer(10000, 0);
+
+    unsigned long ptr1Count = 0x00000000;
+    while (ptr1Count < 0x7FFE0000)
+    {
+
+        SIZE_T bytesRead = 0;
+
+        // Если функция вернула не ноль, то продолжим цикл
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), 10000 , &bytesRead))
+        {
+            if(GetLastError()!=299)
+            {
+                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
+                continue;
+            }
+        }
+
+        for (int i = 0; i < static_cast<int>(bytesRead) - 20; i++)
+        {
+            bool match = false;
+
+            for (int j = 0; j < 20; j++)
+            {
+                if (buffer.at(i + j) != authHeader[j])
+                {
+                    match = false;
+                    break;
+                }
+                else
+                    match = true;
+            }
+
+            if (!match)
+                continue;
+
+            //qDebug() << "MATCHED" <<  QString::fromUtf8((char*)buffer.mid(i, 1000).data());
+
+            i = i + 19;
+
+            QString authStr = "";
+
+            int j = i;
+
+            while (authStr.right(12) != "&accountType" && authStr.count() != 1000)
+            {
+                authStr += QString::fromUtf8((char*)buffer.mid(j, 1).data());
+                j++;
+            }
+
+            //qDebug() << authStr;
+
+            if (authStr.right(12) != "&accountType")
+                continue;
+
+            authStr = authStr.left(authStr.count() - 12);
+
+            emit sendAuthKey(authStr);
+            return;
+        }
+
+        ptr1Count += 10000;
     }
 }
 
