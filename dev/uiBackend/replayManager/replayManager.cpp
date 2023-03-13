@@ -33,7 +33,6 @@ ReplayManager::~ReplayManager()
 {
     m_asyncReplayReaderThread.quit();
     m_asyncReplayReaderThread.wait();
-
     m_asyncReplayReader->deleteLater();
 }
 

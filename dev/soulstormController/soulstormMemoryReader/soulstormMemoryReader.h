@@ -45,8 +45,6 @@ private:
     //QString authHeader = "platformlogin?auth=";
    // QByteArray sessionHeader = {"sessionID="};
 
-
-
     QTimer *m_scanTimer;
     HWND m_soulstormHwnd = NULL;
     QMutex m_playersSteamScannerMutex;

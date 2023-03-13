@@ -485,7 +485,7 @@ void SoulstormMemoryReader::findAuthKey()
     QByteArray buffer(10000, 0);
 
     unsigned long ptr1Count = 0x00000000;
-    while (ptr1Count < 0x7FFE0000)
+    while (ptr1Count < 0x29000000)
     {
 
         SIZE_T bytesRead = 0;
@@ -540,6 +540,9 @@ void SoulstormMemoryReader::findAuthKey()
             authStr = authStr.left(authStr.count() - 12);
 
             emit sendAuthKey(authStr);
+
+            //qDebug() << authStr;
+
             return;
         }
 
