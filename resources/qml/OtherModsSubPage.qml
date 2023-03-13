@@ -24,7 +24,8 @@ Rectangle
             Layout.preferredHeight: 50
             Layout.fillWidth: true
             radius: 10
-            color: "#00ff99"
+            //color: "#00ff99"
+            color: "#DCDCDC"
 
             RowLayout
             {
@@ -34,7 +35,7 @@ Rectangle
                 Label{
                     id: unlockerLabel
                     text: "Race unlocker:"
-                    font.pointSize: 12
+                    //font.pointSize: 12
                     Layout.preferredWidth: 200
                 }
 

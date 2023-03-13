@@ -46,6 +46,8 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     pressedState: true
 
+                    visible: false
+
                     onClicked: {
                         mapsButton.pressedState = false;
                         otherModsButton.pressedState = false;
