@@ -36,7 +36,6 @@ MapManager::~MapManager()
 {
     m_fileHashReaderThread->quit();
     m_fileHashReaderThread->wait();
-
     m_fileHashReader->deleteLater();
 }
 
@@ -57,28 +56,22 @@ void MapManager::requestMapList()
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveMapList(reply);
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
-        m_checkUpdatesProcessed = false;
-        emit mapsInfoLoaded();
-    });
 }
 
 void MapManager::receiveMapList(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "MapManager::receiveMapList Connection error:" << reply->errorString();
+        delete reply;
+        m_checkUpdatesProcessed = false;
         emit mapsInfoLoaded();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -142,10 +135,15 @@ void MapManager::requestMapInfo(MapItem *mapItem)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveMapInfo(reply, mapItem);
     });
+}
 
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "MapManager::receiveMapInfo Connection error:" << reply->errorString();
+        delete reply;
+
         m_requestetMapInfoCount++;
 
         if(m_requestetMapInfoCount == m_mapItemArray.count())
@@ -153,20 +151,12 @@ void MapManager::requestMapInfo(MapItem *mapItem)
             m_blockInfoUpdate = false;
             emit mapsInfoLoaded();
         }
-    });
-}
 
-void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
-{
-    if (reply->error() != QNetworkReply::NoError)
-    {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
+    delete reply;
 
     QByteArray uncompressedByteArray;
 
@@ -246,24 +236,19 @@ void MapManager::requestFile(QString fileName, QString fileHash, MapItem *mapIte
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveFile(reply, fileName, mapItem);
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
-    });
 }
 
 void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *mapItem)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "MapManager::receiveFile Connection error:" << reply->errorString();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
+    delete reply;
 
     QByteArray uncompressedByteArray;
 
@@ -314,24 +299,20 @@ void MapManager::requestMapImage(QString id)
         receiveMapImage(reply, id);
     });
 
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
-    });
 }
 
 void MapManager::receiveMapImage(QNetworkReply *reply, QString id)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        qWarning(logWarning()) << "MapManager::receiveMapImage Connection error:" << reply->errorString();
+        delete reply;
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     QImage mapImage = QImage::fromData(replyByteArray);
 
