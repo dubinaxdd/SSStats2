@@ -52,8 +52,7 @@ signals:
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
-    void receivePlayersInfoMapFromScanner(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
-    void receiveCurrentPlayerHostState(bool isHost);
+    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo);
     void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
 
     void onQuitParty();
@@ -72,7 +71,6 @@ private:
     ImageProvider *m_imageProvider;
     int m_playersCount = 0;
     bool m_expandPatyStatistic = false;
-    bool currentPlayerIsHost = false;
 
     bool m_blockUpdate = false;
 };

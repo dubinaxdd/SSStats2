@@ -22,14 +22,12 @@ public:
 
 signals:
     void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
-    void sendPlayersCount(int playersCount);
-    void sendCurrentPlayerHostState(bool);
     void sendCurrentPlayerSteamID(QString steamID);
     void sendNotification(QString text, bool isWarning);
     void sendStatisticModName(QString statisticModName);
 
 public slots:
-    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);
+    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void receiveRankedMode(bool reankedMode);
     void receiveCurrentMod(QString modName);

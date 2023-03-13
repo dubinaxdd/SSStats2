@@ -28,9 +28,11 @@ void RankedModServiceProcessor::setCurrentPlayerSteamIdSlot(QString currentPlaye
     m_currentPlayerSteamId = currentPlayerSteamId;
 }
 
-void RankedModServiceProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer, int playersCount)
+void RankedModServiceProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer)
 {
     m_playersInfoInfoFromDowServer = playersInfoInfoFromDowServer;
+
+    qInfo(logInfo()) << "RankedModServiceProcessor::receivePlayresInfoFromDowServer" << "players info received";
 }
 
 void RankedModServiceProcessor::sendRankedMode(bool rankedMode)

@@ -488,12 +488,11 @@ bool ReplayDataCollector::checkEqualNamesInStats()
     return haveEqualNames;
 }
 
-void ReplayDataCollector::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer, int playersCount)
-{
-    for (int i = 0; i < playersInfoFromDowServer.count(); i++)
-        qInfo(logInfo()) << "Receive player data from DOW server:"<< playersInfoFromDowServer.at(i).name << playersInfoFromDowServer.at(i).steamId;
-
+void ReplayDataCollector::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer)
+{   
     m_playersInfoFromScanner = playersInfoFromDowServer;
+
+    qInfo(logInfo()) << "ReplayDataCollector::receivePlayresInfoFromDowServer" << "players info received";
 }
 
 void ReplayDataCollector::onQuitParty()

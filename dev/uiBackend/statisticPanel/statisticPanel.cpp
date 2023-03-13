@@ -1,5 +1,6 @@
 #include <statisticPanel.h>
 #include <QDebug>
+#include <logger.h>
 
 StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
     : QAbstractListModel(parent)
@@ -102,10 +103,8 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
     }
 }
 
-void StatisticPanel::receivePlayersInfoMapFromScanner(QList<PlayerInfoFromDowServer> playersInfo, int playersCount)
+void StatisticPanel::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo)
 {
-    Q_UNUSED(playersCount);
-
     m_playersInfo = playersInfo;
 
     if (m_playersStatsItems.count() > 0)
@@ -135,14 +134,8 @@ void StatisticPanel::receivePlayersInfoMapFromScanner(QList<PlayerInfoFromDowSer
 
         endInsertRows();
     }
-}
 
-void StatisticPanel::receiveCurrentPlayerHostState(bool isHost)
-{
-    if(currentPlayerIsHost != isHost)
-        m_playersCount = 1;
-
-    currentPlayerIsHost = isHost;
+    qInfo(logInfo()) << "StatisticPanel::receivePlayresInfoFromDowServer" << "players info received";
 }
 
 void StatisticPanel::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)

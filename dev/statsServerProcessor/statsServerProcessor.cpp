@@ -42,11 +42,8 @@ StatsServerProcessor::StatsServerProcessor(SettingsController *settingsControlle
     qInfo(logInfo()) << "Protocol version:" << m_clientVersion;
 }
 
-void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer, int playersCount )
+void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer)
 {
-    emit sendPlayersCount(playersCount - 1);
-    emit sendCurrentPlayerHostState(false);
-
     QSharedPointer <QList<ServerPlayerStats>> playersInfo(new QList<ServerPlayerStats>);
 
     for(int i = 0; i < playersInfoInfoFromDowServer.count(); i++)
@@ -63,6 +60,8 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
     }
 
     getPlayerStatsFromServer(playersInfo);
+
+    qInfo(logInfo()) << "StatsServerProcessor::receivePlayresInfoFromDowServer" << "players info received";
 }
 
 void StatsServerProcessor::parseCurrentPlayerSteamId()

@@ -22,7 +22,7 @@ signals:
 
 public slots:
     void setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId);
-    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer , int playersCount);
+    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );
     void sendRankedMode(bool rankedMode);
     void receiveCurrentMod(QString modName);
 

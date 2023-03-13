@@ -13,7 +13,7 @@ public:
 public slots:
     void receiveCurrentMissionState(SsMissionState missionCurrentState);
     void receiveAverrageApm(int apm);
-    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer , int playersCount);
+    void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer );
     void onQuitParty();
     void receiveCurrentMod(QString currentMode);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);

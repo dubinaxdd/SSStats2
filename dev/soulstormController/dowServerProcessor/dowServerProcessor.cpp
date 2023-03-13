@@ -384,10 +384,10 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
         }
     }
 
-   // for (int i = 0; i < playersInfo.count(); i++)
-   //     playersInfo[i].position = i+1;
+    for (int i = 0; i < playersInfo.count(); i++)
+        qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId;
 
-    emit sendPlayersInfoFromDowServer(playersInfo, playersInfo.count() + 1);
+    emit sendPlayersInfoFromDowServer(playersInfo);
 }
 
 void DowServerProcessor::asdTimerTimeout()
