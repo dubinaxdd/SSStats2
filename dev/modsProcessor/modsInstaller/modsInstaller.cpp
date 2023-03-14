@@ -33,6 +33,7 @@ void ModsInstaller::installMod(InstMod mod, QString path)
         case InstMod::RussianFonts : installRussianFonts(path); break;
         case InstMod::CameraMod : installCameraMod(path); break;
         case InstMod::GridHotkeys : installGridHotkeys(path); break;
+        case InstMod::TransparentCameraTrapezoid : installTransparentCameraTrapezoid(path); break;
     }
 
     emit modInstalled(mod);
@@ -44,6 +45,7 @@ void ModsInstaller::uninstallMod(InstMod mod)
         case InstMod::RussianFonts : uninstallRussianFonts();
         case InstMod::CameraMod : uninstallCameraMod();
         case InstMod::GridHotkeys : uninstallGridHotkeys();
+        case InstMod::TransparentCameraTrapezoid : uninstallTransparentCameraTrapezoid();
     }
 }
 
@@ -127,4 +129,21 @@ void ModsInstaller::uninstallGridHotkeys()
 
         qInfo(logInfo()) <<  "Grid hotkeys uninstalled from " << path;
     }
+}
+
+void ModsInstaller::installTransparentCameraTrapezoid(QString path)
+{
+    JlCompress::extractDir(path, m_ssPath + QDir::separator());
+    qInfo(logInfo()) <<  "Transparent camera trapezoid installed from " << path << "to" << m_ssPath;
+
+    QFile tempfile(path);
+    tempfile.remove();
+}
+
+void ModsInstaller::uninstallTransparentCameraTrapezoid()
+{
+    QFile tempfile1(m_ssPath + "\\DXP2\\Data\\Art\\ui\\minimap\\camera.tga");
+    tempfile1.remove();
+
+    qInfo(logInfo()) <<  "Transparent camera trapezoid uninstalled";
 }

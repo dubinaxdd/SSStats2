@@ -90,9 +90,9 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAvatars,                  m_uiBackend->eventsPage(),          &MessagesPage::onAvatarUpdate,                      Qt::QueuedConnection);
     QObject::connect(m_uiBackend->newsPage(),           &MessagesPage::sendLastReadedMessageId,         m_discordWebProcessor,              &DiscordWebProcessor::setLastReadedNewsMessageID,     Qt::QueuedConnection);
     QObject::connect(m_uiBackend->eventsPage(),         &MessagesPage::sendLastReadedMessageId,         m_discordWebProcessor,              &DiscordWebProcessor::setLastReadedEventsMessageID,   Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::startInstall,               m_modsProcessor,                    &ModsProcessor::onModInstallRequest,                Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::startUninstall,             m_modsProcessor,                    &ModsProcessor::onUninstallRequest,                 Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::sendUnlockRaces,            m_modsProcessor,                   &ModsProcessor::unlockRaces,                 Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->modsPage(),           &ModsPage::startInstall,               m_modsProcessor,                    &ModsProcessor::onModInstallRequest,                Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->modsPage(),           &ModsPage::startUninstall,             m_modsProcessor,                    &ModsProcessor::onUninstallRequest,                 Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->modsPage(),           &ModsPage::sendUnlockRaces,            m_modsProcessor,                   &ModsProcessor::unlockRaces,                 Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::volumeChanged, m_soundProcessor, &SoundProcessor::setVolume, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->newsPage(),        &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextNews,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend->eventsPage(),      &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextEvents,             Qt::QueuedConnection);
@@ -119,10 +119,10 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNextEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
 
-    QObject::connect(m_modsProcessor, &ModsProcessor::modInstallCompleeted, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveInstallCompleeted, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::installProgress, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadProgress, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::downloadError, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveDownloadError, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::sendUnlockRacesStatus, m_uiBackend->settingsPageModel(), &SettingsPageModel::receiveUnlockRacesStatus, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessor, &ModsProcessor::modInstallCompleeted, m_uiBackend->modsPage(), &ModsPage::receiveInstallCompleeted, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessor, &ModsProcessor::installProgress, m_uiBackend->modsPage(), &ModsPage::receiveDownloadProgress, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessor, &ModsProcessor::downloadError, m_uiBackend->modsPage(), &ModsPage::receiveDownloadError, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessor, &ModsProcessor::sendUnlockRacesStatus, m_uiBackend->modsPage(), &ModsPage::receiveUnlockRacesStatus, Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);

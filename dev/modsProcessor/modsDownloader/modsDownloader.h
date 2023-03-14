@@ -33,6 +33,10 @@ private:
     void receiveGridHotkeys(QNetworkReply* reply);
     void saveGridHotkeys(QByteArray gridHotkeysByteArray);
 
+    void requestTransparentCameraTrapezoid();
+    void receiveTransparentCameraTrapezoid(QNetworkReply* reply);
+    void saveTransparentCameraTrapezoid(QByteArray transparentCameraTrapezoidByteArray);
+
 
 private:
     QNetworkAccessManager *m_networkManager;

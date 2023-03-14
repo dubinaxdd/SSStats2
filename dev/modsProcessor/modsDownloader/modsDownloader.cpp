@@ -42,10 +42,6 @@ void ModsDownloader::requestRussianFonts()
             qInfo(logInfo()) << "Russian fonts download progress:" << bytesReceived << "/" << bytesTotal;
         }
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
 }
 
 void ModsDownloader::receiveRussinFonts(QNetworkReply* reply)
@@ -53,14 +49,14 @@ void ModsDownloader::receiveRussinFonts(QNetworkReply* reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        delete reply;
         emit downloadError(InstMod::RussianFonts);
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     saveRussianFonts(std::move(replyByteArray));
 
@@ -101,10 +97,6 @@ void ModsDownloader::requestCameraMod()
             qInfo(logInfo()) << "Camera mod download progress:" << bytesReceived << "/" << bytesTotal;
         }
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
 }
 
 void ModsDownloader::receiveCameraMod(QNetworkReply *reply)
@@ -112,14 +104,14 @@ void ModsDownloader::receiveCameraMod(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        delete reply;
         emit downloadError(InstMod::CameraMod);
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     saveCameraMod(std::move(replyByteArray));
 
@@ -160,10 +152,6 @@ void ModsDownloader::requestGridHotkeys()
             qInfo(logInfo()) << "Russian fonts download progress:" << bytesReceived << "/" << bytesTotal;
         }
     });
-
-    QObject::connect(reply, &QNetworkReply::errorOccurred, this, [=](){
-        reply->deleteLater();
-    });
 }
 
 void ModsDownloader::receiveGridHotkeys(QNetworkReply *reply)
@@ -171,14 +159,14 @@ void ModsDownloader::receiveGridHotkeys(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        reply->deleteLater();
+        delete reply;
         emit downloadError(InstMod::GridHotkeys);
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    reply->deleteLater();
+    delete reply;
 
     saveGridHotkeys(std::move(replyByteArray));
 
@@ -194,6 +182,61 @@ void ModsDownloader::saveGridHotkeys(QByteArray gridHotkeysByteArray)
 
         QDataStream stream( &newFile );
         stream << gridHotkeysByteArray;
+        newFile.close();
+    }
+}
+
+void ModsDownloader::requestTransparentCameraTrapezoid()
+{
+    QNetworkRequest newRequest;
+
+    QString urlString = "https://dowstats.ru/ssstats/Downloads/TransparentCameraTrapezoid.zip";
+
+    newRequest.setUrl(QUrl(urlString));
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveTransparentCameraTrapezoid(reply);
+    });
+
+    QObject::connect(reply, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
+
+        if(bytesTotal != 0)
+        {
+            emit downladProgress(InstMod::TransparentCameraTrapezoid, bytesReceived * 100 / bytesTotal);
+            qInfo(logInfo()) << "Transparent camera trapezoid mod download progress:" << bytesReceived << "/" << bytesTotal;
+        }
+    });
+}
+
+void ModsDownloader::receiveTransparentCameraTrapezoid(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "ModsDownloader::receiveTransparentCameraTrapezoid Connection error:" << reply->errorString();
+        delete reply;
+        emit downloadError(InstMod::TransparentCameraTrapezoid);
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    delete reply;
+
+    saveGridHotkeys(std::move(replyByteArray));
+
+    qInfo(logInfo()) <<  "Grid hotkeys downloaded to " << QDir::currentPath() + QDir::separator() + "TransparentCameraTrapezoid.zip";
+
+    emit modDownloaded(InstMod::TransparentCameraTrapezoid, QDir::currentPath() + QDir::separator() + "TransparentCameraTrapezoid.zip");
+}
+
+void ModsDownloader::saveTransparentCameraTrapezoid(QByteArray transparentCameraTrapezoidByteArray)
+{
+    QFile newFile( QDir::currentPath() + QDir::separator() + "TransparentCameraTrapezoid.zip" );
+    if( newFile.open( QIODevice::WriteOnly ) ) {
+
+        QDataStream stream( &newFile );
+        stream << transparentCameraTrapezoidByteArray;
         newFile.close();
     }
 }

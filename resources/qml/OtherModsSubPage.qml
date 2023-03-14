@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.12
 
 Rectangle
 {
-    property var model: _uiBackend.settingsPageModel
+    property var model: _uiBackend.modsPage
 
     Connections {
         target: model

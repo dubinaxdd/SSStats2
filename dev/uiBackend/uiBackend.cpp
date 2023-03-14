@@ -13,6 +13,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
     , m_replayManager(new ReplayManager(m_imageProvider, this))
     , m_mapManagerPage(new MapManagerPage(m_settingsController, m_imageProvider, this))
+    , m_modsPage(new ModsPage(m_settingsController, this))
     , m_notificationVisibleTimer(new QTimer(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
@@ -102,6 +103,11 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(SsMissionState::gameOver);
+}
+
+ModsPage *UiBackend::modsPage() const
+{
+    return m_modsPage;
 }
 
 const QString &UiBackend::currentModTechnicalName() const

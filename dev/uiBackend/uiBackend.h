@@ -12,7 +12,7 @@
 #include <settingsPageModel.h>
 #include <replayManager.h>
 #include <mapManagerPage.h>
-
+#include <modsPage.h>
 
 class UiBackend : public QObject
 {
@@ -45,6 +45,8 @@ class UiBackend : public QObject
     Q_PROPERTY(SettingsPageModel* settingsPageModel MEMBER m_settingsPageModel NOTIFY statisticPanelInitialized)
     Q_PROPERTY(ReplayManager* replayManager MEMBER m_replayManager NOTIFY statisticPanelInitialized)
     Q_PROPERTY(MapManagerPage* mapManagerPage MEMBER m_mapManagerPage NOTIFY statisticPanelInitialized)
+    Q_PROPERTY(ModsPage* modsPage MEMBER m_modsPage NOTIFY statisticPanelInitialized)
+
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -111,6 +113,8 @@ public:
 
     const QString &currentModTechnicalName() const;
     void setCurrentModTechnicalName(const QString &newCurrentModTechnicalName);
+
+    ModsPage *modsPage() const;
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -195,6 +199,7 @@ private:
     SettingsPageModel* m_settingsPageModel;
     ReplayManager* m_replayManager;
     MapManagerPage* m_mapManagerPage;
+    ModsPage* m_modsPage;
 
     QTimer* m_notificationVisibleTimer;
 

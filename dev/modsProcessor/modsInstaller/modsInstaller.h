@@ -33,6 +33,9 @@ private:
     void installGridHotkeys(QString path);
     void uninstallGridHotkeys();
 
+    void installTransparentCameraTrapezoid(QString path);
+    void uninstallTransparentCameraTrapezoid();
+
 
 
 private:
