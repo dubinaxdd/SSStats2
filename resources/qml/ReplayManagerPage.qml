@@ -407,7 +407,7 @@ Rectangle {
                 ComboBox{
 
                     Layout.preferredWidth: 255
-                    model: ["Sort by file name", "Sort by name", "Sort by mod", "Sort by map", "Sort by time" ]
+                    model: ["Sort by time", "Sort by file name", "Sort by name", "Sort by mod", "Sort by map" ]
 
                     onCurrentIndexChanged: _uiBackend.replayManager.replaysListModel.setSortType(currentIndex);
                 }

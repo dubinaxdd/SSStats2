@@ -40,7 +40,7 @@ private:
 
 private:
     QVector<ReplayListInfo> replaysList;
-    SortType m_sortType = SortType::SortByFileName;
+    SortType m_sortType = SortType::SortByTime;
 
 };
 

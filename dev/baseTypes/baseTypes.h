@@ -273,11 +273,11 @@ struct ReplayPlayer
 
 enum SortType : int
 {
-    SortByFileName = 0,
-    SortByName = 1,
-    SortByMod = 2,
-    SortByMap = 3,
-    SortByTime = 4
+    SortByTime = 0,
+    SortByFileName = 1,
+    SortByName = 2,
+    SortByMod = 3,
+    SortByMap = 4
 };
 
 struct PlyersRankedState

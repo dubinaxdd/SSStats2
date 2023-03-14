@@ -237,5 +237,6 @@
         <file>resources/maps/8p_thurabis_plateau.jpg</file>
         <file>resources/maps/8p_verdant_Isles.jpg</file>
         <file>resources/maps/default.jpg</file>
+        <file>resources/maps/6p_platform.jpg</file>
     </qresource>
 </RCC>
