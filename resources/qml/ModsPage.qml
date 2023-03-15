@@ -66,6 +66,8 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
 
+                    pressedState: true
+
                     onClicked: {
                         balanceModButton.pressedState = false;
                         otherModsButton.pressedState = false;
@@ -101,20 +103,20 @@ Rectangle {
 
         ColumnLayout
         {
-            DowStatsModSubPage
+            /*DowStatsModSubPage
             {
                 id: dowStatsModSubPage
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 visible: true
-            }
+            }*/
 
             MapsSubPage
             {
                 id: mapsSubPage
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                visible: false
+                visible: true
             }
 
             OtherModsSubPage
