@@ -56,6 +56,8 @@ private:
 
     QString consolidateTags(QList<QString> tags);
 
+    void updateBlockInfoUpdate();
+
 private:
     SettingsController* m_settingsController;
     QNetworkAccessManager *m_networkManager;

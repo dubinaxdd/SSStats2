@@ -244,6 +244,17 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
     {
         qWarning(logWarning()) << "MapManager::receiveFile Connection error:" << reply->errorString();
         delete reply;
+
+        mapItem->needInstall = mapItem->downloadedFiles < 0;
+        mapItem->needUpdate = mapItem->downloadedFiles != mapItem->filesList.count();
+        mapItem->downloadProcessed = false;
+        emit sendMapItem(mapItem);
+
+        updateBlockInfoUpdate();
+
+        if (m_allMapsDownloadingProcessed)
+            downloadNextMap();
+
         return;
     }
 
@@ -270,22 +281,13 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
         mapItem->downloadProcessed = false;
         emit sendMapItem(mapItem);
 
-        bool downloadProcessed = false;
-
-        for (int i = 0; i < m_mapItemArray.count(); i++)
-        {
-            if (m_mapItemArray.at(i).downloadProcessed)
-            {
-                 downloadProcessed = true;
-                 break;
-            }
-        }
-
-        m_blockInfoUpdate = downloadProcessed;
+        updateBlockInfoUpdate();
 
         if (m_allMapsDownloadingProcessed)
             downloadNextMap();
     }
+    else
+        requestFile(mapItem->filesList.at(mapItem->downloadedFiles).fileName, mapItem->filesList.at(mapItem->downloadedFiles).hash, mapItem);
 }
 
 void MapManager::requestMapImage(QString id)
@@ -357,8 +359,7 @@ void MapManager::installMap(MapItem *mapItem)
 {
     mapItem->downloadedFiles = 0;
 
-    for(int i = 0; i < mapItem->filesList.count(); i++)
-        requestFile(mapItem->filesList.at(i).fileName, mapItem->filesList.at(i).hash, mapItem);
+    requestFile(mapItem->filesList.at(0).fileName, mapItem->filesList.at(0).hash, mapItem);
 }
 
 void MapManager::receiveRemoveMap(MapItem *mapItem)
@@ -494,6 +495,22 @@ QString MapManager::consolidateTags(QList<QString> tags)
     }
 
     return tagsString;
+}
+
+void MapManager::updateBlockInfoUpdate()
+{
+    bool downloadProcessed = false;
+
+    for (int i = 0; i < m_mapItemArray.count(); i++)
+    {
+        if (m_mapItemArray.at(i).downloadProcessed)
+        {
+             downloadProcessed = true;
+             break;
+        }
+    }
+
+    m_blockInfoUpdate = downloadProcessed;
 }
 
 bool MapManager::uncompressGz(QByteArray input, QByteArray &output)
