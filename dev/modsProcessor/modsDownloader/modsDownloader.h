@@ -37,7 +37,6 @@ private:
     void receiveTransparentCameraTrapezoid(QNetworkReply* reply);
     void saveTransparentCameraTrapezoid(QByteArray transparentCameraTrapezoidByteArray);
 
-
 private:
     QNetworkAccessManager *m_networkManager;
 

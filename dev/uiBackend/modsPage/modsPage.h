@@ -13,6 +13,7 @@ class ModsPage : public QObject
     Q_PROPERTY(ModItem* russianFontsMod MEMBER m_russianFontsMod CONSTANT)
     Q_PROPERTY(ModItem* cameraMod MEMBER m_cameraMod CONSTANT)
     Q_PROPERTY(ModItem* gridHotkeysMod MEMBER m_gridHotkeysMod CONSTANT)
+    Q_PROPERTY(ModItem* transparentCameraTrapezoidMod MEMBER m_transparentCameraTrapezoidMod CONSTANT)
 
     Q_PROPERTY(QString unlockRacesStatus MEMBER m_unlockRacesStatus NOTIFY unlockRacesStatusChanged)
 
@@ -44,6 +45,8 @@ private:
     ModItem* m_russianFontsMod;
     ModItem* m_cameraMod;
     ModItem* m_gridHotkeysMod;
+    ModItem* m_transparentCameraTrapezoidMod;
+
 
     QString m_unlockRacesStatus = "";
 };

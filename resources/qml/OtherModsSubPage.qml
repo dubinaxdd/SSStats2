@@ -83,6 +83,12 @@ Rectangle
             text: "Grid hotkeys:"
         }
 
+        ModItem
+        {
+            model: root.model.transparentCameraTrapezoidMod
+            text: "Transparent camera trapezoid:"
+        }
+
         Rectangle{
             Layout.fillHeight: true
         }

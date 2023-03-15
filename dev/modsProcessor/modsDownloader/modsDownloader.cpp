@@ -18,6 +18,7 @@ void ModsDownloader::downloadMod(InstMod mod)
         case InstMod::RussianFonts  : requestRussianFonts(); break;
         case InstMod::CameraMod     : requestCameraMod(); break;
         case InstMod::GridHotkeys   : requestGridHotkeys(); break;
+        case InstMod::TransparentCameraTrapezoid   : requestTransparentCameraTrapezoid(); break;
     }
 }
 
@@ -223,9 +224,9 @@ void ModsDownloader::receiveTransparentCameraTrapezoid(QNetworkReply *reply)
 
     delete reply;
 
-    saveGridHotkeys(std::move(replyByteArray));
+    saveTransparentCameraTrapezoid(std::move(replyByteArray));
 
-    qInfo(logInfo()) <<  "Grid hotkeys downloaded to " << QDir::currentPath() + QDir::separator() + "TransparentCameraTrapezoid.zip";
+    qInfo(logInfo()) <<  "Transparent camera trapezoid to " << QDir::currentPath() + QDir::separator() + "TransparentCameraTrapezoid.zip";
 
     emit modDownloaded(InstMod::TransparentCameraTrapezoid, QDir::currentPath() + QDir::separator() + "TransparentCameraTrapezoid.zip");
 }
