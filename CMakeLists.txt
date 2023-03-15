@@ -57,9 +57,6 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 Linguist
 file(GLOB_RECURSE HEADERS_FILES dev/*.h)
 file(GLOB_RECURSE SOURCES_FILES dev/*.cpp)
 
-set(HEADERS_FILES ${HEADERS_FILES})
-set(SOURCES_FILES ${SOURCES_FILES})
-
 set(SOURCES_FILES
         main.cpp
         defines.h
@@ -129,22 +126,12 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
 endif()
 
 file(GLOB  dev_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev ${CMAKE_CURRENT_SOURCE_DIR}/dev/*)
-set(dev_DIR ${dev_DIR})
-
 file(GLOB  soulstormController_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/*)
-set(soulstormController_DIR ${soulstormController_DIR})
-
 file(GLOB  mapManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager/*)
-set(soulstormController_DIR ${soulstormController_DIR})
-
 file(GLOB  uiBackend_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/*)
-set(uiBackend_DIR ${uiBackend_DIR})
-
 file(GLOB  modsProcessor_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/*)
-set(modsProcessor_DIR ${modsProcessor_DIR})
-
 file(GLOB  replayManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/*)
-set(replayManager_DIR ${replayManager_DIR})
+file(GLOB  modsPage_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/modsPage ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/modsPage/*)
 
 set(SOURCE_DIRECTORIES
     ${dev_DIR}
@@ -153,6 +140,7 @@ set(SOURCE_DIRECTORIES
     ${uiBackend_DIR}
     ${modsProcessor_DIR}
     ${replayManager_DIR}
+    ${modsPage_DIR}
 )
 
 #message(STATUS "SOURCE_DIRECTORIES: " ${SOURCE_DIRECTORIES})

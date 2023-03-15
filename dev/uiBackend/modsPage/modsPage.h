@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <settingsController.h>
+#include <modItem.h>
 #include <baseTypes.h>
 
 class ModsPage : public QObject

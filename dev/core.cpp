@@ -135,7 +135,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendStatisticModName, m_uiBackend, &UiBackend::receiveCurrentModName, Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_uiBackend, &UiBackend::receiveCurrentModTechnicalName,   Qt::QueuedConnection);
-    //m_statsServerProcessor->parseCurrentPlayerSteamId();
+
     m_settingsController->initializeSettings();
 }
 
