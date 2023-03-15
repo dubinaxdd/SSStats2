@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.12
 
 Rectangle
 {
+    id: root
     property var model: _uiBackend.modsPage
 
     Connections {
@@ -64,154 +65,22 @@ Rectangle
             }
         }
 
-        Rectangle
+        ModItem
         {
-            Layout.preferredHeight: 50
-            Layout.fillWidth: true
-            color: "#DCDCDC"
-            radius: 10
-
-            RowLayout
-            {
-                anchors.fill: parent
-                anchors.margins: 10
-
-                //Шрифты
-                Label{
-                    text: "Russian fonts:"
-                    Layout.preferredWidth: 200
-                    font.pixelSize: 11
-                }
-
-                Label{
-                    id: progressLabel0;
-                    text: model.russianFontsInstallProgress
-                    Layout.preferredWidth: 200
-                    font.pixelSize: 11
-                }
-
-                Rectangle{
-                    Layout.fillWidth: true
-                }
-
-                BlueButton{
-                    text: model.russianFontsInstalledStatus ? "Reinstall" : "Install"
-                    enabled: !model.russianFontsInstallInProcess
-
-                    onClicked: {
-                        model.installRussianFonts();
-                    }
-                }
-
-                BlueButton{
-                    text: "Delete"
-                    enabled: model.russianFontsInstalledStatus
-
-                    onClicked: {
-                        model.uninstallRussianFonts();
-                    }
-                }
-            }
+            model: root.model.russianFontsMod
+            text: "Russian fonts:"
         }
 
-        Rectangle
+        ModItem
         {
-            Layout.preferredHeight: 50
-            Layout.fillWidth: true
-            color: "#DCDCDC"
-            radius: 10
-
-            RowLayout
-            {
-                anchors.fill: parent
-                anchors.margins: 10
-
-                //Камера мод
-                Label{
-                    text: "Advanced camera mod:"
-                    Layout.preferredWidth: 200
-                    font.pixelSize: 11
-                }
-
-                Label{
-                    id: progressLabel1;
-                    text: model.cameraModInstallProgress
-                    Layout.preferredWidth: 200
-                    font.pixelSize: 11
-                }
-
-                Rectangle{
-                    Layout.fillWidth: true
-                }
-
-                BlueButton{
-                    text: model.cameraModInstalledStatus ? "Reinstall" : "Install"
-                    enabled: !model.cameraModInstallInProcess
-
-                    onClicked: {
-                        model.installCameraMod();
-                    }
-                }
-
-                BlueButton{
-                    text: "Delete"
-                    enabled: model.cameraModInstalledStatus
-
-                    onClicked: {
-                        model.uninstallCameraMod();
-                    }
-                }
-            }
+            model: root.model.cameraMod
+            text: "Advanced camera mod:"
         }
 
-        Rectangle
+        ModItem
         {
-            Layout.preferredHeight: 50
-            Layout.fillWidth: true
-            color: "#DCDCDC"
-            radius: 10
-
-            RowLayout
-            {
-                anchors.fill: parent
-                anchors.margins: 10
-
-                //Хоткеи
-                Label{
-                    text: "Grid hotkeys:"
-                    Layout.preferredWidth: 200
-                    font.pixelSize: 11
-                }
-
-                Label{
-                    id: progressLabel2;
-                    text: model.gridHotkeysInstallProgress
-                    Layout.preferredWidth: 200
-                    font.pixelSize: 11
-                }
-
-                Rectangle{
-                    Layout.fillWidth: true
-                }
-
-                BlueButton{
-                    text: model.gridHotkeysInstalledStatus ? "Reinstall" : "Install"
-                    enabled: !model.gridHotkeysInstallInProcess
-
-                    onClicked: {
-                        model.installGridHotkeys();
-                    }
-                }
-
-                BlueButton{
-                    text: "Delete"
-                    enabled: model.gridHotkeysInstalledStatus
-
-                    onClicked: {
-                        model.uninstallGridHotkeys();
-                    }
-                }
-            }
+            model: root.model.gridHotkeysMod
+            text: "Grid hotkeys:"
         }
 
         Rectangle{

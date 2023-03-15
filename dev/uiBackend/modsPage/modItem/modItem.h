@@ -22,11 +22,12 @@ public:
     void setInstallCompleeted();
     void setDownloadError();
 
+    void setInstalledStatus(bool newInstalledStatus);
+
     Q_INVOKABLE void installMod();
     Q_INVOKABLE void uninstallMod();
 
 signals:
-
     void installedStatusChanged();
     void installInProcessChanged();
     void installProgressChanged();
@@ -35,7 +36,7 @@ signals:
     void startUninstall();
 
 private:
-    void setInstalledStatus(bool newInstalledStatus);
+
     void setInstallInProcess(bool newInstallInProcess);
     void setInstallProgress(const QString &newInstallProgress);
 

@@ -17,6 +17,11 @@ void ModItem::setInstalledStatus(bool newInstalledStatus)
 
     m_installedStatus = newInstalledStatus;
     emit installedStatusChanged();
+
+    if(m_installedStatus)
+        setInstallProgress("Installed");
+    else
+        setInstallProgress("Not installed");
 }
 
 bool ModItem::installInProcess() const

@@ -3,53 +3,82 @@
 ModsPage::ModsPage(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
     , m_settingsController(settingsController)
+    , m_russianFontsMod(new ModItem(this))
+    , m_cameraMod(new ModItem(this))
+    , m_gridHotkeysMod(new ModItem(this))
 {
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &ModsPage::onSettingsLoaded, Qt::QueuedConnection);
+
+    QObject::connect(m_russianFontsMod, &ModItem::startInstall, this, [&]{emit startInstall(InstMod::RussianFonts);});
+    QObject::connect(m_cameraMod, &ModItem::startInstall, this, [&]{emit startInstall(InstMod::CameraMod);});
+    QObject::connect(m_gridHotkeysMod, &ModItem::startInstall, this, [&]{emit startInstall(InstMod::GridHotkeys);});
+
+    QObject::connect(m_russianFontsMod, &ModItem::startUninstall, this, [&]{
+        emit startUninstall(InstMod::RussianFonts);
+        m_settingsController->getSettings()->russianFontsInstalled = false;
+        m_settingsController->saveSettings();
+    });
+    QObject::connect(m_cameraMod, &ModItem::startUninstall, this, [&]{
+        emit startUninstall(InstMod::CameraMod);
+        m_settingsController->getSettings()->cameraModInstalled = false;
+        m_settingsController->saveSettings();
+    });
+    QObject::connect(m_gridHotkeysMod, &ModItem::startUninstall, this, [&]{
+        emit startUninstall(InstMod::GridHotkeys);
+        m_settingsController->getSettings()->gridHotkeysInstalled = false;
+        m_settingsController->saveSettings();
+    });
 }
 
 void ModsPage::onSettingsLoaded()
 {
-    m_russianFontsInstalledStatus = m_settingsController->getSettings()->russianFontsInstalled;
-    m_russianFontsInstallProgress = m_russianFontsInstalledStatus ? "Installed" : "Not installed";
-    emit russianFontsInstallStatusChanged();
-    emit russianFontsInstallProgressChanged();
-
-    m_cameraModInstalledStatus = m_settingsController->getSettings()->cameraModInstalled;
-    m_cameraModInstallProgress = m_cameraModInstalledStatus ? "Installed" : "Not installed";
-    emit cameraModInstallStatusChanged();
-    emit cameraModInstallProgressChanged();
-
-    m_gridHotkeysInstalledStatus = m_settingsController->getSettings()->gridHotkeysInstalled;
-    m_gridHotkeysInstallProgress = m_gridHotkeysInstalledStatus ? "Installed" : "Not installed";
-    emit gridHotkeysInstallStatusChanged();
-    emit gridHotkeysInstallProgressChanged();
+    m_russianFontsMod->setInstalledStatus(m_settingsController->getSettings()->russianFontsInstalled);
+    m_cameraMod->setInstalledStatus(m_settingsController->getSettings()->cameraModInstalled);
+    m_gridHotkeysMod->setInstalledStatus(m_settingsController->getSettings()->gridHotkeysInstalled);
 }
 
 
 void ModsPage::receiveDownloadProgress(InstMod mod, int progress)
 {
     switch (mod) {
-        case InstMod::RussianFonts : receiveRussianFontsDownloadProgress(progress); break;
-        case InstMod::CameraMod : receiveCameraModDownloadProgress(progress); break;
-        case InstMod::GridHotkeys : receiveGridHotkeysDownloadProgress(progress); break;
+        case InstMod::RussianFonts :    m_russianFontsMod->setDownloadProgress(progress);   break;
+        case InstMod::CameraMod :       m_cameraMod->setDownloadProgress(progress);         break;
+        case InstMod::GridHotkeys :     m_gridHotkeysMod->setDownloadProgress(progress);    break;
     }
 }
 
 void ModsPage::receiveInstallCompleeted(InstMod mod)
 {
     switch (mod) {
-        case InstMod::RussianFonts : receiveRussianFontsInstallCompleeted(); break;
-        case InstMod::CameraMod : receiveCameraModInstallCompleeted(); break;
-        case InstMod::GridHotkeys : receiveGridHotkeysInstallCompleeted(); break;
+        case InstMod::RussianFonts :
+        {
+            m_russianFontsMod->setInstallCompleeted();
+            m_settingsController->getSettings()->russianFontsInstalled = true;
+            break;
+        }
+
+        case InstMod::CameraMod : {
+            m_cameraMod->setInstallCompleeted();
+            m_settingsController->getSettings()->cameraModInstalled = true;
+            break;
+        }
+
+        case InstMod::GridHotkeys :{
+            m_gridHotkeysMod->setInstallCompleeted();
+            m_settingsController->getSettings()->gridHotkeysInstalled = true;
+            break;
+        }
     }
+
+    m_settingsController->saveSettings();
 }
 
 void ModsPage::receiveDownloadError(InstMod mod)
 {
     switch (mod) {
-        case InstMod::RussianFonts : receiveRussianFontsDownloadError(); break;
-        case InstMod::CameraMod : receiveCameraModDownloadError(); break;
-        case InstMod::GridHotkeys : receiveGridHotkeysDownloadError(); break;
+        case InstMod::RussianFonts :    m_russianFontsMod->setDownloadError();  break;
+        case InstMod::CameraMod :       m_cameraMod->setDownloadError();        break;
+        case InstMod::GridHotkeys :     m_gridHotkeysMod->setDownloadError();   break;
     }
 }
 
@@ -64,163 +93,9 @@ void ModsPage::receiveUnlockRacesStatus(bool status)
 }
 
 
-void ModsPage::installRussianFonts()
-{
-    m_russianFontsInstallInProcess = true;
-    m_russianFontsInstallProgress = "Progress: 0%";
-    emit russianFontsInstallProgressChanged();
-    emit startInstall(InstMod::RussianFonts);
-    emit russianFontsInstallInProcessChanged();
-}
-
-void ModsPage::uninstallRussianFonts()
-{
-    m_russianFontsInstalledStatus = false;
-    m_russianFontsInstallProgress = "Not installed";
-
-    m_settingsController->getSettings()->russianFontsInstalled = m_russianFontsInstalledStatus;
-    m_settingsController->saveSettings();
-
-    emit startUninstall(InstMod::RussianFonts);
-    emit russianFontsInstallProgressChanged();
-    emit russianFontsInstallStatusChanged();
-}
-
-void ModsPage::installCameraMod()
-{
-    m_cameraModInstallInProcess = true;
-    m_cameraModInstallProgress = "Progress: 0%";
-    emit cameraModInstallProgressChanged();
-    emit startInstall(InstMod::CameraMod);
-    emit cameraModInstallInProcessChanged();
-}
-
-void ModsPage::uninstallCameraMod()
-{
-    m_cameraModInstalledStatus = false;
-    m_cameraModInstallProgress = "Not installed";
-
-    m_settingsController->getSettings()->cameraModInstalled = m_cameraModInstalledStatus;
-    m_settingsController->saveSettings();
-
-    emit startUninstall(InstMod::CameraMod);
-    emit cameraModInstallProgressChanged();
-    emit cameraModInstallStatusChanged();
-}
-
-void ModsPage::installGridHotkeys()
-{
-    m_gridHotkeysInstallInProcess = true;
-    m_gridHotkeysInstallProgress = "Progress: 0%";
-    emit gridHotkeysInstallProgressChanged();
-    emit startInstall(InstMod::GridHotkeys);
-    emit gridHotkeysInstallInProcessChanged();
-}
-
-void ModsPage::uninstallGridHotkeys()
-{
-    m_gridHotkeysInstalledStatus = false;
-    m_gridHotkeysInstallProgress = "Not installed";
-
-    m_settingsController->getSettings()->gridHotkeysInstalled = m_gridHotkeysInstalledStatus;
-    m_settingsController->saveSettings();
-
-    emit startUninstall(InstMod::GridHotkeys);
-    emit gridHotkeysInstallProgressChanged();
-    emit gridHotkeysInstallStatusChanged();
-}
-
 void ModsPage::unlockRaces()
 {
     m_unlockRacesStatus = "Status: Processed...";
     emit unlockRacesStatusChanged();
-
     emit sendUnlockRaces();
-}
-
-void ModsPage::receiveRussianFontsDownloadProgress(int progress)
-{
-    m_russianFontsInstallProgress = "Progress: " + QString::number(progress) + "%";
-    emit russianFontsInstallProgressChanged();
-}
-
-void ModsPage::receiveRussianFontsInstallCompleeted()
-{
-    m_russianFontsInstalledStatus = true;
-    m_russianFontsInstallInProcess = false;
-    m_russianFontsInstallProgress = "Installed";
-
-    m_settingsController->getSettings()->russianFontsInstalled = m_russianFontsInstalledStatus;
-    m_settingsController->saveSettings();
-
-    emit russianFontsInstallProgressChanged();
-    emit russianFontsInstallStatusChanged();
-    emit russianFontsInstallInProcessChanged();
-}
-
-void ModsPage::receiveRussianFontsDownloadError()
-{
-    m_russianFontsInstallProgress = "Download error";
-    emit russianFontsInstallProgressChanged();
-
-    m_russianFontsInstallInProcess = false;
-    emit russianFontsInstallInProcessChanged();
-}
-
-void ModsPage::receiveCameraModDownloadProgress(int progress)
-{
-    m_cameraModInstallProgress = "Progress: " + QString::number(progress) + "%";
-    emit cameraModInstallProgressChanged();
-}
-
-void ModsPage::receiveCameraModInstallCompleeted()
-{
-    m_cameraModInstalledStatus = true;
-    m_cameraModInstallInProcess = false;
-    m_cameraModInstallProgress = "Installed";
-
-    m_settingsController->getSettings()->cameraModInstalled = m_cameraModInstalledStatus;
-    m_settingsController->saveSettings();
-
-    emit cameraModInstallProgressChanged();
-    emit cameraModInstallStatusChanged();
-    emit cameraModInstallInProcessChanged();
-}
-
-void ModsPage::receiveCameraModDownloadError()
-{
-    m_cameraModInstallProgress = "Download error";
-    emit cameraModInstallProgressChanged();
-
-    m_cameraModInstallInProcess = false;
-    emit cameraModInstallInProcessChanged();
-}
-
-void ModsPage::receiveGridHotkeysDownloadProgress(int progress)
-{
-    m_gridHotkeysInstallProgress = "Progress: " + QString::number(progress) + "%";
-    emit gridHotkeysInstallProgressChanged();
-}
-
-void ModsPage::receiveGridHotkeysInstallCompleeted()
-{
-    m_gridHotkeysInstalledStatus = true;
-    m_gridHotkeysInstallInProcess = false;
-    m_gridHotkeysInstallProgress = "Installed";
-
-    m_settingsController->getSettings()->gridHotkeysInstalled = m_gridHotkeysInstalledStatus;
-    m_settingsController->saveSettings();
-
-    emit gridHotkeysInstallProgressChanged();
-    emit gridHotkeysInstallStatusChanged();
-    emit gridHotkeysInstallInProcessChanged();
-}
-
-void ModsPage::receiveGridHotkeysDownloadError()
-{
-    m_gridHotkeysInstallProgress = "Download error";
-    emit gridHotkeysInstallProgressChanged();
-
-    m_gridHotkeysInstallInProcess = false;
-    emit gridHotkeysInstallInProcessChanged();
 }

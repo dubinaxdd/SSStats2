@@ -29,5 +29,6 @@
         <file>resources/qml/GlobalMouseArea.qml</file>
         <file>resources/qml/GlobalMouseProvider.qml</file>
         <file>resources/qml/qmldir</file>
+        <file>resources/qml/ModItem.qml</file>
     </qresource>
 </RCC>
