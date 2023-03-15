@@ -81,6 +81,8 @@ Rectangle {
                         color: "#FFFFFF"
                         text: "Checking updates."
                         visible: _uiBackend.mapManagerPage.loadMapInfoProcessed
+
+                        font.pixelSize: 11
                     }
 
                     OpacityMask {
@@ -98,6 +100,7 @@ Rectangle {
                     id: downloadingProgress
                     visible: _uiBackend.mapManagerPage.downloadedProcessed
                     text: "Downloading progress: " + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
+                    font.pixelSize: 11
                 }
             }
 
@@ -115,18 +118,21 @@ Rectangle {
                     text: "Authors: " + _uiBackend.mapManagerPage.currentMapAuthors
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapAuthors !== ""
+                    font.pixelSize: 11
                 }
 
                 Label{
                     text: _uiBackend.mapManagerPage.currentMapDescription
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapDescription !== ""
+                    font.pixelSize: 11
                 }
 
                 Label{
                     text: "Tags: " + _uiBackend.mapManagerPage.currentMapTags
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapTags !== ""
+                    font.pixelSize: 11
                 }
             }
 
@@ -178,6 +184,7 @@ Rectangle {
                     checked: _uiBackend.mapManagerPage.autoinstallDefaultMaps
 
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallDefaultMaps = checked
+                    font.pixelSize: 11
                 }
 
                 Switch{
@@ -185,6 +192,7 @@ Rectangle {
                     checked: _uiBackend.mapManagerPage.autoinstallAllMaps
 
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallAllMaps = checked
+                    font.pixelSize: 11
                 }
             }
         }
@@ -230,9 +238,7 @@ Rectangle {
                 RowLayout
                 {
                     anchors.fill: parent
-
                     anchors.margins: 10
-
                     spacing: 10
 
                     Rectangle{
@@ -254,12 +260,14 @@ Rectangle {
                     {
                         Layout.preferredWidth: 200
                         text: model.mapName
+                        font.pixelSize: 11
                     }
 
                     Label
                     {
                         Layout.preferredWidth: 60
                         text: model.description
+                        font.pixelSize: 11
                         //visible: model.description !== ""
                     }
 
@@ -268,6 +276,7 @@ Rectangle {
                         Layout.preferredWidth: 100
                         text: "Tags: " + model.tags
                         visible: model.tags !== ""
+                        font.pixelSize: 11
                     }
 
                     Rectangle
@@ -279,6 +288,7 @@ Rectangle {
                     {
                         text: "Downloading processed..."
                         visible: model.downloadingProcessed
+                        font.pixelSize: 11
                     }
 
                     BlueButton{

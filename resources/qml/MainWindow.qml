@@ -7,7 +7,7 @@ import QtGraphicalEffects 1.15
 Window {
     id: root
     width: 1200
-    height: 900
+    height: 700
     title: "DoW Stats 2"
     color: "#eaeaea"
     flags: Qt.Window

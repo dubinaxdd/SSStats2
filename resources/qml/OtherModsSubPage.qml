@@ -35,7 +35,7 @@ Rectangle
                 Label{
                     id: unlockerLabel
                     text: "Race unlocker:"
-                    //font.pointSize: 12
+                    font.pixelSize: 11
                     Layout.preferredWidth: 200
                 }
 
@@ -43,6 +43,7 @@ Rectangle
                     id: unlockerStateLabel
                     text: model.unlockRacesStatus
                     Layout.preferredWidth: 200
+                    font.pixelSize: 11
                 }
 
                 Rectangle
@@ -79,12 +80,14 @@ Rectangle
                 Label{
                     text: "Russian fonts:"
                     Layout.preferredWidth: 200
+                    font.pixelSize: 11
                 }
 
                 Label{
                     id: progressLabel0;
                     text: model.russianFontsInstallProgress
                     Layout.preferredWidth: 200
+                    font.pixelSize: 11
                 }
 
                 Rectangle{
@@ -127,12 +130,14 @@ Rectangle
                 Label{
                     text: "Advanced camera mod:"
                     Layout.preferredWidth: 200
+                    font.pixelSize: 11
                 }
 
                 Label{
                     id: progressLabel1;
                     text: model.cameraModInstallProgress
                     Layout.preferredWidth: 200
+                    font.pixelSize: 11
                 }
 
                 Rectangle{
@@ -175,12 +180,14 @@ Rectangle
                 Label{
                     text: "Grid hotkeys:"
                     Layout.preferredWidth: 200
+                    font.pixelSize: 11
                 }
 
                 Label{
                     id: progressLabel2;
                     text: model.gridHotkeysInstallProgress
                     Layout.preferredWidth: 200
+                    font.pixelSize: 11
                 }
 
                 Rectangle{

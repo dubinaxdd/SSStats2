@@ -239,14 +239,14 @@ Rectangle {
                         rows: 1
 
                         Label {
-                            text: "Type: " + model.type
+                            text: model.type
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 80
                             font.pixelSize: 11
                         }
 
                         Label {
-                            text: "Name: " + model.name
+                            text: model.name
                             Layout.alignment: Qt.AlignLeft
                             //Layout.preferredWidth: 150
                             Layout.fillWidth: true

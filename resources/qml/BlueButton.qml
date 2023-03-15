@@ -31,6 +31,7 @@ Rectangle{
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             text: rootObject.text
             color: buttonMouseArea.containsMouse && rootObject.enabled ? "#DCDCDC" : "#FFFFFF"
+            font.pixelSize: 11
         }
     }
 
