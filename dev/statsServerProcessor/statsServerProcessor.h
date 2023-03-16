@@ -20,6 +20,8 @@ public:
     void getPlayerStatsFromServer(QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo);
 
+
+
 signals:
     void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
     void sendCurrentPlayerSteamID(QString steamID);
@@ -31,6 +33,7 @@ public slots:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void receiveRankedMode(bool reankedMode);
     void receiveCurrentMod(QString modName);
+    void receiveAuthKey(const QString &newAuthKey);
 
 private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
@@ -49,6 +52,7 @@ private:
     QString m_steamPath;
     QString m_ssPath;
     QString m_clientVersion;
+    QString m_authKey = "";
     QMap<QString, QString> AllPlayersInfo;
     QNetworkAccessManager *m_networkManager;
     QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;

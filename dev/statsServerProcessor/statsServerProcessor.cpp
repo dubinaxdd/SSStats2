@@ -159,6 +159,7 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
 
     newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
     newRequest.setRawHeader("machineUniqueId", m_machineUniqueId.toLatin1());
+    newRequest.setRawHeader("steamAuthId", m_authKey.toLatin1());
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -446,6 +447,12 @@ QString StatsServerProcessor::GetRandomString() const
        randomString.append(nextChar);
    }
    return randomString;
+}
+
+void StatsServerProcessor::receiveAuthKey(const QString &newAuthKey)
+{
+    if(!newAuthKey.isEmpty())
+        m_authKey = newAuthKey;
 }
 
 QString StatsServerProcessor::CRC32fromByteArray( const QByteArray & array )

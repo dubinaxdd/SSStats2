@@ -66,6 +66,7 @@ signals:
     void ssLaunchStateChanged(bool lounched);
     void ssMaximized(bool maximized);
     void inputBlockStateChanged(bool);
+    void sendAuthKey(QString authKey);
 
 private:
     QString getSsPathFromRegistry();

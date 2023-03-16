@@ -35,7 +35,6 @@ private:
 
 public slots:
     void setSessionID(QString sessionID);
-    void setAuthId(QString authId);
     void setCurrentPlayerSteamID(QString steamID);
     void setCurrentModVersion(QString modVersion);
     void requestPartysData();
@@ -67,7 +66,6 @@ private:
 
     QNetworkAccessManager *m_networkManager;
     QString m_sessionID = "";
-    QString m_authKey = "";
     QString m_steamID = "";
     QString m_profileID = "";
     QString m_statGroupId = "";
