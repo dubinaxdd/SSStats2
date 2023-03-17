@@ -106,21 +106,28 @@ Rectangle {
         ColumnLayout {
             id: columnLayout
 
+            Layout.topMargin: 10 * sizeModifer
+            Layout.bottomMargin: 10 * sizeModifer
+            spacing: 5 * sizeModifer
+
+            Rectangle{
+                Layout.fillHeight: true
+                visible: itemRectangle.playerIsBanned
+            }
+
             Rectangle {
                 id: rectangle
 
                 color: "#00000000"
                 radius: 10 * sizeModifer
-                Layout.topMargin: (itemRectangle.playerIsBanned ? 10 : 0) * sizeModifer
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                Layout.topMargin: 0
+
+                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                 Layout.maximumWidth: 80 * sizeModifer
                 Layout.preferredHeight: 60 * sizeModifer
                 Layout.preferredWidth: 80 * sizeModifer
                 Layout.minimumHeight: 60 * sizeModifer
                 Layout.minimumWidth: 80 * sizeModifer
-                Layout.fillHeight: true
-                Layout.fillWidth: true
-
 
                 Rectangle {
                     id: avatarRectangle
@@ -128,7 +135,6 @@ Rectangle {
                     width: 60 * sizeModifer
                     height:60 * sizeModifer
                     radius: 10 * sizeModifer
-                    //Layout.rightMargin: 15
 
                     anchors.verticalCenter: parent.verticalCenter
                     anchors.horizontalCenter: parent.horizontalCenter
@@ -161,6 +167,18 @@ Rectangle {
                          maskSource: maskRectangle
                      }
                 }
+            }
+
+            Label {
+                id: statusLabel
+                visible: itemRectangle.playerIsBanned
+                text: qsTr("[CHEATER]")
+                font.pixelSize: 15 * sizeModifer
+                Layout.alignment: Qt.AlignHCenter
+            }
+
+            Rectangle{
+                Layout.fillHeight: true
             }
 
             RowLayout
@@ -205,21 +223,13 @@ Rectangle {
                 }
             }
 
-            Label {
-                id: statusLabel
-                visible: itemRectangle.playerIsBanned
-                text: qsTr("[CHEATER]")
-                font.pixelSize: 15 * sizeModifer
-
-                Layout.bottomMargin: 10 * sizeModifer
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
-            }
 
 
-            Rectangle
+
+            /*Rectangle
             {
                 Layout.fillHeight: true
-            }
+            }*/
         }
 
         ColumnLayout {
