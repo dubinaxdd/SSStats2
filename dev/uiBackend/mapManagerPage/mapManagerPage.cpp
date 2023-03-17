@@ -235,6 +235,9 @@ void MapManagerPage::installMap(int index)
 
 void MapManagerPage::selectMap(int index)
 {
+    if (m_mapItemArray.count() == 0)
+        return;
+
     for(int i = 0; i < m_mapItemArray.count(); i++)
     {
         if (i == index)
