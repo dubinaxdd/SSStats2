@@ -138,7 +138,9 @@ void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
 {
     QNetworkRequest newRequest;
 
-    newRequest.setUrl(QUrl("https://cdn.discordapp.com/avatars/" + userId + "/" + avatarId + ".png"));
+    //newRequest.setUrl(QUrl("https://cdn.discordapp.com/avatars/" + userId + "/" + avatarId + ".png"));
+
+    newRequest.setUrl(QUrl("http://crosspick.ru:8080/user/avatar?id=" + userId));
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
