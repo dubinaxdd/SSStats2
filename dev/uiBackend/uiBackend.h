@@ -13,6 +13,7 @@
 #include <replayManager.h>
 #include <mapManagerPage.h>
 #include <modsPage.h>
+#include <onlineStatisticPanel.h>
 
 class UiBackend : public QObject
 {
@@ -116,6 +117,8 @@ public:
 
     ModsPage *modsPage() const;
 
+    OnlineStatisticPanel *onlineStatisticPanel() const;
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -200,6 +203,7 @@ private:
     ReplayManager* m_replayManager;
     MapManagerPage* m_mapManagerPage;
     ModsPage* m_modsPage;
+    OnlineStatisticPanel* m_onlineStatisticPanel;
 
     QTimer* m_notificationVisibleTimer;
 
