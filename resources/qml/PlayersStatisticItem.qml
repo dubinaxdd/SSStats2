@@ -102,6 +102,7 @@ Rectangle {
     RowLayout {
         id: rowLayout
         anchors.fill: parent
+        spacing: 5 * sizeModifer
 
         ColumnLayout {
             id: columnLayout
@@ -222,23 +223,18 @@ Rectangle {
                     font.pixelSize: 11 * sizeModifer
                 }
             }
-
-
-
-
-            /*Rectangle
-            {
-                Layout.fillHeight: true
-            }*/
         }
 
         ColumnLayout {
             id: columnLayout4
-            spacing: 5 * sizeModifer
+            spacing: 3 * sizeModifer
             Layout.margins: 5 * sizeModifer
+
+            Layout.leftMargin: 0
+            Layout.bottomMargin: 10 * sizeModifer
             Layout.fillHeight: true
             Layout.fillWidth: true
-            anchors.bottomMargin: 0
+
 
             Label {
                 id: label1
@@ -257,13 +253,12 @@ Rectangle {
                 ColumnLayout
                 {
 
-                    spacing: 1
+                    spacing: 0
 
                     Label {
                         id: label2
                         text: "MMR: " + itemRectangle.playerMmr
-                        font.pixelSize: 12 * sizeModifer
-
+                        font.pixelSize: 11 * sizeModifer
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                     }
@@ -274,13 +269,13 @@ Rectangle {
                         text: "Solo MMR: " + itemRectangle.playerMmr1v1
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        font.pixelSize: 12 * sizeModifer
+                        font.pixelSize: 11 * sizeModifer
                     }
 
                     Label {
                         id: label4
                         text: "Games played: " + itemRectangle.playerGamesCount
-                        font.pixelSize: 12 * sizeModifer
+                        font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
@@ -290,13 +285,13 @@ Rectangle {
                         text: "Race: " + itemRectangle.playerRace
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        font.pixelSize: 12 * sizeModifer
+                        font.pixelSize: 11 * sizeModifer
                     }
 
                     Label {
                         id: label5
                         text: "Win rate: " + itemRectangle.playerWinRate + "%"
-                        font.pixelSize: 12 * sizeModifer
+                        font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
@@ -304,7 +299,7 @@ Rectangle {
                     Label {
                         id: label6
                         text: "APM: " + itemRectangle.playerApm
-                        font.pixelSize: 12 * sizeModifer
+                        font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                     }
