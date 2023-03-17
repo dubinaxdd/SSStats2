@@ -52,7 +52,7 @@ Rectangle {
                         mapsButton.pressedState = false;
                         otherModsButton.pressedState = false;
 
-                        dowStatsModSubPage.visible = true;
+                        //dowStatsModSubPage.visible = true;
                         mapsSubPage.visible = false;
                         otherModsSubPage.visible = false;
                     }
@@ -72,7 +72,7 @@ Rectangle {
                         balanceModButton.pressedState = false;
                         otherModsButton.pressedState = false;
 
-                        dowStatsModSubPage.visible = false;
+                        //dowStatsModSubPage.visible = false;
                         mapsSubPage.visible = true;
                         otherModsSubPage.visible = false;
                     }
@@ -89,7 +89,7 @@ Rectangle {
                         balanceModButton.pressedState = false;
                         mapsButton.pressedState = false;
 
-                        dowStatsModSubPage.visible = false;
+                        //dowStatsModSubPage.visible = false;
                         mapsSubPage.visible = false;
                         otherModsSubPage.visible = true;
                     }
