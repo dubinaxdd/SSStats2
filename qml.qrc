@@ -30,5 +30,6 @@
         <file>resources/qml/GlobalMouseProvider.qml</file>
         <file>resources/qml/qmldir</file>
         <file>resources/qml/ModItem.qml</file>
+        <file>resources/qml/OnlineStatisticPanel.qml</file>
     </qresource>
 </RCC>

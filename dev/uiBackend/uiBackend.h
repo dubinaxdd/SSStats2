@@ -33,21 +33,20 @@ class UiBackend : public QObject
     Q_PROPERTY(bool headerVisible MEMBER m_headerVisible NOTIFY headerPanelVisibleChanged)
     Q_PROPERTY(bool patyStatisticVisible MEMBER m_patyStatisticVisible NOTIFY patyStatisticVisibleChanged)
 
-    Q_PROPERTY(QString ssStatsVersion MEMBER m_ssStatsVersion NOTIFY statsHeaderInitialized)
-
-    Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel NOTIFY gamePanelInitialized)
-    Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel NOTIFY statisticPanelInitialized)
+    Q_PROPERTY(QString ssStatsVersion MEMBER m_ssStatsVersion CONSTANT )
 
     Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
     Q_PROPERTY(double sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
 
-    Q_PROPERTY(MessagesPage* newsPage MEMBER m_newsPage NOTIFY statisticPanelInitialized)
-    Q_PROPERTY(MessagesPage* eventsPage MEMBER m_eventsPage NOTIFY statisticPanelInitialized)
-    Q_PROPERTY(SettingsPageModel* settingsPageModel MEMBER m_settingsPageModel NOTIFY statisticPanelInitialized)
-    Q_PROPERTY(ReplayManager* replayManager MEMBER m_replayManager NOTIFY statisticPanelInitialized)
-    Q_PROPERTY(MapManagerPage* mapManagerPage MEMBER m_mapManagerPage NOTIFY statisticPanelInitialized)
-    Q_PROPERTY(ModsPage* modsPage MEMBER m_modsPage NOTIFY statisticPanelInitialized)
-
+    Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel CONSTANT)
+    Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel CONSTANT)
+    Q_PROPERTY(MessagesPage* newsPage MEMBER m_newsPage  CONSTANT)
+    Q_PROPERTY(MessagesPage* eventsPage MEMBER m_eventsPage  CONSTANT)
+    Q_PROPERTY(SettingsPageModel* settingsPageModel MEMBER m_settingsPageModel  CONSTANT)
+    Q_PROPERTY(ReplayManager* replayManager MEMBER m_replayManager  CONSTANT)
+    Q_PROPERTY(MapManagerPage* mapManagerPage MEMBER m_mapManagerPage  CONSTANT)
+    Q_PROPERTY(ModsPage* modsPage MEMBER m_modsPage  CONSTANT)
+    Q_PROPERTY(OnlineStatisticPanel* onlineStatisticPanel MEMBER m_onlineStatisticPanel CONSTANT)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -138,9 +137,6 @@ signals:
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
 
-    void gamePanelInitialized();
-    void statisticPanelInitialized();
-    void statsHeaderInitialized();
     void sendExit();
     void sendLaunchSoulstormWithSupportMode();
     void sendLaunchSoulstorm();

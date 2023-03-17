@@ -29,10 +29,6 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
 
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &UiBackend::onSettingsLoaded, Qt::QueuedConnection);
     QObject::connect(m_notificationVisibleTimer, &QTimer::timeout, this, [=]{setNotificationVisible(false);}, Qt::QueuedConnection);
-
-    emit gamePanelInitialized();
-    emit statisticPanelInitialized();
-    emit statsHeaderInitialized();
 }
 
 void UiBackend::expandKeyPressed()

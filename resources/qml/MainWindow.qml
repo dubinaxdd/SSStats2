@@ -458,6 +458,13 @@ Window {
                          patyStatisticColumnLayout.visible = patyStatistic.visible;
                     }*/
                 }
+
+                OnlineStatisticPanel{
+                    Layout.preferredWidth: 280
+                    Layout.preferredHeight: 130
+                    Layout.rightMargin: 5
+                    Layout.bottomMargin: 10
+                }
             }
         }
 
