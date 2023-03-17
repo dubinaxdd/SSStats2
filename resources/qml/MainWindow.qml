@@ -461,7 +461,7 @@ Window {
 
                 OnlineStatisticPanel{
                     Layout.preferredWidth: 280
-                    Layout.preferredHeight: 130
+                    Layout.preferredHeight: 110
                     Layout.rightMargin: 5
                     Layout.bottomMargin: 10
                 }

@@ -27,9 +27,11 @@ Rectangle {
 
             delegate: Rectangle{
                 width: listView.width - (scrollBar.visible ?  scrollBar.width + 5 : 0)
-                height: 20
+                height: visible ? 20 : 0
                 color: "#00000000"
                 clip: true
+
+                visible: model.modName !== "DoW Stats Balance Mod"
 
                 RowLayout{
                     anchors.fill: parent
