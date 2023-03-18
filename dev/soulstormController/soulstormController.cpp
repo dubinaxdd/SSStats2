@@ -81,6 +81,7 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
 
 SoulstormController::~SoulstormController()
 {
+    m_soulstormMemoryReader->abort();
     m_soulstormMemoryReaderThread.quit();
     m_soulstormMemoryReaderThread.wait();
     m_soulstormMemoryReader->deleteLater();

@@ -487,6 +487,8 @@ void SoulstormMemoryReader::findAuthKey()
     unsigned long ptr1Count = 0x00000000;
     while (ptr1Count < 0x29000000)
     {
+        if (m_abort)
+            return;
 
         SIZE_T bytesRead = 0;
 
@@ -502,6 +504,9 @@ void SoulstormMemoryReader::findAuthKey()
 
         for (int i = 0; i < static_cast<int>(bytesRead) - 20; i++)
         {
+            if (m_abort)
+                return;
+
             bool match = false;
 
             for (int j = 0; j < 20; j++)
@@ -550,3 +555,9 @@ void SoulstormMemoryReader::findAuthKey()
     }
 }
 
+void SoulstormMemoryReader::abort()
+{
+    m_playersSteamScannerMutex.lock();
+    m_abort = true;
+    m_playersSteamScannerMutex.unlock();
+}

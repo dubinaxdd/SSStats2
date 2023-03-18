@@ -19,6 +19,7 @@ public:
 
     QTimer *scanTimer() const;
 
+
 signals:
     void sendSteamPlayersInfoMap(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
 
@@ -32,6 +33,7 @@ public slots:
     void findPlayerBySsId(int ssId, int playerPosititon);
     void findSessionId();
     void findAuthKey();
+    void abort();
 
 private:
     unsigned char steamHeader[18] =  { 0x18, 0x0, 0x0, 0x0, 0x2F, 0x0, 0x73, 0x0, 0x74, 0x0, 0x65, 0x0, 0x61, 0x0, 0x6D, 0x0, 0x2F, 0x0 };
@@ -48,5 +50,6 @@ private:
     QTimer *m_scanTimer;
     HWND m_soulstormHwnd = NULL;
     QMutex m_playersSteamScannerMutex;
+    bool m_abort = false;
 };
 #endif // SOULSTORMMEMORYREADER_H
