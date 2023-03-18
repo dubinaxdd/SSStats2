@@ -150,7 +150,7 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
         sidsString += playersInfo.data()->at(i).steamId;
     }
 
-    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats2.php?sids=" + sidsString
+    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats3.php?sids=" + sidsString
                     + "&version=" + m_clientVersion
                     + "&sender_sid=" + m_currentPlayerStats.data()->at(0).steamId
                     + "&mod_tech_name=" + m_currentMode);
@@ -160,8 +160,8 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
     newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
     newRequest.setRawHeader("machineUniqueId", m_machineUniqueId.toLatin1());
 
-   // if (!m_authKey.isEmpty())
-   //     newRequest.setRawHeader("steamAuthId", m_authKey.toLatin1());
+    if (!m_authKey.isEmpty())
+        newRequest.setRawHeader("steamAuthId", m_authKey.toLatin1());
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
