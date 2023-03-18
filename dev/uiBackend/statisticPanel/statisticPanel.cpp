@@ -118,9 +118,10 @@ void StatisticPanel::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServ
         endRemoveRows();
     }
 
-    if(m_playersInfo.count() > 0)
+
+    if(m_playersInfo.count() > 1)
     {
-        beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-2);
+        beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-2); //TODO: тут баг
 
         for(int i = 0; i < m_playersInfo.count(); i++)
         {
@@ -162,6 +163,9 @@ void StatisticPanel::receivePlyersRankedState(QVector<PlyersRankedState> plyersR
             emit currentPlayerStatsChanged();
         }
     }
+
+    if (m_playersStatsItems.count() < 1)
+        return;
 
     QModelIndex first = QAbstractItemModel::createIndex(0, 0);
     QModelIndex last = QAbstractItemModel::createIndex(m_playersStatsItems.count() - 1, 0);
