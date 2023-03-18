@@ -24,6 +24,7 @@ Rectangle {
             model: root.model
             Layout.fillWidth: true
             Layout.fillHeight: true
+            spacing: 1
 
             delegate: Rectangle{
                 width: listView.width - (scrollBar.visible ?  scrollBar.width + 5 : 0)
@@ -35,6 +36,7 @@ Rectangle {
 
                 RowLayout{
                     anchors.fill: parent
+                    spacing: 5
 
                     Rectangle{
                         radius:5
@@ -49,6 +51,7 @@ Rectangle {
                         text: model.modName
                         Layout.preferredWidth: 200
                         clip: true
+                        font.pixelSize: 11
                     }
 
                     Rectangle{
@@ -57,6 +60,7 @@ Rectangle {
 
                     Label{
                         text: model.onlineCount
+                        font.pixelSize: 11
                     }
                 }
             }
