@@ -34,11 +34,17 @@ QHash<int, QByteArray> OnlineStatisticPanel::roleNames() const
 
 void OnlineStatisticPanel::receiveModsOnlineCountMap(QMap<QString, int> modsOnlineCountMap)
 {
-    beginRemoveRows(QModelIndex(), 0, m_modsOnlineCountMap.count() - 1);
-    m_modsOnlineCountMap.clear();
-    endRemoveRows();
+    if (m_modsOnlineCountMap.count() > 0)
+    {
+        beginRemoveRows(QModelIndex(), 0, m_modsOnlineCountMap.count() - 1);
+        m_modsOnlineCountMap.clear();
+        endRemoveRows();
+    }
 
-    beginInsertRows(QModelIndex(), 0, modsOnlineCountMap.count() - 1);
-    m_modsOnlineCountMap = modsOnlineCountMap;
-    endInsertRows();
+    if (modsOnlineCountMap.count() > 0)
+    {
+        beginInsertRows(QModelIndex(), 0, modsOnlineCountMap.count() - 1);
+        m_modsOnlineCountMap = modsOnlineCountMap;
+        endInsertRows();
+    }
 }

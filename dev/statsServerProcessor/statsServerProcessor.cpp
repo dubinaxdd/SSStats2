@@ -206,6 +206,9 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 
     for(int i = 0; i < statsArray.count(); i++)
     {
+        if (playersInfo.data()->count() < i+1)
+            break;
+
         playersInfo.get()->operator[](i).apm = statsArray.at(i)["apm"].toInt();
         playersInfo.get()->operator[](i).gamesCount = statsArray.at(i)["gamesCount"].toInt();
         playersInfo.get()->operator[](i).mmr = statsArray.at(i)["mmr"].toInt();

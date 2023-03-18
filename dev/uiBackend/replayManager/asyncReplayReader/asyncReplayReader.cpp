@@ -24,6 +24,9 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText
 
     for (int i = 0; i < dirContent.count(); i++)
     {
+        if (m_abort)
+            return;
+
         QString fileName = dirContent.at(i).fileName();
 
         if(fileName == "temp.rec")
@@ -80,4 +83,11 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText
     }
 
     emit sendReplaysInfo(replaysInfo);
+}
+
+void AsyncReplayReader::abort()
+{
+    m_mutex.lock();
+    m_abort = true;
+    m_mutex.unlock();
 }

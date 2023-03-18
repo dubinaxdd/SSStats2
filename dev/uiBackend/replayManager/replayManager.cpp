@@ -31,6 +31,7 @@ ReplayManager::ReplayManager(ImageProvider* imageProvider, QObject *parent)
 
 ReplayManager::~ReplayManager()
 {
+    m_asyncReplayReader->abort();
     m_asyncReplayReaderThread.quit();
     m_asyncReplayReaderThread.wait();
     m_asyncReplayReader->deleteLater();
