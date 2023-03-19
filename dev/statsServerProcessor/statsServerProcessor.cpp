@@ -59,7 +59,8 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
         playersInfo.data()->append(newPlayerInfo);
     }
 
-    getPlayerStatsFromServer(playersInfo);
+    if (playersInfo.data()->count() > 0)
+        getPlayerStatsFromServer(playersInfo);
 
     qInfo(logInfo()) << "StatsServerProcessor::receivePlayresInfoFromDowServer" << "players info received";
 }
@@ -206,9 +207,6 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 
     for(int i = 0; i < statsArray.count(); i++)
     {
-        if (playersInfo.data()->count() < i+1)
-            break;
-
         playersInfo.get()->operator[](i).apm = statsArray.at(i)["apm"].toInt();
         playersInfo.get()->operator[](i).gamesCount = statsArray.at(i)["gamesCount"].toInt();
         playersInfo.get()->operator[](i).mmr = statsArray.at(i)["mmr"].toInt();
@@ -219,15 +217,8 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).winRate = statsArray.at(i)["winRate"].toInt();
         playersInfo.get()->operator[](i).winsCount = statsArray.at(i)["winsCount"].toInt();
         playersInfo.get()->operator[](i).avatarUrl = statsArray.at(i)["avatarUrl"].toString();
-        //playersInfo.get()->operator[](i).calibrateGamesLeft = statsArray.at(i)["calibrateGamesLeft"].toInt();
-
         playersInfo.get()->operator[](i).statsAvailable = true;
-
-       // emit sendServerPlayrStats(playersInfo.get()->operator[](i));
     }
-
-    //if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
-    //    emit sendServerPlayrStats(*playerInfo.data());
 
     getPlayersMediumAvatar(playersInfo);
     delete reply;
