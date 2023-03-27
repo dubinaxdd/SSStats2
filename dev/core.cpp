@@ -136,7 +136,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendStatisticModName, m_uiBackend, &UiBackend::receiveCurrentModName, Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_uiBackend, &UiBackend::receiveCurrentModTechnicalName,   Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendModsOnlineCountMap, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveModsOnlineCountMap, Qt::QueuedConnection);
 

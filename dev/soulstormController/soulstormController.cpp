@@ -43,7 +43,7 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
 
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &SoulstormController::gameInitialized, Qt::QueuedConnection);   
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
-    QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
 
 
     QObject::connect(m_gameStateReader, &GameStateReader::ssShutdown,               this, &SoulstormController::ssShutdown, Qt::QueuedConnection);
@@ -55,8 +55,8 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentWinConditions,   m_replayDataCollector, &ReplayDataCollector::receiveCurrentWinConditions, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
 
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty,        m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::hostParty,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty,        m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::hostParty,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_replayDataCollector,    &ReplayDataCollector::onQuitParty, Qt::QueuedConnection);
@@ -70,7 +70,7 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
 
     QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendAuthKey, this, &SoulstormController::sendAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendAuthKey, this, &SoulstormController::sendAuthKey, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 
