@@ -177,6 +177,7 @@ Rectangle {
                 id: infoWindow
                 visible: buttonInfoRectangle.pressedState
                 anchors.fill: parent
+                sizeModifer: _uiBackend.sizeModifer
             }
         }
     }
