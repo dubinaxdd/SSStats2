@@ -35,9 +35,9 @@ QtObject {
         }
         else
         {
-            backgroundColor = "#34495E ";
-            alternateBackgroundColor = "#212F3D";
-            itemColor = "#85929E ";
+            backgroundColor = "#212F3D";
+            alternateBackgroundColor = "#34495E";
+            itemColor = "#2E4053";//"#85929E";
             selectionColor = "#ABB2B9";
             textColor = "#F8F9F9";
         }
