@@ -3,12 +3,14 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.15
 import QtQuick.Dialogs 1.2
+import QtQuick.Controls.Styles 1.4
 import Qt.labs.platform 1.1
+import DowStatsStyle 1.0
 
 Rectangle {
     id: infoRectangle
     opacity: 1
-    color: "#ffffff"
+    color: DowStatsStyle.backgroundColor
     border.color: "#00000000"
     border.width: 0
     anchors.fill: parent
@@ -35,6 +37,8 @@ Rectangle {
             Layout.fillHeight: true
             Layout.margins: 10
 
+            spacing: 10
+
             RowLayout
             {
                 TextField
@@ -43,6 +47,16 @@ Rectangle {
 
                     Layout.fillWidth: true
                     selectByMouse: true
+                    color: DowStatsStyle.textColor
+                    font.pixelSize: 12
+
+                    background: Rectangle {
+                        radius: 10
+                        implicitHeight: 40
+                        border.color: "#00000000"
+                        border.width: 0
+                        color: DowStatsStyle.alternateBackgroundColor
+                    }
 
                     onAccepted: {
                         findTextField.editingFinished();
@@ -115,6 +129,7 @@ Rectangle {
                         text: _uiBackend.replayManager.currentMap
                         Layout.alignment: Qt.AlignCenter
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                 }
@@ -131,6 +146,7 @@ Rectangle {
                     Label{
                         text: _uiBackend.replayManager.currentReplayName
                         font.pixelSize: 20
+                        color: DowStatsStyle.textColor
 
                     }
 
@@ -138,36 +154,43 @@ Rectangle {
                         id: fileNameLabel
                         text: "File name: " + _uiBackend.replayManager.currentFileName
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Label{
                         text: "Mod: " + _uiBackend.replayManager.currentMod
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Label{
                         text: "Creation time: " + _uiBackend.replayManager.currentReplayTime
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Label{
                         text: "Duration: " + _uiBackend.replayManager.currentDuration
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Label{
                         text: "Players count: " + _uiBackend.replayManager.currentPlayerCount
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Label{
                         text: "Teams count: " + _uiBackend.replayManager.currentTeamsCount
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Label{
                         text: "Map size: " + _uiBackend.replayManager.currentMapSize
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
                 }
             }
@@ -184,6 +207,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignTop
                     text: "AI difficulty: \nStarting resources: \nLock teams: \nEnable cheats: \nStarting location: \nGame speed: \nResource sharing: \nResource rate:"
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
 
                 Label
@@ -191,6 +215,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignTop
                     text: _uiBackend.replayManager.gameSettings
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
 
                 Label
@@ -198,6 +223,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignTop
                     text: _uiBackend.replayManager.winConditions
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
             }
 
@@ -226,7 +252,7 @@ Rectangle {
                     width: playersListView.width - (scrollBar.visible ? scrollBar.width + 5 : 0)
                     height: 50
                     radius: 10
-                    color: model.type === "Observer" ? "#DCDCDC" : model.color
+                    color: model.type === "Observer" ? DowStatsStyle.highlightItemColor : model.color
 
                     GridLayout
                     {
@@ -243,6 +269,7 @@ Rectangle {
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 80
                             font.pixelSize: 11
+                            color: DowStatsStyle.textColor
                         }
 
                         Label {
@@ -252,6 +279,7 @@ Rectangle {
                             Layout.fillWidth: true
                             clip:true
                             font.pixelSize: 11
+                            color: DowStatsStyle.textColor
                         }
 
                         Label {
@@ -259,6 +287,7 @@ Rectangle {
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 120
                             font.pixelSize: 11
+                            color: DowStatsStyle.textColor
                         }
 
                         Label {
@@ -266,6 +295,7 @@ Rectangle {
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 60
                             font.pixelSize: 11
+                            color: DowStatsStyle.textColor
                         }
 
                         Image
@@ -402,14 +432,67 @@ Rectangle {
             Layout.preferredWidth: 300
             Layout.margins: 10
 
+            spacing: 10
+
             RowLayout
             {
                 ComboBox{
+
+                    id: sortComboBox
 
                     Layout.preferredWidth: 255
                     model: ["Sort by time", "Sort by file name", "Sort by name", "Sort by mod", "Sort by map" ]
 
                     onCurrentIndexChanged: _uiBackend.replayManager.replaysListModel.setSortType(currentIndex);
+
+                    indicator: Rectangle{
+
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.rightMargin: 10
+
+
+                        width: 20
+                        height: 20
+                        color: "#00000000"
+
+                        Image
+                        {
+                            id: image
+                            anchors.fill: parent
+                            anchors.margins: 3
+                            source: "qrc:/images/resources/images/arrow_down.svg"
+                            sourceSize.width: 14
+                            sourceSize.height: 14
+                        }
+
+                        ColorOverlay{
+                            anchors.fill: image
+                            source:image
+                            color: DowStatsStyle.textColor
+                            //transform:rotation
+                            antialiasing: true
+                        }
+
+                    }
+
+
+                    contentItem: Text {
+                        color: DowStatsStyle.textColor
+                        text: "  " + sortComboBox.currentText
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignLeft
+                        font.pixelSize: 12
+
+                    }
+
+                    background: Rectangle {
+                        radius: 10
+                        implicitHeight: 40
+                        border.color: "#00000000"
+                        border.width: 0
+                        color: DowStatsStyle.alternateBackgroundColor
+                    }
                 }
 
                 IconButton
@@ -431,7 +514,7 @@ Rectangle {
                 Layout.preferredWidth: 300
                 Layout.fillHeight: true
 
-                color: "#eaeaea"
+                color: DowStatsStyle.alternateBackgroundColor
                 radius: 10
 
                 ListView{
@@ -455,7 +538,7 @@ Rectangle {
                         height: 70
                         radius: 10
 
-                        color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                        color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.backgroundColor
 
                         RowLayout
                         {
@@ -508,16 +591,19 @@ Rectangle {
                                 Label{
                                     text: "File name: " + model.fileName
                                     font.pixelSize: 11
+                                    color: DowStatsStyle.textColor
                                 }
 
                                 Label{
                                     text: "Replay name: " + model.name
                                     font.pixelSize: 11
+                                    color: DowStatsStyle.textColor
                                 }
 
                                 Label{
                                     text: "Mod: " + model.mod
                                     font.pixelSize: 11
+                                    color: DowStatsStyle.textColor
                                 }
                             }
 
@@ -635,7 +721,7 @@ Rectangle {
 
         Rectangle
         {
-            color: "#ffffff"
+            color: DowStatsStyle.backgroundColor
             radius: 10
             width:400
             height: 300
@@ -650,7 +736,7 @@ Rectangle {
                 {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     Layout.topMargin: 15
-                    color: "#eaeaea"
+                    color: DowStatsStyle.alternateBackgroundColor
                     radius: 10
                     width:300
                     height: 200

@@ -7,8 +7,9 @@ QtObject {
     property var currentTheme: Theme.Light
 
     property color backgroundColor: "#FFFFFF"
-    property color alternateBackgroundColor: "#eaeaea"//"#DCDCDC"
+    property color alternateBackgroundColor: "#eaeaea"
     property color itemColor: "#c8c8c8"
+    property color highlightItemColor: "#DCDCDC"
     property color selectionColor: "#A9A9A9"
     property color textColor: "#26282a"
 
@@ -30,6 +31,7 @@ QtObject {
             backgroundColor = "#FFFFFF";
             alternateBackgroundColor = "#eaeaea";
             itemColor = "#c8c8c8";
+            highlightItemColor = "#DCDCDC";
             selectionColor = "#c8c8c8";
             textColor = "#1B2631";
         }
@@ -38,7 +40,8 @@ QtObject {
             backgroundColor = "#212F3D";
             alternateBackgroundColor = "#34495E";
             itemColor = "#2E4053";//"#85929E";
-            selectionColor = "#ABB2B9";
+            highlightItemColor = "#566573";
+            selectionColor = "#5D6D7E"//"#2C3E50"//"#ABB2B9";
             textColor = "#F8F9F9";
         }
     }

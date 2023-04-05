@@ -41,6 +41,7 @@
         <file>resources/images/folder_white.svg</file>
         <file>resources/images/find.svg</file>
         <file>resources/images/dow_online.png</file>
+        <file>resources/images/arrow_down.svg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>resources/sounds/game_started.wav</file>

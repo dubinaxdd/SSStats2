@@ -9,6 +9,7 @@ Item{
     Component.onCompleted: {
 
         DowStatsStyle.setDarkTheme();
+        //DowStatsStyle.setLightTheme();
         mainWindow.show();
         overlayWindow.show();
     }

@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
+import DowStatsStyle 1.0
 
 Rectangle {
     width: 50
@@ -9,12 +10,12 @@ Rectangle {
     gradient: Gradient {
         GradientStop {
             position: 0
-            color: "#FFFFFF"
+            color: DowStatsStyle.backgroundColor
         }
 
         GradientStop {
             position: 1
-            color: "#C0C0C0"
+            color: DowStatsStyle.itemColor//"#C0C0C0"
         }
     }
 
