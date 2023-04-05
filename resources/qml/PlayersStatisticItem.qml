@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.15
+import DowStatsStyle 1.0
 
 Rectangle {
 
@@ -36,7 +37,7 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignTop
     Layout.fillHeight: false
     Layout.fillWidth: true
-    color: itemRectangle.hoverEnabled ? ( itemRectangle.hoveredState ? "#c8c8c8" : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff" )) : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff")
+    color: itemRectangle.hoverEnabled ? ( itemRectangle.hoveredState ? DowStatsStyle.itemColor : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor )) : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor)
     radius: 10 * sizeModifer
 
    /* onCalibrateGamesLeftChanged: {
@@ -176,6 +177,7 @@ Rectangle {
                 text: qsTr("[CHEATER]")
                 font.pixelSize: 15 * sizeModifer
                 Layout.alignment: Qt.AlignHCenter
+                color: DowStatsStyle.textColor
             }
 
             Rectangle{
@@ -199,6 +201,7 @@ Rectangle {
                 Label{
                     text: itemRectangle.isOnline ? "Online" : "Offline"
                     font.pixelSize: 11 * sizeModifer
+                    color: DowStatsStyle.textColor
                 }
             }
 
@@ -221,6 +224,7 @@ Rectangle {
                 Label{
                     text: itemRectangle.isRanked ? "Ranked" : "Unranked"
                     font.pixelSize: 11 * sizeModifer
+                    color: DowStatsStyle.textColor
                 }
             }
         }
@@ -240,6 +244,7 @@ Rectangle {
                 id: label1
                 text: itemRectangle.playerName
                 Layout.maximumWidth: 180 * sizeModifer
+                color: DowStatsStyle.textColor
 
                 font.pixelSize: 20 * sizeModifer
 
@@ -261,6 +266,7 @@ Rectangle {
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillWidth: true
                         Layout.fillHeight: true
+                        color: DowStatsStyle.textColor
                     }
 
                     Label {
@@ -270,6 +276,7 @@ Rectangle {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 11 * sizeModifer
+                        color: DowStatsStyle.textColor
                     }
 
                     Label {
@@ -278,6 +285,7 @@ Rectangle {
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
+                        color: DowStatsStyle.textColor
                     }
 
                     Label {
@@ -286,6 +294,7 @@ Rectangle {
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 11 * sizeModifer
+                        color: DowStatsStyle.textColor
                     }
 
                     Label {
@@ -294,6 +303,7 @@ Rectangle {
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
+                        color: DowStatsStyle.textColor
                     }
 
                     Label {
@@ -302,6 +312,7 @@ Rectangle {
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
+                        color: DowStatsStyle.textColor
                     }
                 }
 

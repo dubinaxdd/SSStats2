@@ -1,6 +1,6 @@
 pragma Singleton
 import QtQuick 2.0
-import DowStatsStyle 1.0
+import Theme 1.0
 
 QtObject {
 
@@ -10,7 +10,18 @@ QtObject {
     property color alternateBackgroundColor: "#eaeaea"//"#DCDCDC"
     property color itemColor: "#c8c8c8"
     property color selectionColor: "#A9A9A9"
-    property color textColor: "#1B2631"
+    property color textColor: "#26282a"
+
+
+    function setDarkTheme()
+    {
+        currentTheme = Theme.Dark;
+    }
+
+    function setLightTheme()
+    {
+        currentTheme = Theme.Light;
+    }
 
     onCurrentThemeChanged:
     {

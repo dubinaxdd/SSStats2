@@ -1,11 +1,13 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import DowStatsStyle 1.0
+
 Rectangle {
 
     id: root
     property var model: _uiBackend.onlineStatisticPanel
-    color: "#ffffff"
+    color: DowStatsStyle.backgroundColor
     radius: 10
 
     ColumnLayout
@@ -16,6 +18,7 @@ Rectangle {
         Label{
             text: "Online statistics"
             font.pixelSize: 16
+            color: DowStatsStyle.textColor
         }
 
         ListView
@@ -52,6 +55,7 @@ Rectangle {
                         Layout.preferredWidth: 200
                         clip: true
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Rectangle{
@@ -61,6 +65,7 @@ Rectangle {
                     Label{
                         text: model.onlineCount
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
                 }
             }

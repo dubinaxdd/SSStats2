@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import QtGraphicalEffects 1.0
+import DowStatsStyle 1.0
 
 Rectangle {
     id: mainRectangle
@@ -25,7 +26,7 @@ Rectangle {
     property int youtubeImageHeight: 0
     property bool isNew: false
 
-    color: "#eaeaea"
+    color: DowStatsStyle.alternateBackgroundColor
     radius: 10
     border.color: "#00000000"
 
@@ -55,7 +56,7 @@ Rectangle {
             Rectangle{
                 width: avatarRectangle.width + userNameLabel.width + 10 + 30
                 height: avatarRectangle.height
-                color: "#c8c8c8"
+                color: DowStatsStyle.itemColor
 
                 radius: 10
 
@@ -97,7 +98,7 @@ Rectangle {
                     Label{
                         id: userNameLabel
                         Layout.rightMargin: 15
-                        color: "#26282a"
+                        color: DowStatsStyle.textColor
                         text: mainRectangle.userName
                         font.pixelSize: 18
                     }
@@ -119,7 +120,7 @@ Rectangle {
 
             Label{
                 id: dateTimeLabel
-                color: "#26282a"
+                color: DowStatsStyle.textColor
                 text: mainRectangle.timesTamp
                 font.pixelSize: 16
                 Layout.rightMargin: 15
@@ -136,7 +137,7 @@ Rectangle {
 
             text: mainRectangle.content
             wrapMode: Text.Wrap
-            color: "#26282a"
+            color: DowStatsStyle.textColor
             font.pixelSize: 14
             textFormat: Text.RichText
 

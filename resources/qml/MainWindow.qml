@@ -431,7 +431,7 @@ Window {
                     Layout.maximumWidth: 280
                     Layout.rightMargin: 5
                     radius: 10
-                    color: "#ffffff"
+                    color: DowStatsStyle.backgroundColor
 
                     ColumnLayout
                     {
@@ -442,6 +442,7 @@ Window {
                             Layout.alignment: Qt.AlignCenter
                             text: _uiBackend.currentModName + " ladder" //"Current mode"
                             font.pixelSize: 15
+                            color: DowStatsStyle.textColor
                         }
                     }
                 }

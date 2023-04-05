@@ -146,7 +146,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
 void Core::registerTypes()
 {
-    qmlRegisterUncreatableType<DowStatsStyle::Theme>("DowStatsStyle", 1, 0, "Theme", "theme style");
+    qmlRegisterUncreatableType<DowStatsStyle::Theme>("Theme", 1, 0, "Theme", "theme style");
 
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");

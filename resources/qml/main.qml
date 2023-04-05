@@ -8,7 +8,7 @@ import DowStatsStyle 1.0
 Item{
     Component.onCompleted: {
 
-        DowStatsStyle.currentTheme = Theme.Light;
+        DowStatsStyle.setDarkTheme();
         mainWindow.show();
         overlayWindow.show();
     }
