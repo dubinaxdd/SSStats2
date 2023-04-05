@@ -3,9 +3,12 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import Qt.labs.platform 1.1
+import DowStatsStyle 1.0
 
 Item{
     Component.onCompleted: {
+
+        DowStatsStyle.currentTheme = Theme.Light;
         mainWindow.show();
         overlayWindow.show();
     }

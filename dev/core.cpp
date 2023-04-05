@@ -7,6 +7,7 @@
 #include <hookManager.h>
 #include <winuser.h>
 #include <version.h>
+#include <theme.h>
 
 Core::Core(QQmlContext *context, QObject* parent)
     : QObject(parent)
@@ -145,6 +146,8 @@ Core::Core(QQmlContext *context, QObject* parent)
 
 void Core::registerTypes()
 {
+    qmlRegisterUncreatableType<DowStatsStyle::Theme>("DowStatsStyle", 1, 0, "Theme", "theme style");
+
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
     qRegisterMetaType<QList<PlayerInfoFromDowServer>>("QList<PlayerInfoFromDowServer>");

@@ -1,1 +1,2 @@
 singleton GlobalMouseProvider 1.0 qrc:/resources/qml/GlobalMouseProvider.qml
+singleton DowStatsStyle 1.0 qrc:/resources/qml/DowStatsStyle.qml

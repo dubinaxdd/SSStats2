@@ -3,13 +3,14 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import QtGraphicalEffects 1.15
+import DowStatsStyle 1.0
 
 Window {
     id: root
     width: 1200
     height: 700
     title: "DoW Stats 2"
-    color: "#eaeaea"
+    color: DowStatsStyle.alternateBackgroundColor//"#eaeaea"
     flags: Qt.Window
     visibility: Window.Maximized
 

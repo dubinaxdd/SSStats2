@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
     }  
 
     qmlRegisterSingletonType(QUrl("qrc:/resources/qml/GlobalMouseProvider.qml"), "GlobalMouseProvider", 1, 0, "GlobalMouseProvider");
+    qmlRegisterSingletonType(QUrl("qrc:/resources/qml/DowStatsStyle.qml"), "DowStatsStyle", 1, 0, "DowStatsStyle");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/resources/qml/main.qml"));
