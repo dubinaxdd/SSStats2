@@ -4,8 +4,11 @@ import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.15
 import QtQuick.Dialogs 1.2
 import Qt.labs.platform 1.1
+import DowStatsStyle 1.0
 
 Rectangle {
+
+    color: "#00000000"
 
     ColumnLayout
     {
@@ -101,6 +104,7 @@ Rectangle {
                     visible: _uiBackend.mapManagerPage.downloadedProcessed
                     text: "Downloading progress: " + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
             }
 
@@ -112,6 +116,7 @@ Rectangle {
                     text: _uiBackend.mapManagerPage.currentMapName
                     font.pixelSize: 20
                     Layout.preferredWidth: 190
+                    color: DowStatsStyle.textColor
                 }
 
                 Label{
@@ -119,6 +124,7 @@ Rectangle {
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapAuthors !== ""
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
 
                 Label{
@@ -126,6 +132,7 @@ Rectangle {
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapDescription !== ""
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
 
                 Label{
@@ -133,6 +140,7 @@ Rectangle {
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapTags !== ""
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
             }
 
@@ -182,17 +190,29 @@ Rectangle {
                 Switch{
                     text: "Auto-install default maps"
                     checked: _uiBackend.mapManagerPage.autoinstallDefaultMaps
-
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallDefaultMaps = checked
-                    font.pixelSize: 11
+
+                    contentItem: Text {
+                        color: DowStatsStyle.textColor
+                        text: "  " + parent.text
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.left: parent.indicator.right
+                        font.pixelSize: 11
+                    }
                 }
 
                 Switch{
                     text: "Auto-install all maps"
                     checked: _uiBackend.mapManagerPage.autoinstallAllMaps
-
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallAllMaps = checked
-                    font.pixelSize: 11
+
+                    contentItem: Text {
+                        color: DowStatsStyle.textColor
+                        text: "  " + parent.text
+                        verticalAlignment: Text.AlignVCenter
+                        anchors.left: parent.indicator.right
+                        font.pixelSize: 11
+                    }
                 }
             }
         }
@@ -220,8 +240,8 @@ Rectangle {
                 width: mapsListView.width - scrollBar.width
                 height: 50
                 radius: 10
-                color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#c8c8c8" : "#DCDCDC"
-                //color: "#DCDCDC"
+                //color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#c8c8c8" : "#DCDCDC"
+                color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.itemColor
 
                 MouseArea{
                     id: delegateMouseArea
@@ -261,6 +281,7 @@ Rectangle {
                         Layout.preferredWidth: 200
                         text: model.mapName
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Label
@@ -268,6 +289,7 @@ Rectangle {
                         Layout.preferredWidth: 60
                         text: model.description
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                         //visible: model.description !== ""
                     }
 
@@ -277,6 +299,7 @@ Rectangle {
                         text: "Tags: " + model.tags
                         visible: model.tags !== ""
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     Rectangle
@@ -289,13 +312,13 @@ Rectangle {
                         text: "Downloading processed..."
                         visible: model.downloadingProcessed
                         font.pixelSize: 11
+                        color: DowStatsStyle.textColor
                     }
 
                     BlueButton{
                         text: "Install"
                         z:2
                         visible: model.needInstall && !model.downloadingProcessed
-
                         onClicked: _uiBackend.mapManagerPage.installMap(model.index)
                     }
 
@@ -303,7 +326,6 @@ Rectangle {
                         text: "Update"
                         z:2
                         visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
-
                         onClicked: _uiBackend.mapManagerPage.installMap(model.index)
                     }
 
@@ -311,7 +333,6 @@ Rectangle {
                         text: "Delete"
                         z:2
                         visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
-
                         onClicked: _uiBackend.mapManagerPage.removeMap(model.index);
                     }
                 }

@@ -1,11 +1,12 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import DowStatsStyle 1.0
 
 Rectangle {
     id: infoRectangle
     opacity: 1
-    color: "#ffffff"
+    color: DowStatsStyle.backgroundColor
     border.color: "#00000000"
     border.width: 0
     anchors.fill: parent
@@ -27,7 +28,7 @@ Rectangle {
         {
             Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
             //Layout.topMargin: 15
-            color: "#eaeaea"
+            color: DowStatsStyle.alternateBackgroundColor
             radius: 10
             Layout.preferredWidth: 220
             Layout.fillHeight: true

@@ -476,14 +476,12 @@ Rectangle {
 
                     }
 
-
                     contentItem: Text {
                         color: DowStatsStyle.textColor
                         text: "  " + sortComboBox.currentText
                         verticalAlignment: Text.AlignVCenter
                         horizontalAlignment: Text.AlignLeft
                         font.pixelSize: 12
-
                     }
 
                     background: Rectangle {
