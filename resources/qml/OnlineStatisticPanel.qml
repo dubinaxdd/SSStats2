@@ -28,6 +28,7 @@ Rectangle {
             Layout.fillWidth: true
             Layout.fillHeight: true
             spacing: 1
+            clip: true
 
             delegate: Rectangle{
                 width: listView.width - (scrollBar.visible ?  scrollBar.width + 5 : 0)
@@ -35,7 +36,7 @@ Rectangle {
                 color: "#00000000"
                 clip: true
 
-                visible: model.modName !== "DoW Stats Balance Mod"
+                //visible: model.modName !== "DoW Stats Balance Mod"
 
                 RowLayout{
                     anchors.fill: parent
@@ -63,7 +64,7 @@ Rectangle {
                     }
 
                     Label{
-                        text: model.onlineCount
+                        text: model.onlineCount //+ (model.modName === "DoW Stats Balance Mod" ? 15 : 0)
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }

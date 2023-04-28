@@ -59,7 +59,6 @@ ComboBox{
         anchors.fill: parent
         hoverEnabled: true
 
-        onPressed: root.popup.open();
-        onClicked: root.popup.open();
+        onPressed: root.popup.opened ? root.popup.close() : root.popup.open();
     }
 }
