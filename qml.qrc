@@ -33,5 +33,6 @@
         <file>resources/qml/OnlineStatisticPanel.qml</file>
         <file>resources/qml/DowStatsStyle.qml</file>
         <file>resources/qml/StyledSwitch.qml</file>
+        <file>resources/qml/StyledComboBox.qml</file>
     </qresource>
 </RCC>

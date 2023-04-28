@@ -22,12 +22,13 @@ class SettingsPageModel : public QObject
 
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
 
+    Q_PROPERTY(int currentTheme READ currentTheme WRITE setCurrentTheme NOTIFY currentThemeChanged)
+
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
 
     bool overlayVisible() const;
     void setOverlayVisible(bool newOverlayVisible);
-
 
 signals:
     void overlayVisibleChanged();
@@ -43,6 +44,8 @@ signals:
     void volumeChanged(int volume);
 
     void launchGameInWindowChanged();
+
+    void currentThemeChanged();
 
 private slots:
     void onSettingsLoaded();
@@ -72,9 +75,13 @@ public:
     bool launchGameInWindow() const;
     void setLaunchGameInWindow(bool newLaunchGameInWindow);
 
+    int currentTheme() const;
+    void setCurrentTheme(int newCurrentTheme);
+
 private:
     SettingsController* m_settingsController;
 
+    int m_currentTheme = 0;
     bool m_overlayVisible = true;
     bool m_win7SupportMode = false;
     bool m_launchGameInWindow = false;

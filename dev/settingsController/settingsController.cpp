@@ -42,6 +42,7 @@ void SettingsController::initializeSettings()
     m_settings->currentMod = ss_stats_settings->value("game/current_mod", "dxp2").toString();
     m_settings->currentModVersion = ss_stats_settings->value("game/current_mod_version", "1.0").toString();
     m_settings->launchGameInWindow = ss_stats_settings->value("game/launch_game_in_window", false).toBool();
+    m_settings->currentTheme = ss_stats_settings->value("client/current_theme", 0).toInt();
 
     emit settingsLoaded();
 
@@ -73,6 +74,7 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("game/current_mod", m_settings->currentMod);
     ss_stats_settings->setValue("game/current_mod_version", m_settings->currentModVersion);
     ss_stats_settings->setValue("game/launch_game_in_window", m_settings->launchGameInWindow);
+    ss_stats_settings->setValue("client/current_theme", m_settings->currentTheme);
 
     ss_stats_settings->sync();
 }

@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.12
 import DowStatsStyle 1.0
 
 Rectangle {
-    id: infoRectangle
+    id: root
     opacity: 1
     color: DowStatsStyle.backgroundColor//"#ffffff"
     border.color: "#00000000"
@@ -67,19 +67,25 @@ Rectangle {
         {
             id: settingsContent
 
-            ComboBox{
+            StyledComboBox{
+                id: themeComboBox
+                Layout.preferredWidth: 255
+
                 model: ["Theme: Light", "Theme: Dark", "Theme: Pink"]
+
+                currentIndex: root.model.currentTheme
 
                 onCurrentIndexChanged: {
                     switch (currentIndex)
                     {
                         case(0): DowStatsStyle.setLightTheme(); break;
-                        case(1): DowStatsStyle.setDarkTheme(); break;
-                        case(2): DowStatsStyle.setPinkTheme(); break;
+                        case(1): DowStatsStyle.setDarkTheme();  break;
+                        case(2): DowStatsStyle.setPinkTheme();  break;
                     }
+
+                    root.model.currentTheme = themeComboBox.currentIndex;
                 }
             }
-
 
             StyledSwitch{
                 text: "Show overlay"

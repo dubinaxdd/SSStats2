@@ -35,6 +35,9 @@ void SettingsPageModel::onSettingsLoaded()
 
     m_launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
     emit launchGameInWindowChanged();
+
+    m_currentTheme = m_settingsController->getSettings()->currentTheme;
+    emit currentThemeChanged();
 }
 
 bool SettingsPageModel::launchGameInWindow() const
@@ -50,6 +53,22 @@ void SettingsPageModel::setLaunchGameInWindow(bool newLaunchGameInWindow)
     emit launchGameInWindowChanged();
 
     m_settingsController->getSettings()->launchGameInWindow = m_launchGameInWindow;
+    m_settingsController->saveSettings();
+}
+
+int SettingsPageModel::currentTheme() const
+{
+    return m_currentTheme;
+}
+
+void SettingsPageModel::setCurrentTheme(int newCurrentTheme)
+{
+    if (m_currentTheme == newCurrentTheme)
+        return;
+    m_currentTheme = newCurrentTheme;
+    emit currentThemeChanged();
+
+    m_settingsController->getSettings()->currentTheme = m_currentTheme;
     m_settingsController->saveSettings();
 }
 

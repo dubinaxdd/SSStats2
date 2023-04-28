@@ -436,61 +436,13 @@ Rectangle {
 
             RowLayout
             {
-                ComboBox{
-
+                StyledComboBox{
                     id: sortComboBox
 
                     Layout.preferredWidth: 255
                     model: ["Sort by time", "Sort by file name", "Sort by name", "Sort by mod", "Sort by map" ]
 
                     onCurrentIndexChanged: _uiBackend.replayManager.replaysListModel.setSortType(currentIndex);
-
-                    indicator: Rectangle{
-
-                        anchors.right: parent.right
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.rightMargin: 10
-
-
-                        width: 20
-                        height: 20
-                        color: "#00000000"
-
-                        Image
-                        {
-                            id: image
-                            anchors.fill: parent
-                            anchors.margins: 3
-                            source: "qrc:/images/resources/images/arrow_down.svg"
-                            sourceSize.width: 14
-                            sourceSize.height: 14
-                        }
-
-                        ColorOverlay{
-                            anchors.fill: image
-                            source:image
-                            color: DowStatsStyle.textColor
-                            //transform:rotation
-                            antialiasing: true
-                        }
-
-                    }
-
-                    contentItem: Text {
-                        color: DowStatsStyle.textColor
-                        text: "  " + sortComboBox.currentText
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignLeft
-                        font.pixelSize: 12
-                    }
-
-                    background: Rectangle {
-                        radius: 10
-                        implicitHeight: 40
-                        border.color: "#00000000"
-                        border.width: 0
-                        color: DowStatsStyle.alternateBackgroundColor
-                    }
                 }
 
                 IconButton

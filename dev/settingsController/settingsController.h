@@ -30,6 +30,7 @@ struct Settings
     bool autoinstallAllMaps = false;
     QString currentMod = "dxp2";
     QString currentModVersion = "1.0";
+    int currentTheme = 0;
 };
 
 class SettingsController : public QObject
