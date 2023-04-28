@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import DowStatsStyle 1.0
 
 Rectangle
 {
@@ -11,7 +12,7 @@ Rectangle
 
     Layout.preferredHeight: 50
     Layout.fillWidth: true
-    color: "#DCDCDC"
+    color: DowStatsStyle.itemColor//highlightItemColor//"#DCDCDC"
     radius: 10
 
     RowLayout
@@ -24,6 +25,7 @@ Rectangle
             text: root.text
             Layout.preferredWidth: 200
             font.pixelSize: 11
+            color: DowStatsStyle.textColor
         }
 
         Label{
@@ -31,6 +33,7 @@ Rectangle
             text: model.installProgress
             Layout.preferredWidth: 200
             font.pixelSize: 11
+            color: DowStatsStyle.textColor
         }
 
         Rectangle{

@@ -24,6 +24,12 @@ QtObject {
         currentTheme = Theme.Light;
     }
 
+    function setPinkTheme()
+    {
+        currentTheme = Theme.Pink;
+    }
+
+
     onCurrentThemeChanged:
     {
         if (currentTheme === Theme.Light)
@@ -35,7 +41,7 @@ QtObject {
             selectionColor = "#c8c8c8";
             textColor = "#1B2631";
         }
-        else
+        else if(currentTheme === Theme.Dark)
         {
             backgroundColor = "#212F3D";
             alternateBackgroundColor = "#34495E";
@@ -43,6 +49,15 @@ QtObject {
             highlightItemColor = "#566573";
             selectionColor = "#5D6D7E"//"#2C3E50"//"#ABB2B9";
             textColor = "#F8F9F9";
+        }
+        else
+        {
+            backgroundColor = "#F5EEF8";
+            alternateBackgroundColor = "#EBDEF0";
+            itemColor = "#D2B4DE";
+            highlightItemColor = "#BB8FCE";
+            selectionColor = "#AF7AC5";
+            textColor = "#1B2631";
         }
     }
 }

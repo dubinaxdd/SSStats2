@@ -32,5 +32,6 @@
         <file>resources/qml/ModItem.qml</file>
         <file>resources/qml/OnlineStatisticPanel.qml</file>
         <file>resources/qml/DowStatsStyle.qml</file>
+        <file>resources/qml/StyledSwitch.qml</file>
     </qresource>
 </RCC>

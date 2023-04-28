@@ -1,11 +1,13 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import DowStatsStyle 1.0
 
 Rectangle
 {
     id: root
     property var model: _uiBackend.modsPage
+    color: "#00000000"
 
     Connections {
         target: model
@@ -26,7 +28,7 @@ Rectangle
             Layout.fillWidth: true
             radius: 10
             //color: "#00ff99"
-            color: "#DCDCDC"
+            color: DowStatsStyle.itemColor//highlightItemColor//"#DCDCDC"
 
             RowLayout
             {
@@ -38,6 +40,7 @@ Rectangle
                     text: "Race unlocker:"
                     font.pixelSize: 11
                     Layout.preferredWidth: 200
+                    color: DowStatsStyle.textColor
                 }
 
                 Label{
@@ -45,6 +48,7 @@ Rectangle
                     text: model.unlockRacesStatus
                     Layout.preferredWidth: 200
                     font.pixelSize: 11
+                    color: DowStatsStyle.textColor
                 }
 
                 Rectangle

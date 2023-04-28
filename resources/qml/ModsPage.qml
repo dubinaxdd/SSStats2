@@ -17,7 +17,6 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     radius: 10
 
-
     RowLayout
     {
         anchors.fill: parent

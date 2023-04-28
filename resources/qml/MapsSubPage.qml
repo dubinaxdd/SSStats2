@@ -187,32 +187,16 @@ Rectangle {
                     }
                 }
 
-                Switch{
+                StyledSwitch{
                     text: "Auto-install default maps"
                     checked: _uiBackend.mapManagerPage.autoinstallDefaultMaps
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallDefaultMaps = checked
-
-                    contentItem: Text {
-                        color: DowStatsStyle.textColor
-                        text: "  " + parent.text
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.left: parent.indicator.right
-                        font.pixelSize: 11
-                    }
                 }
 
-                Switch{
+                StyledSwitch{
                     text: "Auto-install all maps"
                     checked: _uiBackend.mapManagerPage.autoinstallAllMaps
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallAllMaps = checked
-
-                    contentItem: Text {
-                        color: DowStatsStyle.textColor
-                        text: "  " + parent.text
-                        verticalAlignment: Text.AlignVCenter
-                        anchors.left: parent.indicator.right
-                        font.pixelSize: 11
-                    }
                 }
             }
         }

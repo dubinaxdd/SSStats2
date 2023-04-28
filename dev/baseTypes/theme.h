@@ -10,7 +10,8 @@ class Theme {
 public:
     enum Value {
         Light,
-        Dark
+        Dark,
+        Pink
     };
     Q_ENUM(Value)
 private:
