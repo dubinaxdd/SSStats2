@@ -60,6 +60,8 @@ Rectangle
         ToolTip.delay: 1000
         ToolTip.text: toolTipText
 
+        cursorShape: Qt.PointingHandCursor
+
         onClicked:
         {
             buttonRectangle.clicked();

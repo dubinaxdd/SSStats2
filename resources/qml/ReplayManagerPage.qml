@@ -50,6 +50,8 @@ Rectangle {
                     color: DowStatsStyle.textColor
                     font.pixelSize: 12
 
+                    placeholderText: "Search for replays"
+
                     background: Rectangle {
                         radius: 10
                         implicitHeight: 40

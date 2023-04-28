@@ -45,10 +45,21 @@ ComboBox{
     }
 
     background: Rectangle {
+        id: backroundRectangle
         radius: 10
         implicitHeight: 40
         border.color: "#00000000"
         border.width: 0
-        color: DowStatsStyle.alternateBackgroundColor
+        color: mouseArea.containsMouse ? DowStatsStyle.itemColor : DowStatsStyle.alternateBackgroundColor
+    }
+
+    MouseArea{
+        id: mouseArea
+
+        anchors.fill: parent
+        hoverEnabled: true
+
+        onPressed: root.popup.open();
+        onClicked: root.popup.open();
     }
 }
