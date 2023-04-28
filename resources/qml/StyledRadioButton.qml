@@ -2,7 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import DowStatsStyle 1.0
 
-Switch{
+RadioButton{
     id: root
     property int fontPxSize: 11
 

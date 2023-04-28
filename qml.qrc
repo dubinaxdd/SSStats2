@@ -34,5 +34,6 @@
         <file>resources/qml/DowStatsStyle.qml</file>
         <file>resources/qml/StyledSwitch.qml</file>
         <file>resources/qml/StyledComboBox.qml</file>
+        <file>resources/qml/StyledRadioButton.qml</file>
     </qresource>
 </RCC>

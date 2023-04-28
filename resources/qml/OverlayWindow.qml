@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import GlobalMouseProvider 1.0
+import DowStatsStyle 1.0
 
 Window {
     id: window
@@ -148,7 +149,7 @@ Window {
                         Layout.minimumWidth: 280 * _uiBackend.sizeModifer
                         Layout.maximumWidth: 280 * _uiBackend.sizeModifer
                         radius: 10 * _uiBackend.sizeModifer
-                        color: "#ffffff"
+                        color: DowStatsStyle.backgroundColor
                         visible: _uiBackend.headerVisible
 
                         ColumnLayout
@@ -160,6 +161,7 @@ Window {
                                 Layout.alignment: Qt.AlignCenter
                                 text: _uiBackend.currentModName + " ladder"
                                 font.pixelSize: 15 * _uiBackend.sizeModifer
+                                color: DowStatsStyle.textColor
                             }
                         }
                     }

@@ -5,7 +5,7 @@ import QtQuick.Layouts 1.12
 Rectangle {
     id: settingsRectangle
     opacity: 1
-    color: "#f9f9f9"
+    color: DowStatsStyle.backgroundColor
     radius: 10 * _uiBackend.sizeModifer
     border.color: "#00000000"
     border.width: 0
@@ -75,7 +75,7 @@ Rectangle {
         anchors.bottomMargin: 10 * _uiBackend.sizeModifer
         anchors.topMargin: 10 * _uiBackend.sizeModifer
 
-        Switch {
+        StyledSwitch {
             id: noFogSwitch
 
             property bool hoverState : noFogMouseArea.howered
@@ -83,7 +83,7 @@ Rectangle {
 
             text: qsTr("No FOG")
 
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
             leftPadding: 10 * _uiBackend.sizeModifer
@@ -99,14 +99,14 @@ Rectangle {
             }
         }
 
-        Switch {
+        StyledSwitch {
             id: showGamePannelPresetSwitch
 
             property bool hoverState : showGamePannelMouseArea.howered
             property bool checkedState : _uiBackend.gamePanel.showGamePannelPreset
 
             text: qsTr("APM panel visible in game")
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
 
@@ -123,14 +123,14 @@ Rectangle {
             }
         }
 
-        Switch {
+        StyledSwitch {
             id: smallGamePanelActivateSwitch
 
             property bool hoverState : smallGamePanelActivateMouseArea.howered
             property bool checkedState : _uiBackend.gamePanel.smallPannelActive
 
             text: qsTr("Small APM panel in game")
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
 
             opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
@@ -154,9 +154,10 @@ Rectangle {
             leftPadding: 10 * _uiBackend.sizeModifer
             font.pixelSize: 15 * _uiBackend.sizeModifer
             topPadding: 20 * _uiBackend.sizeModifer
+            color: DowStatsStyle.textColor
         }
 
-        RadioButton {
+        StyledRadioButton {
             id: scaleRadioButton0
 
             property bool hoverState: scaleRadioButton0MouseArea.howered
@@ -164,7 +165,7 @@ Rectangle {
 
             text: qsTr("50%")
             leftPadding: 20
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton0MouseArea
@@ -180,7 +181,7 @@ Rectangle {
 
         }
 
-        RadioButton {
+        StyledRadioButton {
             id: scaleRadioButton1
 
             property bool hoverState : scaleRadioButton1MouseArea.howered
@@ -188,7 +189,8 @@ Rectangle {
 
             text: qsTr("75%")
             leftPadding: 20
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
+
 
             GlobalMouseArea{
                 id: scaleRadioButton1MouseArea
@@ -203,7 +205,7 @@ Rectangle {
             }
         }
 
-        RadioButton {
+        StyledRadioButton {
             id: scaleRadioButton2
 
             property bool hoverState : scaleRadioButton2MouseArea.howered
@@ -211,7 +213,7 @@ Rectangle {
 
             text: qsTr("100%")
             leftPadding: 20
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton2MouseArea
@@ -226,7 +228,7 @@ Rectangle {
             }
         }
 
-        RadioButton {
+        StyledRadioButton {
             id: scaleRadioButton3
 
             property bool hoverState : scaleRadioButton3MouseArea.howered
@@ -234,7 +236,7 @@ Rectangle {
 
             text: qsTr("125%")
             leftPadding: 20
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton3MouseArea
@@ -250,7 +252,7 @@ Rectangle {
 
         }
 
-        RadioButton {
+        StyledRadioButton {
             id: scaleRadioButton4
 
             property bool hoverState : scaleRadioButton4MouseArea.howered
@@ -258,7 +260,7 @@ Rectangle {
 
             text: qsTr("150%")
             leftPadding: 20
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton4MouseArea
@@ -273,7 +275,7 @@ Rectangle {
             }
         }
 
-        RadioButton {
+        StyledRadioButton {
             id: scaleRadioButton5
 
             property bool hoverState : scaleRadioButton5MouseArea.howered
@@ -281,7 +283,7 @@ Rectangle {
 
             text: qsTr("175%")
             leftPadding: 20
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton5MouseArea
@@ -296,7 +298,7 @@ Rectangle {
             }
         }
 
-        RadioButton {
+        StyledRadioButton {
             id: scaleRadioButton6
 
             property bool hoverState : scaleRadioButton6MouseArea.howered
@@ -304,7 +306,7 @@ Rectangle {
 
             text: qsTr("200%")
             leftPadding: 20
-            font.pixelSize: 15 * _uiBackend.sizeModifer
+            fontPxSize: 15 * _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton6MouseArea
