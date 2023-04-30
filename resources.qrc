@@ -243,5 +243,8 @@
     <qresource prefix="/componentScins">
         <file>resources/componenScins/switch1.svg</file>
         <file>resources/componenScins/switch2.svg</file>
+        <file>resources/componenScins/radioButton1.svg</file>
+        <file>resources/componenScins/radioButton2.svg</file>
+        <file>resources/componenScins/radioButton3.svg</file>
     </qresource>
 </RCC>

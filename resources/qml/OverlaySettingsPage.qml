@@ -69,6 +69,7 @@ Rectangle {
         id: settingsColumn
 
         anchors.fill: parent
+        spacing: 5 * _uiBackend.sizeModifer
 
         anchors.rightMargin: 10 * _uiBackend.sizeModifer
         anchors.leftMargin: 10 * _uiBackend.sizeModifer
@@ -165,6 +166,7 @@ Rectangle {
             text: qsTr("50%")
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton0MouseArea
@@ -189,7 +191,7 @@ Rectangle {
             text: qsTr("75%")
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
-
+            sizeModifer: _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton1MouseArea
@@ -213,6 +215,7 @@ Rectangle {
             text: qsTr("100%")
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton2MouseArea
@@ -236,6 +239,7 @@ Rectangle {
             text: qsTr("125%")
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton3MouseArea
@@ -260,6 +264,7 @@ Rectangle {
             text: qsTr("150%")
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton4MouseArea
@@ -283,6 +288,7 @@ Rectangle {
             text: qsTr("175%")
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton5MouseArea
@@ -306,6 +312,7 @@ Rectangle {
             text: qsTr("200%")
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
 
             GlobalMouseArea{
                 id: scaleRadioButton6MouseArea
