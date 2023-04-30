@@ -110,7 +110,7 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
                         else
                             url = newText.mid(j, k - j);
 
-                        QString formattedUrl = "<a href=\"" + url + "\">" + url + "</a>";
+                        QString formattedUrl = "<a href=\"" + url + "\"style=\"color:#3498DB; text-decoration:none\">" + url + "</a>";
 
 
                         if (k == newText.count() - 1)
