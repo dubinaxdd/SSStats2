@@ -49,7 +49,7 @@ Rectangle {
                 Rectangle {
                     id: buttonInfoRectangle
 
-                    property bool hoverState : buttonInfoMouseArea.howered
+                    property bool hoverState : buttonInfoMouseArea.hovered
                     property bool pressedState : true
 
                     Layout.preferredWidth: 140 * _uiBackend.sizeModifer
@@ -94,7 +94,7 @@ Rectangle {
                 Rectangle {
                     id: buttonSettingsRectangle
 
-                    property bool hoverState : buttonSettingsMouseArea.howered
+                    property bool hoverState : buttonSettingsMouseArea.hovered
                     property bool pressedState : false
 
                     Layout.preferredWidth: 140 * _uiBackend.sizeModifer

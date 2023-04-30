@@ -167,7 +167,7 @@ Rectangle {
             Rectangle {
                 id: expandPatyStatisticButtonRectangle
 
-                property bool howeredState: expandButton.howered
+                property bool howeredState: expandButton.hovered
 
                 property Gradient grLight: Gradient {
                     GradientStop {

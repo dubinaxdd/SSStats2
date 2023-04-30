@@ -97,8 +97,8 @@ Rectangle{
                     _uiBackend.notificationVisible = false
                 }
 
-                onHoweredChanged: {
-                    if (howered)
+                onHoveredChanged: {
+                    if (hovered)
                         closeRectangle.color = "#FFFFFF"
                     else
                         closeRectangle.color = "#00000000"

@@ -240,4 +240,8 @@
         <file>resources/maps/default.jpg</file>
         <file>resources/maps/6p_platform.jpg</file>
     </qresource>
+    <qresource prefix="/componentScins">
+        <file>resources/componenScins/switch1.svg</file>
+        <file>resources/componenScins/switch2.svg</file>
+    </qresource>
 </RCC>

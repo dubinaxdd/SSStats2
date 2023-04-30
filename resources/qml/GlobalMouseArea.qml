@@ -7,7 +7,7 @@ Item {
     property real globalX: 0
     property real globalY: 0
 
-    property bool howered: false
+    property bool hovered: false
 
     property Rectangle rootElement: GlobalMouseProvider.rootElement
     property real mouseX: GlobalMouseProvider.mouseX
@@ -83,13 +83,13 @@ Item {
                 mouseY >= globalY &&
                 mouseY <= globalY + height)
         {
-            if(!howered)
-                howered = true;
+            if(!hovered)
+                hovered = true;
         }
         else
         {
-            if(howered)
-                howered = false;
+            if(hovered)
+                hovered = false;
         }
     }
 }

@@ -30,7 +30,6 @@ ComboBox{
             anchors.fill: image
             source:image
             color: DowStatsStyle.textColor
-            //transform:rotation
             antialiasing: true
         }
 

@@ -90,130 +90,71 @@ Rectangle {
             StyledSwitch{
                 text: "Show overlay"
                 checked: model.overlayVisible
-
-                opacity: hovered? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.overlayVisible = checked;
-                }
+                onCheckedChanged: model.overlayVisible = checked;
             }
 
             StyledSwitch{
                 text: "Launch Soulstorm with Windows7 support mode"
                 checked: model.win7SupportMode
-
-                opacity: hovered? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.win7SupportMode = checked;
-                }
+                onCheckedChanged: model.win7SupportMode = checked;
             }
 
             StyledSwitch{
                 text: "Launch Soulstorm in window"
                 checked: model.launchGameInWindow
-
-                opacity: hovered? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.launchGameInWindow = checked;
-                }
+                onCheckedChanged: model.launchGameInWindow = checked;
             }
 
             StyledSwitch{
                 text: "Skip the intro video"
                 checked: model.skipIntroVideo
-
-                opacity: hovered? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.skipIntroVideo = checked;
-                }
+                onCheckedChanged: model.skipIntroVideo = checked;
             }
 
             StyledSwitch{
                 id: noFogSwitch
                 text: "No FOG"
-                opacity: hovered ? 1.0 : 0.8
-
-                onCheckedChanged:
-                {
-                    _uiBackend.noFogState = checked;
-                }
+                onCheckedChanged: _uiBackend.noFogState = checked;
             }
 
             StyledSwitch{
                 id: showGamePannelSwitch
                 text: "APM panel visible in game"
-                opacity: hovered ? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    _uiBackend.gamePanel.showGamePannelPreset = checked;
-                }
+                onCheckedChanged: _uiBackend.gamePanel.showGamePannelPreset = checked;
             }
 
             StyledSwitch{
                 id: smallPannelActiveSwitch
                 text: "Small APM panel in game"
-                //checked: _uiBackend.gamePanel.smallPannelActive
-                opacity: hovered ? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    _uiBackend.gamePanel.smallPannelActive = checked;
-                }
-
+                onCheckedChanged: _uiBackend.gamePanel.smallPannelActive = checked;
             }
 
             StyledSwitch {
                 id: enableEventsSoundsEhenGameMinimized
                 text: "Enable events sounds when the game is minimized"
                 checked: model.enableEventsSoundWhenGameMinimized
-
-                opacity: hovered ? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.enableEventsSoundWhenGameMinimized = checked;
-                }
+                onCheckedChanged: model.enableEventsSoundWhenGameMinimized = checked;
             }
 
             StyledSwitch {
                 id: enableEventsSoundsEhenGameMaximized
                 text: "Enable events sounds when the game is maximized"
                 checked: model.enableEventsSoundWhenGameMaximized
-
-                opacity: hovered ? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.enableEventsSoundWhenGameMaximized = checked;
-                }
+                onCheckedChanged: model.enableEventsSoundWhenGameMaximized = checked;
             }
 
             StyledSwitch {
                 enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
-
                 text: "Enable game load event sound"
                 checked: model.enableGameLoadEventSound
-
-                opacity: hovered ? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.enableGameLoadEventSound = checked;
-                }
+                onCheckedChanged: model.enableGameLoadEventSound = checked;
             }
 
             StyledSwitch {
-
                 enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
-
                 text: "Enable game start event sound"
-
                 checked: model.enableGameStartEventSound
-
-                opacity: hovered ? 1.0 : 0.8
-
-                onCheckedChanged: {
-                    model.enableGameStartEventSound = checked;
-                }
+                onCheckedChanged: model.enableGameStartEventSound = checked;
             }
 
             RowLayout
@@ -226,14 +167,11 @@ Rectangle {
                     color: DowStatsStyle.textColor
                 }
 
-
                 Slider {
                     from: 0
                     value: model.volume
                     to: 100
-
                     opacity: hovered ? 1.0 : 0.8
-
                     onValueChanged: model.volume = value;
                 }
             }

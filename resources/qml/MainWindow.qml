@@ -408,19 +408,26 @@ Window {
                         color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
                     }
 
-                    Switch {
+
+                    StyledSwitch {
                         id: trainingModeSwitch
                         text: "Ranked mode"
                         checked: _uiBackend.rankedModeState
-                        anchors.fill: parent
+                        fontPxSize: 15
 
-                        opacity: hovered ? 1.0 : 0.8
-                        font.pixelSize: 15
+                        textColor: "#26282a"
+                        backgroundCheckedColor: "#A9A9A9"
+                        backgroundUncheckedColor: "#c8c8c8"
+                        indicatorColor: "#FFFFFF"
+
+                        anchors.fill: parent
+                        anchors.leftMargin: 10
 
                         onCheckedChanged: {
                             _uiBackend.rankedModeState = checked;
                         }
                     }
+
                 }
 
                 Rectangle

@@ -117,7 +117,7 @@ ColumnLayout
             Rectangle {
                 id: expandButtonRectangle
 
-                property bool howeredState: expandButtonMouseArea.howered
+                property bool howeredState: expandButtonMouseArea.hovered
 
                 GlobalMouseArea
                 {
@@ -200,19 +200,26 @@ ColumnLayout
             color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
         }
 
-        Switch
+        StyledSwitch
         {
             id: trainingModeSwitch
             anchors.fill: parent
+            anchors.leftMargin: 10 * _uiBackend.sizeModifer
+
             text: "Ranked mode"
 
             property bool hoverState : false
             property bool checkedState : _uiBackend.rankedModeState
 
-            font.pixelSize: 15 * _uiBackend.sizeModifer
-            opacity: trainingModeSwitchMouseArea.howered ? 1.0 : 0.8
+            fontPxSize: 15 * _uiBackend.sizeModifer
             checked: checkedState
             leftPadding: 10 * _uiBackend.sizeModifer
+            hoveredState: trainingModeSwitchMouseArea.hovered
+            sizeModifer: _uiBackend.sizeModifer
+            textColor: "#26282a"
+            backgroundCheckedColor: "#A9A9A9"
+            backgroundUncheckedColor: "#c8c8c8"
+            indicatorColor: "#FFFFFF"
 
             GlobalMouseArea{
                 id: trainingModeSwitchMouseArea
@@ -223,10 +230,8 @@ ColumnLayout
                     _uiBackend.rankedModeState = trainingModeSwitch.checkedState;
                 }
             }
-
         }
     }
-
 }
 
 

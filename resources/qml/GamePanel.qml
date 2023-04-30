@@ -63,7 +63,7 @@ Rectangle {
 
                         visible: false
 
-                        property bool howeredState: expandButtonMouseArea.howered
+                        property bool howeredState: expandButtonMouseArea.hovered
 
                         property Gradient grLight: Gradient {
                             GradientStop {
@@ -235,7 +235,7 @@ Rectangle {
                     Rectangle {
                         id: expandPlayerRacesButton
 
-                        property bool howeredState: expandPlayerRacesMouseArea.howered
+                        property bool howeredState: expandPlayerRacesMouseArea.hovered
 
                         property Gradient grLight: Gradient {
                             GradientStop {

@@ -12,6 +12,7 @@ QtObject {
     property color highlightItemColor: "#DCDCDC"
     property color selectionColor: "#A9A9A9"
     property color textColor: "#26282a"
+    property color indicatorColor: "#FFFFFF"
 
 
     function setDarkTheme()
@@ -40,6 +41,7 @@ QtObject {
             highlightItemColor = "#DCDCDC";
             selectionColor = "#c8c8c8";
             textColor = "#1B2631";
+            indicatorColor = "#26282a"
         }
         else if(currentTheme === Theme.Dark)
         {
@@ -49,6 +51,7 @@ QtObject {
             highlightItemColor = "#566573";
             selectionColor = "#5D6D7E"//"#2C3E50"//"#ABB2B9";
             textColor = "#F8F9F9";
+            indicatorColor = "#FFFFFF"
         }
         else
         {
@@ -58,6 +61,7 @@ QtObject {
             highlightItemColor = "#BB8FCE";
             selectionColor = "#AF7AC5";
             textColor = "#1B2631";
+            indicatorColor = "#26282a"
         }
     }
 }

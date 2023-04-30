@@ -78,15 +78,15 @@ Rectangle {
         StyledSwitch {
             id: noFogSwitch
 
-            property bool hoverState : noFogMouseArea.howered
+            property bool hoverState : noFogMouseArea.hovered
             property bool checkedState : _uiBackend.noFogState
 
             text: qsTr("No FOG")
-
             fontPxSize: 15 * _uiBackend.sizeModifer
-            opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
             leftPadding: 10 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
+            hoveredState: noFogMouseArea.hovered
 
             GlobalMouseArea{
                 id: noFogMouseArea
@@ -102,15 +102,15 @@ Rectangle {
         StyledSwitch {
             id: showGamePannelPresetSwitch
 
-            property bool hoverState : showGamePannelMouseArea.howered
+            property bool hoverState : showGamePannelMouseArea.hovered
             property bool checkedState : _uiBackend.gamePanel.showGamePannelPreset
 
             text: qsTr("APM panel visible in game")
             fontPxSize: 15 * _uiBackend.sizeModifer
-            opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
-
             leftPadding: 10 * _uiBackend.sizeModifer
+            sizeModifer: _uiBackend.sizeModifer
+            hoveredState: showGamePannelMouseArea.hovered
 
             GlobalMouseArea{
                 id: showGamePannelMouseArea
@@ -126,16 +126,15 @@ Rectangle {
         StyledSwitch {
             id: smallGamePanelActivateSwitch
 
-            property bool hoverState : smallGamePanelActivateMouseArea.howered
+            property bool hoverState : smallGamePanelActivateMouseArea.hovered
             property bool checkedState : _uiBackend.gamePanel.smallPannelActive
 
             text: qsTr("Small APM panel in game")
             fontPxSize: 15 * _uiBackend.sizeModifer
-
-            opacity: hoverState ? 1.0 : 0.8
             checked: checkedState
-
+            sizeModifer: _uiBackend.sizeModifer
             leftPadding: 10 * _uiBackend.sizeModifer
+            hoveredState: smallGamePanelActivateMouseArea.hovered
 
             GlobalMouseArea{
                 id: smallGamePanelActivateMouseArea
@@ -160,7 +159,7 @@ Rectangle {
         StyledRadioButton {
             id: scaleRadioButton0
 
-            property bool hoverState: scaleRadioButton0MouseArea.howered
+            property bool hoverState: scaleRadioButton0MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
             text: qsTr("50%")
@@ -184,7 +183,7 @@ Rectangle {
         StyledRadioButton {
             id: scaleRadioButton1
 
-            property bool hoverState : scaleRadioButton1MouseArea.howered
+            property bool hoverState : scaleRadioButton1MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
             text: qsTr("75%")
@@ -208,7 +207,7 @@ Rectangle {
         StyledRadioButton {
             id: scaleRadioButton2
 
-            property bool hoverState : scaleRadioButton2MouseArea.howered
+            property bool hoverState : scaleRadioButton2MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
             text: qsTr("100%")
@@ -231,7 +230,7 @@ Rectangle {
         StyledRadioButton {
             id: scaleRadioButton3
 
-            property bool hoverState : scaleRadioButton3MouseArea.howered
+            property bool hoverState : scaleRadioButton3MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
             text: qsTr("125%")
@@ -255,7 +254,7 @@ Rectangle {
         StyledRadioButton {
             id: scaleRadioButton4
 
-            property bool hoverState : scaleRadioButton4MouseArea.howered
+            property bool hoverState : scaleRadioButton4MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
             text: qsTr("150%")
@@ -278,7 +277,7 @@ Rectangle {
         StyledRadioButton {
             id: scaleRadioButton5
 
-            property bool hoverState : scaleRadioButton5MouseArea.howered
+            property bool hoverState : scaleRadioButton5MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
             text: qsTr("175%")
@@ -301,7 +300,7 @@ Rectangle {
         StyledRadioButton {
             id: scaleRadioButton6
 
-            property bool hoverState : scaleRadioButton6MouseArea.howered
+            property bool hoverState : scaleRadioButton6MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
             text: qsTr("200%")
