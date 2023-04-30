@@ -245,29 +245,35 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
             requestUserAvatar(newDiscordMessage.userId, newDiscordMessage.avatarId);
         }
 
-
-
         //Дергаем превьюху ютубовских видосов
-        if (newDiscordMessage.content.contains("https://youtu.be/"))
+        if (newDiscordMessage.content.contains("https://youtu.be/") || newDiscordMessage.content.contains("https://www.youtube.com/watch?v="))
         {
             QString youtubeLink = "";
 
-            for(int i = 0; i < newDiscordMessage.content.count(); i++)
+            int index = newDiscordMessage.content.indexOf("https://youtu.be/");
+
+            for(int i = index; i < newDiscordMessage.content.count(); i++)
             {
-                if ( newDiscordMessage.content.mid(i, 17) == "https://youtu.be/")
-                {
-
-
-                    for(int j = i; j < newDiscordMessage.content.count(); j++)
-                    {
-                        if(newDiscordMessage.content[j] != '\n' && newDiscordMessage.content[j] != ' ' && newDiscordMessage.content[j] != '\0' )
-                            youtubeLink.append(newDiscordMessage.content[j]);
-                        else
-                            break;
-                    }
+                if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                    youtubeLink.append(newDiscordMessage.content[i]);
+                else
                     break;
+            }
+
+
+            if (youtubeLink.isEmpty())
+            {
+                int index = newDiscordMessage.content.indexOf("https://www.youtube.com/watch?v=");
+
+                for(int i = index; i < newDiscordMessage.content.count(); i++)
+                {
+                    if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                        youtubeLink.append(newDiscordMessage.content[i]);
+                    else
+                        break;
                 }
             }
+
 
             if (!youtubeLink.isEmpty())
             {
