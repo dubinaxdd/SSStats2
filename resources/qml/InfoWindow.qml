@@ -31,376 +31,394 @@ Rectangle {
 
         ColumnLayout
         {
-            id: columnLayout
             width: scrollView.width
-
-            Label{
-                Layout.alignment: Qt.AlignHCenter
-                text: "Welcome to DoW Stats 2"
-                font.pixelSize: 22 * infoRectangle.sizeModifer
-                color: DowStatsStyle.textColor
-            }
-
-            Label{
-                text: ""
-                font.pixelSize: 14 * infoRectangle.sizeModifer
-            }
-
-            Label{
-                text: "Standard game settings for sending statistics:"
-                font.pixelSize: 18 * infoRectangle.sizeModifer
-                color: DowStatsStyle.textColor
-            }
-
             ColumnLayout
             {
-                spacing: 3  * infoRectangle.sizeModifer
+                id: columnLayout
+                Layout.alignment: Qt.AlignHCenter
+
+                Label{
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "Welcome to DoW Stats 2"
+                    font.pixelSize: 22 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
+                Label{
+                    text: ""
+                    font.pixelSize: 14 * infoRectangle.sizeModifer
+                }
+
+                Label{
+                    text: "Standard game settings for sending statistics:"
+                    font.pixelSize: 18 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
+                ColumnLayout
+                {
+                    spacing: 3  * infoRectangle.sizeModifer
+
+                    GridLayout
+                    {
+                        columns: 2
+                        rowSpacing: 3  * infoRectangle.sizeModifer
+
+                        Label{
+                            text: "   • Solo MMR game rules:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "1v1 game, Annihilate, Control Area, Take and Hold, Game Timer (optional)."
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • MMR game rules:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional)."
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • Ai difficulty:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "Optional, if there is AI in the game, statistics are not sent."
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • Starting resources:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "Standard"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+
+                        Label{
+                            text: "   • Lock teams:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "Yes"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • Enable cheats:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "No"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • Starting location:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "Optional"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • Game speed:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "Normal"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • Resource sharing:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "No"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "   • Resource Rate:"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: "Standard"
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+                    }
+
+                    Label{
+                        text: "   • Game duration is more than 45 seconds"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+                }
+
+                Label{
+                    text: ""
+                }
+
+                Label{
+                    text: "Ranked mode:"
+                    font.pixelSize: 18 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
+                Label{
+                    text: "   A game is considered ranked when at least one of the players is playing in ranked mode."
+                    font.pixelSize: 14 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
+                Label{
+                    text: ""
+                }
+
+
+
+                Label{
+                    text: "Players are divided into the following ranks by Solo MMR"
+                    font.pixelSize: 18 * infoRectangle.sizeModifer
+                    Layout.alignment: Qt.AlignHCenter
+                    color: DowStatsStyle.textColor
+                }
 
                 GridLayout
                 {
-                    columns: 2
-                    rowSpacing: 3  * infoRectangle.sizeModifer
+                    Layout.alignment: Qt.AlignHCenter
+                    columns: 7
+                    columnSpacing: 20  * infoRectangle.sizeModifer
 
                     Label{
-                        text: "   • Solo MMR game rules:"
+                        text: "Division VII"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "1v1 game, Annihilate, Control Area, Take and Hold, Game Timer (optional)."
+                        text: "Division VI"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • MMR game rules:"
+                        text: "Division V"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional)."
+                        text: "Division IV"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • Ai difficulty:"
+                        text: "Division III"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Optional, if there is AI in the game, statistics are not sent."
+                        text: "Division II"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • Starting resources:"
+                        text: "Division I"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Standard"
-                        font.pixelSize: 14 * infoRectangle.sizeModifer
-                        color: DowStatsStyle.textColor
-                    }
-
-
-                    Label{
-                        text: "   • Lock teams:"
+                        text: "0 - 1399"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Yes"
+                        text: "1400 - 1549"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • Enable cheats:"
+                        text: "1550 - 1649"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "No"
+                        text: "1650 - 1799"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • Starting location:"
+                        text: "1800 - 1999"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Optional"
+                        text: "2000 - 2249"
+                        Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • Game speed:"
+                        text: "2250+"
+                        Layout.alignment: Qt.AlignHCenter
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/resources/images/rank0_60.png"
+                        Layout.preferredWidth: 60 * infoRectangle.sizeModifer
+                        Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+                    }
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/resources/images/rank1_60.png"
+                        Layout.preferredWidth: 60 * infoRectangle.sizeModifer
+                        Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+                    }
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/resources/images/rank2_60.png"
+                        Layout.preferredWidth: 60 * infoRectangle.sizeModifer
+                        Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+                    }
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/resources/images/rank3_60.png"
+                        Layout.preferredWidth: 60 * infoRectangle.sizeModifer
+                        Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+                    }
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/resources/images/rank4_60.png"
+                        Layout.preferredWidth: 60 * infoRectangle.sizeModifer
+                        Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+                    }
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/resources/images/rank5_60.png"
+                        Layout.preferredWidth: 60 * infoRectangle.sizeModifer
+                        Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+                    }
+
+                    Image {
+                        Layout.alignment: Qt.AlignHCenter
+                        source: "qrc:/images/resources/images/rank6_60.png"
+                        Layout.preferredWidth: 60 * infoRectangle.sizeModifer
+                        Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+                    }
+                }
+
+                Label{
+                    text: ""
+                }
+
+                Label{
+                    text: "Developers:"
+                    font.pixelSize: 18 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
+                ColumnLayout
+                {
+                    spacing: 3  * infoRectangle.sizeModifer
+
+                    Label{
+                        text: "   Dubina_xdd - DoW Stats 2 client main developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Normal"
+                        text: "   Anibus - dowstats web site main developer, DoW Stats 2 client developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • Resource sharing:"
+                        text: "   Funeral - microservices developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "No"
+                        text: "   New - first client (SSStats) main developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   • Resource Rate:"
+                        text: "   With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE, Nascent, YbuBaKa"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
-
-                    Label{
-                        text: "Standard"
-                        font.pixelSize: 14 * infoRectangle.sizeModifer
-                        color: DowStatsStyle.textColor
-                    }
-                }
-
-                Label{
-                    text: "   • Game duration is more than 45 seconds"
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-            }
-
-            Label{
-                text: ""
-            }
-
-            Label{
-                text: "Ranked mode"
-                font.pixelSize: 18 * infoRectangle.sizeModifer
-                color: DowStatsStyle.textColor
-            }
-
-            Label{
-                text: "   A game is considered ranked when at least one of the players is playing in ranked mode."
-                font.pixelSize: 14 * infoRectangle.sizeModifer
-                color: DowStatsStyle.textColor
-            }
-
-            Label{
-                text: ""
-            }
-
-
-
-            Label{
-                text: "Players are divided into the following ranks by Solo MMR"
-                font.pixelSize: 18 * infoRectangle.sizeModifer
-                Layout.alignment: Qt.AlignHCenter
-                color: DowStatsStyle.textColor
-            }
-
-            GridLayout
-            {
-                Layout.alignment: Qt.AlignHCenter
-                columns: 7
-                columnSpacing: 20  * infoRectangle.sizeModifer
-
-                Label{
-                    text: "Division VII"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "Division VI"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "Division V"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "Division IV"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "Division III"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "Division II"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "Division I"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "0 - 1399"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "1400 - 1549"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "1550 - 1649"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "1650 - 1799"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "1800 - 1999"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "2000 - 2249"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "2250+"
-                    Layout.alignment: Qt.AlignHCenter
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    source: "qrc:/images/resources/images/rank0_60.png"
-                }
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    source: "qrc:/images/resources/images/rank1_60.png"
-                }
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    source: "qrc:/images/resources/images/rank2_60.png"
-                }
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    source: "qrc:/images/resources/images/rank3_60.png"
-                }
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    source: "qrc:/images/resources/images/rank4_60.png"
-                }
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    source: "qrc:/images/resources/images/rank5_60.png"
-                }
-
-                Image {
-                    Layout.alignment: Qt.AlignHCenter
-                    source: "qrc:/images/resources/images/rank6_60.png"
-                }
-            }
-
-            Label{
-                text: ""
-            }
-
-            Label{
-                text: "Developers"
-                font.pixelSize: 18 * infoRectangle.sizeModifer
-                color: DowStatsStyle.textColor
-            }
-
-            ColumnLayout
-            {
-                spacing: 3  * infoRectangle.sizeModifer
-
-                Label{
-                    text: "   Dubina_xdd - DoW Stats 2 client main developer"
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "   Anibus - dowstats web site main developer, DoW Stats 2 client developer"
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "   Funeral - microservices developer"
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "   New - first client (SSStats) main developer"
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: "   With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE, Nascent, YbuBaKa"
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
                 }
             }
         }
