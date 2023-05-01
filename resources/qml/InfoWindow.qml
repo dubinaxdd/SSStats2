@@ -8,6 +8,7 @@ Rectangle {
     id: infoRectangle
 
     property real sizeModifer: 1
+    property bool isOverlayPage: false
 
     opacity: 1
     color: DowStatsStyle.backgroundColor
@@ -21,7 +22,7 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     radius: 10 * infoRectangle.sizeModifer
 
-    ScrollView
+    Flickable
     {
         id: scrollView
 
@@ -29,8 +30,53 @@ Rectangle {
         anchors.margins: 10 * infoRectangle.sizeModifer
         clip: true
 
+        contentHeight: content.height
+
+        ScrollBar.vertical: ScrollBar {
+            id: scrollBar
+            visible: content.height > scrollView.height
+            policy: ScrollBar.AlwaysOn
+        }
+
+        GlobalMouseArea
+        {
+            id: scrollViewMouseArea
+            anchors.fill: parent
+            enabled: infoRectangle.isOverlayPage
+
+            onWheel: {
+                if (!infoRectangle.isOverlayPage)
+                    return;
+
+                if (delta > 0)
+                    scrollView.scrollToTop();
+
+                if (delta < 0)
+                    scrollView.scrollToBottom()
+            }
+        }
+
+        function scrollToBottom() {
+
+            var cof = 0.04 * _uiBackend.sizeModifer
+
+            if (ScrollBar.vertical.position + cof <= 0.9 && scrollView.height + scrollView.y < scrollView.contentItem.y + scrollView.contentItem.height)
+                ScrollBar.vertical.position += cof
+        }
+
+        function scrollToTop() {
+
+            var cof = 0.04 * _uiBackend.sizeModifer
+
+            if (ScrollBar.vertical.position - cof > 0  )
+                ScrollBar.vertical.position -= cof
+            else
+                ScrollBar.vertical.position = 0
+        }
+
         ColumnLayout
         {
+            id: content
             width: scrollView.width
             ColumnLayout
             {
@@ -193,8 +239,9 @@ Rectangle {
                     }
                 }
 
-                Label{
-                    text: ""
+                Rectangle{
+                    color:"#00000000"
+                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
                 }
 
                 Label{
@@ -209,11 +256,10 @@ Rectangle {
                     color: DowStatsStyle.textColor
                 }
 
-                Label{
-                    text: ""
+                Rectangle{
+                    color:"#00000000"
+                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
                 }
-
-
 
                 Label{
                     text: "Players are divided into the following ranks by Solo MMR"
@@ -376,8 +422,9 @@ Rectangle {
                     }
                 }
 
-                Label{
-                    text: ""
+                Rectangle{
+                    color:"#00000000"
+                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
                 }
 
                 Label{

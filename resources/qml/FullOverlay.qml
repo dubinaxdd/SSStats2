@@ -178,6 +178,7 @@ Rectangle {
                 visible: buttonInfoRectangle.pressedState
                 anchors.fill: parent
                 sizeModifer: _uiBackend.sizeModifer
+                isOverlayPage: true
             }
         }
     }
