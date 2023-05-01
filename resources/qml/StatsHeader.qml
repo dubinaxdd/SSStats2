@@ -68,20 +68,17 @@ ColumnLayout
                 Image {
                     id: image
                     anchors.fill: parent
-                    //source: "qrc:/images/resources/images/ssstats.png"
-                    source: "qrc:/images/resources/images/rank6_60.png"
+
+                    source: "qrc:/images/resources/images/Rank8.svg"
                     anchors.rightMargin: 10 * _uiBackend.sizeModifer
                     anchors.leftMargin: 10 * _uiBackend.sizeModifer
                     anchors.bottomMargin: 10 * _uiBackend.sizeModifer
                     anchors.topMargin: 10 * _uiBackend.sizeModifer
-                    Layout.minimumHeight: 60 * _uiBackend.sizeModifer
-                    Layout.minimumWidth: 60 * _uiBackend.sizeModifer
-                    Layout.margins: 0 * _uiBackend.sizeModifer
-                    Layout.rightMargin: 0 * _uiBackend.sizeModifer
-                    Layout.leftMargin: 0 * _uiBackend.sizeModifer
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
+
                     fillMode: Image.PreserveAspectFit
+
+                    sourceSize.width: 60 * _uiBackend.sizeModifer
+                    sourceSize.height: 60 * _uiBackend.sizeModifer
                 }
             }
 

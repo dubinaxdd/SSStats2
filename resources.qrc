@@ -13,22 +13,7 @@
         <file>resources/icons/ssIcon.png</file>
         <file>resources/images/warning.png</file>
         <file>resources/images/closeButton.png</file>
-        <file>resources/images/rank1_200.png</file>
-        <file>resources/images/rank2_200.png</file>
-        <file>resources/images/rank3_200.png</file>
-        <file>resources/images/rank4_200.png</file>
-        <file>resources/images/rank5_200.png</file>
-        <file>resources/images/rank6_200.png</file>
         <file>resources/images/readyImage.png</file>
-        <file>resources/images/rank6_30.png</file>
-        <file>resources/images/rank6_60.png</file>
-        <file>resources/images/rank1_60.png</file>
-        <file>resources/images/rank2_60.png</file>
-        <file>resources/images/rank3_60.png</file>
-        <file>resources/images/rank4_60.png</file>
-        <file>resources/images/rank5_60.png</file>
-        <file>resources/images/calibrate_60.png</file>
-        <file>resources/images/rank0_60.png</file>
         <file>resources/images/man_user.svg</file>
         <file>resources/images/gear.svg</file>
         <file>resources/images/gear2.svg</file>
@@ -42,6 +27,14 @@
         <file>resources/images/find.svg</file>
         <file>resources/images/dow_online.png</file>
         <file>resources/images/arrow_down.svg</file>
+        <file>resources/images/Rank1.svg</file>
+        <file>resources/images/Rank2.svg</file>
+        <file>resources/images/Rank3.svg</file>
+        <file>resources/images/Rank4.svg</file>
+        <file>resources/images/Rank5.svg</file>
+        <file>resources/images/Rank6.svg</file>
+        <file>resources/images/Rank7.svg</file>
+        <file>resources/images/Rank8.svg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>resources/sounds/game_started.wav</file>

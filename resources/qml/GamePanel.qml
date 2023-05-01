@@ -134,15 +134,15 @@ Rectangle {
                         Image {
                             id: image
                             anchors.fill: parent
-                            //source: "qrc:/images/resources/images/ssstats.png"
-                            source: "qrc:/images/resources/images/rank6_30.png"
                             anchors.rightMargin: 5 * _uiBackend.sizeModifer
                             anchors.leftMargin: 5 * _uiBackend.sizeModifer
                             anchors.bottomMargin: 5 * _uiBackend.sizeModifer
                             anchors.topMargin: 5 * _uiBackend.sizeModifer
-                            Layout.maximumHeight: 40 * _uiBackend.sizeModifer
-                            Layout.maximumWidth: 40 * _uiBackend.sizeModifer
                             fillMode: Image.PreserveAspectFit
+
+                            source: "qrc:/images/resources/images/Rank8.svg"
+                            sourceSize.width: 30 * _uiBackend.sizeModifer
+                            sourceSize.height: 30 * _uiBackend.sizeModifer
                         }
                     }
 

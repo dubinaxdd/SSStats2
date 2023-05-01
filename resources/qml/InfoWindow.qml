@@ -374,51 +374,72 @@ Rectangle {
 
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/images/resources/images/rank0_60.png"
                         Layout.preferredWidth: 60 * infoRectangle.sizeModifer
                         Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+
+                        source: "qrc:/images/resources/images/Rank1.svg"
+                        sourceSize.width: 60 * infoRectangle.sizeModifer
+                        sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
 
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/images/resources/images/rank1_60.png"
                         Layout.preferredWidth: 60 * infoRectangle.sizeModifer
                         Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+
+                        source: "qrc:/images/resources/images/Rank3.svg"
+                        sourceSize.width: 60 * infoRectangle.sizeModifer
+                        sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
 
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/images/resources/images/rank2_60.png"
                         Layout.preferredWidth: 60 * infoRectangle.sizeModifer
                         Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+
+                        source: "qrc:/images/resources/images/Rank4.svg"
+                        sourceSize.width: 60 * infoRectangle.sizeModifer
+                        sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
 
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/images/resources/images/rank3_60.png"
                         Layout.preferredWidth: 60 * infoRectangle.sizeModifer
                         Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+
+                        source: "qrc:/images/resources/images/Rank5.svg"
+                        sourceSize.width: 60 * infoRectangle.sizeModifer
+                        sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
 
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/images/resources/images/rank4_60.png"
                         Layout.preferredWidth: 60 * infoRectangle.sizeModifer
                         Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+
+                        source: "qrc:/images/resources/images/Rank6.svg"
+                        sourceSize.width: 60 * infoRectangle.sizeModifer
+                        sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
 
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/images/resources/images/rank5_60.png"
                         Layout.preferredWidth: 60 * infoRectangle.sizeModifer
                         Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+
+                        source: "qrc:/images/resources/images/Rank7.svg"
+                        sourceSize.width: 60 * infoRectangle.sizeModifer
+                        sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
 
                     Image {
                         Layout.alignment: Qt.AlignHCenter
-                        source: "qrc:/images/resources/images/rank6_60.png"
                         Layout.preferredWidth: 60 * infoRectangle.sizeModifer
                         Layout.preferredHeight: 60 * infoRectangle.sizeModifer
+
+                        source: "qrc:/images/resources/images/Rank8.svg"
+                        sourceSize.width: 60 * infoRectangle.sizeModifer
+                        sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
                 }
 

@@ -62,41 +62,41 @@ Rectangle {
 
         if (playerMmr1v1 < 1400)
         {
-            rankImage.source = "qrc:/images/resources/images/rank0_60.png"
+            rankImage.source = "qrc:/images/resources/images/Rank1.svg"
             return;
         }
 
         if (playerMmr1v1 < 1550)
         {
-            rankImage.source = "qrc:/images/resources/images/rank1_60.png"
+            rankImage.source = "qrc:/images/resources/images/Rank3.svg"
             return;
         }
 
         if (playerMmr1v1 < 1650)
         {
-            rankImage.source = "qrc:/images/resources/images/rank2_60.png"
+            rankImage.source = "qrc:/images/resources/images/Rank4.svg"
             return;
         }
 
         if (playerMmr1v1 < 1800)
         {
-            rankImage.source = "qrc:/images/resources/images/rank3_60.png"
+            rankImage.source = "qrc:/images/resources/images/Rank5.svg"
             return;
         }
 
         if (playerMmr1v1 < 2000)
         {
-            rankImage.source = "qrc:/images/resources/images/rank4_60.png"
+            rankImage.source = "qrc:/images/resources/images/Rank6.svg"
             return;
         }
 
         if (playerMmr1v1 < 2250)
         {
-            rankImage.source = "qrc:/images/resources/images/rank5_60.png"
+            rankImage.source = "qrc:/images/resources/images/Rank7.svg"
             return;
         }
 
-        rankImage.source = "qrc:/images/resources/images/rank6_60.png"
+        rankImage.source = "qrc:/images/resources/images/Rank8.svg"
         return;
     }
 
@@ -344,7 +344,9 @@ Rectangle {
                             anchors.horizontalCenter: parent.horizontalCenter
                             fillMode: Image.PreserveAspectFit
 
-                            source: "qrc:/images/resources/images/rank1_60.png"
+                            source: "qrc:/images/resources/images/Rank2.svg"
+                            sourceSize.width: 50 * sizeModifer
+                            sourceSize.height: 50 * sizeModifer
                         }
                     }
 

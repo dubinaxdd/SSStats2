@@ -108,20 +108,16 @@ Window {
                             Image {
                                 id: image
                                 anchors.fill: parent
-                                //source: "qrc:/images/resources/images/ssstats.png"
-                                source: "qrc:/images/resources/images/rank6_60.png"
+
+                                source: "qrc:/images/resources/images/Rank8.svg"
                                 anchors.rightMargin: 10
                                 anchors.leftMargin: 10
                                 anchors.bottomMargin: 10
                                 anchors.topMargin: 10
-                                Layout.minimumHeight: 60
-                                Layout.minimumWidth: 60
-                                Layout.margins: 0
-                                Layout.rightMargin: 0
-                                Layout.leftMargin: 0
-                                Layout.fillWidth: true
-                                Layout.fillHeight: true
                                 fillMode: Image.PreserveAspectFit
+
+                                sourceSize.width: 60
+                                sourceSize.height: 60
                             }
                         }
 

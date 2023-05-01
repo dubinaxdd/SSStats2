@@ -86,6 +86,10 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     //setlocale(LC_ALL,"Russian");
 
+    //app.setHighDpiScaleFactorRoundingPolicy();
+
+    app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
