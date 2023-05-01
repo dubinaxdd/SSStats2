@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     //setlocale(LC_ALL,"Russian");
 
-    //app.setHighDpiScaleFactorRoundingPolicy();
+    app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Round);
 
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 

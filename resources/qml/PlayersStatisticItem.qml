@@ -345,8 +345,8 @@ Rectangle {
                             fillMode: Image.PreserveAspectFit
 
                             source: "qrc:/images/resources/images/Rank2.svg"
-                            sourceSize.width: 50 * sizeModifer
-                            sourceSize.height: 50 * sizeModifer
+                            sourceSize.width: 60 * sizeModifer
+                            sourceSize.height: 60 * sizeModifer
                         }
                     }
 

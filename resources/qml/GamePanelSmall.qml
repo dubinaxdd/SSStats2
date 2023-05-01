@@ -61,29 +61,25 @@ Rectangle {
 
                     Rectangle {
                         id: rectangle3
-                        width: 200 * _uiBackend.sizeModifer
-                        height: 200 * _uiBackend.sizeModifer
                         color: "#00000000"
-                        Layout.minimumHeight: 40 * _uiBackend.sizeModifer
-                        Layout.minimumWidth: 40 * _uiBackend.sizeModifer
-                        Layout.maximumHeight: 40 * _uiBackend.sizeModifer
-                        Layout.maximumWidth: 40 * _uiBackend.sizeModifer
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
+                        Layout.minimumHeight: 30 * _uiBackend.sizeModifer
+                        Layout.minimumWidth: 30 * _uiBackend.sizeModifer
+                        Layout.maximumHeight: 30 * _uiBackend.sizeModifer
+                        Layout.maximumWidth: 30 * _uiBackend.sizeModifer
 
+                        Layout.margins: 5 * _uiBackend.sizeModifer
+
+                        //Layout.fillWidth: true
+                        //Layout.fillHeight: true
 
                         Image {
                             id: image
                             anchors.fill: parent
-                            anchors.rightMargin: 5 * _uiBackend.sizeModifer
-                            anchors.leftMargin: 5 * _uiBackend.sizeModifer
-                            anchors.bottomMargin: 5 * _uiBackend.sizeModifer
-                            anchors.topMargin: 5 * _uiBackend.sizeModifer
                             fillMode: Image.PreserveAspectFit
 
                             source: "qrc:/images/resources/images/Rank8.svg"
-                            sourceSize.width: 30 * _uiBackend.sizeModifer
-                            sourceSize.height: 30 * _uiBackend.sizeModifer
+                            sourceSize.width: 40 * _uiBackend.sizeModifer
+                            sourceSize.height: 40 * _uiBackend.sizeModifer
                         }
                     }
 
