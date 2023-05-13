@@ -205,11 +205,17 @@ void RankedModServiceProcessor::receivePingRecponce(QNetworkReply *reply)
 void RankedModServiceProcessor::receiveCurrentMod(QString modName)
 {
     m_currentMod = modName;
+
+    if (m_currentMod.contains("dowstats_balance_mod"))
+        m_currentMod = "dowstats_balance_mod";
 }
 
 void RankedModServiceProcessor::onSettingsLoaded()
 {
     m_currentMod = m_settingsController->getSettings()->currentMod;
+
+    if (m_currentMod.contains("dowstats_balance_mod"))
+        m_currentMod = "dowstats_balance_mod";
 
     m_pingTimer->start();
     m_rankedStateTimer->start();

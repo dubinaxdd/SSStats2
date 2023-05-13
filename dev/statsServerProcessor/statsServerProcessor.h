@@ -60,7 +60,7 @@ private:
     bool m_rankedMode = true;
 
     QString m_machineUniqueId = "";
-    QString m_currentMode = "";
+    QString m_currentMod = "";
 };
 
 #endif // STATSSERVERPROCESSOR_H

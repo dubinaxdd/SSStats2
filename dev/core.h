@@ -15,6 +15,7 @@
 #include <statsServerProcessor.h>
 #include <rankedModServiceProcessor.h>
 #include <mapManager.h>
+#include <balanceModManager.h>
 
 class Core : public QObject
 {
@@ -53,6 +54,7 @@ private:
     StatsServerProcessor* m_statsServerProcessor;
     RankedModServiceProcessor* m_rankedModServiceProcessor;
     MapManager* m_mapManager;
+    BalanceModManager* m_balanceModManager;
 };
 
 //Q_DECLARE_METATYPE(Core);

@@ -154,7 +154,7 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
     QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats3.php?sids=" + sidsString
                     + "&version=" + m_clientVersion
                     + "&sender_sid=" + m_currentPlayerStats.data()->at(0).steamId
-                    + "&mod_tech_name=" + m_currentMode);
+                    + "&mod_tech_name=" + m_currentMod);
 
     QNetworkRequest newRequest = QNetworkRequest(url);
 
@@ -270,7 +270,11 @@ void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
 
 void StatsServerProcessor::onSettingsLoaded()
 {
-    m_currentMode = m_settingsController->getSettings()->currentMod;
+    m_currentMod = m_settingsController->getSettings()->currentMod;
+
+    if (m_currentMod.contains("dowstats_balance_mod"))
+        m_currentMod = "dowstats_balance_mod";
+
     parseCurrentPlayerSteamId();
     m_currentPlayerStatsRequestTimer->start();
 }
@@ -427,7 +431,10 @@ void StatsServerProcessor::receiveRankedMode(bool reankedMode)
 
 void StatsServerProcessor::receiveCurrentMod(QString modName)
 {
-    m_currentMode = modName;
+    m_currentMod = modName;
+
+    if (m_currentMod.contains("dowstats_balance_mod"))
+        m_currentMod = "dowstats_balance_mod";
 }
 
 QString StatsServerProcessor::GetRandomString() const

@@ -23,6 +23,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_statsServerProcessor ( new StatsServerProcessor(m_settingsController, m_soulstormController->ssPath(), m_soulstormController->steamPath(), this))
     , m_rankedModServiceProcessor(new RankedModServiceProcessor(m_settingsController, this))
     , m_mapManager(new MapManager(m_settingsController, m_soulstormController->ssPath(), this))
+    , m_balanceModManager(new BalanceModManager(this))
 {
     registerTypes();
 
@@ -140,6 +141,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendModsOnlineCountMap, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveModsOnlineCountMap, Qt::QueuedConnection);
+
+    QObject::connect(m_balanceModManager, &BalanceModManager::sendBalanceModVersoins, m_uiBackend->balanceModPage(), &BalanceModPage::receiveVersions, Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
 }

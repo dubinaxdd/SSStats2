@@ -36,7 +36,7 @@ Rectangle {
                 color: "#00000000"
                 clip: true
 
-                visible: model.modName !== "DoW Stats Balance Mod"
+                //visible: model.modName !== "DoW Stats Balance Mod"
 
                 RowLayout{
                     anchors.fill: parent

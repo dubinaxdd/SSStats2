@@ -14,6 +14,7 @@
 #include <mapManagerPage.h>
 #include <modsPage.h>
 #include <onlineStatisticPanel.h>
+#include <balanceModPage.h>
 
 class UiBackend : public QObject
 {
@@ -47,6 +48,8 @@ class UiBackend : public QObject
     Q_PROPERTY(MapManagerPage* mapManagerPage MEMBER m_mapManagerPage  CONSTANT)
     Q_PROPERTY(ModsPage* modsPage MEMBER m_modsPage  CONSTANT)
     Q_PROPERTY(OnlineStatisticPanel* onlineStatisticPanel MEMBER m_onlineStatisticPanel CONSTANT)
+    Q_PROPERTY(BalanceModPage * balanceModPage MEMBER m_balanceModPage CONSTANT)
+
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -58,6 +61,7 @@ class UiBackend : public QObject
 
     Q_PROPERTY(QString currentModName READ currentModName WRITE setCurrentModName NOTIFY currentModNameChanged)
     Q_PROPERTY(QString currentModTechnicalName READ currentModTechnicalName WRITE setCurrentModTechnicalName NOTIFY currentModTechnicalNameChanged)
+
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -118,6 +122,8 @@ public:
 
     OnlineStatisticPanel *onlineStatisticPanel() const;
 
+    BalanceModPage *balanceModPage() const;
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -156,6 +162,8 @@ signals:
     void currentModNameChanged();
 
     void currentModTechnicalNameChanged();
+
+    void balanceModPageChanged();
 
 public slots:
     void expandKeyPressed();
@@ -200,6 +208,7 @@ private:
     MapManagerPage* m_mapManagerPage;
     ModsPage* m_modsPage;
     OnlineStatisticPanel* m_onlineStatisticPanel;
+    BalanceModPage* m_balanceModPage;
 
     QTimer* m_notificationVisibleTimer;
 
@@ -246,6 +255,7 @@ private:
 
     QString m_currentModName = "";
     QString m_currentModTechnicalName = "";
+
 };
 
 #endif // UIBACKEND_H

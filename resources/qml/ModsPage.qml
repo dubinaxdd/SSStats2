@@ -41,18 +41,16 @@ Rectangle {
                 {
                     id: balanceModButton
 
-                    text: "DowStats balance mod"
+                    text: "DowStats Balance Mod"
                     Layout.preferredWidth: 200
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     pressedState: true
-
-                    visible: false
 
                     onClicked: {
                         mapsButton.pressedState = false;
                         otherModsButton.pressedState = false;
 
-                        //dowStatsModSubPage.visible = true;
+                        dowStatsModSubPage.visible = true;
                         mapsSubPage.visible = false;
                         otherModsSubPage.visible = false;
                     }
@@ -66,13 +64,11 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
 
-                    pressedState: true
-
                     onClicked: {
                         balanceModButton.pressedState = false;
                         otherModsButton.pressedState = false;
 
-                        //dowStatsModSubPage.visible = false;
+                        dowStatsModSubPage.visible = false;
                         mapsSubPage.visible = true;
                         otherModsSubPage.visible = false;
                     }
@@ -89,7 +85,7 @@ Rectangle {
                         balanceModButton.pressedState = false;
                         mapsButton.pressedState = false;
 
-                        //dowStatsModSubPage.visible = false;
+                        dowStatsModSubPage.visible = false;
                         mapsSubPage.visible = false;
                         otherModsSubPage.visible = true;
                     }
@@ -103,20 +99,20 @@ Rectangle {
 
         ColumnLayout
         {
-            /*DowStatsModSubPage
+            DowStatsModSubPage
             {
                 id: dowStatsModSubPage
                 Layout.fillHeight: true
                 Layout.fillWidth: true
                 visible: true
-            }*/
+            }
 
             MapsSubPage
             {
                 id: mapsSubPage
                 Layout.fillHeight: true
                 Layout.fillWidth: true
-                visible: true
+                visible: false
             }
 
             OtherModsSubPage
