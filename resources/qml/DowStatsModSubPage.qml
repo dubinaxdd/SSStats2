@@ -101,7 +101,7 @@ Rectangle {
 
                 delegate: Rectangle{
                     width: listView.width
-                    height: 50
+                    height: 70
                     radius: 10
 
                     color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.itemColor
@@ -112,6 +112,13 @@ Rectangle {
                         anchors.margins: 10
 
                         spacing: 3
+
+                        Label{
+                            Layout.alignment: Qt.AlignVCenter
+                            text: model.uiName
+                            color: DowStatsStyle.textColor
+                            font.pixelSize: 11
+                        }
 
                         Label{
                             Layout.alignment: Qt.AlignVCenter

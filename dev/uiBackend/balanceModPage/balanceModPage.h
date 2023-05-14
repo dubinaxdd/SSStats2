@@ -2,6 +2,7 @@
 #define BALANCEMODPAGE_H
 
 #include <QAbstractListModel>
+#include <baseTypes.h>
 
 class BalanceModPage : public QAbstractListModel
 {
@@ -14,8 +15,9 @@ public:
 
     enum DataRoles {
         Selected = Qt::UserRole + 1,
-        Installed = Qt::UserRole + 1,
-        Version
+        Installed = Qt::UserRole + 2,
+        Version = Qt::UserRole + 3,
+        UiName
     };
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -30,13 +32,13 @@ protected:
    QHash<int, QByteArray> roleNames() const override;
 
 public slots:
-   void receiveVersions(QStringList versions);
+   void receiveVersions(QList<ModInfo> modsInfo);
 
 signals:
    void currentModNameChanged();
 
 private:
-   QStringList m_versions;
+   QList<ModInfo> m_modsInfo;
    QString m_currentModName;
    int m_selectedItemIndex = 0;
 };

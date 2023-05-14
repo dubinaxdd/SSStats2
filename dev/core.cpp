@@ -142,7 +142,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendModsOnlineCountMap, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveModsOnlineCountMap, Qt::QueuedConnection);
 
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendBalanceModVersoins, m_uiBackend->balanceModPage(), &BalanceModPage::receiveVersions, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManager, &BalanceModManager::sendModsInfo, m_uiBackend->balanceModPage(), &BalanceModPage::receiveVersions, Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
 }
@@ -169,6 +169,7 @@ void Core::registerTypes()
     qRegisterMetaType<MapItem*>("MapItem*");
     qRegisterMetaType<QList<MapFileHash>>("QList<MapFileHash>");
     qRegisterMetaType<QMap<QString, int>>("QMap<QString, int>");
+    qRegisterMetaType<QList <ModInfo>>("QList <ModInfo>");
 }
 
 OverlayWindowController *Core::overlayWindowController() const

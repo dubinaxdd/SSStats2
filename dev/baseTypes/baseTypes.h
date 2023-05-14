@@ -319,6 +319,13 @@ struct MapItem
     bool selected = false;
 };
 
+struct ModInfo{
+    QString technicalName = "";
+    QString uiName = "";
+    QString version = "";
+    bool isActual = "";
+};
+
 
 
 #endif // BASETYPES_H

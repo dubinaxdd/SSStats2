@@ -9,16 +9,14 @@ BalanceModPage::BalanceModPage(QObject *parent)
 
 QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 {
-    if (index.row() < 0 || index.row() >= m_versions.count())
+    if (index.row() < 0 || index.row() >= m_modsInfo.count())
         return QVariant();
 
-    const QString version = m_versions[index.row()];
-
-    if (role == Version)
-        return version;
-
-    if (role == Selected)
-        return index.row() == m_selectedItemIndex;
+    switch (role) {
+        case UiName: return m_modsInfo.at(index.row()).uiName;
+        case Version: return m_modsInfo.at(index.row()).version;
+        case Selected: return index.row() == m_selectedItemIndex;
+    }
 
     return QVariant();
 }
@@ -26,7 +24,7 @@ QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 int BalanceModPage::rowCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return m_versions.count();
+    return m_modsInfo.count();
 }
 
 void BalanceModPage::slectItem(int itemIndex)
@@ -35,25 +33,31 @@ void BalanceModPage::slectItem(int itemIndex)
     m_selectedItemIndex = itemIndex;
     endResetModel();
 
-    setCurrentModName(m_versions.at(m_selectedItemIndex));
+    setCurrentModName(m_modsInfo.at(m_selectedItemIndex).uiName);
 }
 
 QHash<int, QByteArray> BalanceModPage::roleNames() const
 {
     QHash<int, QByteArray> roles;
+    roles[UiName] = "uiName";
     roles[Version] = "version";
     roles[Selected] = "selected";
 
     return roles;
 }
 
-void BalanceModPage::receiveVersions(QStringList versions)
+void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
 {
+    if(modsInfo.count() < 1)
+        return;
+
+    m_selectedItemIndex = 0;
+
     beginResetModel();
-    m_versions = versions;
+    m_modsInfo = modsInfo;
     endResetModel();
 
-    setCurrentModName(m_versions.at(m_selectedItemIndex));
+    setCurrentModName(m_modsInfo.at(m_selectedItemIndex).uiName);
 }
 
 const QString &BalanceModPage::currentModName() const

@@ -6,6 +6,8 @@
 #include <QNetworkReply>
 #include <QNetworkAccessManager>
 #include <logger.h>
+#include <baseTypes.h>
+#include <QTimer>
 
 class BalanceModManager : public QObject
 {
@@ -16,15 +18,20 @@ public:
     void downloadMod(QString version);
 
 private:
-    void downloadVersionsInfo();
+
     void receiveVersionsInfo(QNetworkReply *reply);
 
+private slots:
+    void downloadModsInfo();
+
 signals:
-    void sendBalanceModVersoins(QStringList modVersions);
+    void sendModsInfo(QList <ModInfo> modInfo);
 
 private:
-    QStringList m_modVersions;
+    QList <ModInfo> m_modInfoList;
     QNetworkAccessManager *m_networkManager;
+    QByteArray m_modInfoHash;
+    QTimer* m_modsInfoRequestTimer;
 
 };
 
