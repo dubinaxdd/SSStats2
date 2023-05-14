@@ -8,7 +8,13 @@ class BalanceModPage : public QAbstractListModel
 {
     Q_OBJECT
 
-    Q_PROPERTY(QString currentModName READ currentModName WRITE setCurrentModName NOTIFY currentModNameChanged)
+    Q_PROPERTY(QString selectedModName READ selectedModName NOTIFY selectedModInfoChanged)
+    Q_PROPERTY(QString selectedModVersion READ selectedModVersion NOTIFY selectedModInfoChanged)
+    Q_PROPERTY(bool selectedModIsCurrent READ selectedModIsCurrent NOTIFY selectedModInfoChanged)
+    Q_PROPERTY(bool selectedModIsActual READ selectedModIsActual NOTIFY selectedModInfoChanged)
+    Q_PROPERTY(bool selectedModIsInstalled READ selectedModIsInstalled NOTIFY selectedModInfoChanged)
+
+    Q_PROPERTY(QString currentModInGame READ currentModInGame WRITE setCurrentModInGame NOTIFY currentModInGameChanged)
 
 public:
     explicit BalanceModPage(QObject *parent = nullptr);
@@ -17,6 +23,7 @@ public:
         Selected = Qt::UserRole + 1,
         IsInstalled = Qt::UserRole + 2,
         Version = Qt::UserRole + 3,
+        IsCurrentMod = Qt::UserRole + 4,
         UiName
     };
 
@@ -25,22 +32,31 @@ public:
 
     Q_INVOKABLE void slectItem(int itemIndex);
 
-    const QString &currentModName() const;
-    void setCurrentModName(const QString &newCurrentModName);
+    const QString selectedModName() const;
+    const QString selectedModVersion() const;
+    const bool selectedModIsCurrent() const;
+    const bool selectedModIsActual() const;
+    const bool selectedModIsInstalled() const;
+
+
+    const QString &currentModInGame() const;
+    void setCurrentModInGame(const QString &newCurrentModInGame);
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
 public slots:
    void receiveVersions(QList<ModInfo> modsInfo);
+   void receiveCurrentModInGame(QString modName);
 
 signals:
-   void currentModNameChanged();
+   void selectedModInfoChanged();
+   void currentModInGameChanged();
 
 private:
    QList<ModInfo> m_modsInfo;
-   QString m_currentModName;
    int m_selectedItemIndex = 0;
+   QString m_currentModInGame = "";
 };
 
 #endif // BALANCEMODPAGE_H

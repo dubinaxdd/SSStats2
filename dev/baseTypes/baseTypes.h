@@ -323,8 +323,9 @@ struct ModInfo{
     QString technicalName = "";
     QString uiName = "";
     QString version = "";
-    bool isActual = "";
+    bool isActual = false;
     bool isInstalled = false;
+    bool isCurrentMod = false;
 };
 
 

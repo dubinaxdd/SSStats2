@@ -42,13 +42,32 @@ Rectangle {
                     anchors.fill: parent
                     spacing: 5
 
-                    Rectangle{
+                    /*Rectangle{
                         radius:5
 
                         Layout.preferredHeight: 10
                         Layout.preferredWidth: 10
 
                         color: "#00ff99"
+                    }*/
+
+                    Rectangle
+                    {
+                        Layout.topMargin: 2
+
+                        Layout.preferredHeight: 10
+                        Layout.preferredWidth: 10
+
+                        Layout.alignment: Qt.AlignVCenter
+
+                        color:"#00000000"
+
+                        Image {
+                           anchors.fill: parent
+                           source: "qrc:/images/resources/images/man_user.svg"
+                           sourceSize.width: 10
+                           sourceSize.height: 10
+                        }
                     }
 
                     Label{

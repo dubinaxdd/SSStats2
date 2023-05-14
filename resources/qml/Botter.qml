@@ -204,6 +204,14 @@ Rectangle {
             Layout.fillWidth: true
         }
 
+        Label{
+            Layout.preferredWidth: 300
+
+            font.pixelSize: 11
+            text: _uiBackend.balanceModPage.currentModInGame
+            color: DowStatsStyle.textColor
+        }
+
         Rectangle{
             id: lounchSoulstormButtonRectangle
             width: 15 + lounchSoulstormLabel.width + 15 + iconImage.width + 5

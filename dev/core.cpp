@@ -145,6 +145,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendModsOnlineCountMap, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveModsOnlineCountMap, Qt::QueuedConnection);
 
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModsInfo, m_uiBackend->balanceModPage(), &BalanceModPage::receiveVersions, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManager, &BalanceModManager::sendCurrentModInGame, m_uiBackend->balanceModPage(), &BalanceModPage::receiveCurrentModInGame, Qt::QueuedConnection);
+
 
     m_settingsController->initializeSettings();
 }

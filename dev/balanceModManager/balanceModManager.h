@@ -16,18 +16,19 @@ public:
     explicit BalanceModManager(QObject *parent = nullptr);
 
     void downloadMod(QString version);
-
     void setSsPath(const QString &newSsPath);
 
 private:
-
     void receiveVersionsInfo(QNetworkReply *reply);
+    void downloadModsInfo();
+    void checkCurrentModInGame();
 
 private slots:
-    void downloadModsInfo();
+    void modsInfoTimerTimeout();
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
+    void sendCurrentModInGame(QString modName);
 
 private:
     QList <ModInfo> m_modInfoList;
@@ -35,6 +36,7 @@ private:
     QByteArray m_modInfoHash;
     QTimer* m_modsInfoRequestTimer;
     QString m_ssPath = "";
+    QString m_currentModName = "";
 
 };
 

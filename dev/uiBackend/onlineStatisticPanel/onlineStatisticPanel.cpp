@@ -15,6 +15,8 @@ QVariant OnlineStatisticPanel::data(const QModelIndex &index, int role) const
         return m_modsOnlineCountMap.keys().at(index.row());
     else if (role == OnlineCount)
         return m_modsOnlineCountMap.values().at(index.row());
+
+    return QVariant();
 }
 
 int OnlineStatisticPanel::rowCount(const QModelIndex &parent) const

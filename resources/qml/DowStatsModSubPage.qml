@@ -11,15 +11,81 @@ Rectangle {
     RowLayout
     {
         anchors.fill: parent
+        spacing: 10
 
         ColumnLayout{
             Layout.fillWidth: true
             Layout.fillHeight: true
 
             Label{
-                text: model.currentModName
+                text: model.selectedModName
                 color: DowStatsStyle.textColor
                 font.pixelSize: 20
+            }
+
+            Label{
+                Layout.alignment: Qt.AlignVCenter
+                text: "Version: " + model.selectedModVersion
+                color: DowStatsStyle.textColor
+                font.pixelSize: 11
+            }
+
+
+            RowLayout
+            {
+                Rectangle{
+                    radius:5
+
+                    Layout.preferredHeight: 10
+                    Layout.preferredWidth: 10
+
+                    color:  model.selectedModIsInstalled ? "#00ff99" : "#ffa9a9"
+                }
+
+                Label{
+                    Layout.alignment: Qt.AlignVCenter
+                    text: model.selectedModIsInstalled ? "Status: Installed" : "Status: Not installed"
+                    color: DowStatsStyle.textColor
+                    font.pixelSize: 11
+                }
+            }
+
+            RowLayout
+            {
+                Rectangle{
+                    radius:5
+
+                    Layout.preferredHeight: 10
+                    Layout.preferredWidth: 10
+
+                    color:  model.selectedModIsActual ? "#00ff99" : "#ffa9a9"
+                }
+
+                Label{
+                    Layout.alignment: Qt.AlignVCenter
+                    text: model.selectedModIsActual ? "This is latest version of this mod" : "This is an outdated version of this mod."
+                    color: DowStatsStyle.textColor
+                    font.pixelSize: 11
+                }
+            }
+
+            RowLayout
+            {
+                Rectangle{
+                    radius:5
+
+                    Layout.preferredHeight: 10
+                    Layout.preferredWidth: 10
+
+                    color:  model.selectedModIsCurrent ? "#00ff99" : "#ffa9a9"
+                }
+
+                Label{
+                    Layout.alignment: Qt.AlignVCenter
+                    text: model.selectedModIsCurrent ? "This mod is active in the game" : "This mod is not active in the game"
+                    color: DowStatsStyle.textColor
+                    font.pixelSize: 11
+                }
             }
 
             RowLayout{
@@ -127,12 +193,45 @@ Rectangle {
                             font.pixelSize: 11
                         }
 
-                        Label{
-                            Layout.alignment: Qt.AlignVCenter
-                            text: model.isInstalled ? "Status: Installed" : "Status: Not installed"
-                            color: DowStatsStyle.textColor
-                            font.pixelSize: 11
+
+                        RowLayout
+                        {
+                            Rectangle{
+                                radius:5
+
+                                Layout.preferredHeight: 10
+                                Layout.preferredWidth: 10
+
+                                color:  model.isInstalled ? "#00ff99" : "#ffa9a9"
+                            }
+
+                            Label{
+                                Layout.alignment: Qt.AlignVCenter
+                                text: model.isInstalled ? "Status: Installed" : "Status: Not installed"
+                                color: DowStatsStyle.textColor
+                                font.pixelSize: 11
+                            }
                         }
+
+/*
+                        RowLayout
+                        {
+                            Rectangle{
+                                radius:5
+
+                                Layout.preferredHeight: 10
+                                Layout.preferredWidth: 10
+
+                                color:  model.isCurrentMod ? "#00ff99" : "#ffa9a9"
+                            }
+
+                            Label{
+                                Layout.alignment: Qt.AlignVCenter
+                                text: model.isCurrentMod ? "Is current mod in game" : "Is not current mod in game"
+                                color: DowStatsStyle.textColor
+                                font.pixelSize: 11
+                            }
+                        }*/
                     }
 
                     MouseArea{

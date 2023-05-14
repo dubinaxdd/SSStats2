@@ -3,6 +3,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDir>
+#include <QSettings>
 
 BalanceModManager::BalanceModManager(QObject *parent)
     : QObject(parent)
@@ -10,7 +11,7 @@ BalanceModManager::BalanceModManager(QObject *parent)
     , m_modsInfoRequestTimer(new QTimer(this))
 {
     m_modsInfoRequestTimer->setInterval(5000);
-    connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::downloadModsInfo, Qt::QueuedConnection);
+    connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
 }
 
 void BalanceModManager::downloadMod(QString version)
@@ -32,6 +33,27 @@ void BalanceModManager::downloadModsInfo()
     });
 }
 
+void BalanceModManager::checkCurrentModInGame()
+{
+    QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
+    QString currentModName = ssSettings->value("global/currentmoddc", "").toString();
+    delete ssSettings;
+
+    if (currentModName != m_currentModName)
+    {
+        m_currentModName = currentModName;
+        emit sendCurrentModInGame(m_currentModName);
+
+        qDebug() << "FGFGFGFFGFGGFGFGFGGFGFGFGFFGFGFGFGFG" << m_currentModName;
+    }
+}
+
+void BalanceModManager::modsInfoTimerTimeout()
+{
+    checkCurrentModInGame();
+    downloadModsInfo();
+}
+
 void BalanceModManager::setSsPath(const QString &newSsPath)
 {
     m_ssPath = newSsPath;
@@ -40,7 +62,7 @@ void BalanceModManager::setSsPath(const QString &newSsPath)
         return;
 
     m_modsInfoRequestTimer->start();
-    downloadModsInfo();
+    modsInfoTimerTimeout();
 }
 
 void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
@@ -96,6 +118,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         newModInfo.version = newObject.value("version").toString();
         newModInfo.isActual = newObject.value("isActual").toBool();
         newModInfo.isInstalled = entryList.contains(newModInfo.technicalName) && entryList.contains(newModInfo.technicalName + ".module");
+        newModInfo.isCurrentMod = m_currentModName.toLower() == newModInfo.technicalName.toLower();
 
         m_modInfoList.append(newModInfo);
     }

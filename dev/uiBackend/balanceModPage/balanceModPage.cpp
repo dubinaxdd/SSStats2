@@ -14,9 +14,10 @@ QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 
     switch (role) {
         case UiName: return m_modsInfo.at(index.row()).uiName;
-        case Version: return m_modsInfo.at(index.row()).version;
+    case Version: return m_modsInfo.at(index.row()).version + (m_modsInfo.at(index.row()).isActual ? " (Latest)" : "");
         case IsInstalled: return m_modsInfo.at(index.row()).isInstalled;
         case Selected: return index.row() == m_selectedItemIndex;
+        case IsCurrentMod: return m_modsInfo.at(index.row()).isCurrentMod;
     }
 
     return QVariant();
@@ -34,7 +35,47 @@ void BalanceModPage::slectItem(int itemIndex)
     m_selectedItemIndex = itemIndex;
     endResetModel();
 
-    setCurrentModName(m_modsInfo.at(m_selectedItemIndex).uiName);
+    emit selectedModInfoChanged();
+}
+
+const QString BalanceModPage::selectedModName() const
+{
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).uiName;
+
+    return "";
+}
+
+const QString BalanceModPage::selectedModVersion() const
+{
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).version + (m_modsInfo.at(m_selectedItemIndex).isActual ? " (Latest)" : "");
+
+    return "";
+}
+
+const bool BalanceModPage::selectedModIsCurrent() const
+{
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).isCurrentMod;
+
+    return false;
+}
+
+const bool BalanceModPage::selectedModIsActual() const
+{
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).isActual;
+
+    return false;
+}
+
+const bool BalanceModPage::selectedModIsInstalled() const
+{
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).isInstalled;
+
+    return false;
 }
 
 QHash<int, QByteArray> BalanceModPage::roleNames() const
@@ -44,6 +85,7 @@ QHash<int, QByteArray> BalanceModPage::roleNames() const
     roles[Version] = "version";
     roles[IsInstalled] = "isInstalled";
     roles[Selected] = "selected";
+    roles[IsCurrentMod] = "isCurrentMod";
 
     return roles;
 }
@@ -59,18 +101,32 @@ void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
     m_modsInfo = modsInfo;
     endResetModel();
 
-    setCurrentModName(m_modsInfo.at(m_selectedItemIndex).uiName);
+    emit selectedModInfoChanged();
 }
 
-const QString &BalanceModPage::currentModName() const
+void BalanceModPage::receiveCurrentModInGame(QString modName)
 {
-    return m_currentModName;
+    qDebug() << "ASDASDASDASDASDASD";
+
+    setCurrentModInGame(modName);
+
+    beginResetModel();
+
+    for(int i = 0; i < m_modsInfo.count(); i++)
+        m_modsInfo[i].isCurrentMod = modName.toLower() == m_modsInfo[i].technicalName.toLower();
+
+    endResetModel();
 }
 
-void BalanceModPage::setCurrentModName(const QString &newCurrentModName)
+const QString &BalanceModPage::currentModInGame() const
 {
-    if (m_currentModName == newCurrentModName)
+    return m_currentModInGame;
+}
+
+void BalanceModPage::setCurrentModInGame(const QString &newCurrentModInGame)
+{
+    if (m_currentModInGame == newCurrentModInGame)
         return;
-    m_currentModName = newCurrentModName;
-    emit currentModNameChanged();
+    m_currentModInGame = newCurrentModInGame;
+    emit currentModInGameChanged();
 }
