@@ -2,6 +2,7 @@
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDir>
 
 BalanceModManager::BalanceModManager(QObject *parent)
     : QObject(parent)
@@ -10,9 +11,6 @@ BalanceModManager::BalanceModManager(QObject *parent)
 {
     m_modsInfoRequestTimer->setInterval(5000);
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::downloadModsInfo, Qt::QueuedConnection);
-    m_modsInfoRequestTimer->start();
-
-    downloadModsInfo();
 }
 
 void BalanceModManager::downloadMod(QString version)
@@ -34,6 +32,17 @@ void BalanceModManager::downloadModsInfo()
     });
 }
 
+void BalanceModManager::setSsPath(const QString &newSsPath)
+{
+    m_ssPath = newSsPath;
+
+    if(m_ssPath.isEmpty())
+        return;
+
+    m_modsInfoRequestTimer->start();
+    downloadModsInfo();
+}
+
 void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
@@ -47,8 +56,8 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
     delete reply;
 
-    QCryptographicHash hashGeneratir(QCryptographicHash::Sha256);
-    QByteArray newHash = hashGeneratir.hash(replyByteArray, QCryptographicHash::Sha256);
+    QCryptographicHash hashGenerator(QCryptographicHash::Sha256);
+    QByteArray newHash = hashGenerator.hash(replyByteArray, QCryptographicHash::Sha256);
 
     if(newHash == m_modInfoHash)
         return;
@@ -67,7 +76,10 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
     QJsonArray jsonArray = jsonDoc.array();
 
-    for (size_t i = 0; i < jsonArray.count(); i++)
+    QDir dir1(m_ssPath);
+    QStringList entryList = dir1.entryList();
+
+    for (int i = 0; i < jsonArray.count(); i++)
     {
         if(!jsonArray.at(i).isObject())
         {
@@ -83,6 +95,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         newModInfo.uiName = newObject.value("uiName").toString();
         newModInfo.version = newObject.value("version").toString();
         newModInfo.isActual = newObject.value("isActual").toBool();
+        newModInfo.isInstalled = entryList.contains(newModInfo.technicalName) && entryList.contains(newModInfo.technicalName + ".module");
 
         m_modInfoList.append(newModInfo);
     }

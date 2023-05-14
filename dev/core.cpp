@@ -32,10 +32,12 @@ Core::Core(QQmlContext *context, QObject* parent)
                                      + "." + QString::fromStdString(PROJECT_VERSION_MINOR)
                                      + "." + QString::fromStdString(GIT_REL);
 
-    m_uiBackend->replayManager()->setSsPath(m_soulstormController->ssPath());
-    m_uiBackend->mapManagerPage()->setSsPath(m_soulstormController->ssPath());
 
     context->setContextProperty("_uiBackend", m_uiBackend);
+
+    m_uiBackend->replayManager()->setSsPath(m_soulstormController->ssPath());
+    m_uiBackend->mapManagerPage()->setSsPath(m_soulstormController->ssPath());
+    m_balanceModManager->setSsPath(m_soulstormController->ssPath());
 
     HookManager::instance()->setCore(this);
 

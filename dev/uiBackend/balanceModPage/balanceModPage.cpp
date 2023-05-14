@@ -15,6 +15,7 @@ QVariant BalanceModPage::data(const QModelIndex &index, int role) const
     switch (role) {
         case UiName: return m_modsInfo.at(index.row()).uiName;
         case Version: return m_modsInfo.at(index.row()).version;
+        case IsInstalled: return m_modsInfo.at(index.row()).isInstalled;
         case Selected: return index.row() == m_selectedItemIndex;
     }
 
@@ -41,6 +42,7 @@ QHash<int, QByteArray> BalanceModPage::roleNames() const
     QHash<int, QByteArray> roles;
     roles[UiName] = "uiName";
     roles[Version] = "version";
+    roles[IsInstalled] = "isInstalled";
     roles[Selected] = "selected";
 
     return roles;

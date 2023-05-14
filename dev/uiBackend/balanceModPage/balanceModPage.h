@@ -15,7 +15,7 @@ public:
 
     enum DataRoles {
         Selected = Qt::UserRole + 1,
-        Installed = Qt::UserRole + 2,
+        IsInstalled = Qt::UserRole + 2,
         Version = Qt::UserRole + 3,
         UiName
     };

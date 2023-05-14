@@ -122,14 +122,14 @@ Rectangle {
 
                         Label{
                             Layout.alignment: Qt.AlignVCenter
-                            text: model.version
+                            text: "Version: " + model.version
                             color: DowStatsStyle.textColor
                             font.pixelSize: 11
                         }
 
                         Label{
                             Layout.alignment: Qt.AlignVCenter
-                            text: "Status: Not installed"
+                            text: model.isInstalled ? "Status: Installed" : "Status: Not installed"
                             color: DowStatsStyle.textColor
                             font.pixelSize: 11
                         }

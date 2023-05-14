@@ -17,6 +17,8 @@ public:
 
     void downloadMod(QString version);
 
+    void setSsPath(const QString &newSsPath);
+
 private:
 
     void receiveVersionsInfo(QNetworkReply *reply);
@@ -32,6 +34,7 @@ private:
     QNetworkAccessManager *m_networkManager;
     QByteArray m_modInfoHash;
     QTimer* m_modsInfoRequestTimer;
+    QString m_ssPath = "";
 
 };
 
