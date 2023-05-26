@@ -128,22 +128,34 @@ Rectangle {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
 
-                TextArea{
-                    id:changeLogTextArea
 
-                    Layout.alignment: Qt.AlignTop
-                    Layout.leftMargin: 15
-                    Layout.rightMargin: 15
-                    Layout.fillWidth: true
+                Flickable
+                {
+                    anchors.fill: parent
+                    anchors.margins: 15
 
-                    wrapMode: Text.Wrap
-                    color: DowStatsStyle.textColor
-                    font.pixelSize: 11
-                    //textFormat: Text.RichText
-                    selectByMouse: true
-                    readOnly: true
+                    contentHeight: changeLogTextArea.height
+                    clip: true
 
-                    text: model.selectedChangeLog
+                    TextArea{
+                        id:changeLogTextArea
+                        width: parent.width - (scrollBar.visible ? scrollBar.width : 0)
+
+                        wrapMode: Text.Wrap
+                        color: DowStatsStyle.textColor
+                        font.pixelSize: 11
+                        //textFormat: Text.RichText
+                        selectByMouse: true
+                        readOnly: true
+
+                        text: model.selectedChangeLog
+                    }
+
+                    ScrollBar.vertical: ScrollBar {
+                        id: scrollBar
+                        visible: changeLogTextArea.height > parent.height
+                        policy: ScrollBar.AlwaysOn
+                    }
                 }
             }
         }
