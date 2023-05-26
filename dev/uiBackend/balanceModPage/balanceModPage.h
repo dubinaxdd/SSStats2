@@ -15,6 +15,8 @@ class BalanceModPage : public QAbstractListModel
     Q_PROPERTY(bool selectedModIsActual READ selectedModIsActual NOTIFY selectedModInfoChanged)
     Q_PROPERTY(bool selectedModIsInstalled READ selectedModIsInstalled NOTIFY selectedModInfoChanged)
 
+    Q_PROPERTY(QString downloadingProgress MEMBER m_downloadingProgress NOTIFY downloadingProgressChanged)
+
     Q_PROPERTY(QString currentModInGame READ currentModInGame WRITE setCurrentModInGame NOTIFY currentModInGameChanged)
 
 public:
@@ -32,6 +34,7 @@ public:
     int rowCount( const QModelIndex& parent ) const override;
 
     Q_INVOKABLE void slectItem(int itemIndex);
+    Q_INVOKABLE void downloadCurrentMod();
 
     const QString selectedModName() const;
     const QString selectedModVersion() const;
@@ -50,16 +53,22 @@ public slots:
    void receiveVersions(QList<ModInfo> modsInfo);
    void receiveCurrentModInGame(QString modName);
    void receiveChangeLog(QString modTechnicalName, QString changeLog);
+   void receiveModDownloadProgress(int progress, QString modTechnicalName);
+   void receiveModDownloaded(QString modTechnicalName);
 
 signals:
    void selectedModInfoChanged();
    void currentModInGameChanged();
    void requestChangeLog(QString modTechnicalName);
+   void requestDownloadMod(QString modTechnicalName);
+   void downloadingProgressChanged();
 
 private:
    QList<ModInfo> m_modsInfo;
    int m_selectedItemIndex = 0;
    QString m_currentModInGame = "";
+
+   QString m_downloadingProgress = "";
 };
 
 #endif // BALANCEMODPAGE_H

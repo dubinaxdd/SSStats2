@@ -4,6 +4,7 @@
 #include <QJsonObject>
 #include <QDir>
 #include <QSettings>
+#include "JlCompress.h"
 
 BalanceModManager::BalanceModManager(QObject *parent)
     : QObject(parent)
@@ -14,9 +15,29 @@ BalanceModManager::BalanceModManager(QObject *parent)
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
 }
 
-void BalanceModManager::downloadMod(QString version)
+void BalanceModManager::downloadMod(QString modTechnicalName)
 {
+    m_modDownloadingProcessed = true;
 
+    QNetworkRequest newRequest;
+
+    QString urlString = "https://dowstats.ru/dow_stats_balance_mod/" + modTechnicalName + ".zip";
+
+    newRequest.setUrl(QUrl(urlString));
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveMod(reply, modTechnicalName);
+    });
+
+    QObject::connect(reply, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
+
+        if(bytesTotal != 0)
+        {
+            emit sendModDownloadProgress(bytesReceived * 100 / bytesTotal, modTechnicalName);
+            qInfo(logInfo()) << modTechnicalName + " download progress:" << bytesReceived << "/" << bytesTotal;
+        }
+    });
 }
 
 void BalanceModManager::downloadModsInfo()
@@ -76,6 +97,14 @@ void BalanceModManager::requestChangeLog(QString modTechnicalName)
     });
 }
 
+void BalanceModManager::requestDownloadMod(QString modTechnicalName)
+{
+    m_downloadingQuery.append(modTechnicalName);
+
+    if (!m_modDownloadingProcessed)
+        checkDownloadingQuery();
+}
+
 void BalanceModManager::setSsPath(const QString &newSsPath)
 {
     m_ssPath = newSsPath;
@@ -85,6 +114,17 @@ void BalanceModManager::setSsPath(const QString &newSsPath)
 
     m_modsInfoRequestTimer->start();
     modsInfoTimerTimeout();
+}
+
+void BalanceModManager::checkDownloadingQuery()
+{
+     m_modDownloadingProcessed = false;
+
+    if(m_downloadingQuery.isEmpty())
+        return;
+
+    downloadMod(m_downloadingQuery.last());
+    m_downloadingQuery.removeLast();
 }
 
 void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
@@ -152,6 +192,40 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
     if (m_modInfoList.count() > 0 && !m_modInfoList.first().isInstalled)
         requestChangeLog(m_modInfoList.first().technicalName);
+}
+
+void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalName)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "BalanceModManager::receiveMod: Connection error:" << reply->errorString();
+        delete reply;
+        checkDownloadingQuery();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    QString path = QDir::currentPath() + QDir::separator() + "modTechnicalName.zip" ;
+
+    QFile newFile(path);
+
+    if( newFile.open( QIODevice::WriteOnly ) ) {
+
+        QDataStream stream( &newFile );
+        stream << replyByteArray;
+        newFile.close();
+
+        JlCompress::extractDir(path, m_ssPath + QDir::separator());
+        qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
+
+        QFile tempfile(path);
+        tempfile.remove();
+    }
+
+    emit sendModDownloaded(modTechnicalName);
+
+    checkDownloadingQuery();
 }
 
 void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechnicalName)

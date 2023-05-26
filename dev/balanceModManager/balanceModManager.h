@@ -15,11 +15,13 @@ class BalanceModManager : public QObject
 public:
     explicit BalanceModManager(QObject *parent = nullptr);
 
-    void downloadMod(QString version);
+    void downloadMod(QString modTechnicalName);
     void setSsPath(const QString &newSsPath);
+    void checkDownloadingQuery();
 
 private:
     void receiveVersionsInfo(QNetworkReply *reply);
+    void receiveMod(QNetworkReply *reply, QString modTechnicalName);
     void receiveChangeLog(QNetworkReply *reply, QString modTechnicalName);
     void downloadModsInfo();
     void checkCurrentModInGame();
@@ -30,11 +32,14 @@ private slots:
 
 public slots:
     void requestChangeLog(QString modTechnicalName);
+    void requestDownloadMod(QString modTechnicalName);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
     void sendCurrentModInGame(QString modName);
     void changeLogReceived(QString modTechnicalName, QString changeLog);
+    void sendModDownloadProgress(int progress, QString modTechnicalName);
+    void sendModDownloaded(QString modTechnicalName);
 
 private:
     QList <ModInfo> m_modInfoList;
@@ -43,6 +48,9 @@ private:
     QTimer* m_modsInfoRequestTimer;
     QString m_ssPath = "";
     QString m_currentModName = "";
+
+    bool m_modDownloadingProcessed = false;
+    QStringList m_downloadingQuery;
 
 };
 

@@ -41,6 +41,11 @@ void BalanceModPage::slectItem(int itemIndex)
         emit requestChangeLog(m_modsInfo.at(m_selectedItemIndex).technicalName);
 }
 
+void BalanceModPage::downloadCurrentMod()
+{
+    emit requestDownloadMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
+}
+
 const QString BalanceModPage::selectedModName() const
 {
     if(m_modsInfo.count() > m_selectedItemIndex)
@@ -135,6 +140,34 @@ void BalanceModPage::receiveChangeLog(QString modTechnicalName, QString changeLo
         {
             m_modsInfo[i].changelog = changeLog;
             emit selectedModInfoChanged();
+        }
+    }
+}
+
+void BalanceModPage::receiveModDownloadProgress(int progress, QString modTechnicalName)
+{
+    m_downloadingProgress = QString::number(progress);
+    emit downloadingProgressChanged();
+}
+
+void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
+{
+    m_downloadingProgress = "";
+    emit downloadingProgressChanged();
+
+    for (int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if ( m_modsInfo.at(i).technicalName == modTechnicalName)
+        {
+            m_modsInfo[i].isInstalled = true;
+
+            if (m_selectedItemIndex == i)
+                emit selectedModInfoChanged();
+
+            QModelIndex index = QAbstractItemModel::createIndex(i, 0);;
+            emit dataChanged(index, index);
+
+            break;
         }
     }
 }

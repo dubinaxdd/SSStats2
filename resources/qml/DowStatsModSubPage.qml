@@ -95,6 +95,7 @@ Rectangle {
 
                 BlueButton {
                     text: "Install"
+                    onClicked: model.downloadCurrentMod();
                 }
 
                 BlueButton {
@@ -110,6 +111,12 @@ Rectangle {
                 Item {
                     Layout.fillWidth: true
                 }
+            }
+
+            Label{
+                text: model.downloadingProgress === "" ? "" : ("Downloading:" + model.downloadingProgress + "%")
+                color: DowStatsStyle.textColor
+                font.pixelSize: 11
             }
 
             Item{
