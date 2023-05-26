@@ -136,13 +136,14 @@ Rectangle {
                     Layout.rightMargin: 15
                     Layout.fillWidth: true
 
-                    //text: mainRectangle.content
                     wrapMode: Text.Wrap
                     color: DowStatsStyle.textColor
                     font.pixelSize: 11
-                    textFormat: Text.RichText
+                    //textFormat: Text.RichText
+                    selectByMouse: true
+                    readOnly: true
 
-                    text: "Тут будет чейнджлог."
+                    text: model.selectedChangeLog
                 }
             }
         }

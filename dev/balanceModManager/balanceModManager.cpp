@@ -43,15 +43,37 @@ void BalanceModManager::checkCurrentModInGame()
     {
         m_currentModName = currentModName;
         emit sendCurrentModInGame(m_currentModName);
-
-        qDebug() << "FGFGFGFFGFGGFGFGFGGFGFGFGFFGFGFGFGFG" << m_currentModName;
     }
+}
+
+QString BalanceModManager::getChangeLogFromLocalFiles(QString modTechnicalName)
+{
+    QFile chanfeLogFile(m_ssPath + QDir::separator() + modTechnicalName + QDir::separator() + modTechnicalName + ".txt");
+
+    if (!chanfeLogFile.open(QFile::ReadOnly))
+        return "";
+
+    return QString::fromStdString(chanfeLogFile.readAll().toStdString());
 }
 
 void BalanceModManager::modsInfoTimerTimeout()
 {
     checkCurrentModInGame();
     downloadModsInfo();
+}
+
+void BalanceModManager::requestChangeLog(QString modTechnicalName)
+{
+    QNetworkRequest newRequest;
+
+    QString urlString = "https://dowstats.ru/dow_stats_balance_mod/changelogs/" + modTechnicalName + ".txt";
+
+    newRequest.setUrl(QUrl(urlString));
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveChangeLog(reply, modTechnicalName);
+    });
 }
 
 void BalanceModManager::setSsPath(const QString &newSsPath)
@@ -69,7 +91,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
-        qWarning(logWarning()) << "Connection error:" << reply->errorString();
+        qWarning(logWarning()) << "BalanceModManager::receiveVersionsInfo - Connection error:" << reply->errorString();
         delete reply;
         return;
     }
@@ -120,8 +142,30 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         newModInfo.isInstalled = entryList.contains(newModInfo.technicalName) && entryList.contains(newModInfo.technicalName + ".module");
         newModInfo.isCurrentMod = m_currentModName.toLower() == newModInfo.technicalName.toLower();
 
+        if (newModInfo.isInstalled)
+            newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName);
+
         m_modInfoList.append(newModInfo);
     }
 
     emit sendModsInfo(m_modInfoList);
+
+    if (m_modInfoList.count() > 0 && !m_modInfoList.first().isInstalled)
+        requestChangeLog(m_modInfoList.first().technicalName);
+}
+
+void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechnicalName)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "BalanceModManager::receiveChangeLog: Connection error:" << reply->errorString();
+        delete reply;
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+
+    emit changeLogReceived(modTechnicalName, QString::fromStdString(replyByteArray.toStdString()));
+
+    delete reply;
 }

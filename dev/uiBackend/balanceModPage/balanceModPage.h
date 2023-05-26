@@ -10,6 +10,7 @@ class BalanceModPage : public QAbstractListModel
 
     Q_PROPERTY(QString selectedModName READ selectedModName NOTIFY selectedModInfoChanged)
     Q_PROPERTY(QString selectedModVersion READ selectedModVersion NOTIFY selectedModInfoChanged)
+    Q_PROPERTY(QString selectedChangeLog READ selectedChangeLog NOTIFY selectedModInfoChanged)
     Q_PROPERTY(bool selectedModIsCurrent READ selectedModIsCurrent NOTIFY selectedModInfoChanged)
     Q_PROPERTY(bool selectedModIsActual READ selectedModIsActual NOTIFY selectedModInfoChanged)
     Q_PROPERTY(bool selectedModIsInstalled READ selectedModIsInstalled NOTIFY selectedModInfoChanged)
@@ -34,10 +35,10 @@ public:
 
     const QString selectedModName() const;
     const QString selectedModVersion() const;
+    const QString selectedChangeLog() const;
     const bool selectedModIsCurrent() const;
     const bool selectedModIsActual() const;
     const bool selectedModIsInstalled() const;
-
 
     const QString &currentModInGame() const;
     void setCurrentModInGame(const QString &newCurrentModInGame);
@@ -48,10 +49,12 @@ protected:
 public slots:
    void receiveVersions(QList<ModInfo> modsInfo);
    void receiveCurrentModInGame(QString modName);
+   void receiveChangeLog(QString modTechnicalName, QString changeLog);
 
 signals:
    void selectedModInfoChanged();
    void currentModInGameChanged();
+   void requestChangeLog(QString modTechnicalName);
 
 private:
    QList<ModInfo> m_modsInfo;

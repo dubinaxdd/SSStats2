@@ -36,6 +36,9 @@ void BalanceModPage::slectItem(int itemIndex)
     endResetModel();
 
     emit selectedModInfoChanged();
+
+    if(m_modsInfo.at(m_selectedItemIndex).changelog.isEmpty())
+        emit requestChangeLog(m_modsInfo.at(m_selectedItemIndex).technicalName);
 }
 
 const QString BalanceModPage::selectedModName() const
@@ -50,6 +53,14 @@ const QString BalanceModPage::selectedModVersion() const
 {
     if(m_modsInfo.count() > m_selectedItemIndex)
         return m_modsInfo.at(m_selectedItemIndex).version + (m_modsInfo.at(m_selectedItemIndex).isActual ? " (Latest)" : "");
+
+    return "";
+}
+
+const QString BalanceModPage::selectedChangeLog() const
+{
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).changelog;
 
     return "";
 }
@@ -106,8 +117,6 @@ void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
 
 void BalanceModPage::receiveCurrentModInGame(QString modName)
 {
-    qDebug() << "ASDASDASDASDASDASD";
-
     setCurrentModInGame(modName);
 
     beginResetModel();
@@ -116,6 +125,18 @@ void BalanceModPage::receiveCurrentModInGame(QString modName)
         m_modsInfo[i].isCurrentMod = modName.toLower() == m_modsInfo[i].technicalName.toLower();
 
     endResetModel();
+}
+
+void BalanceModPage::receiveChangeLog(QString modTechnicalName, QString changeLog)
+{
+    for(int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if (modTechnicalName == m_modsInfo.at(i).technicalName)
+        {
+            m_modsInfo[i].changelog = changeLog;
+            emit selectedModInfoChanged();
+        }
+    }
 }
 
 const QString &BalanceModPage::currentModInGame() const

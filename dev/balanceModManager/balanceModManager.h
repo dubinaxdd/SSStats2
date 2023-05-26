@@ -20,15 +20,21 @@ public:
 
 private:
     void receiveVersionsInfo(QNetworkReply *reply);
+    void receiveChangeLog(QNetworkReply *reply, QString modTechnicalName);
     void downloadModsInfo();
     void checkCurrentModInGame();
+    QString getChangeLogFromLocalFiles(QString modTechnicalName);
 
 private slots:
     void modsInfoTimerTimeout();
 
+public slots:
+    void requestChangeLog(QString modTechnicalName);
+
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
     void sendCurrentModInGame(QString modName);
+    void changeLogReceived(QString modTechnicalName, QString changeLog);
 
 private:
     QList <ModInfo> m_modInfoList;

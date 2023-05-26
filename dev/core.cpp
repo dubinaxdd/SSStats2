@@ -146,7 +146,8 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModsInfo, m_uiBackend->balanceModPage(), &BalanceModPage::receiveVersions, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::sendCurrentModInGame, m_uiBackend->balanceModPage(), &BalanceModPage::receiveCurrentModInGame, Qt::QueuedConnection);
-
+    QObject::connect(m_balanceModManager, &BalanceModManager::changeLogReceived, m_uiBackend->balanceModPage(), &BalanceModPage::receiveChangeLog, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestChangeLog, m_balanceModManager, &BalanceModManager::requestChangeLog, Qt::QueuedConnection);
 
     m_settingsController->initializeSettings();
 }
