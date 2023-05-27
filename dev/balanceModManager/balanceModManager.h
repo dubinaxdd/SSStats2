@@ -33,6 +33,7 @@ private slots:
 public slots:
     void requestChangeLog(QString modTechnicalName);
     void requestDownloadMod(QString modTechnicalName);
+    void uninstalMod(QString modTechnicalName);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);

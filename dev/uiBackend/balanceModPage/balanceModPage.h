@@ -35,6 +35,7 @@ public:
 
     Q_INVOKABLE void slectItem(int itemIndex);
     Q_INVOKABLE void downloadCurrentMod();
+    Q_INVOKABLE void uninstallCurrentMod();
 
     const QString selectedModName() const;
     const QString selectedModVersion() const;
@@ -61,6 +62,7 @@ signals:
    void currentModInGameChanged();
    void requestChangeLog(QString modTechnicalName);
    void requestDownloadMod(QString modTechnicalName);
+   void requestUninstallMod(QString modTechnicalName);
    void downloadingProgressChanged();
 
 private:

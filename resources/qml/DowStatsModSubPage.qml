@@ -100,6 +100,7 @@ Rectangle {
 
                 BlueButton {
                     text: "Uninstall"
+                    onClicked: model.uninstallCurrentMod();
                 }
 
                 BlueButton {

@@ -46,6 +46,18 @@ void BalanceModPage::downloadCurrentMod()
     emit requestDownloadMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
 }
 
+void BalanceModPage::uninstallCurrentMod()
+{
+    emit requestUninstallMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
+
+    m_modsInfo[m_selectedItemIndex].isInstalled = false;
+
+    emit selectedModInfoChanged();
+
+    QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);;
+    emit dataChanged(index, index);
+}
+
 const QString BalanceModPage::selectedModName() const
 {
     if(m_modsInfo.count() > m_selectedItemIndex)

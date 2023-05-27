@@ -105,6 +105,15 @@ void BalanceModManager::requestDownloadMod(QString modTechnicalName)
         checkDownloadingQuery();
 }
 
+void BalanceModManager::uninstalMod(QString modTechnicalName)
+{
+    QDir modDir(m_ssPath + QDir::separator() + modTechnicalName);
+    modDir.removeRecursively();
+
+    QFile moduleFile(m_ssPath + QDir::separator() + modTechnicalName  + ".module");
+    moduleFile.remove();
+}
+
 void BalanceModManager::setSsPath(const QString &newSsPath)
 {
     m_ssPath = newSsPath;
