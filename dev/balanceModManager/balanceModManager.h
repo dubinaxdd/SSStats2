@@ -8,12 +8,15 @@
 #include <logger.h>
 #include <baseTypes.h>
 #include <QTimer>
+#include <QThread>
+#include <BalanceModInstaller.h>
 
 class BalanceModManager : public QObject
 {
     Q_OBJECT
 public:
     explicit BalanceModManager(QObject *parent = nullptr);
+    ~BalanceModManager();
 
     void downloadMod(QString modTechnicalName);
     void setSsPath(const QString &newSsPath);
@@ -29,6 +32,7 @@ private:
 
 private slots:
     void modsInfoTimerTimeout();
+    void onModInstalled(QString modTechnicalName);
 
 public slots:
     void requestChangeLog(QString modTechnicalName);
@@ -42,7 +46,13 @@ signals:
     void sendModDownloadProgress(int progress, QString modTechnicalName);
     void sendModDownloaded(QString modTechnicalName);
 
+    void installMod(QByteArray modByteArray, QString filePath, QString decompressPath, QString modTechnicalName);
+
 private:
+
+    BalanceModInstaller* m_balanceModInstaller;
+    QThread* m_balanceModInstallerThread;
+
     QList <ModInfo> m_modInfoList;
     QNetworkAccessManager *m_networkManager;
     QByteArray m_modInfoHash;

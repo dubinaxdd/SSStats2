@@ -18,6 +18,7 @@ QVariant BalanceModPage::data(const QModelIndex &index, int role) const
         case IsInstalled: return m_modsInfo.at(index.row()).isInstalled;
         case Selected: return index.row() == m_selectedItemIndex;
         case IsCurrentMod: return m_modsInfo.at(index.row()).isCurrentMod;
+        case DownladingProcessed: return m_modsInfo.at(index.row()).downloadingProcessed;
     }
 
     return QVariant();
@@ -44,6 +45,13 @@ void BalanceModPage::slectItem(int itemIndex)
 void BalanceModPage::downloadCurrentMod()
 {
     emit requestDownloadMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
+
+    m_modsInfo[m_selectedItemIndex].downloadingProcessed = true;
+
+    emit selectedModInfoChanged();
+
+    QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);;
+    emit dataChanged(index, index);
 }
 
 void BalanceModPage::uninstallCurrentMod()
@@ -106,6 +114,14 @@ const bool BalanceModPage::selectedModIsInstalled() const
     return false;
 }
 
+const bool BalanceModPage::selectedModDownladingProcessed() const
+{
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).downloadingProcessed;
+
+    return false;
+}
+
 QHash<int, QByteArray> BalanceModPage::roleNames() const
 {
     QHash<int, QByteArray> roles;
@@ -114,6 +130,7 @@ QHash<int, QByteArray> BalanceModPage::roleNames() const
     roles[IsInstalled] = "isInstalled";
     roles[Selected] = "selected";
     roles[IsCurrentMod] = "isCurrentMod";
+    roles[DownladingProcessed] = "downladingProcessed";
 
     return roles;
 }
@@ -172,6 +189,7 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
         if ( m_modsInfo.at(i).technicalName == modTechnicalName)
         {
             m_modsInfo[i].isInstalled = true;
+            m_modsInfo[i].downloadingProcessed = false;
 
             if (m_selectedItemIndex == i)
                 emit selectedModInfoChanged();

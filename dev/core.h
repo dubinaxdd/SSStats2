@@ -40,6 +40,7 @@ public slots:
 
 private:
     void registerTypes();
+    void addConnections();
 
 private:
     Logger *m_logger;

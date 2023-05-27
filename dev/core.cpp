@@ -32,15 +32,47 @@ Core::Core(QQmlContext *context, QObject* parent)
                                      + "." + QString::fromStdString(PROJECT_VERSION_MINOR)
                                      + "." + QString::fromStdString(GIT_REL);
 
-
     context->setContextProperty("_uiBackend", m_uiBackend);
 
     m_uiBackend->replayManager()->setSsPath(m_soulstormController->ssPath());
     m_uiBackend->mapManagerPage()->setSsPath(m_soulstormController->ssPath());
-    m_balanceModManager->setSsPath(m_soulstormController->ssPath());
 
     HookManager::instance()->setCore(this);
 
+    addConnections();
+
+    m_balanceModManager->setSsPath(m_soulstormController->ssPath());
+
+    m_settingsController->initializeSettings();
+}
+
+void Core::registerTypes()
+{
+    qmlRegisterUncreatableType<DowStatsStyle::Theme>("Theme", 1, 0, "Theme", "theme style");
+
+    qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
+    qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
+    qRegisterMetaType<QList<PlayerInfoFromDowServer>>("QList<PlayerInfoFromDowServer>");
+    qRegisterMetaType<SsMissionState>("SsMissionState");
+    qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
+    qRegisterMetaType<PlayerInfoFromDowServer>("PlayerInfoFromDowServer");
+    qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");
+    qRegisterMetaType<QMap<QString, QImage>>("QMap<QString, QImage>");
+    qRegisterMetaType<DiscordMessage>("DiscordMessage");
+    qRegisterMetaType<QVector<PartyData>>("QVector<PartyData>");
+    qRegisterMetaType<PartyData>("PartyData");
+    qRegisterMetaType<InstMod>("InstMod");
+    qRegisterMetaType<QVector<WinCondition>>("QVector<WinCondition>");
+    qRegisterMetaType<QVector<PlyersRankedState>>("QVector<PlyersRankedState>");
+    qRegisterMetaType<QVector<ReplayListInfo>>("QVector<ReplayListInfo>");
+    qRegisterMetaType<MapItem*>("MapItem*");
+    qRegisterMetaType<QList<MapFileHash>>("QList<MapFileHash>");
+    qRegisterMetaType<QMap<QString, int>>("QMap<QString, int>");
+    qRegisterMetaType<QList <ModInfo>>("QList <ModInfo>");
+}
+
+void Core::addConnections()
+{
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_soulstormController, &SoulstormController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
@@ -153,36 +185,6 @@ Core::Core(QQmlContext *context, QObject* parent)
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestDownloadMod, m_balanceModManager, &BalanceModManager::requestDownloadMod, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestUninstallMod, m_balanceModManager, &BalanceModManager::uninstalMod, Qt::QueuedConnection);
 
-
-
-
-
-    m_settingsController->initializeSettings();
-}
-
-void Core::registerTypes()
-{
-    qmlRegisterUncreatableType<DowStatsStyle::Theme>("Theme", 1, 0, "Theme", "theme style");
-
-    qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
-    qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
-    qRegisterMetaType<QList<PlayerInfoFromDowServer>>("QList<PlayerInfoFromDowServer>");
-    qRegisterMetaType<SsMissionState>("SsMissionState");
-    qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
-    qRegisterMetaType<PlayerInfoFromDowServer>("PlayerInfoFromDowServer");
-    qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");
-    qRegisterMetaType<QMap<QString, QImage>>("QMap<QString, QImage>");
-    qRegisterMetaType<DiscordMessage>("DiscordMessage");
-    qRegisterMetaType<QVector<PartyData>>("QVector<PartyData>");
-    qRegisterMetaType<PartyData>("PartyData");
-    qRegisterMetaType<InstMod>("InstMod");
-    qRegisterMetaType<QVector<WinCondition>>("QVector<WinCondition>");
-    qRegisterMetaType<QVector<PlyersRankedState>>("QVector<PlyersRankedState>");
-    qRegisterMetaType<QVector<ReplayListInfo>>("QVector<ReplayListInfo>");
-    qRegisterMetaType<MapItem*>("MapItem*");
-    qRegisterMetaType<QList<MapFileHash>>("QList<MapFileHash>");
-    qRegisterMetaType<QMap<QString, int>>("QMap<QString, int>");
-    qRegisterMetaType<QList <ModInfo>>("QList <ModInfo>");
 }
 
 OverlayWindowController *Core::overlayWindowController() const

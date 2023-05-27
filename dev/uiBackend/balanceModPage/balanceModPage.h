@@ -14,6 +14,7 @@ class BalanceModPage : public QAbstractListModel
     Q_PROPERTY(bool selectedModIsCurrent READ selectedModIsCurrent NOTIFY selectedModInfoChanged)
     Q_PROPERTY(bool selectedModIsActual READ selectedModIsActual NOTIFY selectedModInfoChanged)
     Q_PROPERTY(bool selectedModIsInstalled READ selectedModIsInstalled NOTIFY selectedModInfoChanged)
+    Q_PROPERTY(bool selectedModDownladingProcessed READ selectedModDownladingProcessed NOTIFY selectedModInfoChanged)
 
     Q_PROPERTY(QString downloadingProgress MEMBER m_downloadingProgress NOTIFY downloadingProgressChanged)
 
@@ -27,6 +28,7 @@ public:
         IsInstalled = Qt::UserRole + 2,
         Version = Qt::UserRole + 3,
         IsCurrentMod = Qt::UserRole + 4,
+        DownladingProcessed = Qt::UserRole + 5,
         UiName
     };
 
@@ -43,6 +45,7 @@ public:
     const bool selectedModIsCurrent() const;
     const bool selectedModIsActual() const;
     const bool selectedModIsInstalled() const;
+    const bool selectedModDownladingProcessed() const;
 
     const QString &currentModInGame() const;
     void setCurrentModInGame(const QString &newCurrentModInGame);

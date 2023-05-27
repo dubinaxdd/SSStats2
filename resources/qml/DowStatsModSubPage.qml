@@ -95,17 +95,25 @@ Rectangle {
 
                 BlueButton {
                     text: "Install"
-                    onClicked: model.downloadCurrentMod();
+                    enabled: !model.selectedModDownladingProcessed
+                    onClicked:{
+                        model.downloadCurrentMod();
+                    }
+
+                    visible: !model.selectedModIsInstalled
                 }
 
                 BlueButton {
                     text: "Uninstall"
                     onClicked: model.uninstallCurrentMod();
+                    visible: model.selectedModIsInstalled
                 }
 
                 BlueButton {
                     text: "Activate in game"
                     Layout.preferredWidth: 100
+                    visible: model.selectedModIsInstalled
+                    enabled: !model.selectedModIsCurrent
 
                 }
 

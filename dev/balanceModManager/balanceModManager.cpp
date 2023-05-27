@@ -8,11 +8,26 @@
 
 BalanceModManager::BalanceModManager(QObject *parent)
     : QObject(parent)
+    , m_balanceModInstaller(new BalanceModInstaller())
+    , m_balanceModInstallerThread(new QThread(this))
     , m_networkManager(new QNetworkAccessManager(this))
     , m_modsInfoRequestTimer(new QTimer(this))
 {
     m_modsInfoRequestTimer->setInterval(5000);
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
+
+    connect(this, &BalanceModManager::installMod, m_balanceModInstaller, &BalanceModInstaller::installMod, Qt::QueuedConnection);
+    connect(m_balanceModInstaller, &BalanceModInstaller::modInstalled, this, &BalanceModManager::onModInstalled, Qt::QueuedConnection);
+
+    m_balanceModInstaller->moveToThread(m_balanceModInstallerThread);
+    m_balanceModInstallerThread->start();
+}
+
+BalanceModManager::~BalanceModManager()
+{
+    m_balanceModInstallerThread->quit();
+    m_balanceModInstallerThread->wait();
+    m_balanceModInstaller->deleteLater();
 }
 
 void BalanceModManager::downloadMod(QString modTechnicalName)
@@ -81,6 +96,14 @@ void BalanceModManager::modsInfoTimerTimeout()
 {
     checkCurrentModInGame();
     downloadModsInfo();
+}
+
+void BalanceModManager::onModInstalled(QString modTechnicalName)
+{
+    qInfo(logInfo()) <<  modTechnicalName + " installed";
+
+    emit sendModDownloaded(modTechnicalName);
+    checkDownloadingQuery();
 }
 
 void BalanceModManager::requestChangeLog(QString modTechnicalName)
@@ -215,26 +238,28 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
 
     QByteArray replyByteArray = reply->readAll();
 
-    QString path = QDir::currentPath() + QDir::separator() + "modTechnicalName.zip" ;
+    //QString path = QDir::currentPath() + QDir::separator() + "modTechnicalName.zip" ;
+    QString path = m_ssPath + QDir::separator() + "modTechnicalName.zip" ;
 
+
+    emit installMod(replyByteArray, path, m_ssPath + QDir::separator(), modTechnicalName);
+/*
     QFile newFile(path);
 
     if( newFile.open( QIODevice::WriteOnly ) ) {
-
         QDataStream stream( &newFile );
         stream << replyByteArray;
         newFile.close();
 
         JlCompress::extractDir(path, m_ssPath + QDir::separator());
-        qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
+        qInfo(logInfo()) <<  modTechnicalName + " installed from " << path << "to" << m_ssPath;
 
-        QFile tempfile(path);
-        tempfile.remove();
+        newFile.remove();
     }
 
     emit sendModDownloaded(modTechnicalName);
 
-    checkDownloadingQuery();
+    checkDownloadingQuery();*/
 }
 
 void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechnicalName)

@@ -132,6 +132,7 @@ file(GLOB  uiBackend_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend ${CMAKE_CURRE
 file(GLOB  modsProcessor_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/*)
 file(GLOB  replayManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/*)
 file(GLOB  modsPage_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/modsPage ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/modsPage/*)
+file(GLOB  balanceModManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/balanceModManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/balanceModManager/*)
 
 set(SOURCE_DIRECTORIES
     ${dev_DIR}
@@ -141,6 +142,7 @@ set(SOURCE_DIRECTORIES
     ${modsProcessor_DIR}
     ${replayManager_DIR}
     ${modsPage_DIR}
+    ${balanceModManager_DIR}
 )
 
 #message(STATUS "SOURCE_DIRECTORIES: " ${SOURCE_DIRECTORIES})

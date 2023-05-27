@@ -327,6 +327,7 @@ struct ModInfo{
     bool isActual = false;
     bool isInstalled = false;
     bool isCurrentMod = false;
+    bool downloadingProcessed = false;
 };
 
 
