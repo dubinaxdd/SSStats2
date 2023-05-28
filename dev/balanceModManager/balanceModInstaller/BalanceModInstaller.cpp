@@ -36,6 +36,26 @@ void BalanceModInstaller::installMod(InstallModData data)
             }
         }
 
+        QDir schemesDir = data.schemesPath;
+
+        if (schemesDir.exists())
+        {
+             QFileInfoList schemesContent = schemesDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+             QDir dir(data.ssPath + "\\Profiles\\");
+
+             QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+             for (int i = 0; i < schemesContent.count(); i++)
+             {
+                  for (int j = 0; j < dirContent.count(); j++)
+                  {
+                      QDir().mkdir(dirContent.at(j).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "schemes");
+                      QString copyPath = dirContent.at(j).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "schemes" + QDir::separator() + schemesContent.at(i).fileName();
+                      QFile::copy(schemesContent.at(i).absoluteFilePath(), copyPath);
+                  }
+             }
+        }
+
         emit modInstalled(data.modTechnicalName);
     }
 }

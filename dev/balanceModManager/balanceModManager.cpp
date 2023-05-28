@@ -122,6 +122,7 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
 void BalanceModManager::onSettingsLoaded()
 {
     m_customHotKeysPath = m_settingsController->getSettings()->balanceModHotKeysPath;
+    m_customSchemesPath = m_settingsController->getSettings()->balanceModSchemesPath;
     m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
 
 
@@ -137,6 +138,11 @@ void BalanceModManager::onSettingsLoaded()
         QChar sepr = QDir::separator();
 
         QString path = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + "dxp2" + sepr + "KEYDEFAULTS.LUA";
+
+        QString schemesPath = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + "dxp2" + sepr + "schemes";
+
+        if (QDir(schemesPath).exists())
+            m_customSchemesPath = schemesPath;
 
         QFile hotKeysDefaultFile(path);
 
@@ -180,8 +186,10 @@ void BalanceModManager::uninstalMod(QString modTechnicalName)
 
 void BalanceModManager::receiveCustomHotKeyPath(QString customHotKeysPath)
 {
-    m_customHotKeysPath = customHotKeysPath;
+    m_customSchemesPath = customHotKeysPath + QDir::separator() + "schemes";
+    m_customHotKeysPath = customHotKeysPath + QDir::separator() + "KEYDEFAULTS.LUA";
 
+    m_settingsController->getSettings()->balanceModSchemesPath = m_customSchemesPath;
     m_settingsController->getSettings()->balanceModHotKeysPath = m_customHotKeysPath;
     m_settingsController->saveSettings();
 }
@@ -305,6 +313,7 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
     data.modTechnicalName = modTechnicalName;
     data.hotKeysPath = m_customHotKeysPath;
     data.ssPath = m_ssPath;
+    data.schemesPath = m_customSchemesPath;
 
     emit installMod(data);
 }

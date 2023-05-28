@@ -33,6 +33,7 @@ struct Settings
     int currentTheme = 0;
     QString lastActualBalanceMod = "";
     QString balanceModHotKeysPath = "";
+    QString balanceModSchemesPath = "";
     bool autoUpdateBalanceMod = true;
 };
 

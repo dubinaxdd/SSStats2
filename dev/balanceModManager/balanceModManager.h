@@ -73,6 +73,7 @@ private:
     QStringList m_downloadingQuery;
 
     QString m_customHotKeysPath = "";
+    QString m_customSchemesPath = "";
     QString m_lastActualMod = "";
 
 
