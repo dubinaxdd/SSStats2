@@ -6,10 +6,11 @@
 #include <QSettings>
 #include "JlCompress.h"
 
-BalanceModManager::BalanceModManager(QObject *parent)
+BalanceModManager::BalanceModManager(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
     , m_balanceModInstaller(new BalanceModInstaller())
     , m_balanceModInstallerThread(new QThread(this))
+    , m_settingsController(settingsController)
     , m_networkManager(new QNetworkAccessManager(this))
     , m_modsInfoRequestTimer(new QTimer(this))
 {
@@ -18,6 +19,8 @@ BalanceModManager::BalanceModManager(QObject *parent)
 
     connect(this, &BalanceModManager::installMod, m_balanceModInstaller, &BalanceModInstaller::installMod, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstalled, this, &BalanceModManager::onModInstalled, Qt::QueuedConnection);
+
+    connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModManager::onSettingsLoaded, Qt::QueuedConnection);
 
     m_balanceModInstaller->moveToThread(m_balanceModInstallerThread);
     m_balanceModInstallerThread->start();
@@ -92,6 +95,16 @@ QString BalanceModManager::getChangeLogFromLocalFiles(QString modTechnicalName)
     return QString::fromStdString(chanfeLogFile.readAll().toStdString());
 }
 
+void BalanceModManager::newActualModDetected(QString modTechnicalName, bool installed)
+{
+    m_settingsController->getSettings()->lastActualBalanceMod = modTechnicalName;
+    m_settingsController->saveSettings();
+
+    if (!installed && m_settingsController->getSettings()->autoUpdateBalanceMod)
+        requestDownloadMod(modTechnicalName);
+
+}
+
 void BalanceModManager::modsInfoTimerTimeout()
 {
     checkCurrentModInGame();
@@ -104,6 +117,34 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
 
     emit sendModDownloaded(modTechnicalName);
     checkDownloadingQuery();
+}
+
+void BalanceModManager::onSettingsLoaded()
+{
+    m_customHotKeysPath = m_settingsController->getSettings()->balanceModHotKeysPath;
+    m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
+
+
+    if (m_customHotKeysPath.isEmpty())
+    {
+        QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
+        m_currentProfile = ssSettings->value("global/playerprofile", "").toString();
+        delete ssSettings;
+
+        if (m_currentProfile.isEmpty())
+            return;
+
+        QChar sepr = QDir::separator();
+
+        QString path = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + "dxp2" + sepr + "KEYDEFAULTS.LUA";
+
+        QFile hotKeysDefaultFile(path);
+
+        if (hotKeysDefaultFile.exists())
+            m_customHotKeysPath = path;
+    }
+
+    emit sendCustomHotKeysPath(m_customHotKeysPath);
 }
 
 void BalanceModManager::requestChangeLog(QString modTechnicalName)
@@ -135,6 +176,14 @@ void BalanceModManager::uninstalMod(QString modTechnicalName)
 
     QFile moduleFile(m_ssPath + QDir::separator() + modTechnicalName  + ".module");
     moduleFile.remove();
+}
+
+void BalanceModManager::receiveCustomHotKeyPath(QString customHotKeysPath)
+{
+    m_customHotKeysPath = customHotKeysPath;
+
+    m_settingsController->getSettings()->balanceModHotKeysPath = m_customHotKeysPath;
+    m_settingsController->saveSettings();
 }
 
 void BalanceModManager::setSsPath(const QString &newSsPath)
@@ -217,6 +266,14 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         if (newModInfo.isInstalled)
             newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName);
 
+        if (newModInfo.isActual && newModInfo.technicalName != m_lastActualMod)
+        {
+            newActualModDetected(newModInfo.technicalName, newModInfo.isInstalled);
+
+            if (!newModInfo.isInstalled && m_settingsController->getSettings()->autoUpdateBalanceMod)
+                newModInfo.downloadingProcessed = true;
+        }
+
         m_modInfoList.append(newModInfo);
     }
 
@@ -238,28 +295,18 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
 
     QByteArray replyByteArray = reply->readAll();
 
-    //QString path = QDir::currentPath() + QDir::separator() + "modTechnicalName.zip" ;
-    QString path = m_ssPath + QDir::separator() + "modTechnicalName.zip" ;
+    QString path = QDir::currentPath() + QDir::separator() + "modTechnicalName.zip";
 
+    InstallModData data;
 
-    emit installMod(replyByteArray, path, m_ssPath + QDir::separator(), modTechnicalName);
-/*
-    QFile newFile(path);
+    data.modByteArray = replyByteArray;
+    data.filePath = path;
+    data.decompressPath = m_ssPath + QDir::separator();
+    data.modTechnicalName = modTechnicalName;
+    data.hotKeysPath = m_customHotKeysPath;
+    data.ssPath = m_ssPath;
 
-    if( newFile.open( QIODevice::WriteOnly ) ) {
-        QDataStream stream( &newFile );
-        stream << replyByteArray;
-        newFile.close();
-
-        JlCompress::extractDir(path, m_ssPath + QDir::separator());
-        qInfo(logInfo()) <<  modTechnicalName + " installed from " << path << "to" << m_ssPath;
-
-        newFile.remove();
-    }
-
-    emit sendModDownloaded(modTechnicalName);
-
-    checkDownloadingQuery();*/
+    emit installMod(data);
 }
 
 void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechnicalName)

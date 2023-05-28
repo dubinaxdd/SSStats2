@@ -31,6 +31,9 @@ struct Settings
     QString currentMod = "dxp2";
     QString currentModVersion = "1.0";
     int currentTheme = 0;
+    QString lastActualBalanceMod = "";
+    QString balanceModHotKeysPath = "";
+    bool autoUpdateBalanceMod = true;
 };
 
 class SettingsController : public QObject
