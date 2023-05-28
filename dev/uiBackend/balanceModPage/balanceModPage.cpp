@@ -1,5 +1,6 @@
 #include "balanceModPage.h"
 #include <QDebug>
+#include <QDir>
 
 BalanceModPage::BalanceModPage(QObject *parent)
     : QAbstractListModel(parent)
@@ -64,6 +65,12 @@ void BalanceModPage::uninstallCurrentMod()
 
     QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);;
     emit dataChanged(index, index);
+}
+
+void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
+{
+    setTemplateProfilePath(templateProfilePath.replace("file:///", "").replace("/", "\\"));
+    emit sendTemplateProfilePath(m_templateProfilePath);
 }
 
 const QString BalanceModPage::selectedModName() const

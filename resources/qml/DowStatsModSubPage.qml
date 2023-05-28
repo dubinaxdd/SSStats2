@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import QtQuick.Dialogs 1.2
+import Qt.labs.platform 1.1
 import DowStatsStyle 1.0
 
 Rectangle {
@@ -290,7 +292,7 @@ Rectangle {
             clip: true
 
 
-            ColumnLayout
+            RowLayout
             {
                 anchors.fill: parent
                 anchors.leftMargin: 10
@@ -300,40 +302,60 @@ Rectangle {
 
                 Layout.alignment: Qt.AlignTop
 
-                spacing: 3
 
-                Label{
-                    Layout.alignment: Qt.AlignVCenter
-                    text: "Template profile path"
-                    color: DowStatsStyle.textColor
-                    font.pixelSize: 14
-                }
+                ColumnLayout
+                {
+                    spacing: 3
 
-                Label{
-                    Layout.alignment: Qt.AlignVCenter
-                    text: model.templateProfilePath
-                    color: DowStatsStyle.textColor
-                    font.pixelSize: 11
-                }
-
-                Label{
-                    Layout.alignment: Qt.AlignVCenter
-                    text: "Profile directory from which color schemes and hotkeys will be copied when installing a new version of the mod."
-                    color: DowStatsStyle.textColor
-                    font.pixelSize: 11
-                }
-
-/*
-                BlueButton {
-                    text: "Install"
-                    enabled: !model.selectedModDownladingProcessed
-                    onClicked:{
-                        model.downloadCurrentMod();
+                    Label{
+                        Layout.alignment: Qt.AlignVCenter
+                        text: "Template profile path"
+                        color: DowStatsStyle.textColor
+                        font.pixelSize: 14
                     }
 
-                    visible: !model.selectedModIsInstalled
-                }*/
+                    Label{
+                        Layout.alignment: Qt.AlignVCenter
+                        text: model.templateProfilePath
+                        color: DowStatsStyle.textColor
+                        font.pixelSize: 11
+                    }
+
+                    Label{
+                        Layout.alignment: Qt.AlignVCenter
+                        text: "Player's color schemes and hotkeys will be copied after installing new version of the mod from chosen directory."
+                        color: DowStatsStyle.textColor
+                        font.pixelSize: 11
+                    }
+                }
+
+                IconButton
+                {
+                    sourceUrl: "qrc:/images/resources/images/folder.svg"
+                    toolTipText: "Choise other folder"
+
+                    onClicked: {
+                        choiseFolderDialog.visible = true
+                    }
+                }
             }
+        }
+    }
+
+
+    FolderDialog
+    {
+        id: choiseFolderDialog
+
+        folder: "file:///" + model.templateProfilePath
+
+        onAccepted: {
+            model.choiseTemplateProfilePath(currentFolder);
+            visible = false;
+        }
+
+        onRejected: {
+            visible =  false;
         }
     }
 }

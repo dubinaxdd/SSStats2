@@ -39,6 +39,7 @@ public:
     Q_INVOKABLE void slectItem(int itemIndex);
     Q_INVOKABLE void downloadCurrentMod();
     Q_INVOKABLE void uninstallCurrentMod();
+    Q_INVOKABLE void choiseTemplateProfilePath(QString templateProfilePath);
 
     const QString selectedModName() const;
     const QString selectedModVersion() const;
@@ -79,9 +80,7 @@ private:
    QList<ModInfo> m_modsInfo;
    int m_selectedItemIndex = 0;
    QString m_currentModInGame = "";
-
    QString m_downloadingProgress = "";
-
    QString m_templateProfilePath = "";
 
 };

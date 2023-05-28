@@ -185,7 +185,6 @@ void BalanceModManager::receiveTemplateProfilePath(QString templateProfilePath)
 {
     m_templateProfilePath = templateProfilePath;
 
-
     m_settingsController->getSettings()->templateProfilePath = m_templateProfilePath;
     m_settingsController->saveSettings();
 }
