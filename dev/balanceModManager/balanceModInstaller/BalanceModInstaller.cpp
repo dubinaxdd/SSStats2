@@ -21,9 +21,12 @@ void BalanceModInstaller::installMod(InstallModData data)
         JlCompress::extractDir(data.filePath, data.decompressPath);
         newFile.remove();
 
-        QFile hotKeyPath(data.hotKeysPath);
+        QString hotKeyPath = data.templateProfilePath + QDir::separator() + "KEYDEFAULTS.LUA";
+        QString schemesPath = data.templateProfilePath + QDir::separator() + "schemes";
 
-        if (hotKeyPath.exists())
+        QFile hotKeyFile(hotKeyPath);
+
+        if (hotKeyFile.exists())
         {
             QDir dir(data.ssPath + "\\Profiles\\");
             QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -32,11 +35,11 @@ void BalanceModInstaller::installMod(InstallModData data)
             {
                 QDir().mkdir(dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower());
                 QString profilePath = dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "KEYDEFAULTS.LUA";
-                QFile::copy(data.hotKeysPath, profilePath);
+                QFile::copy(hotKeyPath, profilePath);
             }
         }
 
-        QDir schemesDir = data.schemesPath;
+        QDir schemesDir = schemesPath;
 
         if (schemesDir.exists())
         {

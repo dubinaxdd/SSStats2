@@ -42,12 +42,12 @@ public slots:
     void requestChangeLog(QString modTechnicalName);
     void requestDownloadMod(QString modTechnicalName);
     void uninstalMod(QString modTechnicalName);
-    void receiveCustomHotKeyPath(QString customHotKeysPath);
+    void receiveTemplateProfilePath(QString templateProfilePath);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
     void sendCurrentModInGame(QString modName);
-    void sendCustomHotKeysPath(QString customHotKeysPath);
+    void sendTemplateProfilePath(QString templateProfilePath);
     void changeLogReceived(QString modTechnicalName, QString changeLog);
     void sendModDownloadProgress(int progress, QString modTechnicalName);
     void sendModDownloaded(QString modTechnicalName);
@@ -72,8 +72,7 @@ private:
     bool m_modDownloadingProcessed = false;
     QStringList m_downloadingQuery;
 
-    QString m_customHotKeysPath = "";
-    QString m_customSchemesPath = "";
+    QString m_templateProfilePath = "";
     QString m_lastActualMod = "";
 
 

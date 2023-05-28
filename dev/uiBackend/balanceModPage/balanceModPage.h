@@ -17,8 +17,9 @@ class BalanceModPage : public QAbstractListModel
     Q_PROPERTY(bool selectedModDownladingProcessed READ selectedModDownladingProcessed NOTIFY selectedModInfoChanged)
 
     Q_PROPERTY(QString downloadingProgress MEMBER m_downloadingProgress NOTIFY downloadingProgressChanged)
-
     Q_PROPERTY(QString currentModInGame READ currentModInGame WRITE setCurrentModInGame NOTIFY currentModInGameChanged)
+
+    Q_PROPERTY(QString templateProfilePath READ templateProfilePath WRITE setTemplateProfilePath NOTIFY templateProfilePathChanged)
 
 public:
     explicit BalanceModPage(QObject *parent = nullptr);
@@ -50,6 +51,9 @@ public:
     const QString &currentModInGame() const;
     void setCurrentModInGame(const QString &newCurrentModInGame);
 
+    const QString &templateProfilePath() const;
+    void setTemplateProfilePath(const QString &newTemplateProfilePath);
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
@@ -59,6 +63,7 @@ public slots:
    void receiveChangeLog(QString modTechnicalName, QString changeLog);
    void receiveModDownloadProgress(int progress, QString modTechnicalName);
    void receiveModDownloaded(QString modTechnicalName);
+   void receiveTemplateProfilePath(QString templateProfilePath);
 
 signals:
    void selectedModInfoChanged();
@@ -67,6 +72,8 @@ signals:
    void requestDownloadMod(QString modTechnicalName);
    void requestUninstallMod(QString modTechnicalName);
    void downloadingProgressChanged();
+   void templateProfilePathChanged();
+   void sendTemplateProfilePath(QString templateProfilePath);
 
 private:
    QList<ModInfo> m_modsInfo;
@@ -74,6 +81,9 @@ private:
    QString m_currentModInGame = "";
 
    QString m_downloadingProgress = "";
+
+   QString m_templateProfilePath = "";
+
 };
 
 #endif // BALANCEMODPAGE_H

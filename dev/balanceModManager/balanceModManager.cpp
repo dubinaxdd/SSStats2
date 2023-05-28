@@ -121,12 +121,13 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
 
 void BalanceModManager::onSettingsLoaded()
 {
-    m_customHotKeysPath = m_settingsController->getSettings()->balanceModHotKeysPath;
-    m_customSchemesPath = m_settingsController->getSettings()->balanceModSchemesPath;
+    m_templateProfilePath = m_settingsController->getSettings()->templateProfilePath;
+
     m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
 
+    QChar sepr = QDir::separator();
 
-    if (m_customHotKeysPath.isEmpty())
+    if (m_templateProfilePath.isEmpty())
     {
         QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
         m_currentProfile = ssSettings->value("global/playerprofile", "").toString();
@@ -135,22 +136,18 @@ void BalanceModManager::onSettingsLoaded()
         if (m_currentProfile.isEmpty())
             return;
 
-        QChar sepr = QDir::separator();
+        QString path = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + "dxp2";
 
-        QString path = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + "dxp2" + sepr + "KEYDEFAULTS.LUA";
+        if (QDir(path).exists())
+            m_templateProfilePath = path;
 
-        QString schemesPath = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + "dxp2" + sepr + "schemes";
+        m_settingsController->getSettings()->templateProfilePath = m_templateProfilePath;
 
-        if (QDir(schemesPath).exists())
-            m_customSchemesPath = schemesPath;
-
-        QFile hotKeysDefaultFile(path);
-
-        if (hotKeysDefaultFile.exists())
-            m_customHotKeysPath = path;
+        m_settingsController->saveSettings();
     }
 
-    emit sendCustomHotKeysPath(m_customHotKeysPath);
+    if (QDir(m_templateProfilePath).exists())
+        emit sendTemplateProfilePath(m_templateProfilePath);
 }
 
 void BalanceModManager::requestChangeLog(QString modTechnicalName)
@@ -184,13 +181,12 @@ void BalanceModManager::uninstalMod(QString modTechnicalName)
     moduleFile.remove();
 }
 
-void BalanceModManager::receiveCustomHotKeyPath(QString customHotKeysPath)
+void BalanceModManager::receiveTemplateProfilePath(QString templateProfilePath)
 {
-    m_customSchemesPath = customHotKeysPath + QDir::separator() + "schemes";
-    m_customHotKeysPath = customHotKeysPath + QDir::separator() + "KEYDEFAULTS.LUA";
+    m_templateProfilePath = templateProfilePath;
 
-    m_settingsController->getSettings()->balanceModSchemesPath = m_customSchemesPath;
-    m_settingsController->getSettings()->balanceModHotKeysPath = m_customHotKeysPath;
+
+    m_settingsController->getSettings()->templateProfilePath = m_templateProfilePath;
     m_settingsController->saveSettings();
 }
 
@@ -311,9 +307,8 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
     data.filePath = path;
     data.decompressPath = m_ssPath + QDir::separator();
     data.modTechnicalName = modTechnicalName;
-    data.hotKeysPath = m_customHotKeysPath;
+    data.templateProfilePath = m_templateProfilePath;
     data.ssPath = m_ssPath;
-    data.schemesPath = m_customSchemesPath;
 
     emit installMod(data);
 }

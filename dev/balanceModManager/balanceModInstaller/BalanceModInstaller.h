@@ -9,8 +9,7 @@ struct InstallModData
     QString filePath;
     QString decompressPath;
     QString modTechnicalName;
-    QString hotKeysPath;
-    QString schemesPath;
+    QString templateProfilePath;
     QString ssPath;
 };
 

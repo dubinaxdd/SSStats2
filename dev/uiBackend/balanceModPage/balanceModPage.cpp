@@ -202,6 +202,24 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
     }
 }
 
+void BalanceModPage::receiveTemplateProfilePath(QString templateProfilePath)
+{
+    setTemplateProfilePath(templateProfilePath);
+}
+
+const QString &BalanceModPage::templateProfilePath() const
+{
+    return m_templateProfilePath;
+}
+
+void BalanceModPage::setTemplateProfilePath(const QString &newTemplateProfilePath)
+{
+    if (m_templateProfilePath == newTemplateProfilePath)
+        return;
+    m_templateProfilePath = newTemplateProfilePath;
+    emit templateProfilePathChanged();
+}
+
 const QString &BalanceModPage::currentModInGame() const
 {
     return m_currentModInGame;

@@ -52,8 +52,7 @@ void SettingsController::initializeSettings()
 
     //[balance_mod]
     m_settings->lastActualBalanceMod = ss_stats_settings->value("balance_mod/last_actual_balance_mod", "").toString();
-    m_settings->balanceModHotKeysPath = ss_stats_settings->value("balance_mod/balance_mod_hot_keys_path", "").toString();
-    m_settings->balanceModSchemesPath = ss_stats_settings->value("balance_mod/balance_mod_schemes_path", "").toString();
+    m_settings->templateProfilePath = ss_stats_settings->value("balance_mod/template_profile_path", "").toString();
     m_settings->autoUpdateBalanceMod = ss_stats_settings->value("balance_mod/auto_update_balance_mode", true).toBool();
 
     emit settingsLoaded();
@@ -95,8 +94,7 @@ void SettingsController::saveSettings()
 
     //[balance_mod]
     ss_stats_settings->setValue("balance_mod/last_actual_balance_mod", m_settings->lastActualBalanceMod);
-    ss_stats_settings->setValue("balance_mod/balance_mod_hot_keys_path", m_settings->balanceModHotKeysPath);
-    ss_stats_settings->setValue("balance_mod/balance_mod_schemes_path", m_settings->balanceModSchemesPath);
+    ss_stats_settings->setValue("balance_mod/template_profile_path", m_settings->templateProfilePath);
     ss_stats_settings->setValue("balance_mod/auto_update_balance_mode", m_settings->autoUpdateBalanceMod);
 
     ss_stats_settings->sync();

@@ -32,8 +32,7 @@ struct Settings
     QString currentModVersion = "1.0";
     int currentTheme = 0;
     QString lastActualBalanceMod = "";
-    QString balanceModHotKeysPath = "";
-    QString balanceModSchemesPath = "";
+    QString templateProfilePath = "";
     bool autoUpdateBalanceMod = true;
 };
 

@@ -283,7 +283,7 @@ Rectangle {
         Rectangle
         {
             radius: 10
-            Layout.preferredHeight: 60
+            Layout.preferredHeight: 70
             color: DowStatsStyle.alternateBackgroundColor
             Layout.fillWidth: true
 
@@ -304,18 +304,26 @@ Rectangle {
 
                 Label{
                     Layout.alignment: Qt.AlignVCenter
-                    text: "Custom hotkeys path"
+                    text: "Template profile path"
                     color: DowStatsStyle.textColor
                     font.pixelSize: 14
                 }
 
                 Label{
                     Layout.alignment: Qt.AlignVCenter
-                    text: "path"
+                    text: model.templateProfilePath
                     color: DowStatsStyle.textColor
                     font.pixelSize: 11
                 }
 
+                Label{
+                    Layout.alignment: Qt.AlignVCenter
+                    text: "Profile directory from which color schemes and hotkeys will be copied when installing a new version of the mod."
+                    color: DowStatsStyle.textColor
+                    font.pixelSize: 11
+                }
+
+/*
                 BlueButton {
                     text: "Install"
                     enabled: !model.selectedModDownladingProcessed
@@ -324,7 +332,7 @@ Rectangle {
                     }
 
                     visible: !model.selectedModIsInstalled
-                }
+                }*/
             }
         }
     }
