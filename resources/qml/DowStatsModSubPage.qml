@@ -323,7 +323,7 @@ Rectangle {
 
                     Label{
                         Layout.alignment: Qt.AlignVCenter
-                        text: "Player's color schemes and hotkeys will be copied after installing new version of the mod from chosen directory."
+                        text: "Player color schemes and hotkeys will be copied after installing any mod version from the chosen directory."
                         color: DowStatsStyle.textColor
                         font.pixelSize: 11
                     }
