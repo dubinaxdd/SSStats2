@@ -24,6 +24,8 @@ class SettingsPageModel : public QObject
 
     Q_PROPERTY(int currentTheme READ currentTheme WRITE setCurrentTheme NOTIFY currentThemeChanged)
 
+    Q_PROPERTY(bool autorun READ autorun WRITE setAutorun NOTIFY autorunChanged)
+
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -46,6 +48,8 @@ signals:
     void launchGameInWindowChanged();
 
     void currentThemeChanged();
+
+    void autorunChanged();
 
 private slots:
     void onSettingsLoaded();
@@ -78,6 +82,12 @@ public:
     int currentTheme() const;
     void setCurrentTheme(int newCurrentTheme);
 
+    bool autorun() const;
+    void setAutorun(bool newAutorun);
+
+private:
+    void updateAutorunState(bool isAutorun);
+
 private:
     SettingsController* m_settingsController;
 
@@ -90,8 +100,10 @@ private:
     bool m_enableEventsSoundWhenGameMaximized = true;
     bool m_enableGameLoadEventSound = true;
     bool m_enableGameStartEventSound = true;
+    bool m_autorun = true;
 
     int m_volume = 100;
+
 };
 
 #endif // SETTINGSPAGEMODEL_H

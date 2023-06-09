@@ -23,8 +23,14 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
 
+
 set(DowStats2_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
 set(DowStats2_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)
+
+set(DowStatsAutorun_INSTALATION_DIR  ${DowStats2_INSTALATION_DIR})
+set(DowStatsAutorun_LIBRARY_DIR  ${DowStats2_LIBRARY_DIR})
+
+
 
 message(STATUS "DowStats2_INSTALATION_DIR: " ${DowStats2_INSTALATION_DIR})
 message(STATUS "DowStats2_LIBRARY_DIR: " ${DowStats2_LIBRARY_DIR})
@@ -39,6 +45,8 @@ file(MAKE_DIRECTORY ${DowStats2_LIBRARY_DIR})
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
 set(DEPLOY_DIR ${DowStats2_INSTALATION_DIR})
+
+add_subdirectory(autoRun)
 
 exec_program(
       "git"
@@ -121,6 +129,12 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
         COMMAND "${CMAKE_COMMAND}" -E
         remove
         ${DEPLOY_DIR}/DowStats2.exe.manifest
+    )
+
+    add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+        COMMAND "${CMAKE_COMMAND}" -E
+        remove
+        ${DEPLOY_DIR}/DowStatsAutorun.exe.manifest
     )
 
 endif()

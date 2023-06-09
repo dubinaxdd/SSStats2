@@ -31,6 +31,7 @@ struct Settings
     QString currentMod = "dxp2";
     QString currentModVersion = "1.0";
     int currentTheme = 0;
+    bool autorun = true;
 };
 
 class SettingsController : public QObject
