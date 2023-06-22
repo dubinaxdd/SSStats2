@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include "Shlwapi.h"
+#include <QDir>
 
 #include <QLocale>
 #include <QTranslator>
@@ -14,6 +15,12 @@
 
 #include "dev/hookManager/hookManager.h"
 
+#include <cstring>
+#include <mbstring.h>
+#include <cstdlib>
+#include <cstdio>
+#include <cassert>
+
 
 // Запускает программу автообновления, которая возвращает exitCode в зависимости от наличия обновлений
 int runAutoUpdate() {
@@ -22,7 +29,8 @@ int runAutoUpdate() {
     ShExecInfo.fMask = SEE_MASK_NOCLOSEPROCESS;
     ShExecInfo.hwnd = NULL;
     ShExecInfo.lpVerb = NULL;
-    ShExecInfo.lpFile = "Updater.exe";
+    //ShExecInfo.lpFile = QDir::toNativeSeparators(QCoreApplication::applicationDirPath() + "\\Updater.exe").toStdString().c_str();
+    ShExecInfo.lpFile = QString(QCoreApplication::applicationDirPath() + "\\Updater.exe").toStdString().c_str();
     ShExecInfo.lpParameters = "/F";
     ShExecInfo.lpDirectory = NULL;
     ShExecInfo.nShow = SW_SHOWNORMAL;
@@ -37,7 +45,7 @@ int runAutoUpdate() {
 
 int main(int argc, char *argv[])
 {
-
+    QApplication app3(argc, argv);
 
     if(runAutoUpdate() == 5){
         return 0; // Не запускаем ssstats - т.к. есть обновления и сейчас пойдет загрузка обновы

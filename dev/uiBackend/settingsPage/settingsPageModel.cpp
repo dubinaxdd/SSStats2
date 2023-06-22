@@ -1,5 +1,7 @@
 #include "settingsPageModel.h"
 #include <QDebug>
+#include <QCoreApplication>
+#include <QDir>
 
 SettingsPageModel::SettingsPageModel(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
@@ -38,6 +40,11 @@ void SettingsPageModel::onSettingsLoaded()
 
     m_currentTheme = m_settingsController->getSettings()->currentTheme;
     emit currentThemeChanged();
+
+    m_autorun = m_settingsController->getSettings()->autorun;
+    emit autorunChanged();
+
+    updateAutorunState(m_autorun);
 }
 
 bool SettingsPageModel::launchGameInWindow() const
@@ -70,6 +77,44 @@ void SettingsPageModel::setCurrentTheme(int newCurrentTheme)
 
     m_settingsController->getSettings()->currentTheme = m_currentTheme;
     m_settingsController->saveSettings();
+}
+
+bool SettingsPageModel::autorun() const
+{
+    return m_autorun;
+}
+
+void SettingsPageModel::setAutorun(bool newAutorun)
+{
+    if (m_autorun == newAutorun)
+        return;
+
+    m_autorun = newAutorun;
+    emit autorunChanged();
+
+    updateAutorunState(m_autorun);
+
+    //HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run
+
+    /*QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+        settings.setValue(APPLICATION_NAME, QDir::toNativeSeparators(QCoreApplication::applicationFilePath()));
+        settings.sync();*/
+
+    m_settingsController->getSettings()->autorun = m_autorun;
+    m_settingsController->saveSettings();
+}
+
+void SettingsPageModel::updateAutorunState(bool isAutorun)
+{
+    QSettings bootUpSettings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
+
+    if (isAutorun) {
+        bootUpSettings.setValue("DowStatsAutorun",  QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+ "\\DowStatsAutorun.exe"));
+        bootUpSettings.sync();
+    } else {
+        bootUpSettings.remove("DowStatsAutorun");
+        bootUpSettings.sync();
+    }
 }
 
 int SettingsPageModel::volume() const

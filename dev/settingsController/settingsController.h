@@ -34,6 +34,7 @@ struct Settings
     QString lastActualBalanceMod = "";
     QString templateProfilePath = "";
     bool autoUpdateBalanceMod = true;
+    bool autorun = true;
 };
 
 class SettingsController : public QObject

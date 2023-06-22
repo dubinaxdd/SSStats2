@@ -88,6 +88,14 @@ Rectangle {
             }
 
             StyledSwitch{
+                text: "Autorun"
+                checked: model.autorun
+                onCheckedChanged: model.autorun = checked;
+            }
+
+
+
+            StyledSwitch{
                 text: "Show overlay"
                 checked: model.overlayVisible
                 onCheckedChanged: model.overlayVisible = checked;

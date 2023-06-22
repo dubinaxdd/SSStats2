@@ -41,6 +41,7 @@ void SettingsController::initializeSettings()
     m_settings->enableGameLoadEventSound = ss_stats_settings->value("client/enable_game_load_event_sound", true).toBool();
     m_settings->enableGameStartEventSound = ss_stats_settings->value("client/enable_game_start_event_sound", true).toBool();
     m_settings->currentTheme = ss_stats_settings->value("client/current_theme", 0).toInt();
+    m_settings->autorun = ss_stats_settings->value("client/autorun", true).toBool();
 
     //[mods]
     m_settings->russianFontsInstalled = ss_stats_settings->value("mods/russian_fonts_installed", false).toBool();
@@ -83,6 +84,7 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("client/enable_game_start_event_sound", m_settings->enableGameStartEventSound);
     ss_stats_settings->setValue("client/volume", m_settings->volume);
     ss_stats_settings->setValue("client/current_theme", m_settings->currentTheme);
+    ss_stats_settings->setValue("client/autorun", m_settings->autorun);
 
     //[mods]
     ss_stats_settings->setValue("mods/russian_fonts_installed", m_settings->russianFontsInstalled);
