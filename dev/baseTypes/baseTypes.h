@@ -330,6 +330,12 @@ struct ModInfo{
     bool downloadingProcessed = false;
 };
 
+enum LaunchMode{
+    OriginalSoulstorm = 0,
+    DowStatsBalanceMod = 1,
+    LastSelectedMod = 2
+};
+
 
 
 #endif // BASETYPES_H

@@ -204,12 +204,20 @@ Rectangle {
             Layout.fillWidth: true
         }
 
-        Label{
+        /*Label{
             Layout.preferredWidth: 300
 
             font.pixelSize: 11
             text: _uiBackend.balanceModPage.currentModInGame
             color: DowStatsStyle.textColor
+        }*/
+
+        StyledComboBox{
+            model: ["Original Soulstorm", "DowStats Balance Mod", "Last selected mod"]
+            currentIndex: _uiBackend.settingsPageModel.launchMode
+            Layout.preferredWidth: 170
+
+            onCurrentIndexChanged: _uiBackend.settingsPageModel.launchMode = currentIndex
         }
 
         Rectangle{

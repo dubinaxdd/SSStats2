@@ -26,6 +26,9 @@ class SettingsPageModel : public QObject
 
     Q_PROPERTY(bool autorun READ autorun WRITE setAutorun NOTIFY autorunChanged)
 
+
+    Q_PROPERTY(int launchMode READ launchMode WRITE setLaunchMode NOTIFY launchModeChanged)
+
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -36,20 +39,15 @@ signals:
     void overlayVisibleChanged();
     void win7SupportModeChanged();
     void skipIntroVideoChanged();
-
     void enableEventsSoundWhenGameMinimizedChanged(bool state);
     void enableEventsSoundWhenGameMaximizedChanged(bool state);
-
     void enableGameLoadEventSoundChanged(bool state);
     void enableGameStartEventSoundChanged(bool state);
-
     void volumeChanged(int volume);
-
     void launchGameInWindowChanged();
-
     void currentThemeChanged();
-
     void autorunChanged();
+    void launchModeChanged();
 
 private slots:
     void onSettingsLoaded();
@@ -85,6 +83,9 @@ public:
     bool autorun() const;
     void setAutorun(bool newAutorun);
 
+    int launchMode() const;
+    void setLaunchMode(int newLaunchMode);
+
 private:
     void updateAutorunState(bool isAutorun);
 
@@ -103,6 +104,8 @@ private:
     bool m_autorun = true;
 
     int m_volume = 100;
+
+    LaunchMode m_launchMode = LaunchMode::LastSelectedMod;
 
 };
 

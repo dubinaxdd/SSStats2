@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSettings>
 #include <logger.h>
+#include <baseTypes.h>
 
 struct Settings
 {
@@ -35,6 +36,7 @@ struct Settings
     QString templateProfilePath = "";
     bool autoUpdateBalanceMod = true;
     bool autorun = true;
+    LaunchMode launchMode = LaunchMode::LastSelectedMod;
 };
 
 class SettingsController : public QObject

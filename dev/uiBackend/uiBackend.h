@@ -62,7 +62,6 @@ class UiBackend : public QObject
     Q_PROPERTY(QString currentModName READ currentModName WRITE setCurrentModName NOTIFY currentModNameChanged)
     Q_PROPERTY(QString currentModTechnicalName READ currentModTechnicalName WRITE setCurrentModTechnicalName NOTIFY currentModTechnicalNameChanged)
 
-
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -160,9 +159,7 @@ signals:
     void onlineCountChanged();
 
     void currentModNameChanged();
-
     void currentModTechnicalNameChanged();
-
     void balanceModPageChanged();
 
 public slots:
@@ -255,7 +252,6 @@ private:
 
     QString m_currentModName = "";
     QString m_currentModTechnicalName = "";
-
 };
 
 #endif // UIBACKEND_H

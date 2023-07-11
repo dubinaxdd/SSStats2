@@ -44,6 +44,9 @@ void SettingsPageModel::onSettingsLoaded()
     m_autorun = m_settingsController->getSettings()->autorun;
     emit autorunChanged();
 
+    m_launchMode =  m_settingsController->getSettings()->launchMode;
+    emit launchModeChanged();
+
     updateAutorunState(m_autorun);
 }
 
@@ -245,6 +248,23 @@ void SettingsPageModel::setOverlayVisible(bool newOverlayVisible)
     emit overlayVisibleChanged();
 
     m_settingsController->getSettings()->overlayVisible = m_overlayVisible;
+    m_settingsController->saveSettings();
+}
+
+int SettingsPageModel::launchMode() const
+{
+    return m_launchMode;
+}
+
+void SettingsPageModel::setLaunchMode(int newLaunchMode)
+{
+    if (m_launchMode == newLaunchMode)
+        return;
+
+    m_launchMode = static_cast<LaunchMode>(newLaunchMode);
+    emit launchModeChanged();
+
+    m_settingsController->getSettings()->launchMode = m_launchMode;
     m_settingsController->saveSettings();
 }
 

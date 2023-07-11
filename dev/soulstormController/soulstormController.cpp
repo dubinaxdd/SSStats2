@@ -108,6 +108,20 @@ void SoulstormController::launchSoulstorm()
     else
         ssSettings->setValue("global/screenwindowed", 0);
 
+
+    LaunchMode launchMode = m_settingsController->getSettings()->launchMode;
+
+    switch (launchMode)
+    {
+        case LaunchMode::OriginalSoulstorm :
+            ssSettings->setValue("global/currentmoddc", "dxp2"/*m_settingsController->getSettings()->*/);
+            break;
+        case LaunchMode::DowStatsBalanceMod :
+            ssSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
+            break;
+        default: break;
+    }
+
     if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
     {
         QString params = "";
