@@ -154,11 +154,18 @@ Rectangle {
 
                     Flickable
                     {
+                        id: flicable
+
                         anchors.fill: parent
                         anchors.margins: 15
 
                         contentHeight: changeLogTextArea.height
                         clip: true
+
+                        ScrollBar.vertical: ScrollBar {
+                            id: scrollBar
+                            policy: ScrollBar.AlwaysOn
+                        }
 
                         TextArea{
                             id:changeLogTextArea
@@ -172,12 +179,10 @@ Rectangle {
                             readOnly: true
 
                             text: model.selectedChangeLog
-                        }
 
-                        ScrollBar.vertical: ScrollBar {
-                            id: scrollBar
-                            visible: changeLogTextArea.height > parent.height
-                            policy: ScrollBar.AlwaysOn
+                            onTextChanged: {
+                                scrollBar.visible = changeLogTextArea.contentHeight > flicable.height
+                            }
                         }
                     }
                 }
