@@ -40,6 +40,7 @@ public:
     Q_INVOKABLE void downloadCurrentMod();
     Q_INVOKABLE void uninstallCurrentMod();
     Q_INVOKABLE void choiseTemplateProfilePath(QString templateProfilePath);
+    Q_INVOKABLE void activateCurrentModInGame();
 
     const QString selectedModName() const;
     const QString selectedModVersion() const;
@@ -69,12 +70,14 @@ public slots:
 signals:
    void selectedModInfoChanged();
    void currentModInGameChanged();
-   void requestChangeLog(QString modTechnicalName);
-   void requestDownloadMod(QString modTechnicalName);
-   void requestUninstallMod(QString modTechnicalName);
    void downloadingProgressChanged();
    void templateProfilePathChanged();
    void sendTemplateProfilePath(QString templateProfilePath);
+   void requestChangeLog(QString modTechnicalName);
+   void requestDownloadMod(QString modTechnicalName);
+   void requestUninstallMod(QString modTechnicalName);
+   void requestActivateMod(QString modTechnicalName);
+
 
 private:
    QList<ModInfo> m_modsInfo;

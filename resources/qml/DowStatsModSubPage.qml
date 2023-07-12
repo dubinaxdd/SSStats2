@@ -122,6 +122,8 @@ Rectangle {
                         visible: model.selectedModIsInstalled
                         enabled: !model.selectedModIsCurrent
 
+                        onClicked: model.activateCurrentModInGame();
+
                     }
 
                     Item {

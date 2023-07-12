@@ -43,6 +43,7 @@ public slots:
     void requestDownloadMod(QString modTechnicalName);
     void uninstalMod(QString modTechnicalName);
     void receiveTemplateProfilePath(QString templateProfilePath);
+    void activateMod(QString modTechnicalName);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);

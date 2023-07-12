@@ -73,6 +73,7 @@ private:
     QString getSteamPathFromRegistry();
     void parseSsSettings();
     void updateSoulstormWindow();
+    void writeCurrentModSettingInGame();
 
 private:
     HWND m_soulstormHwnd = NULL;

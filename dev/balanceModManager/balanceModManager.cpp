@@ -189,6 +189,13 @@ void BalanceModManager::receiveTemplateProfilePath(QString templateProfilePath)
     m_settingsController->saveSettings();
 }
 
+void BalanceModManager::activateMod(QString modTechnicalName)
+{
+    QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
+    ssSettings->setValue("global/currentmoddc", modTechnicalName.toLower());
+    delete ssSettings;
+}
+
 void BalanceModManager::setSsPath(const QString &newSsPath)
 {
     m_ssPath = newSsPath;
@@ -284,6 +291,8 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
     if (m_modInfoList.count() > 0 && !m_modInfoList.first().isInstalled)
         requestChangeLog(m_modInfoList.first().technicalName);
+
+    emit sendCurrentModInGame(m_currentModName);
 }
 
 void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalName)

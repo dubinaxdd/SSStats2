@@ -73,6 +73,21 @@ void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
     emit sendTemplateProfilePath(m_templateProfilePath);
 }
 
+void BalanceModPage::activateCurrentModInGame()
+{
+    beginResetModel();
+    for (int i = 0; i < m_modsInfo.count(); i++)
+        m_modsInfo[i].isCurrentMod = false;
+
+    m_modsInfo[m_selectedItemIndex].isCurrentMod = true;
+    endResetModel();
+
+    emit selectedModInfoChanged();
+    emit requestActivateMod(m_modsInfo[m_selectedItemIndex].technicalName);
+
+    setCurrentModInGame(m_modsInfo[m_selectedItemIndex].uiName);
+}
+
 const QString BalanceModPage::selectedModName() const
 {
     if(m_modsInfo.count() > m_selectedItemIndex)
@@ -234,8 +249,25 @@ const QString &BalanceModPage::currentModInGame() const
 
 void BalanceModPage::setCurrentModInGame(const QString &newCurrentModInGame)
 {
-    if (m_currentModInGame == newCurrentModInGame)
+    QString uiModName = newCurrentModInGame;
+
+    if (newCurrentModInGame == "dxp2")
+        uiModName = "Original Soulstorm";
+    else
+    {
+        for (int i = 0; i < m_modsInfo.count(); i++)
+        {
+            if (m_modsInfo.at(i).technicalName.toLower() == newCurrentModInGame.toLower())
+            {
+                uiModName = m_modsInfo.at(i).uiName;
+                break;
+            }
+        }
+    }
+
+    if (m_currentModInGame == uiModName)
         return;
-    m_currentModInGame = newCurrentModInGame;
+
+    m_currentModInGame = uiModName;
     emit currentModInGameChanged();
 }

@@ -204,20 +204,31 @@ Rectangle {
             Layout.fillWidth: true
         }
 
-        /*Label{
-            Layout.preferredWidth: 300
 
-            font.pixelSize: 11
-            text: _uiBackend.balanceModPage.currentModInGame
-            color: DowStatsStyle.textColor
-        }*/
 
-        StyledComboBox{
-            model: ["Original Soulstorm", "DowStats Balance Mod", "Last selected mod"]
-            currentIndex: _uiBackend.settingsPageModel.launchMode
-            Layout.preferredWidth: 170
+        ColumnLayout
+        {
+            clip: true
 
-            onCurrentIndexChanged: _uiBackend.settingsPageModel.launchMode = currentIndex
+            Label{
+                Layout.preferredWidth: 250
+
+                Layout.leftMargin: 5
+                Layout.rightMargin: 5
+
+                font.pixelSize: 11
+                text: "Current mod: " + _uiBackend.balanceModPage.currentModInGame
+                color: DowStatsStyle.textColor
+            }
+
+            StyledComboBox{
+                model: ["Original Soulstorm", "DowStats Balance Mod (Latest)", "Current mod"]
+                currentIndex: _uiBackend.settingsPageModel.launchMode
+                Layout.preferredWidth: 250
+                Layout.preferredHeight: 25
+
+                onCurrentIndexChanged: _uiBackend.settingsPageModel.launchMode = currentIndex
+            }
         }
 
         Rectangle{
