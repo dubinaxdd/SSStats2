@@ -9,8 +9,9 @@ Switch{
     property real sizeModifer: 1
     property bool hoveredState: mouseArea.containsMouse
     property var textColor: DowStatsStyle.textColor
-    property var backgroundCheckedColor: DowStatsStyle.selectionColor
-    property var backgroundUncheckedColor: DowStatsStyle.itemColor
+    property var backgroundCheckedColor: DowStatsStyle.greenColor
+    property var backgroundUncheckedColor: DowStatsStyle.redColor
+    property var backgroundDisblaedColor: DowStatsStyle.alternateBackgroundColor
     property var indicatorColor: DowStatsStyle.indicatorColor
 
     opacity: hoveredState ? 1.0 : 0.8
@@ -64,7 +65,7 @@ Switch{
         ColorOverlay{
             anchors.fill: image
             source:image
-            color: indicatorColor
+            color: root.enabled ? indicatorColor : backgroundDisblaedColor  //indicatorColor
             antialiasing: true
         }
 
@@ -109,7 +110,7 @@ Switch{
         ColorOverlay{
             anchors.fill: backgroundImage
             source:backgroundImage
-            color: root.checked ? backgroundCheckedColor : backgroundUncheckedColor
+            color: root.enabled ? (root.checked ? backgroundCheckedColor : backgroundUncheckedColor) : backgroundDisblaedColor
             antialiasing: true
         }
     }

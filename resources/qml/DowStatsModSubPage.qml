@@ -212,8 +212,7 @@ Rectangle {
                         width: listView.width
                         height: 70
                         radius: 10
-
-                        color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.itemColor
+                        color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.backgroundColor
 
                         ColumnLayout
                         {

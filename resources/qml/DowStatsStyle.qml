@@ -14,6 +14,8 @@ QtObject {
     property color textColor: "#26282a"
     property color indicatorColor: "#FFFFFF"
 
+    property color greenColor: "#00ff99"
+    property color redColor: "#ffa9a9"
 
     function setDarkTheme()
     {
