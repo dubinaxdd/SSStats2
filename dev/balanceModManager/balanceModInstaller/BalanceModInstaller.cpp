@@ -73,7 +73,7 @@ void BalanceModInstaller::installMod(InstallModData data)
             {
                 QString configString = QString::fromStdString(playercfgFile.readAll().toStdString());
 
-                if (configString. contains("Tutorial_" + data.modTechnicalName.toLower()))
+                if (configString.contains("Tutorial_" + data.modTechnicalName.toLower()))
                 {
                     playercfgFile.close();
                     continue;
@@ -81,12 +81,90 @@ void BalanceModInstaller::installMod(InstallModData data)
 
                 configString.replace("\0", "");
 
+                if (!configString.contains("ai_preferences1"))
+                {
+                    configString.append(
+                                "\nai_preferences1 =  \n"
+                                "{\n"
+                                "}\n"
+                                    );
+
+                }
+
                 configString.append("\nTutorial_" + data.modTechnicalName.toLower() + "  =  \n"
                                     "{\n"
                                     "	HasClickedMulti = true,\n"
                                     "	HasClickedSkirmish = true,\n"
                                     "	HasPlayedTutorial = true,\n"
-                                    "}\0");
+                                    "}\n"
+                                    + data.modTechnicalName.toLower() + "_game_preferences =  \n"
+                                    "{\n"
+                                    "	num_teams = 2,\n"
+                                    "	options = \n"
+                                    "	{\n"
+                                    "		option0 =  \n"
+                                    "		{\n"
+                                    "			choice = \"4\",\n"
+                                    "			id = \"1095320646\",\n"
+                                    "		},\n"
+                                    "		option1 = \n"
+                                    "		{\n"
+                                    "			choice = \"0\",\n"
+                                    "			id = \"1381192532\",\n"
+                                    "		},\n"
+                                    "		option2 =  \n"
+                                    "		{\n"
+                                    "			choice = \"0\",\n"
+                                    "			id = \"1280005197\",\n"
+                                    "		},\n"
+                                    "		option3 = \n"
+                                    "		{\n"
+                                    "			choice = \"1\",\n"
+                                    "			id = \"1128809793\",\n"
+                                    "		},\n"
+                                    "		option4 =  \n"
+                                    "		{\n"
+                                    "			choice = \"0\",\n"
+                                    "			id = \"1397509955\",\n"
+                                    "		},\n"
+                                    "		option5 =\n"
+                                    "		{\n"
+                                    "			choice = \"2\",\n"
+                                    "			id = \"1196642372\",\n"
+                                    "		},\n"
+                                    "		option6 = \n"
+                                    "		{\n"
+                                    "			choice = \"1\",\n"
+                                    "			id = \"1381192520\",\n"
+                                    "		},\n"
+                                    "		option7 = \n"
+                                    "		{\n"
+                                    "			choice = \"1\",\n"
+                                    "			id = \"1381192276\",\n"
+                                    "		},\n"
+                                    "	},\n"
+                                    "	team_type = 3,\n"
+                                    "	win_conditions =  \n"
+                                    "	{\n"
+                                    "		win_condition1 =  \n"
+                                    "		{\n"
+                                    "			id = \"1003066394\",\n"
+                                    "		},\n"
+                                    "		win_condition2 =  \n"
+                                    "		{\n"
+                                    "			id = \"735076042\",\n"
+                                    "		},\n"
+                                    "		win_condition3 =  \n"
+                                    "		{\n"
+                                    "			id = \"69421273\",\n"
+                                    "		},\n"
+                                    "		win_condition4 =  \n"
+                                    "		{\n"
+                                    "			id = \"1959084950\",\n"
+                                    "		},\n"
+                                    "	},\n"
+                                    "}\n"
+                                    "\0");
 
                 playercfgFile.resize(0);
                 playercfgFile.write(configString.toLatin1());
