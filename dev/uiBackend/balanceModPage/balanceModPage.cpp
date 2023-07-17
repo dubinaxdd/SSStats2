@@ -15,7 +15,7 @@ QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 
     switch (role) {
         case UiName: return m_modsInfo.at(index.row()).uiName;
-    case Version: return m_modsInfo.at(index.row()).version + (m_modsInfo.at(index.row()).isActual ? " (Latest)" : "");
+        case Version: return m_modsInfo.at(index.row()).version + (m_modsInfo.at(index.row()).isLatest ? " (Latest)" : "");
         case IsInstalled: return m_modsInfo.at(index.row()).isInstalled;
         case Selected: return index.row() == m_selectedItemIndex;
         case IsCurrentMod: return m_modsInfo.at(index.row()).isCurrentMod;
@@ -75,17 +75,21 @@ void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
 
 void BalanceModPage::activateCurrentModInGame()
 {
+    activateModInGame(m_selectedItemIndex);
+}
+
+void BalanceModPage::activateModInGame(int modIndex)
+{
     beginResetModel();
     for (int i = 0; i < m_modsInfo.count(); i++)
         m_modsInfo[i].isCurrentMod = false;
 
-    m_modsInfo[m_selectedItemIndex].isCurrentMod = true;
+    m_modsInfo[modIndex].isCurrentMod = true;
     endResetModel();
 
     emit selectedModInfoChanged();
-    emit requestActivateMod(m_modsInfo[m_selectedItemIndex].technicalName);
-
-    setCurrentModInGame(m_modsInfo[m_selectedItemIndex].uiName);
+    emit requestActivateMod(m_modsInfo[modIndex].technicalName);
+    setCurrentModInGame(m_modsInfo[modIndex].uiName);
 }
 
 const QString BalanceModPage::selectedModName() const
@@ -99,7 +103,7 @@ const QString BalanceModPage::selectedModName() const
 const QString BalanceModPage::selectedModVersion() const
 {
     if(m_modsInfo.count() > m_selectedItemIndex)
-        return m_modsInfo.at(m_selectedItemIndex).version + (m_modsInfo.at(m_selectedItemIndex).isActual ? " (Latest)" : "");
+        return m_modsInfo.at(m_selectedItemIndex).version + (m_modsInfo.at(m_selectedItemIndex).isLatest ? " (Latest)" : "");
 
     return "";
 }
@@ -123,7 +127,7 @@ const bool BalanceModPage::selectedModIsCurrent() const
 const bool BalanceModPage::selectedModIsActual() const
 {
     if(m_modsInfo.count() > m_selectedItemIndex)
-        return m_modsInfo.at(m_selectedItemIndex).isActual;
+        return m_modsInfo.at(m_selectedItemIndex).isLatest;
 
     return false;
 }
@@ -216,7 +220,10 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
             if (m_selectedItemIndex == i)
                 emit selectedModInfoChanged();
 
-            QModelIndex index = QAbstractItemModel::createIndex(i, 0);;
+            if(m_modsInfo[i].isLatest)
+                activateModInGame(i);
+
+            QModelIndex index = QAbstractItemModel::createIndex(i, 0);
             emit dataChanged(index, index);
 
             break;

@@ -42,6 +42,8 @@ public:
     Q_INVOKABLE void choiseTemplateProfilePath(QString templateProfilePath);
     Q_INVOKABLE void activateCurrentModInGame();
 
+
+
     const QString selectedModName() const;
     const QString selectedModVersion() const;
     const QString selectedChangeLog() const;
@@ -58,6 +60,9 @@ public:
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
+
+private:
+   void activateModInGame(int modIndex);
 
 public slots:
    void receiveVersions(QList<ModInfo> modsInfo);
