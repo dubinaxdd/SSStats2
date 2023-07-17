@@ -188,6 +188,7 @@ void Core::addConnections()
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestUninstallMod, m_balanceModManager, &BalanceModManager::uninstalMod, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendTemplateProfilePath, m_balanceModManager, &BalanceModManager::receiveTemplateProfilePath, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestActivateMod, m_balanceModManager, &BalanceModManager::activateMod, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendUseCustomTemplateProfilePath, m_balanceModManager, &BalanceModManager::receiveUpdateTemplateProfilePath, Qt::QueuedConnection);
 }
 
 OverlayWindowController *Core::overlayWindowController() const

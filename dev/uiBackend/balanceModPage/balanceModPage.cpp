@@ -9,6 +9,18 @@ BalanceModPage::BalanceModPage(SettingsController *settingsController, QObject *
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModPage::onSettingsLoaded, Qt::QueuedConnection);
 }
 
+void BalanceModPage::onSettingsLoaded()
+{
+    m_autoUpdateBalanceMod  =  m_settingsController->getSettings()->autoUpdateBalanceMod;
+    emit autoUpdateBalanceModChanged();
+
+    m_autoUninstallPreviousBalanceMod = m_settingsController->getSettings()->autoUninstallPreviousBalanceMod;
+    emit autoUninstallPreviousBalanceModChanged();
+
+    m_useCustomTemplateProfilePath = m_settingsController->getSettings()->useCustomTemplateProfilePath;
+    emit useCustomTemplateProfilePathChanged();
+}
+
 QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_modsInfo.count())
@@ -59,6 +71,7 @@ void BalanceModPage::downloadSelectedMod()
 void BalanceModPage::uninstallSelectedMod()
 {
    uninstallMod(m_selectedItemIndex);
+   //emit selectedModInfoChanged();
 }
 
 void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
@@ -102,6 +115,8 @@ void BalanceModPage::activateModInGame(int modIndex)
     emit selectedModInfoChanged();
     emit requestActivateMod(m_modsInfo[modIndex].technicalName);
     setCurrentModInGame(m_modsInfo[modIndex].uiName);
+
+    emit selectedModInfoChanged();
 }
 
 void BalanceModPage::activateModInGame(QString modTechnicalName)
@@ -309,13 +324,22 @@ void BalanceModPage::receiveTemplateProfilePath(QString templateProfilePath)
     setTemplateProfilePath(templateProfilePath);
 }
 
-void BalanceModPage::onSettingsLoaded()
+bool BalanceModPage::useCustomTemplateProfilePath() const
 {
-    m_autoUpdateBalanceMod  =  m_settingsController->getSettings()->autoUpdateBalanceMod;
-    emit autoUpdateBalanceModChanged();
+    return m_useCustomTemplateProfilePath;
+}
 
-    m_autoUninstallPreviousBalanceMod = m_settingsController->getSettings()->autoUninstallPreviousBalanceMod;
-    emit autoUpdateBalanceModChanged();
+void BalanceModPage::setUseCustomTemplateProfilePath(bool newUseCustomTemplateProfilePath)
+{
+    if (m_useCustomTemplateProfilePath == newUseCustomTemplateProfilePath)
+        return;
+    m_useCustomTemplateProfilePath = newUseCustomTemplateProfilePath;
+    emit useCustomTemplateProfilePathChanged();
+
+    m_settingsController->getSettings()->useCustomTemplateProfilePath = m_useCustomTemplateProfilePath;
+    m_settingsController->saveSettings();
+
+    emit sendUseCustomTemplateProfilePath(m_useCustomTemplateProfilePath);
 }
 
 bool BalanceModPage::autoUninstallPreviousBalanceMod() const

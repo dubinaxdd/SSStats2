@@ -102,7 +102,6 @@ void BalanceModManager::newActualModDetected(QString modTechnicalName, bool inst
 
     if (!installed && m_settingsController->getSettings()->autoUpdateBalanceMod)
         requestDownloadMod(modTechnicalName);
-
 }
 
 void BalanceModManager::modsInfoTimerTimeout()
@@ -113,6 +112,19 @@ void BalanceModManager::modsInfoTimerTimeout()
 
 void BalanceModManager::onModInstalled(QString modTechnicalName)
 {
+    for(int i = 0; i < m_modInfoList.count(); i++)
+    {
+        if (m_modInfoList.at(i).technicalName == modTechnicalName)
+        {
+            m_modInfoList[i].isInstalled = true;
+
+            if (m_modInfoList.at(i).isLatest && !m_settingsController->getSettings()->useCustomTemplateProfilePath)
+                updateTemplateProfilePath(modTechnicalName);
+
+            break;
+        }
+    }
+
     qInfo(logInfo()) <<  modTechnicalName + " installed";
     emit sendModDownloaded(modTechnicalName);
 
@@ -122,31 +134,11 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
 void BalanceModManager::onSettingsLoaded()
 {
     m_templateProfilePath = m_settingsController->getSettings()->templateProfilePath;
-
     m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
 
-    QChar sepr = QDir::separator();
-
     if (m_templateProfilePath.isEmpty())
-    {
-        QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
-        m_currentProfile = ssSettings->value("global/playerprofile", "").toString();
-        delete ssSettings;
-
-        if (m_currentProfile.isEmpty())
-            return;
-
-        QString path = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + "dxp2";
-
-        if (QDir(path).exists())
-            m_templateProfilePath = path;
-
-        m_settingsController->getSettings()->templateProfilePath = m_templateProfilePath;
-
-        m_settingsController->saveSettings();
-    }
-
-    if (QDir(m_templateProfilePath).exists())
+        updateTemplateProfilePath("dxp2");
+    else if(QDir(m_templateProfilePath).exists())
         emit sendTemplateProfilePath(m_templateProfilePath);
 }
 
@@ -179,6 +171,19 @@ void BalanceModManager::uninstalMod(QString modTechnicalName)
 
     QFile moduleFile(m_ssPath + QDir::separator() + modTechnicalName  + ".module");
     moduleFile.remove();
+
+    for(int i = 0; i < m_modInfoList.count(); i++)
+    {
+        if (m_modInfoList.at(i).technicalName == modTechnicalName)
+        {
+            m_modInfoList[i].isInstalled = false;
+
+            if (m_modInfoList.at(i).isLatest && !m_settingsController->getSettings()->useCustomTemplateProfilePath)
+                updateTemplateProfilePath("dxp2");
+
+            break;
+        }
+    }
 }
 
 void BalanceModManager::receiveTemplateProfilePath(QString templateProfilePath)
@@ -194,6 +199,54 @@ void BalanceModManager::activateMod(QString modTechnicalName)
     QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
     ssSettings->setValue("global/currentmoddc", modTechnicalName.toLower());
     delete ssSettings;
+}
+
+void BalanceModManager::receiveUpdateTemplateProfilePath(bool useCustomTemplateProfilePath)
+{
+    if (!useCustomTemplateProfilePath)
+    {
+        QString technicalName = "";
+
+        for(int i = 0; i < m_modInfoList.count(); i++)
+        {
+            if (m_modInfoList.at(i).isInstalled
+                    && m_modInfoList.at(i).isLatest )
+            {
+                technicalName = m_modInfoList.at(i).technicalName;
+                break;
+            }
+        }
+
+        if (!technicalName.isEmpty())
+            updateTemplateProfilePath(technicalName);
+        else
+            updateTemplateProfilePath("dxp2");
+    }
+}
+
+void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
+{
+    QChar sepr = QDir::separator();
+
+    QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
+    m_currentProfile = ssSettings->value("global/playerprofile", "").toString();
+    delete ssSettings;
+
+    if (m_currentProfile.isEmpty())
+        return;
+
+    QString path = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + modTechnicalName.toLower();
+
+    if (QDir(path).exists())
+        m_templateProfilePath = path;
+
+    if (QDir(m_templateProfilePath).exists())
+    {
+        emit sendTemplateProfilePath(m_templateProfilePath);
+        m_settingsController->getSettings()->templateProfilePath = m_templateProfilePath;
+        m_settingsController->saveSettings();
+    }
+
 }
 
 void BalanceModManager::setSsPath(const QString &newSsPath)

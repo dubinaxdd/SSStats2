@@ -396,6 +396,8 @@ Rectangle {
                 StyledSwitch{
                     id: templateProfilePathSwitch
                     text: "Use custom template profile path"
+                    checked: model.useCustomTemplateProfilePath
+                    onCheckedChanged: model.useCustomTemplateProfilePath = checked
                 }
 
                 Rectangle

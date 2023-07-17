@@ -32,6 +32,7 @@ private:
     QString getChangeLogFromLocalFiles(QString modTechnicalName);
 
     void newActualModDetected(QString modTechnicalName, bool installed);
+    void updateTemplateProfilePath(QString modTechnicalName);
 
 private slots:
     void modsInfoTimerTimeout();
@@ -44,6 +45,7 @@ public slots:
     void uninstalMod(QString modTechnicalName);
     void receiveTemplateProfilePath(QString templateProfilePath);
     void activateMod(QString modTechnicalName);
+    void receiveUpdateTemplateProfilePath(bool useCustomTemplateProfilePath);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);

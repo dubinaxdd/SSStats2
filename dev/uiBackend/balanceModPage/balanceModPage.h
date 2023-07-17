@@ -24,6 +24,7 @@ class BalanceModPage : public QAbstractListModel
 
     Q_PROPERTY(bool autoUpdateBalanceMod READ autoUpdateBalanceMod WRITE setAutoUpdateBalanceMod NOTIFY autoUpdateBalanceModChanged)
     Q_PROPERTY(bool autoUninstallPreviousBalanceMod READ autoUninstallPreviousBalanceMod WRITE setAutoUninstallPreviousBalanceMod NOTIFY autoUninstallPreviousBalanceModChanged)
+    Q_PROPERTY(bool useCustomTemplateProfilePath READ useCustomTemplateProfilePath WRITE setUseCustomTemplateProfilePath NOTIFY useCustomTemplateProfilePathChanged)
 
 public:
     explicit BalanceModPage(SettingsController* settingsController, QObject *parent = nullptr);
@@ -68,6 +69,9 @@ public:
     bool autoUninstallPreviousBalanceMod() const;
     void setAutoUninstallPreviousBalanceMod(bool newAutoUninstallPreviousBalanceMod);
 
+    bool useCustomTemplateProfilePath() const;
+    void setUseCustomTemplateProfilePath(bool newUseCustomTemplateProfilePath);
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
@@ -99,9 +103,9 @@ signals:
    void requestUninstallMod(QString modTechnicalName);
    void requestActivateMod(QString modTechnicalName);
    void autoUpdateBalanceModChanged();
-
-
    void autoUninstallPreviousBalanceModChanged();
+   void useCustomTemplateProfilePathChanged();
+   void sendUseCustomTemplateProfilePath(bool);
 
 private:
    SettingsController* m_settingsController;
@@ -113,6 +117,7 @@ private:
    QString m_templateProfilePath = "";
    bool m_autoUpdateBalanceMod = true;
    bool m_autoUninstallPreviousBalanceMod = false;
+   bool m_useCustomTemplateProfilePath = false;
 };
 
 #endif // BALANCEMODPAGE_H
