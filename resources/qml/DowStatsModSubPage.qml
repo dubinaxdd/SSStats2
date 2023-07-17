@@ -410,6 +410,8 @@ Rectangle {
 
                     RowLayout
                     {
+                        id: rowLayout
+
                         anchors.fill: parent
                         anchors.leftMargin: 10
                         anchors.rightMargin: 10
@@ -423,11 +425,14 @@ Rectangle {
                         {
                             spacing: 3
 
+
                             Label{
                                 Layout.alignment: Qt.AlignVCenter
                                 text: "Template profile path"
                                 color: DowStatsStyle.textColor
                                 font.pixelSize: 14
+
+
                             }
 
                             Label{
@@ -435,6 +440,10 @@ Rectangle {
                                 text: model.templateProfilePath
                                 color: DowStatsStyle.textColor
                                 font.pixelSize: 11
+
+                                clip: true
+
+                                Layout.preferredWidth: rowLayout.width - rowLayout.spacing - (folderButton.visible ? folderButton.width : 0)
                             }
 
                             Label{
@@ -447,6 +456,8 @@ Rectangle {
 
                         IconButton
                         {
+                            id: folderButton
+
                             sourceUrl: "qrc:/images/resources/images/folder.svg"
                             toolTipText: "Choise other folder"
 

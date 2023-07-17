@@ -71,7 +71,6 @@ void BalanceModPage::downloadSelectedMod()
 void BalanceModPage::uninstallSelectedMod()
 {
    uninstallMod(m_selectedItemIndex);
-   //emit selectedModInfoChanged();
 }
 
 void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
