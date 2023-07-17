@@ -43,7 +43,7 @@ void BalanceModPage::slectItem(int itemIndex)
         emit requestChangeLog(m_modsInfo.at(m_selectedItemIndex).technicalName);
 }
 
-void BalanceModPage::downloadCurrentMod()
+void BalanceModPage::downloadSelectedMod()
 {
     emit requestDownloadMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
 
@@ -55,7 +55,7 @@ void BalanceModPage::downloadCurrentMod()
     emit dataChanged(index, index);
 }
 
-void BalanceModPage::uninstallCurrentMod()
+void BalanceModPage::uninstallSelectedMod()
 {
     emit requestUninstallMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
 
@@ -63,8 +63,28 @@ void BalanceModPage::uninstallCurrentMod()
 
     emit selectedModInfoChanged();
 
-    QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);;
+    QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);
     emit dataChanged(index, index);
+
+    //Активируем латест версию мода если удалена устаревшая версия мода
+    if (!m_modsInfo[m_selectedItemIndex].isLatest && m_modsInfo[m_selectedItemIndex].isCurrentMod)
+    {
+        for (int i = 0; i < m_modsInfo.count(); i++)
+        {
+            if(m_modsInfo.at(i).isLatest)
+            {
+                if (m_modsInfo.at(i).isInstalled)
+                    activateModInGame(i);
+                else
+                    activateModInGame("dxp2");
+
+                break;
+            }
+        }
+    }
+    //В остальных случаях, если это текущий мод, то активируем ваниллу
+    else if (m_modsInfo[m_selectedItemIndex].isCurrentMod)
+        activateModInGame("dxp2");
 }
 
 void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
@@ -73,7 +93,7 @@ void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
     emit sendTemplateProfilePath(m_templateProfilePath);
 }
 
-void BalanceModPage::activateCurrentModInGame()
+void BalanceModPage::activateSelectedModInGame()
 {
     activateModInGame(m_selectedItemIndex);
 }
@@ -90,6 +110,18 @@ void BalanceModPage::activateModInGame(int modIndex)
     emit selectedModInfoChanged();
     emit requestActivateMod(m_modsInfo[modIndex].technicalName);
     setCurrentModInGame(m_modsInfo[modIndex].uiName);
+}
+
+void BalanceModPage::activateModInGame(QString modTechnicalName)
+{
+    beginResetModel();
+    for (int i = 0; i < m_modsInfo.count(); i++)
+        m_modsInfo[i].isCurrentMod = m_modsInfo[i].technicalName == modTechnicalName;
+    endResetModel();
+
+    emit selectedModInfoChanged();
+    emit requestActivateMod(modTechnicalName);
+    setCurrentModInGame(modTechnicalName);
 }
 
 const QString BalanceModPage::selectedModName() const

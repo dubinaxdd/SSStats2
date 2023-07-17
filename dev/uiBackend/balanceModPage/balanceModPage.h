@@ -37,10 +37,10 @@ public:
     int rowCount( const QModelIndex& parent ) const override;
 
     Q_INVOKABLE void slectItem(int itemIndex);
-    Q_INVOKABLE void downloadCurrentMod();
-    Q_INVOKABLE void uninstallCurrentMod();
+    Q_INVOKABLE void downloadSelectedMod();
+    Q_INVOKABLE void uninstallSelectedMod();
     Q_INVOKABLE void choiseTemplateProfilePath(QString templateProfilePath);
-    Q_INVOKABLE void activateCurrentModInGame();
+    Q_INVOKABLE void activateSelectedModInGame();
 
 
 
@@ -63,6 +63,7 @@ protected:
 
 private:
    void activateModInGame(int modIndex);
+   void activateModInGame(QString modTechnicalName);
 
 public slots:
    void receiveVersions(QList<ModInfo> modsInfo);

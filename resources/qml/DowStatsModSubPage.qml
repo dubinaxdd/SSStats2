@@ -104,7 +104,7 @@ Rectangle {
                         text: "Install"
                         enabled: !model.selectedModDownladingProcessed
                         onClicked:{
-                            model.downloadCurrentMod();
+                            model.downloadSelectedMod();
                         }
 
                         visible: !model.selectedModIsInstalled
@@ -112,7 +112,7 @@ Rectangle {
 
                     BlueButton {
                         text: "Uninstall"
-                        onClicked: model.uninstallCurrentMod();
+                        onClicked: model.uninstallSelectedMod();
                         visible: model.selectedModIsInstalled
                     }
 
@@ -122,7 +122,7 @@ Rectangle {
                         visible: model.selectedModIsInstalled
                         enabled: !model.selectedModIsCurrent
 
-                        onClicked: model.activateCurrentModInGame();
+                        onClicked: model.activateSelectedModInGame();
 
                     }
 

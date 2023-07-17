@@ -324,10 +324,10 @@ struct ModInfo{
     QString uiName = "";
     QString version = "";
     QString changelog = "";
-    bool isLatest = false;
-    bool isInstalled = false;
-    bool isCurrentMod = false;
-    bool downloadingProcessed = false;
+    bool isLatest = false;                  //Это последняя версия мода
+    bool isInstalled = false;               //Этот мод установлен
+    bool isCurrentMod = false;              //Это текущий мод в игре
+    bool downloadingProcessed = false;      //Этот мод в процессе скачивания
 };
 
 enum LaunchMode{
