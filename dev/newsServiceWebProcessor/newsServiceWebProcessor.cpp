@@ -246,7 +246,9 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
         }
 
         //Дергаем превьюху ютубовских видосов
-        if (newDiscordMessage.content.contains("https://youtu.be/") || newDiscordMessage.content.contains("https://www.youtube.com/watch?v="))
+        if (newDiscordMessage.content.contains("https://youtu.be/")
+                || newDiscordMessage.content.contains("https://www.youtube.com/watch?v=")
+                || newDiscordMessage.content.contains("https://www.youtube.com/live/"))
         {
             QString youtubeLink = "";
 
@@ -275,9 +277,24 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
             }
 
 
+            if (youtubeLink.isEmpty())
+            {
+                int index = newDiscordMessage.content.indexOf("https://www.youtube.com/live/");
+
+                for(int i = index; i < newDiscordMessage.content.count(); i++)
+                {
+                    if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                        youtubeLink.append(newDiscordMessage.content[i]);
+                    else
+                        break;
+                }
+            }
+
+
             if (!youtubeLink.isEmpty())
             {
                 newDiscordMessage.youtubeId = youtubeLink.replace("https://youtu.be/", "").replace("https://www.youtube.com/watch?v=", "");
+                newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.replace("https://www.youtube.com/live/", "");
 
                 for (int i = 0; i < newDiscordMessage.youtubeId.count(); i++)
                 {
