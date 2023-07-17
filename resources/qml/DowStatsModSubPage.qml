@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtQuick.Dialogs 1.2
 import Qt.labs.platform 1.1
+import QtGraphicalEffects 1.15
 import DowStatsStyle 1.0
 
 Rectangle {
@@ -291,14 +292,82 @@ Rectangle {
         Rectangle
         {
             radius: 10
-            Layout.preferredHeight: 70
-            color: DowStatsStyle.alternateBackgroundColor
+            Layout.preferredHeight: 30
+            color: extendedSettingsButtonMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.alternateBackgroundColor
             Layout.fillWidth: true
 
             clip: true
 
-
             RowLayout
+            {
+                anchors.fill: parent
+
+                Layout.alignment: Qt.AlignCenter
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                Label{
+                    text: "Extended settings"
+                    color: DowStatsStyle.textColor
+                    font.pixelSize: 14
+                }
+
+                Item {
+
+                    Layout.preferredWidth: 14
+                    Layout.preferredHeight: 14
+
+                    Image
+                    {
+                        id: image
+                        anchors.margins: 3
+                        source: extendedSettingsPannel.visible ? "qrc:/images/resources/images/arrow_down.svg" : "qrc:/images/resources/images/arrow_up.svg"
+                        sourceSize.width: 14
+                        sourceSize.height: 14
+                    }
+
+                    ColorOverlay{
+                        anchors.fill: image
+                        source:image
+                        color: DowStatsStyle.textColor
+                        antialiasing: true
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+            }
+
+            MouseArea{
+                id: extendedSettingsButtonMouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+
+                onClicked: extendedSettingsPannel.visible = !extendedSettingsPannel.visible
+            }
+
+        }
+
+        Rectangle
+        {
+            id: extendedSettingsPannel
+            radius: 10
+            Layout.preferredHeight: 180
+            color: DowStatsStyle.alternateBackgroundColor
+            Layout.fillWidth: true
+
+            //Layout.topMargin: -15
+
+            clip: true
+
+            visible: false
+
+
+            ColumnLayout
             {
                 anchors.fill: parent
                 anchors.leftMargin: 10
@@ -306,42 +375,83 @@ Rectangle {
                 anchors.topMargin: 5
                 anchors.bottomMargin: 10
 
-                Layout.alignment: Qt.AlignTop
+                StyledSwitch{
+                    text: "Auto-install the latest version of DowStats Balance Mod"
+                    checked: _uiBackend.settingsPageModel.autoUpdateBalanceMod
+                    onCheckedChanged: {
 
+                        _uiBackend.settingsPageModel.autoUpdateBalanceMod = checked;
 
-                ColumnLayout
-                {
-                    spacing: 3
-
-                    Label{
-                        Layout.alignment: Qt.AlignVCenter
-                        text: "Template profile path"
-                        color: DowStatsStyle.textColor
-                        font.pixelSize: 14
-                    }
-
-                    Label{
-                        Layout.alignment: Qt.AlignVCenter
-                        text: model.templateProfilePath
-                        color: DowStatsStyle.textColor
-                        font.pixelSize: 11
-                    }
-
-                    Label{
-                        Layout.alignment: Qt.AlignVCenter
-                        text: "Player color schemes and hotkeys will be copied after installing any mod version from the chosen directory."
-                        color: DowStatsStyle.textColor
-                        font.pixelSize: 11
+                        if( checked)
+                            model.downloadLatestMod();
                     }
                 }
 
-                IconButton
-                {
-                    sourceUrl: "qrc:/images/resources/images/folder.svg"
-                    toolTipText: "Choise other folder"
+                StyledSwitch{
+                    text: "Auto-uninstall the previous version of DowStats Balance Mod when installing the latest version"
+                }
 
-                    onClicked: {
-                        choiseFolderDialog.visible = true
+                StyledSwitch{
+                    id: templateProfilePathSwitch
+                    text: "Use custom template profile path"
+                }
+
+                Rectangle
+                {
+                    id: templateProfilePathPannel
+                    radius: 10
+                    Layout.preferredHeight: 70
+                    color: DowStatsStyle.backgroundColor
+                    Layout.fillWidth: true
+
+                    RowLayout
+                    {
+                        anchors.fill: parent
+                        anchors.leftMargin: 10
+                        anchors.rightMargin: 10
+                        anchors.topMargin: 5
+                        anchors.bottomMargin: 10
+
+                        Layout.alignment: Qt.AlignTop
+
+
+                        ColumnLayout
+                        {
+                            spacing: 3
+
+                            Label{
+                                Layout.alignment: Qt.AlignVCenter
+                                text: "Template profile path"
+                                color: DowStatsStyle.textColor
+                                font.pixelSize: 14
+                            }
+
+                            Label{
+                                Layout.alignment: Qt.AlignVCenter
+                                text: model.templateProfilePath
+                                color: DowStatsStyle.textColor
+                                font.pixelSize: 11
+                            }
+
+                            Label{
+                                Layout.alignment: Qt.AlignVCenter
+                                text: "Player color schemes and hotkeys will be copied after installing any mod version from the specified directory."
+                                color: DowStatsStyle.textColor
+                                font.pixelSize: 11
+                            }
+                        }
+
+                        IconButton
+                        {
+                            sourceUrl: "qrc:/images/resources/images/folder.svg"
+                            toolTipText: "Choise other folder"
+
+                            visible: templateProfilePathSwitch.checked
+
+                            onClicked: {
+                                choiseFolderDialog.visible = true
+                            }
+                        }
                     }
                 }
             }

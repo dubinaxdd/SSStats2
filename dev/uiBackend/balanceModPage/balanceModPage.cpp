@@ -51,7 +51,7 @@ void BalanceModPage::downloadSelectedMod()
 
     emit selectedModInfoChanged();
 
-    QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);;
+    QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);
     emit dataChanged(index, index);
 }
 
@@ -96,6 +96,24 @@ void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
 void BalanceModPage::activateSelectedModInGame()
 {
     activateModInGame(m_selectedItemIndex);
+}
+
+void BalanceModPage::downloadLatestMod()
+{
+    for (int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if(m_modsInfo[i].isLatest && !m_modsInfo[i].isInstalled)
+        {
+            emit requestDownloadMod(m_modsInfo.at(i).technicalName);
+
+            m_modsInfo[i].downloadingProcessed = true;
+
+            emit selectedModInfoChanged();
+
+            QModelIndex index = QAbstractItemModel::createIndex(i, 0);
+            emit dataChanged(index, index);
+        }
+    }
 }
 
 void BalanceModPage::activateModInGame(int modIndex)

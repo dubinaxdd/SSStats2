@@ -35,6 +35,7 @@
         <file>resources/images/Rank6.svg</file>
         <file>resources/images/Rank7.svg</file>
         <file>resources/images/Rank8.svg</file>
+        <file>resources/images/arrow_up.svg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>resources/sounds/game_started.wav</file>

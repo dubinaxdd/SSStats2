@@ -42,7 +42,7 @@ public:
     Q_INVOKABLE void choiseTemplateProfilePath(QString templateProfilePath);
     Q_INVOKABLE void activateSelectedModInGame();
 
-
+    Q_INVOKABLE void downloadLatestMod();
 
     const QString selectedModName() const;
     const QString selectedModVersion() const;

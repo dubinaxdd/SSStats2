@@ -13,21 +13,15 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool win7SupportMode READ win7SupportMode WRITE setWin7SupportMode NOTIFY win7SupportModeChanged)
     Q_PROPERTY(bool launchGameInWindow READ launchGameInWindow WRITE setLaunchGameInWindow NOTIFY launchGameInWindowChanged)
     Q_PROPERTY(bool skipIntroVideo READ skipIntroVideo WRITE setSkipIntroVideo NOTIFY skipIntroVideoChanged)
-
     Q_PROPERTY(bool enableEventsSoundWhenGameMinimized READ enableEventsSoundWhenGameMinimized WRITE setEnableEventsSoundWhenGameMinimized NOTIFY enableEventsSoundWhenGameMinimizedChanged)
     Q_PROPERTY(bool enableEventsSoundWhenGameMaximized READ enableEventsSoundWhenGameMaximized WRITE setEnableEventsSoundWhenGameMaximized NOTIFY enableEventsSoundWhenGameMaximizedChanged)
-
     Q_PROPERTY(bool enableGameLoadEventSound READ enableGameLoadEventSound WRITE setEnableGameLoadEventSound NOTIFY enableGameLoadEventSoundChanged)
     Q_PROPERTY(bool enableGameStartEventSound READ enableGameStartEventSound WRITE setEnableGameStartEventSound NOTIFY enableGameStartEventSoundChanged)
-
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
-
     Q_PROPERTY(int currentTheme READ currentTheme WRITE setCurrentTheme NOTIFY currentThemeChanged)
-
     Q_PROPERTY(bool autorun READ autorun WRITE setAutorun NOTIFY autorunChanged)
-
-
     Q_PROPERTY(int launchMode READ launchMode WRITE setLaunchMode NOTIFY launchModeChanged)
+    Q_PROPERTY(bool autoUpdateBalanceMod READ autoUpdateBalanceMod WRITE setAutoUpdateBalanceMod NOTIFY autoUpdateBalanceModChanged)
 
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
@@ -48,6 +42,8 @@ signals:
     void currentThemeChanged();
     void autorunChanged();
     void launchModeChanged();
+
+    void autoUpdateBalanceModChanged();
 
 private slots:
     void onSettingsLoaded();
@@ -86,6 +82,9 @@ public:
     int launchMode() const;
     void setLaunchMode(int newLaunchMode);
 
+    bool autoUpdateBalanceMod() const;
+    void setAutoUpdateBalanceMod(bool newAutoUpdateBalanceMod);
+
 private:
     void updateAutorunState(bool isAutorun);
 
@@ -102,11 +101,11 @@ private:
     bool m_enableGameLoadEventSound = true;
     bool m_enableGameStartEventSound = true;
     bool m_autorun = true;
+    bool m_autoUpdateBalanceMod = true;
 
     int m_volume = 100;
 
     LaunchMode m_launchMode = LaunchMode::LastSelectedMod;
-
 };
 
 #endif // SETTINGSPAGEMODEL_H

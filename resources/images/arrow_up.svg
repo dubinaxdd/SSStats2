@@ -1,0 +1,19 @@
+<svg width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+ <title>arrow_down [#338]</title>
+ <desc>Created with Sketch.</desc>
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="402" width="582" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <g fill-rule="evenodd" fill="none" id="Page-1">
+   <g stroke="null" fill="#000000" id="Dribbble-Light-Preview">
+    <g stroke="null" id="icons">
+     <path stroke="null" id="arrow_down-[#338]" d="m0.29231,19.476605l0,0c-0.38975,-0.383382 -0.38975,-1.004058 0,-1.386465l8.26356,-8.107981c0.78049,-0.766774 2.04666,-0.766774 2.82714,0l8.32453,8.166812c0.38575,0.379471 0.39074,0.992298 0.00999,1.376665c-0.38874,0.392207 -1.02932,0.397112 -1.42406,0.010785l-7.61699,-7.474569c-0.39074,-0.383382 -1.02333,-0.383382 -1.41407,0l-7.55703,7.414754c-0.38975,0.383392 -1.02233,0.383392 -1.41307,0"/>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>

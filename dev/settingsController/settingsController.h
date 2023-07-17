@@ -37,6 +37,8 @@ struct Settings
     bool autoUpdateBalanceMod = true;
     bool autorun = true;
     LaunchMode launchMode = LaunchMode::LastSelectedMod;
+    bool autoUninstallPreviousBalanceMod = false;
+    bool useCustomTemplateProfilePath = false;
 };
 
 class SettingsController : public QObject
