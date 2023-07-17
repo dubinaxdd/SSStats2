@@ -21,7 +21,7 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(int currentTheme READ currentTheme WRITE setCurrentTheme NOTIFY currentThemeChanged)
     Q_PROPERTY(bool autorun READ autorun WRITE setAutorun NOTIFY autorunChanged)
     Q_PROPERTY(int launchMode READ launchMode WRITE setLaunchMode NOTIFY launchModeChanged)
-    Q_PROPERTY(bool autoUpdateBalanceMod READ autoUpdateBalanceMod WRITE setAutoUpdateBalanceMod NOTIFY autoUpdateBalanceModChanged)
+
 
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
@@ -43,7 +43,7 @@ signals:
     void autorunChanged();
     void launchModeChanged();
 
-    void autoUpdateBalanceModChanged();
+
 
 private slots:
     void onSettingsLoaded();
@@ -82,9 +82,6 @@ public:
     int launchMode() const;
     void setLaunchMode(int newLaunchMode);
 
-    bool autoUpdateBalanceMod() const;
-    void setAutoUpdateBalanceMod(bool newAutoUpdateBalanceMod);
-
 private:
     void updateAutorunState(bool isAutorun);
 
@@ -101,7 +98,6 @@ private:
     bool m_enableGameLoadEventSound = true;
     bool m_enableGameStartEventSound = true;
     bool m_autorun = true;
-    bool m_autoUpdateBalanceMod = true;
 
     int m_volume = 100;
 

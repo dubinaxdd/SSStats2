@@ -3,6 +3,7 @@
 
 #include <QAbstractListModel>
 #include <baseTypes.h>
+#include <settingsController.h>
 
 class BalanceModPage : public QAbstractListModel
 {
@@ -21,8 +22,11 @@ class BalanceModPage : public QAbstractListModel
 
     Q_PROPERTY(QString templateProfilePath READ templateProfilePath WRITE setTemplateProfilePath NOTIFY templateProfilePathChanged)
 
+    Q_PROPERTY(bool autoUpdateBalanceMod READ autoUpdateBalanceMod WRITE setAutoUpdateBalanceMod NOTIFY autoUpdateBalanceModChanged)
+    Q_PROPERTY(bool autoUninstallPreviousBalanceMod READ autoUninstallPreviousBalanceMod WRITE setAutoUninstallPreviousBalanceMod NOTIFY autoUninstallPreviousBalanceModChanged)
+
 public:
-    explicit BalanceModPage(QObject *parent = nullptr);
+    explicit BalanceModPage(SettingsController* settingsController, QObject *parent = nullptr);
 
     enum DataRoles {
         Selected = Qt::UserRole + 1,
@@ -58,12 +62,20 @@ public:
     const QString &templateProfilePath() const;
     void setTemplateProfilePath(const QString &newTemplateProfilePath);
 
+    bool autoUpdateBalanceMod() const;
+    void setAutoUpdateBalanceMod(bool newAutoUpdateBalanceMod);
+
+    bool autoUninstallPreviousBalanceMod() const;
+    void setAutoUninstallPreviousBalanceMod(bool newAutoUninstallPreviousBalanceMod);
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
 private:
    void activateModInGame(int modIndex);
    void activateModInGame(QString modTechnicalName);
+   void uninstallMod(int modIndex);
+   void uninstallPreviousMod();
 
 public slots:
    void receiveVersions(QList<ModInfo> modsInfo);
@@ -72,6 +84,9 @@ public slots:
    void receiveModDownloadProgress(int progress, QString modTechnicalName);
    void receiveModDownloaded(QString modTechnicalName);
    void receiveTemplateProfilePath(QString templateProfilePath);
+
+private slots:
+    void onSettingsLoaded();
 
 signals:
    void selectedModInfoChanged();
@@ -83,15 +98,21 @@ signals:
    void requestDownloadMod(QString modTechnicalName);
    void requestUninstallMod(QString modTechnicalName);
    void requestActivateMod(QString modTechnicalName);
+   void autoUpdateBalanceModChanged();
 
+
+   void autoUninstallPreviousBalanceModChanged();
 
 private:
+   SettingsController* m_settingsController;
+
    QList<ModInfo> m_modsInfo;
    int m_selectedItemIndex = 0;
    QString m_currentModInGame = "";
    QString m_downloadingProgress = "";
    QString m_templateProfilePath = "";
-
+   bool m_autoUpdateBalanceMod = true;
+   bool m_autoUninstallPreviousBalanceMod = false;
 };
 
 #endif // BALANCEMODPAGE_H

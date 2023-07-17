@@ -114,7 +114,6 @@ void BalanceModManager::modsInfoTimerTimeout()
 void BalanceModManager::onModInstalled(QString modTechnicalName)
 {
     qInfo(logInfo()) <<  modTechnicalName + " installed";
-
     emit sendModDownloaded(modTechnicalName);
 
     checkDownloadingQuery();
@@ -273,6 +272,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         newModInfo.isLatest = newObject.value("isActual").toBool();
         newModInfo.isInstalled = entryList.contains(newModInfo.technicalName) && entryList.contains(newModInfo.technicalName + ".module");
         newModInfo.isCurrentMod = m_currentModName.toLower() == newModInfo.technicalName.toLower();
+        newModInfo.isPrevious = newObject.value("isPrevious").toBool();
 
         if (newModInfo.isInstalled)
             newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName);

@@ -47,9 +47,6 @@ void SettingsPageModel::onSettingsLoaded()
     m_launchMode =  m_settingsController->getSettings()->launchMode;
     emit launchModeChanged();
 
-    m_autoUpdateBalanceMod  =  m_settingsController->getSettings()->autoUpdateBalanceMod;
-    emit autoUpdateBalanceModChanged();
-
     updateAutorunState(m_autorun);
 }
 
@@ -121,23 +118,6 @@ void SettingsPageModel::updateAutorunState(bool isAutorun)
         bootUpSettings.remove("DowStatsAutorun");
         bootUpSettings.sync();
     }
-}
-
-bool SettingsPageModel::autoUpdateBalanceMod() const
-{
-    return m_autoUpdateBalanceMod;
-}
-
-void SettingsPageModel::setAutoUpdateBalanceMod(bool newAutoUpdateBalanceMod)
-{
-    if (m_autoUpdateBalanceMod == newAutoUpdateBalanceMod)
-        return;
-
-    m_autoUpdateBalanceMod = newAutoUpdateBalanceMod;
-    emit autoUpdateBalanceModChanged();
-
-    m_settingsController->getSettings()->autoUpdateBalanceMod = m_autoUpdateBalanceMod;
-    m_settingsController->saveSettings();
 }
 
 int SettingsPageModel::volume() const

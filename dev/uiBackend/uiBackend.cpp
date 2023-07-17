@@ -15,7 +15,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_mapManagerPage(new MapManagerPage(m_settingsController, m_imageProvider, this))
     , m_modsPage(new ModsPage(m_settingsController, this))
     , m_onlineStatisticPanel(new OnlineStatisticPanel(this))
-    , m_balanceModPage(new BalanceModPage(this))
+    , m_balanceModPage(new BalanceModPage(settingsController, this))
     , m_notificationVisibleTimer(new QTimer(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);

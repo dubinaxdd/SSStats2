@@ -2,10 +2,11 @@
 #include <QDebug>
 #include <QDir>
 
-BalanceModPage::BalanceModPage(QObject *parent)
+BalanceModPage::BalanceModPage(SettingsController *settingsController, QObject *parent)
     : QAbstractListModel(parent)
+    , m_settingsController(settingsController)
 {
-
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModPage::onSettingsLoaded, Qt::QueuedConnection);
 }
 
 QVariant BalanceModPage::data(const QModelIndex &index, int role) const
@@ -57,34 +58,7 @@ void BalanceModPage::downloadSelectedMod()
 
 void BalanceModPage::uninstallSelectedMod()
 {
-    emit requestUninstallMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
-
-    m_modsInfo[m_selectedItemIndex].isInstalled = false;
-
-    emit selectedModInfoChanged();
-
-    QModelIndex index = QAbstractItemModel::createIndex(m_selectedItemIndex, 0);
-    emit dataChanged(index, index);
-
-    //Активируем латест версию мода если удалена устаревшая версия мода
-    if (!m_modsInfo[m_selectedItemIndex].isLatest && m_modsInfo[m_selectedItemIndex].isCurrentMod)
-    {
-        for (int i = 0; i < m_modsInfo.count(); i++)
-        {
-            if(m_modsInfo.at(i).isLatest)
-            {
-                if (m_modsInfo.at(i).isInstalled)
-                    activateModInGame(i);
-                else
-                    activateModInGame("dxp2");
-
-                break;
-            }
-        }
-    }
-    //В остальных случаях, если это текущий мод, то активируем ваниллу
-    else if (m_modsInfo[m_selectedItemIndex].isCurrentMod)
-        activateModInGame("dxp2");
+   uninstallMod(m_selectedItemIndex);
 }
 
 void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
@@ -140,6 +114,50 @@ void BalanceModPage::activateModInGame(QString modTechnicalName)
     emit selectedModInfoChanged();
     emit requestActivateMod(modTechnicalName);
     setCurrentModInGame(modTechnicalName);
+}
+
+void BalanceModPage::uninstallMod(int modIndex)
+{
+    emit requestUninstallMod(m_modsInfo.at(modIndex).technicalName);
+
+    m_modsInfo[modIndex].isInstalled = false;
+
+    emit selectedModInfoChanged();
+
+    QModelIndex index = QAbstractItemModel::createIndex(modIndex, 0);
+    emit dataChanged(index, index);
+
+    //Активируем латест версию мода если удалена устаревшая версия мода
+    if (!m_modsInfo[modIndex].isLatest && m_modsInfo[modIndex].isCurrentMod)
+    {
+        for (int i = 0; i < m_modsInfo.count(); i++)
+        {
+            if(m_modsInfo.at(i).isLatest)
+            {
+                if (m_modsInfo.at(i).isInstalled)
+                    activateModInGame(i);
+                else
+                    activateModInGame("dxp2");
+
+                break;
+            }
+        }
+    }
+    //В остальных случаях, если это текущий мод, то активируем ваниллу
+    else if (m_modsInfo[modIndex].isCurrentMod)
+        activateModInGame("dxp2");
+}
+
+void BalanceModPage::uninstallPreviousMod()
+{
+    for(int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if (m_modsInfo.at(i).isPrevious)
+        {
+            uninstallMod(i);
+            break;
+        }
+    }
 }
 
 const QString BalanceModPage::selectedModName() const
@@ -271,7 +289,12 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
                 emit selectedModInfoChanged();
 
             if(m_modsInfo[i].isLatest)
+            {
                 activateModInGame(i);
+
+                if ( m_settingsController->getSettings()->autoUninstallPreviousBalanceMod)
+                        uninstallPreviousMod();
+            }
 
             QModelIndex index = QAbstractItemModel::createIndex(i, 0);
             emit dataChanged(index, index);
@@ -284,6 +307,31 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
 void BalanceModPage::receiveTemplateProfilePath(QString templateProfilePath)
 {
     setTemplateProfilePath(templateProfilePath);
+}
+
+void BalanceModPage::onSettingsLoaded()
+{
+    m_autoUpdateBalanceMod  =  m_settingsController->getSettings()->autoUpdateBalanceMod;
+    emit autoUpdateBalanceModChanged();
+
+    m_autoUninstallPreviousBalanceMod = m_settingsController->getSettings()->autoUninstallPreviousBalanceMod;
+    emit autoUpdateBalanceModChanged();
+}
+
+bool BalanceModPage::autoUninstallPreviousBalanceMod() const
+{
+    return m_autoUninstallPreviousBalanceMod;
+}
+
+void BalanceModPage::setAutoUninstallPreviousBalanceMod(bool newAutoUninstallPreviousBalanceMod)
+{
+    if (m_autoUninstallPreviousBalanceMod == newAutoUninstallPreviousBalanceMod)
+        return;
+    m_autoUninstallPreviousBalanceMod = newAutoUninstallPreviousBalanceMod;
+    emit autoUninstallPreviousBalanceModChanged();
+
+    m_settingsController->getSettings()->autoUninstallPreviousBalanceMod = m_autoUninstallPreviousBalanceMod;
+    m_settingsController->saveSettings();
 }
 
 const QString &BalanceModPage::templateProfilePath() const
@@ -327,4 +375,21 @@ void BalanceModPage::setCurrentModInGame(const QString &newCurrentModInGame)
 
     m_currentModInGame = uiModName;
     emit currentModInGameChanged();
+}
+
+bool BalanceModPage::autoUpdateBalanceMod() const
+{
+    return m_autoUpdateBalanceMod;
+}
+
+void BalanceModPage::setAutoUpdateBalanceMod(bool newAutoUpdateBalanceMod)
+{
+    if (m_autoUpdateBalanceMod == newAutoUpdateBalanceMod)
+        return;
+
+    m_autoUpdateBalanceMod = newAutoUpdateBalanceMod;
+    emit autoUpdateBalanceModChanged();
+
+    m_settingsController->getSettings()->autoUpdateBalanceMod = m_autoUpdateBalanceMod;
+    m_settingsController->saveSettings();
 }
