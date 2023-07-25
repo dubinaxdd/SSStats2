@@ -16,6 +16,7 @@ public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer );
     void onQuitParty();
     void receiveCurrentMod(QString currentMode);
+    void receiveCurrentModVersion(QString version);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
 
 
@@ -39,6 +40,7 @@ private:
     QList<PlayerInfoFromDowServer> m_playersInfoFromScanner;
     QString m_ssPath;
     QString m_currentMode;
+    QString m_currentModVerion;
     QString m_testStatsPath;
     bool m_gameWillBePlayedInOtherSession = true;
 

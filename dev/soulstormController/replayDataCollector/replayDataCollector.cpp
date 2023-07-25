@@ -381,7 +381,13 @@ bool ReplayDataCollector::readReplayData()
 
     replayInfo.mapName = scenario;
     replayInfo.gameTime = duration;
-    replayInfo.mod = m_currentMode;
+
+    QString modName = m_currentMode;
+
+    if(modName.contains("dowstats_balance_mod"))
+        modName = "dowstats_balance_mod";
+    replayInfo.modVersion = m_currentModVerion;
+    replayInfo.mod = modName;
     replayInfo.isFullStdGame = isFullStdGame;
 
     if (winBy == "ANNIHILATE" || winBy == "annihilate" )
@@ -503,6 +509,11 @@ void ReplayDataCollector::onQuitParty()
 void ReplayDataCollector::receiveCurrentMod(QString currentMode)
 {
     m_currentMode = currentMode;
+}
+
+void ReplayDataCollector::receiveCurrentModVersion(QString version)
+{
+    m_currentModVerion = version;
 }
 
 void ReplayDataCollector::receiveCurrentWinConditions(QVector<WinCondition> winConditions)

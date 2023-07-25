@@ -230,6 +230,7 @@ struct SendingReplayInfo
     QString mapName;
     int gameTime;
     QString mod;
+    QString modVersion;
     WinCondition winBy;
     bool isFullStdGame = false;
 };
