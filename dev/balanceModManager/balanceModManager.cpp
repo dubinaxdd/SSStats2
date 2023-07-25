@@ -136,9 +136,9 @@ void BalanceModManager::onSettingsLoaded()
     m_templateProfilePath = m_settingsController->getSettings()->templateProfilePath;
     m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
 
-    if (m_templateProfilePath.isEmpty())
+    /*if (m_templateProfilePath.isEmpty())
         updateTemplateProfilePath("dxp2");
-    else if(QDir(m_templateProfilePath).exists())
+    else */if(QDir(m_templateProfilePath).exists())
         emit sendTemplateProfilePath(m_templateProfilePath);
 }
 
@@ -276,6 +276,10 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "BalanceModManager::receiveVersionsInfo - Connection error:" << reply->errorString();
+
+        if (m_templateProfilePath.isEmpty())
+            updateTemplateProfilePath("dxp2");
+
         delete reply;
         return;
     }
@@ -327,6 +331,9 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         newModInfo.isCurrentMod = m_currentModName.toLower() == newModInfo.technicalName.toLower();
         newModInfo.isPrevious = newObject.value("isPrevious").toBool();
 
+        if (newModInfo.isLatest && newModInfo.isInstalled && m_templateProfilePath.isEmpty())
+            updateTemplateProfilePath(newModInfo.technicalName);
+
         if (newModInfo.isInstalled)
             newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName);
 
@@ -340,6 +347,9 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
         m_modInfoList.append(newModInfo);
     }
+
+    if (m_templateProfilePath.isEmpty())
+        updateTemplateProfilePath("dxp2");
 
     emit sendModsInfo(m_modInfoList);
 
