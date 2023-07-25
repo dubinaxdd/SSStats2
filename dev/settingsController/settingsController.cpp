@@ -26,7 +26,7 @@ void SettingsController::initializeSettings()
     m_settings->currentMod = ss_stats_settings->value("game/current_mod", "dxp2").toString();
     m_settings->currentModVersion = ss_stats_settings->value("game/current_mod_version", "1.0").toString();
     m_settings->launchGameInWindow = ss_stats_settings->value("game/launch_game_in_window", false).toBool();
-    m_settings->launchMode = static_cast<LaunchMode>(ss_stats_settings->value("game/launch_mode", LaunchMode::LastSelectedMod).toInt());
+    m_settings->launchMode = static_cast<LaunchMod>(ss_stats_settings->value("game/launch_mode", LaunchMod::LastSelectedMod).toInt());
 
     //[client]
     m_settings->smallGamePanelActive = ss_stats_settings->value("client/small_pannel_active", false).toBool();

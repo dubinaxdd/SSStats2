@@ -111,6 +111,11 @@ void BalanceModPage::activateModInGame(int modIndex)
     m_modsInfo[modIndex].isCurrentMod = true;
     endResetModel();
 
+    if (m_modsInfo[modIndex].isLatest)
+        emit changeLaunchMod(LaunchMod::DowStatsBalanceMod);
+    else
+        emit changeLaunchMod(LaunchMod::LastSelectedMod);
+
     emit selectedModInfoChanged();
     emit requestActivateMod(m_modsInfo[modIndex].technicalName);
     setCurrentModInGame(m_modsInfo[modIndex].uiName);

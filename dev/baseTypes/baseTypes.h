@@ -332,7 +332,7 @@ struct ModInfo{
     bool isPrevious = false;                //Этот мод был предыдущей версией мода
 };
 
-enum LaunchMode{
+enum LaunchMod{
     OriginalSoulstorm = 0,
     DowStatsBalanceMod = 1,
     LastSelectedMod = 2

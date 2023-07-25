@@ -101,7 +101,7 @@ private:
 
     int m_volume = 100;
 
-    LaunchMode m_launchMode = LaunchMode::LastSelectedMod;
+    LaunchMod m_launchMode = LaunchMod::LastSelectedMod;
 };
 
 #endif // SETTINGSPAGEMODEL_H

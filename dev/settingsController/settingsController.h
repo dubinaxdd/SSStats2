@@ -36,7 +36,7 @@ struct Settings
     QString templateProfilePath = "";
     bool autoUpdateBalanceMod = true;
     bool autorun = true;
-    LaunchMode launchMode = LaunchMode::LastSelectedMod;
+    LaunchMod launchMode = LaunchMod::LastSelectedMod;
     bool autoUninstallPreviousBalanceMod = false;
     bool useCustomTemplateProfilePath = false;
 };

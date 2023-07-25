@@ -376,14 +376,14 @@ void SoulstormController::writeCurrentModSettingInGame()
 {
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
 
-    LaunchMode launchMode = m_settingsController->getSettings()->launchMode;
+    LaunchMod launchMode = m_settingsController->getSettings()->launchMode;
 
     switch (launchMode)
     {
-        case LaunchMode::OriginalSoulstorm :
+        case LaunchMod::OriginalSoulstorm :
             ssSettings->setValue("global/currentmoddc", "dxp2");
             break;
-        case LaunchMode::DowStatsBalanceMod :
+        case LaunchMod::DowStatsBalanceMod :
             ssSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
             break;
         default: break;

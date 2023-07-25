@@ -69,6 +69,7 @@ void Core::registerTypes()
     qRegisterMetaType<QList<MapFileHash>>("QList<MapFileHash>");
     qRegisterMetaType<QMap<QString, int>>("QMap<QString, int>");
     qRegisterMetaType<QList <ModInfo>>("QList <ModInfo>");
+    qRegisterMetaType<LaunchMod>("LaunchMod");
 }
 
 void Core::addConnections()

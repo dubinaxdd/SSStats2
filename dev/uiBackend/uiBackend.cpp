@@ -29,6 +29,9 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
 
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &UiBackend::onSettingsLoaded, Qt::QueuedConnection);
     QObject::connect(m_notificationVisibleTimer, &QTimer::timeout, this, [=]{setNotificationVisible(false);}, Qt::QueuedConnection);
+
+    QObject::connect(m_balanceModPage, &BalanceModPage::changeLaunchMod, this,  [=](LaunchMod launchMod){m_settingsPageModel->setLaunchMode(launchMod);}, Qt::QueuedConnection);
+
 }
 
 void UiBackend::expandKeyPressed()

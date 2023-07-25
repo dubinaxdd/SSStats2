@@ -106,6 +106,7 @@ signals:
    void autoUninstallPreviousBalanceModChanged();
    void useCustomTemplateProfilePathChanged();
    void sendUseCustomTemplateProfilePath(bool);
+   void changeLaunchMod(LaunchMod);
 
 private:
    SettingsController* m_settingsController;
