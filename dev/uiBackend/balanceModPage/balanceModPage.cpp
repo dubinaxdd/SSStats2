@@ -156,7 +156,10 @@ void BalanceModPage::uninstallMod(int modIndex)
                 if (m_modsInfo.at(i).isInstalled)
                     activateModInGame(i);
                 else
+                {
                     activateModInGame("dxp2");
+                    emit changeLaunchMod(LaunchMod::OriginalSoulstorm);
+                }
 
                 break;
             }
@@ -164,7 +167,10 @@ void BalanceModPage::uninstallMod(int modIndex)
     }
     //В остальных случаях, если это текущий мод, то активируем ваниллу
     else if (m_modsInfo[modIndex].isCurrentMod)
+    {
         activateModInGame("dxp2");
+        emit changeLaunchMod(LaunchMod::OriginalSoulstorm);
+    }
 }
 
 void BalanceModPage::uninstallPreviousMod()
