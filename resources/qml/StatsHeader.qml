@@ -94,7 +94,7 @@ ColumnLayout
                     color: "#ffffff"
 
                     text: qsTr("DoW Stats Client")
-                    font.pixelSize: 25 * _uiBackend.sizeModifer
+                    font.pixelSize: 20 * _uiBackend.sizeModifer
                 }
 
                 Label {

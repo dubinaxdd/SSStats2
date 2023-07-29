@@ -132,7 +132,7 @@ Window {
                                 id: label
                                 color: "#ffffff"
                                 text: qsTr("DoW Stats Client")
-                                font.pixelSize: 25
+                                font.pixelSize: 20
                             }
 
                             Label {
