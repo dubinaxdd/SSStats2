@@ -50,7 +50,7 @@ void DiscordWebProcessor::requestNews()
     newRequest.setUrl(QUrl(urlString));
     //newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     //newRequest.setRawHeader("Host", "discord.com");
-    //newRequest.setRawHeader("User-Agent", "DowStats2");
+    //newRequest.setRawHeader("User-Agent", "DowStatsClient");
     //newRequest.setRawHeader("Content-Type","application/json");
 
     m_readyToRequest = false;
@@ -85,7 +85,7 @@ void DiscordWebProcessor::requestEvents()
     newRequest.setUrl(QUrl(urlString));
     /*newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStats2");
+    newRequest.setRawHeader("User-Agent", "DowStatsClient");
     newRequest.setRawHeader("Content-Type","application/json");
 */
     m_readyToRequest = false;
@@ -340,7 +340,7 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
     newRequest.setUrl(QUrl(urlString));
     /*newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStats2");
+    newRequest.setRawHeader("User-Agent", "DowStatsClient");
     newRequest.setRawHeader("Content-Type","application/json");
 */
 
@@ -365,7 +365,7 @@ void DiscordWebProcessor::requestNextEvents(QString messageId)
     newRequest.setUrl(QUrl(urlString));
    /* newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
     newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStats2");
+    newRequest.setRawHeader("User-Agent", "DowStatsClient");
     newRequest.setRawHeader("Content-Type","application/json");
 */
     m_readyToRequest = false;

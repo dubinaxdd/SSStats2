@@ -32,7 +32,7 @@ Item{
     SystemTrayIcon {
         id: trayIcon
         visible: true
-        icon.source: "qrc:/icons/resources/icons/DowStats2.ico"
+        icon.source: "qrc:/icons/resources/icons/DowStatsClient.ico"
 
         onActivated:{
             mainWindow.showNormal();

@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
         QMessageBox msgBox;
 
         msgBox.setIcon(QMessageBox::Warning);
-        msgBox.setText("DowStats2 is already running");
+        msgBox.setText("DowStatsClient is already running");
         msgBox.exec();
 
         return 0;
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
-        const QString baseName = "DowStats2_" + QLocale(locale).name();
+        const QString baseName = "DowStatsClient_" + QLocale(locale).name();
         if (translator.load(":/i18n/" + baseName)) {
             app.installTranslator(&translator);
             break;

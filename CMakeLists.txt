@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
 cmake_policy(SET CMP0048 NEW)
 
-project(DowStats2 VERSION 2.3 LANGUAGES CXX)
+project(DowStatsClient VERSION 2.3 LANGUAGES CXX)
 
-set(TARGET_NAME DowStats2)
+set(TARGET_NAME DowStatsClient)
 
 #set(PROJECT_VERSION_MAJOR "0")
 #set(PROJECT_VERSION_MINOR "1")
@@ -24,27 +24,27 @@ add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
 
 
-set(DowStats2_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
-set(DowStats2_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)
+set(DowStatsClient_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
+set(DowStatsClient_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)
 
-set(DowStatsAutorun_INSTALATION_DIR  ${DowStats2_INSTALATION_DIR})
-set(DowStatsAutorun_LIBRARY_DIR  ${DowStats2_LIBRARY_DIR})
+set(DowStatsAutorun_INSTALATION_DIR  ${DowStatsClient_INSTALATION_DIR})
+set(DowStatsAutorun_LIBRARY_DIR  ${DowStatsClient_LIBRARY_DIR})
 
 
 
-message(STATUS "DowStats2_INSTALATION_DIR: " ${DowStats2_INSTALATION_DIR})
-message(STATUS "DowStats2_LIBRARY_DIR: " ${DowStats2_LIBRARY_DIR})
+message(STATUS "DowStatsClient_INSTALATION_DIR: " ${DowStatsClient_INSTALATION_DIR})
+message(STATUS "DowStatsClient_LIBRARY_DIR: " ${DowStatsClient_LIBRARY_DIR})
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${DowStats2_INSTALATION_DIR})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${DowStats2_LIBRARY_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${DowStats2_LIBRARY_DIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${DowStatsClient_INSTALATION_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${DowStatsClient_LIBRARY_DIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${DowStatsClient_LIBRARY_DIR})
 
-file(MAKE_DIRECTORY ${DowStats2_INSTALATION_DIR})
-file(MAKE_DIRECTORY ${DowStats2_LIBRARY_DIR})
+file(MAKE_DIRECTORY ${DowStatsClient_INSTALATION_DIR})
+file(MAKE_DIRECTORY ${DowStatsClient_LIBRARY_DIR})
 
 link_directories(${CMAKE_LIBRARY_OUTPUT_DIRECTORY} ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY})
 
-set(DEPLOY_DIR ${DowStats2_INSTALATION_DIR})
+set(DEPLOY_DIR ${DowStatsClient_INSTALATION_DIR})
 
 add_subdirectory(autoRun)
 
@@ -60,7 +60,7 @@ configure_file( "${CMAKE_SOURCE_DIR}/version.h.template" "${CMAKE_SOURCE_DIR}/ve
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
 
-#set(TS_FILES DowStats2_en_GB.ts)
+#set(TS_FILES DowStatsClient_en_GB.ts)
 
 file(GLOB_RECURSE HEADERS_FILES dev/*.h)
 file(GLOB_RECURSE SOURCES_FILES dev/*.cpp)
@@ -121,14 +121,14 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
     add_custom_command(
         TARGET ${TARGET_NAME}
         POST_BUILD
-        COMMAND ${WINSDK_MT_DIR}/mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${DowStats2_INSTALATION_DIR}/DowStats2.exe
+        COMMAND ${WINSDK_MT_DIR}/mt.exe -manifest ${CMAKE_CURRENT_SOURCE_DIR}/manifest.xml -outputresource:${DowStatsClient_INSTALATION_DIR}/DowStatsClient.exe
         COMMENT "Adding administator manifest."
     )
 
     add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
         COMMAND "${CMAKE_COMMAND}" -E
         remove
-        ${DEPLOY_DIR}/DowStats2.exe.manifest
+        ${DEPLOY_DIR}/DowStatsClient.exe.manifest
     )
 
     add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
@@ -194,7 +194,7 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     --qmldir "${_qt_bin_dir}/../qml"
     ${BUILD_TYPE_ARG}
     $<TARGET_FILE:${TARGET_NAME}>
-    COMMENT "Running windeployqt for DowStats2..."
+    COMMENT "Running windeployqt for DowStatsClient..."
 )
 
 

@@ -241,7 +241,7 @@ void Core::onWheelEvent(QWheelEvent event)
 
 void Core::onExit()
 {
-    qInfo(logInfo()) << "DowStats2 сlosed";
+    qInfo(logInfo()) << "DowStatsClient сlosed";
 
     m_overlayWindowController->onExit();
     m_logger->deleteLater();

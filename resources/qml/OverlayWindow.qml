@@ -10,7 +10,7 @@ Window {
     width: 640
     height: 480
     visible: _uiBackend.settingsPageModel.overlayVisible
-    title: "DowStats2Overlay"
+    title: "DowStatsClientOverlay"
     color: "#00000000"
     visibility: Window.Maximized
 

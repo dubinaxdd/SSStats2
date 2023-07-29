@@ -9,7 +9,7 @@ Window {
     id: root
     width: 1200
     height: 700
-    title: "DoW Stats 2"
+    title: "DoW Stats Client"
     color: DowStatsStyle.alternateBackgroundColor//"#eaeaea"
     flags: Qt.Window
     visibility: Window.Maximized
@@ -131,7 +131,7 @@ Window {
                             Label {
                                 id: label
                                 color: "#ffffff"
-                                text: qsTr("DoW Stats 2")
+                                text: qsTr("DoW Stats Client")
                                 font.pixelSize: 25
                             }
 

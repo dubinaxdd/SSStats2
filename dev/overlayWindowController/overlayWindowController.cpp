@@ -16,7 +16,7 @@ OverlayWindowController::OverlayWindowController(SettingsController *settingsCon
 void OverlayWindowController::grubStatsWindow()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QString s = codec->toUnicode("DowStats2Overlay");
+    QString s = codec->toUnicode("DowStatsClientOverlay");
     LPCWSTR lps = (LPCWSTR)s.utf16();
 
     m_ssStatsHwnd = FindWindowW(NULL, lps);

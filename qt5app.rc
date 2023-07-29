@@ -1,4 +1,4 @@
-IDI_ICON1               ICON    "resources/icons/DowStats2Big.ico"
+IDI_ICON1               ICON    "resources/icons/DowStatsClientBig.ico"
 
 #include <windows.h>
 #include "defines.h"

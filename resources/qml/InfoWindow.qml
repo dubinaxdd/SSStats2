@@ -85,7 +85,7 @@ Rectangle {
 
                 Label{
                     Layout.alignment: Qt.AlignHCenter
-                    text: "Welcome to DoW Stats 2"
+                    text: "Welcome to DoW Stats Client"
                     font.pixelSize: 22 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
                 }
@@ -459,13 +459,13 @@ Rectangle {
                     spacing: 3  * infoRectangle.sizeModifer
 
                     Label{
-                        text: "   Dubina_xdd - DoW Stats 2 client main developer"
+                        text: "   Dubina_xdd - DoW Stats Client main developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   Anibus - dowstats web site main developer, DoW Stats 2 client developer"
+                        text: "   Anibus - dowstats web site main developer, DoW Stats Client developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }

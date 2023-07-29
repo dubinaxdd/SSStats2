@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/icons">
         <file>resources/icons/ssstats.ico</file>
-        <file>resources/icons/DowStats2.ico</file>
-        <file>resources/icons/DowStats2Big.ico</file>
+        <file>resources/icons/DowStatsClient.ico</file>
+        <file>resources/icons/DowStatsClientBig.ico</file>
     </qresource>
     <qresource prefix="/images">
         <file>resources/images/ssstats.png</file>
