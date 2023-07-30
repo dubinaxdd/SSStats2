@@ -80,6 +80,7 @@ private:
    void activateModInGame(QString modTechnicalName);
    void uninstallMod(int modIndex);
    void uninstallPreviousMod();
+   QString formatingVersion(int itemIndex) const;
 
 public slots:
    void receiveVersions(QList<ModInfo> modsInfo);

@@ -58,6 +58,7 @@ void SettingsController::initializeSettings()
     m_settings->autoUpdateBalanceMod = ss_stats_settings->value("balance_mod/auto_update_balance_mode", true).toBool();
     m_settings->autoUninstallPreviousBalanceMod = ss_stats_settings->value("balance_mod/auto_uninstall_previous_balance_mod", false).toBool();
     m_settings->useCustomTemplateProfilePath = ss_stats_settings->value("balance_mod/use_custom_template_profile_path", false).toBool();
+    m_settings->showBalanceModBetaVersions = ss_stats_settings->value("balance_mod/show_balance_mod_beta_versions", false).toBool();
 
     emit settingsLoaded();
 
@@ -104,6 +105,7 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("balance_mod/auto_update_balance_mode", m_settings->autoUpdateBalanceMod);
     ss_stats_settings->setValue("balance_mod/auto_uninstall_previous_balance_mod", m_settings->autoUninstallPreviousBalanceMod);
     ss_stats_settings->setValue("balance_mod/use_custom_template_profile_path", m_settings->useCustomTemplateProfilePath);
+    ss_stats_settings->setValue("balance_mod/show_balance_mod_beta_versions", m_settings->showBalanceModBetaVersions);
 
     ss_stats_settings->sync();
 }

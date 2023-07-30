@@ -465,7 +465,7 @@ Rectangle {
                     }
 
                     Label{
-                        text: "   Anibus - dowstats web site main developer, DoW Stats Client developer"
+                        text: "   Anibus - DoW Stats website main developer, DoW Stats Client developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
@@ -477,13 +477,19 @@ Rectangle {
                     }
 
                     Label{
+                        text: "   Jabka - DoW Stats website developer"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+
+                    Label{
                         text: "   New - first client (SSStats) main developer"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   With participation: elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE, Nascent, YbuBaKa"
+                        text: "   With participation: Elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE, Nascent, YbuBaKa"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
@@ -518,7 +524,7 @@ Rectangle {
                     }
 
                     Label{
-                        text: "   tr1v"
+                        text: "   Tr1v"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }

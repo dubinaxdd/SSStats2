@@ -11,29 +11,32 @@ Rectangle {
 
     signal clicked()
 
-    width: 140
+    width: buttonInfoLabel.width + 40//140
     color: pressedState ? "#ff080808" : "#00ffffff"
-    Layout.minimumWidth: 100
     Layout.minimumHeight: 60
 
-    Text {
-        id: buttonInfoLabel
-        color: mouseArea.containsMouse || pressedState  ? "#ffffff" : "#999999"
-        //opacity: 1
-        text: mainRectangle.text
+    ColumnLayout
+    {
         anchors.fill: parent
 
-        font.pixelSize: 16
+        Text {
+            id: buttonInfoLabel
+            color: mouseArea.containsMouse || pressedState  ? "#ffffff" : "#999999"
+            text: mainRectangle.text
+            Layout.alignment: Qt.AlignCenter
 
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
+            font.pixelSize: 17
 
-        layer.enabled: true
-        layer.effect: DropShadow {
-            verticalOffset: 2
-            color: "#00000064"
-            radius: 1
-            samples: 3
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+
+            layer.enabled: true
+            layer.effect: DropShadow {
+                verticalOffset: 2
+                color: "#00000064"
+                radius: 1
+                samples: 3
+            }
         }
     }
 

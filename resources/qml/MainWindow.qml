@@ -152,9 +152,11 @@ Window {
 
                 HeaderButton{
                     id: newsButton
-                    text: "DowStats News"
+                    text: "DoW Stats News"
                     pressedState: true
                     newsAvailable: newsPage.model.newsAvailable
+
+                    //width: 170
 
                     onClicked: {
                         eventsButton.pressedState = false;
@@ -168,21 +170,12 @@ Window {
 
                 HeaderButton{
                     id: eventsButton
-                    //text: "Events"
-
-                    text: "Comunity News"
+                    text: "Community News"
                     newsAvailable: eventsPage.model.newsAvailable
 
-                   // property bool dataRequested: false
+                    //width: 170
 
                     onClicked: {
-                        /*if (!eventsButton.dataRequested)
-                        {
-                            _uiBackend.onRequestEvents();
-                            eventsButton.dataRequested = true;
-
-                        }*/
-
                         newsButton.pressedState = false;
                         infoButton.pressedState = false;
                         settingsButton.pressedState = false;
@@ -207,8 +200,8 @@ Window {
 
                 HeaderButton{
                     id: replayManagerButton
-                    text: "Replay manager"
-                    width: 160
+                    text: "Replay Manager"
+                    //width: 160
 
                     onClicked: {
                         newsButton.pressedState = false;

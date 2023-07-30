@@ -222,7 +222,7 @@ Rectangle {
             }
 
             StyledComboBox{
-                model: ["Original Soulstorm", "DowStats Balance Mod (Latest)", "Current mod"]
+                model: ["Original Soulstorm", "DoW Stats Balance Mod (Latest)", "Current mod"]
                 currentIndex: _uiBackend.settingsPageModel.launchMode
                 Layout.preferredWidth: 250
                 Layout.preferredHeight: 25

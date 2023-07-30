@@ -28,7 +28,7 @@ QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 
     switch (role) {
         case UiName: return m_modsInfo.at(index.row()).uiName;
-        case Version: return m_modsInfo.at(index.row()).version + (m_modsInfo.at(index.row()).isLatest ? " (Latest)" : "");
+        case Version: return formatingVersion(index.row());
         case IsInstalled: return m_modsInfo.at(index.row()).isInstalled;
         case Selected: return index.row() == m_selectedItemIndex;
         case IsCurrentMod: return m_modsInfo.at(index.row()).isCurrentMod;
@@ -185,18 +185,43 @@ void BalanceModPage::uninstallPreviousMod()
     }
 }
 
-const QString BalanceModPage::selectedModName() const
+QString BalanceModPage::formatingVersion(int itemIndex) const
 {
-    if(m_modsInfo.count() > m_selectedItemIndex)
-        return m_modsInfo.at(m_selectedItemIndex).uiName;
+    if(m_modsInfo.count() > itemIndex)
+    {
+        QString version = m_modsInfo.at(itemIndex).version;
+
+        if (m_modsInfo.at(itemIndex).isLatest && m_modsInfo.at(itemIndex).isBeta)
+            version += " (Latest Beta)";
+        else if(m_modsInfo.at(itemIndex).isLatest)
+                version += " (Latest)";
+        else if(m_modsInfo.at(itemIndex).isBeta)
+                version += " (Beta)";
+
+        return version;
+    }
 
     return "";
+}
+
+const QString BalanceModPage::selectedModName() const
+{
+    return formatingVersion(m_selectedItemIndex);
 }
 
 const QString BalanceModPage::selectedModVersion() const
 {
     if(m_modsInfo.count() > m_selectedItemIndex)
-        return m_modsInfo.at(m_selectedItemIndex).version + (m_modsInfo.at(m_selectedItemIndex).isLatest ? " (Latest)" : "");
+    {
+        QString version = m_modsInfo.at(m_selectedItemIndex).version;
+
+        if (m_modsInfo.at(m_selectedItemIndex).isLatest && m_modsInfo.at(m_selectedItemIndex).isBeta)
+            version += " (Latest Beta)";
+        else if(m_modsInfo.at(m_selectedItemIndex).isLatest)
+                version += " (Latest)";
+        else if(m_modsInfo.at(m_selectedItemIndex).isBeta)
+                version += " (Beta)";
+    }
 
     return "";
 }

@@ -323,6 +323,11 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
         ModInfo newModInfo;
 
+        newModInfo.isBeta  = newObject.value("isBeta").toBool();
+
+        if (!m_settingsController->getSettings()->showBalanceModBetaVersions && newModInfo.isBeta)
+            continue;
+
         newModInfo.technicalName = newObject.value("technicalName").toString();
         newModInfo.uiName = newObject.value("uiName").toString();
         newModInfo.version = newObject.value("version").toString();

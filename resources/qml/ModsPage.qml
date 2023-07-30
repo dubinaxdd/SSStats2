@@ -41,7 +41,7 @@ Rectangle {
                 {
                     id: balanceModButton
 
-                    text: "DowStats Balance Mod"
+                    text: "DoW Stats Balance Mod"
                     Layout.preferredWidth: 200
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     pressedState: true

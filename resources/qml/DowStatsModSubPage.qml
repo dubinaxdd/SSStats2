@@ -376,7 +376,7 @@ Rectangle {
                 anchors.bottomMargin: 10
 
                 StyledSwitch{
-                    text: "Auto-install the latest version of DowStats Balance Mod"
+                    text: "Auto-install the latest version of DoW Stats Balance Mod"
                     checked: model.autoUpdateBalanceMod
                     onCheckedChanged: {
 
@@ -388,7 +388,7 @@ Rectangle {
                 }
 
                 StyledSwitch{
-                    text: "Auto-uninstall the previous version of DowStats Balance Mod when installing the latest version"
+                    text: "Auto-uninstall the previous version of DoW Stats Balance Mod when installing the latest version"
                     checked: model.autoUninstallPreviousBalanceMod
                     onCheckedChanged: model.autoUninstallPreviousBalanceMod = checked
                 }
