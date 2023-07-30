@@ -187,6 +187,10 @@ Rectangle {
                                 scrollBar.visible = changeLogTextArea.contentHeight > flicable.height
                             }
                         }
+
+                        onHeightChanged: {
+                            scrollBar.visible = changeLogTextArea.contentHeight > flicable.height
+                        }
                     }
                 }
             }
