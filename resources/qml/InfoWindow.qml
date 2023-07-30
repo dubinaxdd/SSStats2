@@ -488,6 +488,52 @@ Rectangle {
                         color: DowStatsStyle.textColor
                     }
                 }
+
+                Rectangle{
+                    color:"#00000000"
+                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
+                }
+
+
+                Label{
+                    text: "DoW Stats Balance Mod Developers:"
+                    font.pixelSize: 18 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
+                ColumnLayout
+                {
+                    spacing: 3  * infoRectangle.sizeModifer
+
+                    Label{
+                        text: "   Master Yoba"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+
+                    Label{
+                        text: "   Nascent"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+
+                    Label{
+                        text: "   tr1v"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+
+                    Label{
+                        text: "   Yang Wen-li"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+                }
+
+                Rectangle{
+                    color:"#00000000"
+                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
+                }
             }
         }
     }
