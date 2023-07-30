@@ -18,7 +18,9 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
 
     connect(this, &BalanceModManager::installMod, m_balanceModInstaller, &BalanceModInstaller::installMod, Qt::QueuedConnection);
+    connect(this, &BalanceModManager::uninstallMod, m_balanceModInstaller, &BalanceModInstaller::uninstallMod, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstalled, this, &BalanceModManager::onModInstalled, Qt::QueuedConnection);
+    connect(m_balanceModInstaller, &BalanceModInstaller::modUninstalled, this, &BalanceModManager::onModUnonstalled, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstallError, this, [=](QString modTechnicalName){emit sendInstallingModError(modTechnicalName); }, Qt::QueuedConnection);
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModManager::onSettingsLoaded, Qt::QueuedConnection);
@@ -132,14 +134,28 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
     checkDownloadingQuery();
 }
 
+void BalanceModManager::onModUnonstalled(QString modTechnicalName)
+{
+    for(int i = 0; i < m_modInfoList.count(); i++)
+    {
+        if (m_modInfoList.at(i).technicalName == modTechnicalName)
+        {
+            m_modInfoList[i].isInstalled = false;
+
+            if (m_modInfoList.at(i).isLatest && !m_settingsController->getSettings()->useCustomTemplateProfilePath)
+                updateTemplateProfilePath("dxp2");
+
+            break;
+        }
+    }
+}
+
 void BalanceModManager::onSettingsLoaded()
 {
     m_templateProfilePath = m_settingsController->getSettings()->templateProfilePath;
     m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
 
-    /*if (m_templateProfilePath.isEmpty())
-        updateTemplateProfilePath("dxp2");
-    else */if(QDir(m_templateProfilePath).exists())
+    if(QDir(m_templateProfilePath).exists())
         emit sendTemplateProfilePath(m_templateProfilePath);
 }
 
@@ -167,24 +183,7 @@ void BalanceModManager::requestDownloadMod(QString modTechnicalName)
 
 void BalanceModManager::uninstalMod(QString modTechnicalName)
 {
-    QDir modDir(m_ssPath + QDir::separator() + modTechnicalName);
-    modDir.removeRecursively();
-
-    QFile moduleFile(m_ssPath + QDir::separator() + modTechnicalName  + ".module");
-    moduleFile.remove();
-
-    for(int i = 0; i < m_modInfoList.count(); i++)
-    {
-        if (m_modInfoList.at(i).technicalName == modTechnicalName)
-        {
-            m_modInfoList[i].isInstalled = false;
-
-            if (m_modInfoList.at(i).isLatest && !m_settingsController->getSettings()->useCustomTemplateProfilePath)
-                updateTemplateProfilePath("dxp2");
-
-            break;
-        }
-    }
+    emit uninstallMod(m_ssPath, modTechnicalName);
 }
 
 void BalanceModManager::receiveTemplateProfilePath(QString templateProfilePath)

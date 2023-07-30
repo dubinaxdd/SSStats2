@@ -208,13 +208,17 @@ Rectangle {
                     anchors.fill: parent
                     anchors.margins: 10
                     spacing: 5
-
                     clip: true
-
                     model: root.model
 
+                    ScrollBar.vertical: ScrollBar {
+                        id: scrollBarListViev
+                        visible: listView.contentItem.height > listView.height
+                        policy: ScrollBar.AlwaysOn
+                    }
+
                     delegate: Rectangle{
-                        width: listView.width
+                        width: /*listView.width  */listView.width - (scrollBarListViev.visible ? scrollBarListViev.width + 5 : 0)
                         height: 70
                         radius: 10
                         color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.backgroundColor
@@ -259,26 +263,6 @@ Rectangle {
                                     font.pixelSize: 11
                                 }
                             }
-
-    /*
-                            RowLayout
-                            {
-                                Rectangle{
-                                    radius:5
-
-                                    Layout.preferredHeight: 10
-                                    Layout.preferredWidth: 10
-
-                                    color:  model.isCurrentMod ? "#00ff99" : "#ffa9a9"
-                                }
-
-                                Label{
-                                    Layout.alignment: Qt.AlignVCenter
-                                    text: model.isCurrentMod ? "Is current mod in game" : "Is not current mod in game"
-                                    color: DowStatsStyle.textColor
-                                    font.pixelSize: 11
-                                }
-                            }*/
                         }
 
                         MouseArea{

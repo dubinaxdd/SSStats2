@@ -37,6 +37,7 @@ private:
 private slots:
     void modsInfoTimerTimeout();
     void onModInstalled(QString modTechnicalName);
+    void onModUnonstalled(QString modTechnicalName);
     void onSettingsLoaded();
 
 public slots:
@@ -54,7 +55,7 @@ signals:
     void changeLogReceived(QString modTechnicalName, QString changeLog);
     void sendModDownloadProgress(int progress, QString modTechnicalName);
     void sendModDownloaded(QString modTechnicalName);
-
+    void uninstallMod(QString ssPath, QString modTechnicalName);
     void installMod(InstallModData data);
 
     void sendInstallingModError(QString modTechnicalName);

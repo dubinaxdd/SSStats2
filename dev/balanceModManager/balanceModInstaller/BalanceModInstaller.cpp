@@ -188,3 +188,14 @@ void BalanceModInstaller::installMod(InstallModData data)
     emit modInstalled(data.modTechnicalName);
 
 }
+
+void BalanceModInstaller::uninstallMod(QString ssPath, QString modTechnicalName)
+{
+    QDir modDir(ssPath + QDir::separator() + modTechnicalName);
+    modDir.removeRecursively();
+
+    QFile moduleFile(ssPath + QDir::separator() + modTechnicalName + ".module");
+    moduleFile.remove();
+
+    emit modUninstalled(modTechnicalName);
+}
