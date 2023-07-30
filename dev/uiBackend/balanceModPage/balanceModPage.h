@@ -89,6 +89,7 @@ public slots:
    void receiveModDownloadProgress(int progress, QString modTechnicalName);
    void receiveModDownloaded(QString modTechnicalName);
    void receiveTemplateProfilePath(QString templateProfilePath);
+   void receiveInstallingModError(QString modTechnicalName);
 
 private slots:
     void onSettingsLoaded();

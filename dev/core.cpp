@@ -183,6 +183,7 @@ void Core::addConnections()
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModDownloadProgress, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModDownloadProgress, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModDownloaded, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModDownloaded, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::sendTemplateProfilePath, m_uiBackend->balanceModPage(), &BalanceModPage::receiveTemplateProfilePath, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManager, &BalanceModManager::sendInstallingModError, m_uiBackend->balanceModPage(), &BalanceModPage::receiveInstallingModError, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestChangeLog, m_balanceModManager, &BalanceModManager::requestChangeLog, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestDownloadMod, m_balanceModManager, &BalanceModManager::requestDownloadMod, Qt::QueuedConnection);

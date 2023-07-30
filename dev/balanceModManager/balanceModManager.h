@@ -57,6 +57,8 @@ signals:
 
     void installMod(InstallModData data);
 
+    void sendInstallingModError(QString modTechnicalName);
+
 private:
 
     BalanceModInstaller* m_balanceModInstaller;

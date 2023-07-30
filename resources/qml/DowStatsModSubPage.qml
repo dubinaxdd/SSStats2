@@ -133,7 +133,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: model.downloadingProgress === "" ? "" : ("Downloading:" + model.downloadingProgress + "%")
+                    text: model.downloadingProgress
                     color: DowStatsStyle.textColor
                     font.pixelSize: 11
                 }

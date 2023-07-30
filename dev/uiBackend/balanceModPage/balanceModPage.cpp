@@ -206,24 +206,15 @@ QString BalanceModPage::formatingVersion(int itemIndex) const
 
 const QString BalanceModPage::selectedModName() const
 {
-    return formatingVersion(m_selectedItemIndex);
+    if(m_modsInfo.count() > m_selectedItemIndex)
+        return m_modsInfo.at(m_selectedItemIndex).uiName;
+
+    return "";
 }
 
 const QString BalanceModPage::selectedModVersion() const
 {
-    if(m_modsInfo.count() > m_selectedItemIndex)
-    {
-        QString version = m_modsInfo.at(m_selectedItemIndex).version;
-
-        if (m_modsInfo.at(m_selectedItemIndex).isLatest && m_modsInfo.at(m_selectedItemIndex).isBeta)
-            version += " (Latest Beta)";
-        else if(m_modsInfo.at(m_selectedItemIndex).isLatest)
-                version += " (Latest)";
-        else if(m_modsInfo.at(m_selectedItemIndex).isBeta)
-                version += " (Beta)";
-    }
-
-    return "";
+    return formatingVersion(m_selectedItemIndex);
 }
 
 const QString BalanceModPage::selectedChangeLog() const
@@ -319,7 +310,18 @@ void BalanceModPage::receiveChangeLog(QString modTechnicalName, QString changeLo
 
 void BalanceModPage::receiveModDownloadProgress(int progress, QString modTechnicalName)
 {
-    m_downloadingProgress = QString::number(progress);
+    QString modUiName = "";
+
+    for (int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if (m_modsInfo.at(i).technicalName == modTechnicalName)
+        {
+            modUiName = m_modsInfo.at(i).uiName;
+            break;
+        }
+    }
+
+    m_downloadingProgress = "Downloading " + modUiName + ": "  + QString::number(progress) + "%";
     emit downloadingProgressChanged();
 }
 
@@ -334,6 +336,7 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
         {
             m_modsInfo[i].isInstalled = true;
             m_modsInfo[i].downloadingProcessed = false;
+            m_modsInfo[i].installingError = false;
 
             if (m_selectedItemIndex == i)
                 emit selectedModInfoChanged();
@@ -357,6 +360,35 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
 void BalanceModPage::receiveTemplateProfilePath(QString templateProfilePath)
 {
     setTemplateProfilePath(templateProfilePath);
+}
+
+void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
+{
+    QString modUiName = "";
+
+    for (int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if ( m_modsInfo.at(i).technicalName == modTechnicalName)
+        {
+
+            modUiName = m_modsInfo.at(i).uiName;
+
+            m_modsInfo[i].isInstalled = false;
+            m_modsInfo[i].downloadingProcessed = false;
+            m_modsInfo[i].installingError = true;
+
+            if (m_selectedItemIndex == i)
+                emit selectedModInfoChanged();
+
+            QModelIndex index = QAbstractItemModel::createIndex(i, 0);
+            emit dataChanged(index, index);
+
+            break;
+        }
+    }
+
+    m_downloadingProgress = "Installing error: " + modUiName;
+    emit downloadingProgressChanged();
 }
 
 bool BalanceModPage::useCustomTemplateProfilePath() const

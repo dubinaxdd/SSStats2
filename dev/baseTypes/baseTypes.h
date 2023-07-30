@@ -330,7 +330,8 @@ struct ModInfo{
     bool isCurrentMod = false;              //Это текущий мод в игре
     bool downloadingProcessed = false;      //Этот мод в процессе скачивания
     bool isPrevious = false;                //Этот мод был предыдущей версией мода
-    bool isBeta = false;
+    bool isBeta = false;                    //Это бетта
+    bool installingError = false;           //Ошибка загрузки/установки
 };
 
 enum LaunchMod{

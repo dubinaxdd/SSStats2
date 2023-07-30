@@ -19,6 +19,7 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
 
     connect(this, &BalanceModManager::installMod, m_balanceModInstaller, &BalanceModInstaller::installMod, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstalled, this, &BalanceModManager::onModInstalled, Qt::QueuedConnection);
+    connect(m_balanceModInstaller, &BalanceModInstaller::modInstallError, this, [=](QString modTechnicalName){emit sendInstallingModError(modTechnicalName); }, Qt::QueuedConnection);
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModManager::onSettingsLoaded, Qt::QueuedConnection);
 
@@ -370,6 +371,7 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
     {
         qWarning(logWarning()) << "BalanceModManager::receiveMod: Connection error:" << reply->errorString();
         delete reply;
+        emit sendInstallingModError(modTechnicalName);
         checkDownloadingQuery();
         return;
     }

@@ -28,6 +28,7 @@ private:
 
 signals:
     void modInstalled(QString modTechnicalName);
+    void modInstallError(QString modTechnicalName);
 
 };
 
