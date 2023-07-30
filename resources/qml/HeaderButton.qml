@@ -23,7 +23,7 @@ Rectangle {
         text: mainRectangle.text
         anchors.fill: parent
 
-        font.pixelSize: 20
+        font.pixelSize: 16
 
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

@@ -152,7 +152,7 @@ Window {
 
                 HeaderButton{
                     id: newsButton
-                    text: "News"
+                    text: "DowStats News"
                     pressedState: true
                     newsAvailable: newsPage.model.newsAvailable
 
@@ -168,7 +168,9 @@ Window {
 
                 HeaderButton{
                     id: eventsButton
-                    text: "Events"
+                    //text: "Events"
+
+                    text: "Comunity News"
                     newsAvailable: eventsPage.model.newsAvailable
 
                    // property bool dataRequested: false
