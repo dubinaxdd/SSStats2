@@ -340,6 +340,17 @@ enum LaunchMod{
     LastSelectedMod = 2
 };
 
+enum NotificationType
+{
+    Info = 0,
+    Warning = 1
+};
+
+struct NotificationInfo
+{
+    NotificationType type = Info;
+    QString text = "";
+};
 
 
 #endif // BASETYPES_H

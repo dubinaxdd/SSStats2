@@ -16,6 +16,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_modsPage(new ModsPage(m_settingsController, this))
     , m_onlineStatisticPanel(new OnlineStatisticPanel(this))
     , m_balanceModPage(new BalanceModPage(settingsController, this))
+    , m_notificationManager(new NotificationManager(this))
     , m_notificationVisibleTimer(new QTimer(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
@@ -31,6 +32,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     QObject::connect(m_notificationVisibleTimer, &QTimer::timeout, this, [=]{setNotificationVisible(false);}, Qt::QueuedConnection);
 
     QObject::connect(m_balanceModPage, &BalanceModPage::changeLaunchMod, this,  [=](LaunchMod launchMod){m_settingsPageModel->setLaunchMode(launchMod);}, Qt::QueuedConnection);
+    QObject::connect(m_balanceModPage, &BalanceModPage::sendNotification, m_notificationManager, &NotificationManager::receiveNotification, Qt::QueuedConnection);
 
 }
 

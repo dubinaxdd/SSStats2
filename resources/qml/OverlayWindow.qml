@@ -76,7 +76,7 @@ Window {
     }
 
 
-    Notification{
+    OverlayNotification{
         id: notification
         x: 50
         y: 50

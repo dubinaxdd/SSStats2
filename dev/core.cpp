@@ -70,6 +70,7 @@ void Core::registerTypes()
     qRegisterMetaType<QMap<QString, int>>("QMap<QString, int>");
     qRegisterMetaType<QList <ModInfo>>("QList <ModInfo>");
     qRegisterMetaType<LaunchMod>("LaunchMod");
+    qRegisterMetaType<NotificationInfo>("NotificationInfo");
 }
 
 void Core::addConnections()

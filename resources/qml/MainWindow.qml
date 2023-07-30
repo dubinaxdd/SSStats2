@@ -28,7 +28,16 @@ Window {
     }
 
     onClosing: {
-            root.hide();
+        root.hide();
+    }
+
+    NotificationList{
+        x: mainContentContainerRectangle.x
+        y: mainContentContainerRectangle.y + header.height
+        z: 2
+
+        height: mainContentContainerRectangle.height  - header.height
+        width: 40//mainContentContainerRectangle.width
     }
 
     ColumnLayout {

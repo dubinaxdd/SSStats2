@@ -146,6 +146,14 @@ void BalanceModPage::uninstallMod(int modIndex)
     QModelIndex index = QAbstractItemModel::createIndex(modIndex, 0);
     emit dataChanged(index, index);
 
+
+    NotificationInfo notificationInfo;
+
+    notificationInfo.text = m_modsInfo[modIndex].uiName + " has been uninstalled";
+    notificationInfo.type = NotificationType::Warning;
+
+    emit sendNotification(notificationInfo);
+
     //Активируем латест версию мода если удалена устаревшая версия мода
     if (!m_modsInfo[modIndex].isLatest && m_modsInfo[modIndex].isCurrentMod)
     {
@@ -352,6 +360,13 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
             QModelIndex index = QAbstractItemModel::createIndex(i, 0);
             emit dataChanged(index, index);
 
+            NotificationInfo notificationInfo;
+
+            notificationInfo.text = m_modsInfo[i].uiName + " has been installed.";
+            notificationInfo.type = NotificationType::Info;
+
+            emit sendNotification(notificationInfo);
+
             break;
         }
     }
@@ -382,6 +397,14 @@ void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
 
             QModelIndex index = QAbstractItemModel::createIndex(i, 0);
             emit dataChanged(index, index);
+
+
+            NotificationInfo notificationInfo;
+
+            notificationInfo.text = m_modsInfo[i].uiName + " installation error";
+            notificationInfo.type = NotificationType::Warning;
+
+            emit sendNotification(notificationInfo);
 
             break;
         }

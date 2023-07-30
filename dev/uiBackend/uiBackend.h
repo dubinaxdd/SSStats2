@@ -15,6 +15,7 @@
 #include <modsPage.h>
 #include <onlineStatisticPanel.h>
 #include <balanceModPage.h>
+#include <notificationManager.h>
 
 class UiBackend : public QObject
 {
@@ -49,7 +50,7 @@ class UiBackend : public QObject
     Q_PROPERTY(ModsPage* modsPage MEMBER m_modsPage  CONSTANT)
     Q_PROPERTY(OnlineStatisticPanel* onlineStatisticPanel MEMBER m_onlineStatisticPanel CONSTANT)
     Q_PROPERTY(BalanceModPage * balanceModPage MEMBER m_balanceModPage CONSTANT)
-
+    Q_PROPERTY(NotificationManager * notificationManager MEMBER m_notificationManager CONSTANT)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -118,10 +119,9 @@ public:
     void setCurrentModTechnicalName(const QString &newCurrentModTechnicalName);
 
     ModsPage *modsPage() const;
-
     OnlineStatisticPanel *onlineStatisticPanel() const;
-
     BalanceModPage *balanceModPage() const;
+
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -161,6 +161,8 @@ signals:
     void currentModNameChanged();
     void currentModTechnicalNameChanged();
     void balanceModPageChanged();
+
+    void notificationManagerChanged();
 
 public slots:
     void expandKeyPressed();
@@ -206,6 +208,7 @@ private:
     ModsPage* m_modsPage;
     OnlineStatisticPanel* m_onlineStatisticPanel;
     BalanceModPage* m_balanceModPage;
+    NotificationManager* m_notificationManager;
 
     QTimer* m_notificationVisibleTimer;
 

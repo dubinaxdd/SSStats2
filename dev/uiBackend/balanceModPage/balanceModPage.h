@@ -109,6 +109,7 @@ signals:
    void useCustomTemplateProfilePathChanged();
    void sendUseCustomTemplateProfilePath(bool);
    void changeLaunchMod(LaunchMod);
+   void sendNotification(NotificationInfo notificationString);
 
 private:
    SettingsController* m_settingsController;

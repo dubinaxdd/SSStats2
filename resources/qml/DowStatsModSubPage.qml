@@ -218,7 +218,7 @@ Rectangle {
                     }
 
                     delegate: Rectangle{
-                        width: /*listView.width  */listView.width - (scrollBarListViev.visible ? scrollBarListViev.width + 5 : 0)
+                        width: listView.width - (scrollBarListViev.visible ? scrollBarListViev.width + 5 : 0)
                         height: 70
                         radius: 10
                         color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.backgroundColor
