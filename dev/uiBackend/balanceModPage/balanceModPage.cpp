@@ -46,9 +46,15 @@ int BalanceModPage::rowCount(const QModelIndex &parent) const
 
 void BalanceModPage::slectItem(int itemIndex)
 {
-    beginResetModel();
+    int previousIndex = m_selectedItemIndex;
+
     m_selectedItemIndex = itemIndex;
-    endResetModel();
+
+    QModelIndex previous = QAbstractItemModel::createIndex(previousIndex, 0);
+    QModelIndex current = QAbstractItemModel::createIndex(itemIndex, 0);
+
+    emit dataChanged(previous, previous);
+    emit dataChanged(current, current);
 
     emit selectedModInfoChanged();
 
