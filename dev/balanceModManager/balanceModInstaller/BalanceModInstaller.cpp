@@ -86,13 +86,31 @@ void BalanceModInstaller::installMod(InstallModData data)
         {
             QString configString = QString::fromStdString(playercfgFile.readAll().toStdString());
 
+            configString.replace("\0", "");
+
+            //Удалем предыдущую запись в настройках о туториале
             if (configString.contains("Tutorial_" + data.modTechnicalName.toLower()))
             {
-                playercfgFile.close();
-                continue;
+                int startIndex = configString.indexOf("Tutorial_" + data.modTechnicalName.toLower());
+
+                for (int j = startIndex; j < configString.count(); j++)
+                {
+                    if(configString.at(j) == '}')
+                    {
+                        configString.remove(startIndex, j - startIndex + 1);
+                        break;
+                    }
+                }
             }
 
-            configString.replace("\0", "");
+            //Устанавливаем новые настройки туториала
+            configString.append("\nTutorial_" + data.modTechnicalName.toLower() + "  =  \n"
+                                "{\n"
+                                "    HasClickedCampaign = true,\n"
+                                "	HasClickedMulti = true,\n"
+                                "	HasClickedSkirmish = true,\n"
+                                "	HasPlayedTutorial = true,\n"
+                                "}\n");
 
             if (!configString.contains("ai_preferences1"))
             {
@@ -104,13 +122,28 @@ void BalanceModInstaller::installMod(InstallModData data)
 
             }
 
-            configString.append("\nTutorial_" + data.modTechnicalName.toLower() + "  =  \n"
-                                "{\n"
-                                "	HasClickedMulti = true,\n"
-                                "	HasClickedSkirmish = true,\n"
-                                "	HasPlayedTutorial = true,\n"
-                                "}\n"
-                                + data.modTechnicalName.toLower() + "_game_preferences =  \n"
+            //Удаляем предыдущю запись в настрйоках о настройках пати
+            if (configString.contains(data.modTechnicalName.toLower() + "_game_preferences ="))
+            {
+                int startIndex = configString.indexOf(data.modTechnicalName.toLower() + "_game_preferences =");
+                int needCounter = 0;
+                for (int j = startIndex; j < configString.count(); j++)
+                {
+                    if (configString.at(j) == '}')
+                        needCounter++;
+
+                    if (configString.at(j) == '{')
+                        needCounter = 0;
+
+                    if (needCounter == 3)
+                    {
+                        configString.remove(startIndex, j - startIndex + 1);
+                        break;
+                    }
+                }
+            }
+
+            configString.append("\n" + data.modTechnicalName.toLower() + "_game_preferences =  \n"
                                 "{\n"
                                 "	num_teams = 2,\n"
                                 "	options = \n"
