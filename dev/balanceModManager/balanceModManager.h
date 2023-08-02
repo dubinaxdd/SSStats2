@@ -37,7 +37,7 @@ private:
 private slots:
     void modsInfoTimerTimeout();
     void onModInstalled(QString modTechnicalName);
-    void onModUnonstalled(QString modTechnicalName);
+    void onModUninstalled(QString modTechnicalName);
     void onSettingsLoaded();
 
 public slots:

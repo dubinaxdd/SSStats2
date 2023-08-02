@@ -321,6 +321,7 @@ struct MapItem
 };
 
 struct ModInfo{
+    int id = -1;
     QString technicalName = "";
     QString uiName = "";
     QString version = "";

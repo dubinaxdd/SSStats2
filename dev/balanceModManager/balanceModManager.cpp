@@ -20,7 +20,7 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     connect(this, &BalanceModManager::installMod, m_balanceModInstaller, &BalanceModInstaller::installMod, Qt::QueuedConnection);
     connect(this, &BalanceModManager::uninstallMod, m_balanceModInstaller, &BalanceModInstaller::uninstallMod, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstalled, this, &BalanceModManager::onModInstalled, Qt::QueuedConnection);
-    connect(m_balanceModInstaller, &BalanceModInstaller::modUninstalled, this, &BalanceModManager::onModUnonstalled, Qt::QueuedConnection);
+    connect(m_balanceModInstaller, &BalanceModInstaller::modUninstalled, this, &BalanceModManager::onModUninstalled, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstallError, this, [=](QString modTechnicalName){emit sendInstallingModError(modTechnicalName); }, Qt::QueuedConnection);
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModManager::onSettingsLoaded, Qt::QueuedConnection);
@@ -120,10 +120,7 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
         if (m_modInfoList.at(i).technicalName == modTechnicalName)
         {
             m_modInfoList[i].isInstalled = true;
-
-            if (m_modInfoList.at(i).isLatest && !m_settingsController->getSettings()->useCustomTemplateProfilePath)
-                updateTemplateProfilePath(modTechnicalName);
-
+            receiveUpdateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
             break;
         }
     }
@@ -134,17 +131,14 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
     checkDownloadingQuery();
 }
 
-void BalanceModManager::onModUnonstalled(QString modTechnicalName)
+void BalanceModManager::onModUninstalled(QString modTechnicalName)
 {
     for(int i = 0; i < m_modInfoList.count(); i++)
     {
         if (m_modInfoList.at(i).technicalName == modTechnicalName)
         {
             m_modInfoList[i].isInstalled = false;
-
-            if (m_modInfoList.at(i).isLatest && !m_settingsController->getSettings()->useCustomTemplateProfilePath)
-                updateTemplateProfilePath("dxp2");
-
+            receiveUpdateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
             break;
         }
     }
@@ -209,8 +203,7 @@ void BalanceModManager::receiveUpdateTemplateProfilePath(bool useCustomTemplateP
 
         for(int i = 0; i < m_modInfoList.count(); i++)
         {
-            if (m_modInfoList.at(i).isInstalled
-                    && m_modInfoList.at(i).isLatest )
+            if (m_modInfoList.at(i).isInstalled)
             {
                 technicalName = m_modInfoList.at(i).technicalName;
                 break;
@@ -328,6 +321,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         if (!m_settingsController->getSettings()->showBalanceModBetaVersions && newModInfo.isBeta)
             continue;
 
+        newModInfo.id = newObject.value("id").toInt();
         newModInfo.technicalName = newObject.value("technicalName").toString();
         newModInfo.uiName = newObject.value("uiName").toString();
         newModInfo.version = newObject.value("version").toString();
@@ -335,9 +329,6 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         newModInfo.isInstalled = entryList.contains(newModInfo.technicalName) && entryList.contains(newModInfo.technicalName + ".module");
         newModInfo.isCurrentMod = m_currentModName.toLower() == newModInfo.technicalName.toLower();
         newModInfo.isPrevious = newObject.value("isPrevious").toBool();
-
-        if (newModInfo.isLatest && newModInfo.isInstalled && m_templateProfilePath.isEmpty())
-            updateTemplateProfilePath(newModInfo.technicalName);
 
         if (newModInfo.isInstalled)
             newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName);
@@ -354,7 +345,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
     }
 
     if (m_templateProfilePath.isEmpty())
-        updateTemplateProfilePath("dxp2");
+        receiveUpdateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
 
     emit sendModsInfo(m_modInfoList);
 
