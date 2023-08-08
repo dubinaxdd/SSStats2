@@ -42,7 +42,7 @@ void BalanceModManager::downloadMod(QString modTechnicalName)
 
     QNetworkRequest newRequest;
 
-    QString urlString = "http://crosspick.ru:1337/dow_stats_balance_mod/" + modTechnicalName + ".zip";
+    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/" + modTechnicalName + ".zip";
 
     newRequest.setUrl(QUrl(urlString));
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -65,7 +65,7 @@ void BalanceModManager::downloadModsInfo()
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "http://crosspick.ru:1337/dow_stats_balance_mod/mods.txt";
+    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/mods.txt";
 
     newRequest.setUrl(QUrl(urlString));
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -157,7 +157,7 @@ void BalanceModManager::requestChangeLog(QString modTechnicalName)
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "http://crosspick.ru:1337/dow_stats_balance_mod/changelogs/" + modTechnicalName + ".txt";
+    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/changelogs/" + modTechnicalName + ".txt";
 
     newRequest.setUrl(QUrl(urlString));
     QNetworkReply *reply = m_networkManager->get(newRequest);
