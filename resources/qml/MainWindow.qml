@@ -31,13 +31,28 @@ Window {
         root.hide();
     }
 
-    NotificationList{
+
+    RowLayout
+    {
         x: mainContentContainerRectangle.x
         y: mainContentContainerRectangle.y + header.height
         z: 2
 
         height: mainContentContainerRectangle.height  - header.height
-        width: 40//mainContentContainerRectangle.width
+
+        Item{
+            Layout.fillHeight: true
+        }
+
+        NotificationList{
+
+            maxHeight: parent.height
+
+            //Layout.preferredHeight: 400
+
+            //height: mainContentContainerRectangle.height  - header.height
+            //width: mainContentContainerRectangle.width
+        }
     }
 
     ColumnLayout {

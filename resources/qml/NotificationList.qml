@@ -5,17 +5,24 @@ import QtQuick.Window 2.15
 import QtGraphicalEffects 1.15
 import DowStatsStyle 1.0
 
-
-
 ListView{
+    id: root
     model: _uiBackend.notificationManager
     verticalLayoutDirection: ListView.BottomToTop
     clip: true
 
+    width: 300
+
+    height: contentHeight > maxHeight ? maxHeight : contentHeight
+
+    property int maxHeight
+
     delegate: Rectangle {
+
+        id: delegate
         color: DowStatsStyle.selectionColor
         radius: 10
-        width: 300
+        width: root.width
         height: 60
 
         ColumnLayout{
@@ -29,5 +36,18 @@ ListView{
                 font.pixelSize: 14
             }
         }
+
+        MouseArea{
+            anchors.fill: parent
+
+            onClicked: {
+                root.model.removeItem(model.index);
+            }
+        }
+    }
+
+    MouseArea{
+        anchors.fill: parent
+        propagateComposedEvents: true
     }
 }

@@ -1,4 +1,5 @@
 #include "notificationManager.h"
+#include <QDebug>
 
 NotificationManager::NotificationManager(QObject *parent) : QAbstractListModel(parent)
 {
@@ -24,6 +25,13 @@ int NotificationManager::rowCount(const QModelIndex &parent) const
     return m_notificationInfo.count();
 }
 
+void NotificationManager::removeItem(int index)
+{
+    beginResetModel();
+    m_notificationInfo.removeAt(index);
+    endResetModel();
+}
+
 QHash<int, QByteArray> NotificationManager::roleNames() const
 {
     QHash<int, QByteArray> roles;
@@ -36,18 +44,6 @@ QHash<int, QByteArray> NotificationManager::roleNames() const
 void NotificationManager::receiveNotification(NotificationInfo notificationInfo)
 {
     beginResetModel();
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
-    m_notificationInfo.push_front(notificationInfo);
     m_notificationInfo.push_front(notificationInfo);
     endResetModel();
 }
