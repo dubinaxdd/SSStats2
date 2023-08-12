@@ -45,13 +45,7 @@ Window {
         }
 
         NotificationList{
-
             maxHeight: parent.height
-
-            //Layout.preferredHeight: 400
-
-            //height: mainContentContainerRectangle.height  - header.height
-            //width: mainContentContainerRectangle.width
         }
     }
 
