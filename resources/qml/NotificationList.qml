@@ -42,10 +42,7 @@ ColumnLayout
                     id: image
                     Layout.preferredWidth: 30
                     Layout.preferredHeight: 30
-
-                    //source: "qrc:/images/resources/images/warning.svg"
-                    source: "qrc:/images/resources/images/ready.svg"
-                    //source: "qrc:/images/resources/images/close.svg"
+                    source: model.type === 0 ? "qrc:/images/resources/images/ready.svg" : "qrc:/images/resources/images/warning.svg"
                     sourceSize.width: 30
                     sourceSize.height: 30
                 }

@@ -156,7 +156,7 @@ void BalanceModPage::uninstallMod(int modIndex)
     NotificationInfo notificationInfo;
 
     notificationInfo.text = m_modsInfo[modIndex].uiName + " has been uninstalled";
-    notificationInfo.type = NotificationType::Warning;
+    notificationInfo.type = NotificationType::Info;
 
     emit sendNotification(notificationInfo);
 

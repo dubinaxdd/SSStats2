@@ -95,7 +95,7 @@ Rectangle{
 
                 onHoveredChanged: {
                     if (hovered)
-                        closeRectangle.color = "#FFFFFF"
+                        closeRectangle.color = DowStatsStyle.alternateBackgroundColor
                     else
                         closeRectangle.color = "#00000000"
                 }
