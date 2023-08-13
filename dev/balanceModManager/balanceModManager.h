@@ -19,17 +19,19 @@ public:
     explicit BalanceModManager(SettingsController* settingsController, QObject *parent = nullptr);
     ~BalanceModManager();
 
-    void downloadMod(QString modTechnicalName);
+    void downloadMod(QString modTechnicalName, bool overwritePrifiles);
     void setSsPath(const QString &newSsPath);
     void checkDownloadingQuery();
 
 private:
     void receiveVersionsInfo(QNetworkReply *reply);
-    void receiveMod(QNetworkReply *reply, QString modTechnicalName);
+    void receiveMod(QNetworkReply *reply, QString modTechnicalName, bool overwritePrifiles);
     void receiveChangeLog(QNetworkReply *reply, QString modTechnicalName);
     void downloadModsInfo();
     void checkCurrentModInGame();
     QString getChangeLogFromLocalFiles(QString modTechnicalName);
+
+    bool getProfileExist(QString modTechnicalName);
 
     void newActualModDetected(QString modTechnicalName, bool installed);
     void updateTemplateProfilePath(QString modTechnicalName);
@@ -47,6 +49,7 @@ public slots:
     void receiveTemplateProfilePath(QString templateProfilePath);
     void activateMod(QString modTechnicalName);
     void receiveUpdateTemplateProfilePath(bool useCustomTemplateProfilePath);
+    void receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
@@ -56,9 +59,10 @@ signals:
     void sendModDownloadProgress(int progress, QString modTechnicalName);
     void sendModDownloaded(QString modTechnicalName);
     void uninstallMod(QString ssPath, QString modTechnicalName);
-    void installMod(InstallModData data);
+    void installMod(InstallModData data, bool overwritePrifiles);
 
     void sendInstallingModError(QString modTechnicalName);
+    void requestProfileCopyMode(QString modTechnicalName);
 
 private:
 

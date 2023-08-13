@@ -9,7 +9,7 @@ BalanceModInstaller::BalanceModInstaller(QObject *parent) : QObject(parent)
     qRegisterMetaType<InstallModData>("InstallModData");
 }
 
-void BalanceModInstaller::installMod(InstallModData data)
+void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles)
 {
     QFile newFile(data.filePath);
 
@@ -39,39 +39,52 @@ void BalanceModInstaller::installMod(InstallModData data)
 
     QFile hotKeyFile(hotKeyPath);
 
-    //Копируем хоткеи
-    if (hotKeyFile.exists())
+    if (overwriteProfiles)
     {
         QDir dir(data.ssPath + "\\Profiles\\");
         QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
         for (int i = 0; i < dirContent.count(); i++)
         {
-            QDir().mkdir(dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower());
-            QString profilePath = dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "KEYDEFAULTS.LUA";
-            QFile::copy(hotKeyPath, profilePath);
+            QDir removeDir(dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower());
+            removeDir.removeRecursively();
         }
-    }
 
-    //Копируем раскраски
-    QDir schemesDir = schemesPath;
 
-    if (schemesDir.exists())
-    {
-         QFileInfoList schemesContent = schemesDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
-         QDir dir(data.ssPath + "\\Profiles\\");
+        //Копируем хоткеи
+        if (hotKeyFile.exists())
+        {
+            QDir dir(data.ssPath + "\\Profiles\\");
+            QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
-         QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+            for (int i = 0; i < dirContent.count(); i++)
+            {
+                QDir().mkdir(dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower());
+                QString profilePath = dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "KEYDEFAULTS.LUA";
+                QFile::copy(hotKeyPath, profilePath);
+            }
+        }
 
-         for (int i = 0; i < schemesContent.count(); i++)
-         {
-              for (int j = 0; j < dirContent.count(); j++)
-              {
-                  QDir().mkdir(dirContent.at(j).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "schemes");
-                  QString copyPath = dirContent.at(j).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "schemes" + QDir::separator() + schemesContent.at(i).fileName();
-                  QFile::copy(schemesContent.at(i).absoluteFilePath(), copyPath);
-              }
-         }
+        //Копируем раскраски
+        QDir schemesDir = schemesPath;
+
+        if (schemesDir.exists())
+        {
+             QFileInfoList schemesContent = schemesDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+             QDir dir(data.ssPath + "\\Profiles\\");
+
+             QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+             for (int i = 0; i < schemesContent.count(); i++)
+             {
+                  for (int j = 0; j < dirContent.count(); j++)
+                  {
+                      QDir().mkdir(dirContent.at(j).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "schemes");
+                      QString copyPath = dirContent.at(j).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "schemes" + QDir::separator() + schemesContent.at(i).fileName();
+                      QFile::copy(schemesContent.at(i).absoluteFilePath(), copyPath);
+                  }
+             }
+        }
     }
 
     //Отключаем туториал

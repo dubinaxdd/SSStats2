@@ -36,7 +36,7 @@ BalanceModManager::~BalanceModManager()
     m_balanceModInstaller->deleteLater();
 }
 
-void BalanceModManager::downloadMod(QString modTechnicalName)
+void BalanceModManager::downloadMod(QString modTechnicalName, bool overwritePrifiles)
 {
     m_modDownloadingProcessed = true;
 
@@ -48,7 +48,7 @@ void BalanceModManager::downloadMod(QString modTechnicalName)
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveMod(reply, modTechnicalName);
+        receiveMod(reply, modTechnicalName, overwritePrifiles);
     });
 
     QObject::connect(reply, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
@@ -96,6 +96,21 @@ QString BalanceModManager::getChangeLogFromLocalFiles(QString modTechnicalName)
         return "";
 
     return QString::fromStdString(chanfeLogFile.readAll().toStdString());
+}
+
+bool BalanceModManager::getProfileExist(QString modTechnicalName)
+{
+
+    QDir dir(m_ssPath + "\\Profiles\\");
+    QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    for (int i = 0; i < dirContent.count(); i++)
+    {
+        if (QDir().exists(dirContent.at(i).absoluteFilePath() + QDir::separator() + modTechnicalName.toLower()))
+            return true;
+    }
+
+    return false;
 }
 
 void BalanceModManager::newActualModDetected(QString modTechnicalName, bool installed)
@@ -217,6 +232,12 @@ void BalanceModManager::receiveUpdateTemplateProfilePath(bool useCustomTemplateP
     }
 }
 
+void BalanceModManager::receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName)
+{
+    downloadMod(modTechnicalName, overwritePrifiles);
+    m_downloadingQuery.removeOne(modTechnicalName);
+}
+
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
 {
     QChar sepr = QDir::separator();
@@ -260,8 +281,17 @@ void BalanceModManager::checkDownloadingQuery()
     if(m_downloadingQuery.isEmpty())
         return;
 
-    downloadMod(m_downloadingQuery.last());
-    m_downloadingQuery.removeLast();
+
+    if (getProfileExist(m_downloadingQuery.last()))
+    {
+        m_modDownloadingProcessed = false;
+        emit requestProfileCopyMode(m_downloadingQuery.last());
+    }
+    else
+    {
+        downloadMod(m_downloadingQuery.last(), false);
+        m_downloadingQuery.removeLast();
+    }
 }
 
 void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
@@ -355,7 +385,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
     emit sendCurrentModInGame(m_currentModName);
 }
 
-void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalName)
+void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalName, bool overwritePrifiles)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -379,7 +409,7 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
     data.templateProfilePath = m_templateProfilePath;
     data.ssPath = m_ssPath;
 
-    emit installMod(data);
+    emit installMod(data, overwritePrifiles);
 }
 
 void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechnicalName)

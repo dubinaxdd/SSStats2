@@ -31,35 +31,15 @@ Window {
         root.hide();
     }
 
+    ProfileCopyModeRequestMessage{}
 
     NotificationList{
         x: mainContentContainerRectangle.x
         y: mainContentContainerRectangle.y + header.height
         z: 2
 
-        //maxHeight: mainContentContainerRectangle.height // - header.height
-
         height: mainContentContainerRectangle.height
     }
-
-
-    /*RowLayout
-    {
-        x: mainContentContainerRectangle.x
-        y: mainContentContainerRectangle.y + header.height
-        z: 2
-
-        height: mainContentContainerRectangle.height  - header.height
-
-        Item{
-            Layout.fillHeight: true
-        }
-
-        NotificationList{
-            Layout.preferredHeight: height
-            maxHeight: parent.height
-        }
-    }*/
 
     ColumnLayout {
         id: columnLayout

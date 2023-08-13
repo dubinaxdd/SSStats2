@@ -21,6 +21,19 @@ void BalanceModPage::onSettingsLoaded()
     emit useCustomTemplateProfilePathChanged();
 }
 
+bool BalanceModPage::profileCopyModeRequestMessageVisible() const
+{
+    return m_profileCopyModeRequestMessageVisible;
+}
+
+void BalanceModPage::setProfileCopyModeRequestMessageVisible(bool newProfileCopyModeRequestMessageVisible)
+{
+    if (m_profileCopyModeRequestMessageVisible == newProfileCopyModeRequestMessageVisible)
+        return;
+    m_profileCopyModeRequestMessageVisible = newProfileCopyModeRequestMessageVisible;
+    emit profileCopyModeRequestMessageVisibleChanged();
+}
+
 QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_modsInfo.count())
@@ -106,6 +119,12 @@ void BalanceModPage::downloadLatestMod()
             emit dataChanged(index, index);
         }
     }
+}
+
+void BalanceModPage::continueModInstallation(bool overwritePrifiles)
+{
+    emit sendProfileCopyMode(overwritePrifiles, m_profileCopyModeRequestTechnicalName);
+    m_profileCopyModeRequestTechnicalName = "";
 }
 
 void BalanceModPage::activateModInGame(int modIndex)
@@ -431,6 +450,12 @@ void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
 
     m_downloadingProgress = "Installing error: " + modUiName;
     emit downloadingProgressChanged();
+}
+
+void BalanceModPage::receiveProfileCopyModeRequest(QString modTechnicalName)
+{
+    m_profileCopyModeRequestTechnicalName = modTechnicalName;
+    setProfileCopyModeRequestMessageVisible(true);
 }
 
 bool BalanceModPage::useCustomTemplateProfilePath() const

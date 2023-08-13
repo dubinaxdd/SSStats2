@@ -21,7 +21,7 @@ public:
     explicit BalanceModInstaller(QObject *parent = nullptr);
 
 public slots:
-    void installMod(InstallModData data);
+    void installMod(InstallModData data, bool overwriteProfiles);
     void uninstallMod(QString ssPath, QString modTechnicalName);
 
 private:

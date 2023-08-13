@@ -27,6 +27,8 @@ class BalanceModPage : public QAbstractListModel
     Q_PROPERTY(bool autoUninstallPreviousBalanceMod READ autoUninstallPreviousBalanceMod WRITE setAutoUninstallPreviousBalanceMod NOTIFY autoUninstallPreviousBalanceModChanged)
     Q_PROPERTY(bool useCustomTemplateProfilePath READ useCustomTemplateProfilePath WRITE setUseCustomTemplateProfilePath NOTIFY useCustomTemplateProfilePathChanged)
 
+    Q_PROPERTY(bool profileCopyModeRequestMessageVisible READ profileCopyModeRequestMessageVisible WRITE setProfileCopyModeRequestMessageVisible NOTIFY profileCopyModeRequestMessageVisibleChanged)
+
 public:
     explicit BalanceModPage(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -47,8 +49,8 @@ public:
     Q_INVOKABLE void uninstallSelectedMod();
     Q_INVOKABLE void choiseTemplateProfilePath(QString templateProfilePath);
     Q_INVOKABLE void activateSelectedModInGame();
-
     Q_INVOKABLE void downloadLatestMod();
+    Q_INVOKABLE void continueModInstallation(bool overwritePrifiles);
 
     const QString selectedModName() const;
     const QString selectedModVersion() const;
@@ -73,6 +75,9 @@ public:
     bool useCustomTemplateProfilePath() const;
     void setUseCustomTemplateProfilePath(bool newUseCustomTemplateProfilePath);
 
+    bool profileCopyModeRequestMessageVisible() const;
+    void setProfileCopyModeRequestMessageVisible(bool newProfileCopyModeRequestMessageVisible);
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
@@ -91,6 +96,7 @@ public slots:
    void receiveModDownloaded(QString modTechnicalName);
    void receiveTemplateProfilePath(QString templateProfilePath);
    void receiveInstallingModError(QString modTechnicalName);
+   void receiveProfileCopyModeRequest(QString modTechnicalName);
 
 private slots:
     void onSettingsLoaded();
@@ -111,6 +117,9 @@ signals:
    void sendUseCustomTemplateProfilePath(bool);
    void changeLaunchMod(LaunchMod);
    void sendNotification(NotificationInfo notificationString);
+   void sendProfileCopyMode(bool profileCopyMode, QString modTechnicalName);
+
+   void profileCopyModeRequestMessageVisibleChanged();
 
 private:
    SettingsController* m_settingsController;
@@ -124,6 +133,9 @@ private:
    bool m_autoUninstallPreviousBalanceMod = false;
    bool m_useCustomTemplateProfilePath = false;
    QUuid m_uuid;
+
+   QString m_profileCopyModeRequestTechnicalName = "";
+   bool m_profileCopyModeRequestMessageVisible = false;
 };
 
 #endif // BALANCEMODPAGE_H
