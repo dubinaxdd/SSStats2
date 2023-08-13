@@ -11,15 +11,6 @@ Rectangle{
     z: 10
     visible: _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible
 
-    MouseArea {
-        anchors.fill: parent
-        cursorShape: Qt.PointingHandCursor
-
-        onClicked: {
-
-        }
-    }
-
     Rectangle
     {
         color: DowStatsStyle.backgroundColor
