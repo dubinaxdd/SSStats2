@@ -1,13 +1,14 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import DowStatsStyle 1.0
 
 Rectangle{
     id: mainRectangle
 
     width: 600 * _uiBackend.sizeModifer
     height: textMessage.height  * _uiBackend.sizeModifer + 60
-    color: "#535353"
+    color: DowStatsStyle.backgroundColor
     visible: _uiBackend.notificationVisible
 
     radius: 10 * _uiBackend.sizeModifer
@@ -36,21 +37,19 @@ Rectangle{
 
             color: "#00000000"
 
-            Image{
-                cache: false
-                width: 40 * _uiBackend.sizeModifer
-                height: 40 * _uiBackend.sizeModifer
-                x: 0
-                y: 0
-                source: isWarning ? "qrc:/images/resources/images/warning.png" : "qrc:/images/resources/images/readyImage.png"
-                fillMode: Image.PreserveAspectFit
+            Image {
+                id: image
+                anchors.fill: parent
+                source: isWarning ? "qrc:/images/resources/images/warning.svg" : "qrc:/images/resources/images/ready.svg"
+                sourceSize.width: width
+                sourceSize.height: height
             }
         }
 
         Text{
 
             id: textMessage
-            color: "#ffffff"
+            color: DowStatsStyle.textColor
 
             Layout.fillWidth: true
             text: _uiBackend.lastNotification
@@ -78,15 +77,12 @@ Rectangle{
 
             Layout.alignment: Qt.AlignTop |Qt.AlignHCenter
 
-            Image{
-                cache: false
-                x: 0
-                y: 0
-                width: 30 * _uiBackend.sizeModifer
-                height: 30 * _uiBackend.sizeModifer
-
-                source: "qrc:/images/resources/images/closeButton.png"
-                fillMode: Image.PreserveAspectFit
+            Image {
+                anchors.fill: parent
+                anchors.margins: 5
+                source: "qrc:/images/resources/images/close.svg"
+                sourceSize.width: width
+                sourceSize.height: height
             }
 
             GlobalMouseArea{

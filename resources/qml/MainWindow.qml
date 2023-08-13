@@ -32,7 +32,18 @@ Window {
     }
 
 
-    RowLayout
+    NotificationList{
+        x: mainContentContainerRectangle.x
+        y: mainContentContainerRectangle.y + header.height
+        z: 2
+
+        //maxHeight: mainContentContainerRectangle.height // - header.height
+
+        height: mainContentContainerRectangle.height
+    }
+
+
+    /*RowLayout
     {
         x: mainContentContainerRectangle.x
         y: mainContentContainerRectangle.y + header.height
@@ -45,9 +56,10 @@ Window {
         }
 
         NotificationList{
+            Layout.preferredHeight: height
             maxHeight: parent.height
         }
-    }
+    }*/
 
     ColumnLayout {
         id: columnLayout

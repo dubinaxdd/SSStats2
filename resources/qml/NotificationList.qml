@@ -5,49 +5,75 @@ import QtQuick.Window 2.15
 import QtGraphicalEffects 1.15
 import DowStatsStyle 1.0
 
-ListView{
+ColumnLayout
+{
     id: root
-    model: _uiBackend.notificationManager
-    verticalLayoutDirection: ListView.BottomToTop
-    clip: true
 
-    width: 300
+    Item {
+        Layout.preferredHeight: parent.height - listView.height
+    }
 
-    height: contentHeight > maxHeight ? maxHeight : contentHeight
+    ListView{
+        id: listView
+        model: _uiBackend.notificationManager
+        verticalLayoutDirection: ListView.BottomToTop
+        clip: true
+        width: 300
+        Layout.preferredHeight: contentHeight > root.height ? root.height : contentHeight
 
-    property int maxHeight
+        spacing: 5
 
-    delegate: Rectangle {
+        delegate: Rectangle {
 
-        id: delegate
-        color: DowStatsStyle.selectionColor
-        radius: 10
-        width: root.width
-        height: 60
+            id: delegate
+            color: DowStatsStyle.selectionColor
+            radius: 10
+            width: root.width
+            height: textArea.height > 40 ? textArea.height + 20 : 60
 
-        ColumnLayout{
-            anchors.fill: parent
-            anchors.margins: 10
+            RowLayout
+            {
+                anchors.fill: parent
+                anchors.margins: 10
 
-            Label{
-                Layout.alignment: Qt.AlignVCenter
-                text: model.text
-                color: DowStatsStyle.textColor
-                font.pixelSize: 14
+                clip: true
+
+                Image {
+                    id: image
+                    Layout.preferredWidth: 30
+                    Layout.preferredHeight: 30
+
+                    //source: "qrc:/images/resources/images/warning.svg"
+                    source: "qrc:/images/resources/images/ready.svg"
+                    //source: "qrc:/images/resources/images/close.svg"
+                    sourceSize.width: 30
+                    sourceSize.height: 30
+                }
+
+                TextArea{
+                    id: textArea
+                    width: parent.width - 50
+                    Layout.alignment: Qt.AlignVCenter
+                    text: model.text
+                    color: DowStatsStyle.textColor
+                    font.pixelSize: 11
+                    wrapMode: Text.Wrap
+                }
+            }
+
+            MouseArea{
+                anchors.fill: parent
+
+                onClicked: {
+                    listView.model.removeItem(model.index);
+                    cursorShape: Qt.PointingHandCursor
+                }
             }
         }
 
         MouseArea{
             anchors.fill: parent
-
-            onClicked: {
-                root.model.removeItem(model.index);
-            }
+            propagateComposedEvents: true
         }
-    }
-
-    MouseArea{
-        anchors.fill: parent
-        propagateComposedEvents: true
     }
 }
