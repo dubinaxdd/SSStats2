@@ -6,6 +6,7 @@
 #include <QImage>
 #include <QDateTime>
 #include <QUrl>
+#include <QUuid>
 
 enum InstMod
 {
@@ -349,8 +350,20 @@ enum NotificationType
 
 struct NotificationInfo
 {
+    NotificationInfo& operator=(const NotificationInfo& copy)
+    {
+        if(&copy != this)
+        {
+            type = copy.type;
+            text = copy.text;
+            uuid = copy.uuid;
+        }
+        return *this;
+    }
+
     NotificationType type = Info;
     QString text = "";
+    QUuid uuid = QUuid().createUuid();
 };
 
 

@@ -337,6 +337,17 @@ void BalanceModPage::receiveModDownloadProgress(int progress, QString modTechnic
 
     m_downloadingProgress = "Downloading " + modUiName + ": "  + QString::number(progress) + "%";
     emit downloadingProgressChanged();
+
+    if (progress == 0)
+        m_uuid = QUuid().createUuid();
+
+    NotificationInfo notificationInfo;
+    notificationInfo.text = m_downloadingProgress;
+    notificationInfo.type = NotificationType::Warning;
+    notificationInfo.uuid = m_uuid;
+    emit sendNotification(notificationInfo);
+
+
 }
 
 void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
@@ -370,6 +381,7 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
 
             notificationInfo.text = m_modsInfo[i].uiName + " has been installed.";
             notificationInfo.type = NotificationType::Info;
+            notificationInfo.uuid = m_uuid;
 
             emit sendNotification(notificationInfo);
 
@@ -409,6 +421,7 @@ void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
 
             notificationInfo.text = m_modsInfo[i].uiName + " installation error";
             notificationInfo.type = NotificationType::Warning;
+            notificationInfo.uuid = m_uuid;
 
             emit sendNotification(notificationInfo);
 

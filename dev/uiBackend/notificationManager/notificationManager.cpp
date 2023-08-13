@@ -43,7 +43,38 @@ QHash<int, QByteArray> NotificationManager::roleNames() const
 
 void NotificationManager::receiveNotification(NotificationInfo notificationInfo)
 {
+    /*for (NotificationInfo &needNotifyInfo : m_notificationInfo)
+    {
+        if (needNotifyInfo.uuid == notificationInfo.uuid)
+        {
+            beginResetModel();
+            needNotifyInfo = notificationInfo;
+            endResetModel();
+            return;
+        }
+    }*/
+
+
+    for (int i = 0; i < m_notificationInfo.count(); i++)
+    {
+        if (m_notificationInfo.at(i).uuid == notificationInfo.uuid)
+        {
+            //beginResetModel();
+            m_notificationInfo[i] = notificationInfo;
+            //endResetModel();
+
+
+            qDebug() << "ASDASDASDADASDASDASD" + notificationInfo.text;
+
+            QModelIndex index = QAbstractItemModel::createIndex(i, 0);
+
+            emit dataChanged(index,index);
+            return;
+        }
+    }
+
     beginResetModel();
     m_notificationInfo.push_front(notificationInfo);
     endResetModel();
+
 }

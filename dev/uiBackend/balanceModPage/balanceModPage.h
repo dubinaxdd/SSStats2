@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 #include <baseTypes.h>
 #include <settingsController.h>
+#include <QUuid>
 
 class BalanceModPage : public QAbstractListModel
 {
@@ -122,6 +123,7 @@ private:
    bool m_autoUpdateBalanceMod = true;
    bool m_autoUninstallPreviousBalanceMod = false;
    bool m_useCustomTemplateProfilePath = false;
+   QUuid m_uuid;
 };
 
 #endif // BALANCEMODPAGE_H
