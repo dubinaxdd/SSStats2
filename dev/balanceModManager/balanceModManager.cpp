@@ -289,7 +289,7 @@ void BalanceModManager::checkDownloadingQuery()
     }
     else
     {
-        downloadMod(m_downloadingQuery.last(), false);
+        downloadMod(m_downloadingQuery.last(), true);
         m_downloadingQuery.removeLast();
     }
 }
