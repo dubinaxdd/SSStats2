@@ -118,8 +118,10 @@ void BalanceModManager::newActualModDetected(QString modTechnicalName, bool inst
     m_settingsController->getSettings()->lastActualBalanceMod = modTechnicalName;
     m_settingsController->saveSettings();
 
-    if (!installed && m_settingsController->getSettings()->autoUpdateBalanceMod)
-        requestDownloadMod(modTechnicalName);
+    m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
+
+    //if (!installed && m_settingsController->getSettings()->autoUpdateBalanceMod)
+    //    requestDownloadMod(modTechnicalName);
 }
 
 void BalanceModManager::modsInfoTimerTimeout()
@@ -234,8 +236,8 @@ void BalanceModManager::receiveUpdateTemplateProfilePath(bool useCustomTemplateP
 
 void BalanceModManager::receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName)
 {
-    downloadMod(modTechnicalName, overwritePrifiles);
     m_downloadingQuery.removeOne(modTechnicalName);
+    downloadMod(modTechnicalName, overwritePrifiles);
 }
 
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
@@ -281,10 +283,9 @@ void BalanceModManager::checkDownloadingQuery()
     if(m_downloadingQuery.isEmpty())
         return;
 
-
     if (getProfileExist(m_downloadingQuery.last()))
     {
-        m_modDownloadingProcessed = false;
+        m_modDownloadingProcessed = true;
         emit requestProfileCopyMode(m_downloadingQuery.last());
     }
     else
@@ -363,19 +364,25 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         if (newModInfo.isInstalled)
             newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName);
 
-        if (newModInfo.isLatest && newModInfo.technicalName != m_lastActualMod)
-        {
-            newActualModDetected(newModInfo.technicalName, newModInfo.isInstalled);
-
-            if (!newModInfo.isInstalled && m_settingsController->getSettings()->autoUpdateBalanceMod)
-                newModInfo.downloadingProcessed = true;
-        }
-
         m_modInfoList.append(newModInfo);
     }
 
     if (m_templateProfilePath.isEmpty())
         receiveUpdateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
+
+    for (int i = 0; i < m_modInfoList.count(); i++)
+    {
+        if (m_modInfoList.at(i).isLatest && m_modInfoList.at(i).technicalName != m_lastActualMod)
+        {
+            newActualModDetected(m_modInfoList.at(i).technicalName, m_modInfoList.at(i).isInstalled);
+
+            if (!m_modInfoList.at(i).isInstalled && m_settingsController->getSettings()->autoUpdateBalanceMod)
+            {
+                m_modInfoList[i].downloadingProcessed = true;
+                requestDownloadMod(m_modInfoList.at(i).technicalName);
+            }
+        }
+    }
 
     emit sendModsInfo(m_modInfoList);
 
