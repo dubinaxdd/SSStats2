@@ -9,8 +9,8 @@
 //#define REQUEST_TIMER_INTERVAL 2000
 //#define REQUEST_TIMER_INTERVAL2 4000
 
-#define REQUEST_TIMER_INTERVAL 500
-#define REQUEST_TIMER_INTERVAL2 500
+#define REQUEST_TIMER_INTERVAL 5000
+#define REQUEST_TIMER_INTERVAL2 5000
 
 DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
