@@ -115,7 +115,7 @@ public:
     const QString &currentModName() const;
     void setCurrentModName(const QString &newCurrentModName);
 
-    const QString &currentModTechnicalName() const;
+    const QString currentModTechnicalName() const;
     void setCurrentModTechnicalName(const QString &newCurrentModTechnicalName);
 
     ModsPage *modsPage() const;

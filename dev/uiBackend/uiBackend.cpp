@@ -123,9 +123,12 @@ ModsPage *UiBackend::modsPage() const
     return m_modsPage;
 }
 
-const QString &UiBackend::currentModTechnicalName() const
+const QString UiBackend::currentModTechnicalName() const
 {
-    return m_currentModTechnicalName;
+    if(m_currentModTechnicalName.toLower().contains("dowstats_balance_mod"))
+        return "dowstats_balance_mod";
+    else
+        return m_currentModTechnicalName;
 }
 
 void UiBackend::setCurrentModTechnicalName(const QString &newCurrentModTechnicalName)
