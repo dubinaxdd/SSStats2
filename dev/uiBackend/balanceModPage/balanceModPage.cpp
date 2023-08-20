@@ -34,6 +34,17 @@ void BalanceModPage::setProfileCopyModeRequestMessageVisible(bool newProfileCopy
     emit profileCopyModeRequestMessageVisibleChanged();
 }
 
+bool BalanceModPage::isLatestModInstalled()
+{
+    for (int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if (m_modsInfo.at(i).isLatest)
+            return m_modsInfo.at(i).isInstalled;
+    }
+
+    return false;
+}
+
 QVariant BalanceModPage::data(const QModelIndex &index, int role) const
 {
     if (index.row() < 0 || index.row() >= m_modsInfo.count())

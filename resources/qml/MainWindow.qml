@@ -33,6 +33,8 @@ Window {
 
     PopupDialog{
         id: owerwriteProfileDialog
+        visible: _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible
+        okButtonVisible: false
         text: "The profile folder of the installed mod already exists. Overwrite the hotkeys and army colors using Template Profile Path?"
         onClickedYes:{
             _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible = false;
@@ -44,6 +46,19 @@ Window {
             _uiBackend.balanceModPage.continueModInstallation(false);
         }
     }
+
+    PopupDialog{
+        id: latesBalanceModNotInstalledDialog
+        visible: _uiBackend.latesBalanceModNotInstalledDialogVisible
+        yesButtonVisible: false
+        noButtonVisible: false
+        text: "The latest DoW Stats Balance Mod is not installed!\nYou can install latest version DoW Stats Balance Mod in Mods page, or you can select other mod in bottom panel."
+
+        onClickedOk:{
+            _uiBackend.latesBalanceModNotInstalledDialogVisible = false;
+        }
+    }
+
 
     NotificationList{
         x: mainContentContainerRectangle.x

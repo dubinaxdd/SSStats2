@@ -108,6 +108,19 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+bool UiBackend::latesBalanceModNotInstalledDialogVisible() const
+{
+    return m_latesBalanceModNotInstalledDialogVisible;
+}
+
+void UiBackend::setLatesBalanceModNotInstalledDialogVisible(bool newLatesBalanceModNotInstalledDialogVisible)
+{
+    if (m_latesBalanceModNotInstalledDialogVisible == newLatesBalanceModNotInstalledDialogVisible)
+        return;
+    m_latesBalanceModNotInstalledDialogVisible = newLatesBalanceModNotInstalledDialogVisible;
+    emit latesBalanceModNotInstalledDialogVisibleChanged();
+}
+
 BalanceModPage *UiBackend::balanceModPage() const
 {
     return m_balanceModPage;
@@ -303,7 +316,10 @@ void UiBackend::onExit()
 
 void UiBackend::launchSoulstorm()
 {
-    emit sendLaunchSoulstorm();
+    if (m_settingsPageModel->launchMode() == LaunchMod::DowStatsBalanceMod && !m_balanceModPage->isLatestModInstalled())
+        setLatesBalanceModNotInstalledDialogVisible(true);
+    else
+        emit sendLaunchSoulstorm();
 }
 
 void UiBackend::setSizeModifer(double size)

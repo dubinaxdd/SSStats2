@@ -9,24 +9,31 @@ Rectangle{
     anchors.fill: parent
     color: "#cf1a1919"
     z: 10
-    visible: _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible
+
+    property bool yesButtonVisible: true
+    property bool noButtonVisible: true
+    property bool okButtonVisible: true
 
     property string text: ""
-    signal clickedYes();
-    signal clickedNo();
+
+    signal clickedYes()
+    signal clickedNo()
+    signal clickedOk()
 
     Rectangle
     {
+        id: messageRectangle
         color: DowStatsStyle.backgroundColor
         radius: 10
         width:400
-        height: 150
+        height: textArea.height > 40 ? textArea.height + 50 : 90
         anchors.horizontalCenter: root.horizontalCenter
         anchors.verticalCenter: root.verticalCenter
 
         ColumnLayout
         {
             anchors.fill: parent
+            anchors.margins: 10
 
             RowLayout
             {
@@ -41,7 +48,8 @@ Rectangle{
                 }
 
                 TextArea{
-                    width: 350
+                    id: textArea
+                    width: messageRectangle.width - 50
                     Layout.alignment: Qt.AlignVCenter
                     text: root.text
                     color: DowStatsStyle.textColor
@@ -57,14 +65,23 @@ Rectangle{
 
                 BlueButton
                 {
+                    visible: root.yesButtonVisible
                     text: "Yes"
                     onClicked: root.clickedYes();
                 }
 
                 BlueButton
                 {
+                    visible: root.noButtonVisible
                     text: "No"
                     onClicked: root.clickedNo();
+                }
+
+                BlueButton
+                {
+                    visible: root.okButtonVisible
+                    text: "Ok"
+                    onClicked: root.clickedOk();
                 }
             }
         }

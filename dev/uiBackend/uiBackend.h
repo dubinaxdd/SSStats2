@@ -63,6 +63,8 @@ class UiBackend : public QObject
     Q_PROPERTY(QString currentModName READ currentModName WRITE setCurrentModName NOTIFY currentModNameChanged)
     Q_PROPERTY(QString currentModTechnicalName READ currentModTechnicalName WRITE setCurrentModTechnicalName NOTIFY currentModTechnicalNameChanged)
 
+    Q_PROPERTY(bool latesBalanceModNotInstalledDialogVisible READ latesBalanceModNotInstalledDialogVisible WRITE setLatesBalanceModNotInstalledDialogVisible NOTIFY latesBalanceModNotInstalledDialogVisibleChanged)
+
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -123,6 +125,9 @@ public:
     BalanceModPage *balanceModPage() const;
 
 
+    bool latesBalanceModNotInstalledDialogVisible() const;
+    void setLatesBalanceModNotInstalledDialogVisible(bool newLatesBalanceModNotInstalledDialogVisible);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -162,6 +167,8 @@ signals:
     void balanceModPageChanged();
 
     void notificationManagerChanged();
+
+    void latesBalanceModNotInstalledDialogVisibleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -253,6 +260,8 @@ private:
 
     QString m_currentModName = "";
     QString m_currentModTechnicalName = "";
+
+    bool m_latesBalanceModNotInstalledDialogVisible = false;
 };
 
 #endif // UIBACKEND_H

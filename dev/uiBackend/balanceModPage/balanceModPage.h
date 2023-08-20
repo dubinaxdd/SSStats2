@@ -78,6 +78,8 @@ public:
     bool profileCopyModeRequestMessageVisible() const;
     void setProfileCopyModeRequestMessageVisible(bool newProfileCopyModeRequestMessageVisible);
 
+    bool isLatestModInstalled();
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
