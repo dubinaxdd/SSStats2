@@ -42,17 +42,10 @@ Item{
 
         menu: Menu {
             MenuItem {
-                text: qsTr("Launch Soulstorm with Windows7 support mode")
-
-                onTriggered: _uiBackend.onLaunchSoulstormWithSupportMode();
-            }
-
-            MenuItem {
                 text: qsTr("Exit")
 
                 onTriggered: _uiBackend.onExit();
             }
         }
     }
-
 }
