@@ -133,6 +133,7 @@ private:
    bool m_autoUninstallPreviousBalanceMod = false;
    bool m_useCustomTemplateProfilePath = false;
    QUuid m_uuid;
+   QString m_currentDownloadedMod = "";
 
    QString m_profileCopyModeRequestTechnicalName = "";
    bool m_profileCopyModeRequestMessageVisible = false;

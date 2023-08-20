@@ -6,7 +6,7 @@ import DowStatsStyle 1.0
 
 Rectangle {
 
-    id: itemRectangle
+    id: root
 
     property string playerName
     property int playerMmr
@@ -29,6 +29,8 @@ Rectangle {
     property var hoveredState
     property bool hoverEnabled: true
 
+    property var textColor: root.hoveredState ? DowStatsStyle.textColor : (playerIsBanned ? "#26282a" : DowStatsStyle.textColor)
+
     Layout.maximumWidth: 280 * sizeModifer
     Layout.maximumHeight: 120 * sizeModifer
     Layout.minimumWidth: 280 * sizeModifer
@@ -37,12 +39,8 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignTop
     Layout.fillHeight: false
     Layout.fillWidth: true
-    color: itemRectangle.hoverEnabled ? ( itemRectangle.hoveredState ? DowStatsStyle.itemColor : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor )) : ((itemRectangle.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor)
+    color: root.hoverEnabled ? ( root.hoveredState ? DowStatsStyle.itemColor : ((root.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor )) : ((root.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor)
     radius: 10 * sizeModifer
-
-   /* onCalibrateGamesLeftChanged: {
-        changeRank();
-    }*/
 
     onPlayerGamesCountChanged:{
         changeRank();
@@ -54,12 +52,6 @@ Rectangle {
 
     function changeRank()
     {
-       /* if (calibrateGamesLeft != 0)
-        {
-            rankImage.source = "qrc:/images/resources/images/calibrate_60.png"
-            return;
-        }*/
-
         if (playerMmr1v1 < 1400)
         {
             rankImage.source = "qrc:/images/resources/images/Rank1.svg"
@@ -114,7 +106,7 @@ Rectangle {
 
             Rectangle{
                 Layout.fillHeight: true
-                visible: itemRectangle.playerIsBanned
+                visible: root.playerIsBanned
             }
 
             Rectangle {
@@ -148,7 +140,7 @@ Rectangle {
                         height: 60 * sizeModifer
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: itemRectangle.avatarSource
+                        source: root.avatarSource
                         visible:false
                         fillMode: Image.PreserveAspectFit
                     }
@@ -173,11 +165,11 @@ Rectangle {
 
             Label {
                 id: statusLabel
-                visible: itemRectangle.playerIsBanned
+                visible: root.playerIsBanned
                 text: qsTr("[CHEATER]")
                 font.pixelSize: 15 * sizeModifer
                 Layout.alignment: Qt.AlignHCenter
-                color: DowStatsStyle.textColor
+                color: root.textColor
             }
 
             Rectangle{
@@ -187,7 +179,7 @@ Rectangle {
             RowLayout
             {
                 Layout.leftMargin: 10 * sizeModifer
-                visible: !itemRectangle.playerIsBanned
+                visible: !root.playerIsBanned
 
                 Rectangle{
                     radius:5 * sizeModifer
@@ -195,13 +187,13 @@ Rectangle {
                     Layout.preferredHeight: 10 * sizeModifer
                     Layout.preferredWidth: 10 * sizeModifer
 
-                    color:  itemRectangle.isOnline ? "#00ff99" : "#ffa9a9"
+                    color:  root.isOnline ? "#00ff99" : "#ffa9a9"
                 }
 
                 Label{
-                    text: itemRectangle.isOnline ? "Online" : "Offline"
+                    text: root.isOnline ? "Online" : "Offline"
                     font.pixelSize: 11 * sizeModifer
-                    color: DowStatsStyle.textColor
+                    color: root.textColor
                 }
             }
 
@@ -210,7 +202,7 @@ Rectangle {
             {
                 Layout.leftMargin: 10 * sizeModifer
 
-                visible: !itemRectangle.playerIsBanned
+                visible: !root.playerIsBanned
 
                 Rectangle{
                     radius:5 * sizeModifer
@@ -218,13 +210,13 @@ Rectangle {
                     Layout.preferredHeight: 10 * sizeModifer
                     Layout.preferredWidth: 10 * sizeModifer
 
-                    color:  itemRectangle.isRanked ? "#00ff99" : "#ffa9a9"
+                    color:  root.isRanked ? "#00ff99" : "#ffa9a9"
                 }
 
                 Label{
-                    text: itemRectangle.isRanked ? "Ranked" : "Unranked"
+                    text: root.isRanked ? "Ranked" : "Unranked"
                     font.pixelSize: 11 * sizeModifer
-                    color: DowStatsStyle.textColor
+                    color: root.textColor
                 }
             }
         }
@@ -242,9 +234,9 @@ Rectangle {
 
             Label {
                 id: label1
-                text: itemRectangle.playerName
+                text: root.playerName
                 Layout.maximumWidth: 180 * sizeModifer
-                color: DowStatsStyle.textColor
+                color: root.textColor
 
                 font.pixelSize: 20 * sizeModifer
 
@@ -260,59 +252,59 @@ Rectangle {
 
                     spacing: 0
 
-                    Label {
-                        id: label2
-                        text: "MMR: " + itemRectangle.playerMmr
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: DowStatsStyle.textColor
-                    }
 
                     Label {
                         id: label
-                        //text: "Solo MMR: " + (itemRectangle.calibrateGamesLeft != 0 ? ("Calibrate") : itemRectangle.playerMmr1v1)
-                        text: "Solo MMR: " + itemRectangle.playerMmr1v1
+                        text: "Solo MMR: " + root.playerMmr1v1
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 11 * sizeModifer
-                        color: DowStatsStyle.textColor
+                        color: root.textColor
+                    }
+
+                    Label {
+                        id: label2
+                        text: "Team MMR: " + root.playerMmr
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: root.textColor
                     }
 
                     Label {
                         id: label4
-                        text: "Games played: " + itemRectangle.playerGamesCount
+                        text: "Games played: " + root.playerGamesCount
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        color: DowStatsStyle.textColor
+                        color: root.textColor
                     }
 
                     Label {
                         id: label3
-                        text: "Race: " + itemRectangle.playerRace
+                        text: "Race: " + root.playerRace
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 11 * sizeModifer
-                        color: DowStatsStyle.textColor
+                        color: root.textColor
                     }
 
                     Label {
                         id: label5
-                        text: "Win rate: " + itemRectangle.playerWinRate + "%"
+                        text: "Win rate: " + root.playerWinRate + "%"
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        color: DowStatsStyle.textColor
+                        color: root.textColor
                     }
 
                     Label {
                         id: label6
-                        text: "APM: " + itemRectangle.playerApm
+                        text: "APM: " + root.playerApm
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
-                        color: DowStatsStyle.textColor
+                        color: root.textColor
                     }
                 }
 
@@ -328,8 +320,6 @@ Rectangle {
                         Layout.minimumHeight: 50 * sizeModifer
                         Layout.minimumWidth: 50 * sizeModifer
                         Layout.margins: 5 * sizeModifer
-
-                        //color: "#b7b7b7"
                         color: "#00000000"
                         radius:5
 
@@ -349,16 +339,6 @@ Rectangle {
                             sourceSize.height: 60 * sizeModifer
                         }
                     }
-
-                    /*
-                    Label {
-                        id: label7
-                        visible: itemRectangle.calibrateGamesLeft != 0
-                        text: "1v1 calibrating\ngames left: " + itemRectangle.calibrateGamesLeft
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        font.pixelSize: 10 * sizeModifer
-                    }*/
                 }
             }
         }
@@ -371,16 +351,14 @@ Rectangle {
         hoverEnabled: true
 
         onClicked: {
-            Qt.openUrlExternally("https://dowstats.ru/player.php?sid=" + itemRectangle.steamId + "&mod_tech_name=" + _uiBackend.currentModTechnicalName);
+            Qt.openUrlExternally("https://dowstats.ru/player.php?sid=" + root.steamId + "&mod_tech_name=" + _uiBackend.currentModTechnicalName);
         }
 
         onContainsMouseChanged: {
             if (playerItemMouseArea.containsMouse)
-                //itemRectangle.color = "#c8c8c8";
-                itemRectangle.hoveredState = true;
+                root.hoveredState = true;
             else
-                //itemRectangle.color = (itemRectangle.playerIsBanned) ? "#ffa9a9" : "#ffffff"
-                itemRectangle.hoveredState = false;
+                root.hoveredState = false;
         }
     }
 }

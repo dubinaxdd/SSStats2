@@ -123,7 +123,7 @@ Rectangle {
                         }
 
                         Label{
-                            text: "   • MMR game rules:"
+                            text: "   • Team MMR game rules:"
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
