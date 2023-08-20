@@ -36,6 +36,6 @@
         <file>resources/qml/StyledComboBox.qml</file>
         <file>resources/qml/StyledRadioButton.qml</file>
         <file>resources/qml/NotificationList.qml</file>
-        <file>resources/qml/ProfileCopyModeRequestMessage.qml</file>
+        <file>resources/qml/PopupDialog.qml</file>
     </qresource>
 </RCC>

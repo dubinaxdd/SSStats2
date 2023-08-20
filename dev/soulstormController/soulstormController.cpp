@@ -100,6 +100,8 @@ void SoulstormController::blockSsWindowInput(bool state)
 
 void SoulstormController::launchSoulstorm()
 {
+
+    bool win7SupportMode = m_settingsController->getSettings()->win7SupportMode;
     bool launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
 
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
@@ -107,11 +109,21 @@ void SoulstormController::launchSoulstorm()
     if (launchGameInWindow)
         ssSettings->setValue("global/screenwindowed", 1);
     else
-        ssSettings->setValue("global/screenwindowed", 0);
-
-    writeCurrentModSettingInGame();
+    {
+        if (win7SupportMode)
+        {
+            ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+            m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
+            m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
+            ssSettings->setValue("global/screenwindowed", 1);
+        }
+        else
+            ssSettings->setValue("global/screenwindowed", 0);
+    }
 
     delete ssSettings;
+
+    writeCurrentModSettingInGame();
 
     if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
     {
@@ -122,42 +134,7 @@ void SoulstormController::launchSoulstorm()
 
         m_soulstormProcess = new QProcess(this);
         m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {params});
-        m_useWindows7SupportMode = false;
-    }
-}
-
-void SoulstormController::launchSoulstormWithSupportMode()
-{
-    bool launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
-
-    if (launchGameInWindow)
-    {
-        launchSoulstorm();
-        return;
-    }
-
-    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
-    m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
-    m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
-
-    ssSettings->setValue("global/screenwindowed", 1);
-    delete ssSettings;
-
-    writeCurrentModSettingInGame();
-
-
-
-
-    if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
-    {
-        QString params = "";
-
-        if (m_settingsController->getSettings()->skipIntroVideo)
-            params.append("-nomovies");
-
-        m_soulstormProcess = new QProcess(this);
-        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {params});
-        m_useWindows7SupportMode = true;
+        m_useWindows7SupportMode = win7SupportMode;
     }
 }
 

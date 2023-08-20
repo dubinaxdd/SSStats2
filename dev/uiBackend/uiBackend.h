@@ -143,7 +143,6 @@ signals:
     void ssWindowPositionChanged();
 
     void sendExit();
-    void sendLaunchSoulstormWithSupportMode();
     void sendLaunchSoulstorm();
     void noFogStateChanged(bool);
 
@@ -181,7 +180,6 @@ public slots:
     void receiveCurrentModTechnicalName(QString modName);
 
     Q_INVOKABLE void onExit();
-    Q_INVOKABLE void onLaunchSoulstormWithSupportMode();
     Q_INVOKABLE void setSizeModifer(double size);
 
 private slots:

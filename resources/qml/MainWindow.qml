@@ -31,7 +31,19 @@ Window {
         root.hide();
     }
 
-    ProfileCopyModeRequestMessage{}
+    PopupDialog{
+        id: owerwriteProfileDialog
+        text: "The profile folder of the installed mod already exists. Overwrite the hotkeys and army colors using Template Profile Path?"
+        onClickedYes:{
+            _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible = false;
+            _uiBackend.balanceModPage.continueModInstallation(true);
+        }
+
+        onClickedNo:{
+            _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible = false;
+            _uiBackend.balanceModPage.continueModInstallation(false);
+        }
+    }
 
     NotificationList{
         x: mainContentContainerRectangle.x

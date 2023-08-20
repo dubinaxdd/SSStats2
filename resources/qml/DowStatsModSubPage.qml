@@ -198,7 +198,7 @@ Rectangle {
             Rectangle
             {
                 Layout.fillHeight: true
-                Layout.preferredWidth: 200
+                Layout.preferredWidth: 220
                 radius: 10
                 color: DowStatsStyle.alternateBackgroundColor
 

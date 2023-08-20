@@ -50,7 +50,6 @@ public:
 
 public slots:
     void blockSsWindowInput(bool state);
-    void launchSoulstormWithSupportMode();
     void minimizeSsWithWin7Support();
     void launchSoulstorm();
 

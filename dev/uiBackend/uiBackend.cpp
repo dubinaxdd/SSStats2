@@ -301,11 +301,6 @@ void UiBackend::onExit()
     emit sendExit();
 }
 
-void UiBackend::onLaunchSoulstormWithSupportMode()
-{
-    emit sendLaunchSoulstormWithSupportMode();
-}
-
 void UiBackend::launchSoulstorm()
 {
     emit sendLaunchSoulstorm();

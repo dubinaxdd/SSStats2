@@ -11,6 +11,10 @@ Rectangle{
     z: 10
     visible: _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible
 
+    property string text: ""
+    signal clickedYes();
+    signal clickedNo();
+
     Rectangle
     {
         color: DowStatsStyle.backgroundColor
@@ -39,7 +43,7 @@ Rectangle{
                 TextArea{
                     width: 350
                     Layout.alignment: Qt.AlignVCenter
-                    text: "The profile folder of the installed mod already exists. Overwrite the hotkeys and army colors using Template Profile Path?"
+                    text: root.text
                     color: DowStatsStyle.textColor
                     font.pixelSize: 11
                     wrapMode: Text.Wrap
@@ -54,23 +58,13 @@ Rectangle{
                 BlueButton
                 {
                     text: "Yes"
-
-                    onClicked:
-                    {
-                        _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible = false;
-                        _uiBackend.balanceModPage.continueModInstallation(true);
-                    }
+                    onClicked: root.clickedYes();
                 }
 
                 BlueButton
                 {
                     text: "No"
-
-                    onClicked:
-                    {
-                        _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible = false;
-                        _uiBackend.balanceModPage.continueModInstallation(false);
-                    }
+                    onClicked: root.clickedNo();
                 }
             }
         }

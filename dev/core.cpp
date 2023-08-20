@@ -117,7 +117,6 @@ void Core::addConnections()
     QObject::connect(m_uiBackend,                       &UiBackend::sendExit,                           this,                               &Core::onExit,                  Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::sendExpand,                         m_soulstormController,              &SoulstormController::blockSsWindowInput,                  Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::noFogStateChanged,                  m_soulstormController->soulstormMemoryController(), &SoulstormMemoryController::onNoFogStateChanged,             Qt::QueuedConnection);
-    QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstormWithSupportMode, m_soulstormController,              &SoulstormController::launchSoulstormWithSupportMode,      Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_soulstormController,              &SoulstormController::launchSoulstorm,                     Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
     QObject::connect(m_uiBackend->imageProvider(),      &ImageProvider::updateAttachments,              m_uiBackend->newsPage(),            &MessagesPage::onAttachmetImagesUpdate,             Qt::QueuedConnection);
