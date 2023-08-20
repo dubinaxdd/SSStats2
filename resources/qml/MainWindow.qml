@@ -52,7 +52,7 @@ Window {
         visible: _uiBackend.latesBalanceModNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "The latest DoW Stats Balance Mod is not installed!\nYou can install latest version DoW Stats Balance Mod in Mods page, or you can select other mod in bottom panel."
+        text: "The latest DoW Stats Balance Mod version is not installed!\nYou can install the latest DoW Stats Balance Mod  version from Mods page or select other mod from the bottom panel."
 
         onClickedOk:{
             _uiBackend.latesBalanceModNotInstalledDialogVisible = false;
