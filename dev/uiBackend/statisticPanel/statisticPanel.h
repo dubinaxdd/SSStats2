@@ -32,6 +32,7 @@ public:
         CalibrateGamesLeft = Qt::UserRole + 11,
         IsOnline = Qt::UserRole + 12,
         IsRanked = Qt::UserRole + 13,
+        BanType = Qt::UserRole + 14,
         PlayerVisible = Qt::UserRole
     };
 

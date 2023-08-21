@@ -109,6 +109,11 @@ int StatisticPanelItem::getCalibrateGamesLeft() const
     return m_playersStats.calibrateGamesLeft;
 }
 
+BanType::BanTypeEnum StatisticPanelItem::banType() const
+{
+    return m_playersStats.banType;
+}
+
 void StatisticPanelItem::setPlayerSteamId(QString steamId)
 {
     tempSid = steamId;

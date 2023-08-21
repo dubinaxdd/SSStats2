@@ -3,6 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import QtGraphicalEffects 1.15
 import DowStatsStyle 1.0
+import BanType 1.0
 
 Rectangle {
 
@@ -19,6 +20,7 @@ Rectangle {
     property bool playerVisible
     property string steamId
     //property int calibrateGamesLeft
+    property int banType
     property bool isOnline: false
     property bool isRanked: false
 
@@ -39,7 +41,24 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignTop
     Layout.fillHeight: false
     Layout.fillWidth: true
-    color: root.hoverEnabled ? ( root.hoveredState ? DowStatsStyle.itemColor : ((root.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor )) : ((root.playerIsBanned) ? "#ffa9a9" : DowStatsStyle.backgroundColor)
+
+    color: {
+        if (root.hoverEnabled && root.hoveredState)
+            return DowStatsStyle.itemColor
+        else
+        {
+            if (root.playerIsBanned)
+            {
+                if (root.banType === BanType.FormerBugUser || root.banType === BanType.FormerCheater)
+                    return "#FAF884"
+                else
+                    return "#ffa9a9"
+            }
+            else
+                return DowStatsStyle.backgroundColor
+        }
+    }
+
     radius: 10 * sizeModifer
 
     onPlayerGamesCountChanged:{

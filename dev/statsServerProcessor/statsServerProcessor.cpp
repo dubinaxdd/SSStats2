@@ -218,6 +218,20 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).winsCount = statsArray.at(i)["winsCount"].toInt();
         playersInfo.get()->operator[](i).avatarUrl = statsArray.at(i)["avatarUrl"].toString();
         playersInfo.get()->operator[](i).statsAvailable = true;
+
+        if (!playersInfo.get()->operator[](i).isBanned)
+            continue;
+
+        QString banType = statsArray.at(i)["banType"].toString();
+
+        if (banType == "former_cheater")
+            playersInfo.get()->operator[](i).banType = BanType::FormerCheater;
+        if (banType == "former_bug_user")
+            playersInfo.get()->operator[](i).banType = BanType::FormerBugUser;
+        if (banType == "bug_user")
+            playersInfo.get()->operator[](i).banType = BanType::BugUser;
+        if (banType == "cheater")
+            playersInfo.get()->operator[](i).banType = BanType::Cheater;
     }
 
     getPlayersMediumAvatar(playersInfo);

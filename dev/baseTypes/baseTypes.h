@@ -8,6 +8,21 @@
 #include <QUrl>
 #include <QUuid>
 
+class BanType {
+    Q_GADGET
+public:
+    enum BanTypeEnum: int{
+        NotBanned = 0,
+        Cheater = 1,
+        BugUser = 2,
+        FormerCheater = 3,
+        FormerBugUser = 4
+    };
+    Q_ENUM(BanTypeEnum)
+private:
+    explicit BanType(){}
+};
+
 enum InstMod
 {
     RussianFonts,
@@ -129,6 +144,7 @@ struct ServerPlayerStats
     int winRate = 0;
     int winsCount = 0;
     bool isBanned = false;
+    BanType::BanTypeEnum banType = BanType::NotBanned;
     QImage avatar;
     bool isCurrentPlayer = false;
     bool avatarAvailable = false;

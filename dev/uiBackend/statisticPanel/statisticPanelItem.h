@@ -21,6 +21,8 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(QUrl     playerAvatarId   READ avatarId              NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  steamId          READ getSteamId              NOTIFY playersStatsChanged)
     Q_PROPERTY(int  calibrateGamesLeft   READ getCalibrateGamesLeft              NOTIFY playersStatsChanged)
+    Q_PROPERTY(BanType::BanTypeEnum  banType        READ banType                NOTIFY playersStatsChanged)
+
     Q_PROPERTY(bool isRanked READ getIsRanked WRITE setIsRanked NOTIFY isRankedChanged)
     Q_PROPERTY(bool isOnline READ getIsOnline WRITE setIsOnline NOTIFY isOnlineChanged)
 
@@ -54,6 +56,7 @@ public:
     QImage  getAvatar() const;
     QString getSteamId() const;    
     int getCalibrateGamesLeft() const;
+    BanType::BanTypeEnum banType() const;
 
     QString getRaceFromNumber(int raceNumber) const;
 
