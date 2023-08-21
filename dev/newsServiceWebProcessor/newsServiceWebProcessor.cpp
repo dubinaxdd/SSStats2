@@ -9,7 +9,7 @@
 //#define REQUEST_TIMER_INTERVAL 2000
 //#define REQUEST_TIMER_INTERVAL2 4000
 
-#define REQUEST_TIMER_INTERVAL 5000
+#define REQUEST_TIMER_INTERVAL 500
 #define REQUEST_TIMER_INTERVAL2 5000
 
 DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController, QObject *parent)
@@ -384,14 +384,11 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveNews:" << "Connection error:" << reply->errorString();
-
-        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2 * 2);
+        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
         m_needRequestNews = true;
         delete reply;
         return;
     }
-
-    m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
 
     QByteArray replyByteArray = reply->readAll();
 
@@ -400,9 +397,7 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
 
     if (newsList.count() == 0)
-
         return;
-
 
     bool isNew = true;
 
@@ -452,13 +447,11 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveEvents:" << "Connection error:" << reply->errorString();
-        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2 * 2);
+        m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
         m_needRequestEvents = true;
         delete reply;
         return;
     }
-
-    m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
 
     QByteArray replyByteArray = reply->readAll();
 
