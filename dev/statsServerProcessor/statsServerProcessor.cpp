@@ -218,6 +218,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).winsCount = statsArray.at(i)["winsCount"].toInt();
         playersInfo.get()->operator[](i).avatarUrl = statsArray.at(i)["avatarUrl"].toString();
         playersInfo.get()->operator[](i).statsAvailable = true;
+        playersInfo.get()->operator[](i).banType = BanType::NotBanned;
 
         if (!playersInfo.get()->operator[](i).isBanned)
             continue;

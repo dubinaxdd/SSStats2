@@ -534,6 +534,12 @@ Rectangle {
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
+
+                    Label{
+                        text: "   ZADGE"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
                 }
 
                 Rectangle{

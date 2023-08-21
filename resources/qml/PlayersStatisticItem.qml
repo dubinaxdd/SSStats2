@@ -125,7 +125,7 @@ Rectangle {
 
             Rectangle{
                 Layout.fillHeight: true
-                visible: root.playerIsBanned
+                visible: root.banType === BanType.BugUser || root.banType === BanType.Cheater//root.playerIsBanned
             }
 
             Rectangle {
@@ -184,7 +184,7 @@ Rectangle {
 
             Label {
                 id: statusLabel
-                visible: root.playerIsBanned
+                visible: root.banType === BanType.BugUser || root.banType === BanType.Cheater
                 text: qsTr("[CHEATER]")
                 font.pixelSize: 15 * sizeModifer
                 Layout.alignment: Qt.AlignHCenter
@@ -198,7 +198,7 @@ Rectangle {
             RowLayout
             {
                 Layout.leftMargin: 10 * sizeModifer
-                visible: !root.playerIsBanned
+                visible: !(root.banType === BanType.BugUser || root.banType === BanType.Cheater)
 
                 Rectangle{
                     radius:5 * sizeModifer
@@ -221,7 +221,7 @@ Rectangle {
             {
                 Layout.leftMargin: 10 * sizeModifer
 
-                visible: !root.playerIsBanned
+                visible: !(root.banType === BanType.BugUser || root.banType === BanType.Cheater)
 
                 Rectangle{
                     radius:5 * sizeModifer
@@ -330,6 +330,7 @@ Rectangle {
                 ColumnLayout
                 {
                     spacing:0
+                    Layout.rightMargin: 5 * sizeModifer
 
                     Rectangle
                     {
@@ -338,9 +339,8 @@ Rectangle {
                         Layout.preferredWidth: 50 * sizeModifer
                         Layout.minimumHeight: 50 * sizeModifer
                         Layout.minimumWidth: 50 * sizeModifer
-                        Layout.margins: 5 * sizeModifer
+                        Layout.margins: 0
                         color: "#00000000"
-                        radius:5
 
                         Image
                         {
@@ -358,6 +358,28 @@ Rectangle {
                             sourceSize.height: 60 * sizeModifer
                         }
                     }
+
+                    Label {
+                        visible: root.banType === BanType.FormerBugUser
+                        text: qsTr("Former\nbug abuser")
+                        font.pixelSize: 10 * sizeModifer
+                        Layout.alignment: Qt.AlignHCenter
+                        color: root.textColor
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
+
+                    Label {
+                        visible: root.banType === BanType.FormerCheater
+                        text: qsTr("Former\ncheater")
+                        font.pixelSize: 10 * sizeModifer
+                        Layout.alignment: Qt.AlignHCenter
+                        color: root.textColor
+                        horizontalAlignment: Text.AlignHCenter
+                        verticalAlignment: Text.AlignVCenter
+                    }
+
                 }
             }
         }
