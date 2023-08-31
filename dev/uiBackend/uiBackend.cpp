@@ -1,6 +1,8 @@
 #include <uiBackend.h>
 #include <QDebug>
 #include <version.h>
+#include <QFile>
+#include <QDir>
 
 UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -106,6 +108,24 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(SsMissionState::gameOver);
+}
+
+bool UiBackend::ssNotInstalledDialogVisisble() const
+{
+    return m_ssNotInstalledDialogVisisble;
+}
+
+void UiBackend::setSsNotInstalledDialogVisisble(bool newSsNotInstalledDialogVisisble)
+{
+    if (m_ssNotInstalledDialogVisisble == newSsNotInstalledDialogVisisble)
+        return;
+    m_ssNotInstalledDialogVisisble = newSsNotInstalledDialogVisisble;
+    emit ssNotInstalledDialogVisisbleChanged();
+}
+
+void UiBackend::setSsPath(const QString &newSsPath)
+{
+    m_ssPath = newSsPath;
 }
 
 bool UiBackend::latesBalanceModNotInstalledDialogVisible() const
@@ -316,7 +336,11 @@ void UiBackend::onExit()
 
 void UiBackend::launchSoulstorm()
 {
-    if (m_settingsPageModel->launchMode() == LaunchMod::DowStatsBalanceMod && !m_balanceModPage->isLatestModInstalled())
+    QFile ssDir(m_ssPath + QDir::separator() + "Soulstorm.exe");
+
+    if(!ssDir.exists())
+        setSsNotInstalledDialogVisisble(true);
+    else if (m_settingsPageModel->launchMode() == LaunchMod::DowStatsBalanceMod && !m_balanceModPage->isLatestModInstalled())
         setLatesBalanceModNotInstalledDialogVisible(true);
     else
         emit sendLaunchSoulstorm();

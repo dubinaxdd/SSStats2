@@ -64,6 +64,7 @@ class UiBackend : public QObject
     Q_PROPERTY(QString currentModTechnicalName READ currentModTechnicalName WRITE setCurrentModTechnicalName NOTIFY currentModTechnicalNameChanged)
 
     Q_PROPERTY(bool latesBalanceModNotInstalledDialogVisible READ latesBalanceModNotInstalledDialogVisible WRITE setLatesBalanceModNotInstalledDialogVisible NOTIFY latesBalanceModNotInstalledDialogVisibleChanged)
+    Q_PROPERTY(bool ssNotInstalledDialogVisisble READ ssNotInstalledDialogVisisble WRITE setSsNotInstalledDialogVisisble NOTIFY ssNotInstalledDialogVisisbleChanged)
 
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
@@ -128,6 +129,11 @@ public:
     bool latesBalanceModNotInstalledDialogVisible() const;
     void setLatesBalanceModNotInstalledDialogVisible(bool newLatesBalanceModNotInstalledDialogVisible);
 
+    void setSsPath(const QString &newSsPath);
+
+    bool ssNotInstalledDialogVisisble() const;
+    void setSsNotInstalledDialogVisisble(bool newSsNotInstalledDialogVisisble);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -169,6 +175,8 @@ signals:
     void notificationManagerChanged();
 
     void latesBalanceModNotInstalledDialogVisibleChanged();
+
+    void ssNotInstalledDialogVisisbleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -249,6 +257,7 @@ private:
 
     bool m_rankedModeState = true;
     bool m_enableTrainingModeSwitch = true;
+    bool m_ssNotInstalledDialogVisisble = false;
 
     double m_sizeModifer = 1.0;
 
@@ -260,6 +269,7 @@ private:
 
     QString m_currentModName = "";
     QString m_currentModTechnicalName = "";
+    QString m_ssPath = "";
 
     bool m_latesBalanceModNotInstalledDialogVisible = false;
 };

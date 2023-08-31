@@ -283,25 +283,16 @@ void SoulstormController::ssShutdown()
 
 QString SoulstormController::getSsPathFromRegistry()
 {
-    QString path = QCoreApplication::applicationDirPath();
-    if(QFile::exists(path+"/Soulstorm.exe"))
-        return path;
+    QString path = "";
 
-    //QSettings thq("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War - Soulstorm", QSettings::NativeFormat);
-    //path = thq.value("installlocation", "").toString();
-
-    //if(path.isEmpty())
-    //{
     QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War - Soulstorm", QSettings::NativeFormat);
     path = sega.value("installlocation", "").toString();
-    //}
 
     if(path.isEmpty())
     {
         QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War Soulstorm", QSettings::NativeFormat);
         path = sega.value("installlocation", "").toString();
     }
-
 
     if(path.isEmpty())
     {

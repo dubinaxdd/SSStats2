@@ -59,6 +59,18 @@ Window {
         }
     }
 
+    PopupDialog{
+        id: soulstormNotInstalledDialog
+        visible: _uiBackend.ssNotInstalledDialogVisisble
+        yesButtonVisible: false
+        noButtonVisible: false
+        text: "Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game."
+
+        onClickedOk:{
+            _uiBackend.ssNotInstalledDialogVisisble = false;
+        }
+    }
+
 
     NotificationList{
         x: mainContentContainerRectangle.x
