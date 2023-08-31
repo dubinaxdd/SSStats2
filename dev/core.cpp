@@ -43,6 +43,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     m_balanceModManager->setSsPath(m_soulstormController->ssPath());
     m_uiBackend->setSsPath(m_soulstormController->ssPath());
+    m_uiBackend->setSteamPath(m_soulstormController->steamPath());
 
     m_settingsController->initializeSettings();
 }

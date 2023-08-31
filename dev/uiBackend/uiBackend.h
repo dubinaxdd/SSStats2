@@ -65,7 +65,7 @@ class UiBackend : public QObject
 
     Q_PROPERTY(bool latesBalanceModNotInstalledDialogVisible READ latesBalanceModNotInstalledDialogVisible WRITE setLatesBalanceModNotInstalledDialogVisible NOTIFY latesBalanceModNotInstalledDialogVisibleChanged)
     Q_PROPERTY(bool ssNotInstalledDialogVisisble READ ssNotInstalledDialogVisisble WRITE setSsNotInstalledDialogVisisble NOTIFY ssNotInstalledDialogVisisbleChanged)
-
+    Q_PROPERTY(bool steamNotInstalledDialogVisisble READ steamNotInstalledDialogVisisble WRITE setSteamNotInstalledDialogVisisble NOTIFY steamNotInstalledDialogVisisbleChanged)
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -134,6 +134,11 @@ public:
     bool ssNotInstalledDialogVisisble() const;
     void setSsNotInstalledDialogVisisble(bool newSsNotInstalledDialogVisisble);
 
+    void setSteamPath(const QString &newSteamPath);
+
+    bool steamNotInstalledDialogVisisble() const;
+    void setSteamNotInstalledDialogVisisble(bool newSteamNotInstalledDialogVisisble);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -177,6 +182,8 @@ signals:
     void latesBalanceModNotInstalledDialogVisibleChanged();
 
     void ssNotInstalledDialogVisisbleChanged();
+
+    void steamNotInstalledDialogVisisbleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -257,7 +264,9 @@ private:
 
     bool m_rankedModeState = true;
     bool m_enableTrainingModeSwitch = true;
+
     bool m_ssNotInstalledDialogVisisble = false;
+    bool m_steamNotInstalledDialogVisisble = false;
 
     double m_sizeModifer = 1.0;
 
@@ -270,6 +279,7 @@ private:
     QString m_currentModName = "";
     QString m_currentModTechnicalName = "";
     QString m_ssPath = "";
+    QString m_steamPath = "";
 
     bool m_latesBalanceModNotInstalledDialogVisible = false;
 };

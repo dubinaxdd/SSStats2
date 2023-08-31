@@ -110,6 +110,24 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+bool UiBackend::steamNotInstalledDialogVisisble() const
+{
+    return m_steamNotInstalledDialogVisisble;
+}
+
+void UiBackend::setSteamNotInstalledDialogVisisble(bool newSteamNotInstalledDialogVisisble)
+{
+    if (m_steamNotInstalledDialogVisisble == newSteamNotInstalledDialogVisisble)
+        return;
+    m_steamNotInstalledDialogVisisble = newSteamNotInstalledDialogVisisble;
+    emit steamNotInstalledDialogVisisbleChanged();
+}
+
+void UiBackend::setSteamPath(const QString &newSteamPath)
+{
+    m_steamPath = newSteamPath;
+}
+
 bool UiBackend::ssNotInstalledDialogVisisble() const
 {
     return m_ssNotInstalledDialogVisisble;
@@ -338,8 +356,12 @@ void UiBackend::launchSoulstorm()
 {
     QFile ssDir(m_ssPath + QDir::separator() + "Soulstorm.exe");
 
-    if(!ssDir.exists())
+    QDir steamDir(m_steamPath);
+
+    if(m_ssPath.isEmpty() || !ssDir.exists())
         setSsNotInstalledDialogVisisble(true);
+    else if(m_steamPath.isEmpty() || !steamDir.exists())
+        setSteamNotInstalledDialogVisisble(true);
     else if (m_settingsPageModel->launchMode() == LaunchMod::DowStatsBalanceMod && !m_balanceModPage->isLatestModInstalled())
         setLatesBalanceModNotInstalledDialogVisible(true);
     else

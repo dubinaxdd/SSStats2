@@ -71,6 +71,19 @@ Window {
         }
     }
 
+    PopupDialog{
+        id: steamNotInstalledDialog
+        visible: _uiBackend.steamNotInstalledDialogVisisble
+        yesButtonVisible: false
+        noButtonVisible: false
+        text: "Steam is not installed!\nInstall Steam and try again.\nRestart Dow Stats Client after installing Steam."
+
+        onClickedOk:{
+            _uiBackend.steamNotInstalledDialogVisisble = false;
+        }
+    }
+
+
 
     NotificationList{
         x: mainContentContainerRectangle.x
