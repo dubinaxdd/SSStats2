@@ -302,11 +302,23 @@ QString SoulstormController::getSsPathFromRegistry()
 
     if(path.isEmpty())
     {
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+    }
+
+    if(path.isEmpty())
+    {
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War - Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+    }
+
+    if(path.isEmpty())
+    {
         QSettings steam("HKEY_CURRENT_USER\\SOFTWARE\\Valve\\Steam", QSettings::NativeFormat);
         path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
     }
 
-    return "" /*path*/;
+    return path;
 }
 
 QString SoulstormController::getSteamPathFromRegistry()
@@ -319,7 +331,7 @@ QString SoulstormController::getSteamPathFromRegistry()
         QSettings settings_second("HKEY_CURRENT_USER\\Software\\Valve\\Steam", QSettings::NativeFormat);
         steam_path = settings_second.value("SteamPath").toString();
     }
-    return "" /*steam_path*/;
+    return steam_path;
 }
 
 void SoulstormController::parseSsSettings()
