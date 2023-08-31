@@ -45,6 +45,8 @@ int runAutoUpdate() {
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+
     QApplication app3(argc, argv);
 
     if(runAutoUpdate() == 5){
@@ -88,8 +90,6 @@ int main(int argc, char *argv[])
 //#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 //#endif
-
-    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
     //setlocale(LC_ALL,"Russian");

@@ -75,14 +75,14 @@ private:
     void writeCurrentModSettingInGame();
 
 private:
+    const QString m_ssPath;
+    const QString m_steamPath;
+
     HWND m_soulstormHwnd = NULL;
     LONG m_defaultSoulstormWindowLong = NULL;
 
     QTimer* m_ssWindowControllTimer;
     
-    QString m_ssPath;
-    QString m_steamPath;
-
     QString m_currentProfile;
 
     bool inputBlocked = false;
@@ -93,7 +93,7 @@ private:
     bool m_gameInitialized = false;
     bool m_ssWindowCreated = false;
 
-    GameStateReader* m_gameStateReader;
+
     LobbyEventReader* m_lobbyEventReader;
 
     SoulstormMemoryReader* m_soulstormMemoryReader;
@@ -103,6 +103,7 @@ private:
     APMMeter* m_apmMeter;
     SoulstormMemoryController* m_soulstormMemoryController;
     SettingsController* m_settingsController;
+    GameStateReader* m_gameStateReader;
     DowServerProcessor* m_dowServerProcessor;
     ReplayDataCollector* m_replayDataCollector;
 

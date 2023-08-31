@@ -7,6 +7,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QStringList>
+#include <QDir>
 
 #define SS_FULLSCREENIZE_TIMER_INTERVAL 2000
 
@@ -15,21 +16,26 @@
 
 SoulstormController::SoulstormController(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
+    , m_ssPath(getSsPathFromRegistry())
+    , m_steamPath(getSteamPathFromRegistry())
+    , m_lobbyEventReader(new LobbyEventReader(m_ssPath, this))
     , m_apmMeter(new APMMeter(this))
     , m_soulstormMemoryController(new SoulstormMemoryController(settingsController, this))
     , m_settingsController(settingsController)
+    , m_gameStateReader(new GameStateReader(m_settingsController, m_ssPath, this))
     , m_dowServerProcessor(new DowServerProcessor(this))
+    , m_replayDataCollector(new ReplayDataCollector(m_ssPath, this))
     , m_soulstormProcess(nullptr)
 {
+    if(m_steamPath.isEmpty() || !QDir(m_steamPath).exists())
+        qWarning(logWarning()) << "Steam is not installed!" << m_steamPath;
+    else
+        qInfo(logInfo()) << "Steam path: " << m_steamPath;
 
-    m_ssPath = getSsPathFromRegistry();
-    qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
-
-    m_gameStateReader = new GameStateReader(m_settingsController, m_ssPath, this);
-    m_lobbyEventReader = new LobbyEventReader(m_ssPath, this);
-    m_replayDataCollector = new ReplayDataCollector(m_ssPath, this);
-
-    m_steamPath = getSteamPathFromRegistry();
+    if(m_ssPath.isEmpty() || !QDir(m_ssPath).exists())
+        qWarning(logWarning()) << "Soulstorm is not installed!" << m_ssPath;
+    else
+        qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
 
     m_soulstormMemoryReader = new SoulstormMemoryReader(/*this*/);
 
@@ -300,7 +306,7 @@ QString SoulstormController::getSsPathFromRegistry()
         path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
     }
 
-    return path;
+    return "" /*path*/;
 }
 
 QString SoulstormController::getSteamPathFromRegistry()
@@ -313,9 +319,7 @@ QString SoulstormController::getSteamPathFromRegistry()
         QSettings settings_second("HKEY_CURRENT_USER\\Software\\Valve\\Steam", QSettings::NativeFormat);
         steam_path = settings_second.value("SteamPath").toString();
     }
-    qInfo(logInfo()) << "Steam path: " << steam_path;
-
-    return steam_path;
+    return "" /*steam_path*/;
 }
 
 void SoulstormController::parseSsSettings()
