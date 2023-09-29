@@ -143,7 +143,11 @@ void UiBackend::setSsNotInstalledDialogVisisble(bool newSsNotInstalledDialogVisi
 
 void UiBackend::setSsPath(const QString &newSsPath)
 {
+    if(m_ssPath == newSsPath)
+        return;
+
     m_ssPath = newSsPath;
+    emit soulstormIsInstalledChanged();
 }
 
 bool UiBackend::latesBalanceModNotInstalledDialogVisible() const
@@ -354,11 +358,9 @@ void UiBackend::onExit()
 
 void UiBackend::launchSoulstorm()
 {
-    QFile ssDir(m_ssPath + QDir::separator() + "Soulstorm.exe");
-
     QDir steamDir(m_steamPath);
 
-    if(m_ssPath.isEmpty() || !ssDir.exists())
+    if(!soulstormIsInstalled())
         setSsNotInstalledDialogVisisble(true);
     else if(m_steamPath.isEmpty() || !steamDir.exists())
         setSteamNotInstalledDialogVisisble(true);
@@ -399,6 +401,13 @@ void UiBackend::showClient()
 SettingsPageModel *UiBackend::settingsPageModel() const
 {
     return m_settingsPageModel;
+}
+
+bool UiBackend::soulstormIsInstalled()
+{
+    QFile ssDir(m_ssPath + QDir::separator() + "Soulstorm.exe");
+
+    return !m_ssPath.isEmpty() && ssDir.exists();
 }
 
 MessagesPage *UiBackend::eventsPage() const

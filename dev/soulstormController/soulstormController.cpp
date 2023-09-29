@@ -106,6 +106,11 @@ void SoulstormController::blockSsWindowInput(bool state)
 
 void SoulstormController::launchSoulstorm()
 {
+    QDir ssPath(m_ssPath);
+
+    if(!ssPath.exists())
+        return;
+
 
     bool win7SupportMode = m_settingsController->getSettings()->win7SupportMode;
     bool launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
@@ -151,6 +156,11 @@ void SoulstormController::minimizeSsWithWin7Support()
 
 void SoulstormController::checkWindowState()
 {
+    QDir ssPath(m_ssPath);
+
+    if(!ssPath.exists())
+        return;
+
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
     LPCWSTR lps = (LPCWSTR)ss.utf16();
@@ -336,6 +346,10 @@ QString SoulstormController::getSteamPathFromRegistry()
 
 void SoulstormController::parseSsSettings()
 {
+    QDir ssPath(m_ssPath);
+
+    if(!ssPath.exists())
+        return;
 
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
     m_ssWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
@@ -358,6 +372,11 @@ void SoulstormController::updateSoulstormWindow()
 
 void SoulstormController::writeCurrentModSettingInGame()
 {
+    QDir ssPath(m_ssPath);
+
+    if(!ssPath.exists())
+        return;
+
     QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
 
     LaunchMod launchMode = m_settingsController->getSettings()->launchMode;

@@ -66,6 +66,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool latesBalanceModNotInstalledDialogVisible READ latesBalanceModNotInstalledDialogVisible WRITE setLatesBalanceModNotInstalledDialogVisible NOTIFY latesBalanceModNotInstalledDialogVisibleChanged)
     Q_PROPERTY(bool ssNotInstalledDialogVisisble READ ssNotInstalledDialogVisisble WRITE setSsNotInstalledDialogVisisble NOTIFY ssNotInstalledDialogVisisbleChanged)
     Q_PROPERTY(bool steamNotInstalledDialogVisisble READ steamNotInstalledDialogVisisble WRITE setSteamNotInstalledDialogVisisble NOTIFY steamNotInstalledDialogVisisbleChanged)
+
+    Q_PROPERTY(bool soulstormIsInstalled READ soulstormIsInstalled NOTIFY soulstormIsInstalledChanged)
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -96,6 +98,8 @@ public:
     MessagesPage *eventsPage() const;
     ReplayManager *replayManager() const;
     SettingsPageModel *settingsPageModel() const;
+
+    bool soulstormIsInstalled();
 
     Q_INVOKABLE void launchSoulstorm();
 
@@ -180,10 +184,10 @@ signals:
     void notificationManagerChanged();
 
     void latesBalanceModNotInstalledDialogVisibleChanged();
-
     void ssNotInstalledDialogVisisbleChanged();
-
     void steamNotInstalledDialogVisisbleChanged();
+
+    void soulstormIsInstalledChanged();
 
 public slots:
     void expandKeyPressed();

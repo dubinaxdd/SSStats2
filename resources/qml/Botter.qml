@@ -210,6 +210,8 @@ Rectangle {
         {
             clip: true
 
+            visible: _uiBackend.soulstormIsInstalled
+
             Label{
                 Layout.preferredWidth: 250
 
@@ -286,7 +288,7 @@ Rectangle {
                 hoverEnabled: true
 
                 onClicked: {
-                        _uiBackend.launchSoulstorm()
+                    _uiBackend.launchSoulstorm()
                 }
             }
         }

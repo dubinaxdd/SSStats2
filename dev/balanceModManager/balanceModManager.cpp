@@ -77,6 +77,11 @@ void BalanceModManager::downloadModsInfo()
 
 void BalanceModManager::checkCurrentModInGame()
 {
+    QDir ssPath(m_ssPath);
+
+    if(!ssPath.exists())
+        return;
+
     QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
     QString currentModName = ssSettings->value("global/currentmoddc", "").toString();
     delete ssSettings;
@@ -267,6 +272,11 @@ void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
 
 void BalanceModManager::setSsPath(const QString &newSsPath)
 {
+    QDir ssPath(newSsPath);
+
+    if(!ssPath.exists())
+        return;
+
     m_ssPath = newSsPath;
 
     if(m_ssPath.isEmpty())

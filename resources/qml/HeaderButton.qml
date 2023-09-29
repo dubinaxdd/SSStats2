@@ -8,11 +8,21 @@ Rectangle {
     property bool pressedState : false
     property string text: "button"
     property bool newsAvailable: false
+    property bool enabled: true
 
     signal clicked()
 
     width: buttonInfoLabel.width + 40//140
-    color: pressedState ? "#ff080808" : "#00ffffff"
+    color: {
+        if(!enabled)
+            return "#3A3B3C"
+
+        if (pressedState)
+            return "#ff080808"
+        else
+            return "#00ffffff"
+    }
+
     Layout.minimumHeight: 60
 
     ColumnLayout
@@ -21,7 +31,14 @@ Rectangle {
 
         Text {
             id: buttonInfoLabel
-            color: mouseArea.containsMouse || pressedState  ? "#ffffff" : "#999999"
+
+            color: {
+                if (mouseArea.containsMouse  || pressedState)
+                     return "#ffffff"
+                else
+                    return "#999999"
+            }
+
             text: mainRectangle.text
             Layout.alignment: Qt.AlignCenter
 
@@ -69,7 +86,11 @@ Rectangle {
         cursorShape: Qt.PointingHandCursor
 
         onClicked: {
-            pressedState = true;
+            if (enabled)
+                pressedState = true;
+            else
+                pressedState = false;
+
             mainRectangle.clicked();
         }
     }

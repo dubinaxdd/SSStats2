@@ -124,6 +124,8 @@ Window {
             {
                 anchors.fill: parent
 
+                spacing: 0
+
                 Rectangle {
                     id: headerRectangle
                     width: 280
@@ -263,14 +265,22 @@ Window {
                 HeaderButton{
                     id: replayManagerButton
                     text: "Replay Manager"
-                    //width: 160
+                    enabled: _uiBackend.soulstormIsInstalled
 
                     onClicked: {
-                        newsButton.pressedState = false;
-                        eventsButton.pressedState = false;
-                        infoButton.pressedState = false;
-                        settingsButton.pressedState = false;
-                        modsButton.pressedState = false
+                        if (_uiBackend.soulstormIsInstalled)
+                        {
+                            newsButton.pressedState = false;
+                            eventsButton.pressedState = false;
+                            infoButton.pressedState = false;
+                            settingsButton.pressedState = false;
+                            modsButton.pressedState = false
+                        }
+                        else
+                        {
+                            pressedState = false;
+                            _uiBackend.ssNotInstalledDialogVisisble = true
+                        }
                     }
                 }
 
@@ -278,13 +288,22 @@ Window {
                     id: modsButton
                     text: "Mods"
                     newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
+                    enabled: _uiBackend.soulstormIsInstalled
 
                     onClicked: {
-                        newsButton.pressedState = false;
-                        eventsButton.pressedState = false;
-                        infoButton.pressedState = false;
-                        replayManagerButton.pressedState = false;
-                        settingsButton.pressedState = false;
+                        if (_uiBackend.soulstormIsInstalled)
+                        {
+                            newsButton.pressedState = false;
+                            eventsButton.pressedState = false;
+                            infoButton.pressedState = false;
+                            replayManagerButton.pressedState = false;
+                            settingsButton.pressedState = false;
+                        }
+                        else
+                        {
+                            pressedState = false;
+                            _uiBackend.ssNotInstalledDialogVisisble = true
+                        }
 
                     }
                 }
