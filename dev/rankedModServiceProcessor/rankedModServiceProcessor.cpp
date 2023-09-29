@@ -235,8 +235,8 @@ bool RankedModServiceProcessor::checkReplyErrors(QString funcName, QNetworkReply
 
 void RankedModServiceProcessor::sendPingRequest()
 {
-    if (m_currentPlayerSteamId.isEmpty())
-        return;
+    //if (m_currentPlayerSteamId.isEmpty())
+    //    return;
 
     QString urlString = "http://crosspick.ru:8081/pingRequest?sid=" + m_currentPlayerSteamId + "&gameMod=" + m_currentMod;
 
