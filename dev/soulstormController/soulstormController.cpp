@@ -381,14 +381,32 @@ void SoulstormController::writeCurrentModSettingInGame()
 
     LaunchMod launchMode = m_settingsController->getSettings()->launchMode;
 
+    QChar sepr = QDir::separator();
+
     switch (launchMode)
     {
         case LaunchMod::OriginalSoulstorm :
+        {
             ssSettings->setValue("global/currentmoddc", "dxp2");
+
+            QFile file(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
+
+            if (file.exists())
+                file.rename(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds");
+
             break;
+        }
         case LaunchMod::DowStatsBalanceMod :
+        {
             ssSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
+
+            QFile file(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
+
+            if (file.exists())
+                file.rename(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds");
+
             break;
+        }
         default: break;
     }
 
