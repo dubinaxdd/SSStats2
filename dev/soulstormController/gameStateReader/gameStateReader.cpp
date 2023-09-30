@@ -160,6 +160,14 @@ void GameStateReader::readRacesTimerTimeout()
 
             QString name = fileLines[i].right(fileLines[i].length() - 12);
             name = name.left(name.length() - 2);
+
+            //TODO: повторяем два раза ибо могут быть двойные скобки
+            if (name.count() >= 3 && name.at(0) == '[' && name.at(name.count()-1) == ']')
+                name = name.mid(1, name.count() - 2);
+
+            if (name.count() >= 3 && name.at(0) == '[' && name.at(name.count()-1) == ']')
+                name = name.mid(1, name.count() - 2);
+
             playerNames.append(name);
         }
 

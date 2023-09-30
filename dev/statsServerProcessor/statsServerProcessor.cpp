@@ -301,8 +301,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     for (int i = 0; i < replayInfo.playersInfo.count(); i++)
     {
-        if (replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).name)
+        if (replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).name ||
+            replayInfo.playersInfo[i].playerName == "[" + m_currentPlayerStats.data()->at(0).name + "]" ||
+            replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).name + "]]"
+            )
+        {
             replayInfo.playersInfo[i].playerSid = m_currentPlayerStats.data()->at(0).steamId;
+            replayInfo.playersInfo[i].playerName = m_currentPlayerStats.data()->at(0).name;
+        }
 
         if (replayInfo.playersInfo[i].playerSid == "")
         {

@@ -381,8 +381,6 @@ void SoulstormController::writeCurrentModSettingInGame()
 
     LaunchMod launchMode = m_settingsController->getSettings()->launchMode;
 
-    QChar sepr = QDir::separator();
-
     switch (launchMode)
     {
         case LaunchMod::OriginalSoulstorm :

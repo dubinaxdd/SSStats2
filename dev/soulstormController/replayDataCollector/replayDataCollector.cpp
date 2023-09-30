@@ -319,9 +319,13 @@ bool ReplayDataCollector::readReplayData()
             if(m_playersInfoFromScanner[j].isCurrentPlayer)
                 continue;
 
-            if(newPlayer.playerName == m_playersInfoFromScanner[j].name || newPlayer.playerName == "[" + m_playersInfoFromScanner[j].name + "]")
+            if(newPlayer.playerName == m_playersInfoFromScanner[j].name ||
+               newPlayer.playerName == "[" + m_playersInfoFromScanner[j].name + "]"  ||
+               newPlayer.playerName == "[[" + m_playersInfoFromScanner[j].name + "]]"
+                    )
             {
                 newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
+                newPlayer.playerName = m_playersInfoFromScanner[j].name;
                 break;
             }
         }
