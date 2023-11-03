@@ -82,8 +82,6 @@ Rectangle {
             case(7): rankImage.source = "qrc:/images/resources/images/Rank1.svg"; return;
         }
 
-        console.log("ASDASDADASDASDASDASDASD", root.playerRank)
-
         rankImage.source = "qrc:/images/resources/images/Rank2.svg"
         return;
     }
