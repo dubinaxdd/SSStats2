@@ -18,6 +18,8 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     m_modsInfoRequestTimer->setInterval(5000);
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
 
+    m_modsInfoRequestTimer->start();
+
     m_checkDownloadingQueryTimer->setInterval(1000);
     connect(m_checkDownloadingQueryTimer, &QTimer::timeout, this, &BalanceModManager::checkDownloadingQuery, Qt::QueuedConnection);
 
@@ -137,7 +139,7 @@ void BalanceModManager::newActualModDetected(QString modTechnicalName, bool inst
 
 void BalanceModManager::modsInfoTimerTimeout()
 {
-    if(m_ssPath.isEmpty())
+    if(m_ssPath.isEmpty() || !m_ssLounchedStateReceived)
         return;
 
     checkCurrentModInGame();
@@ -258,9 +260,11 @@ void BalanceModManager::receiveProfileCopyMode(bool overwritePrifiles, QString m
 void BalanceModManager::onSsLaunchStateChanged(bool lounched)
 {
     m_ssLounchedState = lounched;
+    m_ssLounchedStateReceived = true;
     qDebug() << "ASDADASDASDASDADADASDASDASDASD" << m_ssLounchedState;
 
-    m_modsInfoRequestTimer->start();
+    modsInfoTimerTimeout();
+
 }
 
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
@@ -406,6 +410,9 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
                 m_modInfoList[i].downloadingProcessed = true;
                 requestDownloadMod(m_modInfoList.at(i).technicalName);
             }
+
+            if (!m_modInfoList.at(i).isInstalled && (!m_settingsController->getSettings()->autoUpdateBalanceMod || m_ssLounchedState))
+                sendModReadyForInstall(m_modInfoList.at(i).uiName);
         }
     }
 

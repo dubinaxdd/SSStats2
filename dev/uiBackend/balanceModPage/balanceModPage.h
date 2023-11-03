@@ -99,6 +99,7 @@ public slots:
    void receiveTemplateProfilePath(QString templateProfilePath);
    void receiveInstallingModError(QString modTechnicalName);
    void receiveProfileCopyModeRequest(QString modTechnicalName);
+   void receiveModReadyForInstall(QString modTechnicalName);
 
 private slots:
     void onSettingsLoaded();

@@ -93,6 +93,8 @@ private:
     bool m_gameInitialized = false;
     bool m_ssWindowCreated = false;
 
+    bool m_firstTimerTick = true;
+
 
     LobbyEventReader* m_lobbyEventReader;
 

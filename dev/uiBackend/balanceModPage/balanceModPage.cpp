@@ -185,7 +185,7 @@ void BalanceModPage::uninstallMod(int modIndex)
 
     NotificationInfo notificationInfo;
 
-    notificationInfo.text = m_modsInfo[modIndex].uiName + " has been uninstalled";
+    notificationInfo.text = m_modsInfo[modIndex].uiName + " has been uninstalled.";
     notificationInfo.type = NotificationType::Delete;
 
     emit sendNotification(notificationInfo);
@@ -453,7 +453,7 @@ void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
 
             NotificationInfo notificationInfo;
 
-            notificationInfo.text = m_modsInfo[i].uiName + " installation error";
+            notificationInfo.text = m_modsInfo[i].uiName + " installation error.";
             notificationInfo.type = NotificationType::Warning;
             notificationInfo.uuid = m_uuid;
 
@@ -473,6 +473,18 @@ void BalanceModPage::receiveProfileCopyModeRequest(QString modTechnicalName)
 {
     m_profileCopyModeRequestTechnicalName = modTechnicalName;
     setProfileCopyModeRequestMessageVisible(true);
+}
+
+void BalanceModPage::receiveModReadyForInstall(QString modTechnicalName)
+{
+
+    NotificationInfo notificationInfo;
+
+    notificationInfo.text = modTechnicalName + " ready for install.";
+    notificationInfo.type = NotificationType::Info;
+    notificationInfo.uuid = m_uuid;
+
+    emit sendNotification(notificationInfo);
 }
 
 bool BalanceModPage::useCustomTemplateProfilePath() const

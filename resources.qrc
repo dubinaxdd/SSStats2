@@ -38,6 +38,7 @@
         <file>resources/images/ready.svg</file>
         <file>resources/images/warning.svg</file>
         <file>resources/images/download.svg</file>
+        <file>resources/images/info.svg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>resources/sounds/game_started.wav</file>

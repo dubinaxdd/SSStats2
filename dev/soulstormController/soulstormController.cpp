@@ -186,7 +186,14 @@ void SoulstormController::checkWindowState()
     else
     {
          if (!m_gameInitialized)
+         {
+             if (m_firstTimerTick)
+             {
+                 m_firstTimerTick = false;
+                 emit ssLaunchStateChanged(false);
+             }
              return;
+         }
     }
 
 
@@ -283,6 +290,12 @@ void SoulstormController::checkWindowState()
             m_gameInitialized = false;
             qWarning(logWarning()) << "Soulstorm window not accepted";
         }
+    }
+
+    if (m_firstTimerTick)
+    {
+        m_firstTimerTick = false;
+        emit ssLaunchStateChanged(m_ssLounchState);
     }
 }
 

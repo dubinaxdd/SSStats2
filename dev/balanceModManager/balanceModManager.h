@@ -64,6 +64,7 @@ signals:
 
     void sendInstallingModError(QString modTechnicalName);
     void requestProfileCopyMode(QString modTechnicalName);
+    void sendModReadyForInstall(QString modUiName);
 
 private:
 
@@ -88,6 +89,7 @@ private:
     QString m_lastActualMod = "";
 
     bool m_ssLounchedState = false;
+    bool m_ssLounchedStateReceived = false;
 
 
 };
