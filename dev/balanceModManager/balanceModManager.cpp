@@ -10,12 +10,18 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     : QObject(parent)
     , m_balanceModInstaller(new BalanceModInstaller())
     , m_balanceModInstallerThread(new QThread(this))
+    , m_checkDownloadingQueryTimer(new QTimer(this))
     , m_settingsController(settingsController)
     , m_networkManager(new QNetworkAccessManager(this))
     , m_modsInfoRequestTimer(new QTimer(this))
 {
     m_modsInfoRequestTimer->setInterval(5000);
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
+
+    m_checkDownloadingQueryTimer->setInterval(1000);
+    connect(m_checkDownloadingQueryTimer, &QTimer::timeout, this, &BalanceModManager::checkDownloadingQuery, Qt::QueuedConnection);
+
+    m_checkDownloadingQueryTimer->start();
 
     connect(this, &BalanceModManager::installMod, m_balanceModInstaller, &BalanceModInstaller::installMod, Qt::QueuedConnection);
     connect(this, &BalanceModManager::uninstallMod, m_balanceModInstaller, &BalanceModInstaller::uninstallMod, Qt::QueuedConnection);
@@ -131,6 +137,9 @@ void BalanceModManager::newActualModDetected(QString modTechnicalName, bool inst
 
 void BalanceModManager::modsInfoTimerTimeout()
 {
+    if(m_ssPath.isEmpty())
+        return;
+
     checkCurrentModInGame();
     downloadModsInfo();
 }
@@ -150,6 +159,7 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
     qInfo(logInfo()) <<  modTechnicalName + " installed";
     emit sendModDownloaded(modTechnicalName);
 
+    m_modDownloadingProcessed = false;
     checkDownloadingQuery();
 }
 
@@ -245,6 +255,14 @@ void BalanceModManager::receiveProfileCopyMode(bool overwritePrifiles, QString m
     downloadMod(modTechnicalName, overwritePrifiles);
 }
 
+void BalanceModManager::onSsLaunchStateChanged(bool lounched)
+{
+    m_ssLounchedState = lounched;
+    qDebug() << "ASDADASDASDASDADADASDASDASDASD" << m_ssLounchedState;
+
+    m_modsInfoRequestTimer->start();
+}
+
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
 {
     QChar sepr = QDir::separator();
@@ -282,15 +300,12 @@ void BalanceModManager::setSsPath(const QString &newSsPath)
     if(m_ssPath.isEmpty())
         return;
 
-    m_modsInfoRequestTimer->start();
     modsInfoTimerTimeout();
 }
 
 void BalanceModManager::checkDownloadingQuery()
 {
-     m_modDownloadingProcessed = false;
-
-    if(m_downloadingQuery.isEmpty())
+    if(m_downloadingQuery.isEmpty() || m_ssLounchedState || m_modDownloadingProcessed)
         return;
 
     if (getProfileExist(m_downloadingQuery.last()))
@@ -409,6 +424,7 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
         qWarning(logWarning()) << "BalanceModManager::receiveMod: Connection error:" << reply->errorString();
         reply->deleteLater();
         emit sendInstallingModError(modTechnicalName);
+        m_modDownloadingProcessed = false;
         checkDownloadingQuery();
         return;
     }

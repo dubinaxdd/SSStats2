@@ -50,6 +50,7 @@ public slots:
     void activateMod(QString modTechnicalName);
     void receiveUpdateTemplateProfilePath(bool useCustomTemplateProfilePath);
     void receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
+    void onSsLaunchStateChanged(bool lounched);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
@@ -68,6 +69,7 @@ private:
 
     BalanceModInstaller* m_balanceModInstaller;
     QThread* m_balanceModInstallerThread;
+    QTimer* m_checkDownloadingQueryTimer;
 
     SettingsController* m_settingsController;
 
@@ -84,6 +86,8 @@ private:
 
     QString m_templateProfilePath = "";
     QString m_lastActualMod = "";
+
+    bool m_ssLounchedState = false;
 
 
 };

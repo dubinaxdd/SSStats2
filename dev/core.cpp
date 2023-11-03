@@ -85,6 +85,7 @@ void Core::addConnections()
     QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_soundProcessor,             &SoundProcessor::setSoulstormMaximized,                             Qt::DirectConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_overlayWindowController,    &OverlayWindowController::ssLaunched,                              Qt::QueuedConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_uiBackend,                  &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_balanceModManager,          &BalanceModManager::onSsLaunchStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_uiBackend,                  &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
 
