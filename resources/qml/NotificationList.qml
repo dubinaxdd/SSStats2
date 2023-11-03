@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import QtGraphicalEffects 1.15
 import DowStatsStyle 1.0
+import NotificationType 1.0
 
 ColumnLayout
 {
@@ -35,16 +36,41 @@ ColumnLayout
             {
                 anchors.fill: parent
                 anchors.margins: 10
-
                 clip: true
 
-                Image {
-                    id: image
-                    Layout.preferredWidth: 30
-                    Layout.preferredHeight: 30
-                    source: model.type === 0 ? "qrc:/images/resources/images/ready.svg" : "qrc:/images/resources/images/warning.svg"
-                    sourceSize.width: 30
-                    sourceSize.height: 30
+                Rectangle{
+                    Layout.preferredWidth: 40
+                    Layout.preferredHeight: 40
+                    color: (model.type !== NotificationType.Ready && model.type !== NotificationType.Warning) ? DowStatsStyle.alternateBackgroundColor : "#00000000"
+                    radius: 10
+
+                    Image {
+                        id: image
+
+                        anchors.fill: parent
+                        anchors.margins: 5
+
+                        source:{
+                            switch (model.type){
+                                case (NotificationType.Ready):          return "qrc:/images/resources/images/ready.svg"
+                                case (NotificationType.Warning):        return "qrc:/images/resources/images/warning.svg"
+                                case (NotificationType.Delete):         return "qrc:/images/resources/images/delete.svg"
+                                case (NotificationType.Info):           return "qrc:/images/resources/images/info.svg"
+                                case (NotificationType.Downloading):    return "qrc:/images/resources/images/download.svg"
+                            }
+                        }
+
+                        sourceSize.width: 30
+                        sourceSize.height: 30
+                    }
+
+                    ColorOverlay{
+                        anchors.fill: image
+                        source: image
+                        color: DowStatsStyle.textColor
+                        antialiasing: true
+                        visible: model.type !== NotificationType.Ready && model.type !== NotificationType.Warning
+                    }
                 }
 
                 TextArea{

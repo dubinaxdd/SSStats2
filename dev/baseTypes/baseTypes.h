@@ -23,6 +23,32 @@ private:
     BanType(){}
 };
 
+
+class NotificationType {
+    Q_GADGET
+public:
+    enum NotificationTypeEnum: int{
+        Info = 0,
+        Warning = 1,
+        Downloading = 2,
+        Delete = 3,
+        Ready = 4
+    };
+    Q_ENUM(NotificationTypeEnum)
+private:
+    NotificationType(){}
+};
+
+/*
+enum NotificationType
+{
+    Info = 0,
+    Warning = 1,
+    Downloading = 2,
+    Delete = 3,
+    Ready = 4
+};*/
+
 enum InstMod
 {
     RussianFonts,
@@ -358,12 +384,6 @@ enum LaunchMod{
     LastSelectedMod = 2
 };
 
-enum NotificationType
-{
-    Info = 0,
-    Warning = 1
-};
-
 struct NotificationInfo
 {
     NotificationInfo& operator=(const NotificationInfo& copy)
@@ -377,7 +397,7 @@ struct NotificationInfo
         return *this;
     }
 
-    NotificationType type = Info;
+    NotificationType::NotificationTypeEnum type = NotificationType::Info;
     QString text = "";
     QUuid uuid = QUuid().createUuid();
 };

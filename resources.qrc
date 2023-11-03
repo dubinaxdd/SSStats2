@@ -12,8 +12,6 @@
         <file>resources/images/redDot.png</file>
         <file>resources/icons/ssIcon.png</file>
         <file>resources/images/warning.png</file>
-        <file>resources/images/closeButton.png</file>
-        <file>resources/images/readyImage.png</file>
         <file>resources/images/man_user.svg</file>
         <file>resources/images/gear.svg</file>
         <file>resources/images/gear2.svg</file>
@@ -39,6 +37,7 @@
         <file>resources/images/close.svg</file>
         <file>resources/images/ready.svg</file>
         <file>resources/images/warning.svg</file>
+        <file>resources/images/download.svg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>resources/sounds/game_started.wav</file>

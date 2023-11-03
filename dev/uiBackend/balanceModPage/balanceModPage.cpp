@@ -186,7 +186,7 @@ void BalanceModPage::uninstallMod(int modIndex)
     NotificationInfo notificationInfo;
 
     notificationInfo.text = m_modsInfo[modIndex].uiName + " has been uninstalled";
-    notificationInfo.type = NotificationType::Info;
+    notificationInfo.type = NotificationType::Delete;
 
     emit sendNotification(notificationInfo);
 
@@ -376,7 +376,7 @@ void BalanceModPage::receiveModDownloadProgress(int progress, QString modTechnic
 
     NotificationInfo notificationInfo;
     notificationInfo.text = m_downloadingProgress;
-    notificationInfo.type = NotificationType::Warning;
+    notificationInfo.type = NotificationType::Downloading;
     notificationInfo.uuid = m_uuid;
     emit sendNotification(notificationInfo);
 
@@ -413,7 +413,7 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
             NotificationInfo notificationInfo;
 
             notificationInfo.text = m_modsInfo[i].uiName + " has been installed.";
-            notificationInfo.type = NotificationType::Info;
+            notificationInfo.type = NotificationType::Ready;
             notificationInfo.uuid = m_uuid;
 
             emit sendNotification(notificationInfo);
