@@ -8,10 +8,8 @@
 RankedModServiceProcessor::RankedModServiceProcessor(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
     , m_settingsController(settingsController)
-
+    , m_networkManager (new QNetworkAccessManager(this))
 {
-    m_networkManager = new QNetworkAccessManager(this);
-
     m_pingTimer = new QTimer(this);
     m_pingTimer->setInterval(1000);
 
@@ -55,7 +53,7 @@ void RankedModServiceProcessor::sendRankedMode(bool rankedMode)
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        delete reply;
+        reply->deleteLater();
     });
 }
 
@@ -114,7 +112,7 @@ void RankedModServiceProcessor::receiveRankedState(QNetworkReply *reply, QVector
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -157,7 +155,7 @@ void RankedModServiceProcessor::receivePingRecponce(QNetworkReply *reply)
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -226,7 +224,7 @@ bool RankedModServiceProcessor::checkReplyErrors(QString funcName, QNetworkReply
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << funcName + ":" << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return true;
     }
 

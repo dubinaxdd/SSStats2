@@ -314,13 +314,13 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         if (m_templateProfilePath.isEmpty())
             updateTemplateProfilePath("dxp2");
 
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QCryptographicHash hashGenerator(QCryptographicHash::Sha256);
     QByteArray newHash = hashGenerator.hash(replyByteArray, QCryptographicHash::Sha256);
@@ -407,7 +407,7 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "BalanceModManager::receiveMod: Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         emit sendInstallingModError(modTechnicalName);
         checkDownloadingQuery();
         return;
@@ -434,7 +434,7 @@ void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechni
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "BalanceModManager::receiveChangeLog: Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
@@ -442,5 +442,5 @@ void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechni
 
     emit changeLogReceived(modTechnicalName, QString::fromStdString(replyByteArray.toStdString()));
 
-    delete reply;
+    reply->deleteLater();
 }

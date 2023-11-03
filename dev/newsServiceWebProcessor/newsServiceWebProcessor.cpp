@@ -386,13 +386,13 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
         qWarning(logWarning()) << "DiscordWebProcessor::receiveNews:" << "Connection error:" << reply->errorString();
         m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
         m_needRequestNews = true;
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
 
@@ -421,13 +421,13 @@ void DiscordWebProcessor::receiveNextNews(QNetworkReply *reply)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveNextNews:" << "Connection error:" << reply->errorString();
         emit sendNextNews(QList<DiscordMessage>());
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
 
     QByteArray replyByteArray = reply->readAll();
-    delete reply;
+    reply->deleteLater();
 
     QList<DiscordMessage> newsList = parseMessagesJson(replyByteArray);
 
@@ -449,13 +449,13 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
         qWarning(logWarning()) << "DiscordWebProcessor::receiveEvents:" << "Connection error:" << reply->errorString();
         m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL2);
         m_needRequestEvents = true;
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QList<DiscordMessage> eventsList = parseMessagesJson(replyByteArray);
 
@@ -487,13 +487,13 @@ void DiscordWebProcessor::receiveNextEvents(QNetworkReply *reply)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveNextEvents:" << "Connection error:" << reply->errorString();
         emit sendNextEvents(QList<DiscordMessage>());
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QList<DiscordMessage> eventsList = parseMessagesJson(replyByteArray);
 
@@ -513,12 +513,12 @@ void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveNewsLastMessageId:" << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
-    delete reply;
+    reply->deleteLater();
 
     QString lastMessageId = QString::fromStdString(replyByteArray.toStdString());
 
@@ -537,12 +537,12 @@ void DiscordWebProcessor::receiveEventsLastMessageId(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveEventsLastMessageId:" << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
-    delete reply;
+    reply->deleteLater();
 
     QString lastMessageId = QString::fromStdString(replyByteArray.toStdString());
 
@@ -562,13 +562,13 @@ void DiscordWebProcessor::receiveUserAvatar(QNetworkReply *reply, QString avatar
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveUserAvatar:" << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QImage avatar = QImage::fromData(replyByteArray);
 
@@ -583,13 +583,13 @@ void DiscordWebProcessor::receiveAttachmentImage(QNetworkReply *reply, QString a
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveAttachmentImage:" << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QImage image = QImage::fromData(replyByteArray);
 
@@ -604,13 +604,13 @@ void DiscordWebProcessor::receiveYoutubeImage(QNetworkReply *reply, QString yout
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "DiscordWebProcessor::receiveYoutubeImage:" << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     QImage image = QImage::fromData(replyByteArray);
 

@@ -7,7 +7,7 @@ OverlayWindowController::OverlayWindowController(SettingsController *settingsCon
     , p_soulstormController(soulstormController)
     , p_settingsController(settingsController)
 {
-    m_topmostTimer = new QTimer();
+    m_topmostTimer = new QTimer(this);
     m_topmostTimer->setInterval(500);
 
     QObject::connect(m_topmostTimer, &QTimer::timeout, this, &OverlayWindowController::topmostTimerTimout, Qt::QueuedConnection);

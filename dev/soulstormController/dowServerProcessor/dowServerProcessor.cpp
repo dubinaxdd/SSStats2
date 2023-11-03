@@ -32,7 +32,7 @@ bool DowServerProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << funcName + ":" << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         return true;
     }
 
@@ -52,7 +52,7 @@ QNetworkRequest DowServerProcessor::createDowServerRequest(QString url)
     sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
     newRequest.setSslConfiguration(sslConf);
 
-    return std::move(newRequest);
+    return newRequest;
 }
 
 QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
@@ -204,7 +204,7 @@ void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    delete reply;
+    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -220,7 +220,7 @@ void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    delete reply;
+    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -259,7 +259,7 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    delete reply;
+    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -327,7 +327,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    delete reply;
+    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 

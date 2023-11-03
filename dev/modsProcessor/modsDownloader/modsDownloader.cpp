@@ -50,14 +50,14 @@ void ModsDownloader::receiveRussinFonts(QNetworkReply* reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         emit downloadError(InstMod::RussianFonts);
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     saveRussianFonts(std::move(replyByteArray));
 
@@ -105,14 +105,14 @@ void ModsDownloader::receiveCameraMod(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         emit downloadError(InstMod::CameraMod);
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     saveCameraMod(std::move(replyByteArray));
 
@@ -160,14 +160,14 @@ void ModsDownloader::receiveGridHotkeys(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         emit downloadError(InstMod::GridHotkeys);
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     saveGridHotkeys(std::move(replyByteArray));
 
@@ -215,14 +215,14 @@ void ModsDownloader::receiveTransparentCameraTrapezoid(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "ModsDownloader::receiveTransparentCameraTrapezoid Connection error:" << reply->errorString();
-        delete reply;
+        reply->deleteLater();
         emit downloadError(InstMod::TransparentCameraTrapezoid);
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
 
-    delete reply;
+    reply->deleteLater();
 
     saveTransparentCameraTrapezoid(std::move(replyByteArray));
 

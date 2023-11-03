@@ -20,7 +20,7 @@ public:
     };
     Q_ENUM(BanTypeEnum)
 private:
-    explicit BanType(){}
+    BanType(){}
 };
 
 enum InstMod
