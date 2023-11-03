@@ -400,7 +400,11 @@ void SoulstormController::writeCurrentModSettingInGame()
         {
             ssSettings->setValue("global/currentmoddc", "dxp2");
 
+            QFile fileCheck(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
             QFile file(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
+
+            if (fileCheck.exists() && file.exists())
+                fileCheck.remove();
 
             if (file.exists())
                 file.rename(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds");
@@ -411,7 +415,12 @@ void SoulstormController::writeCurrentModSettingInGame()
         {
             ssSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
 
+
+            QFile fileCheck(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
             QFile file(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
+
+            if (fileCheck.exists() && file.exists())
+                fileCheck.remove();
 
             if (file.exists())
                 file.rename(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds");

@@ -261,10 +261,8 @@ void BalanceModManager::onSsLaunchStateChanged(bool lounched)
 {
     m_ssLounchedState = lounched;
     m_ssLounchedStateReceived = true;
-    qDebug() << "ASDADASDASDASDADADASDASDASDASD" << m_ssLounchedState;
 
     modsInfoTimerTimeout();
-
 }
 
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
