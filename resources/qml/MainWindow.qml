@@ -84,6 +84,19 @@ Window {
     }
 
 
+    PopupDialog{
+        id: soulstormLaunchedDialog
+        visible: _uiBackend.soulstormLaunchedDialogVisible
+        yesButtonVisible: false
+        noButtonVisible: false
+        text: "The game is currently running, please close the game and try again."
+
+        onClickedOk:{
+            _uiBackend.soulstormLaunchedDialogVisible = false;
+        }
+    }
+
+
 
     NotificationList{
         x: mainContentContainerRectangle.x

@@ -20,7 +20,6 @@ Rectangle
         anchors.fill: parent
         anchors.margins: 10
 
-        //Шрифты
         Label{
             text: root.text
             Layout.preferredWidth: 200
@@ -45,7 +44,10 @@ Rectangle
             enabled: !model.installInProcess
 
             onClicked: {
-                model.installMod();
+                if (_uiBackend.ssLaunchState)
+                    _uiBackend.soulstormLaunchedDialogVisible = true
+                else
+                    model.installMod();
             }
         }
 
@@ -54,7 +56,10 @@ Rectangle
             enabled: model.installedStatus
 
             onClicked: {
-                model.uninstallMod();
+                if (_uiBackend.ssLaunchState)
+                    _uiBackend.soulstormLaunchedDialogVisible = true
+                else
+                    model.uninstallMod();
             }
         }
     }

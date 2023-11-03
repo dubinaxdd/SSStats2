@@ -66,8 +66,10 @@ class UiBackend : public QObject
     Q_PROPERTY(bool latesBalanceModNotInstalledDialogVisible READ latesBalanceModNotInstalledDialogVisible WRITE setLatesBalanceModNotInstalledDialogVisible NOTIFY latesBalanceModNotInstalledDialogVisibleChanged)
     Q_PROPERTY(bool ssNotInstalledDialogVisisble READ ssNotInstalledDialogVisisble WRITE setSsNotInstalledDialogVisisble NOTIFY ssNotInstalledDialogVisisbleChanged)
     Q_PROPERTY(bool steamNotInstalledDialogVisisble READ steamNotInstalledDialogVisisble WRITE setSteamNotInstalledDialogVisisble NOTIFY steamNotInstalledDialogVisisbleChanged)
+    Q_PROPERTY(bool soulstormLaunchedDialogVisible READ getSoulstormLaunchedDialogVisible WRITE setSoulstormLaunchedDialogVisible NOTIFY soulstormLaunchedDialogVisibleChanged)
 
     Q_PROPERTY(bool soulstormIsInstalled READ soulstormIsInstalled NOTIFY soulstormIsInstalledChanged)
+    Q_PROPERTY(bool ssLaunchState READ ssLaunchState WRITE setSsLaunchState NOTIFY ssLaunchStateChanged)
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -143,6 +145,12 @@ public:
     bool steamNotInstalledDialogVisisble() const;
     void setSteamNotInstalledDialogVisisble(bool newSteamNotInstalledDialogVisisble);
 
+    bool getSoulstormLaunchedDialogVisible() const;
+    void setSoulstormLaunchedDialogVisible(bool newSoulstormLaunchedDialogVisible);
+
+    bool ssLaunchState() const;
+    void setSsLaunchState(bool newSsLaunchState);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -186,8 +194,11 @@ signals:
     void latesBalanceModNotInstalledDialogVisibleChanged();
     void ssNotInstalledDialogVisisbleChanged();
     void steamNotInstalledDialogVisisbleChanged();
+    void soulstormLaunchedDialogVisibleChanged();
 
     void soulstormIsInstalledChanged();
+
+    void ssLaunchStateChanged();
 
 public slots:
     void expandKeyPressed();
@@ -271,6 +282,7 @@ private:
 
     bool m_ssNotInstalledDialogVisisble = false;
     bool m_steamNotInstalledDialogVisisble = false;
+    bool m_soulstormLaunchedDialogVisible = false;
 
     double m_sizeModifer = 1.0;
 

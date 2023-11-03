@@ -62,8 +62,13 @@ Rectangle
                     Layout.preferredWidth: 140 + columnLayout.spacing
 
                     onClicked: {
-                        model.unlockRaces();
-                        enabled = false;
+                        if (_uiBackend.ssLaunchState)
+                            _uiBackend.soulstormLaunchedDialogVisible = true
+                        else
+                        {
+                            model.unlockRaces();
+                            enabled = false;
+                        }
                     }
                 }
             }

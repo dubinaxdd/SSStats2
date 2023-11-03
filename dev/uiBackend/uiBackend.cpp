@@ -110,6 +110,32 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+bool UiBackend::ssLaunchState() const
+{
+    return m_ssLaunchState;
+}
+
+void UiBackend::setSsLaunchState(bool newSsLaunchState)
+{
+    if (m_ssLaunchState == newSsLaunchState)
+        return;
+    m_ssLaunchState = newSsLaunchState;
+    emit ssLaunchStateChanged();
+}
+
+bool UiBackend::getSoulstormLaunchedDialogVisible() const
+{
+    return m_soulstormLaunchedDialogVisible;
+}
+
+void UiBackend::setSoulstormLaunchedDialogVisible(bool newSoulstormLaunchedDialogVisible)
+{
+    if (m_soulstormLaunchedDialogVisible == newSoulstormLaunchedDialogVisible)
+        return;
+    m_soulstormLaunchedDialogVisible = newSoulstormLaunchedDialogVisible;
+    emit soulstormLaunchedDialogVisibleChanged();
+}
+
 bool UiBackend::steamNotInstalledDialogVisisble() const
 {
     return m_steamNotInstalledDialogVisisble;

@@ -105,7 +105,11 @@ Rectangle {
                         text: "Install"
                         enabled: !model.selectedModDownladingProcessed
                         onClicked:{
-                            model.downloadSelectedMod();
+
+                            if (_uiBackend.ssLaunchState)
+                                _uiBackend.soulstormLaunchedDialogVisible = true
+                            else
+                                model.downloadSelectedMod();
                         }
 
                         visible: !model.selectedModIsInstalled
@@ -113,8 +117,15 @@ Rectangle {
 
                     BlueButton {
                         text: "Uninstall"
-                        onClicked: model.uninstallSelectedMod();
                         visible: model.selectedModIsInstalled
+
+                        onClicked: {
+                            if (_uiBackend.ssLaunchState)
+                                _uiBackend.soulstormLaunchedDialogVisible = true
+                            else
+                                model.uninstallSelectedMod();
+                        }
+
                     }
 
                     BlueButton {
@@ -123,7 +134,12 @@ Rectangle {
                         visible: model.selectedModIsInstalled
                         enabled: !model.selectedModIsCurrent
 
-                        onClicked: model.activateSelectedModInGame();
+                        onClicked:{
+                            if (_uiBackend.ssLaunchState)
+                                _uiBackend.soulstormLaunchedDialogVisible = true
+                            else
+                                model.activateSelectedModInGame();
+                        }
 
                     }
 

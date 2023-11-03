@@ -172,7 +172,10 @@ Rectangle {
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
-                        _uiBackend.mapManagerPage.installDefaultMaps();
+                        if (_uiBackend.ssLaunchState)
+                            _uiBackend.soulstormLaunchedDialogVisible = true
+                        else
+                            _uiBackend.mapManagerPage.installDefaultMaps();
                     }
                 }
 
@@ -183,7 +186,10 @@ Rectangle {
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
-                        _uiBackend.mapManagerPage.installAllMaps();
+                        if (_uiBackend.ssLaunchState)
+                            _uiBackend.soulstormLaunchedDialogVisible = true
+                        else
+                            _uiBackend.mapManagerPage.installAllMaps();
                     }
                 }
 
@@ -310,14 +316,24 @@ Rectangle {
                         text: "Update"
                         z:2
                         visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
-                        onClicked: _uiBackend.mapManagerPage.installMap(model.index)
+                        onClicked:{
+                            if (_uiBackend.ssLaunchState)
+                                _uiBackend.soulstormLaunchedDialogVisible = true
+                            else
+                                _uiBackend.mapManagerPage.installMap(model.index)
+                        }
                     }
 
                     BlueButton{
                         text: "Delete"
                         z:2
                         visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
-                        onClicked: _uiBackend.mapManagerPage.removeMap(model.index);
+                        onClicked: {
+                            if (_uiBackend.ssLaunchState)
+                                _uiBackend.soulstormLaunchedDialogVisible = true
+                            else
+                                _uiBackend.mapManagerPage.removeMap(model.index);
+                        }
                     }
                 }
             }
