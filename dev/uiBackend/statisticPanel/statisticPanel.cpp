@@ -23,6 +23,7 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case PlayerMmr: return item->getPlayerMmr();
         case PlayerMmr1v1: return item->getPlayerMmr1v1();
         case PlayerGamesCount: return item->getPlayerGamesCount();
+        case PlayerRank: return item->getPlayerRank();
         case PlayerRace: return item->getPlayerRace();
         case PlayerWinRate: return item->getPlayerWinRate();
         case PlayerApm: return item->getPlayerApm();
@@ -34,6 +35,7 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case BanType: return item->banType();
         case IsOnline: return item->getIsOnline();
         case IsRanked: return item->getIsRanked();
+
     }
 
     return QVariant();
@@ -53,6 +55,7 @@ QHash<int, QByteArray> StatisticPanel::roleNames() const
     roles[PlayerMmr]        = "playerMmr";
     roles[PlayerMmr1v1]     = "playerMmr1v1";
     roles[PlayerGamesCount] = "playerGamesCount";
+    roles[PlayerRank]       = "playerRank";
     roles[PlayerRace]       = "playerRace";
     roles[PlayerWinRate]    = "playerWinRate";
     roles[PlayerApm]        = "playerApm";

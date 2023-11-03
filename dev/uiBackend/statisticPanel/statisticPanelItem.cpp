@@ -1,5 +1,4 @@
 #include <statisticPanelItem.h>
-
 StatisticPanelItem::StatisticPanelItem(QObject *parent) : QObject(parent)
 {
 
@@ -138,6 +137,11 @@ QString StatisticPanelItem::getPlayerMmr1v1() const
 QString StatisticPanelItem::getPlayerGamesCount() const
 {
     return QString::number(m_playersStats.gamesCount);
+}
+
+int StatisticPanelItem::getPlayerRank() const
+{
+    return m_playersStats.rank;
 }
 
 QString StatisticPanelItem::getPlayerRace() const

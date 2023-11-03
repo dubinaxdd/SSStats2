@@ -13,6 +13,7 @@ Rectangle {
     property int playerMmr
     property int playerMmr1v1
     property int playerGamesCount
+    property int playerRank
     property string playerRace
     property int playerWinRate
     property int playerApm
@@ -65,49 +66,25 @@ Rectangle {
         changeRank();
     }
 
-    onPlayerMmr1v1Changed:{
+    onPlayerRankChanged:{
         changeRank();
     }
 
     function changeRank()
     {
-        if (playerMmr1v1 < 1400)
-        {
-            rankImage.source = "qrc:/images/resources/images/Rank1.svg"
-            return;
+        switch(root.playerRank){
+            case(1): rankImage.source = "qrc:/images/resources/images/Rank8.svg"; return;
+            case(2): rankImage.source = "qrc:/images/resources/images/Rank7.svg"; return;
+            case(3): rankImage.source = "qrc:/images/resources/images/Rank6.svg"; return;
+            case(4): rankImage.source = "qrc:/images/resources/images/Rank5.svg"; return;
+            case(5): rankImage.source = "qrc:/images/resources/images/Rank4.svg"; return;
+            case(6): rankImage.source = "qrc:/images/resources/images/Rank3.svg"; return;
+            case(7): rankImage.source = "qrc:/images/resources/images/Rank1.svg"; return;
         }
 
-        if (playerMmr1v1 < 1550)
-        {
-            rankImage.source = "qrc:/images/resources/images/Rank3.svg"
-            return;
-        }
+        console.log("ASDASDADASDASDASDASDASD", root.playerRank)
 
-        if (playerMmr1v1 < 1650)
-        {
-            rankImage.source = "qrc:/images/resources/images/Rank4.svg"
-            return;
-        }
-
-        if (playerMmr1v1 < 1800)
-        {
-            rankImage.source = "qrc:/images/resources/images/Rank5.svg"
-            return;
-        }
-
-        if (playerMmr1v1 < 2000)
-        {
-            rankImage.source = "qrc:/images/resources/images/Rank6.svg"
-            return;
-        }
-
-        if (playerMmr1v1 < 2250)
-        {
-            rankImage.source = "qrc:/images/resources/images/Rank7.svg"
-            return;
-        }
-
-        rankImage.source = "qrc:/images/resources/images/Rank8.svg"
+        rankImage.source = "qrc:/images/resources/images/Rank2.svg"
         return;
     }
 

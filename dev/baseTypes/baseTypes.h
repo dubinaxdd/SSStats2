@@ -166,6 +166,7 @@ struct ServerPlayerStats
     int mmr1v1 = 0;
     QString name = "";
     QString avatarUrl = "";
+    int rank = 8;
     int race = 0;
     int winRate = 0;
     int winsCount = 0;

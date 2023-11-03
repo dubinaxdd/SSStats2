@@ -212,6 +212,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).mmr1v1 = statsArray.at(i)["mmr1v1"].toInt();
         playersInfo.get()->operator[](i).isBanned = statsArray.at(i)["isBanned"].toBool();
         playersInfo.get()->operator[](i).name = statsArray.at(i)["name"].toString();
+        playersInfo.get()->operator[](i).rank = statsArray.at(i)["rank"].toInt();
         playersInfo.get()->operator[](i).race = statsArray.at(i)["race"].toInt();
         playersInfo.get()->operator[](i).winRate = statsArray.at(i)["winRate"].toInt();
         playersInfo.get()->operator[](i).winsCount = statsArray.at(i)["winsCount"].toInt();

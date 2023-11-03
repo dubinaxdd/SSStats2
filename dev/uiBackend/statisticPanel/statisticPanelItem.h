@@ -14,14 +14,15 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(QString  playerMmr        READ getPlayerMmr          NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerMmr1v1     READ getPlayerMmr1v1       NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerGamesCount READ getPlayerGamesCount   NOTIFY playersStatsChanged)
+    Q_PROPERTY(int      playerRank       READ getPlayerRank         NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerRace       READ getPlayerRace         NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerWinRate    READ getPlayerWinRate      NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerApm        READ getPlayerApm          NOTIFY playersStatsChanged)
     Q_PROPERTY(bool     itemVisible      READ getVisible            NOTIFY itemVisibleChanged)
     Q_PROPERTY(QUrl     playerAvatarId   READ avatarId              NOTIFY playersStatsChanged)
-    Q_PROPERTY(QString  steamId          READ getSteamId              NOTIFY playersStatsChanged)
-    Q_PROPERTY(int  calibrateGamesLeft   READ getCalibrateGamesLeft              NOTIFY playersStatsChanged)
-    Q_PROPERTY(BanType::BanTypeEnum  banType        READ banType                NOTIFY playersStatsChanged)
+    Q_PROPERTY(QString  steamId          READ getSteamId            NOTIFY playersStatsChanged)
+    Q_PROPERTY(int  calibrateGamesLeft   READ getCalibrateGamesLeft NOTIFY playersStatsChanged)
+    Q_PROPERTY(BanType::BanTypeEnum  banType        READ banType    NOTIFY playersStatsChanged)
 
     Q_PROPERTY(bool isRanked READ getIsRanked WRITE setIsRanked NOTIFY isRankedChanged)
     Q_PROPERTY(bool isOnline READ getIsOnline WRITE setIsOnline NOTIFY isOnlineChanged)
@@ -37,9 +38,7 @@ public:
 signals:
     void playersStatsChanged();
     void itemVisibleChanged();
-
     void isRankedChanged();
-
     void isOnlineChanged();
 
 public:
@@ -47,6 +46,7 @@ public:
     QString getPlayerMmr() const;
     QString getPlayerMmr1v1() const;
     QString getPlayerGamesCount() const;
+    int     getPlayerRank() const;
     QString getPlayerRace() const;
     QString getPlayerWinRate() const;
     QString getPlayerApm() const;

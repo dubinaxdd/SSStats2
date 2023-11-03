@@ -112,6 +112,7 @@ Rectangle {
                 playerMmr: model.curentPlayerStatsItem.playerMmr
                 playerMmr1v1: model.curentPlayerStatsItem.playerMmr1v1
                 playerGamesCount: model.curentPlayerStatsItem.playerGamesCount
+                playerRank: model.curentPlayerStatsItem.playerRank
                 playerRace: model.curentPlayerStatsItem.playerRace
                 playerWinRate: model.curentPlayerStatsItem.playerWinRate
                 playerApm: model.curentPlayerStatsItem.playerApm
@@ -147,6 +148,7 @@ Rectangle {
                     playerMmr: model.playerMmr
                     playerMmr1v1: model.playerMmr1v1
                     playerGamesCount: model.playerGamesCount
+                    playerRank: model.playerRank
                     playerRace: model.playerRace
                     playerWinRate: model.playerWinRate
                     playerApm: model.playerApm

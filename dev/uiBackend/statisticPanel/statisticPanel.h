@@ -33,6 +33,7 @@ public:
         IsOnline = Qt::UserRole + 12,
         IsRanked = Qt::UserRole + 13,
         BanType = Qt::UserRole + 14,
+        PlayerRank = Qt::UserRole + 15,
         PlayerVisible = Qt::UserRole
     };
 
