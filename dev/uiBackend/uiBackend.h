@@ -16,6 +16,7 @@
 #include <onlineStatisticPanel.h>
 #include <balanceModPage.h>
 #include <notificationManager.h>
+#include <informationPage.h>
 
 class UiBackend : public QObject
 {
@@ -51,6 +52,7 @@ class UiBackend : public QObject
     Q_PROPERTY(OnlineStatisticPanel* onlineStatisticPanel MEMBER m_onlineStatisticPanel CONSTANT)
     Q_PROPERTY(BalanceModPage * balanceModPage MEMBER m_balanceModPage CONSTANT)
     Q_PROPERTY(NotificationManager * notificationManager MEMBER m_notificationManager CONSTANT)
+    Q_PROPERTY(InformationPage * informationPage MEMBER m_informationPage CONSTANT)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -100,6 +102,11 @@ public:
     MessagesPage *eventsPage() const;
     ReplayManager *replayManager() const;
     SettingsPageModel *settingsPageModel() const;
+    MapManagerPage *mapManagerPage() const;
+    ModsPage *modsPage() const;
+    OnlineStatisticPanel *onlineStatisticPanel() const;
+    BalanceModPage *balanceModPage() const;
+    InformationPage *informationPage() const;
 
     bool soulstormIsInstalled();
 
@@ -119,18 +126,11 @@ public:
 
     void determinateRankedModePanelVisisble();
 
-    MapManagerPage *mapManagerPage() const;
-
     const QString &currentModName() const;
     void setCurrentModName(const QString &newCurrentModName);
 
     const QString currentModTechnicalName() const;
     void setCurrentModTechnicalName(const QString &newCurrentModTechnicalName);
-
-    ModsPage *modsPage() const;
-    OnlineStatisticPanel *onlineStatisticPanel() const;
-    BalanceModPage *balanceModPage() const;
-
 
     bool latesBalanceModNotInstalledDialogVisible() const;
     void setLatesBalanceModNotInstalledDialogVisible(bool newLatesBalanceModNotInstalledDialogVisible);
@@ -244,6 +244,7 @@ private:
     OnlineStatisticPanel* m_onlineStatisticPanel;
     BalanceModPage* m_balanceModPage;
     NotificationManager* m_notificationManager;
+    InformationPage* m_informationPage;
 
     QTimer* m_notificationVisibleTimer;
 

@@ -19,7 +19,8 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     , m_onlineStatisticPanel(new OnlineStatisticPanel(this))
     , m_balanceModPage(new BalanceModPage(settingsController, this))
     , m_notificationManager(new NotificationManager(this))
-    , m_notificationVisibleTimer(new QTimer(this))
+    , m_informationPage(new InformationPage(this))
+    , m_notificationVisibleTimer(new QTimer(this))  
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");
@@ -108,6 +109,11 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(SsMissionState::gameOver);
+}
+
+InformationPage *UiBackend::informationPage() const
+{
+    return m_informationPage;
 }
 
 bool UiBackend::ssLaunchState() const

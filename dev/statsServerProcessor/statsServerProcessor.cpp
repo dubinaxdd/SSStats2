@@ -20,6 +20,7 @@ using namespace ReplayReader;
 StatsServerProcessor::StatsServerProcessor(SettingsController *settingsController, QString ssPath, QString steamPath, QObject *parent)
     : QObject(parent)
     , m_settingsController(settingsController)
+    , m_rankDiversionTimer(new QTimer(this))
     , m_steamPath(steamPath)
     , m_ssPath(ssPath)
     , m_networkManager( new QNetworkAccessManager(this))
@@ -27,11 +28,16 @@ StatsServerProcessor::StatsServerProcessor(SettingsController *settingsControlle
     m_machineUniqueId = QSysInfo::machineUniqueId();
     m_currentPlayerStats = QSharedPointer <QList<ServerPlayerStats>>(new QList<ServerPlayerStats>);
 
+
     m_currentPlayerStatsRequestTimer = new QTimer(this);
     m_currentPlayerStatsRequestTimer->setInterval(CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL);
+
+    m_rankDiversionTimer->setInterval(60000);
+
     connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::currentPlayerStatsRequestTimerTimeout, Qt::QueuedConnection);
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &StatsServerProcessor::onSettingsLoaded, Qt::QueuedConnection);
+    connect(m_rankDiversionTimer, &QTimer::timeout, this, &StatsServerProcessor::onRankDiversionTimerTimeout, Qt::QueuedConnection);
 
     m_clientVersion.append(PROJECT_VERSION_MAJOR);
     m_clientVersion.append(PROJECT_VERSION_MINOR);
@@ -292,6 +298,93 @@ void StatsServerProcessor::onSettingsLoaded()
 
     parseCurrentPlayerSteamId();
     m_currentPlayerStatsRequestTimer->start();
+
+    requestRankDiversion();
+    m_rankDiversionTimer->start();
+}
+
+void StatsServerProcessor::receiveRankDiversion(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "StatsServerProcessor::receiveRankDiversion:" << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+    reply->deleteLater();
+
+    RankDiversion newRankDiversion;
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    if (!jsonDoc.isObject())
+        return;
+
+    QJsonObject jsonObject = jsonDoc.object();
+
+    if (!jsonObject.value("ranks").isObject())
+        return;
+
+    QJsonObject ranksObject = jsonObject.value("ranks").toObject();
+
+    if (!ranksObject.value("7").isObject())
+        return;
+
+    QJsonObject rank7Object = ranksObject.value("7").toObject();
+
+    newRankDiversion.rank7Min = rank7Object.value("min").toInt();
+    newRankDiversion.rank7Max = rank7Object.value("max").toInt();
+
+    if (!ranksObject.value("6").isObject())
+        return;
+
+    QJsonObject rank6Object = ranksObject.value("6").toObject();
+    newRankDiversion.rank6Min = rank6Object.value("min").toInt();
+    newRankDiversion.rank6Max = rank6Object.value("max").toInt();
+
+    if (!ranksObject.value("5").isObject())
+        return;
+
+    QJsonObject rank5Object = ranksObject.value("5").toObject();
+    newRankDiversion.rank5Min = rank5Object.value("min").toInt();
+    newRankDiversion.rank5Max = rank5Object.value("max").toInt();
+
+    if (!ranksObject.value("4").isObject())
+        return;
+
+    QJsonObject rank4Object = ranksObject.value("4").toObject();
+    newRankDiversion.rank4Min = rank4Object.value("min").toInt();
+    newRankDiversion.rank4Max = rank4Object.value("max").toInt();
+
+    if (!ranksObject.value("3").isObject())
+        return;
+
+    QJsonObject rank3Object = ranksObject.value("3").toObject();
+    newRankDiversion.rank3Min = rank3Object.value("min").toInt();
+    newRankDiversion.rank3Max = rank3Object.value("max").toInt();
+
+    if (!ranksObject.value("2").isObject())
+        return;
+
+    QJsonObject rank2Object = ranksObject.value("2").toObject();
+    newRankDiversion.rank2Min = rank2Object.value("min").toInt();
+    newRankDiversion.rank2Max = rank2Object.value("max").toInt();
+
+    if (!ranksObject.value("1").isObject())
+        return;
+
+    QJsonObject rank1Object = ranksObject.value("1").toObject();
+    newRankDiversion.rank1Min = rank1Object.value("min").toInt();
+    newRankDiversion.rank1Max = rank1Object.value("max").toInt();
+
+    emit sendRankDiversion(newRankDiversion);
+}
+
+void StatsServerProcessor::onRankDiversionTimerTimeout()
+{
+    requestRankDiversion();
 }
 
 void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
@@ -457,6 +550,9 @@ void StatsServerProcessor::receiveCurrentMod(QString modName)
 
     if (m_currentMod.contains("dowstats_balance_mod"))
         m_currentMod = "dowstats_balance_mod";
+
+    requestRankDiversion();
+    m_rankDiversionTimer->start();
 }
 
 QString StatsServerProcessor::GetRandomString() const
@@ -495,6 +591,20 @@ QString StatsServerProcessor::CRC32fromByteArray( const QByteArray & array )
     buffer.close();
     crc32 ^= 0xffffffff;
     return QString("%1").arg(crc32, 8, 16, QChar('0'));
+}
+
+void StatsServerProcessor::requestRankDiversion()
+{
+    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/rank-diversion.php?mod_tech_name=" + m_currentMod);
+
+    QNetworkRequest newRequest = QNetworkRequest(url);
+    newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveRankDiversion(reply);
+    });
 }
 
 void StatsServerProcessor::registerPlayer(QString name, QString sid, bool init)

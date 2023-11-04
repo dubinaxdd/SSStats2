@@ -27,6 +27,7 @@ signals:
     void sendCurrentPlayerSteamID(QString steamID);
     void sendNotification(QString text, bool isWarning);
     void sendStatisticModName(QString statisticModName);
+    void sendRankDiversion(RankDiversion rankDiversion);
 
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );
@@ -40,15 +41,19 @@ private slots:
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
     void currentPlayerStatsRequestTimerTimeout();
     void onSettingsLoaded();
+    void receiveRankDiversion(QNetworkReply* reply);
+    void onRankDiversionTimerTimeout();
 
 private:
     void registerPlayer(QString name, QString sid, bool init);
     QString GetRandomString() const;
     QString CRC32fromByteArray( const QByteArray & array );
+    void requestRankDiversion();
 
 private:
     SettingsController* m_settingsController;
     QTimer *m_currentPlayerStatsRequestTimer;
+    QTimer *m_rankDiversionTimer;
     QString m_steamPath;
     QString m_ssPath;
     QString m_clientVersion;

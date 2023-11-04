@@ -190,6 +190,24 @@ struct PlayerInfoFromDowServer
     bool closeConnection = false;
 };
 
+struct RankDiversion
+{
+    int rank7Min = 0;
+    int rank7Max = 0;
+    int rank6Min = 0;
+    int rank6Max = 0;
+    int rank5Min = 0;
+    int rank5Max = 0;
+    int rank4Min = 0;
+    int rank4Max = 0;
+    int rank3Min = 0;
+    int rank3Max = 0;
+    int rank2Min = 0;
+    int rank2Max = 0;
+    int rank1Min = 0;
+    int rank1Max = 0;
+};
+
 static const quint32 CRC32Table[256] =
 {
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,

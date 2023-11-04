@@ -75,6 +75,7 @@ void Core::registerTypes()
     qRegisterMetaType<QList <ModInfo>>("QList <ModInfo>");
     qRegisterMetaType<LaunchMod>("LaunchMod");
     qRegisterMetaType<NotificationInfo>("NotificationInfo");
+    qRegisterMetaType<RankDiversion>("RankDiversion");
 }
 
 void Core::addConnections()
@@ -192,8 +193,6 @@ void Core::addConnections()
     QObject::connect(m_balanceModManager, &BalanceModManager::requestProfileCopyMode, m_uiBackend->balanceModPage(), &BalanceModPage::receiveProfileCopyModeRequest, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModReadyForInstall, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModReadyForInstall, Qt::QueuedConnection);
 
-
-
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestChangeLog, m_balanceModManager, &BalanceModManager::requestChangeLog, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestDownloadMod, m_balanceModManager, &BalanceModManager::requestDownloadMod, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestUninstallMod, m_balanceModManager, &BalanceModManager::uninstalMod, Qt::QueuedConnection);
@@ -201,6 +200,8 @@ void Core::addConnections()
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestActivateMod, m_balanceModManager, &BalanceModManager::activateMod, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendUseCustomTemplateProfilePath, m_balanceModManager, &BalanceModManager::receiveUpdateTemplateProfilePath, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendProfileCopyMode, m_balanceModManager, &BalanceModManager::receiveProfileCopyMode, Qt::QueuedConnection);
+
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendRankDiversion, m_uiBackend->informationPage(), &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
 }
 
 OverlayWindowController *Core::overlayWindowController() const

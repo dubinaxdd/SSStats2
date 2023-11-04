@@ -9,6 +9,7 @@ Rectangle {
 
     property real sizeModifer: 1
     property bool isOverlayPage: false
+    property var model: _uiBackend.informationPage
 
     opacity: 1
     color: DowStatsStyle.backgroundColor
@@ -324,49 +325,49 @@ Rectangle {
                     }
 
                     Label{
-                        text: "0 - 1399"
+                        text: "-" + model.rank7Max
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "1400 - 1549"
+                        text: model.rank6Min + " - " + model.rank6Max
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "1550 - 1649"
+                        text: model.rank5Min + " - " + model.rank5Max
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "1650 - 1799"
+                        text: model.rank4Min + " - " + model.rank4Max
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "1800 - 1999"
+                        text: model.rank3Min + " - " + model.rank3Max
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "2000 - 2249"
+                        text: model.rank2Min + " - " + model.rank2Max
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "2250+"
+                        text: model.rank1Min + "+ "
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
@@ -442,6 +443,14 @@ Rectangle {
                         sourceSize.height: 60 * infoRectangle.sizeModifer
                     }
                 }
+
+                Label{
+                    text: "(these values ​​may vary depending on which ladder you are using)"
+                    Layout.alignment: Qt.AlignHCenter
+                    font.pixelSize: 12 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
 
                 Rectangle{
                     color:"#00000000"
