@@ -16,9 +16,15 @@ RankedModServiceProcessor::RankedModServiceProcessor(SettingsController *setting
     m_rankedStateTimer = new QTimer(this);
     m_rankedStateTimer->setInterval(1000);
 
+    m_uniquePlayersOnlineStatisticTimer = new QTimer(this);
+    m_uniquePlayersOnlineStatisticTimer->start(60000);
+
     QObject::connect(m_pingTimer, &QTimer::timeout, this, &RankedModServiceProcessor::pingTimerTimeout, Qt::QueuedConnection);
     QObject::connect(m_rankedStateTimer, &QTimer::timeout, this, &RankedModServiceProcessor::rankedStateTimerTimeout, Qt::QueuedConnection);
+    QObject::connect(m_uniquePlayersOnlineStatisticTimer, &QTimer::timeout, this, &RankedModServiceProcessor::requestUniquePlayersOnlineStatistic, Qt::QueuedConnection);
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &RankedModServiceProcessor::onSettingsLoaded, Qt::QueuedConnection);
+
+    requestUniquePlayersOnlineStatistic();
 }
 
 void RankedModServiceProcessor::setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId)
@@ -200,6 +206,35 @@ void RankedModServiceProcessor::receivePingRecponce(QNetworkReply *reply)
     emit sendModsOnlineCountMap(modsMap);
 }
 
+void RankedModServiceProcessor::receiveUniquePlayersOnlineStatistic(QNetworkReply *reply)
+{
+    if (checkReplyErrors("RankedModServiceProcessor::receivePingRecponce", reply))
+        return;
+
+    QByteArray replyByteArray = reply->readAll();
+
+    reply->deleteLater();
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    if (!jsonDoc.isObject())
+    {
+        qWarning(logWarning()) << "RankedModServiceProcessor::receiveUniquePlayersOnlineStatistic:" << "Bad reply from ranked microservice:" << QString::fromLatin1(replyByteArray);
+        return;
+    }
+
+    QJsonObject jsonObject = jsonDoc.object();
+
+    UniqueOnlineStatistic uniqueOnlineStatistic;
+
+    uniqueOnlineStatistic.day = jsonObject.value("day").toInt();
+    uniqueOnlineStatistic.month = jsonObject.value("month").toInt();
+    uniqueOnlineStatistic.year = jsonObject.value("year").toInt();
+    uniqueOnlineStatistic.total = jsonObject.value("total").toInt();
+
+    emit sendUniquePlayersOnlineStatistic(uniqueOnlineStatistic);
+}
+
 void RankedModServiceProcessor::receiveCurrentMod(QString modName)
 {
     m_currentMod = modName;
@@ -245,5 +280,19 @@ void RankedModServiceProcessor::sendPingRequest()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePingRecponce(reply);
+    });
+}
+
+void RankedModServiceProcessor::requestUniquePlayersOnlineStatistic()
+{
+    QString urlString = "http://crosspick.ru:8081/uniq";
+
+    QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
+    newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveUniquePlayersOnlineStatistic(reply);
     });
 }

@@ -208,6 +208,14 @@ struct RankDiversion
     int rank1Max = 0;
 };
 
+struct UniqueOnlineStatistic
+{
+    int day = 0;
+    int month = 0;
+    int year = 0;
+    int total = 0;
+};
+
 static const quint32 CRC32Table[256] =
 {
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba,

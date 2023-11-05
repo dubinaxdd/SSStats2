@@ -106,6 +106,14 @@ Window {
         height: mainContentContainerRectangle.height
     }
 
+    UniqueOnlineStatistic
+    {
+        x: parent.width - width - 5
+        y: header.height + 5
+        z: 3
+        visible: onlineCounter.pressedState
+    }
+
     ColumnLayout {
         id: columnLayout
         anchors.fill: parent
@@ -368,7 +376,11 @@ Window {
 
                 }
 
-                Rectangle
+                OnlineCounter{
+                    id: onlineCounter
+                }
+
+               /* Rectangle
                 {
                     width: 25
                     height: 25
@@ -398,7 +410,7 @@ Window {
                     font.pixelSize: 15
                     color: "#ffffff"
                     Layout.rightMargin: 15
-                }
+                }*/
             }
         }
 

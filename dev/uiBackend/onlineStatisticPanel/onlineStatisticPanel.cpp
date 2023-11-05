@@ -1,4 +1,5 @@
 #include "onlineStatisticPanel.h"
+#include "QDebug"
 
 OnlineStatisticPanel::OnlineStatisticPanel(QObject *parent)
     : QAbstractListModel(parent)
@@ -25,6 +26,26 @@ int OnlineStatisticPanel::rowCount(const QModelIndex &parent) const
     return m_modsOnlineCountMap.count();
 }
 
+int OnlineStatisticPanel::getUniquePlayersOnDay()
+{
+    return m_uniqueOnlineStatistic.day;
+}
+
+int OnlineStatisticPanel::getUniquePlayersOnMonth()
+{
+    return m_uniqueOnlineStatistic.month;
+}
+
+int OnlineStatisticPanel::getUniquePlayersOnYear()
+{
+    return m_uniqueOnlineStatistic.year;
+}
+
+int OnlineStatisticPanel::getUniquePlayersOnTotal()
+{
+    return m_uniqueOnlineStatistic.total;
+}
+
 QHash<int, QByteArray> OnlineStatisticPanel::roleNames() const
 {
     QHash<int, QByteArray> roles;
@@ -49,4 +70,10 @@ void OnlineStatisticPanel::receiveModsOnlineCountMap(QMap<QString, int> modsOnli
         m_modsOnlineCountMap = modsOnlineCountMap;
         endInsertRows();
     }
+}
+
+void OnlineStatisticPanel::receiveUniquePlayersOnlineStatistic(UniqueOnlineStatistic uniqueOnlineStatistic)
+{
+    m_uniqueOnlineStatistic = uniqueOnlineStatistic;
+    emit uniquePlayersOnlineStatisticChanged();
 }

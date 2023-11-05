@@ -76,6 +76,7 @@ void Core::registerTypes()
     qRegisterMetaType<LaunchMod>("LaunchMod");
     qRegisterMetaType<NotificationInfo>("NotificationInfo");
     qRegisterMetaType<RankDiversion>("RankDiversion");
+    qRegisterMetaType<UniqueOnlineStatistic>("UniqueOnlineStatistic");
 }
 
 void Core::addConnections()
@@ -170,6 +171,7 @@ void Core::addConnections()
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_soulstormController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
+    QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendUniquePlayersOnlineStatistic, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveUniquePlayersOnlineStatistic, Qt::QueuedConnection);
 
     QObject::connect(m_mapManager, &MapManager::sendMapItem, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapItem, Qt::QueuedConnection);
     QObject::connect(m_mapManager, &MapManager::sendDownloadingProgress, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveDownloadingProgress, Qt::QueuedConnection);

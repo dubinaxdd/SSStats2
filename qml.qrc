@@ -37,5 +37,8 @@
         <file>resources/qml/StyledRadioButton.qml</file>
         <file>resources/qml/NotificationList.qml</file>
         <file>resources/qml/PopupDialog.qml</file>
+        <file>resources/qml/OnlineCounter.qml</file>
+        <file>resources/qml/UniqueOnlineStatistic.qml</file>
+        <file>resources/qml/CounterComponent.qml</file>
     </qresource>
 </RCC>
