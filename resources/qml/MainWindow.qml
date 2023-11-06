@@ -64,7 +64,7 @@ Window {
         visible: _uiBackend.ssNotInstalledDialogVisisble
         yesButtonVisible: false
         noButtonVisible: false
-        text: "Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game."
+        text: "Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game.\nThe first launch of the game must be done through Steam."
 
         onClickedOk:{
             _uiBackend.ssNotInstalledDialogVisisble = false;
@@ -82,7 +82,6 @@ Window {
             _uiBackend.steamNotInstalledDialogVisisble = false;
         }
     }
-
 
     PopupDialog{
         id: soulstormLaunchedDialog
