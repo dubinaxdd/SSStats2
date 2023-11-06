@@ -205,6 +205,8 @@ void Core::addConnections()
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendRankDiversion, m_uiBackend->informationPage(), &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendActualClientVersion, m_uiBackend, &UiBackend::receiveActualClientVersion, Qt::QueuedConnection);
+
+    QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->dowServerProcessor(), &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
 }
 
 OverlayWindowController *Core::overlayWindowController() const

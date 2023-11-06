@@ -9,11 +9,14 @@ Rectangle
     property string sourceUrl: "";
     property string toolTipText: "";
 
+    property bool containsMouse: false;
+    property real sizeModifer: 1.0;
+
     signal clicked()
 
     width: 40
     height: 40
-    radius: 10
+    radius: 10 * buttonRectangle.sizeModifer
 
     //color: buttonMouseArea.containsMouse ? "#A9A9A9" : "#E0E0E0"
 
@@ -33,18 +36,16 @@ Rectangle
 
         id: image
         anchors.fill: parent
-        anchors.margins: 5
+        anchors.margins: 5 * buttonRectangle.sizeModifer
         source: sourceUrl
-        sourceSize.width: 30
-        sourceSize.height: 30
-
-
+        sourceSize.width: width//* buttonRectangle.sizeModifer
+        sourceSize.height: height //* buttonRectangle.sizeModifer
     }
 
     ColorOverlay{
         anchors.fill: image
         source:image
-        color: buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+        color: buttonMouseArea.containsMouse || buttonRectangle.containsMouse ? "#DCDCDC" : "#FFFFFF"
         //transform:rotation
         antialiasing: true
     }

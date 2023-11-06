@@ -46,11 +46,13 @@ protected:
 public:
     void setExpandPatyStatistic(bool newExpandPatyStatistic);
     void setBlockUpdate(bool newBlockUpdate);
+    Q_INVOKABLE void updateStatistic();
 
 signals:
     void currentPlayerStatsChanged();
     void expandPatyStatisticChanged();
     void playersItemsInitialized();
+    void manualStatsRequest();
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);

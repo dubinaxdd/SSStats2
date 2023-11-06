@@ -536,26 +536,45 @@ Window {
 
                 }
 
-                Rectangle
+                RowLayout
                 {
-                    Layout.alignment: Qt.AlignCenter
-                    Layout.preferredHeight: 30
-                    Layout.minimumWidth: 280
-                    Layout.maximumWidth: 280
-                    Layout.rightMargin: 5
-                    radius: 10
-                    color: DowStatsStyle.backgroundColor
+                    spacing: 5
 
-                    ColumnLayout
+                    Rectangle
                     {
-                        anchors.fill: parent
+                        Layout.alignment: Qt.AlignCenter
+                        Layout.preferredHeight: 30
+                        Layout.minimumWidth: _uiBackend.ssLaunchState ? 245 : 280
+                        Layout.maximumWidth: _uiBackend.ssLaunchState ? 245 : 280
+                        radius: 10
+                        color: DowStatsStyle.backgroundColor
 
-                        Label
+                        ColumnLayout
                         {
-                            Layout.alignment: Qt.AlignCenter
-                            text: _uiBackend.currentModName + " ladder" //"Current mode"
-                            font.pixelSize: 15
-                            color: DowStatsStyle.textColor
+                            anchors.fill: parent
+
+                            Label
+                            {
+                                Layout.alignment: Qt.AlignCenter
+                                text: _uiBackend.currentModName + " ladder"
+                                font.pixelSize: 15
+                                color: DowStatsStyle.textColor
+                            }
+                        }
+                    }
+
+                    IconButton{
+                        sourceUrl: "qrc:/images/resources/images/update.svg"
+                        toolTipText: "Update"
+                        Layout.rightMargin: 5
+
+                        visible: _uiBackend.ssLaunchState
+
+                        Layout.preferredHeight: 30
+                        Layout.preferredWidth: 30
+
+                        onClicked: {
+                            _uiBackend.statisticPanel.updateStatistic();
                         }
                     }
                 }

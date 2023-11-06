@@ -142,26 +142,52 @@ Window {
                         showTrainingModeSwitch: true
                     }
 
-                    Rectangle
+                    RowLayout
                     {
-                        Layout.alignment: Qt.AlignCenter
-                        Layout.preferredHeight: 30 * _uiBackend.sizeModifer
-                        Layout.minimumWidth: 280 * _uiBackend.sizeModifer
-                        Layout.maximumWidth: 280 * _uiBackend.sizeModifer
-                        radius: 10 * _uiBackend.sizeModifer
-                        color: DowStatsStyle.backgroundColor
+                        spacing: 5 * _uiBackend.sizeModifer
                         visible: _uiBackend.headerVisible
 
-                        ColumnLayout
+                        Rectangle
                         {
-                            anchors.fill: parent
+                            Layout.alignment: Qt.AlignCenter
+                            Layout.preferredHeight: 30 * _uiBackend.sizeModifer
+                            Layout.minimumWidth: 245 * _uiBackend.sizeModifer
+                            Layout.maximumWidth: 245 * _uiBackend.sizeModifer
+                            radius: 10 * _uiBackend.sizeModifer
+                            color: DowStatsStyle.backgroundColor
 
-                            Label
+
+                            ColumnLayout
                             {
-                                Layout.alignment: Qt.AlignCenter
-                                text: _uiBackend.currentModName + " ladder"
-                                font.pixelSize: 15 * _uiBackend.sizeModifer
-                                color: DowStatsStyle.textColor
+                                anchors.fill: parent
+
+                                Label
+                                {
+                                    Layout.alignment: Qt.AlignCenter
+                                    text: _uiBackend.currentModName + " ladder"
+                                    font.pixelSize: 15 * _uiBackend.sizeModifer
+                                    color: DowStatsStyle.textColor
+                                }
+                            }
+                        }
+
+                        IconButton{
+                            sourceUrl: "qrc:/images/resources/images/update.svg"
+                            toolTipText: "Update"
+                            containsMouse: updateButtonMouseArea.hovered
+
+                            Layout.preferredHeight: 30 * _uiBackend.sizeModifer
+                            Layout.preferredWidth: 30 * _uiBackend.sizeModifer
+                            sizeModifer: _uiBackend.sizeModifer
+
+                            GlobalMouseArea{
+
+                                id: updateButtonMouseArea
+                                anchors.fill: parent
+
+                                onClicked: {
+                                    _uiBackend.statisticPanel.updateStatistic();
+                                }
                             }
                         }
                     }

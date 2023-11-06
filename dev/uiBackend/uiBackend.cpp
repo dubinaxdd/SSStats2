@@ -70,7 +70,8 @@ void UiBackend::receiveSsMaximized(bool maximized)
 
 void UiBackend::onSsLaunchStateChanged(bool state)
 {
-    m_ssLaunchState = state;
+    //m_ssLaunchState = state;
+    setSsLaunchState(state);
     setExpand(false);
     showClient();
 }

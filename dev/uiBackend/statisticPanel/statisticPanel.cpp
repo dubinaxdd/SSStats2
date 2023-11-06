@@ -220,6 +220,11 @@ void StatisticPanel::setBlockUpdate(bool newBlockUpdate)
     m_blockUpdate = newBlockUpdate;
 }
 
+void StatisticPanel::updateStatistic()
+{
+    emit manualStatsRequest();
+}
+
 void StatisticPanel::setExpandPatyStatistic(bool newExpandPatyStatistic)
 {
     m_expandPatyStatistic = newExpandPatyStatistic;
