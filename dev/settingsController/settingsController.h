@@ -40,6 +40,7 @@ struct Settings
     bool autoUninstallPreviousBalanceMod = false;
     bool useCustomTemplateProfilePath = false;
     bool showBalanceModBetaVersions = false;
+    QString updateCheckAddress = "";
 };
 
 class SettingsController : public QObject
@@ -61,6 +62,7 @@ signals:
 
 private:
     QSettings *ss_stats_settings;
+    QSettings *m_updaterSettings;
     Settings* m_settings;
 
 };

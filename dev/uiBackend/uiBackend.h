@@ -221,6 +221,7 @@ public slots:
 
     void receiveCurrentModName(QString modName);
     void receiveCurrentModTechnicalName(QString modName);
+    void receiveActualClientVersion(QString version);
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void setSizeModifer(double size);
@@ -306,6 +307,8 @@ private:
     QString m_steamPath = "";
 
     bool m_latesBalanceModNotInstalledDialogVisible = false;
+
+    bool m_clientUpdateAvailable = false;
 };
 
 #endif // UIBACKEND_H

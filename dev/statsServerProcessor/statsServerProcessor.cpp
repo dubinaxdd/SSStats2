@@ -35,6 +35,7 @@ StatsServerProcessor::StatsServerProcessor(SettingsController *settingsControlle
     m_rankDiversionTimer->setInterval(60000);
 
     connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::currentPlayerStatsRequestTimerTimeout, Qt::QueuedConnection);
+    connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::requestClientLastVersion, Qt::QueuedConnection);
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &StatsServerProcessor::onSettingsLoaded, Qt::QueuedConnection);
     connect(m_rankDiversionTimer, &QTimer::timeout, this, &StatsServerProcessor::onRankDiversionTimerTimeout, Qt::QueuedConnection);
@@ -385,6 +386,38 @@ void StatsServerProcessor::receiveRankDiversion(QNetworkReply *reply)
 void StatsServerProcessor::onRankDiversionTimerTimeout()
 {
     requestRankDiversion();
+}
+
+void StatsServerProcessor::requestClientLastVersion()
+{
+    QUrl url = QUrl(m_settingsController->getSettings()->updateCheckAddress);
+
+    QNetworkRequest newRequest = QNetworkRequest(url);
+    newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveClientLastVersion(reply);
+    });
+}
+
+void StatsServerProcessor::receiveClientLastVersion(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "StatsServerProcessor::receiveClientLastVersion:" << "Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+    reply->deleteLater();
+
+    QString versionDoc = QString(replyByteArray);
+    QString version = versionDoc.mid(versionDoc.indexOf("Version=") + 8, versionDoc.indexOf("URL") - 2 - (versionDoc.indexOf("Version=") + 8));
+
+    emit sendActualClientVersion(version);
 }
 
 void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)

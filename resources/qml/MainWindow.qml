@@ -100,7 +100,7 @@ Window {
         visible: _uiBackend.balanceModInstallProcessedDialogVisisble
         yesButtonVisible: false
         noButtonVisible: false
-        text: "DoW Stats Balance Mod during the installation process, please wait until the installation is complete and try again."
+        text: "Dow Stats Balance Mod is being installed, please wait until the installation is complete and try again."
 
         onClickedOk:{
             _uiBackend.balanceModInstallProcessedDialogVisisble = false;

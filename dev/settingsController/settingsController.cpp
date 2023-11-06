@@ -1,5 +1,7 @@
 #include <settingsController.h>
 #include <logger.h>
+#include <QDir>
+#include <QCoreApplication>
 
 SettingsController::SettingsController(QObject *parent) : QObject(parent)
 {
@@ -14,8 +16,7 @@ SettingsController::~SettingsController()
 
 void SettingsController::initializeSettings()
 {
-    ss_stats_settings = new QSettings("settings/settings.ini", QSettings::IniFormat, this);
-
+    ss_stats_settings = new QSettings(QCoreApplication::applicationDirPath() + QDir::separator()  + "settings/settings.ini", QSettings::IniFormat, this);
     ss_stats_settings->sync();
 
     // Если настроек нет, сохраняем дефолтные
@@ -60,6 +61,10 @@ void SettingsController::initializeSettings()
     m_settings->useCustomTemplateProfilePath = ss_stats_settings->value("balance_mod/use_custom_template_profile_path", false).toBool();
     m_settings->showBalanceModBetaVersions = ss_stats_settings->value("balance_mod/show_balance_mod_beta_versions", false).toBool();
 
+    m_updaterSettings = new QSettings(QCoreApplication::applicationDirPath() + QDir::separator() + "Updater.ini", QSettings::IniFormat, this);
+    m_updaterSettings->sync();
+
+    m_settings->updateCheckAddress = m_updaterSettings->value("UpdateURL", "").toString();
     emit settingsLoaded();
 
     qInfo(logInfo()) << "Settings loaded";

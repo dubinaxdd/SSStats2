@@ -28,6 +28,7 @@ signals:
     void sendNotification(QString text, bool isWarning);
     void sendStatisticModName(QString statisticModName);
     void sendRankDiversion(RankDiversion rankDiversion);
+    void sendActualClientVersion(QString version);
 
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );
@@ -43,12 +44,15 @@ private slots:
     void onSettingsLoaded();
     void receiveRankDiversion(QNetworkReply* reply);
     void onRankDiversionTimerTimeout();
+    void requestClientLastVersion();
+    void receiveClientLastVersion(QNetworkReply *reply);
 
 private:
     void registerPlayer(QString name, QString sid, bool init);
     QString GetRandomString() const;
     QString CRC32fromByteArray( const QByteArray & array );
     void requestRankDiversion();
+
 
 private:
     SettingsController* m_settingsController;

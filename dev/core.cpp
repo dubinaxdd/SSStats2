@@ -204,6 +204,7 @@ void Core::addConnections()
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendProfileCopyMode, m_balanceModManager, &BalanceModManager::receiveProfileCopyMode, Qt::QueuedConnection);
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendRankDiversion, m_uiBackend->informationPage(), &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendActualClientVersion, m_uiBackend, &UiBackend::receiveActualClientVersion, Qt::QueuedConnection);
 }
 
 OverlayWindowController *Core::overlayWindowController() const

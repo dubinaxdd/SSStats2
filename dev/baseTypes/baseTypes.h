@@ -32,7 +32,8 @@ public:
         Warning = 1,
         Downloading = 2,
         Delete = 3,
-        Ready = 4
+        Ready = 4,
+        Update = 5
     };
     Q_ENUM(NotificationTypeEnum)
 private:

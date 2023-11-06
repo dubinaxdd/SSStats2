@@ -396,6 +396,21 @@ void UiBackend::receiveCurrentModTechnicalName(QString modName)
     setCurrentModTechnicalName(modName);
 }
 
+void UiBackend::receiveActualClientVersion(QString version)
+{
+    if(version > m_ssStatsVersion && !m_clientUpdateAvailable)
+    {
+        m_clientUpdateAvailable = true;
+
+        NotificationInfo notificationInfo;
+
+        notificationInfo.text = "Client update version " + version + " is available, restart the client to install updates.";
+        notificationInfo.type = NotificationType::Update;
+
+        m_notificationManager->receiveNotification(notificationInfo);
+    }
+}
+
 void UiBackend::onExit()
 {
     emit sendExit();

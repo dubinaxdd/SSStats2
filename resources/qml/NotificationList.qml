@@ -57,6 +57,7 @@ ColumnLayout
                                 case (NotificationType.Delete):         return "qrc:/images/resources/images/delete.svg"
                                 case (NotificationType.Info):           return "qrc:/images/resources/images/info.svg"
                                 case (NotificationType.Downloading):    return "qrc:/images/resources/images/download.svg"
+                                case (NotificationType.Update):         return "qrc:/images/resources/images/update.svg"
                             }
                         }
 
