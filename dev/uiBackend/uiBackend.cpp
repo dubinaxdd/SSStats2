@@ -111,6 +111,19 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+bool UiBackend::balanceModInstallProcessedDialogVisisble() const
+{
+    return m_balanceModInstallProcessedDialogVisisble;
+}
+
+void UiBackend::setBalanceModInstallProcessedDialogVisisble(bool newBalanceModInstallProcessedDialogVisisble)
+{
+    if (m_balanceModInstallProcessedDialogVisisble == newBalanceModInstallProcessedDialogVisisble)
+        return;
+    m_balanceModInstallProcessedDialogVisisble = newBalanceModInstallProcessedDialogVisisble;
+    emit balanceModInstallProcessedDialogVisisbleChanged();
+}
+
 InformationPage *UiBackend::informationPage() const
 {
     return m_informationPage;
@@ -398,6 +411,8 @@ void UiBackend::launchSoulstorm()
         setSteamNotInstalledDialogVisisble(true);
     else if (m_settingsPageModel->launchMode() == LaunchMod::DowStatsBalanceMod && !m_balanceModPage->isLatestModInstalled())
         setLatesBalanceModNotInstalledDialogVisible(true);
+    else if (m_balanceModPage->downloadingProcessed())
+        setBalanceModInstallProcessedDialogVisisble(true);
     else
         emit sendLaunchSoulstorm();
 }

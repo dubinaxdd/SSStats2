@@ -21,6 +21,11 @@ void BalanceModPage::onSettingsLoaded()
     emit useCustomTemplateProfilePathChanged();
 }
 
+bool BalanceModPage::downloadingProcessed() const
+{
+    return m_downloadingProcessed;
+}
+
 bool BalanceModPage::profileCopyModeRequestMessageVisible() const
 {
     return m_profileCopyModeRequestMessageVisible;
@@ -366,6 +371,7 @@ void BalanceModPage::receiveModDownloadProgress(int progress, QString modTechnic
     }
 
     m_downloadingProgress = "Downloading " + modUiName + ": "  + QString::number(progress) + "%";
+    m_downloadingProcessed = true;
     emit downloadingProgressChanged();
 
     if (m_currentDownloadedMod != modTechnicalName)
@@ -386,6 +392,7 @@ void BalanceModPage::receiveModDownloadProgress(int progress, QString modTechnic
 void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
 {
     m_downloadingProgress = "";
+    m_downloadingProcessed = false;
     emit downloadingProgressChanged();
 
     for (int i = 0; i < m_modsInfo.count(); i++)
@@ -466,6 +473,7 @@ void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
     }
 
     m_downloadingProgress = "Installing error: " + modUiName;
+    m_downloadingProcessed = false;
     emit downloadingProgressChanged();
 }
 

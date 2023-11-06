@@ -96,7 +96,17 @@ Window {
         }
     }
 
+    PopupDialog{
+        id: balanceModInstallProcessedDialog
+        visible: _uiBackend.balanceModInstallProcessedDialogVisisble
+        yesButtonVisible: false
+        noButtonVisible: false
+        text: "DoW Stats Balance Mod during the installation process, please wait until the installation is complete and try again."
 
+        onClickedOk:{
+            _uiBackend.balanceModInstallProcessedDialogVisisble = false;
+        }
+    }
 
     NotificationList{
         x: mainContentContainerRectangle.x

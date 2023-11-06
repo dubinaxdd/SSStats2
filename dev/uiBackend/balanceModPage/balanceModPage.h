@@ -80,6 +80,9 @@ public:
 
     bool isLatestModInstalled();
 
+
+    bool downloadingProcessed() const;
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
@@ -137,6 +140,7 @@ private:
    bool m_useCustomTemplateProfilePath = false;
    QUuid m_uuid;
    QString m_currentDownloadedMod = "";
+   bool m_downloadingProcessed = false;
 
    QString m_profileCopyModeRequestTechnicalName = "";
    bool m_profileCopyModeRequestMessageVisible = false;

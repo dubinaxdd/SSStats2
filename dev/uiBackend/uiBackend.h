@@ -69,6 +69,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool ssNotInstalledDialogVisisble READ ssNotInstalledDialogVisisble WRITE setSsNotInstalledDialogVisisble NOTIFY ssNotInstalledDialogVisisbleChanged)
     Q_PROPERTY(bool steamNotInstalledDialogVisisble READ steamNotInstalledDialogVisisble WRITE setSteamNotInstalledDialogVisisble NOTIFY steamNotInstalledDialogVisisbleChanged)
     Q_PROPERTY(bool soulstormLaunchedDialogVisible READ getSoulstormLaunchedDialogVisible WRITE setSoulstormLaunchedDialogVisible NOTIFY soulstormLaunchedDialogVisibleChanged)
+    Q_PROPERTY(bool balanceModInstallProcessedDialogVisisble READ balanceModInstallProcessedDialogVisisble WRITE setBalanceModInstallProcessedDialogVisisble NOTIFY balanceModInstallProcessedDialogVisisbleChanged)
 
     Q_PROPERTY(bool soulstormIsInstalled READ soulstormIsInstalled NOTIFY soulstormIsInstalledChanged)
     Q_PROPERTY(bool ssLaunchState READ ssLaunchState WRITE setSsLaunchState NOTIFY ssLaunchStateChanged)
@@ -151,6 +152,9 @@ public:
     bool ssLaunchState() const;
     void setSsLaunchState(bool newSsLaunchState);
 
+    bool balanceModInstallProcessedDialogVisisble() const;
+    void setBalanceModInstallProcessedDialogVisisble(bool newBalanceModInstallProcessedDialogVisisble);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
 
@@ -199,6 +203,8 @@ signals:
     void soulstormIsInstalledChanged();
 
     void ssLaunchStateChanged();
+
+    void balanceModInstallProcessedDialogVisisbleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -284,6 +290,7 @@ private:
     bool m_ssNotInstalledDialogVisisble = false;
     bool m_steamNotInstalledDialogVisisble = false;
     bool m_soulstormLaunchedDialogVisible = false;
+    bool m_balanceModInstallProcessedDialogVisisble = false;
 
     double m_sizeModifer = 1.0;
 
