@@ -313,19 +313,19 @@ bool ReplayDataCollector::readReplayData()
         PlayerInfoForReplaySending newPlayer;
         newPlayer.playerName = playerStats[i].name;
 
-        //Берем сиды из последнего скана
-        for(int j = 0; j < m_playersInfoFromScanner.count(); j++)
+        //Выставляем сиды для всех игроков, кроме текущего игрока, определение сида для текущего игрока происходит в statsServerProcessor
+        for(int j = 0; j < m_playersInfoFromDowServer.count(); j++)
         {
-            if(m_playersInfoFromScanner[j].isCurrentPlayer)
+            if(m_playersInfoFromDowServer[j].isCurrentPlayer)
                 continue;
 
-            if(newPlayer.playerName == m_playersInfoFromScanner[j].name ||
-               newPlayer.playerName == "[" + m_playersInfoFromScanner[j].name + "]"  ||
-               newPlayer.playerName == "[[" + m_playersInfoFromScanner[j].name + "]]"
-                    )
+            if(newPlayer.playerName == m_playersInfoFromDowServer[j].name ||
+               newPlayer.playerName == "[" + m_playersInfoFromDowServer[j].name + "]"  ||
+               newPlayer.playerName == "[[" + m_playersInfoFromDowServer[j].name + "]]"
+             )
             {
-                newPlayer.playerSid = m_playersInfoFromScanner[j].steamId;
-                newPlayer.playerName = m_playersInfoFromScanner[j].name;
+                newPlayer.playerSid = m_playersInfoFromDowServer[j].steamId;
+                newPlayer.playerName = m_playersInfoFromDowServer[j].name;
                 break;
             }
         }
@@ -477,14 +477,14 @@ bool ReplayDataCollector::checkEqualNamesInStats()
 {
     bool haveEqualNames = false;
 
-    for (int i = 0; i < m_playersInfoFromScanner.count(); i++ )
+    for (int i = 0; i < m_playersInfoFromDowServer.count(); i++ )
     {
-        for (int j = 0; j < m_playersInfoFromScanner.count(); j++ )
+        for (int j = 0; j < m_playersInfoFromDowServer.count(); j++ )
         {
             if (i == j)
                 continue;
 
-            if (m_playersInfoFromScanner.at(i).name == m_playersInfoFromScanner.at(j).name)
+            if (m_playersInfoFromDowServer.at(i).name == m_playersInfoFromDowServer.at(j).name)
             {
                 haveEqualNames = true;
                 break;
@@ -500,14 +500,14 @@ bool ReplayDataCollector::checkEqualNamesInStats()
 
 void ReplayDataCollector::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer)
 {   
-    m_playersInfoFromScanner = playersInfoFromDowServer;
+    m_playersInfoFromDowServer = playersInfoFromDowServer;
 
     qInfo(logInfo()) << "ReplayDataCollector::receivePlayresInfoFromDowServer" << "players info received";
 }
 
 void ReplayDataCollector::onQuitParty()
 {
-    m_playersInfoFromScanner.clear();
+    m_playersInfoFromDowServer.clear();
 }
 
 void ReplayDataCollector::receiveCurrentMod(QString currentMode)

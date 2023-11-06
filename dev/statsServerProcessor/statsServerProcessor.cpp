@@ -55,12 +55,16 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
     for(int i = 0; i < playersInfoInfoFromDowServer.count(); i++)
     {
         if (playersInfoInfoFromDowServer[i].isCurrentPlayer)
+        {
+            m_currentPlayerStats.get()->operator[](0).dowServerName = playersInfoInfoFromDowServer.at(i).name;
             continue;
+        }
 
         ServerPlayerStats newPlayerInfo;
 
         newPlayerInfo.steamId = playersInfoInfoFromDowServer.at(i).steamId;
         newPlayerInfo.position = playersInfoInfoFromDowServer.at(i).position;
+        newPlayerInfo.dowServerName = playersInfoInfoFromDowServer.at(i).name;
 
         playersInfo.data()->append(newPlayerInfo);
     }
@@ -425,15 +429,19 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8)
         return;
 
+    //Определяем сид для текущего игрока
     for (int i = 0; i < replayInfo.playersInfo.count(); i++)
     {
         if (replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).name ||
             replayInfo.playersInfo[i].playerName == "[" + m_currentPlayerStats.data()->at(0).name + "]" ||
-            replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).name + "]]"
+            replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).name + "]]"||
+            replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).dowServerName ||
+            replayInfo.playersInfo[i].playerName == "[" + m_currentPlayerStats.data()->at(0).dowServerName + "]" ||
+            replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).dowServerName + "]]"
             )
         {
             replayInfo.playersInfo[i].playerSid = m_currentPlayerStats.data()->at(0).steamId;
-            replayInfo.playersInfo[i].playerName = m_currentPlayerStats.data()->at(0).name;
+            replayInfo.playersInfo[i].playerName = m_currentPlayerStats.data()->at(0).dowServerName;
         }
 
         if (replayInfo.playersInfo[i].playerSid == "")

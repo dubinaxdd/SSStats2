@@ -37,7 +37,7 @@ private:
 private:
     QVector<WinCondition> m_winCoditionsVector;
     int m_lastAverrageApm = 0;
-    QList<PlayerInfoFromDowServer> m_playersInfoFromScanner;
+    QList<PlayerInfoFromDowServer> m_playersInfoFromDowServer;
     QString m_ssPath;
     QString m_currentMode;
     QString m_currentModVerion;
