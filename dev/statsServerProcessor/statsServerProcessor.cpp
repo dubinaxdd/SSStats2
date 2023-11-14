@@ -152,19 +152,27 @@ void StatsServerProcessor::parseCurrentPlayerSteamId()
 void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<ServerPlayerStats>> playersInfo)
 {
     QString sidsString;
+    QString nickNames;
 
     for(int i = 0; i < playersInfo.data()->count(); i++)
     {
         if ( i != 0)
+        {
             sidsString += ",";
+            nickNames += ",";
+        }
 
         sidsString += playersInfo.data()->at(i).steamId;
+        nickNames += playersInfo.data()->at(i).dowServerName.toUtf8().toBase64();
     }
 
     QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats3.php?sids=" + sidsString
                     + "&version=" + m_clientVersion
                     + "&sender_sid=" + m_currentPlayerStats.data()->at(0).steamId
-                    + "&mod_tech_name=" + m_currentMod);
+                    + "&mod_tech_name=" + m_currentMod
+                    + "&nicks=" + nickNames);
+
+    qDebug() << url;
 
     QNetworkRequest newRequest = QNetworkRequest(url);
 
