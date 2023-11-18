@@ -60,6 +60,7 @@ public:
 
 public slots:
     void openPlayback(QString fileName);
+    void receiveModsInfo(QList <ModInfo> modInfo);
 
 private slots:
     void receiveReplaysInfo(QVector<ReplayListInfo> newReplaysList);
@@ -108,6 +109,7 @@ private:
 
     QString m_mapSourceUrl;
 
+    QList <ModInfo> m_modInfo;
 };
 
 #endif // REPLAYMANAGER_H

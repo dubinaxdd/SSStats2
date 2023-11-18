@@ -71,6 +71,19 @@ void ReplayManager::openPlayback(QString fileName)
     m_currentReplayName = newRepReader.replay.Name;
     m_currentFileName = fileName;
     m_currentMod = newRepReader.replay.MOD;
+
+    if (m_currentMod == "dxp2")
+        m_currentMod = "Original Soulstorm";
+
+    for (int i = 0; i < m_modInfo.count(); i++)
+    {
+        if (m_modInfo.at(i).technicalName.toLower() == m_currentMod.toLower())
+        {
+            m_currentMod = m_modInfo.at(i).uiName;
+            break;
+        }
+    }
+
     m_currentModVersion = newRepReader.replay.Version;
     m_currentMap = newRepReader.replay.Map;
 
@@ -208,6 +221,13 @@ void ReplayManager::openPlayback(QString fileName)
     }
 
     m_playersListModel->setPlayersList(std::move(replayPlayers));
+}
+
+void ReplayManager::receiveModsInfo(QList<ModInfo> modInfo)
+{
+    m_modInfo = modInfo;
+    m_replaysListModel->setModInfo(&m_modInfo);
+    emit updateReplayInfo();
 }
 
 void ReplayManager::update()

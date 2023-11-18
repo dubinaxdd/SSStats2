@@ -186,6 +186,7 @@ void Core::addConnections()
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendModsOnlineCountMap, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveModsOnlineCountMap, Qt::QueuedConnection);
 
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModsInfo, m_uiBackend->balanceModPage(), &BalanceModPage::receiveVersions, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManager, &BalanceModManager::sendModsInfo, m_uiBackend->replayManager(), &ReplayManager::receiveModsInfo, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::sendCurrentModInGame, m_uiBackend->balanceModPage(), &BalanceModPage::receiveCurrentModInGame, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::changeLogReceived, m_uiBackend->balanceModPage(), &BalanceModPage::receiveChangeLog, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModDownloadProgress, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModDownloadProgress, Qt::QueuedConnection);

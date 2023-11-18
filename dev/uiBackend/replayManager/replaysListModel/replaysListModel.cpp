@@ -20,7 +20,19 @@ QVariant ReplaysListModel::data(const QModelIndex &index, int role) const
     else if (role == Map)
         return replayInfo.mapUrl;
     else if (role == Mod)
+    {
+        if (replayInfo.mod == "dxp2")
+            return "Original Soulstorm";
+
+        for (int i = 0; i < m_modInfo->count(); i++)
+        {
+            if (m_modInfo->at(i).technicalName.toLower() == replayInfo.mod.toLower())
+                return m_modInfo->at(i).uiName;
+        }
+
+
         return replayInfo.mod;
+    }
     else if (role == Selected)
         return replayInfo.selected;
 
@@ -50,6 +62,16 @@ void ReplaysListModel::replace(int index)
     ReplayListInfo buffer = replaysList.at(index);
     replaysList[index] = replaysList.at(index + 1);
     replaysList[index+1] = buffer;
+}
+
+void ReplaysListModel::setModInfo(QList<ModInfo> *newModInfo)
+{
+    m_modInfo = newModInfo;
+
+    QModelIndex first = QAbstractItemModel::createIndex(0,0);
+    QModelIndex last = QAbstractItemModel::createIndex(replaysList.count() - 1, 0);
+
+    emit dataChanged(first, last);
 }
 
 void ReplaysListModel::setReplaysList(const QVector<ReplayListInfo> &newReplaysList)

@@ -29,6 +29,8 @@ public:
     Q_INVOKABLE void setSortType(int sortType);
     Q_INVOKABLE void setSelected(int index);
 
+    void setModInfo(QList<ModInfo> *newModInfo);
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
@@ -42,6 +44,7 @@ private:
     QVector<ReplayListInfo> replaysList;
     SortType m_sortType = SortType::SortByTime;
 
+    QList <ModInfo> *m_modInfo;
 };
 
 #endif // REPLAYSLISTMODEL_H
