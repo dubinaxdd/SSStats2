@@ -227,6 +227,7 @@ void ReplayManager::receiveModsInfo(QList<ModInfo> modInfo)
 {
     m_modInfo = modInfo;
     m_replaysListModel->setModInfo(&m_modInfo);
+    m_asyncReplayReader->setModInfo(&m_modInfo);
     emit updateReplayInfo();
 }
 

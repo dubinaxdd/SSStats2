@@ -24,12 +24,14 @@ QVariant ReplaysListModel::data(const QModelIndex &index, int role) const
         if (replayInfo.mod == "dxp2")
             return "Original Soulstorm";
 
-        for (int i = 0; i < m_modInfo->count(); i++)
+        if (m_modInfo)
         {
-            if (m_modInfo->at(i).technicalName.toLower() == replayInfo.mod.toLower())
-                return m_modInfo->at(i).uiName;
+            for (int i = 0; i < m_modInfo->count(); i++)
+            {
+                if (m_modInfo->at(i).technicalName.toLower() == replayInfo.mod.toLower())
+                    return m_modInfo->at(i).uiName;
+            }
         }
-
 
         return replayInfo.mod;
     }

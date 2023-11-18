@@ -11,6 +11,13 @@ AsyncReplayReader::AsyncReplayReader(QObject *parent)
 
 }
 
+void AsyncReplayReader::setModInfo(QList<ModInfo> *newModInfo)
+{
+    m_mutex.lock();
+    m_modInfo = newModInfo;
+    m_mutex.unlock();
+}
+
 void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText)
 {
     QDir dir(playbackFolder);
@@ -61,9 +68,27 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText
 
         bool isContainsFindText = false;
 
+
+        QString uiModName = "";
+        if (m_modInfo)
+        {
+            if (newReplayInfo.mod == "dxp2")
+                uiModName = "Original Soulstorm";
+
+            for (int i = 0; i < m_modInfo->count(); i++)
+            {
+                if (m_modInfo->at(i).technicalName.toLower() == newReplayInfo.mod.toLower())
+                {
+                    uiModName = m_modInfo->at(i).uiName;
+                    break;
+                }
+            }
+        }
+
         if(newReplayInfo.name.toUpper().contains(findText.toUpper())
                 || newReplayInfo.map.toUpper().contains(findText.toUpper())
                 || newReplayInfo.mod.toUpper().contains(findText.toUpper())
+                || (uiModName.toUpper().contains(findText.toUpper()) && !uiModName.isEmpty())
                 || newReplayInfo.fileName.toUpper().contains(findText.toUpper())
                 || newReplayInfo.time.toString("dd.MM.yyyy hh:mm").contains(findText.toUpper())
                 )
