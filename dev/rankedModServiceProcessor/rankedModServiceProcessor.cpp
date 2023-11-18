@@ -30,6 +30,7 @@ RankedModServiceProcessor::RankedModServiceProcessor(SettingsController *setting
 void RankedModServiceProcessor::setCurrentPlayerSteamIdSlot(QString currentPlayerSteamId)
 {
     m_currentPlayerSteamId = currentPlayerSteamId;
+    sendRankedMode(true);
 }
 
 void RankedModServiceProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer)
