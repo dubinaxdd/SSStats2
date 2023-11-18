@@ -699,7 +699,10 @@ void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
                 if (playerStats.at(j).name.isEmpty())
                     continue;
 
-                if (playerStats.at(j).name == m_plyersRankedState.at(i).name || playerStats.at(j).name == "[" + m_plyersRankedState.at(i).name + "]")
+                if (playerStats.at(j).name == m_plyersRankedState.at(i).name
+                    || playerStats.at(j).name == "[" + m_plyersRankedState.at(i).name + "]"
+                    || playerStats.at(j).name == "[[" + m_plyersRankedState.at(i).name + "]]"
+                        )
                 {
                     finded = true;
                     break;

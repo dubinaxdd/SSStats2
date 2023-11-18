@@ -49,6 +49,7 @@ private:
     QNetworkAccessManager *m_networkManager;
     QString m_currentMod = "";
     QString m_currentPlayerSteamId = "";
+    QString m_currentPlayerName = "";
     QList<PlayerInfoFromDowServer> m_playersInfoInfoFromDowServer;
 };
 

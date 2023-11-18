@@ -359,6 +359,8 @@ Window {
                         anchors.fill: parent
                         hoverEnabled: true
 
+                        cursorShape: Qt.PointingHandCursor
+
                         onClicked:
                         {
                             settingsButton.pressedState = true;

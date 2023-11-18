@@ -71,20 +71,21 @@ void RankedModServiceProcessor::pingTimerTimeout()
 
 void RankedModServiceProcessor::rankedStateTimerTimeout()
 {
+    QString sidsListString = "";
+
+    QVector<PlyersRankedState> plyersRankedState;
+
     if (m_playersInfoInfoFromDowServer.isEmpty())
     {
         if(m_currentPlayerSteamId.isEmpty())
             return;
 
-        PlayerInfoFromDowServer newPlayer;
-        newPlayer.steamId = m_currentPlayerSteamId;
+        sidsListString.append(m_currentPlayerSteamId);
 
-        m_playersInfoInfoFromDowServer.append(newPlayer);
+        PlyersRankedState newPlyersRankedState;
+        newPlyersRankedState.steamId = m_currentPlayerSteamId;
+        plyersRankedState.append(newPlyersRankedState);
     }
-
-    QString sidsListString = "";
-
-    QVector<PlyersRankedState> plyersRankedState;
 
     for (int i = 0; i < m_playersInfoInfoFromDowServer.count(); i++)
     {
