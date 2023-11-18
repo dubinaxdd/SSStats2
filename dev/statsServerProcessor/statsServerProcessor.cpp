@@ -166,13 +166,11 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
         nickNames += playersInfo.data()->at(i).dowServerName.toUtf8().toBase64();
     }
 
-    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats3.php?sids=" + sidsString
+    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats4.php?sids=" + sidsString
                     + "&version=" + m_clientVersion
                     + "&sender_sid=" + m_currentPlayerStats.data()->at(0).steamId
                     + "&mod_tech_name=" + m_currentMod
                     + "&nicks=" + nickNames);
-
-    qDebug() << url;
 
     QNetworkRequest newRequest = QNetworkRequest(url);
 
