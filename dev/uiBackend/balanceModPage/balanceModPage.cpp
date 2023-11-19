@@ -326,7 +326,7 @@ QHash<int, QByteArray> BalanceModPage::roleNames() const
 
 void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
 {
-    if ((m_modsInfo.count() == 0 && modsInfo.count() > 0 && m_modsInfoReceived) ||
+   /* if ((m_modsInfo.count() == 0 && modsInfo.count() > 0 && m_modsInfoReceived) ||
          (m_modsInfo.count() < modsInfo.count() && m_modsInfoReceived))
     {
         NotificationInfo notificationInfo;
@@ -334,7 +334,7 @@ void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
         notificationInfo.type = NotificationType::Info;
         notificationInfo.uuid = m_uuid;
         emit sendNotification(notificationInfo);
-    }
+    }*/
 
     m_modsInfoReceived = true;
 
