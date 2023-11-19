@@ -29,6 +29,8 @@ class BalanceModPage : public QAbstractListModel
 
     Q_PROPERTY(bool profileCopyModeRequestMessageVisible READ profileCopyModeRequestMessageVisible WRITE setProfileCopyModeRequestMessageVisible NOTIFY profileCopyModeRequestMessageVisibleChanged)
 
+    Q_PROPERTY(bool haveAvilableMods READ haveAvilableMods NOTIFY haveAvilableModsChanged)
+
 public:
     explicit BalanceModPage(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -82,6 +84,7 @@ public:
 
 
     bool downloadingProcessed() const;
+    bool haveAvilableMods() const;
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
@@ -127,6 +130,8 @@ signals:
 
    void profileCopyModeRequestMessageVisibleChanged();
 
+   void haveAvilableModsChanged();
+
 private:
    SettingsController* m_settingsController;
 
@@ -144,6 +149,7 @@ private:
 
    QString m_profileCopyModeRequestTechnicalName = "";
    bool m_profileCopyModeRequestMessageVisible = false;
+   bool m_modsInfoReceived;
 };
 
 #endif // BALANCEMODPAGE_H

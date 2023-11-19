@@ -26,6 +26,11 @@ bool BalanceModPage::downloadingProcessed() const
     return m_downloadingProcessed;
 }
 
+bool BalanceModPage::haveAvilableMods() const
+{
+    return m_modsInfo.count() > 0;
+}
+
 bool BalanceModPage::profileCopyModeRequestMessageVisible() const
 {
     return m_profileCopyModeRequestMessageVisible;
@@ -321,6 +326,18 @@ QHash<int, QByteArray> BalanceModPage::roleNames() const
 
 void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
 {
+    if ((m_modsInfo.count() == 0 && modsInfo.count() > 0 && m_modsInfoReceived) ||
+         (m_modsInfo.count() < modsInfo.count() && m_modsInfoReceived))
+    {
+        NotificationInfo notificationInfo;
+        notificationInfo.text = "New DoW Stats balance mod version is available.";
+        notificationInfo.type = NotificationType::Info;
+        notificationInfo.uuid = m_uuid;
+        emit sendNotification(notificationInfo);
+    }
+
+    m_modsInfoReceived = true;
+
     if(modsInfo.count() < 1)
         return;
 
@@ -331,6 +348,8 @@ void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
     endResetModel();
 
     emit selectedModInfoChanged();
+    emit haveAvilableModsChanged();
+
 }
 
 void BalanceModPage::receiveCurrentModInGame(QString modName)

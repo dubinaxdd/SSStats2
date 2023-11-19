@@ -16,6 +16,23 @@ Rectangle {
         anchors.fill: parent
         spacing: 5
 
+        visible: !root.model.haveAvilableMods
+
+        Label{
+            text: "No mods available."
+            color: DowStatsStyle.textColor
+            font.pixelSize: 20
+            Layout.alignment: Qt.AlignCenter
+        }
+    }
+
+    ColumnLayout
+    {
+        visible: root.model.haveAvilableMods
+
+        anchors.fill: parent
+        spacing: 5
+
         RowLayout
         {
             Layout.fillWidth: true
