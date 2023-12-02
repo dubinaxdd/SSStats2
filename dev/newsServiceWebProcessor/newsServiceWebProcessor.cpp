@@ -252,20 +252,11 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
         {
             QString youtubeLink = "";
 
-            int index = newDiscordMessage.content.indexOf("https://youtu.be/");
 
-            for(int i = index; i < newDiscordMessage.content.count(); i++)
+
+            if (newDiscordMessage.content.contains("https://youtu.be/"))
             {
-                if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
-                    youtubeLink.append(newDiscordMessage.content[i]);
-                else
-                    break;
-            }
-
-
-            if (youtubeLink.isEmpty())
-            {
-                int index = newDiscordMessage.content.indexOf("https://www.youtube.com/watch?v=");
+                int index = newDiscordMessage.content.indexOf("https://youtu.be/");
 
                 for(int i = index; i < newDiscordMessage.content.count(); i++)
                 {
@@ -279,14 +270,36 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
 
             if (youtubeLink.isEmpty())
             {
-                int index = newDiscordMessage.content.indexOf("https://www.youtube.com/live/");
 
-                for(int i = index; i < newDiscordMessage.content.count(); i++)
+                if(newDiscordMessage.content.contains("https://www.youtube.com/watch?v="))
                 {
-                    if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
-                        youtubeLink.append(newDiscordMessage.content[i]);
-                    else
-                        break;
+                    int index = newDiscordMessage.content.indexOf("https://www.youtube.com/watch?v=");
+
+                    for(int i = index; i < newDiscordMessage.content.count(); i++)
+                    {
+                        if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                            youtubeLink.append(newDiscordMessage.content[i]);
+                        else
+                            break;
+                    }
+                }
+            }
+
+
+            if (youtubeLink.isEmpty())
+            {
+
+                if (newDiscordMessage.content.contains("https://www.youtube.com/live/"))
+                {
+                    int index = newDiscordMessage.content.indexOf("https://www.youtube.com/live/");
+
+                    for(int i = index; i < newDiscordMessage.content.count(); i++)
+                    {
+                        if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                            youtubeLink.append(newDiscordMessage.content[i]);
+                        else
+                            break;
+                    }
                 }
             }
 

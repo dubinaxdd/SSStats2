@@ -15,6 +15,7 @@ void AsyncReplayReader::setModInfo(QList<ModInfo> *newModInfo)
 {
     m_mutex.lock();
     m_modInfo = newModInfo;
+    m_modInfoReceived = true;
     m_mutex.unlock();
 }
 
@@ -70,7 +71,8 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText
 
 
         QString uiModName = "";
-        if (m_modInfo)
+        m_mutex.lock();
+        if (m_modInfo && m_modInfoReceived)
         {
             if (newReplayInfo.mod == "dxp2")
                 uiModName = "Original Soulstorm";
@@ -84,6 +86,7 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText
                 }
             }
         }
+        m_mutex.unlock();
 
         if(newReplayInfo.name.toUpper().contains(findText.toUpper())
                 || newReplayInfo.map.toUpper().contains(findText.toUpper())

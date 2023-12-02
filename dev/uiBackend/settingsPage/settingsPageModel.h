@@ -22,7 +22,6 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool autorun READ autorun WRITE setAutorun NOTIFY autorunChanged)
     Q_PROPERTY(int launchMode READ launchMode WRITE setLaunchMode NOTIFY launchModeChanged)
 
-
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
 

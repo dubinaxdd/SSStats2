@@ -22,6 +22,7 @@ signals:
 
 private:
     bool m_abort = false;
+    bool m_modInfoReceived = false;
     QMutex m_mutex;
 
     QList <ModInfo> *m_modInfo;

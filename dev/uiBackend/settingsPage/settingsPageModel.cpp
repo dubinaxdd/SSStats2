@@ -93,15 +93,7 @@ void SettingsPageModel::setAutorun(bool newAutorun)
         return;
 
     m_autorun = newAutorun;
-    emit autorunChanged();
-
     updateAutorunState(m_autorun);
-
-    //HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run
-
-    /*QSettings settings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
-        settings.setValue(APPLICATION_NAME, QDir::toNativeSeparators(QCoreApplication::applicationFilePath()));
-        settings.sync();*/
 
     m_settingsController->getSettings()->autorun = m_autorun;
     m_settingsController->saveSettings();
@@ -111,13 +103,12 @@ void SettingsPageModel::updateAutorunState(bool isAutorun)
 {
     QSettings bootUpSettings("HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", QSettings::NativeFormat);
 
-    if (isAutorun) {
+     if (isAutorun)
         bootUpSettings.setValue("DowStatsAutorun",  QDir::toNativeSeparators(QCoreApplication::applicationDirPath()+ "\\DowStatsAutorun.exe"));
-        bootUpSettings.sync();
-    } else {
+     else
         bootUpSettings.remove("DowStatsAutorun");
-        bootUpSettings.sync();
-    }
+
+    bootUpSettings.sync();
 }
 
 int SettingsPageModel::volume() const
