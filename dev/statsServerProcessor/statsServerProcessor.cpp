@@ -462,13 +462,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay2.php?";
-    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay3.php?";
+    //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay3.php?";
+    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay4.php?";
 
     int winnerCount = 0;
 
     for(int i = 0; i < replayInfo.playersInfo.count(); i++)
     {
-        url += "p" + QString::number(i+1) + "=" + replayInfo.playersInfo.at(i).playerName + "&";
+        url += "p" + QString::number(i+1) + "=" + replayInfo.playersInfo.at(i).playerName.toUtf8().toBase64() + "&";
         url += "sid" + QString::number(i+1) + "=" + replayInfo.playersInfo.at(i).playerSid + "&";
         url += "r" + QString::number(i+1) + "=" + QString::number(replayInfo.playersInfo.at(i).playerRace + 1) + "&";
 
