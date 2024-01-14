@@ -15,8 +15,8 @@ class GamePanel : public QObject
     Q_PROPERTY(QString currentApm MEMBER m_currentApm NOTIFY apmUpdate)
     Q_PROPERTY(QString averageApm MEMBER m_averageApm NOTIFY apmUpdate)
 
-    Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisisble NOTIFY gamePanelVisibleChanged)
-    Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisisble NOTIFY racePanelVisibleChanged)
+    Q_PROPERTY(bool gamePanelVisible MEMBER m_gamePanelVisible NOTIFY gamePanelVisibleChanged)
+    Q_PROPERTY(bool racePanelVisible MEMBER m_racePanelVisible NOTIFY racePanelVisibleChanged)
     Q_PROPERTY(bool gameLeaveTimerVisible MEMBER m_gameLeaveTimerVisible NOTIFY gameLeaveTimerVisibleChanged)
     Q_PROPERTY(int gameLeaveTimeLeft MEMBER m_gameLeaveTimeLeft NOTIFY gemeLeaveTimeLeftChanged)
 
@@ -47,7 +47,7 @@ class GamePanel : public QObject
 public:
     explicit GamePanel(SettingsController* settingsController, QObject *parent = nullptr);
 
-    void setGamePanelVisisble(bool newGamePanelVisisble);
+    void setGamePanelVisible(bool newGamePanelVisible);
 
     void setSmallGamePanelActive(bool active);
     bool getSmallGamePanelActive();
@@ -114,8 +114,8 @@ private:
     bool m_showGamePannelPreset;
 
 
-    bool m_gamePanelVisisble = false;
-    bool m_racePanelVisisble = false;
+    bool m_gamePanelVisible = false;
+    bool m_racePanelVisible = false;
 
     bool m_gameRankedMode = true;
     bool m_rankedModePanelVisible = true;

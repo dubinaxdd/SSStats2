@@ -244,12 +244,15 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
 
         if (banType == "former_cheater")
             playersInfo.get()->operator[](i).banType = BanType::FormerCheater;
-        if (banType == "former_bug_user")
-            playersInfo.get()->operator[](i).banType = BanType::FormerBugUser;
-        if (banType == "bug_user")
-            playersInfo.get()->operator[](i).banType = BanType::BugUser;
+        if (banType == "banned")
+            playersInfo.get()->operator[](i).banType = BanType::Banned;
+        if (banType == "product_use")
+            playersInfo.get()->operator[](i).banType = BanType::SoftwareUseBan;
         if (banType == "cheater")
             playersInfo.get()->operator[](i).banType = BanType::Cheater;
+
+        if (playersInfo.get()->operator[](i).isCurrentPlayer && playersInfo.get()->operator[](i).banType == BanType::SoftwareUseBan)
+            emit sendSoftwareBanActivated(statsArray.at(i)["reason"].toString());
     }
 
     getPlayersMediumAvatar(playersInfo);

@@ -14,9 +14,9 @@ public:
     enum BanTypeEnum: int{
         NotBanned = 0,
         Cheater = 1,
-        BugUser = 2,
+        Banned = 2,
         FormerCheater = 3,
-        FormerBugUser = 4
+        SoftwareUseBan = 4
     };
     Q_ENUM(BanTypeEnum)
 private:

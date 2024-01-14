@@ -40,7 +40,6 @@ public slots:
     void requestPartysData();
     void onPlayerDisconnected();
 
-
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
     void receiveProfileID(QNetworkReply *reply, QString steamID);

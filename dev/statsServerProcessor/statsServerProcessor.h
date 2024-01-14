@@ -20,8 +20,6 @@ public:
     void getPlayerStatsFromServer(QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo);
 
-
-
 signals:
     void sendServerPlayrStats(ServerPlayerStats serverPlayrStats);
     void sendCurrentPlayerSteamID(QString steamID);
@@ -29,6 +27,7 @@ signals:
     void sendStatisticModName(QString statisticModName);
     void sendRankDiversion(RankDiversion rankDiversion);
     void sendActualClientVersion(QString version);
+    void sendSoftwareBanActivated(QString reason);
 
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );

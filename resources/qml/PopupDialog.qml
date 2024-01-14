@@ -20,6 +20,11 @@ Rectangle{
     signal clickedNo()
     signal clickedOk()
 
+    MouseArea
+    {
+        anchors.fill: parent
+    }
+
     Rectangle
     {
         id: messageRectangle
@@ -29,6 +34,8 @@ Rectangle{
         height: textArea.height > 40 ? textArea.height + 50 : 90
         anchors.horizontalCenter: root.horizontalCenter
         anchors.verticalCenter: root.verticalCenter
+
+
 
         ColumnLayout
         {
@@ -49,7 +56,8 @@ Rectangle{
 
                 TextArea{
                     id: textArea
-                    width: messageRectangle.width - 50
+                    //width: messageRectangle.width - 50
+                    Layout.fillWidth: true
                     Layout.alignment: Qt.AlignVCenter
                     text: root.text
                     color: DowStatsStyle.textColor

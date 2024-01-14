@@ -66,13 +66,16 @@ class UiBackend : public QObject
     Q_PROPERTY(QString currentModTechnicalName READ currentModTechnicalName WRITE setCurrentModTechnicalName NOTIFY currentModTechnicalNameChanged)
 
     Q_PROPERTY(bool latesBalanceModNotInstalledDialogVisible READ latesBalanceModNotInstalledDialogVisible WRITE setLatesBalanceModNotInstalledDialogVisible NOTIFY latesBalanceModNotInstalledDialogVisibleChanged)
-    Q_PROPERTY(bool ssNotInstalledDialogVisisble READ ssNotInstalledDialogVisisble WRITE setSsNotInstalledDialogVisisble NOTIFY ssNotInstalledDialogVisisbleChanged)
-    Q_PROPERTY(bool steamNotInstalledDialogVisisble READ steamNotInstalledDialogVisisble WRITE setSteamNotInstalledDialogVisisble NOTIFY steamNotInstalledDialogVisisbleChanged)
+    Q_PROPERTY(bool ssNotInstalledDialogVisible READ ssNotInstalledDialogVisible WRITE setSsNotInstalledDialogVisible NOTIFY ssNotInstalledDialogVisibleChanged)
+    Q_PROPERTY(bool steamNotInstalledDialogVisible READ steamNotInstalledDialogVisible WRITE setSteamNotInstalledDialogVisible NOTIFY steamNotInstalledDialogVisibleChanged)
     Q_PROPERTY(bool soulstormLaunchedDialogVisible READ getSoulstormLaunchedDialogVisible WRITE setSoulstormLaunchedDialogVisible NOTIFY soulstormLaunchedDialogVisibleChanged)
-    Q_PROPERTY(bool balanceModInstallProcessedDialogVisisble READ balanceModInstallProcessedDialogVisisble WRITE setBalanceModInstallProcessedDialogVisisble NOTIFY balanceModInstallProcessedDialogVisisbleChanged)
+    Q_PROPERTY(bool balanceModInstallProcessedDialogVisible READ balanceModInstallProcessedDialogVisible WRITE setBalanceModInstallProcessedDialogVisible NOTIFY balanceModInstallProcessedDialogVisibleChanged)
+    Q_PROPERTY(bool softwareUseBanDialogVisible READ softwareUseBanDialogVisible WRITE setSoftwareUseBanDialogVisible NOTIFY softwareUseBanDialogVisibleChanged)
+    Q_PROPERTY(QString softwareUseBanReason READ softwareUseBanReason WRITE setSoftwareUseBanReason NOTIFY softwareUseBanReasonChanged)
 
     Q_PROPERTY(bool soulstormIsInstalled READ soulstormIsInstalled NOTIFY soulstormIsInstalledChanged)
     Q_PROPERTY(bool ssLaunchState READ ssLaunchState WRITE setSsLaunchState NOTIFY ssLaunchStateChanged)
+
 public:
     explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -125,7 +128,7 @@ public:
     int onlineCount() const;
     void setOnlineCount(int newOnlineCount);
 
-    void determinateRankedModePanelVisisble();
+    void determinateRankedModePanelVisible();
 
     const QString &currentModName() const;
     void setCurrentModName(const QString &newCurrentModName);
@@ -138,13 +141,13 @@ public:
 
     void setSsPath(const QString &newSsPath);
 
-    bool ssNotInstalledDialogVisisble() const;
-    void setSsNotInstalledDialogVisisble(bool newSsNotInstalledDialogVisisble);
+    bool ssNotInstalledDialogVisible() const;
+    void setSsNotInstalledDialogVisible(bool newSsNotInstalledDialogVisible);
 
     void setSteamPath(const QString &newSteamPath);
 
-    bool steamNotInstalledDialogVisisble() const;
-    void setSteamNotInstalledDialogVisisble(bool newSteamNotInstalledDialogVisisble);
+    bool steamNotInstalledDialogVisible() const;
+    void setSteamNotInstalledDialogVisible(bool newSteamNotInstalledDialogVisible);
 
     bool getSoulstormLaunchedDialogVisible() const;
     void setSoulstormLaunchedDialogVisible(bool newSoulstormLaunchedDialogVisible);
@@ -152,8 +155,14 @@ public:
     bool ssLaunchState() const;
     void setSsLaunchState(bool newSsLaunchState);
 
-    bool balanceModInstallProcessedDialogVisisble() const;
-    void setBalanceModInstallProcessedDialogVisisble(bool newBalanceModInstallProcessedDialogVisisble);
+    bool balanceModInstallProcessedDialogVisible() const;
+    void setBalanceModInstallProcessedDialogVisible(bool newBalanceModInstallProcessedDialogVisible);
+
+    bool softwareUseBanDialogVisible() const;
+    void setSoftwareUseBanDialogVisible(bool newSoftwareUseBanDialogVisible);
+
+    const QString &softwareUseBanReason() const;
+    void setSoftwareUseBanReason(const QString &newSoftwareUseBanReason);
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -196,15 +205,19 @@ signals:
     void notificationManagerChanged();
 
     void latesBalanceModNotInstalledDialogVisibleChanged();
-    void ssNotInstalledDialogVisisbleChanged();
-    void steamNotInstalledDialogVisisbleChanged();
+    void ssNotInstalledDialogVisibleChanged();
+    void steamNotInstalledDialogVisibleChanged();
     void soulstormLaunchedDialogVisibleChanged();
 
     void soulstormIsInstalledChanged();
 
     void ssLaunchStateChanged();
 
-    void balanceModInstallProcessedDialogVisisbleChanged();
+    void balanceModInstallProcessedDialogVisibleChanged();
+
+    void softwareUseBanDialogVisibleChanged();
+
+    void softwareUseBanReasonChanged();
 
 public slots:
     void expandKeyPressed();
@@ -222,6 +235,9 @@ public slots:
     void receiveCurrentModName(QString modName);
     void receiveCurrentModTechnicalName(QString modName);
     void receiveActualClientVersion(QString version);
+
+    void onSoftwareBanActivated(QString reason);
+
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void setSizeModifer(double size);
@@ -288,10 +304,12 @@ private:
     bool m_rankedModeState = true;
     bool m_enableTrainingModeSwitch = true;
 
-    bool m_ssNotInstalledDialogVisisble = false;
-    bool m_steamNotInstalledDialogVisisble = false;
+    bool m_ssNotInstalledDialogVisible = false;
+    bool m_steamNotInstalledDialogVisible = false;
     bool m_soulstormLaunchedDialogVisible = false;
-    bool m_balanceModInstallProcessedDialogVisisble = false;
+    bool m_balanceModInstallProcessedDialogVisible = false;
+    bool m_softwareUseBanDialogVisible = false;
+    QString m_softwareUseBanReason = "";
 
     double m_sizeModifer = 1.0;
 
@@ -307,8 +325,8 @@ private:
     QString m_steamPath = "";
 
     bool m_latesBalanceModNotInstalledDialogVisible = false;
-
     bool m_clientUpdateAvailable = false;
+    bool m_softwareBanActivated = false;
 };
 
 #endif // UIBACKEND_H

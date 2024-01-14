@@ -61,25 +61,38 @@ Window {
 
     PopupDialog{
         id: soulstormNotInstalledDialog
-        visible: _uiBackend.ssNotInstalledDialogVisisble
+        visible: _uiBackend.ssNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
         text: "Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game.\nThe first launch of the game must be done through Steam."
 
         onClickedOk:{
-            _uiBackend.ssNotInstalledDialogVisisble = false;
+            _uiBackend.ssNotInstalledDialogVisible = false;
         }
     }
 
     PopupDialog{
         id: steamNotInstalledDialog
-        visible: _uiBackend.steamNotInstalledDialogVisisble
+        visible: _uiBackend.steamNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
         text: "Steam is not installed!\nInstall Steam and try again.\nRestart Dow Stats Client after installing Steam."
 
         onClickedOk:{
-            _uiBackend.steamNotInstalledDialogVisisble = false;
+            _uiBackend.steamNotInstalledDialogVisible = false;
+        }
+    }
+
+    PopupDialog{
+        id: softwareUseBanDialog
+        visible: _uiBackend.softwareUseBanDialogVisible
+        yesButtonVisible: false
+        noButtonVisible: false
+        text: "Your account is permanently banned." + (_uiBackend.softwareUseBanReason === "" ? "" : "\nReason:" + _uiBackend.softwareUseBanReason)
+
+        onClickedOk:{
+            _uiBackend.softwareUseBanDialogVisible = false;
+            _uiBackend.onExit();
         }
     }
 
@@ -97,13 +110,13 @@ Window {
 
     PopupDialog{
         id: balanceModInstallProcessedDialog
-        visible: _uiBackend.balanceModInstallProcessedDialogVisisble
+        visible: _uiBackend.balanceModInstallProcessedDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
         text: "Dow Stats Balance Mod is being installed, please wait until the installation is complete and try again."
 
         onClickedOk:{
-            _uiBackend.balanceModInstallProcessedDialogVisisble = false;
+            _uiBackend.balanceModInstallProcessedDialogVisible = false;
         }
     }
 
@@ -309,7 +322,7 @@ Window {
                         else
                         {
                             pressedState = false;
-                            _uiBackend.ssNotInstalledDialogVisisble = true
+                            _uiBackend.ssNotInstalledDialogVisible = true
                         }
                     }
                 }
@@ -332,7 +345,7 @@ Window {
                         else
                         {
                             pressedState = false;
-                            _uiBackend.ssNotInstalledDialogVisisble = true
+                            _uiBackend.ssNotInstalledDialogVisible = true
                         }
 
                     }

@@ -23,8 +23,8 @@ GamePanel::GamePanel(SettingsController *settingsController, QObject *parent)
 
 void GamePanel::racePanelVisibleTimerTimeout()
 {
-    m_racePanelVisisble = false;
-    emit racePanelVisibleChanged(m_racePanelVisisble);
+    m_racePanelVisible = false;
+    emit racePanelVisibleChanged(m_racePanelVisible);
 }
 
 void GamePanel::gameLeaveTimerTimeout()
@@ -72,10 +72,10 @@ void GamePanel::onGameStopped()
 
     emit playerTestStatsUpdate();
 
-    m_gamePanelVisisble = false;
-    emit gamePanelVisibleChanged(m_gamePanelVisisble);
-    m_racePanelVisisble = false;
-    emit racePanelVisibleChanged(m_racePanelVisisble);
+    m_gamePanelVisible = false;
+    emit gamePanelVisibleChanged(m_gamePanelVisible);
+    m_racePanelVisible = false;
+    emit racePanelVisibleChanged(m_racePanelVisible);
 }
 
 void GamePanel::onGameStarted(SsMissionState gameCurrentState)
@@ -94,8 +94,8 @@ void GamePanel::onGameStarted(SsMissionState gameCurrentState)
         return;
     }
 
-    m_gamePanelVisisble = true;
-    emit gamePanelVisibleChanged(m_gamePanelVisisble);
+    m_gamePanelVisible = true;
+    emit gamePanelVisibleChanged(m_gamePanelVisible);
 
     if (gameCurrentState == SsMissionState::gameStarted)
     {
@@ -118,16 +118,16 @@ void GamePanel::onGameStarted(SsMissionState gameCurrentState)
 void GamePanel::receivePlayersTestStats(QVector<PlayerStats> testStats)
 {
     m_testStats = testStats;
-    m_racePanelVisisble = true;
-    emit racePanelVisibleChanged(m_racePanelVisisble);
+    m_racePanelVisible = true;
+    emit racePanelVisibleChanged(m_racePanelVisible);
 
     updatePlayerRaces();
 }
 
 void GamePanel::expandPlayerRacesButtonClick()
 {
-    m_racePanelVisisble = !m_racePanelVisisble;
-    emit racePanelVisibleChanged(m_racePanelVisisble);
+    m_racePanelVisible = !m_racePanelVisible;
+    emit racePanelVisibleChanged(m_racePanelVisible);
 }
 
 void GamePanel::onSettingsLoaded()
@@ -337,10 +337,10 @@ void GamePanel::setShowGamePannelPreset(bool showGamePannelPreset)
     emit showGamePanelPresetChanged(m_showGamePannelPreset);
 }
 
-void GamePanel::setGamePanelVisisble(bool newGamePanelVisisble)
+void GamePanel::setGamePanelVisible(bool newGamePanelVisible)
 {
-    m_gamePanelVisisble = newGamePanelVisisble;
-    emit gamePanelVisibleChanged(m_gamePanelVisisble);
+    m_gamePanelVisible = newGamePanelVisible;
+    emit gamePanelVisibleChanged(m_gamePanelVisible);
 }
 
 void GamePanel::setSmallGamePanelActive(bool active)

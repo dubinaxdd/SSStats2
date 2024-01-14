@@ -50,7 +50,7 @@ Rectangle {
         {
             if (root.playerIsBanned)
             {
-                if (root.banType === BanType.FormerBugUser || root.banType === BanType.FormerCheater)
+                if (root.banType === BanType.FormerCheater)
                     return "#FAF884"
                 else
                     return "#ffa9a9"
@@ -100,7 +100,7 @@ Rectangle {
 
             Rectangle{
                 Layout.fillHeight: true
-                visible: root.banType === BanType.BugUser || root.banType === BanType.Cheater//root.playerIsBanned
+                visible: root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan
             }
 
             Rectangle {
@@ -159,8 +159,17 @@ Rectangle {
 
             Label {
                 id: statusLabel
-                visible: root.banType === BanType.BugUser || root.banType === BanType.Cheater
+                visible: root.banType === BanType.Cheater
                 text: qsTr("[CHEATER]")
+                font.pixelSize: 15 * sizeModifer
+                Layout.alignment: Qt.AlignHCenter
+                color: root.textColor
+            }
+
+            Label {
+                id: statusLabel2
+                visible: root.banType === BanType.Banned || root.banType === BanType.SoftwareUseBan
+                text: qsTr("[BANNED]")
                 font.pixelSize: 15 * sizeModifer
                 Layout.alignment: Qt.AlignHCenter
                 color: root.textColor
@@ -173,7 +182,7 @@ Rectangle {
             RowLayout
             {
                 Layout.leftMargin: 10 * sizeModifer
-                visible: !(root.banType === BanType.BugUser || root.banType === BanType.Cheater)
+                visible: !(root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan)
 
                 Rectangle{
                     radius:5 * sizeModifer
@@ -196,7 +205,7 @@ Rectangle {
             {
                 Layout.leftMargin: 10 * sizeModifer
 
-                visible: !(root.banType === BanType.BugUser || root.banType === BanType.Cheater)
+                visible: !(root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan)
 
                 Rectangle{
                     radius:5 * sizeModifer
@@ -333,17 +342,6 @@ Rectangle {
                             sourceSize.height: 60 * sizeModifer
                         }
                     }
-
-                    Label {
-                        visible: root.banType === BanType.FormerBugUser
-                        text: qsTr("Former\nbug abuser")
-                        font.pixelSize: 10 * sizeModifer
-                        Layout.alignment: Qt.AlignHCenter
-                        color: root.textColor
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
-                    }
-
 
                     Label {
                         visible: root.banType === BanType.FormerCheater

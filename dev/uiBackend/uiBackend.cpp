@@ -112,17 +112,43 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
-bool UiBackend::balanceModInstallProcessedDialogVisisble() const
+const QString &UiBackend::softwareUseBanReason() const
 {
-    return m_balanceModInstallProcessedDialogVisisble;
+    return m_softwareUseBanReason;
 }
 
-void UiBackend::setBalanceModInstallProcessedDialogVisisble(bool newBalanceModInstallProcessedDialogVisisble)
+void UiBackend::setSoftwareUseBanReason(const QString &newSoftwareUseBanReason)
 {
-    if (m_balanceModInstallProcessedDialogVisisble == newBalanceModInstallProcessedDialogVisisble)
+    if (m_softwareUseBanReason == newSoftwareUseBanReason)
         return;
-    m_balanceModInstallProcessedDialogVisisble = newBalanceModInstallProcessedDialogVisisble;
-    emit balanceModInstallProcessedDialogVisisbleChanged();
+    m_softwareUseBanReason = newSoftwareUseBanReason;
+    emit softwareUseBanReasonChanged();
+}
+
+bool UiBackend::softwareUseBanDialogVisible() const
+{
+    return m_softwareUseBanDialogVisible;
+}
+
+void UiBackend::setSoftwareUseBanDialogVisible(bool newSoftwareUseBanDialogVisible)
+{
+    if (m_softwareUseBanDialogVisible == newSoftwareUseBanDialogVisible)
+        return;
+    m_softwareUseBanDialogVisible = newSoftwareUseBanDialogVisible;
+    emit softwareUseBanDialogVisibleChanged();
+}
+
+bool UiBackend::balanceModInstallProcessedDialogVisible() const
+{
+    return m_balanceModInstallProcessedDialogVisible;
+}
+
+void UiBackend::setBalanceModInstallProcessedDialogVisible(bool newBalanceModInstallProcessedDialogVisible)
+{
+    if (m_balanceModInstallProcessedDialogVisible == newBalanceModInstallProcessedDialogVisible)
+        return;
+    m_balanceModInstallProcessedDialogVisible = newBalanceModInstallProcessedDialogVisible;
+    emit balanceModInstallProcessedDialogVisibleChanged();
 }
 
 InformationPage *UiBackend::informationPage() const
@@ -156,17 +182,17 @@ void UiBackend::setSoulstormLaunchedDialogVisible(bool newSoulstormLaunchedDialo
     emit soulstormLaunchedDialogVisibleChanged();
 }
 
-bool UiBackend::steamNotInstalledDialogVisisble() const
+bool UiBackend::steamNotInstalledDialogVisible() const
 {
-    return m_steamNotInstalledDialogVisisble;
+    return m_steamNotInstalledDialogVisible;
 }
 
-void UiBackend::setSteamNotInstalledDialogVisisble(bool newSteamNotInstalledDialogVisisble)
+void UiBackend::setSteamNotInstalledDialogVisible(bool newSteamNotInstalledDialogVisible)
 {
-    if (m_steamNotInstalledDialogVisisble == newSteamNotInstalledDialogVisisble)
+    if (m_steamNotInstalledDialogVisible == newSteamNotInstalledDialogVisible)
         return;
-    m_steamNotInstalledDialogVisisble = newSteamNotInstalledDialogVisisble;
-    emit steamNotInstalledDialogVisisbleChanged();
+    m_steamNotInstalledDialogVisible = newSteamNotInstalledDialogVisible;
+    emit steamNotInstalledDialogVisibleChanged();
 }
 
 void UiBackend::setSteamPath(const QString &newSteamPath)
@@ -174,17 +200,17 @@ void UiBackend::setSteamPath(const QString &newSteamPath)
     m_steamPath = newSteamPath;
 }
 
-bool UiBackend::ssNotInstalledDialogVisisble() const
+bool UiBackend::ssNotInstalledDialogVisible() const
 {
-    return m_ssNotInstalledDialogVisisble;
+    return m_ssNotInstalledDialogVisible;
 }
 
-void UiBackend::setSsNotInstalledDialogVisisble(bool newSsNotInstalledDialogVisisble)
+void UiBackend::setSsNotInstalledDialogVisible(bool newSsNotInstalledDialogVisible)
 {
-    if (m_ssNotInstalledDialogVisisble == newSsNotInstalledDialogVisisble)
+    if (m_ssNotInstalledDialogVisible == newSsNotInstalledDialogVisible)
         return;
-    m_ssNotInstalledDialogVisisble = newSsNotInstalledDialogVisisble;
-    emit ssNotInstalledDialogVisisbleChanged();
+    m_ssNotInstalledDialogVisible = newSsNotInstalledDialogVisible;
+    emit ssNotInstalledDialogVisibleChanged();
 }
 
 void UiBackend::setSsPath(const QString &newSsPath)
@@ -271,7 +297,7 @@ void UiBackend::setOnlineCount(int newOnlineCount)
     emit onlineCountChanged();
 }
 
-void UiBackend::determinateRankedModePanelVisisble()
+void UiBackend::determinateRankedModePanelVisible()
 {
     if (m_gameCurrentState == SsMissionState::playbackLoadStarted
         || m_gameCurrentState == SsMissionState::playbackStarted
@@ -367,7 +393,7 @@ void UiBackend::setMissionCurrentState(SsMissionState gameCurrentState)
         default: break;
     }
 
-    determinateRankedModePanelVisisble();
+    determinateRankedModePanelVisible();
 }
 
 void UiBackend::receiveNotification(QString notify, bool isWarning)
@@ -412,6 +438,20 @@ void UiBackend::receiveActualClientVersion(QString version)
     }
 }
 
+void UiBackend::onSoftwareBanActivated(QString reason)
+{
+    if (m_softwareBanActivated)
+        return;
+
+    m_softwareBanActivated = true;
+
+    setSoftwareUseBanDialogVisible(true);
+    setSoftwareUseBanReason(reason);
+
+    m_settingsPageModel->setOverlayVisible(false);
+
+}
+
 void UiBackend::onExit()
 {
     emit sendExit();
@@ -422,13 +462,13 @@ void UiBackend::launchSoulstorm()
     QDir steamDir(m_steamPath);
 
     if(!soulstormIsInstalled())
-        setSsNotInstalledDialogVisisble(true);
+        setSsNotInstalledDialogVisible(true);
     else if(m_steamPath.isEmpty() || !steamDir.exists())
-        setSteamNotInstalledDialogVisisble(true);
+        setSteamNotInstalledDialogVisible(true);
     else if (m_settingsPageModel->launchMode() == LaunchMod::DowStatsBalanceMod && !m_balanceModPage->isLatestModInstalled())
         setLatesBalanceModNotInstalledDialogVisible(true);
     else if (m_balanceModPage->downloadingProcessed())
-        setBalanceModInstallProcessedDialogVisisble(true);
+        setBalanceModInstallProcessedDialogVisible(true);
     else
         emit sendLaunchSoulstorm();
 }
@@ -555,14 +595,14 @@ void UiBackend::setExpand(bool newExpand)
     {
         if (m_expand)
         {
-            m_gamePanel->setGamePanelVisisble(true);
+            m_gamePanel->setGamePanelVisible(true);
             m_headerVisible = true;
             m_patyStatisticVisible = true;
             m_statisticPanel->setExpandPatyStatistic(false);
         }
         else
         {
-            m_gamePanel->setGamePanelVisisble(true);
+            m_gamePanel->setGamePanelVisible(true);
             m_headerVisible = false;
             m_patyStatisticVisible = false;
             m_statisticPanel->setExpandPatyStatistic(true);
