@@ -533,6 +533,12 @@ Rectangle {
                     }
 
                     Label{
+                        text: "   Tornado"
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+
+                    Label{
                         text: "   Tr1v"
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor

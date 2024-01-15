@@ -35,6 +35,8 @@ private:
 
     void newActualModDetected(QString modTechnicalName, bool installed);
     void updateTemplateProfilePath(QString modTechnicalName);
+    void requestBetaTestPlayersList();
+    void receiveBetaTestPlayersList(QNetworkReply *reply);
 
 private slots:
     void modsInfoTimerTimeout();
@@ -51,6 +53,7 @@ public slots:
     void receiveUpdateTemplateProfilePath(bool useCustomTemplateProfilePath);
     void receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
     void onSsLaunchStateChanged(bool lounched);
+    void setCurrentPlayerSteamId(QString steamId);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
@@ -90,8 +93,10 @@ private:
 
     bool m_ssLounchedState = false;
     bool m_ssLounchedStateReceived = false;
+    bool m_showBalanceModBetaVersions = false;
+    bool m_betaTestPlayersListReceived = false;
 
-
+    QString m_currentPlayerSteamId = "";
 };
 
 #endif // BALANCEMODMANAGER_H

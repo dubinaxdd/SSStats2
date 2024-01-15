@@ -154,6 +154,7 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_soulstormController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);

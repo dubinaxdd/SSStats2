@@ -39,7 +39,7 @@ struct Settings
     LaunchMod launchMode = LaunchMod::LastSelectedMod;
     bool autoUninstallPreviousBalanceMod = false;
     bool useCustomTemplateProfilePath = false;
-    bool showBalanceModBetaVersions = false;
+    //bool showBalanceModBetaVersions = false;
     QString updateCheckAddress = "";
 };
 

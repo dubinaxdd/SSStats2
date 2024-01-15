@@ -18,12 +18,8 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     m_modsInfoRequestTimer->setInterval(5000);
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
 
-    m_modsInfoRequestTimer->start();
-
     m_checkDownloadingQueryTimer->setInterval(1000);
     connect(m_checkDownloadingQueryTimer, &QTimer::timeout, this, &BalanceModManager::checkDownloadingQuery, Qt::QueuedConnection);
-
-    m_checkDownloadingQueryTimer->start();
 
     connect(this, &BalanceModManager::installMod, m_balanceModInstaller, &BalanceModInstaller::installMod, Qt::QueuedConnection);
     connect(this, &BalanceModManager::uninstallMod, m_balanceModInstaller, &BalanceModInstaller::uninstallMod, Qt::QueuedConnection);
@@ -132,13 +128,16 @@ void BalanceModManager::newActualModDetected(QString modTechnicalName, bool inst
     m_settingsController->saveSettings();
 
     m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
-
-    //if (!installed && m_settingsController->getSettings()->autoUpdateBalanceMod)
-    //    requestDownloadMod(modTechnicalName);
 }
 
 void BalanceModManager::modsInfoTimerTimeout()
 {
+    if(!m_betaTestPlayersListReceived)
+    {
+        requestBetaTestPlayersList();
+        return;
+    }
+
     if(m_ssPath.isEmpty() || !m_ssLounchedStateReceived)
         return;
 
@@ -209,6 +208,70 @@ void BalanceModManager::requestDownloadMod(QString modTechnicalName)
         checkDownloadingQuery();
 }
 
+void BalanceModManager::requestBetaTestPlayersList()
+{
+    QNetworkRequest newRequest;
+
+    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/beta_test_players_list.txt";
+
+    newRequest.setUrl(QUrl(urlString));
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveBetaTestPlayersList(reply);
+    });
+}
+
+void BalanceModManager::receiveBetaTestPlayersList(QNetworkReply *reply)
+{
+    if (reply->error() != QNetworkReply::NoError)
+    {
+        qWarning(logWarning()) << "BalanceModManager::receiveBetaTestPlayersList - Connection error:" << reply->errorString();
+        reply->deleteLater();
+        return;
+    }
+
+    QByteArray replyByteArray = reply->readAll();
+    reply->deleteLater();
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    if(!jsonDoc.isArray())
+    {
+        qWarning(logWarning()) << "BalanceModManager::receiveBetaTestPlayersList: beta_test_players_list.txt parsing error: " + replyByteArray;
+        return;
+    }
+
+    QJsonArray jsonArray = jsonDoc.array();
+
+    for (int i = 0; i < jsonArray.count(); i++)
+    {
+        if(!jsonArray.at(i).isObject())
+        {
+            qWarning(logWarning()) << "BalanceModManager::receiveBetaTestPlayersList: Value at " << i << "is not a JsonObject" + replyByteArray;
+            continue;
+        }
+
+        QJsonObject newObject = jsonArray.at(i).toObject();
+
+        QString steamId = newObject.value("steamId").toString();
+
+        if (steamId == m_currentPlayerSteamId)
+        {
+            m_showBalanceModBetaVersions = true;
+            qInfo(logInfo()) << "Beta versions of balance mod is avilable.";
+            break;
+        }
+    }
+
+    if (!m_showBalanceModBetaVersions)
+        qInfo(logInfo()) << "Beta versions of balance mod is not avilable.";
+
+    m_betaTestPlayersListReceived = true;
+
+    modsInfoTimerTimeout();
+}
+
 void BalanceModManager::uninstalMod(QString modTechnicalName)
 {
     emit uninstallMod(m_ssPath, modTechnicalName);
@@ -262,7 +325,18 @@ void BalanceModManager::onSsLaunchStateChanged(bool lounched)
     m_ssLounchedState = lounched;
     m_ssLounchedStateReceived = true;
 
+    if (m_currentPlayerSteamId.isEmpty())
+        return;
+
     modsInfoTimerTimeout();
+}
+
+void BalanceModManager::setCurrentPlayerSteamId(QString steamId)
+{
+    m_currentPlayerSteamId = steamId;
+
+    m_modsInfoRequestTimer->start();
+    m_checkDownloadingQueryTimer->start();
 }
 
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
@@ -302,12 +376,15 @@ void BalanceModManager::setSsPath(const QString &newSsPath)
     if(m_ssPath.isEmpty())
         return;
 
+    if (m_currentPlayerSteamId.isEmpty())
+        return;
+
     modsInfoTimerTimeout();
 }
 
 void BalanceModManager::checkDownloadingQuery()
 {
-    if(m_downloadingQuery.isEmpty() || m_ssLounchedState || m_modDownloadingProcessed)
+    if(m_downloadingQuery.isEmpty() || m_ssLounchedState || m_modDownloadingProcessed || m_currentPlayerSteamId == "")
         return;
 
     if (getProfileExist(m_downloadingQuery.last()))
@@ -376,7 +453,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
         newModInfo.isBeta  = newObject.value("isBeta").toBool();
 
-        if (!m_settingsController->getSettings()->showBalanceModBetaVersions && newModInfo.isBeta)
+        if (!m_showBalanceModBetaVersions && newModInfo.isBeta)
             continue;
 
         newModInfo.id = newObject.value("id").toInt();

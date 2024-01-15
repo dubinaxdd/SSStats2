@@ -88,9 +88,10 @@ Window {
         visible: _uiBackend.softwareUseBanDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "Your account is permanently banned." + (_uiBackend.softwareUseBanReason === "" ? "" : "\nReason:" + _uiBackend.softwareUseBanReason)
+        text: "Your account is permanently banned. You can use other services." + (_uiBackend.softwareUseBanReason === "" ? "" : "\nReason:" + _uiBackend.softwareUseBanReason)
 
         onClickedOk:{
+            Qt.openUrlExternally("https://dowonline.ru");
             _uiBackend.softwareUseBanDialogVisible = false;
             _uiBackend.onExit();
         }
