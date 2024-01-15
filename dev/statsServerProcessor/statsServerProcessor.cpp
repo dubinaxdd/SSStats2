@@ -246,13 +246,15 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
             playersInfo.get()->operator[](i).banType = BanType::FormerCheater;
         if (banType == "banned")
             playersInfo.get()->operator[](i).banType = BanType::Banned;
-        if (banType == "product_use")
+        if (banType == "software_use")
             playersInfo.get()->operator[](i).banType = BanType::SoftwareUseBan;
         if (banType == "cheater")
             playersInfo.get()->operator[](i).banType = BanType::Cheater;
 
-        if (playersInfo.get()->operator[](i).isCurrentPlayer && playersInfo.get()->operator[](i).banType == BanType::SoftwareUseBan)
-            emit sendSoftwareBanActivated(statsArray.at(i)["reason"].toString());
+        m_softwareBanActivated = playersInfo.get()->operator[](i).isCurrentPlayer && playersInfo.get()->operator[](i).banType == BanType::SoftwareUseBan;
+
+        if (m_softwareBanActivated)
+            emit sendSoftwareBanActivated(statsArray.at(i)["banReason"].toString());
     }
 
     getPlayersMediumAvatar(playersInfo);
@@ -435,7 +437,7 @@ void StatsServerProcessor::receiveClientLastVersion(QNetworkReply *reply)
 
 void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 {
-    if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8)
+    if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8 || m_softwareBanActivated)
         return;
 
     //Определяем сид для текущего игрока

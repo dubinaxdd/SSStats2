@@ -11,7 +11,7 @@ Window {
     height: 700
     title: "DoW Stats Client"
     color: DowStatsStyle.alternateBackgroundColor//"#eaeaea"
-    flags: Qt.Window
+    flags: Qt.Window //| Qt.FramelessWindowHint
     visibility: Window.Maximized
 
     minimumWidth: 1200

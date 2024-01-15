@@ -69,6 +69,8 @@ private:
 
     QString m_machineUniqueId = "";
     QString m_currentMod = "";
+
+    bool m_softwareBanActivated = false;
 };
 
 #endif // STATSSERVERPROCESSOR_H
