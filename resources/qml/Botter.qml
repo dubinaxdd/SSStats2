@@ -93,7 +93,9 @@ Rectangle {
                 hoverEnabled: true
 
                 onClicked: {
-                    Qt.openUrlExternally("https://discordapp.com/channels/606832876369215491/852182655570411592");
+                    //Qt.openUrlExternally("https://discordapp.com/channels/606832876369215491/852182655570411592");
+                    Qt.openUrlExternally("https://discord.gg/t7WqcDDeSU");
+
                 }
             }
         }
