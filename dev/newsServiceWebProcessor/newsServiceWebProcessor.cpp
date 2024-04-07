@@ -206,7 +206,7 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
 
         QJsonObject authorObject = newObject.value("author").toObject();
         newDiscordMessage.userId = authorObject.value("id").toString();
-        newDiscordMessage.userName = authorObject.value("username").toString();
+        newDiscordMessage.userName = authorObject.value("global_name").toString();/*username*/
         newDiscordMessage.avatarId = authorObject.value("avatar").toString();
 
         newDiscordMessage.attachmentId = "0";
