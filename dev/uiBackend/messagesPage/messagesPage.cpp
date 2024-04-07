@@ -150,6 +150,9 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
             emit newsAvailableChanged(m_newsAvailable);
         }
 
+        newText.replace("@everyone","");
+        newText.replace("@here","");
+
         messages[i].content = newText;
     }
 
