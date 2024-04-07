@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QSettings>
 #include "JlCompress.h"
+#include "defines.h"
 
 BalanceModManager::BalanceModManager(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -49,6 +50,8 @@ void BalanceModManager::downloadMod(QString modTechnicalName, bool overwritePrif
     QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/" + modTechnicalName + ".zip";
 
     newRequest.setUrl(QUrl(urlString));
+    newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
@@ -72,6 +75,8 @@ void BalanceModManager::downloadModsInfo()
     QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/mods.txt";
 
     newRequest.setUrl(QUrl(urlString));
+    newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
@@ -193,6 +198,8 @@ void BalanceModManager::requestChangeLog(QString modTechnicalName)
     QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/changelogs/" + modTechnicalName + ".txt";
 
     newRequest.setUrl(QUrl(urlString));
+    newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
@@ -215,6 +222,8 @@ void BalanceModManager::requestBetaTestPlayersList()
     QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/beta_test_players_list.txt";
 
     newRequest.setUrl(QUrl(urlString));
+    newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
+
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
