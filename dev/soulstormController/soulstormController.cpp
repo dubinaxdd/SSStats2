@@ -25,6 +25,7 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     , m_gameStateReader(new GameStateReader(m_settingsController, m_ssPath, this))
     , m_dowServerProcessor(new DowServerProcessor(this))
     , m_replayDataCollector(new ReplayDataCollector(m_ssPath, this))
+    , m_advertisingProcessor(new AdvertisingProcessor(this))
     , m_soulstormProcess(nullptr)
 {
     if(m_steamPath.isEmpty() || !QDir(m_steamPath).exists())
@@ -76,6 +77,8 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_replayDataCollector,  &ReplayDataCollector::receiveAverrageApm,       Qt::QueuedConnection);
 
     QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
+
+    QObject::connect(m_advertisingProcessor, &AdvertisingProcessor::sendAdvertisingMesssage, m_dowServerProcessor, &DowServerProcessor::sendAdvertisingMessage, Qt::QueuedConnection);
 
     //QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendAuthKey, this, &SoulstormController::sendAuthKey, Qt::QueuedConnection);
 
@@ -431,6 +434,11 @@ void SoulstormController::writeCurrentModSettingInGame()
     }
 
     delete ssSettings;
+}
+
+AdvertisingProcessor *SoulstormController::advertisingProcessor() const
+{
+    return m_advertisingProcessor;
 }
 
 ReplayDataCollector *SoulstormController::replayDataCollector() const

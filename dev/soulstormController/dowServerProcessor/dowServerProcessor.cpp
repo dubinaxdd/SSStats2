@@ -163,6 +163,20 @@ void DowServerProcessor::onPlayerDisconnected()
     //addQuery(QueryType::FindAdvertisements);
 }
 
+void DowServerProcessor::sendAdvertisingMessage(int room, QString text)
+{
+    if (m_sessionID.isEmpty())
+        return;
+
+    QString urlString = "https://dow1ss-lobby.reliclink.com:443/game/chat/sendText?message=" + text + "&subject=&chatroomID=" + QString::number(room)+ "&sessionID=" + m_sessionID.toLocal8Bit();
+    QNetworkRequest newRequest = createDowServerRequest(urlString);
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        reply->deleteLater();
+    });
+}
+
 void DowServerProcessor::setSessionID(QString sessionID)
 {
     m_sessionID = sessionID;

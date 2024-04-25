@@ -28,6 +28,7 @@ signals:
     void sendRankDiversion(RankDiversion rankDiversion);
     void sendActualClientVersion(QString version);
     void sendSoftwareBanActivated(QString reason);
+    void replaySended();
 
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );

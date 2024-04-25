@@ -574,6 +574,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     request.setRawHeader("User-Agent", "");
 
     QNetworkReply *reply = m_networkManager->post(request, postData);
+    emit replaySended();
 
 
     if (m_rankedMode)

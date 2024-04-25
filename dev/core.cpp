@@ -151,6 +151,7 @@ void Core::addConnections()
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameStartEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameStartEventSound, Qt::QueuedConnection);
 
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_soulstormController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_soulstormController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);
@@ -210,6 +211,8 @@ void Core::addConnections()
 
     QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->dowServerProcessor(), &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendSoftwareBanActivated, m_uiBackend, &UiBackend::onSoftwareBanActivated, Qt::QueuedConnection);
+
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
 }
 
 OverlayWindowController *Core::overlayWindowController() const

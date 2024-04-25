@@ -39,6 +39,7 @@ public slots:
     void setCurrentModVersion(QString modVersion);
     void requestPartysData();
     void onPlayerDisconnected();
+    void sendAdvertisingMessage(int room, QString text);
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
