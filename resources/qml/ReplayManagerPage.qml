@@ -726,7 +726,7 @@ Rectangle {
                     Layout.alignment: Qt.AlignHCenter
                     Layout.bottomMargin: 15
 
-                    Button
+                    BlueButton
                     {
                         text: "Save badge"
 
@@ -741,7 +741,7 @@ Rectangle {
                         }
                     }
 
-                    Button
+                    BlueButton
                     {
                         text: "Save banner"
 

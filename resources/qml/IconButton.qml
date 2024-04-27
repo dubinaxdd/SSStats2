@@ -58,7 +58,7 @@ Rectangle
         hoverEnabled: true
 
         ToolTip.visible: containsMouse
-        ToolTip.delay: 1000
+        ToolTip.delay: 600
         ToolTip.text: toolTipText
 
         cursorShape: Qt.PointingHandCursor
