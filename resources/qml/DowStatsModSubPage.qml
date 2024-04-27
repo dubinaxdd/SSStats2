@@ -187,6 +187,19 @@ Rectangle {
                     Layout.fillWidth: true
                     Layout.fillHeight: true
 
+                    BlueButton{
+                        text: "Full changelog"
+                        anchors.bottom: parent.bottom
+                        anchors.left: parent.left
+
+                        width: 100
+                        height: 25
+
+                        anchors.margins: 10
+                        z: 2
+
+                        onClicked: Qt.openUrlExternally("https://dowstats.ru/")
+                    }
 
                     Flickable
                     {
@@ -309,205 +322,5 @@ Rectangle {
                 }
             }
         }
-
-        /*Rectangle
-        {
-            radius: 10
-            Layout.preferredHeight: 30
-            color: extendedSettingsButtonMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.alternateBackgroundColor
-            Layout.fillWidth: true
-
-            clip: true
-
-            RowLayout
-            {
-                anchors.fill: parent
-
-                Layout.alignment: Qt.AlignCenter
-
-                Item {
-                    Layout.fillWidth: true
-                }
-
-                Label{
-                    text: "Extended settings"
-                    color: DowStatsStyle.textColor
-                    font.pixelSize: 14
-                }
-
-                Item {
-
-                    Layout.preferredWidth: 14
-                    Layout.preferredHeight: 14
-
-                    Image
-                    {
-                        id: image
-                        anchors.margins: 3
-                        source: extendedSettingsPannel.visible ? "qrc:/images/resources/images/arrow_down.svg" : "qrc:/images/resources/images/arrow_up.svg"
-                        sourceSize.width: 14
-                        sourceSize.height: 14
-                    }
-
-                    ColorOverlay{
-                        anchors.fill: image
-                        source:image
-                        color: DowStatsStyle.textColor
-                        antialiasing: true
-                    }
-                }
-
-                Item {
-                    Layout.fillWidth: true
-                }
-
-            }
-
-            MouseArea{
-                id: extendedSettingsButtonMouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-
-                onClicked: extendedSettingsPannel.visible = !extendedSettingsPannel.visible
-            }
-
-        }*/
-
-        /*Rectangle
-        {
-            id: extendedSettingsPannel
-            radius: 10
-            Layout.preferredHeight: 180
-            color: DowStatsStyle.alternateBackgroundColor
-            Layout.fillWidth: true
-
-            //Layout.topMargin: -15
-
-            clip: true
-
-            visible: false
-
-
-            ColumnLayout
-            {
-                anchors.fill: parent
-                anchors.leftMargin: 10
-                anchors.rightMargin: 10
-                anchors.topMargin: 5
-                anchors.bottomMargin: 10
-
-                StyledSwitch{
-                    text: "Auto-install the latest version of DoW Stats Balance Mod"
-                    checked: model.autoUpdateBalanceMod
-                    onCheckedChanged: {
-
-                        model.autoUpdateBalanceMod = checked;
-
-                        if( checked)
-                            model.downloadLatestMod();
-                    }
-                }
-
-                StyledSwitch{
-                    text: "Auto-uninstall the previous version of DoW Stats Balance Mod when installing the latest version"
-                    checked: model.autoUninstallPreviousBalanceMod
-                    onCheckedChanged: model.autoUninstallPreviousBalanceMod = checked
-                }
-
-                StyledSwitch{
-                    id: templateProfilePathSwitch
-                    text: "Use custom template profile path"
-                    checked: model.useCustomTemplateProfilePath
-                    onCheckedChanged: model.useCustomTemplateProfilePath = checked
-                }
-
-                Rectangle
-                {
-                    id: templateProfilePathPannel
-                    radius: 10
-                    Layout.preferredHeight: 70
-                    color: DowStatsStyle.backgroundColor
-                    Layout.fillWidth: true
-
-                    RowLayout
-                    {
-                        id: rowLayout
-
-                        anchors.fill: parent
-                        anchors.leftMargin: 10
-                        anchors.rightMargin: 10
-                        anchors.topMargin: 5
-                        anchors.bottomMargin: 10
-
-                        Layout.alignment: Qt.AlignTop
-
-
-                        ColumnLayout
-                        {
-                            spacing: 3
-
-
-                            Label{
-                                Layout.alignment: Qt.AlignVCenter
-                                text: "Template profile path"
-                                color: DowStatsStyle.textColor
-                                font.pixelSize: 14
-
-
-                            }
-
-                            Label{
-                                Layout.alignment: Qt.AlignVCenter
-                                text: model.templateProfilePath
-                                color: DowStatsStyle.textColor
-                                font.pixelSize: 11
-
-                                clip: true
-
-                                Layout.preferredWidth: rowLayout.width - rowLayout.spacing - (folderButton.visible ? folderButton.width : 0)
-                            }
-
-                            Label{
-                                Layout.alignment: Qt.AlignVCenter
-                                text: "Player color schemes and hotkeys will be copied after installing any mod version from the specified directory."
-                                color: DowStatsStyle.textColor
-                                font.pixelSize: 11
-                            }
-                        }
-
-                        IconButton
-                        {
-                            id: folderButton
-
-                            sourceUrl: "qrc:/images/resources/images/folder.svg"
-                            toolTipText: "Choise other folder"
-
-                            visible: templateProfilePathSwitch.checked
-
-                            onClicked: {
-                                choiseFolderDialog.visible = true
-                            }
-                        }
-                    }
-                }
-            }
-        }*/
     }
-
-
-    /*FolderDialog
-    {
-        id: choiseFolderDialog
-
-        folder: "file:///" + model.templateProfilePath
-
-        onAccepted: {
-            model.choiseTemplateProfilePath(currentFolder);
-            visible = false;
-        }
-
-        onRejected: {
-            visible =  false;
-        }
-    }*/
 }
