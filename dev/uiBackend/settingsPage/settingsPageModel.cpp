@@ -47,6 +47,9 @@ void SettingsPageModel::onSettingsLoaded()
     m_launchMode =  m_settingsController->getSettings()->launchMode;
     emit launchModeChanged();
 
+    m_enableAdvertising = m_settingsController->getSettings()->enableAdvertising;
+    emit enableAdvertisingChanged();
+
     updateAutorunState(m_autorun);
 }
 
@@ -108,7 +111,23 @@ void SettingsPageModel::updateAutorunState(bool isAutorun)
      else
         bootUpSettings.remove("DowStatsAutorun");
 
-    bootUpSettings.sync();
+     bootUpSettings.sync();
+}
+
+bool SettingsPageModel::enableAdvertising() const
+{
+    return m_enableAdvertising;
+}
+
+void SettingsPageModel::setEnableAdvertising(bool newEnableAdvertising)
+{
+    if (m_enableAdvertising == newEnableAdvertising)
+        return;
+    m_enableAdvertising = newEnableAdvertising;
+    emit enableAdvertisingChanged();
+
+    m_settingsController->getSettings()->enableAdvertising = m_enableAdvertising;
+    m_settingsController->saveSettings();
 }
 
 int SettingsPageModel::volume() const

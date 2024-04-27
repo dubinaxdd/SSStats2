@@ -63,130 +63,150 @@ Rectangle {
 
         contentHeight: settingsContent.height
 
-        ColumnLayout
+        RowLayout
         {
-            id: settingsContent
+            ColumnLayout
+            {
+                id: settingsContent
+                Layout.preferredWidth: 350
 
-            StyledComboBox{
-                id: themeComboBox
-                Layout.preferredWidth: 255
+                StyledComboBox{
+                    id: themeComboBox
+                    Layout.preferredWidth: 255
 
-                model: ["Theme: Light", "Theme: Dark", "Theme: Pink"]
+                    model: ["Theme: Light", "Theme: Dark", "Theme: Pink"]
 
-                currentIndex: root.model.currentTheme
+                    currentIndex: root.model.currentTheme
 
-                onCurrentIndexChanged: {
-                    switch (currentIndex)
+                    onCurrentIndexChanged: {
+                        switch (currentIndex)
+                        {
+                            case(0): DowStatsStyle.setLightTheme(); break;
+                            case(1): DowStatsStyle.setDarkTheme();  break;
+                            case(2): DowStatsStyle.setPinkTheme();  break;
+                        }
+
+                        root.model.currentTheme = themeComboBox.currentIndex;
+                    }
+                }
+
+                StyledSwitch{
+                    text: "Autorun"
+                    checked: model.autorun
+                    onCheckedChanged: model.autorun = checked;
+                }
+
+                StyledSwitch{
+                    text: "Show overlay"
+                    checked: model.overlayVisible
+                    onCheckedChanged: model.overlayVisible = checked;
+                }
+
+                StyledSwitch{
+                    id: showGamePannelSwitch
+                    text: "APM panel visible in game"
+                    onCheckedChanged: _uiBackend.gamePanel.showGamePannelPreset = checked;
+                }
+
+                StyledSwitch{
+                    id: smallPannelActiveSwitch
+                    text: "Small APM panel in game"
+                    onCheckedChanged: _uiBackend.gamePanel.smallPannelActive = checked;
+                }
+
+                StyledSwitch {
+                    id: enableEventsSoundsEhenGameMinimized
+                    text: "Enable events sounds when the game is minimized"
+                    checked: model.enableEventsSoundWhenGameMinimized
+                    onCheckedChanged: model.enableEventsSoundWhenGameMinimized = checked;
+                }
+
+                StyledSwitch {
+                    id: enableEventsSoundsEhenGameMaximized
+                    text: "Enable events sounds when the game is maximized"
+                    checked: model.enableEventsSoundWhenGameMaximized
+                    onCheckedChanged: model.enableEventsSoundWhenGameMaximized = checked;
+                }
+
+                StyledSwitch {
+                    enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
+                    text: "Enable game load event sound"
+                    checked: model.enableGameLoadEventSound
+                    onCheckedChanged: model.enableGameLoadEventSound = checked;
+                }
+
+                StyledSwitch {
+                    enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
+                    text: "Enable game start event sound"
+                    checked: model.enableGameStartEventSound
+                    onCheckedChanged: model.enableGameStartEventSound = checked;
+                }
+
+                RowLayout
+                {
+                    Label
                     {
-                        case(0): DowStatsStyle.setLightTheme(); break;
-                        case(1): DowStatsStyle.setDarkTheme();  break;
-                        case(2): DowStatsStyle.setPinkTheme();  break;
+                        text: "Events volume:"
+                        opacity: 0.8
+                        font.pixelSize: 12
+                        color: DowStatsStyle.textColor
                     }
 
-                    root.model.currentTheme = themeComboBox.currentIndex;
+                    Slider {
+                        from: 0
+                        value: model.volume
+                        to: 100
+                        opacity: hovered ? 1.0 : 0.8
+                        onValueChanged: model.volume = value;
+                    }
                 }
-            }
 
-            StyledSwitch{
-                text: "Autorun"
-                checked: model.autorun
-                onCheckedChanged: model.autorun = checked;
-            }
-
-
-
-            StyledSwitch{
-                text: "Show overlay"
-                checked: model.overlayVisible
-                onCheckedChanged: model.overlayVisible = checked;
-            }
-
-            StyledSwitch{
-                text: "Launch Soulstorm with Windows7 support mode"
-                checked: model.win7SupportMode
-                onCheckedChanged: model.win7SupportMode = checked;
-            }
-
-            StyledSwitch{
-                text: "Launch Soulstorm in window"
-                checked: model.launchGameInWindow
-                onCheckedChanged: model.launchGameInWindow = checked;
-            }
-
-            StyledSwitch{
-                text: "Skip the intro video"
-                checked: model.skipIntroVideo
-                onCheckedChanged: model.skipIntroVideo = checked;
-            }
-
-            StyledSwitch{
-                id: noFogSwitch
-                text: "No FOG"
-                onCheckedChanged: _uiBackend.noFogState = checked;
-            }
-
-            StyledSwitch{
-                id: showGamePannelSwitch
-                text: "APM panel visible in game"
-                onCheckedChanged: _uiBackend.gamePanel.showGamePannelPreset = checked;
-            }
-
-            StyledSwitch{
-                id: smallPannelActiveSwitch
-                text: "Small APM panel in game"
-                onCheckedChanged: _uiBackend.gamePanel.smallPannelActive = checked;
-            }
-
-            StyledSwitch {
-                id: enableEventsSoundsEhenGameMinimized
-                text: "Enable events sounds when the game is minimized"
-                checked: model.enableEventsSoundWhenGameMinimized
-                onCheckedChanged: model.enableEventsSoundWhenGameMinimized = checked;
-            }
-
-            StyledSwitch {
-                id: enableEventsSoundsEhenGameMaximized
-                text: "Enable events sounds when the game is maximized"
-                checked: model.enableEventsSoundWhenGameMaximized
-                onCheckedChanged: model.enableEventsSoundWhenGameMaximized = checked;
-            }
-
-            StyledSwitch {
-                enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
-                text: "Enable game load event sound"
-                checked: model.enableGameLoadEventSound
-                onCheckedChanged: model.enableGameLoadEventSound = checked;
-            }
-
-            StyledSwitch {
-                enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
-                text: "Enable game start event sound"
-                checked: model.enableGameStartEventSound
-                onCheckedChanged: model.enableGameStartEventSound = checked;
-            }
-
-            RowLayout
-            {
-                Label
+                Rectangle
                 {
-                    text: "Events volume:"
-                    opacity: 0.8
-                    font.pixelSize: 12
-                    color: DowStatsStyle.textColor
-                }
-
-                Slider {
-                    from: 0
-                    value: model.volume
-                    to: 100
-                    opacity: hovered ? 1.0 : 0.8
-                    onValueChanged: model.volume = value;
+                    Layout.fillHeight: true
                 }
             }
 
-            Rectangle
+            ColumnLayout
             {
-                Layout.fillHeight: true
+                StyledSwitch{
+                    text: "Launch Soulstorm with Windows7 support mode"
+                    checked: model.win7SupportMode
+                    onCheckedChanged: model.win7SupportMode = checked;
+                }
+
+                StyledSwitch{
+                    text: "Launch Soulstorm in window"
+                    checked: model.launchGameInWindow
+                    onCheckedChanged: model.launchGameInWindow = checked;
+                }
+
+                StyledSwitch{
+                    text: "Skip the intro video"
+                    checked: model.skipIntroVideo
+                    onCheckedChanged: model.skipIntroVideo = checked;
+                }
+
+                StyledSwitch{
+                    id: noFogSwitch
+                    text: "No FOG"
+                    onCheckedChanged: _uiBackend.noFogState = checked;
+                }
+
+                StyledSwitch{
+                    id: advertisingSwitch
+                    text: "Auto ad sender"
+                    onCheckedChanged: model.enableAdvertising = checked;
+                }
+
+                Rectangle
+                {
+                    Layout.fillHeight: true
+                }
+            }
+
+            Item {
+                Layout.fillWidth: true
             }
         }
     }

@@ -20,6 +20,7 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(int volume READ volume WRITE setVolume NOTIFY volumeChanged)
     Q_PROPERTY(int currentTheme READ currentTheme WRITE setCurrentTheme NOTIFY currentThemeChanged)
     Q_PROPERTY(bool autorun READ autorun WRITE setAutorun NOTIFY autorunChanged)
+    Q_PROPERTY(bool enableAdvertising READ enableAdvertising WRITE setEnableAdvertising NOTIFY enableAdvertisingChanged)
     Q_PROPERTY(int launchMode READ launchMode WRITE setLaunchMode NOTIFY launchModeChanged)
 
 public:
@@ -41,8 +42,7 @@ signals:
     void currentThemeChanged();
     void autorunChanged();
     void launchModeChanged();
-
-
+    void enableAdvertisingChanged();
 
 private slots:
     void onSettingsLoaded();
@@ -81,6 +81,9 @@ public:
     int launchMode() const;
     void setLaunchMode(int newLaunchMode);
 
+    bool enableAdvertising() const;
+    void setEnableAdvertising(bool newEnableAdvertising);
+
 private:
     void updateAutorunState(bool isAutorun);
 
@@ -97,6 +100,7 @@ private:
     bool m_enableGameLoadEventSound = true;
     bool m_enableGameStartEventSound = true;
     bool m_autorun = true;
+    bool m_enableAdvertising = true;
 
     int m_volume = 100;
 

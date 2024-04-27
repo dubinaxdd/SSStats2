@@ -25,7 +25,7 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     , m_gameStateReader(new GameStateReader(m_settingsController, m_ssPath, this))
     , m_dowServerProcessor(new DowServerProcessor(this))
     , m_replayDataCollector(new ReplayDataCollector(m_ssPath, this))
-    , m_advertisingProcessor(new AdvertisingProcessor(this))
+    , m_advertisingProcessor(new AdvertisingProcessor(m_settingsController, this))
     , m_soulstormProcess(nullptr)
 {
     if(m_steamPath.isEmpty() || !QDir(m_steamPath).exists())

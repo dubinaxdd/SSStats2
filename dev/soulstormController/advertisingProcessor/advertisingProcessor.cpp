@@ -1,8 +1,9 @@
 #include "advertisingProcessor.h"
 #include "QDebug"
 
-AdvertisingProcessor::AdvertisingProcessor(QObject *parent)
+AdvertisingProcessor::AdvertisingProcessor(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
+    , m_settingsController(settingsController)
 {
     m_sendingTimer = new QTimer(this);
     m_sendingTimer->setInterval(1000);
@@ -11,7 +12,7 @@ AdvertisingProcessor::AdvertisingProcessor(QObject *parent)
 
 void AdvertisingProcessor::onReplaySended()
 {
-    if (m_currentPlayer.statsAvailable)
+    if (m_currentPlayer.statsAvailable && m_settingsController->getSettings()->enableAdvertising)
         m_sendingTimer->start();
 }
 

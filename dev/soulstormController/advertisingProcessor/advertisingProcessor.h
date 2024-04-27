@@ -4,12 +4,13 @@
 #include <QObject>
 #include <baseTypes.h>
 #include <QTimer>
+#include <settingsController/settingsController.h>
 
 class AdvertisingProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit AdvertisingProcessor(QObject *parent = nullptr);
+    explicit AdvertisingProcessor(SettingsController* settingsController, QObject *parent = nullptr);
 
 signals:
     void sendAdvertisingMesssage(int room, QString text);
@@ -22,6 +23,7 @@ private slots:
     void onSendingTimerTimeout();
 
 private:
+    SettingsController* m_settingsController;
     QTimer* m_sendingTimer;
     QString m_currentMessageText;
     int m_currentRoom = 0;
