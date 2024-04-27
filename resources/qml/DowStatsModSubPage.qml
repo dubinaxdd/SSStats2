@@ -310,7 +310,7 @@ Rectangle {
             }
         }
 
-        Rectangle
+        /*Rectangle
         {
             radius: 10
             Layout.preferredHeight: 30
@@ -371,9 +371,9 @@ Rectangle {
                 onClicked: extendedSettingsPannel.visible = !extendedSettingsPannel.visible
             }
 
-        }
+        }*/
 
-        Rectangle
+        /*Rectangle
         {
             id: extendedSettingsPannel
             radius: 10
@@ -491,11 +491,11 @@ Rectangle {
                     }
                 }
             }
-        }
+        }*/
     }
 
 
-    FolderDialog
+    /*FolderDialog
     {
         id: choiseFolderDialog
 
@@ -509,5 +509,5 @@ Rectangle {
         onRejected: {
             visible =  false;
         }
-    }
+    }*/
 }
