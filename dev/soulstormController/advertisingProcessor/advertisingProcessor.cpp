@@ -138,7 +138,7 @@ void AdvertisingProcessor::startAdvertising()
 
     m_playerRealRoom = 0;
     m_currentRoom = 1;
-    m_currentText = "Hi everyone, my Solo MMR is " + QString::number(m_currentPlayer.mmr1v1) + ", more information on dowstats.ru";
+    m_currentText = "Hi everyone, I use DoW Stats, my Solo MMR: " + QString::number(m_currentPlayer.mmr1v1) + ", games played: " + QString::number(m_currentPlayer.gamesCount) + ", see new game features, replays and more information on dowstats.ru";
 
     joinChannel();
 }
