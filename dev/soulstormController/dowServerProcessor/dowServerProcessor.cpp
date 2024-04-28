@@ -11,23 +11,23 @@
 #define ASD_TIMER_INTERVAL 3000
 
 DowServerProcessor::DowServerProcessor(QObject *parent)
-    : QObject(parent)
-    , m_networkManager(new QNetworkAccessManager(this))
+    : AbstractDowServerProcessor(parent)
+    //, m_networkManager(new QNetworkAccessManager(this))
 {
     m_queueTimer = new QTimer(this);
     m_queueTimer->setInterval(QUEUE_TIMER_INTERVAL);
 
-    m_requestDataAftrePlayerDiscoonectTimer = new QTimer(this);
-    m_requestDataAftrePlayerDiscoonectTimer->setInterval(ASD_TIMER_INTERVAL);
-    m_requestDataAftrePlayerDiscoonectTimer->setSingleShot(true);
+    m_requestDataAftrePlayerDisconectTimer = new QTimer(this);
+    m_requestDataAftrePlayerDisconectTimer->setInterval(ASD_TIMER_INTERVAL);
+    m_requestDataAftrePlayerDisconectTimer->setSingleShot(true);
 
     QObject::connect(m_queueTimer, &QTimer::timeout, this, &DowServerProcessor::checkQueue, Qt::QueuedConnection);
-    QObject::connect(m_requestDataAftrePlayerDiscoonectTimer, &QTimer::timeout, this, &DowServerProcessor::asdTimerTimeout, Qt::QueuedConnection);
+    QObject::connect(m_requestDataAftrePlayerDisconectTimer, &QTimer::timeout, this, &DowServerProcessor::playerDiscoonectTimerTimeout, Qt::QueuedConnection);
 
     m_queueTimer->start();
 }
 
-bool DowServerProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply)
+/*bool DowServerProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -53,7 +53,7 @@ QNetworkRequest DowServerProcessor::createDowServerRequest(QString url)
     newRequest.setSslConfiguration(sslConf);
 
     return newRequest;
-}
+}*/
 
 QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
 {
@@ -159,34 +159,16 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 
 void DowServerProcessor::onPlayerDisconnected()
 {
-    m_requestDataAftrePlayerDiscoonectTimer->start();
+    m_requestDataAftrePlayerDisconectTimer->start();
     //addQuery(QueryType::FindAdvertisements);
-}
-
-void DowServerProcessor::sendAdvertisingMessage(int room, QString text)
-{
-    if (m_sessionID.isEmpty())
-        return;
-
-    QString urlString = "https://dow1ss-lobby.reliclink.com:443/game/chat/sendText?message=" + text + "&subject=&chatroomID=" + QString::number(room)+ "&sessionID=" + m_sessionID.toLocal8Bit();
-    QNetworkRequest newRequest = createDowServerRequest(urlString);
-    QNetworkReply *reply = m_networkManager->get(newRequest);
-
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        reply->deleteLater();
-    });
 }
 
 void DowServerProcessor::setSessionID(QString sessionID)
 {
-    m_sessionID = sessionID;
-
-    qInfo(logInfo()) << "sessionID =" << m_sessionID;
+    AbstractDowServerProcessor::setSessionID(sessionID);
 
     if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
-    {
         addQuery(QueryType::ProfileID);
-    }
 }
 
 void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
@@ -194,9 +176,7 @@ void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
     m_steamID = steamID;
 
     if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
-    {
         addQuery(QueryType::ProfileID);
-    }
 }
 
 void DowServerProcessor::setCurrentModVersion(QString modVersion)
@@ -399,7 +379,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
     emit sendPlayersInfoFromDowServer(playersInfo);
 }
 
-void DowServerProcessor::asdTimerTimeout()
+void DowServerProcessor::playerDiscoonectTimerTimeout()
 {
     addQuery(QueryType::FindAdvertisements);
 }

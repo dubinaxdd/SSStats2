@@ -3,16 +3,17 @@
 
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <abstractDowServerProcessor.h>
 #include <logger.h>
 #include <baseTypes.h>
 #include <QTimer>
 
-class DowServerProcessor : public QObject
+class DowServerProcessor : public AbstractDowServerProcessor
 {
-
     Q_OBJECT
 public:
     explicit DowServerProcessor(QObject *parent = nullptr);
+    ~DowServerProcessor(){};
 
     enum QueryType : int
     {
@@ -23,8 +24,6 @@ public:
     };
 
 private:
-    bool checkReplyErrors(QString funcName, QNetworkReply *reply);
-    QNetworkRequest createDowServerRequest(QString url);
     QVector<PlayerData> getPlayersInCurrentRoom(QVector<PartyData> partyDataArray);
 
     void rquestChannellData(int id);
@@ -32,14 +31,12 @@ private:
     void requestFindAdvertisements();
     void requestPlayersSids(QVector<PlayerData> profilesData);
 
-
 public slots:
     void setSessionID(QString sessionID);
     void setCurrentPlayerSteamID(QString steamID);
     void setCurrentModVersion(QString modVersion);
     void requestPartysData();
     void onPlayerDisconnected();
-    void sendAdvertisingMessage(int room, QString text);
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
@@ -47,25 +44,21 @@ private slots:
     void receiveFindAdvertisements(QNetworkReply *reply);
     void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData);
 
-    void asdTimerTimeout();
+    void playerDiscoonectTimerTimeout();
 
     void checkQueue();
     void addQuery(QueryType type);
-
 
 signals:
     void sendPartysArray(QVector<PartyData> partyDataArray);
     void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo );
 
 private:
-
     QVector<QueryType> m_requestsQueue;
     QTimer *m_queueTimer;
-    QTimer *m_requestDataAftrePlayerDiscoonectTimer;
+    QTimer *m_requestDataAftrePlayerDisconectTimer;
     QVector<PlayerData> m_profileIdsForQueue;
 
-    QNetworkAccessManager *m_networkManager;
-    QString m_sessionID = "";
     QString m_steamID = "";
     QString m_profileID = "";
     QString m_statGroupId = "";

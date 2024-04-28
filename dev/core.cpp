@@ -213,6 +213,9 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendSoftwareBanActivated, m_uiBackend, &UiBackend::onSoftwareBanActivated, Qt::QueuedConnection);
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+
+    //TODO: нужно для отладки спамилки рекламы
+    //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
 }
 
 OverlayWindowController *Core::overlayWindowController() const
