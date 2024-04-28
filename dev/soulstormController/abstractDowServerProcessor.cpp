@@ -7,7 +7,6 @@ AbstractDowServerProcessor::AbstractDowServerProcessor(QObject *parent)
     : QObject(parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
-    qDebug() << "ASDASDASD";
 }
 
 bool AbstractDowServerProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply)
