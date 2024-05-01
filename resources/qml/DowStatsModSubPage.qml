@@ -198,7 +198,7 @@ Rectangle {
                         anchors.margins: 10
                         z: 2
 
-                        onClicked: Qt.openUrlExternally("https://dowstats.ru/")
+                        onClicked: Qt.openUrlExternally("https://dowstats.ru/changelog.php")
                     }
 
                     Flickable
