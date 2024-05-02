@@ -236,6 +236,12 @@
         <file>resources/maps/8p_verdant_Isles.jpg</file>
         <file>resources/maps/default.jpg</file>
         <file>resources/maps/6p_platform.jpg</file>
+        <file>resources/maps/2p_ancient_jungle_bm.jpg</file>
+        <file>resources/maps/2p_consecrated_gardens_5p_bm.jpg</file>
+        <file>resources/maps/2p_consecrated_gardens_6p_bm.jpg</file>
+        <file>resources/maps/2p_cryptek_arkana_bm.jpg</file>
+        <file>resources/maps/6p_principian_badlands_bm.jpg</file>
+        <file>resources/maps/6p_trivian_groves_bm.jpg</file>
     </qresource>
     <qresource prefix="/componentScins">
         <file>resources/componenScins/switch1.svg</file>
