@@ -18,9 +18,6 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     , m_requestTimer(new QTimer(this))
     , m_networkManager(new QNetworkAccessManager(this))
 {
-    m_newsChannelId = QString(/*TEST_CHANNEL_ID*/NEWS_CHANNEL_ID).toLocal8Bit();
-    m_eventsChannelId = QString(/*TEST_CHANNEL_ID*/EVENTS_CHANNEL_ID).toLocal8Bit();
-
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordWebProcessor::onSettingsLoaded, Qt::QueuedConnection);
     QObject::connect(m_requestTimer, &QTimer::timeout, this, &DiscordWebProcessor::requestMessages, Qt::QueuedConnection);
 
@@ -33,25 +30,18 @@ void DiscordWebProcessor::requestNews()
     QNetworkRequest newRequest;
 
     QString urlString = "";
-/*
-    if (m_isFirstNewsRequest)
-        urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5";
-    else
-        urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?after=" + m_afterNewsMessageID + "&limit=5";
-*/
+
     if (m_isFirstNewsRequest)
         urlString = "http://crosspick.ru:8080/news/messages?limit=5";
+        //urlString = "http://crosspick.ru:8080/test/messages?limit=5";
     else
         urlString = "http://crosspick.ru:8080/news/messages?after=" + m_afterNewsMessageID + "&limit=5";
+        //urlString = "http://crosspick.ru:8080/test/messages?after=" + m_afterNewsMessageID + "&limit=5";
 
 
     m_isFirstNewsRequest = false;
 
     newRequest.setUrl(QUrl(urlString));
-    //newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
-    //newRequest.setRawHeader("Host", "discord.com");
-    //newRequest.setRawHeader("User-Agent", "DowStatsClient");
-    //newRequest.setRawHeader("Content-Type","application/json");
 
     m_readyToRequest = false;
 
@@ -68,12 +58,7 @@ void DiscordWebProcessor::requestEvents()
     QNetworkRequest newRequest;
 
     QString urlString = "";
-/*
-    if (m_isFirstEventsRequest)
-        urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?limit=5";
-    else
-        urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?after=" + m_afterEventsMessageID  + "&limit=5";
-*/
+
     if (m_isFirstEventsRequest)
         urlString = "http://crosspick.ru:8080/events/messages?limit=5";
     else
@@ -83,11 +68,7 @@ void DiscordWebProcessor::requestEvents()
     m_isFirstEventsRequest = false;
 
     newRequest.setUrl(QUrl(urlString));
-    /*newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
-    newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStatsClient");
-    newRequest.setRawHeader("Content-Type","application/json");
-*/
+
     m_readyToRequest = false;
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -103,6 +84,7 @@ void DiscordWebProcessor::requestNewsLastMessageId()
     QNetworkRequest newRequest;
 
     QString urlString = "http://crosspick.ru:8080/news/lastmessageid";
+    //QString urlString = "http://crosspick.ru:8080/test/lastmessageid";
 
     newRequest.setUrl(QUrl(urlString));
 
@@ -349,13 +331,9 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
     //QString urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5&before=" + messageId;
 
     QString urlString = "http://crosspick.ru:8080/news/messages?limit=5&before=" + messageId;
+    //QString urlString = "http://crosspick.ru:8080/test/messages?limit=5&before=" + messageId;
 
     newRequest.setUrl(QUrl(urlString));
-    /*newRequest.setRawHeader("Authorization", QString(DISCORD_TOKEN).toLocal8Bit());
-    newRequest.setRawHeader("Host", "discord.com");
-    newRequest.setRawHeader("User-Agent", "DowStatsClient");
-    newRequest.setRawHeader("Content-Type","application/json");
-*/
 
     m_readyToRequest = false;
 
