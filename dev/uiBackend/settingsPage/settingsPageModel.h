@@ -100,7 +100,7 @@ private:
     bool m_enableGameLoadEventSound = true;
     bool m_enableGameStartEventSound = true;
     bool m_autorun = true;
-    bool m_enableAdvertising = true;
+    bool m_enableAdvertising = false;
 
     int m_volume = 100;
 

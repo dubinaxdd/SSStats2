@@ -204,6 +204,7 @@ Rectangle {
                     StyledSwitch{
                         id: advertisingSwitch
                         text: "Auto ad sender"
+                        checked: model.enableAdvertising
                         onCheckedChanged: model.enableAdvertising = checked;
                     }
 

@@ -1,6 +1,8 @@
 #include "advertisingProcessor.h"
 #include <QDebug>
 #include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonArray>
 
 AdvertisingProcessor::AdvertisingProcessor(SettingsController *settingsController, QObject *parent)
     : AbstractDowServerProcessor(parent)
@@ -46,17 +48,34 @@ void AdvertisingProcessor::joinChannel()
 
         QByteArray replyByteArray = reply->readAll();
 
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
-        m_currentRequestType = SendAdvertisingMessage;
-        m_requestTimer->start();
+        if (!jsonDoc.isArray())
+        {
+            reply->deleteLater();
+            return;
+        }
 
-        if (replyByteArray.contains(m_currentPlayer.steamId.toLatin1()))
-            m_playerRealRoom = m_currentRoom;
+        QJsonArray jsonArray = jsonDoc.array();
 
+        int roomNumber = jsonArray.at(1).toString().toInt();
 
+        if (roomNumber != m_currentRoom)
+        {
+            m_currentRequestType = LeaveChannel;
+            m_requestTimer->start();
+        }
+        else
+        {
+            if (replyByteArray.contains(m_currentPlayer.steamId.toLatin1()))
+                m_playerRealRoom = m_currentRoom;
 
+            m_currentRequestType = SendAdvertisingMessage;
+            m_requestTimer->start();
+        }
 
         reply->deleteLater();
+
     });
 }
 
@@ -64,6 +83,7 @@ void AdvertisingProcessor::sendAdvertisingMessage()
 {
     if (m_sessionID.isEmpty())
         return;
+
 
     QString urlString = "https://dow1ss-lobby.reliclink.com:443/game/chat/sendText?message=" + m_currentText + "&subject=&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_sessionID.toLocal8Bit();
     QNetworkRequest newRequest = createDowServerRequest(urlString);
@@ -87,9 +107,12 @@ void AdvertisingProcessor::sendAdvertisingMessage()
                 m_requestTimer->start();
             }
         }
+        else
+        {
+            m_currentRequestType = LeaveChannel;
+            m_requestTimer->start();
+        }
 
-        m_currentRequestType = LeaveChannel;
-        m_requestTimer->start();
         reply->deleteLater();
     });
 }
