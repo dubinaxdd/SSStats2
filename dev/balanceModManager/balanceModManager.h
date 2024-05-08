@@ -77,6 +77,9 @@ private:
 
     SettingsController* m_settingsController;
 
+    QString m_balanceModServerAddres = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/";
+    //QString m_balanceModServerAddres = "http://crosspick.ru/dow_stats_client/test/";
+
     QList <ModInfo> m_modInfoList;
     QNetworkAccessManager *m_networkManager;
     QByteArray m_modInfoHash;

@@ -231,7 +231,7 @@ void BalanceModPage::uninstallPreviousMod()
 {
     for(int i = 0; i < m_modsInfo.count(); i++)
     {
-        if (m_modsInfo.at(i).isPrevious)
+        if (m_modsInfo.at(i).isPrevious && m_modsInfo.at(i).isInstalled)
         {
             uninstallMod(i);
             break;

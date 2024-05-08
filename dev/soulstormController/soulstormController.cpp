@@ -125,7 +125,6 @@ void SoulstormController::launchSoulstorm()
     {
         if (win7SupportMode)
         {
-            ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
             m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
             m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
             ssSettings->setValue("global/screenwindowed", 1);

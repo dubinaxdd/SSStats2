@@ -47,7 +47,7 @@ void BalanceModManager::downloadMod(QString modTechnicalName, bool overwritePrif
 
     QNetworkRequest newRequest;
 
-    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/" + modTechnicalName + ".zip";
+    QString urlString = m_balanceModServerAddres + modTechnicalName + ".zip";
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
@@ -72,7 +72,7 @@ void BalanceModManager::downloadModsInfo()
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/mods.txt";
+    QString urlString = m_balanceModServerAddres + "mods.txt";
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
@@ -195,7 +195,7 @@ void BalanceModManager::requestChangeLog(QString modTechnicalName)
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/changelogs/" + modTechnicalName + ".txt";
+    QString urlString = m_balanceModServerAddres + "changelogs/" + modTechnicalName + ".txt";
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
@@ -219,7 +219,7 @@ void BalanceModManager::requestBetaTestPlayersList()
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/beta_test_players_list.txt";
+    QString urlString = m_balanceModServerAddres + "beta_test_players_list.txt";
 
     newRequest.setUrl(QUrl(urlString));
     newRequest.setRawHeader("X-Key", BALANCE_MOD_KEY);
@@ -496,7 +496,9 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
             }
 
             if (!m_modInfoList.at(i).isInstalled && (!m_settingsController->getSettings()->autoUpdateBalanceMod || m_ssLounchedState))
-                sendModReadyForInstall(m_modInfoList.at(i).uiName);
+                emit sendModReadyForInstall(m_modInfoList.at(i).uiName);
+
+            break;
         }
     }
 
