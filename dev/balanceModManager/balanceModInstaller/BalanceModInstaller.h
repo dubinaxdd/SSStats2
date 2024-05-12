@@ -25,7 +25,8 @@ public slots:
     void uninstallMod(QString ssPath, QString modTechnicalName);
 
 private:
-    void installHotKeys();
+    void installHotKeys(QString hotkeysDir, QString templateHotKeyPath, QString missingHotKeysPath);
+
 
 signals:
     void modInstalled(QString modTechnicalName);

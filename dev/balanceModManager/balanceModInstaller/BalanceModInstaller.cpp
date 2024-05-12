@@ -3,6 +3,7 @@
 #include <QDataStream>
 #include <JlCompress.h>
 #include <QDebug>
+#include <logger.h>
 
 BalanceModInstaller::BalanceModInstaller(QObject *parent) : QObject(parent)
 {
@@ -34,10 +35,8 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
     JlCompress::extractDir(data.filePath, data.decompressPath);
     newFile.remove();
 
-    QString hotKeyPath = data.templateProfilePath + QDir::separator() + "KEYDEFAULTS.LUA";
-    QString schemesPath = data.templateProfilePath + QDir::separator() + "schemes";
-
-    QFile hotKeyFile(hotKeyPath);
+    QString templateHotKeyPath = data.templateProfilePath + QDir::separator() + "KEYDEFAULTS.LUA";
+    QFile hotKeyFile(templateHotKeyPath);
 
     if (overwriteProfiles)
     {
@@ -50,7 +49,6 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
             removeDir.removeRecursively();
         }
 
-
         //Копируем хоткеи
         if (hotKeyFile.exists())
         {
@@ -58,19 +56,17 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
             QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
             for (int i = 0; i < dirContent.count(); i++)
-            {
-                QDir().mkdir(dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower());
-                QString profilePath = dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower() + QDir::separator() + "KEYDEFAULTS.LUA";
-                QFile::copy(hotKeyPath, profilePath);
-            }
+                installHotKeys(dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower()
+                               , templateHotKeyPath
+                               , data.ssPath + QDir::separator() + data.modTechnicalName + QDir::separator() + "missing_hotkeys.lua");
         }
 
         //Копируем раскраски
-        QDir schemesDir = schemesPath;
+        QDir templateSchemesDir = data.templateProfilePath + QDir::separator() + "schemes";
 
-        if (schemesDir.exists())
+        if (templateSchemesDir.exists())
         {
-             QFileInfoList schemesContent = schemesDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
+             QFileInfoList schemesContent = templateSchemesDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
              QDir dir(data.ssPath + "\\Profiles\\");
 
              QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
@@ -244,4 +240,104 @@ void BalanceModInstaller::uninstallMod(QString ssPath, QString modTechnicalName)
     moduleFile.remove();
 
     emit modUninstalled(modTechnicalName);
+}
+
+void BalanceModInstaller::installHotKeys(QString hotkeysDir, QString templateHotKeyPath,  QString missingHotKeysPath)
+{
+    //Копируем хоткеи в новый профиль из шаблонного профиля
+    QDir().mkdir(hotkeysDir);
+    QString profilePath = hotkeysDir + QDir::separator() + "KEYDEFAULTS.LUA";
+    QFile::copy(templateHotKeyPath, profilePath);
+
+    //Модифицируем файл с хоткеями недостающими значениями для новой версии мода
+    QFile hotkeyFile(profilePath);
+    QFile missingHotKeysFile(missingHotKeysPath);
+
+    if (!hotkeyFile.open(QFile::OpenModeFlag::ReadWrite))
+    {
+        qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << profilePath << "Hotkeys file not openned!";
+        return;
+    }
+
+    if (!missingHotKeysFile.open(QFile::OpenModeFlag::ReadOnly))
+    {
+        qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << missingHotKeysPath << "Missing_hotkeeys file not openned!";
+        return;
+    }
+
+    QString hotkeys = hotkeyFile.readAll();
+    QString missingHotkeys = missingHotKeysFile.readAll();
+    hotkeyFile.resize(0);
+    missingHotKeysFile.close();
+
+    QVector<QString> missingHotkeysVector;
+
+    //Парсим новые хоткеи
+    int startStringIndex = 0;
+    for (int i = 0; i < missingHotkeys.count(); i++)
+    {
+        if (missingHotkeys.at(i) == '\n')
+        {
+            missingHotkeysVector.append(missingHotkeys.mid(startStringIndex, i - startStringIndex));
+            startStringIndex = i+1;
+        }
+
+        if(i == missingHotkeys.count() - 1)
+        {
+            missingHotkeysVector.append(missingHotkeys.mid(startStringIndex, i - startStringIndex + 1));
+            startStringIndex = i+2;
+        }
+    }
+
+    int insertIndex = 0;
+
+    //Вставляем хэдер
+    QString headerString = "-- BALANCE MODE NEW HOTKEYS";
+
+
+    if (hotkeys.contains(headerString))
+        insertIndex = hotkeys.indexOf(headerString) + headerString.count() + 1;
+    else
+    {
+        QString bindingString = "bindings =\r\n{";
+        insertIndex = hotkeys.indexOf(bindingString) + bindingString.count() + 1;
+
+        if (!(insertIndex < hotkeys.count()))
+        {
+            qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << "Failed to insert hotkey file header, insertion index out of file range.";
+            return;
+        }
+
+        headerString = '\t' + headerString;
+
+        hotkeys.insert(insertIndex, headerString);
+        insertIndex += headerString.count() + 1;
+    }
+
+    //Вставляем хоткеи
+    bool oldModHotkeysFinded = false;
+
+    for (auto& needHotkeyString : missingHotkeysVector)
+    {
+        QString hotKeyId = needHotkeyString.mid(0,needHotkeyString.indexOf(" = "));
+
+        if (hotkeys.contains(hotKeyId))
+        {
+            oldModHotkeysFinded = true;
+            continue;
+        }
+
+        needHotkeyString = "\t" + needHotkeyString + "\n";
+
+        hotkeys.insert(insertIndex, needHotkeyString);
+        insertIndex += needHotkeyString.count();
+    }
+
+    if (!oldModHotkeysFinded)
+        hotkeys.insert(insertIndex, "\n\t");
+
+    //Перезаписываем файл хоткеев
+    hotkeyFile.write(hotkeys.toLatin1());
+    hotkeyFile.close();
+
 }
