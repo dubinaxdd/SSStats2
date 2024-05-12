@@ -161,7 +161,7 @@ Rectangle {
                     }
 
                     BlueButton {
-                        text: "Add missing Hotkeys"
+                        text: "Add extended Hotkeys"
                         visible: model.selectedModIsInstalled
                         Layout.preferredWidth: 130
                         onClicked: {
