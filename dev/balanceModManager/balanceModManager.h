@@ -69,7 +69,7 @@ signals:
     void requestProfileCopyMode(QString modTechnicalName);
     void sendModReadyForInstall(QString modUiName);
     void updateHotKeysOnMod(QString modTechnicalName, QString ssPath);
-    void onHotKeysUpdated(QString modTechnicalName);
+    void onHotKeysUpdated(QString modTechnicalName, bool result);
 
 private:
 

@@ -27,7 +27,7 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstalled, this, &BalanceModManager::onModInstalled, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modUninstalled, this, &BalanceModManager::onModUninstalled, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstallError, this, [=](QString modTechnicalName){emit sendInstallingModError(modTechnicalName); }, Qt::QueuedConnection);
-    connect(m_balanceModInstaller, &BalanceModInstaller::hotKeysUpdated, this,  [=](QString modTechnicalName){emit onHotKeysUpdated(modTechnicalName);}, Qt::QueuedConnection);
+    connect(m_balanceModInstaller, &BalanceModInstaller::hotKeysUpdated, this,  [=](QString modTechnicalName, bool result){emit onHotKeysUpdated(modTechnicalName, result);}, Qt::QueuedConnection);
 
 
     connect(this, &BalanceModManager::updateHotKeysOnMod, m_balanceModInstaller, &BalanceModInstaller::updateHotKeysOnMod, Qt::QueuedConnection);

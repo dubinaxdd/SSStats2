@@ -519,17 +519,25 @@ void BalanceModPage::receiveModReadyForInstall(QString modTechnicalName)
     emit sendNotification(notificationInfo);
 }
 
-void BalanceModPage::receiveHotKeysUpdated(QString modTechnicalName)
+void BalanceModPage::receiveHotKeysUpdated(QString modTechnicalName, bool result)
 {
     for (int i = 0; i < m_modsInfo.count(); i++)
     {
         if ( m_modsInfo.at(i).technicalName == modTechnicalName)
         {
-
             NotificationInfo notificationInfo;
 
-            notificationInfo.text = "Extended hotkeys added for " + m_modsInfo.at(i).uiName;
-            notificationInfo.type = NotificationType::Ready;
+            if (result)
+            {
+                notificationInfo.text = "Extended hotkeys added for " + m_modsInfo.at(i).uiName;
+                notificationInfo.type = NotificationType::Ready;
+            }
+            else
+            {
+                notificationInfo.text = "An error occurred while updating one of the hotkey files for " + m_modsInfo.at(i).uiName;
+                notificationInfo.type = NotificationType::Warning;
+            }
+
             notificationInfo.uuid = QUuid().createUuid();
 
             emit sendNotification(notificationInfo);

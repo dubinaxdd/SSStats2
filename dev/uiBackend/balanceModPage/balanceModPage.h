@@ -107,7 +107,7 @@ public slots:
    void receiveInstallingModError(QString modTechnicalName);
    void receiveProfileCopyModeRequest(QString modTechnicalName);
    void receiveModReadyForInstall(QString modTechnicalName);
-   void receiveHotKeysUpdated(QString modTechnicalName);
+   void receiveHotKeysUpdated(QString modTechnicalName, bool result);
 
 private slots:
     void onSettingsLoaded();

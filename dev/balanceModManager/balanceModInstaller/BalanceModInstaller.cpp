@@ -249,13 +249,16 @@ void BalanceModInstaller::updateHotKeysOnMod(QString modTechnicalName, QString s
 
     QString missingHotkeysPath = ssPath + QDir::separator() + modTechnicalName + QDir::separator() + "missing_hotkeys.lua";
 
+    bool result = true;
+
     for (int i = 0; i < dirContent.count(); i++)
     {
         QString hotkeysPath = dirContent.at(i).absoluteFilePath() + QDir::separator() + modTechnicalName + QDir::separator() + "KEYDEFAULTS.LUA";
-        updateHotkeys(hotkeysPath, missingHotkeysPath);
+        if (!updateHotkeys(hotkeysPath, missingHotkeysPath))
+            result = false;
     }
 
-    emit hotKeysUpdated(modTechnicalName);
+    emit hotKeysUpdated(modTechnicalName, result);
 }
 
 void BalanceModInstaller::installHotKeys(QString hotkeysDir, QString templateHotKeyPath,  QString missingHotKeysPath)
@@ -268,7 +271,7 @@ void BalanceModInstaller::installHotKeys(QString hotkeysDir, QString templateHot
     updateHotkeys(hotkeysPath, missingHotKeysPath);
 }
 
-void BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotKeysPath)
+bool BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotKeysPath)
 {
     //Модифицируем файл с хоткеями недостающими значениями для новой версии мода
     QFile hotkeyFile(hotkeysPath);
@@ -277,13 +280,13 @@ void BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
     if (!hotkeyFile.open(QFile::OpenModeFlag::ReadWrite))
     {
         qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << hotkeysPath << "Hotkeys file not openned!";
-        return;
+        return false;
     }
 
     if (!missingHotKeysFile.open(QFile::OpenModeFlag::ReadOnly))
     {
         qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << missingHotKeysPath << "Missing_hotkeeys file not openned!";
-        return;
+        return false;
     }
 
     QString hotkeys = hotkeyFile.readAll();
@@ -326,7 +329,7 @@ void BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
         if (!(insertIndex < hotkeys.count()))
         {
             qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << "Failed to insert hotkey file header, insertion index out of file range.";
-            return;
+            return false;
         }
 
         headerString = "\n\t" + headerString;
@@ -360,4 +363,6 @@ void BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
     //Перезаписываем файл хоткеев
     hotkeyFile.write(hotkeys.toLatin1());
     hotkeyFile.close();
+
+    return true;
 }
