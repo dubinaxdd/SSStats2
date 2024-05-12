@@ -23,15 +23,17 @@ public:
 public slots:
     void installMod(InstallModData data, bool overwriteProfiles);
     void uninstallMod(QString ssPath, QString modTechnicalName);
+    void updateHotKeysOnMod(QString modTechnicalName, QString ssPath);
 
 private:
     void installHotKeys(QString hotkeysDir, QString templateHotKeyPath, QString missingHotKeysPath);
-
+    void updateHotkeys(QString hotkeysPath, QString missingHotKeysPath);
 
 signals:
     void modInstalled(QString modTechnicalName);
     void modInstallError(QString modTechnicalName);
     void modUninstalled(QString modTechnicalName);
+    void hotKeysUpdated(QString modTechnicalName);
 };
 
 #endif // BALANCEMODINSTALLER_H

@@ -197,6 +197,7 @@ void Core::addConnections()
     QObject::connect(m_balanceModManager, &BalanceModManager::sendInstallingModError, m_uiBackend->balanceModPage(), &BalanceModPage::receiveInstallingModError, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::requestProfileCopyMode, m_uiBackend->balanceModPage(), &BalanceModPage::receiveProfileCopyModeRequest, Qt::QueuedConnection);
     QObject::connect(m_balanceModManager, &BalanceModManager::sendModReadyForInstall, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModReadyForInstall, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManager, &BalanceModManager::onHotKeysUpdated, m_uiBackend->balanceModPage(), &BalanceModPage::receiveHotKeysUpdated, Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestChangeLog, m_balanceModManager, &BalanceModManager::requestChangeLog, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestDownloadMod, m_balanceModManager, &BalanceModManager::requestDownloadMod, Qt::QueuedConnection);
@@ -213,6 +214,8 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendSoftwareBanActivated, m_uiBackend, &UiBackend::onSoftwareBanActivated, Qt::QueuedConnection);
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendUpdateHotKeysOnMod, m_balanceModManager, &BalanceModManager::receiveUpdateHotKeysOnMod, Qt::QueuedConnection);
+
 
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);

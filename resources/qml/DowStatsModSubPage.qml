@@ -160,6 +160,19 @@ Rectangle {
 
                     }
 
+                    BlueButton {
+                        text: "Add missing Hotkeys"
+                        visible: model.selectedModIsInstalled
+                        Layout.preferredWidth: 130
+                        onClicked: {
+                            if (_uiBackend.ssLaunchState)
+                                _uiBackend.soulstormLaunchedDialogVisible = true
+                            else
+                                model.updateHotKeysOnSelectedMod()
+                        }
+
+                    }
+
                     Item {
                         Layout.fillWidth: true
                     }

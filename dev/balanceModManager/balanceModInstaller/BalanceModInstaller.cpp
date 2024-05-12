@@ -242,20 +242,41 @@ void BalanceModInstaller::uninstallMod(QString ssPath, QString modTechnicalName)
     emit modUninstalled(modTechnicalName);
 }
 
+void BalanceModInstaller::updateHotKeysOnMod(QString modTechnicalName, QString ssPath)
+{
+    QDir dir(ssPath + "\\Profiles\\");
+    QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
+
+    QString missingHotkeysPath = ssPath + QDir::separator() + modTechnicalName + QDir::separator() + "missing_hotkeys.lua";
+
+    for (int i = 0; i < dirContent.count(); i++)
+    {
+        QString hotkeysPath = dirContent.at(i).absoluteFilePath() + QDir::separator() + modTechnicalName + QDir::separator() + "KEYDEFAULTS.LUA";
+        updateHotkeys(hotkeysPath, missingHotkeysPath);
+    }
+
+    emit hotKeysUpdated(modTechnicalName);
+}
+
 void BalanceModInstaller::installHotKeys(QString hotkeysDir, QString templateHotKeyPath,  QString missingHotKeysPath)
 {
     //Копируем хоткеи в новый профиль из шаблонного профиля
     QDir().mkdir(hotkeysDir);
-    QString profilePath = hotkeysDir + QDir::separator() + "KEYDEFAULTS.LUA";
-    QFile::copy(templateHotKeyPath, profilePath);
+    QString hotkeysPath = hotkeysDir + QDir::separator() + "KEYDEFAULTS.LUA";
+    QFile::copy(templateHotKeyPath, hotkeysPath);
 
+    updateHotkeys(hotkeysPath, missingHotKeysPath);
+}
+
+void BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotKeysPath)
+{
     //Модифицируем файл с хоткеями недостающими значениями для новой версии мода
-    QFile hotkeyFile(profilePath);
+    QFile hotkeyFile(hotkeysPath);
     QFile missingHotKeysFile(missingHotKeysPath);
 
     if (!hotkeyFile.open(QFile::OpenModeFlag::ReadWrite))
     {
-        qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << profilePath << "Hotkeys file not openned!";
+        qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << hotkeysPath << "Hotkeys file not openned!";
         return;
     }
 
@@ -296,11 +317,11 @@ void BalanceModInstaller::installHotKeys(QString hotkeysDir, QString templateHot
 
 
     if (hotkeys.contains(headerString))
-        insertIndex = hotkeys.indexOf(headerString) + headerString.count() + 1;
+        insertIndex = hotkeys.indexOf(headerString) + headerString.count();
     else
     {
         QString bindingString = "bindings =\r\n{";
-        insertIndex = hotkeys.indexOf(bindingString) + bindingString.count() + 1;
+        insertIndex = hotkeys.indexOf(bindingString) + bindingString.count();
 
         if (!(insertIndex < hotkeys.count()))
         {
@@ -308,10 +329,10 @@ void BalanceModInstaller::installHotKeys(QString hotkeysDir, QString templateHot
             return;
         }
 
-        headerString = '\t' + headerString;
+        headerString = "\n\t" + headerString;
 
         hotkeys.insert(insertIndex, headerString);
-        insertIndex += headerString.count() + 1;
+        insertIndex += headerString.count();
     }
 
     //Вставляем хоткеи
@@ -327,17 +348,16 @@ void BalanceModInstaller::installHotKeys(QString hotkeysDir, QString templateHot
             continue;
         }
 
-        needHotkeyString = "\t" + needHotkeyString + "\n";
+        needHotkeyString = "\n\t" + needHotkeyString;
 
         hotkeys.insert(insertIndex, needHotkeyString);
         insertIndex += needHotkeyString.count();
     }
 
     if (!oldModHotkeysFinded)
-        hotkeys.insert(insertIndex, "\n\t");
+        hotkeys.insert(insertIndex, "\n");
 
     //Перезаписываем файл хоткеев
     hotkeyFile.write(hotkeys.toLatin1());
     hotkeyFile.close();
-
 }

@@ -49,6 +49,7 @@ public:
     Q_INVOKABLE void slectItem(int itemIndex);
     Q_INVOKABLE void downloadSelectedMod();
     Q_INVOKABLE void uninstallSelectedMod();
+    Q_INVOKABLE void updateHotKeysOnSelectedMod();
     Q_INVOKABLE void choiseTemplateProfilePath(QString templateProfilePath);
     Q_INVOKABLE void activateSelectedModInGame();
     Q_INVOKABLE void downloadLatestMod();
@@ -106,6 +107,7 @@ public slots:
    void receiveInstallingModError(QString modTechnicalName);
    void receiveProfileCopyModeRequest(QString modTechnicalName);
    void receiveModReadyForInstall(QString modTechnicalName);
+   void receiveHotKeysUpdated(QString modTechnicalName);
 
 private slots:
     void onSettingsLoaded();
@@ -127,6 +129,7 @@ signals:
    void changeLaunchMod(LaunchMod);
    void sendNotification(NotificationInfo notificationString);
    void sendProfileCopyMode(bool profileCopyMode, QString modTechnicalName);
+   void sendUpdateHotKeysOnMod(QString modTechnicalName);
 
    void profileCopyModeRequestMessageVisibleChanged();
 

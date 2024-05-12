@@ -27,6 +27,11 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstalled, this, &BalanceModManager::onModInstalled, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modUninstalled, this, &BalanceModManager::onModUninstalled, Qt::QueuedConnection);
     connect(m_balanceModInstaller, &BalanceModInstaller::modInstallError, this, [=](QString modTechnicalName){emit sendInstallingModError(modTechnicalName); }, Qt::QueuedConnection);
+    connect(m_balanceModInstaller, &BalanceModInstaller::hotKeysUpdated, this,  [=](QString modTechnicalName){emit onHotKeysUpdated(modTechnicalName);}, Qt::QueuedConnection);
+
+
+    connect(this, &BalanceModManager::updateHotKeysOnMod, m_balanceModInstaller, &BalanceModInstaller::updateHotKeysOnMod, Qt::QueuedConnection);
+
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModManager::onSettingsLoaded, Qt::QueuedConnection);
 
@@ -346,6 +351,11 @@ void BalanceModManager::setCurrentPlayerSteamId(QString steamId)
 
     m_modsInfoRequestTimer->start();
     m_checkDownloadingQueryTimer->start();
+}
+
+void BalanceModManager::receiveUpdateHotKeysOnMod(QString modTechnicalName)
+{
+    emit updateHotKeysOnMod(modTechnicalName, m_ssPath);
 }
 
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)

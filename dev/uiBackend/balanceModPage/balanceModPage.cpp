@@ -110,7 +110,12 @@ void BalanceModPage::downloadSelectedMod()
 
 void BalanceModPage::uninstallSelectedMod()
 {
-   uninstallMod(m_selectedItemIndex);
+    uninstallMod(m_selectedItemIndex);
+}
+
+void BalanceModPage::updateHotKeysOnSelectedMod()
+{
+    emit sendUpdateHotKeysOnMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
 }
 
 void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
@@ -512,6 +517,24 @@ void BalanceModPage::receiveModReadyForInstall(QString modTechnicalName)
     notificationInfo.uuid = m_uuid;
 
     emit sendNotification(notificationInfo);
+}
+
+void BalanceModPage::receiveHotKeysUpdated(QString modTechnicalName)
+{
+    for (int i = 0; i < m_modsInfo.count(); i++)
+    {
+        if ( m_modsInfo.at(i).technicalName == modTechnicalName)
+        {
+
+            NotificationInfo notificationInfo;
+
+            notificationInfo.text = "Extended hotkeys added for " + m_modsInfo.at(i).uiName;
+            notificationInfo.type = NotificationType::Ready;
+            notificationInfo.uuid = QUuid().createUuid();
+
+            emit sendNotification(notificationInfo);
+        }
+    }
 }
 
 bool BalanceModPage::useCustomTemplateProfilePath() const

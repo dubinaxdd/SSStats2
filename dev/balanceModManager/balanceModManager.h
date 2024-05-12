@@ -54,6 +54,7 @@ public slots:
     void receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
     void onSsLaunchStateChanged(bool lounched);
     void setCurrentPlayerSteamId(QString steamId);
+    void receiveUpdateHotKeysOnMod(QString modTechnicalName);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
@@ -64,10 +65,11 @@ signals:
     void sendModDownloaded(QString modTechnicalName);
     void uninstallMod(QString ssPath, QString modTechnicalName);
     void installMod(InstallModData data, bool overwritePrifiles);
-
     void sendInstallingModError(QString modTechnicalName);
     void requestProfileCopyMode(QString modTechnicalName);
     void sendModReadyForInstall(QString modUiName);
+    void updateHotKeysOnMod(QString modTechnicalName, QString ssPath);
+    void onHotKeysUpdated(QString modTechnicalName);
 
 private:
 
