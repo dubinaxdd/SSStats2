@@ -278,7 +278,7 @@ Window {
 
                 HeaderButton{
                     id: eventsButton
-                    text: "Community News"
+                    text: qsTr("Community News")
                     newsAvailable: eventsPage.model.newsAvailable
 
                     //width: 170

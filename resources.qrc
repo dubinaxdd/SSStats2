@@ -250,4 +250,8 @@
         <file>resources/componenScins/radioButton2.svg</file>
         <file>resources/componenScins/radioButton3.svg</file>
     </qresource>
+    <qresource prefix="/translations">
+        <file>resources/translations/DowStatsClient_ru_RU.ts</file>
+        <file>resources/translations/DowStatsClient_ru_RU.qm</file>
+    </qresource>
 </RCC>

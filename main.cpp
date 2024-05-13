@@ -92,17 +92,15 @@ int main(int argc, char *argv[])
 //#endif
 
     QGuiApplication app(argc, argv);
-    //setlocale(LC_ALL,"Russian");
-
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
-
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
         const QString baseName = "DowStatsClient_" + QLocale(locale).name();
-        if (translator.load(":/i18n/" + baseName)) {
+        if (translator.load(baseName, ":/translations/resources/translations"))
+        {
             app.installTranslator(&translator);
             break;
         }
