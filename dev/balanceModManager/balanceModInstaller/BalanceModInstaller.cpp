@@ -294,8 +294,6 @@ bool BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
     hotkeyFile.resize(0);
     missingHotKeysFile.close();
 
-    qDebug() << hotkeys;
-
     QVector<QString> missingHotkeysVector;
 
     //Парсим новые хоткеи
@@ -348,9 +346,13 @@ bool BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
                                 bindingString = "bindings= \r\n{";
                                 if(!hotkeys.contains(bindingString))
                                 {
-                                    qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << "Failed to find bindings ={";
-                                    hotkeyFile.close();
-                                    return  false;
+                                    bindingString = "bindings ={";
+                                    if(!hotkeys.contains(bindingString))
+                                    {
+                                        qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << "Failed to find bindings ={";
+                                        hotkeyFile.close();
+                                        return  false;
+                                    }
                                 }
                             }
                         }
@@ -358,7 +360,6 @@ bool BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
                 }
             }
         }
-
 
         insertIndex = hotkeys.indexOf(bindingString) + bindingString.count();
 
