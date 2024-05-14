@@ -294,6 +294,8 @@ bool BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
     hotkeyFile.resize(0);
     missingHotKeysFile.close();
 
+    qDebug() << hotkeys;
+
     QVector<QString> missingHotkeysVector;
 
     //Парсим новые хоткеи
@@ -324,11 +326,46 @@ bool BalanceModInstaller::updateHotkeys(QString hotkeysPath, QString missingHotK
     else
     {
         QString bindingString = "bindings =\r\n{";
+
+        //Говнокодим хотфикс
+        if(!hotkeys.contains(bindingString))
+        {
+            bindingString = "bindings =\n{";
+            if(!hotkeys.contains(bindingString))
+            {
+                bindingString = "bindings=\n{";
+                if(!hotkeys.contains(bindingString))
+                {
+                    bindingString = "bindings={";
+                    if(!hotkeys.contains(bindingString))
+                    {
+                        bindingString = "bindings= {";
+                        if(!hotkeys.contains(bindingString))
+                        {
+                            bindingString = "bindings= \n{";
+                            if(!hotkeys.contains(bindingString))
+                            {
+                                bindingString = "bindings= \r\n{";
+                                if(!hotkeys.contains(bindingString))
+                                {
+                                    qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << "Failed to find bindings ={";
+                                    hotkeyFile.close();
+                                    return  false;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         insertIndex = hotkeys.indexOf(bindingString) + bindingString.count();
 
         if (!(insertIndex < hotkeys.count()))
         {
             qWarning(logWarning()) << "BalanceModInstaller::installHotKeys" << "Failed to insert hotkey file header, insertion index out of file range.";
+            hotkeyFile.close();
             return false;
         }
 
