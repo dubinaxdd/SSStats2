@@ -42,10 +42,10 @@ void ModsInstaller::installMod(InstMod mod, QString path)
 void ModsInstaller::uninstallMod(InstMod mod)
 {
     switch (mod){
-        case InstMod::RussianFonts : uninstallRussianFonts();
-        case InstMod::CameraMod : uninstallCameraMod();
-        case InstMod::GridHotkeys : uninstallGridHotkeys();
-        case InstMod::TransparentCameraTrapezoid : uninstallTransparentCameraTrapezoid();
+        case InstMod::RussianFonts : uninstallRussianFonts(); break;
+        case InstMod::CameraMod : uninstallCameraMod(); break;
+        case InstMod::GridHotkeys : uninstallGridHotkeys(); break;
+        case InstMod::TransparentCameraTrapezoid : uninstallTransparentCameraTrapezoid(); break;
     }
 }
 
