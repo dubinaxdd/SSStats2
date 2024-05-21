@@ -8,6 +8,7 @@
 #include <QTranslator>
 #include <dev/core.h>
 #include <QDebug>
+#include <QIcon>
 
 #include <QSystemSemaphore>
 #include <QSharedMemory>
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+
 /*
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
@@ -117,6 +119,8 @@ int main(int argc, char *argv[])
     Core *core = new Core(context, &app);
 
     engine.addImageProvider("ImageProvider",core->uiBackend()->imageProvider());
+
+    app.setWindowIcon(QIcon(":/icons/resources/icons/DowStatsClient.ico"));
 
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {
