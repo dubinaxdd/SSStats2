@@ -37,7 +37,7 @@ Rectangle
 
                 Label{
                     id: unlockerLabel
-                    text: "Race unlocker:"
+                    text: qsTr("Race unlocker:")
                     font.pixelSize: 11
                     Layout.preferredWidth: 200
                     color: DowStatsStyle.textColor
@@ -58,7 +58,7 @@ Rectangle
 
                 BlueButton{
                     id: unlockRacesButton
-                    text: "Unlock races"
+                    text: qsTr("Unlock races")
                     Layout.preferredWidth: 140 + columnLayout.spacing
 
                     onClicked: {
@@ -77,25 +77,25 @@ Rectangle
         ModItem
         {
             model: root.model.russianFontsMod
-            text: "Russian fonts:"
+            text: qsTr("Russian fonts:")
         }
 
         ModItem
         {
             model: root.model.cameraMod
-            text: "Advanced camera mod:"
+            text: qsTr("Advanced camera mod:")
         }
 
         ModItem
         {
             model: root.model.gridHotkeysMod
-            text: "Grid hotkeys:"
+            text: qsTr("QWERTY hotkeys:")
         }
 
         ModItem
         {
             model: root.model.transparentCameraTrapezoidMod
-            text: "Transparent camera trapezoid:"
+            text: qsTr("Transparent camera trapezoid:")
         }
 
         Rectangle{

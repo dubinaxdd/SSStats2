@@ -14,8 +14,8 @@ Rectangle {
 
     height: colomnLayot.height
 
-    property string userName: "Unknown user"
-    property string content: "Message text"
+    property string userName: qsTr("Unknown user")
+    property string content: qsTr("Message text")
     property string timesTamp: "00-00-0000 00:00"
     property string avatarId : ""
     property string attachmentId : ""
@@ -109,7 +109,7 @@ Rectangle {
                 id: newMessageLabel
                 visible: mainRectangle.isNew
                 color: "#e60000"
-                text: "NEW"
+                text: qsTr("NEW")
                 font.pointSize: 10
                 Layout.rightMargin: 15
             }

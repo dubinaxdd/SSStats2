@@ -69,7 +69,7 @@ Rectangle {
 
         ToolTip.visible: containsMouse
         ToolTip.delay: 1000
-        ToolTip.text: ("Online DoW Stats users")
+        ToolTip.text: qsTr("Online DoW Stats users")
 
         cursorShape: Qt.PointingHandCursor
 

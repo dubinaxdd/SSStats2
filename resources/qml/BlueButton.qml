@@ -9,7 +9,8 @@ Rectangle{
 
     id: rootObject
     Layout.preferredHeight: 25
-    Layout.preferredWidth: 70
+    Layout.preferredWidth: textLabel.width + 30
+    width: textLabel.width + 30
     radius:3
 
     gradient: Gradient {
@@ -28,6 +29,7 @@ Rectangle{
     {
         anchors.fill: parent
         Label{
+            id: textLabel
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             text: rootObject.text
             color: buttonMouseArea.containsMouse && rootObject.enabled ? "#DCDCDC" : "#FFFFFF"

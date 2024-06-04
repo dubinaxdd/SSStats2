@@ -7,9 +7,6 @@ import DowStatsStyle 1.0
 
 Item{
     Component.onCompleted: {
-
-        //DowStatsStyle.setDarkTheme();
-        //DowStatsStyle.setLightTheme();
         mainWindow.show();
         overlayWindow.show();
     }
@@ -43,7 +40,6 @@ Item{
         menu: Menu {
             MenuItem {
                 text: qsTr("Exit")
-
                 onTriggered: _uiBackend.onExit();
             }
         }

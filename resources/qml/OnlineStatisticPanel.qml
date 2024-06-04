@@ -16,7 +16,7 @@ Rectangle {
         anchors.margins: 10
 
         Label{
-            text: "Online statistics"
+            text: qsTr("Online statistics")
             font.pixelSize: 16
             color: DowStatsStyle.textColor
         }

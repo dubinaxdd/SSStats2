@@ -164,7 +164,7 @@ Window {
                                 Label
                                 {
                                     Layout.alignment: Qt.AlignCenter
-                                    text: _uiBackend.currentModName + " ladder"
+                                    text: _uiBackend.currentModName + qsTr(" ladder")
                                     font.pixelSize: 15 * _uiBackend.sizeModifer
                                     color: DowStatsStyle.textColor
                                 }
@@ -173,7 +173,7 @@ Window {
 
                         IconButton{
                             sourceUrl: "qrc:/images/resources/images/update.svg"
-                            toolTipText: "Update"
+                            toolTipText: qsTr("Update")
                             containsMouse: updateButtonMouseArea.hovered
 
                             Layout.preferredHeight: 30 * _uiBackend.sizeModifer

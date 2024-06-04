@@ -82,7 +82,7 @@ Rectangle {
 
                         anchors.fill: parent
                         color: "#FFFFFF"
-                        text: "Checking updates."
+                        text: qsTr("Checking updates...")
                         visible: _uiBackend.mapManagerPage.loadMapInfoProcessed
 
                         font.pixelSize: 11
@@ -102,7 +102,7 @@ Rectangle {
                 {
                     id: downloadingProgress
                     visible: _uiBackend.mapManagerPage.downloadedProcessed
-                    text: "Downloading progress: " + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
+                    text: qsTr("Downloading progress: ") + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
                     font.pixelSize: 11
                     color: DowStatsStyle.textColor
                 }
@@ -120,7 +120,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: "Authors: " + _uiBackend.mapManagerPage.currentMapAuthors
+                    text: qsTr("Authors: ") + _uiBackend.mapManagerPage.currentMapAuthors
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapAuthors !== ""
                     font.pixelSize: 11
@@ -136,7 +136,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: "Tags: " + _uiBackend.mapManagerPage.currentMapTags
+                    text: qsTr("Tags: ") + _uiBackend.mapManagerPage.currentMapTags
                     Layout.preferredWidth: 190
                     visible: _uiBackend.mapManagerPage.currentMapTags !== ""
                     font.pixelSize: 11
@@ -156,7 +156,7 @@ Rectangle {
                 BlueButton
                 {
                     Layout.preferredWidth: 220
-                    text: "Check updates"
+                    text: qsTr("Check updates")
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
@@ -168,7 +168,7 @@ Rectangle {
                 BlueButton
                 {
                     Layout.preferredWidth: 220
-                    text: "Install default maps"
+                    text: qsTr("Install default maps")
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
@@ -182,7 +182,7 @@ Rectangle {
                 BlueButton
                 {
                     Layout.preferredWidth: 220
-                    text: "Install all maps"
+                    text: qsTr("Install all maps")
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
@@ -194,13 +194,13 @@ Rectangle {
                 }
 
                 StyledSwitch{
-                    text: "Auto-install default maps"
+                    text: qsTr("Auto-install default maps")
                     checked: _uiBackend.mapManagerPage.autoinstallDefaultMaps
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallDefaultMaps = checked
                 }
 
                 StyledSwitch{
-                    text: "Auto-install all maps"
+                    text: qsTr("Auto-install all maps")
                     checked: _uiBackend.mapManagerPage.autoinstallAllMaps
                     onCheckedChanged: _uiBackend.mapManagerPage.autoinstallAllMaps = checked
                 }
@@ -286,7 +286,7 @@ Rectangle {
                     Label
                     {
                         Layout.preferredWidth: 100
-                        text: "Tags: " + model.tags
+                        text: qsTr("Tags: ") + model.tags
                         visible: model.tags !== ""
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
@@ -299,21 +299,21 @@ Rectangle {
 
                     Label
                     {
-                        text: "Downloading processed..."
+                        text: qsTr("Downloading processed...")
                         visible: model.downloadingProcessed
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
 
                     BlueButton{
-                        text: "Install"
+                        text: qsTr("Install")
                         z:2
                         visible: model.needInstall && !model.downloadingProcessed
                         onClicked: _uiBackend.mapManagerPage.installMap(model.index)
                     }
 
                     BlueButton{
-                        text: "Update"
+                        text: qsTr("Update")
                         z:2
                         visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
                         onClicked:{
@@ -325,7 +325,7 @@ Rectangle {
                     }
 
                     BlueButton{
-                        text: "Delete"
+                        text: qsTr("Delete")
                         z:2
                         visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
                         onClicked: {

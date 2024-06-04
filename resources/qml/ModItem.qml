@@ -40,7 +40,7 @@ Rectangle
         }
 
         BlueButton{
-            text: model.installedStatus ? "Reinstall" : "Install"
+            text: model.installedStatus ? qsTr("Reinstall") : qsTr("Install")
             enabled: !model.installInProcess
 
             onClicked: {
@@ -52,7 +52,7 @@ Rectangle
         }
 
         BlueButton{
-            text: "Delete"
+            text: qsTr("Delete")
             enabled: model.installedStatus
 
             onClicked: {

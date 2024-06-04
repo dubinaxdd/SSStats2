@@ -35,7 +35,7 @@ Window {
         id: owerwriteProfileDialog
         visible: _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible
         okButtonVisible: false
-        text: "The profile folder of the installed mod already exists. Overwrite the hotkeys and army colors using Template Profile Path?"
+        text: qsTr("The profile folder of the installed mod already exists. Overwrite the hotkeys and army colors using Template Profile Path?")
         onClickedYes:{
             _uiBackend.balanceModPage.profileCopyModeRequestMessageVisible = false;
             _uiBackend.balanceModPage.continueModInstallation(true);
@@ -52,7 +52,7 @@ Window {
         visible: _uiBackend.latesBalanceModNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "The latest DoW Stats Balance Mod version is not installed!\nYou can install the latest DoW Stats Balance Mod  version from Mods page or select other mod from the bottom panel."
+        text: qsTr("The latest DoW Stats Balance Mod version is not installed!\nYou can install the latest DoW Stats Balance Mod  version from Mods page or select other mod from the bottom panel.")
 
         onClickedOk:{
             _uiBackend.latesBalanceModNotInstalledDialogVisible = false;
@@ -64,7 +64,7 @@ Window {
         visible: _uiBackend.ssNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game.\nThe first launch of the game must be done through Steam."
+        text: qsTr("Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game.\nThe first launch of the game must be done through Steam.")
 
         onClickedOk:{
             _uiBackend.ssNotInstalledDialogVisible = false;
@@ -76,7 +76,7 @@ Window {
         visible: _uiBackend.steamNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "Steam is not installed!\nInstall Steam and try again.\nRestart Dow Stats Client after installing Steam."
+        text: qsTr("Steam is not installed!\nInstall Steam and try again.\nRestart Dow Stats Client after installing Steam.")
 
         onClickedOk:{
             _uiBackend.steamNotInstalledDialogVisible = false;
@@ -88,7 +88,7 @@ Window {
         visible: _uiBackend.softwareUseBanDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "Your account is permanently banned. You can use other services." + (_uiBackend.softwareUseBanReason === "" ? "" : "\nReason:" + _uiBackend.softwareUseBanReason)
+        text: qsTr("Your account is permanently banned. You can use other services.") + (_uiBackend.softwareUseBanReason === "" ? "" : qsTr("\nReason: ") + _uiBackend.softwareUseBanReason)
 
         onClickedOk:{
             Qt.openUrlExternally("https://dowonline.ru");
@@ -102,7 +102,7 @@ Window {
         visible: _uiBackend.soulstormLaunchedDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "The game is currently running, please close the game and try again."
+        text: qsTr("The game is currently running, please close the game and try again.")
 
         onClickedOk:{
             _uiBackend.soulstormLaunchedDialogVisible = false;
@@ -114,7 +114,7 @@ Window {
         visible: _uiBackend.balanceModInstallProcessedDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: "Dow Stats Balance Mod is being installed, please wait until the installation is complete and try again."
+        text: qsTr("Dow Stats Balance Mod is being installed, please wait until the installation is complete and try again.")
 
         onClickedOk:{
             _uiBackend.balanceModInstallProcessedDialogVisible = false;
@@ -239,7 +239,7 @@ Window {
                             Label {
                                 id: label
                                 color: "#ffffff"
-                                text: qsTr("DoW Stats Client")
+                                text: "DoW Stats Client"
                                 font.pixelSize: 20
                             }
 
@@ -260,7 +260,7 @@ Window {
 
                 HeaderButton{
                     id: newsButton
-                    text: "DoW Stats News"
+                    text: qsTr("DoW Stats News")
                     pressedState: true
                     newsAvailable: newsPage.model.newsAvailable
 
@@ -295,7 +295,7 @@ Window {
 
                 HeaderButton{
                     id: infoButton
-                    text: "Information"
+                    text: qsTr("Information")
 
                     onClicked: {
                         newsButton.pressedState = false;
@@ -308,7 +308,7 @@ Window {
 
                 HeaderButton{
                     id: replayManagerButton
-                    text: "Replay Manager"
+                    text: qsTr("Replay Manager")
                     enabled: _uiBackend.soulstormIsInstalled
 
                     onClicked: {
@@ -330,7 +330,7 @@ Window {
 
                 HeaderButton{
                     id: modsButton
-                    text: "Mods"
+                    text: qsTr("Mods")
                     newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
                     enabled: _uiBackend.soulstormIsInstalled
 
@@ -387,7 +387,7 @@ Window {
 
                         ToolTip.visible: containsMouse
                         ToolTip.delay: 1000
-                        ToolTip.text: ("Settings")
+                        ToolTip.text: qsTr("Settings")
                     }
 
                     Image {
@@ -533,7 +533,7 @@ Window {
 
                     StyledSwitch {
                         id: trainingModeSwitch
-                        text: "Ranked mode"
+                        text: qsTr("Ranked mode")
                         checked: _uiBackend.rankedModeState
                         fontPxSize: 15
 
@@ -572,7 +572,7 @@ Window {
                             Label
                             {
                                 Layout.alignment: Qt.AlignCenter
-                                text: _uiBackend.currentModName + " ladder"
+                                text: _uiBackend.currentModName + qsTr(" ladder")
                                 font.pixelSize: 15
                                 color: DowStatsStyle.textColor
                             }
@@ -581,7 +581,7 @@ Window {
 
                     IconButton{
                         sourceUrl: "qrc:/images/resources/images/update.svg"
-                        toolTipText: "Update"
+                        toolTipText: qsTr("Update")
                         Layout.rightMargin: 5
 
                         visible: _uiBackend.ssLaunchState

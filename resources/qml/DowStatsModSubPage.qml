@@ -19,7 +19,7 @@ Rectangle {
         visible: !root.model.haveAvilableMods
 
         Label{
-            text: "No mods available."
+            text: qsTr("No mods available.")
             color: DowStatsStyle.textColor
             font.pixelSize: 20
             Layout.alignment: Qt.AlignCenter
@@ -50,7 +50,7 @@ Rectangle {
 
                 Label{
                     Layout.alignment: Qt.AlignVCenter
-                    text: "Version: " + model.selectedModVersion
+                    text: qsTr("Version: ") + model.selectedModVersion
                     color: DowStatsStyle.textColor
                     font.pixelSize: 11
                 }
@@ -69,7 +69,7 @@ Rectangle {
 
                     Label{
                         Layout.alignment: Qt.AlignVCenter
-                        text: model.selectedModIsInstalled ? "Status: Installed" : "Status: Not installed"
+                        text: model.selectedModIsInstalled ? qsTr("Status: Installed") : qsTr("Status: Not installed")
                         color: DowStatsStyle.textColor
                         font.pixelSize: 11
                     }
@@ -88,7 +88,7 @@ Rectangle {
 
                     Label{
                         Layout.alignment: Qt.AlignVCenter
-                        text: model.selectedModIsActual ? "This is latest version of this mod" : "This is an outdated version of this mod."
+                        text: model.selectedModIsActual ? qsTr("This is latest version of this mod") : qsTr("This is an outdated version of this mod")
                         color: DowStatsStyle.textColor
                         font.pixelSize: 11
                     }
@@ -107,7 +107,7 @@ Rectangle {
 
                     Label{
                         Layout.alignment: Qt.AlignVCenter
-                        text: model.selectedModIsCurrent ? "This mod is active in the game" : "This mod is not active in the game"
+                        text: model.selectedModIsCurrent ? qsTr("This mod is active in the game") : qsTr("This mod is not active in the game")
                         color: DowStatsStyle.textColor
                         font.pixelSize: 11
                     }
@@ -119,7 +119,7 @@ Rectangle {
 
 
                     BlueButton {
-                        text: "Install"
+                        text: qsTr("Install")
                         enabled: !model.selectedModDownladingProcessed
                         onClicked:{
 
@@ -133,7 +133,7 @@ Rectangle {
                     }
 
                     BlueButton {
-                        text: "Uninstall"
+                        text: qsTr("Uninstall")
                         visible: model.selectedModIsInstalled
 
                         onClicked: {
@@ -146,8 +146,7 @@ Rectangle {
                     }
 
                     BlueButton {
-                        text: "Activate in game"
-                        Layout.preferredWidth: 100
+                        text: qsTr("Activate in game")
                         visible: model.selectedModIsInstalled
                         enabled: !model.selectedModIsCurrent
 
@@ -161,9 +160,8 @@ Rectangle {
                     }
 
                     BlueButton {
-                        text: "Add extended Hotkeys"
+                        text: qsTr("Add extended Hotkeys")
                         visible: model.selectedModIsInstalled
-                        Layout.preferredWidth: 130
                         onClicked: {
                             if (_uiBackend.ssLaunchState)
                                 _uiBackend.soulstormLaunchedDialogVisible = true
@@ -189,7 +187,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: "Changelog"
+                    text: qsTr("Changelog")
                     color: DowStatsStyle.textColor
                     font.pixelSize: 14
                 }
@@ -201,13 +199,10 @@ Rectangle {
                     Layout.fillHeight: true
 
                     BlueButton{
-                        text: "Full changelog"
+                        text: qsTr("Full changelog")
                         anchors.bottom: parent.bottom
                         anchors.left: parent.left
-
-                        width: 100
                         height: 25
-
                         anchors.margins: 10
                         z: 2
 
@@ -298,7 +293,7 @@ Rectangle {
 
                             Label{
                                 Layout.alignment: Qt.AlignVCenter
-                                text: "Version: " + model.version
+                                text: qsTr("Version: ") + model.version
                                 color: DowStatsStyle.textColor
                                 font.pixelSize: 11
                             }
@@ -317,7 +312,7 @@ Rectangle {
 
                                 Label{
                                     Layout.alignment: Qt.AlignVCenter
-                                    text: model.isInstalled ? "Status: Installed" : "Status: Not installed"
+                                    text: model.isInstalled ? qsTr("Status: Installed") : qsTr("Status: Not installed")
                                     color: DowStatsStyle.textColor
                                     font.pixelSize: 11
                                 }

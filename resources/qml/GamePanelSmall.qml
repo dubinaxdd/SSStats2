@@ -248,7 +248,7 @@ Rectangle {
                         Label {
                             id: rankedModeLabel
                             height: 20 * _uiBackend.sizeModifer
-                            text: _uiBackend.gamePanel.gameRankedMode ? "Ranked mode" : "Unranked mode"
+                            text: _uiBackend.gamePanel.gameRankedMode ? qsTr("Ranked mode") : qsTr("Unranked mode")
                             anchors.fill: parent
                             horizontalAlignment: Text.AlignHCenter
                             verticalAlignment: Text.AlignVCenter

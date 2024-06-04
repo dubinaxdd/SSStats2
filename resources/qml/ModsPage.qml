@@ -59,7 +59,7 @@ Rectangle {
                 SubPageMenuButton
                 {
                     id: mapsButton
-                    text: "Maps"
+                    text: qsTr("Maps")
                     Layout.preferredWidth: 200
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
                     newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
@@ -77,7 +77,7 @@ Rectangle {
                 SubPageMenuButton
                 {
                     id: otherModsButton
-                    text: "Other mods"
+                    text: qsTr("Other mods")
                     Layout.preferredWidth: 200
                     Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 

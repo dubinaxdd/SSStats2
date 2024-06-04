@@ -163,7 +163,7 @@ Rectangle {
             property bool hoverState: scaleRadioButton0MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
-            text: qsTr("50%")
+            text: "50%"
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
             sizeModifer: _uiBackend.sizeModifer
@@ -188,7 +188,7 @@ Rectangle {
             property bool hoverState : scaleRadioButton1MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
-            text: qsTr("75%")
+            text: "75%"
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
             sizeModifer: _uiBackend.sizeModifer
@@ -212,7 +212,7 @@ Rectangle {
             property bool hoverState : scaleRadioButton2MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
-            text: qsTr("100%")
+            text: "100%"
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
             sizeModifer: _uiBackend.sizeModifer
@@ -236,7 +236,7 @@ Rectangle {
             property bool hoverState : scaleRadioButton3MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
-            text: qsTr("125%")
+            text: "125%"
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
             sizeModifer: _uiBackend.sizeModifer
@@ -261,7 +261,7 @@ Rectangle {
             property bool hoverState : scaleRadioButton4MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
-            text: qsTr("150%")
+            text: "150%"
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
             sizeModifer: _uiBackend.sizeModifer
@@ -285,7 +285,7 @@ Rectangle {
             property bool hoverState : scaleRadioButton5MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
-            text: qsTr("175%")
+            text: "175%"
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
             sizeModifer: _uiBackend.sizeModifer
@@ -309,7 +309,7 @@ Rectangle {
             property bool hoverState : scaleRadioButton6MouseArea.hovered
             opacity: hoverState ? 1.0 : 0.8
 
-            text: qsTr("200%")
+            text: "200%"
             leftPadding: 20
             fontPxSize: 15 * _uiBackend.sizeModifer
             sizeModifer: _uiBackend.sizeModifer

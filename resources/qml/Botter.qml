@@ -181,7 +181,7 @@ Rectangle {
 
             Label{
                 id: helpGuideLinkLabel
-                text: "Help"
+                text: qsTr("Help")
                 color: helpGuideLinkMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
                 anchors.verticalCenter: parent.verticalCenter
                 font.pixelSize: 16
@@ -221,12 +221,12 @@ Rectangle {
                 Layout.rightMargin: 5
 
                 font.pixelSize: 11
-                text: "Current mod: " + _uiBackend.balanceModPage.currentModInGame
+                text: qsTr("Active mod: ") + _uiBackend.balanceModPage.currentModInGame
                 color: DowStatsStyle.textColor
             }
 
             StyledComboBox{
-                model: ["Original Soulstorm", "DoW Stats Balance Mod (Latest)", "Current mod"]
+                model: [qsTr("Original Soulstorm"), qsTr("DoW Stats Balance Mod (Latest)"), qsTr("Current active mod")]
                 currentIndex: _uiBackend.settingsPageModel.launchMode
                 Layout.preferredWidth: 250
                 Layout.preferredHeight: 25
@@ -261,7 +261,7 @@ Rectangle {
 
                 Label{
                     id: lounchSoulstormLabel
-                    text: "Launch Soulstorm"
+                    text: qsTr("Play")
                     Layout.leftMargin: 15
                     color: lounchSoulstormMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
                     font.pixelSize: 16

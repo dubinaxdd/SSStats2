@@ -194,7 +194,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: root.isOnline ? "Online" : "Offline"
+                    text: root.isOnline ? qsTr("Online") : qsTr("Offline")
                     font.pixelSize: 11 * sizeModifer
                     color: root.textColor
                 }
@@ -217,7 +217,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: root.isRanked ? "Ranked" : "Unranked"
+                    text: root.isRanked ? qsTr("Ranked") : qsTr("Unranked")
                     font.pixelSize: 11 * sizeModifer
                     color: root.textColor
                 }
@@ -258,7 +258,7 @@ Rectangle {
 
                     Label {
                         id: label
-                        text: "Solo MMR: " + root.playerMmr1v1
+                        text: qsTr("Solo MMR: ") + root.playerMmr1v1
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 11 * sizeModifer
@@ -267,7 +267,7 @@ Rectangle {
 
                     Label {
                         id: label2
-                        text: "Team MMR: " + root.playerMmr
+                        text: qsTr("Team MMR: ") + root.playerMmr
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillWidth: true
                         Layout.fillHeight: true
@@ -276,7 +276,7 @@ Rectangle {
 
                     Label {
                         id: label4
-                        text: "Games played: " + root.playerGamesCount
+                        text: qsTr("Games played: ") + root.playerGamesCount
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
@@ -285,7 +285,7 @@ Rectangle {
 
                     Label {
                         id: label3
-                        text: "Race: " + root.playerRace
+                        text: qsTr("Race: ") + root.playerRace
                         Layout.fillHeight: true
                         Layout.fillWidth: true
                         font.pixelSize: 11 * sizeModifer
@@ -294,7 +294,7 @@ Rectangle {
 
                     Label {
                         id: label5
-                        text: "Win rate: " + root.playerWinRate + "%"
+                        text: qsTr("Win rate: ") + root.playerWinRate + "%"
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
@@ -352,7 +352,6 @@ Rectangle {
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                     }
-
                 }
             }
         }
