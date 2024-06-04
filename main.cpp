@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-/*
+
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
             break;
         }
     }  
-*/
+
     qmlRegisterSingletonType(QUrl("qrc:/resources/qml/GlobalMouseProvider.qml"), "GlobalMouseProvider", 1, 0, "GlobalMouseProvider");
     qmlRegisterSingletonType(QUrl("qrc:/resources/qml/DowStatsStyle.qml"), "DowStatsStyle", 1, 0, "DowStatsStyle");
 

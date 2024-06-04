@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.19)
 cmake_policy(SET CMP0048 NEW)
 
 project(DowStatsClient VERSION 2.4 LANGUAGES CXX)
@@ -23,14 +23,11 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
 
-
 set(DowStatsClient_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
 set(DowStatsClient_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)
 
 set(DowStatsAutorun_INSTALATION_DIR  ${DowStatsClient_INSTALATION_DIR})
 set(DowStatsAutorun_LIBRARY_DIR  ${DowStatsClient_LIBRARY_DIR})
-
-
 
 message(STATUS "DowStatsClient_INSTALATION_DIR: " ${DowStatsClient_INSTALATION_DIR})
 message(STATUS "DowStatsClient_LIBRARY_DIR: " ${DowStatsClient_LIBRARY_DIR})
@@ -60,7 +57,13 @@ configure_file( "${CMAKE_SOURCE_DIR}/version.h.template" "${CMAKE_SOURCE_DIR}/ve
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
 
-#set(TS_FILES DowStatsClient_en_GB.ts)
+set (LANGUAGES "ru_RU")
+foreach (LANGUAGE ${LANGUAGES})
+    set (TS ${CMAKE_CURRENT_SOURCE_DIR}/resources/translations/DowStatsClient_${LANGUAGE}.ts)
+    set (QM ${CMAKE_CURRENT_SOURCE_DIR}/resources/translations/DowStatsClient_${LANGUAGE}.qm)
+    add_custom_command ( OUTPUT ${QM} COMMAND ${Qt5_LRELEASE_EXECUTABLE} ${TS} -qm ${QM} MAIN_DEPENDENCY ${TS} COMMENT "Generating translations")
+    #qt5_add_translation(QM_FILES ${CMAKE_CURRENT_SOURCE_DIR}/resources/translations ${TS})
+endforeach()
 
 file(GLOB_RECURSE HEADERS_FILES dev/*.h)
 file(GLOB_RECURSE SOURCES_FILES dev/*.cpp)
@@ -77,8 +80,6 @@ set(SOURCES_FILES
 set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
 
 add_executable(${TARGET_NAME} WIN32 ${HEADERS_FILES} ${SOURCES_FILES} ${APP_ICON_RESOURCE_WINDOWS})
-
-qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 
 #set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x86")
 
