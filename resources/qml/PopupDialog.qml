@@ -74,21 +74,21 @@ Rectangle{
                 BlueButton
                 {
                     visible: root.yesButtonVisible
-                    text: "Yes"
+                    text: qsTr("Yes")
                     onClicked: root.clickedYes();
                 }
 
                 BlueButton
                 {
                     visible: root.noButtonVisible
-                    text: "No"
+                    text: qsTr("No")
                     onClicked: root.clickedNo();
                 }
 
                 BlueButton
                 {
                     visible: root.okButtonVisible
-                    text: "Ok"
+                    text: qsTr("Ok")
                     onClicked: root.clickedOk();
                 }
             }

@@ -28,27 +28,27 @@ Rectangle {
 
         CounterComponent{
             count: model.uniquePlayersOnDay
-            text: "Unique players per day"
+            text: qsTr("Unique players per day")
         }
 
         CounterComponent{
             count: model.uniquePlayersOnMonth
-            text: "Unique players per month"
+            text: qsTr("Unique players per month")
         }
 
         CounterComponent{
             count: model.uniquePlayersOnYear
-            text: "Unique players per year"
+            text: qsTr("Unique players per year")
         }
 
         CounterComponent{
             count: model.uniquePlayersOnTotal
-            text: "Total number of unique players"
+            text: qsTr("Total number of unique players")
         }
 
         Label{
             id: label
-            text: "(calculated starting from August 2023)"
+            text: qsTr("(calculated starting from August 2023)")
             font.pixelSize: 9
             color: DowStatsStyle.textColor
             Layout.alignment: Qt.AlignHCenter

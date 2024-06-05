@@ -52,7 +52,8 @@ Window {
         visible: _uiBackend.latesBalanceModNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: qsTr("The latest DoW Stats Balance Mod version is not installed!\nYou can install the latest DoW Stats Balance Mod  version from Mods page or select other mod from the bottom panel.")
+        text: qsTr("The latest DoW Stats Balance Mod version is not installed!") + "\n" +
+              qsTr("You can install the latest DoW Stats Balance Mod  version from Mods page or select other mod from the bottom panel.")
 
         onClickedOk:{
             _uiBackend.latesBalanceModNotInstalledDialogVisible = false;
@@ -64,7 +65,11 @@ Window {
         visible: _uiBackend.ssNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: qsTr("Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game.\nThe first launch of the game must be done through Steam.")
+        text: qsTr("Dawn of War - Soulstorm is not installed, or installed incorrectly!") + "\n" +
+              qsTr("You can install Dawn of War - Soulstorm from Steam store.") + "\n" +
+              qsTr("Dow Stats Client only works with the Steam version of the game.") + "\n" +
+              qsTr("Restart Dow Stats Client after installing the game.") + "\n" +
+              qsTr("The first launch of the game must be done through Steam.")
 
         onClickedOk:{
             _uiBackend.ssNotInstalledDialogVisible = false;
@@ -76,7 +81,9 @@ Window {
         visible: _uiBackend.steamNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: qsTr("Steam is not installed!\nInstall Steam and try again.\nRestart Dow Stats Client after installing Steam.")
+        text: qsTr("Steam is not installed!") + "\n" +
+              qsTr("Install Steam and try again.") + "\n" +
+              qsTr("Restart Dow Stats Client after installing Steam.")
 
         onClickedOk:{
             _uiBackend.steamNotInstalledDialogVisible = false;
@@ -88,7 +95,7 @@ Window {
         visible: _uiBackend.softwareUseBanDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: qsTr("Your account is permanently banned. You can use other services.") + (_uiBackend.softwareUseBanReason === "" ? "" : qsTr("\nReason: ") + _uiBackend.softwareUseBanReason)
+        text: qsTr("Your account is permanently banned. You can use other services.") + (_uiBackend.softwareUseBanReason === "" ? "" : "\n" + qsTr("Reason: ") + _uiBackend.softwareUseBanReason)
 
         onClickedOk:{
             Qt.openUrlExternally("https://dowonline.ru");

@@ -86,7 +86,7 @@ Rectangle {
 
                 Label{
                     Layout.alignment: Qt.AlignHCenter
-                    text: "Welcome to DoW Stats Client"
+                    text: qsTr("Welcome to DoW Stats Client")
                     font.pixelSize: 22 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
                 }
@@ -97,7 +97,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: "Standard game settings for sending statistics:"
+                    text: qsTr("Standard game settings for sending statistics:")
                     font.pixelSize: 18 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
                 }
@@ -112,129 +112,129 @@ Rectangle {
                         rowSpacing: 3  * infoRectangle.sizeModifer
 
                         Label{
-                            text: "   • Solo MMR game rules:"
+                            text: qsTr("   • Solo MMR game rules:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "1v1 game, Annihilate, Control Area, Take and Hold, Game Timer (optional)."
+                            text: qsTr("1v1 game, Annihilate, Control Area, Take and Hold, Game Timer (optional).")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Team MMR game rules:"
+                            text: qsTr("   • Team MMR game rules:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional)."
+                            text: qsTr("Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional).")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Ai difficulty:"
+                            text: qsTr("   • Ai difficulty:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "Optional, if there is AI in the game, statistics are not sent."
+                            text: qsTr("Optional, if there is AI in the game, statistics are not sent.")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Starting resources:"
+                            text: qsTr("   • Starting resources:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "Standard"
+                            text: qsTr("Standard")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
 
                         Label{
-                            text: "   • Lock teams:"
+                            text: qsTr("   • Lock teams:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "Yes"
+                            text: qsTr("Yes")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Enable cheats:"
+                            text: qsTr("   • Enable cheats:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "No"
+                            text: qsTr("No")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Starting location:"
+                            text: qsTr("   • Starting location:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "Optional"
+                            text: qsTr("Optional")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Game speed:"
+                            text: qsTr("   • Game speed:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "Normal"
+                            text: qsTr("Normal")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Resource sharing:"
+                            text: qsTr("   • Resource sharing:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "No"
+                            text: qsTr("No")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "   • Resource Rate:"
+                            text: qsTr("   • Resource Rate:")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
 
                         Label{
-                            text: "Standard"
+                            text: qsTr("Standard")
                             font.pixelSize: 14 * infoRectangle.sizeModifer
                             color: DowStatsStyle.textColor
                         }
                     }
 
                     Label{
-                        text: "   • Game duration is more than 45 seconds"
+                        text: qsTr("   • Game duration is more than 45 seconds")
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
@@ -246,13 +246,13 @@ Rectangle {
                 }
 
                 Label{
-                    text: "Ranked mode:"
+                    text: qsTr("Ranked mode:")
                     font.pixelSize: 18 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
                 }
 
                 Label{
-                    text: "   A game is considered ranked when at least one of the players is playing in ranked mode."
+                    text: qsTr("   A game is considered ranked when at least one of the players is playing in ranked mode.")
                     font.pixelSize: 14 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
                 }
@@ -263,7 +263,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: "Players are divided into the following ranks by Solo MMR"
+                    text: qsTr("Players are divided into the following ranks by Solo MMR")
                     font.pixelSize: 18 * infoRectangle.sizeModifer
                     Layout.alignment: Qt.AlignHCenter
                     color: DowStatsStyle.textColor
@@ -276,49 +276,49 @@ Rectangle {
                     columnSpacing: 20  * infoRectangle.sizeModifer
 
                     Label{
-                        text: "Division VII"
+                        text: qsTr("Division VII")
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Division VI"
+                        text: qsTr("Division VI")
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Division V"
+                        text: qsTr("Division V")
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Division IV"
+                        text: qsTr("Division IV")
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Division III"
+                        text: qsTr("Division III")
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Division II"
+                        text: qsTr("Division II")
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Division I"
+                        text: qsTr("Division I")
                         Layout.alignment: Qt.AlignHCenter
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
@@ -445,7 +445,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: "(these values ​​may vary depending on which ladder you are using)"
+                    text: qsTr("(these values ​​may vary depending on which ladder you are using)")
                     Layout.alignment: Qt.AlignHCenter
                     font.pixelSize: 12 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
@@ -458,7 +458,7 @@ Rectangle {
                 }
 
                 Label{
-                    text: "Developers:"
+                    text: qsTr("Developers:")
                     font.pixelSize: 18 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
                 }
@@ -468,37 +468,37 @@ Rectangle {
                     spacing: 3  * infoRectangle.sizeModifer
 
                     Label{
-                        text: "   Dubina_xdd - DoW Stats Client main developer"
+                        text: qsTr("   Dubina_xdd - DoW Stats Client main developer")
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   Anibus - DoW Stats website main developer, DoW Stats Client developer"
+                        text: qsTr("   Anibus - DoW Stats website main developer, DoW Stats Client developer")
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   Funeral - microservices developer"
+                        text: qsTr("   Funeral - microservices developer")
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   Jabka - DoW Stats website developer"
+                        text: qsTr("   Jabka - DoW Stats website developer")
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   New - first client (SSStats) main developer"
+                        text: qsTr("   New - first client (SSStats) main developer")
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "   With participation: Elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE, Nascent, YbuBaKa"
+                        text: qsTr("   With participation: " + "Elamaunt, TranspersonalPsy, Drobor, NCTribit, ZADGE, Nascent, YbuBaKa")
                         font.pixelSize: 14 * infoRectangle.sizeModifer
                         color: DowStatsStyle.textColor
                     }
@@ -511,7 +511,7 @@ Rectangle {
 
 
                 Label{
-                    text: "DoW Stats Balance Mod Developers:"
+                    text: qsTr("DoW Stats Balance Mod Developers:")
                     font.pixelSize: 18 * infoRectangle.sizeModifer
                     color: DowStatsStyle.textColor
                 }

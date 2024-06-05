@@ -82,7 +82,7 @@ Rectangle {
                         id: themeComboBox
                         Layout.preferredWidth: 255
 
-                        model: ["Theme: Light", "Theme: Dark", "Theme: Pink"]
+                        model: [qsTr("Theme: Light"), qsTr("Theme: Dark"), qsTr("Theme: Pink")]
 
                         currentIndex: root.model.currentTheme
 
@@ -99,41 +99,41 @@ Rectangle {
                     }
 
                     StyledSwitch{
-                        text: "Autorun"
+                        text: qsTr("Autorun")
                         checked: model.autorun
                         onCheckedChanged: model.autorun = checked;
                     }
 
                     StyledSwitch{
-                        text: "Show overlay"
+                        text: qsTr("Show overlay")
                         checked: model.overlayVisible
                         onCheckedChanged: model.overlayVisible = checked;
                     }
 
                     StyledSwitch {
                         id: enableEventsSoundsEhenGameMinimized
-                        text: "Enable events sounds when the game is minimized"
+                        text: qsTr("Enable events sounds when the game is minimized")
                         checked: model.enableEventsSoundWhenGameMinimized
                         onCheckedChanged: model.enableEventsSoundWhenGameMinimized = checked;
                     }
 
                     StyledSwitch {
                         id: enableEventsSoundsEhenGameMaximized
-                        text: "Enable events sounds when the game is maximized"
+                        text: qsTr("Enable events sounds when the game is maximized")
                         checked: model.enableEventsSoundWhenGameMaximized
                         onCheckedChanged: model.enableEventsSoundWhenGameMaximized = checked;
                     }
 
                     StyledSwitch {
                         enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
-                        text: "Enable game load event sound"
+                        text: qsTr("Enable game load event sound")
                         checked: model.enableGameLoadEventSound
                         onCheckedChanged: model.enableGameLoadEventSound = checked;
                     }
 
                     StyledSwitch {
                         enabled: enableEventsSoundsEhenGameMinimized.checked || enableEventsSoundsEhenGameMaximized.checked
-                        text: "Enable game start event sound"
+                        text: qsTr("Enable game start event sound")
                         checked: model.enableGameStartEventSound
                         onCheckedChanged: model.enableGameStartEventSound = checked;
                     }
@@ -142,7 +142,7 @@ Rectangle {
                     {
                         Label
                         {
-                            text: "Events volume:"
+                            text: qsTr("Events volume:")
                             opacity: 0.8
                             font.pixelSize: 12
                             color: DowStatsStyle.textColor
@@ -166,44 +166,44 @@ Rectangle {
                 ColumnLayout
                 {
                     StyledSwitch{
-                        text: "Launch Soulstorm with Windows7 support mode"
+                        text: qsTr("Show overlay with Windows 7 support mode")
                         checked: model.win7SupportMode
                         onCheckedChanged: model.win7SupportMode = checked;
                     }
 
                     StyledSwitch{
-                        text: "Launch Soulstorm in window"
+                        text: qsTr("Launch Soulstorm in window")
                         checked: model.launchGameInWindow
                         onCheckedChanged: model.launchGameInWindow = checked;
                     }
 
                     StyledSwitch{
                         id: showGamePannelSwitch
-                        text: "APM panel visible in game"
+                        text: qsTr("APM panel visible in game")
                         onCheckedChanged: _uiBackend.gamePanel.showGamePannelPreset = checked;
                     }
 
                     StyledSwitch{
                         id: smallPannelActiveSwitch
-                        text: "Small APM panel in game"
+                        text: qsTr("Small APM panel in game")
                         onCheckedChanged: _uiBackend.gamePanel.smallPannelActive = checked;
                     }
 
                     StyledSwitch{
-                        text: "Skip the intro video"
+                        text: qsTr("Skip the intro video")
                         checked: model.skipIntroVideo
                         onCheckedChanged: model.skipIntroVideo = checked;
                     }
 
                     StyledSwitch{
                         id: noFogSwitch
-                        text: "No FOG"
+                        text: qsTr("No FOG")
                         onCheckedChanged: _uiBackend.noFogState = checked;
                     }
 
                     StyledSwitch{
                         id: advertisingSwitch
-                        text: "Auto ad sender"
+                        text: qsTr("Auto ad sender")
                         checked: model.enableAdvertising
                         onCheckedChanged: model.enableAdvertising = checked;
                     }
@@ -233,14 +233,14 @@ Rectangle {
                     anchors.bottomMargin: 10
 
                     Label{
-                        text: "DoW Stats Balance Mod settings"
+                        text: qsTr("DoW Stats Balance Mod settings")
                         color: DowStatsStyle.textColor
                         font.pixelSize: 14
                         Layout.margins: 5
                     }
 
                     StyledSwitch{
-                        text: "Auto-install the latest version of DoW Stats Balance Mod"
+                        text: qsTr("Auto-install the latest version of DoW Stats Balance Mod")
                         checked: balanceModePageModel.autoUpdateBalanceMod
                         onCheckedChanged: {
 
@@ -252,14 +252,14 @@ Rectangle {
                     }
 
                     StyledSwitch{
-                        text: "Auto-uninstall the previous version of DoW Stats Balance Mod when installing the latest version"
+                        text: qsTr("Auto-uninstall the previous version of DoW Stats Balance Mod when installing the latest version")
                         checked: balanceModePageModel.autoUninstallPreviousBalanceMod
                         onCheckedChanged: balanceModePageModel.autoUninstallPreviousBalanceMod = checked
                     }
 
                     StyledSwitch{
                         id: templateProfilePathSwitch
-                        text: "Use custom template profile path"
+                        text: qsTr("Use custom template profile path")
                         checked: balanceModePageModel.useCustomTemplateProfilePath
                         onCheckedChanged: balanceModePageModel.useCustomTemplateProfilePath = checked
                     }
@@ -291,7 +291,7 @@ Rectangle {
 
                                 Label{
                                     Layout.alignment: Qt.AlignVCenter
-                                    text: "Template profile path"
+                                    text: qsTr("Template profile path")
                                     color: DowStatsStyle.textColor
                                     font.pixelSize: 14
 
@@ -311,7 +311,7 @@ Rectangle {
 
                                 Label{
                                     Layout.alignment: Qt.AlignVCenter
-                                    text: "Player color schemes and hotkeys will be copied after installing any mod version from the specified directory."
+                                    text: qsTr("Player color schemes and hotkeys will be copied after installing any mod version from the specified directory.")
                                     color: DowStatsStyle.textColor
                                     font.pixelSize: 11
                                 }
@@ -322,7 +322,7 @@ Rectangle {
                                 id: folderButton
 
                                 sourceUrl: "qrc:/images/resources/images/folder.svg"
-                                toolTipText: "Choise other folder"
+                                toolTipText: qsTr("Choise other folder")
 
                                 visible: templateProfilePathSwitch.checked
 

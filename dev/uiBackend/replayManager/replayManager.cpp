@@ -114,7 +114,7 @@ void ReplayManager::openPlayback(QString fileName)
     QString winConditions;
 
     if(newRepReader.replay.hasAnnihilate)
-        winConditions += "\nAnnihilate ";
+        winConditions += "\n" + tr("Annihilate ");
 
     if(newRepReader.replay.hasTakeAndHold)
         winConditions += "\nTake And Hold ";

@@ -50,7 +50,7 @@ Rectangle {
                     color: DowStatsStyle.textColor
                     font.pixelSize: 12
 
-                    placeholderText: "Search for replays"
+                    placeholderText: qsTr("Search for replays")
 
                     background: Rectangle {
                         radius: 10
@@ -74,7 +74,7 @@ Rectangle {
                 IconButton
                 {
                     sourceUrl: "qrc:/images/resources/images/find.svg"
-                    toolTipText: "Find"
+                    toolTipText: qsTr("Find")
 
                     onClicked: {
                         findTextField.editingFinished();
@@ -154,43 +154,43 @@ Rectangle {
 
                     Label{
                         id: fileNameLabel
-                        text: "File name: " + _uiBackend.replayManager.currentFileName
+                        text: qsTr("File name: ") + _uiBackend.replayManager.currentFileName
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Mod: " + _uiBackend.replayManager.currentMod
+                        text: qsTr("Mod: ") + _uiBackend.replayManager.currentMod
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Creation time: " + _uiBackend.replayManager.currentReplayTime
+                        text: qsTr("Creation time: ") + _uiBackend.replayManager.currentReplayTime
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Duration: " + _uiBackend.replayManager.currentDuration
+                        text: qsTr("Duration: ") + _uiBackend.replayManager.currentDuration
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Players count: " + _uiBackend.replayManager.currentPlayerCount
+                        text: qsTr("Players count: ") + _uiBackend.replayManager.currentPlayerCount
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Teams count: " + _uiBackend.replayManager.currentTeamsCount
+                        text: qsTr("Teams count: ") + _uiBackend.replayManager.currentTeamsCount
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
 
                     Label{
-                        text: "Map size: " + _uiBackend.replayManager.currentMapSize
+                        text: qsTr("Map size: ") + _uiBackend.replayManager.currentMapSize
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
@@ -207,7 +207,7 @@ Rectangle {
                 Label
                 {
                     Layout.alignment: Qt.AlignTop
-                    text: "AI difficulty: \nStarting resources: \nLock teams: \nEnable cheats: \nStarting location: \nGame speed: \nResource sharing: \nResource rate:"
+                    text: qsTr("AI difficulty:") + "\n" + qsTr("Starting resources:") + "\n" + qsTr("Lock teams:") + "\n" + qsTr("Enable cheats:") + "\n" + qsTr("Starting location:") + "\n" + qsTr("Game speed:") + "\n" + qsTr("Resource sharing:") + "\n" + qsTr("Resource rate:")
                     font.pixelSize: 11
                     color: DowStatsStyle.textColor
                 }
@@ -254,7 +254,7 @@ Rectangle {
                     width: playersListView.width - (scrollBar.visible ? scrollBar.width + 5 : 0)
                     height: 50
                     radius: 10
-                    color: model.type === "Observer" ? DowStatsStyle.highlightItemColor : model.color
+                    color: model.type === qsTr("Observer") ? DowStatsStyle.highlightItemColor : model.color
 
                     GridLayout
                     {
@@ -285,7 +285,7 @@ Rectangle {
                         }
 
                         Label {
-                            text: model.type === "Observer" ? "" : "Race: " + model.race
+                            text: model.type === qsTr("Observer") ? "" : qsTr("Race: ") + model.race
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 120
                             font.pixelSize: 11
@@ -293,7 +293,7 @@ Rectangle {
                         }
 
                         Label {
-                            text: model.type === "Observer" ? "" : "Team: " + model.team
+                            text: model.type === qsTr("Observer") ? "" : qsTr("Team: ") + model.team
                             Layout.alignment: Qt.AlignLeft
                             Layout.preferredWidth: 60
                             font.pixelSize: 11
@@ -305,7 +305,7 @@ Rectangle {
                             Layout.preferredWidth:30
                             Layout.preferredHeight: 30
                             cache: false
-                            visible: model.type === "Observer" ? "" : "Team: " + model.team
+                            visible: model.type === qsTr("Observer") ? "" : qsTr("Team: ") + model.team
 
                             source: "image://imageprovider/" + model.badgeUrl
                         }
@@ -315,7 +315,7 @@ Rectangle {
                             Layout.preferredWidth:20
                             Layout.preferredHeight: 30
                             cache: false
-                            visible: model.type === "Observer" ? "" : "Team: " + model.team
+                            visible: model.type === qsTr("Observer") ? "" : qsTr("Team: ") + model.team
 
                             source: "image://imageprovider/" + model.bannerUrl
                         }
@@ -328,7 +328,7 @@ Rectangle {
 
                         onClicked:
                         {
-                            if (model.type !== "Observer")
+                            if (model.type !== qsTr("Observer"))
                             {
                                 fullBadgesImagesRectangle.badgeUrl = ""
                                 fullBadgesImagesRectangle.bannerUrl = ""
@@ -347,7 +347,7 @@ Rectangle {
                 IconButton
                 {
                     sourceUrl: "qrc:/images/resources/images/save.svg"
-                    toolTipText: "Save as..."
+                    toolTipText: qsTr("Save as...")
 
                     onClicked: {
                         saveFileDialog.currentFile =  "file:///" + _uiBackend.replayManager.currentFileName.replace('#', '');
@@ -358,7 +358,7 @@ Rectangle {
                 IconButton
                 {
                     sourceUrl: "qrc:/images/resources/images/delete.svg"
-                    toolTipText: "Delete replay"
+                    toolTipText: qsTr("Delete replay")
 
                     onClicked: {
                         _uiBackend.replayManager.removeReplay(_uiBackend.replayManager.currentFileName);
@@ -368,7 +368,7 @@ Rectangle {
                 IconButton
                 {
                     sourceUrl: "qrc:/images/resources/images/folder.svg"
-                    toolTipText: "Choise other playback folder"
+                    toolTipText: qsTr("Choose other playback folder")
 
                     onClicked: {
                         choiseFolderDialog.visible = true
@@ -378,7 +378,7 @@ Rectangle {
                 IconButton
                 {
                     sourceUrl: "qrc:/images/resources/images/reset.svg"
-                    toolTipText: "Choise default playback folder"
+                    toolTipText: qsTr("Choose default playback folder")
 
                     onClicked: {
                         _uiBackend.replayManager.choiseDefaultPlaybackFolder();
@@ -442,7 +442,7 @@ Rectangle {
                     id: sortComboBox
 
                     Layout.preferredWidth: 255
-                    model: ["Sort by time", "Sort by file name", "Sort by name", "Sort by mod", "Sort by map" ]
+                    model: [qsTr("Sort by time"), qsTr("Sort by file name"), qsTr("Sort by name"), qsTr("Sort by mod"), qsTr("Sort by map") ]
 
                     onCurrentIndexChanged: _uiBackend.replayManager.replaysListModel.setSortType(currentIndex);
                 }
@@ -450,7 +450,7 @@ Rectangle {
                 IconButton
                 {
                     sourceUrl: "qrc:/images/resources/images/update.svg"
-                    toolTipText: "Update"
+                    toolTipText: qsTr("Update")
 
                     onClicked: {
                         findTextField.text = "";
@@ -541,19 +541,19 @@ Rectangle {
                                 spacing: 2
 
                                 Label{
-                                    text: "File name: " + model.fileName
+                                    text: qsTr("File name: ") + model.fileName
                                     font.pixelSize: 11
                                     color: DowStatsStyle.textColor
                                 }
 
                                 Label{
-                                    text: "Replay name: " + model.name
+                                    text: qsTr("Replay name: ") + model.name
                                     font.pixelSize: 11
                                     color: DowStatsStyle.textColor
                                 }
 
                                 Label{
-                                    text: "Mod: " + model.mod
+                                    text: qsTr("Mod: ") + model.mod
                                     font.pixelSize: 11
                                     color: DowStatsStyle.textColor
                                 }
@@ -623,7 +623,7 @@ Rectangle {
 
                     Label{
                         id: openPlaybackFolderLabel
-                        text: "Open playback folder"
+                        text: qsTr("Open playback folder")
                         Layout.rightMargin: 15
 
                         color: openPlaybackFolderMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
@@ -655,7 +655,7 @@ Rectangle {
         visible: false
         color: "#cf1a1919"
         radius: 10
-        property string playerName: "UnknownPlayer";
+        property string playerName: qsTr("Unknown Player");
 
         z: 10
 
@@ -728,7 +728,7 @@ Rectangle {
 
                     BlueButton
                     {
-                        text: "Save badge"
+                        text: qsTr("Save badge")
 
                         onClicked:
                         {
@@ -743,7 +743,7 @@ Rectangle {
 
                     BlueButton
                     {
-                        text: "Save banner"
+                        text: qsTr("Save banner")
 
                         onClicked:
                         {

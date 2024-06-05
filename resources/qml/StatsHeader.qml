@@ -93,7 +93,7 @@ ColumnLayout
                     id: label
                     color: "#ffffff"
 
-                    text: qsTr("DoW Stats Client")
+                    text: "DoW Stats Client"
                     font.pixelSize: 20 * _uiBackend.sizeModifer
                 }
 
@@ -203,7 +203,7 @@ ColumnLayout
             anchors.fill: parent
             anchors.leftMargin: 10 * _uiBackend.sizeModifer
 
-            text: "Ranked mode"
+            text: qsTr("Ranked mode")
 
             property bool hoverState : false
             property bool checkedState : _uiBackend.rankedModeState

@@ -345,7 +345,7 @@ Rectangle {
 
                     Label {
                         visible: root.banType === BanType.FormerCheater
-                        text: qsTr("Former\ncheater")
+                        text: qsTr("Former") + "\n" + qsTr("cheater")
                         font.pixelSize: 10 * sizeModifer
                         Layout.alignment: Qt.AlignHCenter
                         color: root.textColor

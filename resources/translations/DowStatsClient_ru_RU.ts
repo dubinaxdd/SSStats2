@@ -40,28 +40,56 @@
         <translation>Обновить</translation>
     </message>
     <message>
-        <source>"The latest DoW Stats Balance Mod version is not installed!\nYou can install the latest DoW Stats Balance Mod  version from Mods page or select other mod from the bottom panel.</source>
-        <translation>Последняя версия DoW Stats Balance Mod не установлена на вашем компьютере!\nВы можете установить последнюю версию DoW Stats Balance Mod на страцице "Моды" или выбрать другой мод в нижней панели окна.</translation>
+        <source>The latest DoW Stats Balance Mod version is not installed!</source>
+        <translation>Последняя версия DoW Stats Balance Mod не установлена на вашем компьютере!</translation>
+    </message>
+    <message>
+        <source>You can install the latest DoW Stats Balance Mod  version from Mods page or select other mod from the bottom panel.</source>
+        <translation>Вы можете установить последнюю версию DoW Stats Balance Mod на страцице "Моды" или выбрать другой мод в нижней панеле окна.</translation>
     </message>
     <message>
         <source>The profile folder of the installed mod already exists. Overwrite the hotkeys and army colors using Template Profile Path?</source>
         <translation>Настройки профиля для устанавливаемого мода уже существуют. Перезаписать хоткеи и раскраски армии используя Шаблонный Профиль?</translation>
     </message>
     <message>
-        <source>Dawn of War - Soulstorm is not installed, or installed incorrectly!\nYou can install Dawn of War - Soulstorm from Steam store.\nDow Stats Client only works with the Steam version of the game.\nRestart Dow Stats Client after installing the game.\nThe first launch of the game must be done through Steam.</source>
-        <translation>Dawn of War - Soulstorm не установлен, или установлен неправильно!\nВы можете установить Dawn of War - Soulstorm использая магазин Steam.\nDow Stats Client работает только с версией игры установленной через Steam.\nПервый запуск игры должен быть произведен через Steam.</translation>
+        <source>Dawn of War - Soulstorm is not installed, or installed incorrectly!</source>
+        <translation>Dawn of War - Soulstorm не установлен, или установлен неправильно!</translation>
     </message>
     <message>
-        <source>Steam is not installed!\nInstall Steam and try again.\nRestart Dow Stats Client after installing Steam.</source>
-        <translation>Steam не установлен!\nУстановите Steam и попробуйте снова.\nПерезапустите Dow Stats Client после установки Steam.</translation>
+        <source>You can install Dawn of War - Soulstorm from Steam store.</source>
+        <translation>Вы можете установить Dawn of War - Soulstorm использая магазин Steam.</translation>
+    </message>
+    <message>
+        <source>Dow Stats Client only works with the Steam version of the game.</source>
+        <translation>Dow Stats Client работает только с версией игры установленной через Steam.</translation>
+    </message>
+    <message>
+        <source>Restart Dow Stats Client after installing the game.</source>
+        <translation>Перезапустите Dow Stats Client после установки игры.</translation>
+    </message>
+    <message>
+        <source>The first launch of the game must be done through Steam.</source>
+        <translation>Первый запуск игры должен быть произведен через Steam.</translation>
+    </message>
+    <message>
+        <source>Steam is not installed!</source>
+        <translation>Steam не установлен!</translation>
+    </message>
+    <message>
+        <source>Install Steam and try again.</source>
+        <translation>Установите Steam и попробуйте снова.</translation>
+    </message>
+    <message>
+        <source>Restart Dow Stats Client after installing Steam.</source>
+        <translation>Перезапустите Dow Stats Client после установки Steam.</translation>
     </message>
     <message>
         <source>Your account is permanently banned. You can use other services.</source>
         <translation>Ваш аккаунт забанен. Вы можете воспользоваться другими сервисами.</translation>
     </message>
     <message>
-        <source>\nReason: </source>
-        <translation>\nПричина: </translation>
+        <source>Reason: </source>
+        <translation>Причина: </translation>
     </message>
     <message>
         <source>The game is currently running, please close the game and try again.</source>
@@ -440,10 +468,469 @@
         <translation>Процент побед: </translation>
     </message>
     <message>
-        <source>Former\ncheater</source>
-        <translation>Бывший\nчитер</translation>
+        <source>Former</source>
+        <translation>Бывший</translation>
+    </message>
+    <message>
+        <source>cheater</source>
+        <translation>читер</translation>
     </message>
 </context>
-
-
+<context>
+    <name>PopupDialog</name>
+    <message>
+        <source>Yes</source>
+        <translation>Да</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Нет</translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation>Ок</translation>
+    </message>
+</context>
+<context>
+    <name>ReplayManagerPage</name>
+    <message>
+        <source>Search for replays</source>
+        <translation>Поиск реплеев</translation>
+    </message>
+    <message>
+        <source>Find</source>
+        <translation>Найти</translation>
+    </message>
+    <message>
+        <source>File name: </source>
+        <translation>Имя файла: </translation>
+    </message>
+    <message>
+        <source>Mod: </source>
+        <translation>Мод: </translation>
+    </message>
+    <message>
+        <source>Creation time: </source>
+        <translation>Время создания: </translation>
+    </message>
+    <message>
+        <source>Duration: </source>
+        <translation>Длительность: </translation>
+    </message>
+    <message>
+        <source>Players count: </source>
+        <translation>Количество игроков: </translation>
+    </message>
+    <message>
+        <source>Teams count: </source>
+        <translation>Количество команд: </translation>
+    </message>
+    <message>
+        <source>Map size: </source>
+        <translation>Размер карты: </translation>
+    </message>
+    <message>
+        <source>AI difficulty:</source>
+        <translation>Сложность ИИ:</translation>
+    </message>
+    <message>
+        <source>Starting resources:</source>
+        <translation>Начальные ресурсы:</translation>
+    </message>
+    <message>
+        <source>Lock teams:</source>
+        <translation>Закрепленные команды:</translation>
+    </message>
+    <message>
+        <source>Enable cheats:</source>
+        <translation>Разрешить читы:</translation>
+    </message>
+    <message>
+        <source>Starting location:</source>
+        <translation>Начальные позиции:</translation>
+    </message>
+    <message>
+        <source>Game speed:</source>
+        <translation>Скорость игры:</translation>
+    </message>
+    <message>
+        <source>Resource sharing:</source>
+        <translation>Обмен ресурсов:</translation>
+    </message>
+    <message>
+        <source>Resource rate:</source>
+        <translation>Скорость прироста:</translation>
+    </message>
+    <message>
+        <source>Observer</source>
+        <translation>Обозреватель</translation>
+    </message>
+    <message>
+        <source>Race: </source>
+        <translation>Раса: </translation>
+    </message>
+    <message>
+        <source>Team: </source>
+        <translation>Команда: </translation>
+    </message>
+    <message>
+        <source>Save as...</source>
+        <translation>Сохранить как...</translation>
+    </message>
+    <message>
+        <source>Delete replay</source>
+        <translation>Удалить реплей</translation>
+    </message>
+    <message>
+        <source>Choose other playback folder</source>
+        <translation>Выбрать другую папку с реплеями</translation>
+    </message>
+    <message>
+        <source>Choose default playback folder</source>
+        <translation>Выбрать дефолтную папку с реплеями</translation>
+    </message>
+    <message>
+        <source>Sort by time</source>
+        <translation>Сортировать по времени</translation>
+    </message>
+    <message>
+        <source>Sort by file name</source>
+        <translation>Сортировать по имени файла</translation>
+    </message>
+    <message>
+        <source>Sort by name</source>
+        <translation>Сортировать по имени релея</translation>
+    </message>
+    <message>
+        <source>Sort by mod</source>
+        <translation>Сортировать по моду</translation>
+    </message>
+    <message>
+        <source>Sort by map</source>
+        <translation>Сортировать по карте</translation>
+    </message>
+    <message>
+        <source>Update</source>
+        <translation>Обновить</translation>
+    </message>
+    <message>
+        <source>Open playback folder</source>
+        <translation>Открыть папку с реплеями</translation>
+    </message>
+    <message>
+        <source>Unknown Player</source>
+        <translation>Неизвестный игрок</translation>
+    </message>
+    <message>
+        <source>Save badge</source>
+        <translation>Сохранить эмблему</translation>
+    </message>
+    <message>
+        <source>Save banner</source>
+        <translation>Сохранить флаг</translation>
+    </message>
+    <message>
+        <source>Replay name: </source>
+        <translation>Название: </translation>
+    </message>
+</context>
+<context>
+    <name>SettingsPage</name>
+    <message>
+        <source>Theme: Light</source>
+        <translation>Тема: Светлая</translation>
+    </message>
+    <message>
+        <source>Theme: Dark</source>
+        <translation>Тема: Тёмная</translation>
+    </message>
+    <message>
+        <source>Theme: Pink</source>
+        <translation>Тема: Розовая</translation>
+    </message>
+    <message>
+        <source>Autorun</source>
+        <translation>Автозапуск</translation>
+    </message>
+    <message>
+        <source>Show overlay</source>
+        <translation>Показать оверлей</translation>
+    </message>
+    <message>
+        <source>Enable events sounds when the game is minimized</source>
+        <translation>Включить озвучку событий лобби, когда игра свернута</translation>
+    </message>
+    <message>
+        <source>Enable events sounds when the game is maximized</source>
+        <translation>Включить озвучку событий лобби, когда игра развернута</translation>
+    </message>
+    <message>
+        <source>Enable game load event sound</source>
+        <translation>Включить озвучку события начала загрузки игры</translation>
+    </message>
+    <message>
+        <source>Enable game start event sound</source>
+        <translation>Включить озвучку события начала игры</translation>
+    </message>
+    <message>
+        <source>Events volume:</source>
+        <translation>Громкость событий:</translation>
+    </message>
+    <message>
+        <source>Show overlay with Windows 7 support mode</source>
+        <translation>Отображать оверлей в режиме совместимости с Windows 7</translation>
+    </message>
+    <message>
+        <source>Launch Soulstorm in window</source>
+        <translation>Запускать Soulstorm в окне</translation>
+    </message>
+    <message>
+        <source>APM panel visible in game</source>
+        <translation>Отображать APM панель в игре</translation>
+    </message>
+    <message>
+        <source>Small APM panel in game</source>
+        <translation>Маленькая APM панель</translation>
+    </message>
+    <message>
+        <source>Skip the intro video</source>
+        <translation>Пропускать заставку при запуске игры</translation>
+    </message>
+    <message>
+        <source>No FOG</source>
+        <translation>Отключить туман</translation>
+    </message>
+    <message>
+        <source>Auto ad sender</source>
+        <translation>Автоматическая отправка рекламы в лобби</translation>
+    </message>
+    <message>
+        <source>DoW Stats Balance Mod settings</source>
+        <translation>Настройки для DoW Stats Balance Mod</translation>
+    </message>
+    <message>
+        <source>Auto-install the latest version of DoW Stats Balance Mod</source>
+        <translation>Автоматически устанавливать последнюю версию DoW Stats Balance Mod</translation>
+    </message>
+    <message>
+        <source>Auto-uninstall the previous version of DoW Stats Balance Mod when installing the latest version</source>
+        <translation>Автоматически удалять предыдущую версию DoW Stats Balance Mod при установке последней версии</translation>
+    </message>
+    <message>
+        <source>Use custom template profile path</source>
+        <translation>Использовать пользовательский путь к папке шаблонного профиля</translation>
+    </message>
+    <message>
+        <source>Template profile path</source>
+        <translation>Путь к шаблонному профилю</translation>
+    </message>
+    <message>
+        <source>Player color schemes and hotkeys will be copied after installing any mod version from the specified directory.</source>
+        <translation>Цветовые схемы и хоткеи будут копироваться в папку профиля новго мода из указанной папки после установки любой версии мода.</translation>
+    </message>
+    <message>
+        <source>Choise other folder</source>
+        <translation>Выбрать другую папку</translation>
+    </message>
+</context>
+<context>
+    <name>StatsHeader</name>
+    <message>
+        <source>Ranked mode</source>
+        <translation>Рейтинговый режим</translation>
+    </message>
+</context>
+<context>
+    <name>UniqueOnlineStatistic</name>
+    <message>
+        <source>Unique players per day</source>
+        <translation>Уникальные игроки за день</translation>
+    </message>
+    <message>
+        <source>Unique players per month</source>
+        <translation>Уникальные игроки за месяц</translation>
+    </message>
+    <message>
+        <source>Unique players per year</source>
+        <translation>Уникальные игроки за год</translation>
+    </message>
+    <message>
+        <source>Total number of unique players</source>
+        <translation>Уникальные игроки за все время</translation>
+    </message>
+    <message>
+        <source>(calculated starting from August 2023)</source>
+        <translation>(рассчитывается с Августа 2023)</translation>
+    </message>
+</context>
+<context>
+    <name>InfoWindow</name>
+    <message>
+        <source>Welcome to DoW Stats Client</source>
+        <translation>Добро пожаловать в DoW Stats Client</translation>
+    </message>
+    <message>
+        <source>Standard game settings for sending statistics:</source>
+        <translation>Стандартные настройки игры для учета статистики:</translation>
+    </message>
+    <message>
+        <source>   • Solo MMR game rules:</source>
+        <translation>   • Правила для Одиночного MMR:</translation>
+    </message>
+    <message>
+        <source>1v1 game, Annihilate, Control Area, Take and Hold, Game Timer (optional).</source>
+        <translation>Игра 1 на 1, Уничтожение, Полный контроль, Царь горы, Таймер (опционально).</translation>
+    </message>
+    <message>
+        <source>   • Team MMR game rules:</source>
+        <translation>   • Правила для Командного MMR:</translation>
+    </message>
+    <message>
+        <source>Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional).</source>
+        <translation>Уничтожение, Полный контроль (опционально), Царь горы (опционально), Таймер (опционально).</translation>
+    </message>
+    <message>
+        <source>   • Ai difficulty:</source>
+        <translation>   • Сложность ИИ:</translation>
+    </message>
+    <message>
+        <source>Optional, if there is AI in the game, statistics are not sent.</source>
+        <translation>Опционально, игры в которых участвует ИИ не учитываются статистикой.</translation>
+    </message>
+    <message>
+        <source>   • Starting resources:</source>
+        <translation>   • Начальные ресурсы:</translation>
+    </message>
+    <message>
+        <source>Standard</source>
+        <translation>Стандарт</translation>
+    </message>
+    <message>
+        <source>   • Lock teams:</source>
+        <translation>   • Закрепить команды:</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Да</translation>
+    </message>
+    <message>
+        <source>   • Enable cheats:</source>
+        <translation>   • Разрешить читы:</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Нет</translation>
+    </message>
+    <message>
+        <source>   • Starting location:</source>
+        <translation>   • Начальные позиции:</translation>
+    </message>
+    <message>
+        <source>Optional</source>
+        <translation>Опционально</translation>
+    </message>
+    <message>
+        <source>   • Game speed:</source>
+        <translation>   • Скорость игры:</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Нормальная</translation>
+    </message>
+    <message>
+        <source>   • Resource sharing:</source>
+        <translation>   • Обмен ресурсов:</translation>
+    </message>
+    <message>
+        <source>   • Resource Rate:</source>
+        <translation>   • Скорость прироста:</translation>
+    </message>
+    <message>
+        <source>   • Game duration is more than 45 seconds</source>
+        <translation>   • Длительность игры больше 45 секунд</translation>
+    </message>
+    <message>
+        <source>Ranked mode:</source>
+        <translation>Рейтинговый режим:</translation>
+    </message>
+    <message>
+        <source>   A game is considered ranked when at least one of the players is playing in ranked mode.</source>
+        <translation>   Игра считается рейтинговой когда хотябы у одиного из игроков  включен рейтинговый режим.</translation>
+    </message>
+    <message>
+        <source>Players are divided into the following ranks by Solo MMR</source>
+        <translation>Игроки получают ранг в зависимости от следующих показателей Одиночного MMR</translation>
+    </message>
+    <message>
+        <source>Division VII</source>
+        <translation>Дивизион VII</translation>
+    </message>
+    <message>
+        <source>Division VI</source>
+        <translation>Дивизион VI</translation>
+    </message>
+    <message>
+        <source>Division V</source>
+        <translation>Дивизион V</translation>
+    </message>
+    <message>
+        <source>Division IV</source>
+        <translation>Дивизион IV</translation>
+    </message>
+    <message>
+        <source>Division III</source>
+        <translation>Дивизион III</translation>
+    </message>
+    <message>
+        <source>Division II</source>
+        <translation>Дивизион II</translation>
+    </message>
+    <message>
+        <source>Division I</source>
+        <translation>Дивизион I</translation>
+    </message>
+    <message>
+        <source>(these values ​​may vary depending on which ladder you are using)</source>
+        <translation>(эти значения могут изменяться в зависимости от текущего ладдера)</translation>
+    </message>
+    <message>
+        <source>Developers:</source>
+        <translation>Разработчики:</translation>
+    </message>
+    <message>
+        <source>   Dubina_xdd - DoW Stats Client main developer</source>
+        <translation>   Dubina_xdd - основной разработчик DoW Stats Client</translation>
+    </message>
+    <message>
+        <source>   Anibus - DoW Stats website main developer, DoW Stats Client developer</source>
+        <translation>   Anibus - основной разработчик сайта DoW Stats, разработчик DoW Stats Client</translation>
+    </message>
+    <message>
+        <source>   Funeral - microservices developer</source>
+        <translation>   Funeral - разработчик микросервисов</translation>
+    </message>
+    <message>
+        <source>   Jabka - DoW Stats website developer</source>
+        <translation>   Jabka - разработчик сайта DoW Stats</translation>
+    </message>
+    <message>
+        <source>   New - first client (SSStats) main developer</source>
+        <translation>   New - разработчик первой версии клиента (SSStats)</translation>
+    </message>
+    <message>
+        <source>   With participation: </source>
+        <translation>   Также в разработке участвовали: </translation>
+    </message>
+    <message>
+        <source>DoW Stats Balance Mod Developers:</source>
+        <translation>Разработчики DoW Stats Balance Mod:</translation>
+    </message>
+</context>
+<context>
+    <name>ReplayManager</name>
+    <message>
+        <source>Annihilate </source>
+        <translation>Уничтожение </translation>
+    </message>
+</context>
 </TS>
