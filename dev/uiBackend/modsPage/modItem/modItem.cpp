@@ -19,9 +19,9 @@ void ModItem::setInstalledStatus(bool newInstalledStatus)
     emit installedStatusChanged();
 
     if(m_installedStatus)
-        setInstallProgress("Installed");
+        setInstallProgress(tr("Installed"));
     else
-        setInstallProgress("Not installed");
+        setInstallProgress(tr("Not installed"));
 }
 
 bool ModItem::installInProcess() const
@@ -44,20 +44,20 @@ const QString &ModItem::installProgress() const
 
 void ModItem::setDownloadProgress(int progress)
 {
-    setInstallProgress("Progress: " + QString::number(progress) + "%");
+    setInstallProgress(tr("Progress: ") + QString::number(progress) + "%");
 }
 
 void ModItem::setInstallCompleeted()
 {
     setInstalledStatus(true);
     setInstallInProcess(false);
-    setInstallProgress("Installed");
+    setInstallProgress(tr("Installed"));
 }
 
 void ModItem::setDownloadError()
 {
     setInstallInProcess(false);
-    setInstallProgress("Download error");
+    setInstallProgress(tr("Download error"));
 }
 
 void ModItem::setInstallProgress(const QString &newInstallProgress)
@@ -71,13 +71,13 @@ void ModItem::setInstallProgress(const QString &newInstallProgress)
 void ModItem::installMod()
 {
     setInstallInProcess(true);
-    setInstallProgress("Progress: 0%");
+    setInstallProgress(tr("Progress: ") + "0%");
     emit startInstall();
 }
 
 void ModItem::uninstallMod()
 {
     setInstalledStatus(false);
-    setInstallProgress("Not installed");
+    setInstallProgress(tr("Not installed"));
     emit startUninstall();
 }

@@ -101,9 +101,9 @@ void ModsPage::receiveDownloadError(InstMod mod)
 void ModsPage::receiveUnlockRacesStatus(bool status)
 {
     if (status)
-        m_unlockRacesStatus = "Status: Races unlocked";
+        m_unlockRacesStatus = tr("Status: Races unlocked");
     else
-        m_unlockRacesStatus = "Status: Unlock races error";
+        m_unlockRacesStatus = tr("Status: Unlock races error");
 
     emit unlockRacesStatusChanged();
 }
@@ -111,7 +111,7 @@ void ModsPage::receiveUnlockRacesStatus(bool status)
 
 void ModsPage::unlockRaces()
 {
-    m_unlockRacesStatus = "Status: Processed...";
+    m_unlockRacesStatus = tr("Status: Processed...");
     emit unlockRacesStatusChanged();
     emit sendUnlockRaces();
 }

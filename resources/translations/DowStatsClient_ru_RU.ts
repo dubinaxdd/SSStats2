@@ -1260,4 +1260,95 @@
         <translation> (Бета)</translation>
     </message>
 </context>
+<context>
+    <name>ModsPage</name>
+    <message>
+        <source>Status: Races unlocked</source>
+        <translation>Статус: Расы разблокированы</translation>
+    </message>
+    <message>
+        <source>Status: Unlock races error</source>
+        <translation>Статус: Не удалось разблокировать расы</translation>
+    </message>
+    <message>
+        <source>Status: Processed...</source>
+        <translation>Статус: В процессе...</translation>
+    </message>
+</context>
+<context>
+    <name>ModsPage</name>
+    <message>
+        <source>Installed</source>
+        <translation>Установлен</translation>
+    </message>
+    <message>
+        <source>Not installed</source>
+        <translation>Не установлен</translation>
+    </message>
+    <message>
+        <source>Progress: </source>
+        <translation>Прогресс: </translation>
+    </message>
+    <message>
+        <source>Download error</source>
+        <translation>Ошибка загрузки</translation>
+    </message>
+</context>
+<context>
+    <name>AsyncReplayReader</name>
+    <message>
+        <source>Original Soulstorm</source>
+        <translation>Оригинальный Soulstorm</translation>
+    </message>
+</context>
+<context>
+    <name>ReplaysListModel</name>
+    <message>
+        <source>Original Soulstorm</source>
+        <translation>Оригинальный Soulstorm</translation>
+    </message>
+</context>
+<context>
+    <name>StatisticPanelItem</name>
+    <message>
+        <source>Imperial Guard</source>
+        <translation>Имперская гвардия</translation>
+    </message>
+    <message>
+        <source>Tau Empire</source>
+        <translation>Империя Тау</translation>
+    </message>
+    <message>
+        <source>Orks</source>
+        <translation>Орки</translation>
+    </message>
+    <message>
+        <source>Chaos</source>
+        <translation>Хаос</translation>
+    </message>
+    <message>
+        <source>Necrons</source>
+        <translation>Некроны</translation>
+    </message>
+    <message>
+        <source>Space Marines</source>
+        <translation>Космодесант</translation>
+    </message>
+    <message>
+        <source>Sisters of Battle</source>
+        <translation>Сёстры Битвы</translation>
+    </message>
+    <message>
+        <source>Dark Eldar</source>
+        <translation>Тёмные эльдары</translation>
+    </message>
+    <message>
+        <source>Eldar</source>
+        <translation>Эльдары</translation>
+    </message>
+</context>
+
+
+
+
 </TS>

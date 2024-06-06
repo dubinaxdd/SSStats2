@@ -75,7 +75,7 @@ void AsyncReplayReader::readReplaysList(QString playbackFolder, QString findText
         if (m_modInfo && m_modInfoReceived)
         {
             if (newReplayInfo.mod == "dxp2")
-                uiModName = "Original Soulstorm";
+                uiModName = tr("Original Soulstorm");
 
             for (int i = 0; i < m_modInfo->count(); i++)
             {

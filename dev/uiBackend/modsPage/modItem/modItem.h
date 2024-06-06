@@ -41,7 +41,7 @@ private:
     void setInstallProgress(const QString &newInstallProgress);
 
 private:
-    QString m_installProgress = "Not installed";
+    QString m_installProgress = tr("Not installed");
     bool m_installedStatus = false;
     bool m_installInProcess = false;
 };

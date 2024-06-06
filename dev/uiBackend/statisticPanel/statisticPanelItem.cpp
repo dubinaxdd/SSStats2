@@ -15,15 +15,15 @@ QString StatisticPanelItem::getRaceFromNumber(int raceNumber) const
 
     switch(raceNumber)
     {
-        case 1 : return "Space Marines";
-        case 2 : return "Chaos";
-        case 3 : return "Orks";
-        case 4 : return "Eldar";
-        case 5 : return "Imperial Guard";
-        case 6 : return "Necrons";
-        case 7 : return "Tau Empire";
-        case 8 : return "Sisters of Battle";
-        case 9 : return "Dark Eldar";
+        case 1 : return tr("Space Marines");
+        case 2 : return tr("Chaos");
+        case 3 : return tr("Orks");
+        case 4 : return tr("Eldar");
+        case 5 : return tr("Imperial Guard");
+        case 6 : return tr("Necrons");
+        case 7 : return tr("Tau Empire");
+        case 8 : return tr("Sisters of Battle");
+        case 9 : return tr("Dark Eldar");
     }
 
     return "";
