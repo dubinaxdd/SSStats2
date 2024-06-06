@@ -73,7 +73,7 @@ void ReplayManager::openPlayback(QString fileName)
     m_currentMod = newRepReader.replay.MOD;
 
     if (m_currentMod == "dxp2")
-        m_currentMod = "Original Soulstorm";
+        m_currentMod = tr("Original Soulstorm");
 
     for (int i = 0; i < m_modInfo.count(); i++)
     {
@@ -114,28 +114,28 @@ void ReplayManager::openPlayback(QString fileName)
     QString winConditions;
 
     if(newRepReader.replay.hasAnnihilate)
-        winConditions += "\n" + tr("Annihilate ");
+        winConditions += "\n" + tr("Annihilate");
 
     if(newRepReader.replay.hasTakeAndHold)
-        winConditions += "\nTake And Hold ";
+        winConditions += "\n" + tr("Take And Hold");
 
     if(newRepReader.replay.hasDestroyHQ)
-        winConditions += "\nDestroy HQ ";
+        winConditions += "\n" + tr("Destroy HQ");
 
     if(newRepReader.replay.hasControlArea)
-        winConditions += "\nControl Area ";
+        winConditions += "\n" + tr("Control Area");
 
     if(newRepReader.replay.hasEconomicVictory)
-        winConditions += "\nEconomic Victory ";
+        winConditions += "\n" + tr("Economic Victory");
 
     if(newRepReader.replay.hasSuddenDeath)
-        winConditions += "\nSudden Death ";
+        winConditions += "\n" + tr("Sudden Death");
 
     if(newRepReader.replay.hasAssassinate)
-        winConditions += "\nAssassinate ";
+        winConditions += "\n" + tr("Assassinate");
 
     if(newRepReader.replay.hasGameTimer)
-        winConditions += "\nGame Timer ";
+        winConditions += "\n" + tr("Game Timer");
 
     winConditions.remove(0, 1);
 
@@ -144,14 +144,14 @@ void ReplayManager::openPlayback(QString fileName)
 
     QString gameSettings;
 
-    gameSettings += newRepReader.replay.settings.getResolvedAIDiff();
-    gameSettings += "\n" + newRepReader.replay.settings.getResolvedResources();
-    gameSettings += "\n" + newRepReader.replay.settings.getResolvedLockTeams();
-    gameSettings += "\n" + newRepReader.replay.settings.getResolvedCheats();
-    gameSettings += "\n" + newRepReader.replay.settings.getResolvedPositions();
-    gameSettings += "\n" + newRepReader.replay.settings.getResolvedGameSpeed();
-    gameSettings += "\n" + newRepReader.replay.settings.getResolvedResourceSharing();
-    gameSettings += "\n" + newRepReader.replay.settings.getResolvedResourceSpeed();
+    gameSettings += tr(newRepReader.replay.settings.getResolvedAIDiff().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedResources().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedLockTeams().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedCheats().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedPositions().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedGameSpeed().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedResourceSharing().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedResourceSpeed().toLatin1());
 
     setGameSettings(gameSettings);
 
@@ -176,18 +176,18 @@ void ReplayManager::openPlayback(QString fileName)
 
         switch(players[i]->Type)
         {
-            case(0): newPlayer.type = "Player"; break;
-            case(1): newPlayer.type = "Computer"; break;
-            case(2): newPlayer.type = "Player"; break;
-            case(3): newPlayer.type = "Computer"; break;
-            case(4): newPlayer.type = "Observer"; break;
-            case(11): newPlayer.type = "Computer"; break;
-            default: newPlayer.type =  "EmptySlot"; break;
+            case(0): newPlayer.type = tr("Player"); break;
+            case(1): newPlayer.type = tr("Computer"); break;
+            case(2): newPlayer.type = tr("Player"); break;
+            case(3): newPlayer.type = tr("Computer"); break;
+            case(4): newPlayer.type = tr("Observer"); break;
+            case(11): newPlayer.type = tr("Computer"); break;
+            default: newPlayer.type =  tr("EmptySlot"); break;
         }
 
         if (players[i]->isSpectator())
         {
-            newPlayer.type = "Observer";
+            newPlayer.type = tr("Observer");
             newPlayer.team = "9";
         }
 
@@ -339,55 +339,55 @@ void ReplayManager::replaceRaceKeyword(QString *raceString)
 {
     if (raceString->contains("guard_race"))
     {
-        raceString->replace("guard_race", "Imperial Guard");
+        raceString->replace("guard_race", tr("Imperial Guard"));
         return;
     }
 
     if (raceString->contains("tau_race"))
     {
-        raceString->replace("tau_race", "Tau Empire");
+        raceString->replace("tau_race", tr("Tau Empire"));
         return;
     }
 
     if (raceString->contains("ork_race"))
     {
-        raceString->replace("ork_race", "Orks");
+        raceString->replace("ork_race", tr("Orks"));
         return;
     }
 
     if (raceString->contains("chaos_marine_race"))
     {
-        raceString->replace("chaos_marine_race", "Chaos");
+        raceString->replace("chaos_marine_race", tr("Chaos"));
         return;
     }
 
     if (raceString->contains("necron_race"))
     {
-        raceString->replace("necron_race", "Necrons");
+        raceString->replace("necron_race", tr("Necrons"));
         return;
     }
 
     if (raceString->contains("space_marine_race"))
     {
-        raceString->replace("space_marine_race", "Space Marines");
+        raceString->replace("space_marine_race", tr("Space Marines"));
         return;
     }
 
     if (raceString->contains("sisters_race"))
     {
-        raceString->replace("sisters_race", "Sisters of Battle");
+        raceString->replace("sisters_race", tr("Sisters of Battle"));
         return;
     }
 
     if (raceString->contains("dark_eldar_race"))
     {
-        raceString->replace("dark_eldar_race", "Dark Eldar");
+        raceString->replace("dark_eldar_race", tr("Dark Eldar"));
         return;
     }
 
     if (raceString->contains("eldar_race"))
     {
-        raceString->replace("eldar_race", "Eldar");
+        raceString->replace("eldar_race", tr("Eldar"));
         return;
     }
 }

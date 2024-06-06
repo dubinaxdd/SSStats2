@@ -132,10 +132,10 @@ QString GameSettings::getResolvedAIDiff() const
 {
     switch (AIDiff)
     {
-        case 0: return "Hard";
-        case 1: return "Insane";
-        case 2: return "Easy";
-        case 3: return "Hard";
+        case 0: return "Easy";
+        case 1: return "Standard";
+        case 2: return "Hard";
+        case 3: return "Harder";
         case 4: return "Insane";
         default: return "Unknown";
     }

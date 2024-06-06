@@ -929,8 +929,172 @@
 <context>
     <name>ReplayManager</name>
     <message>
-        <source>Annihilate </source>
-        <translation>Уничтожение </translation>
+        <source>Original Soulstorm</source>
+        <translation>Оригинальный Soulstorm</translation>
+    </message>
+    <message>
+        <source>Annihilate</source>
+        <translation>Уничтожение</translation>
+    </message>
+    <message>
+        <source>Take And Hold</source>
+        <translation>Царь горы</translation>
+    </message>
+    <message>
+        <source>Destroy HQ</source>
+        <translation>Уничтожение штаба</translation>
+    </message>
+    <message>
+        <source>Control Area</source>
+        <translation>Полный контроль</translation>
+    </message>
+    <message>
+        <source>Economic Victory</source>
+        <translation>Экономическая победа</translation>
+    </message>
+    <message>
+        <source>Sudden Death</source>
+        <translation>Внезапная смерть</translation>
+    </message>
+    <message>
+        <source>Assassinate</source>
+        <translation>Уничтожение командира</translation>
+    </message>
+    <message>
+        <source>Game Timer</source>
+        <translation>Таймер</translation>
+    </message>
+    <message>
+        <source>Player</source>
+        <translation>Игрок</translation>
+    </message>
+    <message>
+        <source>Computer</source>
+        <translation>Компьютер</translation>
+    </message>
+    <message>
+        <source>Observer</source>
+        <translation>Обозреватель</translation>
+    </message>
+    <message>
+        <source>EmptySlot</source>
+        <translation>Пустой слот</translation>
+    </message>
+    <message>
+        <source>Imperial Guard</source>
+        <translation>Имперская гвардия</translation>
+    </message>
+    <message>
+        <source>Tau Empire</source>
+        <translation>Империя Тау</translation>
+    </message>
+    <message>
+        <source>Orks</source>
+        <translation>Орки</translation>
+    </message>
+    <message>
+        <source>Chaos</source>
+        <translation>Хаос</translation>
+    </message>
+    <message>
+        <source>Necrons</source>
+        <translation>Некроны</translation>
+    </message>
+    <message>
+        <source>Space Marines</source>
+        <translation>Космодесант</translation>
+    </message>
+    <message>
+        <source>Sisters of Battle</source>
+        <translation>Сёстры Битвы</translation>
+    </message>
+    <message>
+        <source>Dark Eldar</source>
+        <translation>Тёмные эльдары</translation>
+    </message>
+    <message>
+        <source>Eldar</source>
+        <translation>Эльдары</translation>
+    </message>
+</context>
+
+<context>
+    <name>ReplayManager</name>
+    <message>
+        <source>Standard</source>
+        <translation>Стандарт</translation>
+    </message>
+    <message>
+        <source>Quick-start</source>
+        <translation>Быстрый старт</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Неизвестно</translation>
+    </message>
+    <message>
+        <source>Easy</source>
+        <translation>Легкий</translation>
+    </message>
+    <message>
+        <source>Hard</source>
+        <translation>Тяжёлый</translation>
+    </message>
+    <message>
+        <source>Harder</source>
+        <translation>Очень тяжёлый</translation>
+    </message>
+    <message>
+        <source>Insane</source>
+        <translation>Безумный</translation>
+    </message>
+    <message>
+        <source>Lock teams</source>
+        <translation>Закреплено</translation>
+    </message>
+    <message>
+        <source>Unlock teams</source>
+        <translation>Не закреплено</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>Да</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Нет</translation>
+    </message>
+    <message>
+        <source>Random</source>
+        <translation>Случайные</translation>
+    </message>
+    <message>
+        <source>Fixed</source>
+        <translation>Фиксированные</translation>
+    </message>
+    <message>
+        <source>Very slow</source>
+        <translation>Очень медленно</translation>
+    </message>
+    <message>
+        <source>Slow</source>
+        <translation>Медленно</translation>
+    </message>
+    <message>
+        <source>Normal</source>
+        <translation>Нормально</translation>
+    </message>
+    <message>
+        <source>Fast</source>
+        <translation>Быстро</translation>
+    </message>
+    <message>
+        <source>Low</source>
+        <translation>Низкая</translation>
+    </message>
+    <message>
+        <source>High</source>
+        <translation>Высокая</translation>
     </message>
 </context>
 </TS>

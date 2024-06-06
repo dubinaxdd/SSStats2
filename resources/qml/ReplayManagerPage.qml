@@ -287,7 +287,7 @@ Rectangle {
                         Label {
                             text: model.type === qsTr("Observer") ? "" : qsTr("Race: ") + model.race
                             Layout.alignment: Qt.AlignLeft
-                            Layout.preferredWidth: 120
+                            Layout.preferredWidth: 140
                             font.pixelSize: 11
                             color: DowStatsStyle.textColor
                         }
