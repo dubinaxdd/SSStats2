@@ -144,55 +144,55 @@ void GamePanel::replaceRaceKeyword(QString *raceString)
 {
     if (raceString->contains("guard_race"))
     {
-        raceString->replace("guard_race", "Imperial Guard");
+        raceString->replace("guard_race", tr("Imperial Guard"));
         return;
     }
 
     if (raceString->contains("tau_race"))
     {
-        raceString->replace("tau_race", "Tau Empire");
+        raceString->replace("tau_race", tr("Tau Empire"));
         return;
     }
 
     if (raceString->contains("ork_race"))
     {
-        raceString->replace("ork_race", "Orks");
+        raceString->replace("ork_race", tr("Orks"));
         return;
     }
 
     if (raceString->contains("chaos_marine_race"))
     {
-        raceString->replace("chaos_marine_race", "Chaos");
+        raceString->replace("chaos_marine_race", tr("Chaos"));
         return;
     }
 
     if (raceString->contains("necron_race"))
     {
-        raceString->replace("necron_race", "Necrons");
+        raceString->replace("necron_race", tr("Necrons"));
         return;
     }
 
     if (raceString->contains("space_marine_race"))
     {
-        raceString->replace("space_marine_race", "Space Marines");
+        raceString->replace("space_marine_race", tr("Space Marines"));
         return;
     }
 
     if (raceString->contains("sisters_race"))
     {
-        raceString->replace("sisters_race", "Sisters of Battle");
+        raceString->replace("sisters_race", tr("Sisters of Battle"));
         return;
     }
 
     if (raceString->contains("dark_eldar_race"))
     {
-        raceString->replace("dark_eldar_race", "Dark Eldar");
+        raceString->replace("dark_eldar_race", tr("Dark Eldar"));
         return;
     }
 
     if (raceString->contains("eldar_race"))
     {
-        raceString->replace("eldar_race", "Eldar");
+        raceString->replace("eldar_race", tr("Eldar"));
         return;
     }
 }
@@ -230,28 +230,28 @@ void GamePanel::updatePlayerRaces()
     if (!m_smallPannelActive)
     {
         if(!m_testStats.at(0).name.isEmpty())
-            m_player0Race = "Team " + QString::number(m_testStats.at(0).team.toInt() + 1) + ": " + m_testStats.at(0).name + " - " + m_testStats.at(0).race;
+            m_player0Race = tr("Team ") + QString::number(m_testStats.at(0).team.toInt() + 1) + ": " + m_testStats.at(0).name + " - " + m_testStats.at(0).race;
 
         if(!m_testStats.at(1).name.isEmpty())
-            m_player1Race = "Team " + QString::number(m_testStats.at(1).team.toInt() + 1) + ": " + m_testStats.at(1).name + " - " + m_testStats.at(1).race;
+            m_player1Race = tr("Team ") + QString::number(m_testStats.at(1).team.toInt() + 1) + ": " + m_testStats.at(1).name + " - " + m_testStats.at(1).race;
 
         if(!m_testStats.at(2).name.isEmpty())
-            m_player2Race = "Team " + QString::number(m_testStats.at(2).team.toInt() + 1) + ": " + m_testStats.at(2).name + " - " + m_testStats.at(2).race;
+            m_player2Race = tr("Team ") + QString::number(m_testStats.at(2).team.toInt() + 1) + ": " + m_testStats.at(2).name + " - " + m_testStats.at(2).race;
 
         if(!m_testStats.at(3).name.isEmpty())
-            m_player3Race = "Team " + QString::number(m_testStats.at(3).team.toInt() + 1) + ": " + m_testStats.at(3).name + " - " + m_testStats.at(3).race;
+            m_player3Race = tr("Team ") + QString::number(m_testStats.at(3).team.toInt() + 1) + ": " + m_testStats.at(3).name + " - " + m_testStats.at(3).race;
 
         if(!m_testStats.at(4).name.isEmpty())
-            m_player4Race = "Team " + QString::number(m_testStats.at(4).team.toInt() + 1) + ": " + m_testStats.at(4).name + " - " + m_testStats.at(4).race;
+            m_player4Race = tr("Team ") + QString::number(m_testStats.at(4).team.toInt() + 1) + ": " + m_testStats.at(4).name + " - " + m_testStats.at(4).race;
 
         if(!m_testStats.at(5).name.isEmpty())
-            m_player5Race = "Team " + QString::number(m_testStats.at(5).team.toInt() + 1) + ": " + m_testStats.at(5).name + " - " + m_testStats.at(5).race;
+            m_player5Race = tr("Team ") + QString::number(m_testStats.at(5).team.toInt() + 1) + ": " + m_testStats.at(5).name + " - " + m_testStats.at(5).race;
 
         if(!m_testStats.at(6).name.isEmpty())
-            m_player6Race = "Team " + QString::number(m_testStats.at(6).team.toInt() + 1) + ": " + m_testStats.at(6).name + " - " + m_testStats.at(6).race;
+            m_player6Race = tr("Team ") + QString::number(m_testStats.at(6).team.toInt() + 1) + ": " + m_testStats.at(6).name + " - " + m_testStats.at(6).race;
 
         if(!m_testStats.at(7).name.isEmpty())
-            m_player7Race = "Team " + QString::number(m_testStats.at(7).team.toInt() + 1) + ": " + m_testStats.at(7).name + " - " + m_testStats.at(7).race;
+            m_player7Race = tr("Team ") + QString::number(m_testStats.at(7).team.toInt() + 1) + ": " + m_testStats.at(7).name + " - " + m_testStats.at(7).race;
     }
     else
     {

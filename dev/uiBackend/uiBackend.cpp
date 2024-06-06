@@ -431,7 +431,7 @@ void UiBackend::receiveActualClientVersion(QString version)
 
         NotificationInfo notificationInfo;
 
-        notificationInfo.text = "Client update version " + version + " is available, restart the client to install updates.";
+        notificationInfo.text = tr("Client update version ") + version + tr(" is available, restart the client to install updates.");
         notificationInfo.type = NotificationType::Update;
 
         m_notificationManager->receiveNotification(notificationInfo);

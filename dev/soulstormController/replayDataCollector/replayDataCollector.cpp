@@ -138,7 +138,7 @@ bool ReplayDataCollector::readReplayData()
         }
     }
 
-    QString warning = "    The replay has not been uploaded to the server!\n";
+    QString warning = tr("    The replay has not been uploaded to the server!") + "\n";
 
     bool checkFailed = false;
 
@@ -159,7 +159,7 @@ bool ReplayDataCollector::readReplayData()
     if (haveEqualNamesForStats)
     {
         checkFailed = true;
-        warning += "    The observer have equal name with other player\n";
+        warning += tr("    The observer have equal name with other player") + "\n";
     }
 
     QVector<PlayerStats> playerStats;
@@ -197,7 +197,7 @@ bool ReplayDataCollector::readReplayData()
     if (computersFinded)
     {
         checkFailed = true;
-        warning += "    There was AI in the game\n";
+        warning += tr("    There was AI in the game") + "\n";
     }
 
     //Выводим информацию об игре
@@ -219,7 +219,7 @@ bool ReplayDataCollector::readReplayData()
     if (!isStdWinConditions)
     {
         checkFailed = true;
-        warning += "    Standard winning conditions were not set up for the game\n";
+        warning += tr("    Standard winning conditions were not set up for the game") + "\n";
     }
 
     bool isFullStdGame = false;
@@ -255,7 +255,7 @@ bool ReplayDataCollector::readReplayData()
     if (teamsCount > 2)
     {
         checkFailed = true;
-        warning += "    There were more than two teams in the game\n";
+        warning += tr("    There were more than two teams in the game") + "\n";
     }
 
     //Проверка на равенство команд
@@ -277,7 +277,7 @@ bool ReplayDataCollector::readReplayData()
     else
     {
         checkFailed = true;
-        warning += "    Team identification failure occured\n";
+        warning += tr("    Team identification failure occured") + "\n";
     }
 
     for (int i = 0; i < teamsCounter.count(); i++)
@@ -285,7 +285,7 @@ bool ReplayDataCollector::readReplayData()
         if (teamsCounter.values().at(i) != count)
         {
             checkFailed = true;
-            warning += "    Teams didn't have an equal number of playersn";
+            warning += tr("    Teams didn't have an equal number of players") + "\n";
         }
     }
 
@@ -293,7 +293,7 @@ bool ReplayDataCollector::readReplayData()
     if(duration <= 45)
     {
         checkFailed = true;
-        warning += "    Game lasted less than 45 seconds\n";
+        warning += tr("    Game lasted less than 45 seconds") + "\n";
     }
 
     //Проверка на наличие победителя
@@ -302,7 +302,7 @@ bool ReplayDataCollector::readReplayData()
     if (!winnerAccepted)
     {
         checkFailed = true;
-        warning += "    No game winner has been determined\n";
+        warning += tr("    No game winner has been determined") + "\n";
     }
 
     //Отправка реплея
@@ -373,7 +373,7 @@ bool ReplayDataCollector::readReplayData()
     if (!lastGameSettingsValide)
     {
         checkFailed = true;
-        warning += "    Game settings not valide\n";
+        warning += tr("    Game settings not valide") + "\n";
     }
 
     if (checkFailed)

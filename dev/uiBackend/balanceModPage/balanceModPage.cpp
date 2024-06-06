@@ -200,7 +200,7 @@ void BalanceModPage::uninstallMod(int modIndex)
 
     NotificationInfo notificationInfo;
 
-    notificationInfo.text = m_modsInfo[modIndex].uiName + " has been uninstalled.";
+    notificationInfo.text = m_modsInfo[modIndex].uiName + tr(" has been uninstalled.");
     notificationInfo.type = NotificationType::Delete;
 
     emit sendNotification(notificationInfo);
@@ -251,11 +251,11 @@ QString BalanceModPage::formatingVersion(int itemIndex) const
         QString version = m_modsInfo.at(itemIndex).version;
 
         if (m_modsInfo.at(itemIndex).isLatest && m_modsInfo.at(itemIndex).isBeta)
-            version += " (Latest Beta)";
+            version += tr(" (Latest Beta)");
         else if(m_modsInfo.at(itemIndex).isLatest)
-                version += " (Latest)";
+                version += tr(" (Latest)");
         else if(m_modsInfo.at(itemIndex).isBeta)
-                version += " (Beta)";
+                version += tr(" (Beta)");
 
         return version;
     }
@@ -394,7 +394,7 @@ void BalanceModPage::receiveModDownloadProgress(int progress, QString modTechnic
         }
     }
 
-    m_downloadingProgress = "Downloading " + modUiName + ": "  + QString::number(progress) + "%";
+    m_downloadingProgress = tr("Downloading ") + modUiName + ": "  + QString::number(progress) + "%";
     m_downloadingProcessed = true;
     emit downloadingProgressChanged();
 
@@ -443,7 +443,7 @@ void BalanceModPage::receiveModDownloaded(QString modTechnicalName)
 
             NotificationInfo notificationInfo;
 
-            notificationInfo.text = m_modsInfo[i].uiName + " has been installed.";
+            notificationInfo.text = m_modsInfo[i].uiName + tr(" has been installed.");
             notificationInfo.type = NotificationType::Ready;
             notificationInfo.uuid = m_uuid;
 
@@ -484,7 +484,7 @@ void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
 
             NotificationInfo notificationInfo;
 
-            notificationInfo.text = m_modsInfo[i].uiName + " installation error.";
+            notificationInfo.text = m_modsInfo[i].uiName + tr(" installation error.");
             notificationInfo.type = NotificationType::Warning;
             notificationInfo.uuid = m_uuid;
 
@@ -496,7 +496,7 @@ void BalanceModPage::receiveInstallingModError(QString modTechnicalName)
         }
     }
 
-    m_downloadingProgress = "Installing error: " + modUiName;
+    m_downloadingProgress = tr("Installing error: ") + modUiName;
     m_downloadingProcessed = false;
     emit downloadingProgressChanged();
 }
@@ -512,7 +512,7 @@ void BalanceModPage::receiveModReadyForInstall(QString modTechnicalName)
 
     NotificationInfo notificationInfo;
 
-    notificationInfo.text = modTechnicalName + " ready for install.";
+    notificationInfo.text = modTechnicalName + tr(" ready for install.");
     notificationInfo.type = NotificationType::Info;
     notificationInfo.uuid = m_uuid;
 
@@ -529,12 +529,12 @@ void BalanceModPage::receiveHotKeysUpdated(QString modTechnicalName, bool result
 
             if (result)
             {
-                notificationInfo.text = "Extended hotkeys added for " + m_modsInfo.at(i).uiName;
+                notificationInfo.text = tr("Extended hotkeys added for ") + m_modsInfo.at(i).uiName;
                 notificationInfo.type = NotificationType::Ready;
             }
             else
             {
-                notificationInfo.text = "An error occurred while updating one of the hotkey files for " + m_modsInfo.at(i).uiName;
+                notificationInfo.text = tr("An error occurred while updating one of the hotkey files for ") + m_modsInfo.at(i).uiName;
                 notificationInfo.type = NotificationType::Warning;
             }
 
@@ -602,7 +602,7 @@ void BalanceModPage::setCurrentModInGame(const QString &newCurrentModInGame)
     QString uiModName = newCurrentModInGame;
 
     if (newCurrentModInGame == "dxp2")
-        uiModName = "Original Soulstorm";
+        uiModName = tr("Original Soulstorm");
     else
     {
         for (int i = 0; i < m_modsInfo.count(); i++)

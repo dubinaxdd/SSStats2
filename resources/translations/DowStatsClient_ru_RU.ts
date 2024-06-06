@@ -1097,4 +1097,167 @@
         <translation>Высокая</translation>
     </message>
 </context>
+<context>
+    <name>GamePanel</name>
+    <message>
+        <source>Imperial Guard</source>
+        <translation>Имперская гвардия</translation>
+    </message>
+    <message>
+        <source>Tau Empire</source>
+        <translation>Империя Тау</translation>
+    </message>
+    <message>
+        <source>Orks</source>
+        <translation>Орки</translation>
+    </message>
+    <message>
+        <source>Chaos</source>
+        <translation>Хаос</translation>
+    </message>
+    <message>
+        <source>Necrons</source>
+        <translation>Некроны</translation>
+    </message>
+    <message>
+        <source>Space Marines</source>
+        <translation>Космодесант</translation>
+    </message>
+    <message>
+        <source>Sisters of Battle</source>
+        <translation>Сёстры Битвы</translation>
+    </message>
+    <message>
+        <source>Dark Eldar</source>
+        <translation>Тёмные эльдары</translation>
+    </message>
+    <message>
+        <source>Eldar</source>
+        <translation>Эльдары</translation>
+    </message>
+    <message>
+        <source>Team </source>
+        <translation>Команда </translation>
+    </message>
+</context>
+<context>
+    <name>UiBackend</name>
+    <message>
+        <source>Client update version </source>
+        <translation>Доступно обновление клиента, версия: </translation>
+    </message>
+    <message>
+        <source> is available, restart the client to install updates.</source>
+        <translation>. Перезапустите клиент для установки обновлений.</translation>
+    </message>
+</context>
+<context>
+    <name>ReplayDataCollector</name>
+    <message>
+        <source>    The replay has not been uploaded to the server!</source>
+        <translation>    Игра не была загружена на сервер!</translation>
+    </message>
+    <message>
+        <source>    The observer have equal name with other player</source>
+        <translation>    Обозреватель и игрок имеют идентичные имена</translation>
+    </message>
+    <message>
+        <source>    There was AI in the game</source>
+        <translation>    В игре присутствует ИИ</translation>
+    </message>
+    <message>
+        <source>    Standard winning conditions were not set up for the game</source>
+        <translation>    Игра имеет не стандартные условия победы</translation>
+    </message>
+    <message>
+        <source>    Team identification failure occured</source>
+        <translation>    Ошибка идентификации команд</translation>
+    </message>
+    <message>
+        <source>    Teams didn't have an equal number of players</source>
+        <translation>    Команды содержат неравное количество игроков</translation>
+    </message>
+    <message>
+        <source>    Game lasted less than 45 seconds</source>
+        <translation>    Длительность игры составляет меньше 45 секунд</translation>
+    </message>
+    <message>
+        <source>    No game winner has been determined</source>
+        <translation>    Победитель в игре не определён</translation>
+    </message>
+    <message>
+        <source>    Game settings not valide</source>
+        <translation>    Неверные настройки игры</translation>
+    </message>
+</context>
+<context>
+    <name>StatsServerProcessor</name>
+    <message>
+        <source>The ranked game has been uploaded to the server</source>
+        <translation>Рейтинговая игра загружена на сервер</translation>
+    </message>
+    <message>
+        <source>The unranked game has been uploaded to the server</source>
+        <translation>Не рейтинговая игра загружена на сервер</translation>
+    </message>
+    <message>
+        <source>Player </source>
+        <translation>У игрока</translation>
+    </message>
+    <message>
+        <source> does not have a steam id, the replay has not been uploaded to the server</source>
+        <translation> не определен SteamID, игра не была загружена на сервер</translation>
+    </message>
+</context>
+<context>
+    <name>BalanceModPage</name>
+    <message>
+        <source> has been uninstalled.</source>
+        <translation> был удален.</translation>
+    </message>
+    <message>
+        <source>Downloading </source>
+        <translation>Загрузка </translation>
+    </message>
+    <message>
+        <source> has been installed.</source>
+        <translation> был установлен.</translation>
+    </message>
+    <message>
+        <source> installation error.</source>
+        <translation> - ошибка установки.</translation>
+    </message>
+    <message>
+        <source>Installing error:</source>
+        <translation>Ошибка установки:</translation>
+    </message>
+    <message>
+        <source> ready for install.</source>
+        <translation> готов к установке.</translation>
+    </message>
+    <message>
+        <source>Extended hotkeys added for </source>
+        <translation>Недостающие хоткеи добавлены в </translation>
+    </message>
+    <message>
+        <source>An error occurred while updating one of the hotkey files for </source>
+        <translation>Возикла ошибка во время обновления одного из файлов с хоткеями для </translation>
+    </message>
+    <message>
+        <source>Original Soulstorm</source>
+        <translation>Оригинальный Soulstorm</translation>
+    </message>
+    <message>
+        <source> (Latest Beta)</source>
+        <translation> (Последняя Бета)</translation>
+    </message>
+    <message>
+        <source> (Latest)</source>
+        <translation> (Последняя)</translation>
+    </message>
+    <message>
+        <source> (Beta)</source>
+        <translation> (Бета)</translation>
+    </message>
+</context>
 </TS>

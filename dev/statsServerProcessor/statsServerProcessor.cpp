@@ -458,7 +458,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
         if (replayInfo.playersInfo[i].playerSid == "")
         {
             qWarning() << "Player" << replayInfo.playersInfo[i].playerName << "does not have a steam id, the replay has not been uploaded to the server";
-            emit sendNotification("Player " + replayInfo.playersInfo[i].playerName + " does not have a steam id, the replay has not been uploaded to the server", true);
+            emit sendNotification(tr("Player ") + replayInfo.playersInfo[i].playerName + tr(" does not have a steam id, the replay has not been uploaded to the server"), true);
             return;
         }
     }
@@ -580,12 +580,12 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     if (m_rankedMode)
     {
         qInfo(logInfo()) << "The ranked game has been uploaded to the server";
-        emit sendNotification("The ranked game has been uploaded to the server", false);
+        emit sendNotification(tr("The ranked game has been uploaded to the server"), false);
     }
     else
     {
         qInfo(logInfo()) << "The unranked game has been uploaded to the server";
-        emit sendNotification("The unranked game has been uploaded to the server", false);
+        emit sendNotification(tr("The unranked game has been uploaded to the server"), false);
     }
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
