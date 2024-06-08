@@ -485,7 +485,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         newModInfo.isPrevious = newObject.value("isPrevious").toBool();
 
         if (newModInfo.isInstalled)
-            newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName);
+            newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName).replace('\t', "    ");
 
         m_modInfoList.append(newModInfo);
     }
@@ -559,7 +559,7 @@ void BalanceModManager::receiveChangeLog(QNetworkReply *reply, QString modTechni
 
     QByteArray replyByteArray = reply->readAll();
 
-    emit changeLogReceived(modTechnicalName, QString::fromStdString(replyByteArray.toStdString()));
+    emit changeLogReceived(modTechnicalName, QString::fromStdString(replyByteArray.toStdString()).replace("\t","    "));
 
     reply->deleteLater();
 }

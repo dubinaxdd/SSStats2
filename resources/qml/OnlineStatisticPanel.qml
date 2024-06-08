@@ -71,7 +71,7 @@ Rectangle {
                     }
 
                     Label{
-                        text: model ? model.modName : ""
+                        text: model && model.modName ? model.modName : ""
                         Layout.preferredWidth: 200
                         clip: true
                         font.pixelSize: 11
@@ -83,7 +83,7 @@ Rectangle {
                     }
 
                     Label{
-                        text: model ? model.onlineCount : 0
+                        text: model && model.onlineCount ? model.onlineCount : 0
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
                     }
