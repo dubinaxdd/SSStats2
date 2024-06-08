@@ -649,6 +649,18 @@
         <translation>Тема: Розовая</translation>
     </message>
     <message>
+        <source>Language: System</source>
+        <translation>Язык: Системный</translation>
+    </message>
+    <message>
+        <source>Language: English</source>
+        <translation>Язык: Английский</translation>
+    </message>
+    <message>
+        <source>Language: Russian</source>
+        <translation>Язык: Русский</translation>
+    </message>
+    <message>
         <source>Autorun</source>
         <translation>Автозапуск</translation>
     </message>

@@ -186,10 +186,27 @@ Rectangle {
                     Layout.preferredHeight: 60
                 }
 
-                Label{
-                    text: qsTr("Changelog")
-                    color: DowStatsStyle.textColor
-                    font.pixelSize: 14
+                RowLayout
+                {
+                    Layout.fillWidth: true
+
+                    Label{
+                        text: qsTr("Changelog")
+                        color: DowStatsStyle.textColor
+                        font.pixelSize: 14
+                    }
+
+                    Item{
+                        Layout.fillWidth: true
+                    }
+
+
+                    BlueButton{
+                        text: qsTr("Full changelog")
+                        height: 25
+                        anchors.margins: 10
+                        onClicked: Qt.openUrlExternally("https://dowstats.ru/changelog.php")
+                    }
                 }
 
                 Rectangle{
@@ -197,17 +214,6 @@ Rectangle {
                     color: DowStatsStyle.alternateBackgroundColor
                     Layout.fillWidth: true
                     Layout.fillHeight: true
-
-                    BlueButton{
-                        text: qsTr("Full changelog")
-                        anchors.bottom: parent.bottom
-                        anchors.left: parent.left
-                        height: 25
-                        anchors.margins: 10
-                        z: 2
-
-                        onClicked: Qt.openUrlExternally("https://dowstats.ru/changelog.php")
-                    }
 
                     Flickable
                     {

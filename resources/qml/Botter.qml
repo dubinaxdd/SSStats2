@@ -173,7 +173,8 @@ Rectangle {
 
         Rectangle{
             id: helpLinkRectangle
-            width: helpGuideLinkLabel.width + 30
+            //width: helpGuideLinkLabel.width + 30
+            Layout.preferredWidth: helpGuideLinkLabel.width + 30
             height: 35
             radius:5
 
@@ -226,12 +227,20 @@ Rectangle {
             }
 
             StyledComboBox{
+                id: modComboBox
                 model: [qsTr("Original Soulstorm"), qsTr("DoW Stats Balance Mod (Latest)"), qsTr("Current active mod")]
-                currentIndex: _uiBackend.settingsPageModel.launchMode
+
                 Layout.preferredWidth: 250
                 Layout.preferredHeight: 25
 
-                onCurrentIndexChanged: _uiBackend.settingsPageModel.launchMode = currentIndex
+                onObjectSelected: _uiBackend.settingsPageModel.launchMode = currentIndex
+
+                Connections{
+                    target: _uiBackend.settingsPageModel
+                    function onLaunchModeChanged(){
+                        modComboBox.currentIndex = _uiBackend.settingsPageModel.launchMode
+                    }
+                }
             }
         }
 

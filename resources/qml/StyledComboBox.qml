@@ -6,6 +6,10 @@ import DowStatsStyle 1.0
 ComboBox{
     id: root
 
+    property int index: 0
+    signal objectSelected
+    property int indexSeted: 0
+
     indicator: Rectangle{
 
         anchors.right: parent.right
@@ -59,5 +63,19 @@ ComboBox{
         hoverEnabled: true
 
         onPressed: root.popup.opened ? root.popup.close() : root.popup.open();
+    }
+
+    popup.onClosed: {index = currentIndex; objectSelected();}
+
+    onCurrentIndexChanged: {
+        if (root.indexSeted < 2)
+        {
+            index = currentIndex
+            root.indexSeted++;
+        }
+    }
+
+    onModelChanged:{
+        currentIndex = index
     }
 }

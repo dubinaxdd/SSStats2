@@ -81,12 +81,8 @@ Rectangle {
                     StyledComboBox{
                         id: themeComboBox
                         Layout.preferredWidth: 255
-
                         model: [qsTr("Theme: Light"), qsTr("Theme: Dark"), qsTr("Theme: Pink")]
-
-                        currentIndex: root.model.currentTheme
-
-                        onCurrentIndexChanged: {
+                        onCurrentIndexChanged:{
                             switch (currentIndex)
                             {
                                 case(0): DowStatsStyle.setLightTheme(); break;
@@ -96,15 +92,30 @@ Rectangle {
 
                             root.model.currentTheme = themeComboBox.currentIndex;
                         }
+
+                        Connections{
+                            target: root.model
+                            function onCurrentThemeChanged(){
+                                themeComboBox.currentIndex = root.model.currentTheme
+                            }
+                        }
                     }
 
                     StyledComboBox{
                         id: languageComboBox
                         Layout.preferredWidth: 255
-                        model: [qsTr("Language: System"), qsTr("Language: English"), qsTr("Language: Russian")]
-                        currentIndex: root.model.language
+                        model: [qsTr("Language: System"), "Language: English", "Язык: Русский"]
 
-                        onCurrentIndexChanged: root.model.language = currentIndex;
+                        onObjectSelected: root.model.language = currentIndex;
+
+                        Connections{
+                            target: root.model
+                            function onLanguageChanged(){
+                                languageComboBox.currentIndex = root.model.language
+                            }
+                        }
+
+
                     }
 
                     StyledSwitch{
