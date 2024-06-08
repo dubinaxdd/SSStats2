@@ -10,7 +10,7 @@ Rectangle{
     id: rootObject
     Layout.preferredHeight: 25
     Layout.preferredWidth: textLabel.width + 30
-    width: textLabel.width + 30
+    //width: textLabel.width + 30
     radius:3
 
     gradient: Gradient {

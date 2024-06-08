@@ -1,12 +1,24 @@
 #ifndef BASETYPES_H
 #define BASETYPES_H
 
-
 #include <QString>
 #include <QImage>
 #include <QDateTime>
 #include <QUrl>
 #include <QUuid>
+
+class Language {
+    Q_GADGET
+public:
+    enum LanguageEnum: int{
+        System = 0,
+        Eng = 1,
+        Ru = 2
+    };
+    Q_ENUM(LanguageEnum)
+private:
+    Language(){}
+};
 
 class BanType {
     Q_GADGET

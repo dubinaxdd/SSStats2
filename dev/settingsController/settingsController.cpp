@@ -45,6 +45,7 @@ void SettingsController::initializeSettings()
     m_settings->currentTheme = ss_stats_settings->value("client/current_theme", 0).toInt();
     m_settings->autorun = ss_stats_settings->value("client/autorun", true).toBool();
     m_settings->enableAdvertising = ss_stats_settings->value("client/enable_advertising", false).toBool();
+    m_settings->language = ss_stats_settings->value("client/language", "system").toString();
 
     //[mods]
     m_settings->russianFontsInstalled = ss_stats_settings->value("mods/russian_fonts_installed", false).toBool();
@@ -97,6 +98,7 @@ void SettingsController::saveSettings()
     ss_stats_settings->setValue("client/current_theme", m_settings->currentTheme);
     ss_stats_settings->setValue("client/autorun", m_settings->autorun);
     ss_stats_settings->setValue("client/enable_advertising", m_settings->enableAdvertising);
+    ss_stats_settings->setValue("client/language", m_settings->language);
 
     //[mods]
     ss_stats_settings->setValue("mods/russian_fonts_installed", m_settings->russianFontsInstalled);

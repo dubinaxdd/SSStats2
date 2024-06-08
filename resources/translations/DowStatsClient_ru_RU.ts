@@ -116,7 +116,7 @@
     </message>
     <message>
         <source>DoW Stats Balance Mod (Latest)</source>
-        <translation>DoW Stats Balance Mod (актуальная)</translation>
+        <translation>DoW Stats Balance Mod (Последняя)</translation>
     </message>
     <message>
         <source>Current active mod</source>

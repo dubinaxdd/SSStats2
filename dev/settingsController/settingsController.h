@@ -42,6 +42,7 @@ struct Settings
     bool useCustomTemplateProfilePath = false;
     //bool showBalanceModBetaVersions = false;
     QString updateCheckAddress = "";
+    QString language = "system";
 };
 
 class SettingsController : public QObject

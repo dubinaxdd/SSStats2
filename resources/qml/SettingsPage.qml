@@ -98,6 +98,15 @@ Rectangle {
                         }
                     }
 
+                    StyledComboBox{
+                        id: languageComboBox
+                        Layout.preferredWidth: 255
+                        model: [qsTr("Language: System"), qsTr("Language: English"), qsTr("Language: Russian")]
+                        currentIndex: root.model.language
+
+                        onCurrentIndexChanged: root.model.language = currentIndex;
+                    }
+
                     StyledSwitch{
                         text: qsTr("Autorun")
                         checked: model.autorun

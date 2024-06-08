@@ -237,7 +237,8 @@ Rectangle {
 
         Rectangle{
             id: lounchSoulstormButtonRectangle
-            width: 15 + lounchSoulstormLabel.width + 15 + iconImage.width + 5
+            //width: 15 + lounchSoulstormLabel.width + 15 + iconImage.width + 5
+            Layout.preferredWidth:  15 + lounchSoulstormLabel.width + 15 + iconImage.width + 5
             height: 35
             radius:5
             Layout.rightMargin: 15

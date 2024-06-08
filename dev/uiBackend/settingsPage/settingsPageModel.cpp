@@ -50,7 +50,31 @@ void SettingsPageModel::onSettingsLoaded()
     m_enableAdvertising = m_settingsController->getSettings()->enableAdvertising;
     emit enableAdvertisingChanged();
 
+    m_language = parseLanguage(m_settingsController->getSettings()->language);
+    emit languageChanged(m_language);
+
     updateAutorunState(m_autorun);
+}
+
+Language::LanguageEnum SettingsPageModel::parseLanguage(QString language)
+{
+    if(language == "ru")
+        return Language::LanguageEnum::Ru;
+
+    if(language == "eng")
+        return Language::LanguageEnum::Eng;
+
+    return Language::LanguageEnum::System;
+}
+
+QString SettingsPageModel::languageToString(Language::LanguageEnum language)
+{
+    switch (language)
+    {
+        case Language::LanguageEnum::Eng: return "eng";
+        case Language::LanguageEnum::Ru: return "ru";
+        default: return "system";
+    }
 }
 
 bool SettingsPageModel::launchGameInWindow() const
@@ -112,6 +136,22 @@ void SettingsPageModel::updateAutorunState(bool isAutorun)
         bootUpSettings.remove("DowStatsAutorun");
 
      bootUpSettings.sync();
+}
+
+const Language::LanguageEnum &SettingsPageModel::language() const
+{
+    return m_language;
+}
+
+void SettingsPageModel::setLanguage(const Language::LanguageEnum &newLanguage)
+{
+    if (m_language == newLanguage)
+        return;
+    m_language = newLanguage;
+    emit languageChanged(m_language);
+
+    m_settingsController->getSettings()->language = languageToString(m_language);
+    m_settingsController->saveSettings();
 }
 
 bool SettingsPageModel::enableAdvertising() const

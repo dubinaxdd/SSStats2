@@ -29,6 +29,7 @@ public:
 
 signals:
     void sendExit();
+    void languageChanged(QString language);
 
 private slots:
     void onExit();

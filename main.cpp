@@ -96,17 +96,21 @@ int main(int argc, char *argv[])
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
-
     QTranslator translator;
-    const QStringList uiLanguages = QLocale::system().uiLanguages();
-    for (const QString &locale : uiLanguages) {
-        const QString baseName = "DowStatsClient_" + QLocale(locale).name();
-        if (translator.load(baseName, ":/translations/resources/translations"))
-        {
-            app.installTranslator(&translator);
-            break;
+
+    std::function<void()> loadSystemTranslation([&] {
+        const QStringList uiLanguages = QLocale::system().uiLanguages();
+        for (const QString &locale : uiLanguages) {
+            const QString baseName = "DowStatsClient_" + QLocale(locale).name();
+            if (translator.load(baseName, ":/translations/resources/translations"))
+            {
+                app.installTranslator(&translator);
+                break;
+            }
         }
-    }  
+    });
+
+    loadSystemTranslation();
 
     qmlRegisterSingletonType(QUrl("qrc:/resources/qml/GlobalMouseProvider.qml"), "GlobalMouseProvider", 1, 0, "GlobalMouseProvider");
     qmlRegisterSingletonType(QUrl("qrc:/resources/qml/DowStatsStyle.qml"), "DowStatsStyle", 1, 0, "DowStatsStyle");
@@ -132,6 +136,29 @@ int main(int argc, char *argv[])
     QObject::connect(core, &Core::sendExit, [&] {
         engine.removeImageProvider("imageprovider");
         app.exit(0);});
+
+
+    QObject::connect(core->uiBackend()->settingsPageModel(), &SettingsPageModel::languageChanged, [&](Language::LanguageEnum language) {
+        if (!translator.isEmpty())
+            QCoreApplication::removeTranslator(&translator);
+
+        if (language == Language::LanguageEnum::System)
+            loadSystemTranslation();
+        else
+        {
+            QString baseName;
+
+            if (language == Language::LanguageEnum::Ru)
+                baseName = "DowStatsClient_" + QLocale("ru-RU").name();
+
+            if (language == Language::LanguageEnum::Eng)
+                baseName = "DowStatsClient_" + QLocale("en-US").name();
+
+            translator.load(baseName, ":/translations/resources/translations");
+            app.installTranslator(&translator);
+        }
+        engine.retranslate();
+    });
 
     core->overlayWindowController()->grubStatsWindow();
 

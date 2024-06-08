@@ -22,6 +22,7 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool autorun READ autorun WRITE setAutorun NOTIFY autorunChanged)
     Q_PROPERTY(bool enableAdvertising READ enableAdvertising WRITE setEnableAdvertising NOTIFY enableAdvertisingChanged)
     Q_PROPERTY(int launchMode READ launchMode WRITE setLaunchMode NOTIFY launchModeChanged)
+    Q_PROPERTY(Language::LanguageEnum language READ language WRITE setLanguage NOTIFY languageChanged)
 
 public:
     explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
@@ -43,9 +44,12 @@ signals:
     void autorunChanged();
     void launchModeChanged();
     void enableAdvertisingChanged();
+    void languageChanged(Language::LanguageEnum language);
 
 private slots:
     void onSettingsLoaded();
+    Language::LanguageEnum parseLanguage(QString language);
+    QString languageToString(Language::LanguageEnum language);
 
 public:
     bool win7SupportMode() const;
@@ -84,6 +88,9 @@ public:
     bool enableAdvertising() const;
     void setEnableAdvertising(bool newEnableAdvertising);
 
+    const Language::LanguageEnum &language() const;
+    void setLanguage(const Language::LanguageEnum &newLanguage);
+
 private:
     void updateAutorunState(bool isAutorun);
 
@@ -104,6 +111,7 @@ private:
 
     int m_volume = 100;
 
+    Language::LanguageEnum m_language = Language::LanguageEnum::System;
     LaunchMod m_launchMode = LaunchMod::LastSelectedMod;
 };
 
