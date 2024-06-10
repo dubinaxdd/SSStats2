@@ -684,37 +684,42 @@ void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
         return;
 
     bool isRanked = false;
+    bool playersNotFinded = true;
 
+    //Ищем соответствия в testStats.lua чтобы учитывать рейтинговый режим только игрокв (обсов не учитываем)
     for (int i = 0; i < m_plyersRankedState.count(); i++)
     {
         if (m_plyersRankedState.at(i).name.isEmpty())
+        {
+            qWarning(logWarning()) << "GameStateReader::determinateRankedMode: Player name from Ranked server is empty";
             continue;
+        }
+
+        bool finded = false;
+
+        for(int j = 0; j < playerStats.count(); j++)
+        {
+            if (playerStats.at(j).name.isEmpty())
+                continue;
+
+            if ( playerStats.at(j).name == m_plyersRankedState.at(i).name )
+            {
+                finded = true;
+                break;
+            }
+        }
+
+        if(!finded)
+            continue;
+
+        playersNotFinded = false;
 
         if (m_plyersRankedState.at(i).isRanked)
         {
-            bool finded = false;
-
-            for(int j = 0; j < playerStats.count(); j++)
-            {
-                if (playerStats.at(j).name.isEmpty())
-                    continue;
-
-                if (playerStats.at(j).name == m_plyersRankedState.at(i).name
-                    || playerStats.at(j).name == "[" + m_plyersRankedState.at(i).name + "]"
-                    || playerStats.at(j).name == "[[" + m_plyersRankedState.at(i).name + "]]"
-                        )
-                {
-                    finded = true;
-                    break;
-                }
-            }
-
-            if(!finded)
-                continue;
-
             isRanked = true;
             break;
         }
+
     }
 
     m_rankedMode = isRanked;
@@ -728,7 +733,8 @@ void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
         )
         m_rankedMode = false;
 
-    m_lockRanked = true;
+    if (!playersNotFinded)
+        m_lockRanked = true;
 
     emit sendGameRankedMode(m_rankedMode);
 }
