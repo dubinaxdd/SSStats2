@@ -2,11 +2,24 @@
 #include <QDebug>
 #include <QDir>
 
-BalanceModPage::BalanceModPage(SettingsController *settingsController, QObject *parent)
+BalanceModPage::BalanceModPage(BalanceModManager* balanceModManager, SettingsController *settingsController, QObject *parent)
     : QAbstractListModel(parent)
+    , m_balanceModManagerPtr(balanceModManager)
     , m_settingsController(settingsController)
 {
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModPage::onSettingsLoaded, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendModsInfo, this, &BalanceModPage::receiveVersions, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendCurrentModInGame, this, &BalanceModPage::receiveCurrentModInGame, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::changeLogReceived, this, &BalanceModPage::receiveChangeLog, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendModDownloadProgress, this, &BalanceModPage::receiveModDownloadProgress, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendModDownloaded, this, &BalanceModPage::receiveModDownloaded, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendTemplateProfilePath, this, &BalanceModPage::receiveTemplateProfilePath, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendInstallingModError, this, &BalanceModPage::receiveInstallingModError, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::requestProfileCopyMode, this, &BalanceModPage::receiveProfileCopyModeRequest, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendModReadyForInstall, this, &BalanceModPage::receiveModReadyForInstall, Qt::QueuedConnection);
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::onHotKeysUpdated, this, &BalanceModPage::receiveHotKeysUpdated, Qt::QueuedConnection);
+
+
 }
 
 void BalanceModPage::onSettingsLoaded()
@@ -93,12 +106,12 @@ void BalanceModPage::slectItem(int itemIndex)
     emit selectedModInfoChanged();
 
     if(m_modsInfo.at(m_selectedItemIndex).changelog.isEmpty())
-        emit requestChangeLog(m_modsInfo.at(m_selectedItemIndex).technicalName);
+        m_balanceModManagerPtr->requestChangeLog(m_modsInfo.at(m_selectedItemIndex).technicalName);
 }
 
 void BalanceModPage::downloadSelectedMod()
 {
-    emit requestDownloadMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
+    m_balanceModManagerPtr->requestDownloadMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
 
     m_modsInfo[m_selectedItemIndex].downloadingProcessed = true;
 
@@ -115,13 +128,13 @@ void BalanceModPage::uninstallSelectedMod()
 
 void BalanceModPage::updateHotKeysOnSelectedMod()
 {
-    emit sendUpdateHotKeysOnMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
+    m_balanceModManagerPtr->updateHotKeysOnMod(m_modsInfo.at(m_selectedItemIndex).technicalName);
 }
 
 void BalanceModPage::choiseTemplateProfilePath(QString templateProfilePath)
 {
     setTemplateProfilePath(templateProfilePath.replace("file:///", "").replace("/", "\\"));
-    emit sendTemplateProfilePath(m_templateProfilePath);
+    m_balanceModManagerPtr->receiveTemplateProfilePath(m_templateProfilePath);
 }
 
 void BalanceModPage::activateSelectedModInGame()
@@ -135,7 +148,7 @@ void BalanceModPage::downloadLatestMod()
     {
         if(m_modsInfo[i].isLatest && !m_modsInfo[i].isInstalled)
         {
-            emit requestDownloadMod(m_modsInfo.at(i).technicalName);
+            m_balanceModManagerPtr->requestDownloadMod(m_modsInfo.at(i).technicalName);
 
             m_modsInfo[i].downloadingProcessed = true;
 
@@ -149,7 +162,7 @@ void BalanceModPage::downloadLatestMod()
 
 void BalanceModPage::continueModInstallation(bool overwritePrifiles)
 {
-    emit sendProfileCopyMode(overwritePrifiles, m_profileCopyModeRequestTechnicalName);
+    m_balanceModManagerPtr->setProfileCopyMode(overwritePrifiles, m_profileCopyModeRequestTechnicalName);
     m_profileCopyModeRequestTechnicalName = "";
 }
 
@@ -168,7 +181,7 @@ void BalanceModPage::activateModInGame(int modIndex)
         emit changeLaunchMod(LaunchMod::LastSelectedMod);
 
     emit selectedModInfoChanged();
-    emit requestActivateMod(m_modsInfo[modIndex].technicalName);
+    m_balanceModManagerPtr->activateMod(m_modsInfo[modIndex].technicalName);
     setCurrentModInGame(m_modsInfo[modIndex].uiName);
 
     emit selectedModInfoChanged();
@@ -182,13 +195,13 @@ void BalanceModPage::activateModInGame(QString modTechnicalName)
     endResetModel();
 
     emit selectedModInfoChanged();
-    emit requestActivateMod(modTechnicalName);
+    m_balanceModManagerPtr->activateMod(modTechnicalName);
     setCurrentModInGame(modTechnicalName);
 }
 
 void BalanceModPage::uninstallMod(int modIndex)
 {
-    emit requestUninstallMod(m_modsInfo.at(modIndex).technicalName);
+    m_balanceModManagerPtr->uninstalMod(m_modsInfo.at(modIndex).technicalName);
 
     m_modsInfo[modIndex].isInstalled = false;
 
@@ -560,7 +573,7 @@ void BalanceModPage::setUseCustomTemplateProfilePath(bool newUseCustomTemplatePr
     m_settingsController->getSettings()->useCustomTemplateProfilePath = m_useCustomTemplateProfilePath;
     m_settingsController->saveSettings();
 
-    emit sendUseCustomTemplateProfilePath(m_useCustomTemplateProfilePath);
+    m_balanceModManagerPtr->updateTemplateProfilePath(m_useCustomTemplateProfilePath);
 }
 
 bool BalanceModPage::autoUninstallPreviousBalanceMod() const

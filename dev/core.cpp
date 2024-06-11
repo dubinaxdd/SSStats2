@@ -14,9 +14,8 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_logger(new Logger(this))
     , m_settingsController(new SettingsController(this))
     , m_keyboardProcessor(new KeyboardProcessor(this))
-    , m_uiBackend(new UiBackend(m_settingsController, context))
     , m_soulstormController(new SoulstormController(m_settingsController, this))
-    , m_overlayWindowController(new OverlayWindowController(m_settingsController, m_uiBackend, m_soulstormController, this))
+    , m_overlayWindowController(new OverlayWindowController(m_settingsController, m_soulstormController, this))
     , m_discordWebProcessor(new DiscordWebProcessor(m_settingsController, this))
     , m_modsProcessor(new ModsProcessor(m_soulstormController->ssPath(), this))
     , m_soundProcessor(new SoundProcessor(this))
@@ -24,6 +23,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_rankedModServiceProcessor(new RankedModServiceProcessor(m_settingsController, this))
     , m_mapManager(new MapManager(m_settingsController, m_soulstormController->ssPath(), this))
     , m_balanceModManager(new BalanceModManager(m_settingsController, this))
+    , m_uiBackend(new UiBackend(this, this/*, context*/))
 {
     registerTypes();
 
@@ -41,6 +41,7 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     addConnections();
 
+    m_overlayWindowController->setUiBackend(m_uiBackend);
     m_balanceModManager->setSsPath(m_soulstormController->ssPath());
     m_uiBackend->setSsPath(m_soulstormController->ssPath());
     m_uiBackend->setSteamPath(m_soulstormController->steamPath());
@@ -181,26 +182,6 @@ void Core::addConnections()
 
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendModsOnlineCountMap, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveModsOnlineCountMap, Qt::QueuedConnection);
 
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendModsInfo, m_uiBackend->balanceModPage(), &BalanceModPage::receiveVersions, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendModsInfo, m_uiBackend->replayManager(), &ReplayManager::receiveModsInfo, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendCurrentModInGame, m_uiBackend->balanceModPage(), &BalanceModPage::receiveCurrentModInGame, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::changeLogReceived, m_uiBackend->balanceModPage(), &BalanceModPage::receiveChangeLog, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendModDownloadProgress, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModDownloadProgress, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendModDownloaded, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModDownloaded, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendTemplateProfilePath, m_uiBackend->balanceModPage(), &BalanceModPage::receiveTemplateProfilePath, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendInstallingModError, m_uiBackend->balanceModPage(), &BalanceModPage::receiveInstallingModError, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::requestProfileCopyMode, m_uiBackend->balanceModPage(), &BalanceModPage::receiveProfileCopyModeRequest, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::sendModReadyForInstall, m_uiBackend->balanceModPage(), &BalanceModPage::receiveModReadyForInstall, Qt::QueuedConnection);
-    QObject::connect(m_balanceModManager, &BalanceModManager::onHotKeysUpdated, m_uiBackend->balanceModPage(), &BalanceModPage::receiveHotKeysUpdated, Qt::QueuedConnection);
-
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestChangeLog, m_balanceModManager, &BalanceModManager::requestChangeLog, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestDownloadMod, m_balanceModManager, &BalanceModManager::requestDownloadMod, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestUninstallMod, m_balanceModManager, &BalanceModManager::uninstalMod, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendTemplateProfilePath, m_balanceModManager, &BalanceModManager::receiveTemplateProfilePath, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::requestActivateMod, m_balanceModManager, &BalanceModManager::activateMod, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendUseCustomTemplateProfilePath, m_balanceModManager, &BalanceModManager::receiveUpdateTemplateProfilePath, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendProfileCopyMode, m_balanceModManager, &BalanceModManager::receiveProfileCopyMode, Qt::QueuedConnection);
-
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendRankDiversion, m_uiBackend->informationPage(), &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendActualClientVersion, m_uiBackend, &UiBackend::receiveActualClientVersion, Qt::QueuedConnection);
 
@@ -208,11 +189,21 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendSoftwareBanActivated, m_uiBackend, &UiBackend::onSoftwareBanActivated, Qt::QueuedConnection);
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->balanceModPage(), &BalanceModPage::sendUpdateHotKeysOnMod, m_balanceModManager, &BalanceModManager::receiveUpdateHotKeysOnMod, Qt::QueuedConnection);
+
 
 
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+BalanceModManager *Core::balanceModManager() const
+{
+    return m_balanceModManager;
+}
+
+SettingsController *Core::settingsController() const
+{
+    return m_settingsController;
 }
 
 OverlayWindowController *Core::overlayWindowController() const

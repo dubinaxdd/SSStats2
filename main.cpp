@@ -120,9 +120,9 @@ int main(int argc, char *argv[])
 
     QQmlContext *context = engine.rootContext();
 
-    Core *core = new Core(context, &app);
+    Core core(context, &app);
 
-    engine.addImageProvider("ImageProvider",core->uiBackend()->imageProvider());
+    engine.addImageProvider("ImageProvider",core.uiBackend()->imageProvider());
 
     app.setWindowIcon(QIcon(":/icons/resources/icons/DowStatsClient.ico"));
 
@@ -133,12 +133,12 @@ int main(int argc, char *argv[])
     }, Qt::QueuedConnection);
     engine.load(url);
 
-    QObject::connect(core, &Core::sendExit, [&] {
+    QObject::connect(&core, &Core::sendExit, [&] {
         engine.removeImageProvider("imageprovider");
         app.exit(0);});
 
 
-    QObject::connect(core->uiBackend()->settingsPageModel(), &SettingsPageModel::languageChanged, [&](Language::LanguageEnum language) {
+    QObject::connect(core.uiBackend()->settingsPageModel(), &SettingsPageModel::languageChanged, [&](Language::LanguageEnum language) {
         if (!translator.isEmpty())
             QCoreApplication::removeTranslator(&translator);
 
@@ -160,7 +160,7 @@ int main(int argc, char *argv[])
         engine.retranslate();
     });
 
-    core->overlayWindowController()->grubStatsWindow();
+    core.overlayWindowController()->grubStatsWindow();
 
     return app.exec();
 }

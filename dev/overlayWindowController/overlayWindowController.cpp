@@ -1,9 +1,8 @@
 #include "overlayWindowController.h"
 #include <QTextCodec>
 
-OverlayWindowController::OverlayWindowController(SettingsController *settingsController, UiBackend* uiBackend, SoulstormController* soulstormController, QObject *parent)
+OverlayWindowController::OverlayWindowController(SettingsController *settingsController, SoulstormController* soulstormController, QObject *parent)
     : QObject(parent)
-    , p_uiBackend(uiBackend)
     , p_soulstormController(soulstormController)
     , p_settingsController(settingsController)
 {
@@ -26,7 +25,7 @@ void OverlayWindowController::grubStatsWindow()
 
     m_defaultWindowLong = GetWindowLongPtr(m_ssStatsHwnd, GWL_EXSTYLE);
     SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
-    p_uiBackend->setWindowTopmost(false);
+
 }
 
 void OverlayWindowController::topmostTimerTimout()
@@ -37,6 +36,9 @@ void OverlayWindowController::topmostTimerTimout()
     //установка флага Qt::WindowStaysOnTopHint на кородкое время выводет икно повер сса
     //Соответственно затираем флаг и выставлем заного по таймеру.
     //Время устанавливаемое таймеру возможно придется менять из за разницы систем, надо тестить
+    if (!m_uiBackendPtr)
+        return;
+
     if (!p_settingsController->getSettings()->overlayVisible)
         return;
 
@@ -62,14 +64,14 @@ void OverlayWindowController::topmostTimerTimout()
                         m_ssRect = ssRect;
                         SetWindowPos(m_ssStatsHwnd, HWND_TOP/*p_soulstormController->soulstormHwnd()*/, m_ssRect.left, m_ssRect.top + titleBarHeight, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top - titleBarHeight, m_defaultWindowLong );
 
-                        p_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top + titleBarHeight);
+                        m_uiBackendPtr->setSsWindowPosition(m_ssRect.left, m_ssRect.top + titleBarHeight);
                    // }
 
 
                     LONG ssLong = GetWindowLongPtr(p_soulstormController->soulstormHwnd(), 0);
                     SetWindowPos(p_soulstormController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
 
-                    p_uiBackend->setSsWindowed(p_soulstormController->ssWindowed());
+                    m_uiBackendPtr->setSsWindowed(p_soulstormController->ssWindowed());
                 }
             }
             else
@@ -117,6 +119,9 @@ int OverlayWindowController::getGameTitleBarHeight()
 
 void OverlayWindowController::ssMaximized(bool maximized)
 {
+    if (!m_uiBackendPtr)
+        return;
+
     if (!p_settingsController->getSettings()->overlayVisible)
         return;
 
@@ -128,7 +133,7 @@ void OverlayWindowController::ssMaximized(bool maximized)
         m_widthInGame = width;
         m_heightInGame = height;
 
-        p_uiBackend->setMouseArea(width, height);
+        m_uiBackendPtr->setMouseArea(width, height);
 
         if (!p_soulstormController->ssWindowed())
         {
@@ -137,10 +142,10 @@ void OverlayWindowController::ssMaximized(bool maximized)
             {
                 m_ssRect = ssRect;
                 SetWindowPos(m_ssStatsHwnd, HWND_TOPMOST, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong);
-                p_uiBackend->setWindowTopmost(true);
+                m_uiBackendPtr->setWindowTopmost(true);
             }
             m_topmostTimer->start();
-            p_uiBackend->setSsWindowed(p_soulstormController->ssWindowed());
+            m_uiBackendPtr->setSsWindowed(p_soulstormController->ssWindowed());
         }
         else
         {
@@ -157,10 +162,10 @@ void OverlayWindowController::ssMaximized(bool maximized)
                     LONG ssLong = GetWindowLongPtr(p_soulstormController->soulstormHwnd(), 0);
                     SetWindowPos(p_soulstormController->soulstormHwnd(), m_ssStatsHwnd, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, ssLong );
 
-                    p_uiBackend->setSsWindowPosition(m_ssRect.left, m_ssRect.top + titleBarHeight);
+                    m_uiBackendPtr->setSsWindowPosition(m_ssRect.left, m_ssRect.top + titleBarHeight);
                 }
             }
-            p_uiBackend->setSsWindowed(p_soulstormController->ssWindowed());
+            m_uiBackendPtr->setSsWindowed(p_soulstormController->ssWindowed());
         }
 
         m_topmostTimer->start();
@@ -169,10 +174,10 @@ void OverlayWindowController::ssMaximized(bool maximized)
     {
         m_topmostTimer->stop();
         SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, 0,0,0,0, m_defaultWindowLong );
-        p_uiBackend->setWindowTopmost(false);
+        m_uiBackendPtr->setWindowTopmost(false);
     }
 
-    p_uiBackend->setSsWindowed(p_soulstormController->ssWindowed());
+    m_uiBackendPtr->setSsWindowed(p_soulstormController->ssWindowed());
 }
 
 void OverlayWindowController::gameInitialized()
@@ -189,11 +194,14 @@ void OverlayWindowController::gameInitialized()
 
 void OverlayWindowController::ssLaunched(bool ssLaunched)
 {
+    if (!m_uiBackendPtr)
+        return;
+
     if (!ssLaunched)
     {
         m_topmostTimer->stop();
         SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
-        p_uiBackend->setWindowTopmost(false);
+        m_uiBackendPtr->setWindowTopmost(false);
     }
 }
 
@@ -216,4 +224,14 @@ void OverlayWindowController::onExit()
 
         BringWindowToTop(p_soulstormController->soulstormHwnd());
     }
+}
+
+void OverlayWindowController::setUiBackend(UiBackend *uiBackend)
+{
+    m_uiBackendPtr = uiBackend;
+
+    if (!m_uiBackendPtr)
+        return;
+
+    m_uiBackendPtr->setWindowTopmost(false);
 }

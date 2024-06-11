@@ -30,7 +30,7 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     connect(m_balanceModInstaller, &BalanceModInstaller::hotKeysUpdated, this,  [=](QString modTechnicalName, bool result){emit onHotKeysUpdated(modTechnicalName, result);}, Qt::QueuedConnection);
 
 
-    connect(this, &BalanceModManager::updateHotKeysOnMod, m_balanceModInstaller, &BalanceModInstaller::updateHotKeysOnMod, Qt::QueuedConnection);
+    connect(this, &BalanceModManager::sendUpdateHotKeysOnMod, m_balanceModInstaller, &BalanceModInstaller::updateHotKeysOnMod, Qt::QueuedConnection);
 
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModManager::onSettingsLoaded, Qt::QueuedConnection);
@@ -162,7 +162,7 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
         if (m_modInfoList.at(i).technicalName == modTechnicalName)
         {
             m_modInfoList[i].isInstalled = true;
-            receiveUpdateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
+            updateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
             break;
         }
     }
@@ -181,7 +181,7 @@ void BalanceModManager::onModUninstalled(QString modTechnicalName)
         if (m_modInfoList.at(i).technicalName == modTechnicalName)
         {
             m_modInfoList[i].isInstalled = false;
-            receiveUpdateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
+            updateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
             break;
         }
     }
@@ -306,7 +306,7 @@ void BalanceModManager::activateMod(QString modTechnicalName)
     delete ssSettings;
 }
 
-void BalanceModManager::receiveUpdateTemplateProfilePath(bool useCustomTemplateProfilePath)
+void BalanceModManager::updateTemplateProfilePath(bool useCustomTemplateProfilePath)
 {
     if (!useCustomTemplateProfilePath)
     {
@@ -328,7 +328,7 @@ void BalanceModManager::receiveUpdateTemplateProfilePath(bool useCustomTemplateP
     }
 }
 
-void BalanceModManager::receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName)
+void BalanceModManager::setProfileCopyMode(bool overwritePrifiles, QString modTechnicalName)
 {
     m_downloadingQuery.removeOne(modTechnicalName);
     downloadMod(modTechnicalName, overwritePrifiles);
@@ -353,9 +353,9 @@ void BalanceModManager::setCurrentPlayerSteamId(QString steamId)
     m_checkDownloadingQueryTimer->start();
 }
 
-void BalanceModManager::receiveUpdateHotKeysOnMod(QString modTechnicalName)
+void BalanceModManager::updateHotKeysOnMod(QString modTechnicalName)
 {
-    emit updateHotKeysOnMod(modTechnicalName, m_ssPath);
+    emit sendUpdateHotKeysOnMod(modTechnicalName, m_ssPath);
 }
 
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
@@ -491,7 +491,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
     }
 
     if (m_templateProfilePath.isEmpty())
-        receiveUpdateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
+        updateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
 
     for (int i = 0; i < m_modInfoList.count(); i++)
     {

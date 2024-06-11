@@ -4,20 +4,20 @@
 #include <QFile>
 #include <QDir>
 
-UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
+UiBackend::UiBackend(Core* core, QObject *parent)
     : QObject(parent)
+    , m_corePtr(core)
     , m_imageProvider(new ImageProvider(this))
-    , m_gamePanel(new GamePanel(settingsController, this))
+    , m_gamePanel(new GamePanel(core->settingsController(), this))
     , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
-    , m_settingsController(settingsController)
     , m_newsPage(new MessagesPage(this))
     , m_eventsPage(new MessagesPage(this))
-    , m_settingsPageModel(new SettingsPageModel(m_settingsController, this))
+    , m_settingsPageModel(new SettingsPageModel(core->settingsController(), this))
     , m_replayManager(new ReplayManager(m_imageProvider, this))
-    , m_mapManagerPage(new MapManagerPage(m_settingsController, m_imageProvider, this))
-    , m_modsPage(new ModsPage(m_settingsController, this))
+    , m_mapManagerPage(new MapManagerPage(core->settingsController(), m_imageProvider, this))
+    , m_modsPage(new ModsPage(core->settingsController(), this))
     , m_onlineStatisticPanel(new OnlineStatisticPanel(this))
-    , m_balanceModPage(new BalanceModPage(settingsController, this))
+    , m_balanceModPage(new BalanceModPage(core->balanceModManager(), core->settingsController(), this))
     , m_notificationManager(new NotificationManager(this))
     , m_informationPage(new InformationPage(this))
     , m_notificationVisibleTimer(new QTimer(this))  
@@ -31,7 +31,7 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     m_notificationVisibleTimer->setInterval(7000);
     m_notificationVisibleTimer->setSingleShot(true);
 
-    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &UiBackend::onSettingsLoaded, Qt::QueuedConnection);
+    QObject::connect(core->settingsController(), &SettingsController::settingsLoaded, this, &UiBackend::onSettingsLoaded, Qt::QueuedConnection);
     QObject::connect(m_notificationVisibleTimer, &QTimer::timeout, this, [=]{setNotificationVisible(false);}, Qt::QueuedConnection);
 
     QObject::connect(m_balanceModPage, &BalanceModPage::changeLaunchMod, this,  [=](LaunchMod launchMod){m_settingsPageModel->setLaunchMode(launchMod);}, Qt::QueuedConnection);
@@ -43,6 +43,8 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     QObject::connect(m_imageProvider,      &ImageProvider::updateYoutubeImages,            m_eventsPage,          &MessagesPage::onYoutubeImagesUpdate,             Qt::QueuedConnection);
     QObject::connect(m_imageProvider,      &ImageProvider::updateAvatars,                  m_newsPage,            &MessagesPage::onAvatarUpdate,                    Qt::QueuedConnection);
     QObject::connect(m_imageProvider,      &ImageProvider::updateAvatars,                  m_eventsPage,          &MessagesPage::onAvatarUpdate,                    Qt::QueuedConnection);
+
+    QObject::connect(m_corePtr->balanceModManager(), &BalanceModManager::sendModsInfo, m_replayManager, &ReplayManager::receiveModsInfo, Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()
@@ -485,19 +487,19 @@ void UiBackend::setSizeModifer(double size)
 
     emit sizeModiferChanged(m_sizeModifer);
 
-    m_settingsController->getSettings()->scale = m_sizeModifer;
-    m_settingsController->saveSettings();
+    m_corePtr->settingsController()->getSettings()->scale = m_sizeModifer;
+    m_corePtr->settingsController()->saveSettings();
 }
 
 void UiBackend::onSettingsLoaded()
 {
-    m_noFogState = m_settingsController->getSettings()->noFog;
+    m_noFogState = m_corePtr->settingsController()->getSettings()->noFog;
     emit noFogStateChanged(m_noFogState);
-    m_sizeModifer = m_settingsController->getSettings()->scale;
+    m_sizeModifer = m_corePtr->settingsController()->getSettings()->scale;
     emit sizeModiferLoadedFromSettings(m_sizeModifer);
     emit sizeModiferChanged(m_sizeModifer);
 
-    setCurrentModTechnicalName(m_settingsController->getSettings()->currentMod);
+    setCurrentModTechnicalName(m_corePtr->settingsController()->getSettings()->currentMod);
 
 }
 
@@ -542,8 +544,8 @@ void UiBackend::onMouseWheel(int delta)
 void UiBackend::setNoFogState(bool state)
 {
     m_noFogState = state;
-    m_settingsController->getSettings()->noFog = m_noFogState;
-    m_settingsController->saveSettings();
+    m_corePtr->settingsController()->getSettings()->noFog = m_noFogState;
+    m_corePtr->settingsController()->saveSettings();
     emit noFogStateChanged(m_noFogState);
 }
 

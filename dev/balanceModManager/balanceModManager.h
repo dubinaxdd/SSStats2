@@ -50,11 +50,11 @@ public slots:
     void uninstalMod(QString modTechnicalName);
     void receiveTemplateProfilePath(QString templateProfilePath);
     void activateMod(QString modTechnicalName);
-    void receiveUpdateTemplateProfilePath(bool useCustomTemplateProfilePath);
-    void receiveProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
+    void updateTemplateProfilePath(bool useCustomTemplateProfilePath);
+    void setProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
     void onSsLaunchStateChanged(bool lounched);
     void setCurrentPlayerSteamId(QString steamId);
-    void receiveUpdateHotKeysOnMod(QString modTechnicalName);
+    void updateHotKeysOnMod(QString modTechnicalName);
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
@@ -68,7 +68,7 @@ signals:
     void sendInstallingModError(QString modTechnicalName);
     void requestProfileCopyMode(QString modTechnicalName);
     void sendModReadyForInstall(QString modUiName);
-    void updateHotKeysOnMod(QString modTechnicalName, QString ssPath);
+    void sendUpdateHotKeysOnMod(QString modTechnicalName, QString ssPath);
     void onHotKeysUpdated(QString modTechnicalName, bool result);
 
 private:

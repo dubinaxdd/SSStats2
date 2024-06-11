@@ -17,6 +17,9 @@
 #include <balanceModPage.h>
 #include <notificationManager.h>
 #include <informationPage.h>
+#include <core.h>
+
+class Core;
 
 class UiBackend : public QObject
 {
@@ -77,7 +80,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool ssLaunchState READ ssLaunchState WRITE setSsLaunchState NOTIFY ssLaunchStateChanged)
 
 public:
-    explicit UiBackend(SettingsController* settingsController, QObject *parent = nullptr);
+    explicit UiBackend(Core* core, QObject *parent = nullptr);
 
     bool switchNoFogState() const;
 
@@ -254,10 +257,10 @@ private:
     void gameOver();
 
 private:
+    Core* m_corePtr;
     ImageProvider* m_imageProvider;
     GamePanel* m_gamePanel;
     StatisticPanel* m_statisticPanel;
-    SettingsController* m_settingsController;
     MessagesPage* m_newsPage;
     MessagesPage* m_eventsPage;
     SettingsPageModel* m_settingsPageModel;

@@ -7,13 +7,16 @@
 #include <uiBackend.h>
 #include <soulstormController.h>
 
+class UiBackend;
+
 class OverlayWindowController : public QObject
 {
     Q_OBJECT
 public:
-    explicit OverlayWindowController(SettingsController* settingsController, UiBackend* uiBackend, SoulstormController* soulstormController, QObject *parent = nullptr);
+    explicit OverlayWindowController(SettingsController* settingsController, SoulstormController* soulstormController, QObject *parent = nullptr);
     void grubStatsWindow();
     void onExit();
+    void setUiBackend(UiBackend* uiBackend);
 
 public slots:
 
@@ -40,7 +43,7 @@ private:
     LONG m_defaultWindowLong;
     RECT m_ssRect;
 
-    UiBackend* p_uiBackend;
+    UiBackend* m_uiBackendPtr;
     SoulstormController* p_soulstormController;
     SettingsController* p_settingsController;
 

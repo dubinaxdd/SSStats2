@@ -17,6 +17,9 @@
 #include <mapManager.h>
 #include <balanceModManager.h>
 
+class UiBackend;
+class OverlayWindowController;
+
 class Core : public QObject
 {
     Q_OBJECT
@@ -26,6 +29,10 @@ public:
     bool event(QEvent *event) override;
     UiBackend *uiBackend() const;
     OverlayWindowController *overlayWindowController() const;
+
+    SettingsController *settingsController() const;
+
+    BalanceModManager *balanceModManager() const;
 
 signals:
     void sendExit();
@@ -47,7 +54,6 @@ private:
     Logger *m_logger;
     SettingsController* m_settingsController;
     KeyboardProcessor* m_keyboardProcessor;
-    UiBackend* m_uiBackend;
     SoulstormController* m_soulstormController;
     OverlayWindowController* m_overlayWindowController;
     DiscordWebProcessor* m_discordWebProcessor;
@@ -57,6 +63,7 @@ private:
     RankedModServiceProcessor* m_rankedModServiceProcessor;
     MapManager* m_mapManager;
     BalanceModManager* m_balanceModManager;
+    UiBackend* m_uiBackend;
 };
 
 //Q_DECLARE_METATYPE(Core);

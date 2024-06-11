@@ -5,6 +5,7 @@
 #include <baseTypes.h>
 #include <settingsController.h>
 #include <QUuid>
+#include <balanceModManager.h>
 
 class BalanceModPage : public QAbstractListModel
 {
@@ -32,7 +33,7 @@ class BalanceModPage : public QAbstractListModel
     Q_PROPERTY(bool haveAvilableMods READ haveAvilableMods NOTIFY haveAvilableModsChanged)
 
 public:
-    explicit BalanceModPage(SettingsController* settingsController, QObject *parent = nullptr);
+    explicit BalanceModPage(BalanceModManager* balanceModManager, SettingsController* settingsController, QObject *parent = nullptr);
 
     enum DataRoles {
         Selected = Qt::UserRole + 1,
@@ -117,25 +118,17 @@ signals:
    void currentModInGameChanged();
    void downloadingProgressChanged();
    void templateProfilePathChanged();
-   void sendTemplateProfilePath(QString templateProfilePath);
-   void requestChangeLog(QString modTechnicalName);
-   void requestDownloadMod(QString modTechnicalName);
-   void requestUninstallMod(QString modTechnicalName);
-   void requestActivateMod(QString modTechnicalName);
    void autoUpdateBalanceModChanged();
    void autoUninstallPreviousBalanceModChanged();
    void useCustomTemplateProfilePathChanged();
-   void sendUseCustomTemplateProfilePath(bool);
    void changeLaunchMod(LaunchMod);
    void sendNotification(NotificationInfo notificationString);
-   void sendProfileCopyMode(bool profileCopyMode, QString modTechnicalName);
-   void sendUpdateHotKeysOnMod(QString modTechnicalName);
 
    void profileCopyModeRequestMessageVisibleChanged();
-
    void haveAvilableModsChanged();
 
 private:
+   BalanceModManager* m_balanceModManagerPtr;
    SettingsController* m_settingsController;
 
    QList<ModInfo> m_modsInfo;
