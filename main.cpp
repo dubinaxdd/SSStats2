@@ -46,16 +46,6 @@ int runAutoUpdate() {
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
-
-    //QApplication app3(argc, argv);
-    QGuiApplication app(argc, argv);
-    //QApplication app(argc, argv);
-
-    if(runAutoUpdate() == 5){
-        return 0; // Не запускаем ssstats - т.к. есть обновления и сейчас пойдет загрузка обновы
-    }
-
     QSystemSemaphore semaphore("<uniq id>", 1);     // создаём семафор
     semaphore.acquire();                            // Поднимаем семафор, запрещая другим экземплярам работать с разделяемой памятью
 
@@ -88,6 +78,13 @@ int main(int argc, char *argv[])
         msgBox.exec();
 
         return 0;
+    }
+    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
+
+    QGuiApplication app(argc, argv);
+
+    if(runAutoUpdate() == 5){
+        return 0; // Не запускаем ssstats - т.к. есть обновления и сейчас пойдет загрузка обновы
     }
 
     HookManager::instance();
