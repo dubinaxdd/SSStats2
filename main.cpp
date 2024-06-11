@@ -49,6 +49,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
     //QApplication app3(argc, argv);
+    QGuiApplication app(argc, argv);
+    //QApplication app(argc, argv);
 
     if(runAutoUpdate() == 5){
         return 0; // Не запускаем ssstats - т.к. есть обновления и сейчас пойдет загрузка обновы
@@ -77,6 +79,8 @@ int main(int argc, char *argv[])
     {
         QApplication app2(argc, argv);
 
+        //QApplication(argc, argv);
+
         QMessageBox msgBox;
 
         msgBox.setIcon(QMessageBox::Warning);
@@ -92,7 +96,7 @@ int main(int argc, char *argv[])
 //    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 //#endif
 
-    QGuiApplication app(argc, argv);
+    //QGuiApplication app(argc, argv);
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
