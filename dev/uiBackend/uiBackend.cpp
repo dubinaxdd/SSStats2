@@ -37,6 +37,12 @@ UiBackend::UiBackend(SettingsController* settingsController, QObject *parent)
     QObject::connect(m_balanceModPage, &BalanceModPage::changeLaunchMod, this,  [=](LaunchMod launchMod){m_settingsPageModel->setLaunchMode(launchMod);}, Qt::QueuedConnection);
     QObject::connect(m_balanceModPage, &BalanceModPage::sendNotification, m_notificationManager, &NotificationManager::receiveNotification, Qt::QueuedConnection);
 
+    QObject::connect(m_imageProvider,      &ImageProvider::updateAttachments,              m_newsPage,            &MessagesPage::onAttachmetImagesUpdate,           Qt::QueuedConnection);
+    QObject::connect(m_imageProvider,      &ImageProvider::updateAttachments,              m_eventsPage,          &MessagesPage::onAttachmetImagesUpdate,           Qt::QueuedConnection);
+    QObject::connect(m_imageProvider,      &ImageProvider::updateYoutubeImages,            m_newsPage,            &MessagesPage::onYoutubeImagesUpdate,             Qt::QueuedConnection);
+    QObject::connect(m_imageProvider,      &ImageProvider::updateYoutubeImages,            m_eventsPage,          &MessagesPage::onYoutubeImagesUpdate,             Qt::QueuedConnection);
+    QObject::connect(m_imageProvider,      &ImageProvider::updateAvatars,                  m_newsPage,            &MessagesPage::onAvatarUpdate,                    Qt::QueuedConnection);
+    QObject::connect(m_imageProvider,      &ImageProvider::updateAvatars,                  m_eventsPage,          &MessagesPage::onAvatarUpdate,                    Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()
