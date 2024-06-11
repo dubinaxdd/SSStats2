@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
-    QApplication app3(argc, argv);
+    //QApplication app3(argc, argv);
 
     if(runAutoUpdate() == 5){
         return 0; // Не запускаем ssstats - т.к. есть обновления и сейчас пойдет загрузка обновы
