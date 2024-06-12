@@ -134,6 +134,9 @@ bool BalanceModManager::getProfileExist(QString modTechnicalName)
 
 void BalanceModManager::newActualModDetected(QString modTechnicalName, bool installed)
 {
+    if (!installed)
+        return;
+
     m_settingsController->getSettings()->lastActualBalanceMod = modTechnicalName;
     m_settingsController->saveSettings();
 
@@ -163,6 +166,10 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
         {
             m_modInfoList[i].isInstalled = true;
             updateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
+
+            if (m_modInfoList.at(i).isLatest)
+                newActualModDetected(modTechnicalName, true);
+
             break;
         }
     }
@@ -172,6 +179,8 @@ void BalanceModManager::onModInstalled(QString modTechnicalName)
 
     m_modDownloadingProcessed = false;
     checkDownloadingQuery();
+
+
 }
 
 void BalanceModManager::onModUninstalled(QString modTechnicalName)
@@ -521,8 +530,6 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
             if (!m_modInfoList.at(i).isInstalled && (!m_settingsController->getSettings()->autoUpdateBalanceMod || m_ssLounchedState))
                 emit sendModReadyForInstall(m_modInfoList.at(i).uiName);
-
-           // break;
         }
     }
 
