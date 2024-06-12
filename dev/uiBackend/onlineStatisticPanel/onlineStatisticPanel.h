@@ -5,6 +5,7 @@
 #include <QAbstractListModel>
 #include <QMap>
 #include <baseTypes.h>
+#include <rankedModServiceProcessor.h>
 
 class OnlineStatisticPanel : public QAbstractListModel
 {
@@ -16,7 +17,7 @@ class OnlineStatisticPanel : public QAbstractListModel
     Q_PROPERTY(int uniquePlayersOnTotal READ getUniquePlayersOnTotal    NOTIFY uniquePlayersOnlineStatisticChanged)
 
 public:
-    explicit OnlineStatisticPanel(QObject *parent = nullptr);
+    explicit OnlineStatisticPanel(RankedModServiceProcessor* rankedModServiceProcessor, QObject *parent = nullptr);
 
     enum DataRoles {
         ModName = Qt::UserRole + 1,
@@ -42,6 +43,7 @@ public slots:
     void receiveUniquePlayersOnlineStatistic(UniqueOnlineStatistic uniqueOnlineStatistic);
 
 private:
+    RankedModServiceProcessor* m_rankedModServiceProcessorPtr;
     QMap<QString, int> m_modsOnlineCountMap;
     UniqueOnlineStatistic m_uniqueOnlineStatistic;
 

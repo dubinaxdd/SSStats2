@@ -1,10 +1,12 @@
 #include "onlineStatisticPanel.h"
 #include "QDebug"
 
-OnlineStatisticPanel::OnlineStatisticPanel(QObject *parent)
+OnlineStatisticPanel::OnlineStatisticPanel(RankedModServiceProcessor* rankedModServiceProcessor,QObject *parent)
     : QAbstractListModel(parent)
+    , m_rankedModServiceProcessorPtr(rankedModServiceProcessor)
 {
-
+    QObject::connect(m_rankedModServiceProcessorPtr, &RankedModServiceProcessor::sendUniquePlayersOnlineStatistic, this, &OnlineStatisticPanel::receiveUniquePlayersOnlineStatistic, Qt::QueuedConnection);
+    QObject::connect(m_rankedModServiceProcessorPtr, &RankedModServiceProcessor::sendModsOnlineCountMap,           this, &OnlineStatisticPanel::receiveModsOnlineCountMap,           Qt::QueuedConnection);
 }
 
 QVariant OnlineStatisticPanel::data(const QModelIndex &index, int role) const

@@ -36,6 +36,9 @@ public:
     DiscordWebProcessor *discordWebProcessor() const;
     MapManager *mapManager() const;
     SoundProcessor *soundProcessor() const;
+    StatsServerProcessor *statsServerProcessor() const;
+    SoulstormController *soulstormController() const;
+    RankedModServiceProcessor *rankedModServiceProcessor() const;
 
 signals:
     void sendExit();

@@ -9,14 +9,14 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     , m_corePtr(core)
     , m_imageProvider(new ImageProvider(this))
     , m_gamePanel(new GamePanel(core->settingsController(), this))
-    , m_statisticPanel(new StatisticPanel(m_imageProvider, this))
+    , m_statisticPanel(new StatisticPanel(core, m_imageProvider, this))
     , m_newsPage(new MessagesPage(this))
     , m_eventsPage(new MessagesPage(this))
     , m_settingsPageModel(new SettingsPageModel(core->soundProcessor(), core->settingsController(), this))
     , m_replayManager(new ReplayManager(m_imageProvider, this))
     , m_mapManagerPage(new MapManagerPage(core->mapManager(), core->settingsController(), m_imageProvider, this))
     , m_modsPage(new ModsPage(core->modsProcessor(), core->settingsController(), this))
-    , m_onlineStatisticPanel(new OnlineStatisticPanel(this))
+    , m_onlineStatisticPanel(new OnlineStatisticPanel(core->rankedModServiceProcessor(), this))
     , m_balanceModPage(new BalanceModPage(core->balanceModManager(), core->settingsController(), this))
     , m_notificationManager(new NotificationManager(this))
     , m_informationPage(new InformationPage(this))
@@ -37,27 +37,36 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_balanceModPage, &BalanceModPage::changeLaunchMod, this,  [=](LaunchMod launchMod){m_settingsPageModel->setLaunchMode(launchMod);}, Qt::QueuedConnection);
     QObject::connect(m_balanceModPage, &BalanceModPage::sendNotification, m_notificationManager, &NotificationManager::receiveNotification, Qt::QueuedConnection);
 
-    QObject::connect(m_imageProvider,      &ImageProvider::updateAttachments,              m_newsPage,            &MessagesPage::onAttachmetImagesUpdate,           Qt::QueuedConnection);
-    QObject::connect(m_imageProvider,      &ImageProvider::updateAttachments,              m_eventsPage,          &MessagesPage::onAttachmetImagesUpdate,           Qt::QueuedConnection);
-    QObject::connect(m_imageProvider,      &ImageProvider::updateYoutubeImages,            m_newsPage,            &MessagesPage::onYoutubeImagesUpdate,             Qt::QueuedConnection);
-    QObject::connect(m_imageProvider,      &ImageProvider::updateYoutubeImages,            m_eventsPage,          &MessagesPage::onYoutubeImagesUpdate,             Qt::QueuedConnection);
-    QObject::connect(m_imageProvider,      &ImageProvider::updateAvatars,                  m_newsPage,            &MessagesPage::onAvatarUpdate,                    Qt::QueuedConnection);
-    QObject::connect(m_imageProvider,      &ImageProvider::updateAvatars,                  m_eventsPage,          &MessagesPage::onAvatarUpdate,                    Qt::QueuedConnection);
+    QObject::connect(m_imageProvider, &ImageProvider::updateAttachments,   m_newsPage,   &MessagesPage::onAttachmetImagesUpdate, Qt::QueuedConnection);
+    QObject::connect(m_imageProvider, &ImageProvider::updateAttachments,   m_eventsPage, &MessagesPage::onAttachmetImagesUpdate, Qt::QueuedConnection);
+    QObject::connect(m_imageProvider, &ImageProvider::updateYoutubeImages, m_newsPage,   &MessagesPage::onYoutubeImagesUpdate,   Qt::QueuedConnection);
+    QObject::connect(m_imageProvider, &ImageProvider::updateYoutubeImages, m_eventsPage, &MessagesPage::onYoutubeImagesUpdate,   Qt::QueuedConnection);
+    QObject::connect(m_imageProvider, &ImageProvider::updateAvatars,       m_newsPage,   &MessagesPage::onAvatarUpdate,          Qt::QueuedConnection);
+    QObject::connect(m_imageProvider, &ImageProvider::updateAvatars,       m_eventsPage, &MessagesPage::onAvatarUpdate,          Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->balanceModManager(), &BalanceModManager::sendModsInfo, m_replayManager, &ReplayManager::receiveModsInfo, Qt::QueuedConnection);
 
-    QObject::connect(m_newsPage,           &MessagesPage::sendLastReadedMessageId,         m_corePtr->discordWebProcessor(),              &DiscordWebProcessor::setLastReadedNewsMessageID,     Qt::QueuedConnection);
-    QObject::connect(m_eventsPage,         &MessagesPage::sendLastReadedMessageId,         m_corePtr->discordWebProcessor(),              &DiscordWebProcessor::setLastReadedEventsMessageID,   Qt::QueuedConnection);
-    QObject::connect(m_newsPage,        &MessagesPage::sendNextMessagesRequest,              m_corePtr->discordWebProcessor(),            &DiscordWebProcessor::requestNextNews,             Qt::QueuedConnection);
-    QObject::connect(m_eventsPage,      &MessagesPage::sendNextMessagesRequest,              m_corePtr->discordWebProcessor(),            &DiscordWebProcessor::requestNextEvents,             Qt::QueuedConnection);
+    QObject::connect(m_newsPage,   &MessagesPage::sendLastReadedMessageId, m_corePtr->discordWebProcessor(), &DiscordWebProcessor::setLastReadedNewsMessageID,   Qt::QueuedConnection);
+    QObject::connect(m_eventsPage, &MessagesPage::sendLastReadedMessageId, m_corePtr->discordWebProcessor(), &DiscordWebProcessor::setLastReadedEventsMessageID, Qt::QueuedConnection);
+    QObject::connect(m_newsPage,   &MessagesPage::sendNextMessagesRequest, m_corePtr->discordWebProcessor(), &DiscordWebProcessor::requestNextNews,              Qt::QueuedConnection);
+    QObject::connect(m_eventsPage, &MessagesPage::sendNextMessagesRequest, m_corePtr->discordWebProcessor(), &DiscordWebProcessor::requestNextEvents,            Qt::QueuedConnection);
 
-    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendAvatar, m_imageProvider, &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendAvatar,          m_imageProvider, &ImageProvider::addDiscordAvatar,   Qt::QueuedConnection);
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendAttachmentImage, m_imageProvider, &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
-    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendYoutubeImage, m_imageProvider, &ImageProvider::addYoutubeImage, Qt::QueuedConnection);
-    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNews, m_newsPage, &MessagesPage::receiveMessages, Qt::QueuedConnection);
-    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextNews, m_newsPage, &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
-    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendEvents, m_eventsPage, &MessagesPage::receiveMessages, Qt::QueuedConnection);
-    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextEvents, m_eventsPage, &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendYoutubeImage,    m_imageProvider, &ImageProvider::addYoutubeImage,    Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNews,            m_newsPage, &MessagesPage::receiveMessages,          Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextNews,        m_newsPage, &MessagesPage::receiveNextMessages,      Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendEvents,          m_eventsPage, &MessagesPage::receiveMessages,        Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextEvents,      m_eventsPage, &MessagesPage::receiveNextMessages,    Qt::QueuedConnection);
+
+    QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendRankDiversion,        m_informationPage, &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
+
+    QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendNotification,         this, &UiBackend::receiveNotification,        Qt::QueuedConnection);
+    QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendStatisticModName,     this, &UiBackend::receiveCurrentModName,      Qt::QueuedConnection);
+    QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendActualClientVersion,  this, &UiBackend::receiveActualClientVersion, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendSoftwareBanActivated, this, &UiBackend::onSoftwareBanActivated,     Qt::QueuedConnection);
+
+    QObject::connect(m_corePtr->rankedModServiceProcessor(), &RankedModServiceProcessor::sendOnlineCount, this, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()

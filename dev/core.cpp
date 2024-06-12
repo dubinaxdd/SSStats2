@@ -85,80 +85,74 @@ void Core::addConnections()
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_soulstormController, &SoulstormController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_overlayWindowController,    &OverlayWindowController::ssMaximized,                             Qt::DirectConnection);
-    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_soundProcessor,             &SoundProcessor::setSoulstormMaximized,                             Qt::DirectConnection);
-    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_overlayWindowController,    &OverlayWindowController::ssLaunched,                              Qt::QueuedConnection);
+
     QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_uiBackend,                  &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
-    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_balanceModManager,          &BalanceModManager::onSsLaunchStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_uiBackend,                  &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
-    QObject::connect(m_soulstormController,                    &SoulstormController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
-
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::gameInitialized,         m_overlayWindowController,  &OverlayWindowController::gameInitialized,                  Qt::DirectConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,                   Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_rankedModServiceProcessor, &RankedModServiceProcessor::receiveCurrentMod,   Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_statsServerProcessor, &StatsServerProcessor::receiveCurrentMod,   Qt::QueuedConnection);
-
-
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendGameRankedMode, m_uiBackend, [&](bool gameRankedMode){ m_uiBackend->gamePanel()->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendGameRankedMode, m_statsServerProcessor, &StatsServerProcessor::receiveRankedMode, Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,  m_uiBackend->statisticPanel(),  &StatisticPanel::onQuitParty,  Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::quitFromParty,      m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::hostParty,      m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::playerConnected,    m_soundProcessor,  &SoundProcessor::playPlayerJoinSound,  Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::playerDisconnected, m_soundProcessor,  &SoundProcessor::playPlayerLeftSound,  Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->lobbyEventReader(),  &LobbyEventReader::playerKicked,       m_soundProcessor,  &SoundProcessor::playPlayerLeftSound,  Qt::QueuedConnection);
-
-    QObject::connect(m_soulstormController->replayDataCollector(), &ReplayDataCollector::sendReplayToServer,       m_statsServerProcessor, &StatsServerProcessor::sendReplayToServer,   Qt::QueuedConnection);
     QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormController->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, m_statsServerProcessor, &StatsServerProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer,  m_uiBackend->statisticPanel(),  &StatisticPanel::receivePlayresInfoFromDowServer,  Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, m_rankedModServiceProcessor, &RankedModServiceProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
-
     QObject::connect(m_soulstormController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_uiBackend, &UiBackend::receiveCurrentModTechnicalName,   Qt::QueuedConnection);
 
     QObject::connect(m_uiBackend,                       &UiBackend::sendExit,                           this,                               &Core::onExit,                  Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::sendExpand,                         m_soulstormController,              &SoulstormController::blockSsWindowInput,                  Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::noFogStateChanged,                  m_soulstormController->soulstormMemoryController(), &SoulstormMemoryController::onNoFogStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_soulstormController,              &SoulstormController::launchSoulstorm,                     Qt::QueuedConnection);
-    QObject::connect(m_uiBackend,                       &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
+    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_soulstormController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
 
-    QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
-    QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_soulstormController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
-    QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
+    QObject::connect(m_uiBackend,                 &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
+
+
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_overlayWindowController,    &OverlayWindowController::ssMaximized,                             Qt::DirectConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_soundProcessor,             &SoundProcessor::setSoulstormMaximized,                             Qt::DirectConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_overlayWindowController,    &OverlayWindowController::ssLaunched,                              Qt::QueuedConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_balanceModManager,          &BalanceModManager::onSsLaunchStateChanged,             Qt::QueuedConnection);
+    QObject::connect(m_soulstormController,                    &SoulstormController::inputBlockStateChanged, HookManager::instance(), &HookManager::onInputBlockStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),     &GameStateReader::gameInitialized,         m_overlayWindowController,  &OverlayWindowController::gameInitialized,                  Qt::DirectConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),     &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,                   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),     &GameStateReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState,         Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),     &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),     &GameStateReader::sendCurrentMod,  m_rankedModServiceProcessor, &RankedModServiceProcessor::receiveCurrentMod,   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),     &GameStateReader::sendCurrentMod,  m_statsServerProcessor, &StatsServerProcessor::receiveCurrentMod,   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->gameStateReader(),     &GameStateReader::sendGameRankedMode, m_statsServerProcessor, &StatsServerProcessor::receiveRankedMode, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),    &LobbyEventReader::quitFromParty,      m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),    &LobbyEventReader::hostParty,          m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),    &LobbyEventReader::playerConnected,    m_soundProcessor,  &SoundProcessor::playPlayerJoinSound,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),    &LobbyEventReader::playerDisconnected, m_soundProcessor,  &SoundProcessor::playPlayerLeftSound,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->lobbyEventReader(),    &LobbyEventReader::playerKicked,       m_soundProcessor,  &SoundProcessor::playPlayerLeftSound,  Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->replayDataCollector(), &ReplayDataCollector::sendReplayToServer,       m_statsServerProcessor, &StatsServerProcessor::sendReplayToServer,   Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer, m_statsServerProcessor, &StatsServerProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
+    QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer, m_rankedModServiceProcessor, &RankedModServiceProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
+
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendServerPlayrStats,     m_soulstormController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_soulstormController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended,             m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
-    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
-    QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
-    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_soulstormController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
-    QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendUniquePlayersOnlineStatistic, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveUniquePlayersOnlineStatistic, Qt::QueuedConnection);
-
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendStatisticModName, m_uiBackend, &UiBackend::receiveCurrentModName, Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_uiBackend, &UiBackend::receiveCurrentModTechnicalName,   Qt::QueuedConnection);
-
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
-
-    QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendModsOnlineCountMap, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveModsOnlineCountMap, Qt::QueuedConnection);
-
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendRankDiversion, m_uiBackend->informationPage(), &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendActualClientVersion, m_uiBackend, &UiBackend::receiveActualClientVersion, Qt::QueuedConnection);
-
-    QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->dowServerProcessor(), &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendSoftwareBanActivated, m_uiBackend, &UiBackend::onSoftwareBanActivated, Qt::QueuedConnection);
-
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
-
 
 
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+RankedModServiceProcessor *Core::rankedModServiceProcessor() const
+{
+    return m_rankedModServiceProcessor;
+}
+
+SoulstormController *Core::soulstormController() const
+{
+    return m_soulstormController;
+}
+
+StatsServerProcessor *Core::statsServerProcessor() const
+{
+    return m_statsServerProcessor;
 }
 
 SoundProcessor *Core::soundProcessor() const

@@ -7,6 +7,9 @@
 #include <imageProvider.h>
 #include <statisticPanelItem.h>
 #include <QAbstractListModel>
+#include <core.h>
+
+class Core;
 
 class StatisticPanel :  public QAbstractListModel
 {
@@ -15,7 +18,7 @@ class StatisticPanel :  public QAbstractListModel
     Q_PROPERTY(StatisticPanelItem* curentPlayerStatsItem READ getCurentPlayerStatsItem NOTIFY playersItemsInitialized)
 
 public:
-    explicit StatisticPanel(ImageProvider *imageProvider, QObject *parent = nullptr);
+    explicit StatisticPanel(Core* core, ImageProvider *imageProvider, QObject *parent = nullptr);
 
 
     enum DataRoles {
@@ -52,7 +55,6 @@ signals:
     void currentPlayerStatsChanged();
     void expandPatyStatisticChanged();
     void playersItemsInitialized();
-    void manualStatsRequest();
 
 public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
@@ -66,6 +68,7 @@ private:
     void sortStatsBySoloMmr();
 
 private:
+    Core* m_corePtr;
     StatisticPanelItem* m_curentPlayerStatsItem;
     QVector<StatisticPanelItem*> m_playersStatsItems;
 

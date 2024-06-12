@@ -20,6 +20,7 @@
 #include <core.h>
 
 class Core;
+class StatisticPanel;
 
 class UiBackend : public QObject
 {

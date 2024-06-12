@@ -2,10 +2,16 @@
 #include <QDebug>
 #include <logger.h>
 
-StatisticPanel::StatisticPanel(ImageProvider *imageProvider, QObject *parent)
+StatisticPanel::StatisticPanel(Core *core, ImageProvider *imageProvider, QObject *parent)
     : QAbstractListModel(parent)
+    , m_corePtr(core)
     , m_imageProvider(imageProvider)
 {
+    QObject::connect(m_corePtr->statsServerProcessor(),                      &StatsServerProcessor::sendServerPlayrStats,       this, &StatisticPanel::receiveServerPlayerStats,        Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController()->lobbyEventReader(),   &LobbyEventReader::quitFromParty,                  this, &StatisticPanel::onQuitParty,                     Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController()->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, this, &StatisticPanel::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->rankedModServiceProcessor(),                 &RankedModServiceProcessor::sendPlyersRankedState, this, &StatisticPanel::receivePlyersRankedState ,       Qt::QueuedConnection);
+
     m_curentPlayerStatsItem = new StatisticPanelItem(this);
     emit playersItemsInitialized();
 }
@@ -222,7 +228,7 @@ void StatisticPanel::setBlockUpdate(bool newBlockUpdate)
 
 void StatisticPanel::updateStatistic()
 {
-    emit manualStatsRequest();
+    m_corePtr->soulstormController()->dowServerProcessor()->requestPartysData();
 }
 
 void StatisticPanel::setExpandPatyStatistic(bool newExpandPatyStatistic)
