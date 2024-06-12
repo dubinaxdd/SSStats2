@@ -85,18 +85,6 @@ void Core::addConnections()
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_soulstormController, &SoulstormController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
-
-    QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_uiBackend,                  &UiBackend::onSsLaunchStateChanged,             Qt::QueuedConnection);
-    QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_uiBackend,                  &UiBackend::receiveSsMaximized,                 Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMissionState, m_uiBackend,                &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendPlayersTestStats,    m_uiBackend->gamePanel(),   &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendGameRankedMode, m_uiBackend, [&](bool gameRankedMode){ m_uiBackend->gamePanel()->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
-
-    QObject::connect(m_soulstormController->replayDataCollector(),   &ReplayDataCollector::sendNotification,        m_uiBackend,                &UiBackend::receiveNotification,         Qt::QueuedConnection);
-
-    QObject::connect(m_soulstormController->apmMeter(),        &APMMeter::apmCalculated,        m_uiBackend->gamePanel(),       &GamePanel::onApmChanged,            Qt::QueuedConnection);
-    QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_uiBackend, &UiBackend::receiveCurrentModTechnicalName,   Qt::QueuedConnection);
-
     QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_overlayWindowController,    &OverlayWindowController::ssMaximized,                             Qt::DirectConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssMaximized,                     m_soundProcessor,             &SoundProcessor::setSoulstormMaximized,                             Qt::DirectConnection);
     QObject::connect(m_soulstormController,                    &SoulstormController::ssLaunchStateChanged,            m_overlayWindowController,    &OverlayWindowController::ssLaunched,                              Qt::QueuedConnection);

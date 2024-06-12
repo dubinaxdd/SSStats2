@@ -8,7 +8,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     : QObject(parent)
     , m_corePtr(core)
     , m_imageProvider(new ImageProvider(this))
-    , m_gamePanel(new GamePanel(core->settingsController(), this))
+    , m_gamePanel(new GamePanel(core->soulstormController(), core->settingsController(), this))
     , m_statisticPanel(new StatisticPanel(core, m_imageProvider, this))
     , m_newsPage(new MessagesPage(this))
     , m_eventsPage(new MessagesPage(this))
@@ -67,6 +67,12 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendSoftwareBanActivated, this, &UiBackend::onSoftwareBanActivated,     Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->rankedModServiceProcessor(), &RankedModServiceProcessor::sendOnlineCount, this, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
+
+    QObject::connect(m_corePtr->soulstormController(),                        &SoulstormController::ssLaunchStateChanged, this, &UiBackend::onSsLaunchStateChanged,         Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController(),                        &SoulstormController::ssMaximized,          this, &UiBackend::receiveSsMaximized,             Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController()->replayDataCollector(), &ReplayDataCollector::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMissionState,  this, &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMod,           this, &UiBackend::receiveCurrentModTechnicalName, Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()

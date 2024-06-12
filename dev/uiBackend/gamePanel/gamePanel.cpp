@@ -1,10 +1,11 @@
-#include "gamepanel.h"
+#include "gamePanel.h"
 #include <QDebug>
 
 #define GAME_LEAVE_TIMER_INTERVAL 1000
 
-GamePanel::GamePanel(SettingsController *settingsController, QObject *parent)
+GamePanel::GamePanel(SoulstormController *soulstormController, SettingsController *settingsController, QObject *parent)
     : QObject(parent)
+    , m_soulstormControllerPtr(soulstormController)
     , m_settingsController(settingsController)
 {
     m_racePanelVisibleTimer = new QTimer(this);
@@ -14,11 +15,13 @@ GamePanel::GamePanel(SettingsController *settingsController, QObject *parent)
     m_gameLeaveTimer = new QTimer(this);
     m_gameLeaveTimer->setInterval(GAME_LEAVE_TIMER_INTERVAL);
 
-
     QObject::connect(m_racePanelVisibleTimer, &QTimer::timeout, this, &GamePanel::racePanelVisibleTimerTimeout, Qt::QueuedConnection);
     QObject::connect(m_gameLeaveTimer, &QTimer::timeout, this, &GamePanel::gameLeaveTimerTimeout, Qt::QueuedConnection);
-
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &GamePanel::onSettingsLoaded, Qt::QueuedConnection);
+
+    QObject::connect(m_soulstormControllerPtr->gameStateReader(), &GameStateReader::sendPlayersTestStats, this, &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
+    QObject::connect(m_soulstormControllerPtr->apmMeter(),        &APMMeter::apmCalculated,               this,  &GamePanel::onApmChanged,            Qt::QueuedConnection);
+    QObject::connect(m_soulstormControllerPtr->gameStateReader(), &GameStateReader::sendGameRankedMode,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
 }
 
 void GamePanel::racePanelVisibleTimerTimeout()
