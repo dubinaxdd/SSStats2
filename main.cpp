@@ -68,11 +68,9 @@ int main(int argc, char *argv[])
     if(is_running)
     {
         QApplication app2(argc, argv);
-
-        //QApplication(argc, argv);
+        app2.setWindowIcon(QIcon(":/icons/resources/icons/DowStatsClient.ico"));
 
         QMessageBox msgBox;
-
         msgBox.setIcon(QMessageBox::Warning);
         msgBox.setText("DowStatsClient is already running");
         msgBox.exec();
