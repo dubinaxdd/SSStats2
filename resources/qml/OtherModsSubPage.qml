@@ -45,7 +45,7 @@ Rectangle
 
                 Label{
                     id: unlockerStateLabel
-                    text: model.unlockRacesStatus
+                    text: qsTr(model.unlockRacesStatus)
                     Layout.preferredWidth: 200
                     font.pixelSize: 11
                     color: DowStatsStyle.textColor
@@ -59,7 +59,7 @@ Rectangle
                 BlueButton{
                     id: unlockRacesButton
                     text: qsTr("Unlock races")
-                    Layout.preferredWidth: 140 + columnLayout.spacing
+                    Layout.preferredWidth: 200 + columnLayout.spacing
 
                     onClicked: {
                         if (_uiBackend.ssLaunchState)

@@ -345,6 +345,22 @@
         <source>Delete</source>
         <translation>Удалить</translation>
     </message>
+    <message>
+        <source>Installed</source>
+        <translation>Установлен</translation>
+    </message>
+    <message>
+        <source>Not installed</source>
+        <translation>Не установлен</translation>
+    </message>
+    <message>
+        <source>Progress: </source>
+        <translation>Прогресс: </translation>
+    </message>
+    <message>
+        <source>Download error</source>
+        <translation>Ошибка загрузки</translation>
+    </message>
 </context>
 <context>
     <name>ModsPage</name>

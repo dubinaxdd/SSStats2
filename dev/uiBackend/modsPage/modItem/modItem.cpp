@@ -12,16 +12,17 @@ bool ModItem::installedStatus() const
 
 void ModItem::setInstalledStatus(bool newInstalledStatus)
 {
-    if (m_installedStatus == newInstalledStatus)
-        return;
+    //TODO: убираем эту проверку для корректного перевода статуса установленности
+    //if (m_installedStatus == newInstalledStatus)
+    //    return;
 
     m_installedStatus = newInstalledStatus;
     emit installedStatusChanged();
 
     if(m_installedStatus)
-        setInstallProgress(tr("Installed"));
+        setInstallProgress("Installed");
     else
-        setInstallProgress(tr("Not installed"));
+        setInstallProgress("Not installed");
 }
 
 bool ModItem::installInProcess() const
@@ -51,13 +52,13 @@ void ModItem::setInstallCompleeted()
 {
     setInstalledStatus(true);
     setInstallInProcess(false);
-    setInstallProgress(tr("Installed"));
+    setInstallProgress("Installed");
 }
 
 void ModItem::setDownloadError()
 {
     setInstallInProcess(false);
-    setInstallProgress(tr("Download error"));
+    setInstallProgress("Download error");
 }
 
 void ModItem::setInstallProgress(const QString &newInstallProgress)

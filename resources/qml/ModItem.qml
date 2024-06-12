@@ -29,7 +29,7 @@ Rectangle
 
         Label{
             id: progressLabel0;
-            text: model.installProgress
+            text: qsTr(model.installProgress)
             Layout.preferredWidth: 200
             font.pixelSize: 11
             color: DowStatsStyle.textColor
@@ -42,6 +42,7 @@ Rectangle
         BlueButton{
             text: model.installedStatus ? qsTr("Reinstall") : qsTr("Install")
             enabled: !model.installInProcess
+            Layout.preferredWidth: 100
 
             onClicked: {
                 if (_uiBackend.ssLaunchState)
@@ -54,6 +55,7 @@ Rectangle
         BlueButton{
             text: qsTr("Delete")
             enabled: model.installedStatus
+            Layout.preferredWidth: 100
 
             onClicked: {
                 if (_uiBackend.ssLaunchState)
