@@ -20,6 +20,16 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
+#set(BALANCE_MOD_TEST OFF CACHE BOOL "")
+
+option(BALANCE_MOD_TEST "Build with DoW Stats Balance Mod TEST server" OFF)
+
+if (${BALANCE_MOD_TEST})
+    add_definitions(-DBALANCE_MOD_TEST)
+    message(STATUS "Build with DoW Stats Balance Mod TEST server")
+endif()
+
+
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
 
