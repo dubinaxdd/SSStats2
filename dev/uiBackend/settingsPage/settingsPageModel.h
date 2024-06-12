@@ -4,6 +4,7 @@
 #include <QObject>
 #include <settingsController.h>
 #include <baseTypes.h>
+#include <soundProcessor.h>
 
 class SettingsPageModel : public QObject
 {
@@ -25,7 +26,7 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(Language::LanguageEnum language READ language WRITE setLanguage NOTIFY languageChanged)
 
 public:
-    explicit SettingsPageModel(SettingsController* settingsController, QObject *parent = nullptr);
+    explicit SettingsPageModel(SoundProcessor* soundProcessor, SettingsController* settingsController, QObject *parent = nullptr);
 
     bool overlayVisible() const;
     void setOverlayVisible(bool newOverlayVisible);
@@ -34,10 +35,10 @@ signals:
     void overlayVisibleChanged();
     void win7SupportModeChanged();
     void skipIntroVideoChanged();
-    void enableEventsSoundWhenGameMinimizedChanged(bool state);
-    void enableEventsSoundWhenGameMaximizedChanged(bool state);
-    void enableGameLoadEventSoundChanged(bool state);
-    void enableGameStartEventSoundChanged(bool state);
+    void enableEventsSoundWhenGameMinimizedChanged();
+    void enableEventsSoundWhenGameMaximizedChanged();
+    void enableGameLoadEventSoundChanged();
+    void enableGameStartEventSoundChanged();
     void volumeChanged(int volume);
     void launchGameInWindowChanged();
     void currentThemeChanged();
@@ -95,6 +96,7 @@ private:
     void updateAutorunState(bool isAutorun);
 
 private:
+    SoundProcessor* m_soundProcessorPtr;
     SettingsController* m_settingsController;
 
     int m_currentTheme = 0;

@@ -128,15 +128,6 @@ void Core::addConnections()
     QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_soulstormController,              &SoulstormController::launchSoulstorm,                     Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
 
-
-
-    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMaximizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMaximized, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMinimizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMinimized, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameLoadEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameLoadEventSound, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameStartEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameStartEventSound, Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::volumeChanged, m_soundProcessor, &SoundProcessor::setVolume, Qt::QueuedConnection);
-
-
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_soulstormController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendNotification,              m_uiBackend,                    &UiBackend::receiveNotification,                Qt::QueuedConnection);
@@ -168,6 +159,11 @@ void Core::addConnections()
 
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+SoundProcessor *Core::soundProcessor() const
+{
+    return m_soundProcessor;
 }
 
 MapManager *Core::mapManager() const

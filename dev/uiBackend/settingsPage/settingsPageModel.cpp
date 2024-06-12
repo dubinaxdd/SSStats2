@@ -3,8 +3,9 @@
 #include <QCoreApplication>
 #include <QDir>
 
-SettingsPageModel::SettingsPageModel(SettingsController *settingsController, QObject *parent)
+SettingsPageModel::SettingsPageModel(SoundProcessor *soundProcessor, SettingsController *settingsController, QObject *parent)
     : QObject(parent)
+    , m_soundProcessorPtr(soundProcessor)
     , m_settingsController(settingsController)
 {
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &SettingsPageModel::onSettingsLoaded, Qt::QueuedConnection);
@@ -13,15 +14,24 @@ SettingsPageModel::SettingsPageModel(SettingsController *settingsController, QOb
 void SettingsPageModel::onSettingsLoaded()
 {
     m_enableEventsSoundWhenGameMinimized = m_settingsController->getSettings()->enableEventsSoundWhenGameMinimized;
-    emit enableEventsSoundWhenGameMinimizedChanged(m_enableEventsSoundWhenGameMinimized);
+    m_soundProcessorPtr->setEnableSoundsWhenGameMinimized(m_enableEventsSoundWhenGameMinimized);
+    emit enableEventsSoundWhenGameMinimizedChanged();
 
     m_enableEventsSoundWhenGameMaximized = m_settingsController->getSettings()->enableEventsSoundWhenGameMaximized;
-    emit enableEventsSoundWhenGameMaximizedChanged(m_enableEventsSoundWhenGameMaximized);
+    m_soundProcessorPtr->setEnableSoundsWhenGameMaximized(m_enableEventsSoundWhenGameMaximized);
+    emit enableEventsSoundWhenGameMaximizedChanged();
 
     m_enableGameLoadEventSound = m_settingsController->getSettings()->enableGameLoadEventSound;
+    m_soundProcessorPtr->setEnableGameLoadEventSound(m_enableGameLoadEventSound);
+    emit enableGameLoadEventSoundChanged();
+
     m_enableGameStartEventSound = m_settingsController->getSettings()->enableGameStartEventSound;
-    emit enableGameLoadEventSoundChanged(m_enableGameLoadEventSound);
-    emit enableGameStartEventSoundChanged(m_enableGameStartEventSound);
+    m_soundProcessorPtr->setEnableGameStartEventSound(m_enableGameStartEventSound);
+    emit enableGameStartEventSoundChanged();
+
+    m_volume = m_settingsController->getSettings()->volume;
+    m_soundProcessorPtr->setVolume(m_volume);
+    emit volumeChanged(m_volume);
 
     m_overlayVisible =  m_settingsController->getSettings()->overlayVisible;
     emit overlayVisibleChanged();
@@ -31,9 +41,6 @@ void SettingsPageModel::onSettingsLoaded()
 
     m_skipIntroVideo =  m_settingsController->getSettings()->skipIntroVideo;
     emit skipIntroVideoChanged();
-
-    m_volume = m_settingsController->getSettings()->volume;
-    emit volumeChanged(m_volume);
 
     m_launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
     emit launchGameInWindowChanged();
@@ -180,6 +187,7 @@ void SettingsPageModel::setVolume(int newVolume)
     if (m_volume == newVolume)
         return;
     m_volume = newVolume;
+    m_soundProcessorPtr->setVolume(m_volume);
     emit volumeChanged(m_volume);
 
     m_settingsController->getSettings()->volume = m_volume;
@@ -196,7 +204,8 @@ void SettingsPageModel::setEnableGameStartEventSound(bool newEnableGameStartEven
     if (m_enableGameStartEventSound == newEnableGameStartEventSound)
         return;
     m_enableGameStartEventSound = newEnableGameStartEventSound;
-    emit enableGameStartEventSoundChanged(m_enableGameStartEventSound);
+    m_soundProcessorPtr->setEnableGameStartEventSound(m_enableGameStartEventSound);
+    emit enableGameStartEventSoundChanged();
 
     m_settingsController->getSettings()->enableGameStartEventSound = m_enableGameStartEventSound;
     m_settingsController->saveSettings();
@@ -212,7 +221,8 @@ void SettingsPageModel::setEnableGameLoadEventSound(bool newEnableGameLoadEventS
     if (m_enableGameLoadEventSound == newEnableGameLoadEventSound)
         return;
     m_enableGameLoadEventSound = newEnableGameLoadEventSound;
-    emit enableGameLoadEventSoundChanged(m_enableGameLoadEventSound);
+    m_soundProcessorPtr->setEnableGameLoadEventSound(m_enableGameLoadEventSound);
+    emit enableGameLoadEventSoundChanged();
 
     m_settingsController->getSettings()->enableGameLoadEventSound = m_enableGameLoadEventSound;
     m_settingsController->saveSettings();
@@ -228,7 +238,8 @@ void SettingsPageModel::setEnableEventsSoundWhenGameMaximized(bool newEnableEven
     if (m_enableEventsSoundWhenGameMaximized == newEnableEventsSoundWhenGameMaximized)
         return;
     m_enableEventsSoundWhenGameMaximized = newEnableEventsSoundWhenGameMaximized;
-    emit enableEventsSoundWhenGameMaximizedChanged(m_enableEventsSoundWhenGameMaximized);
+    m_soundProcessorPtr->setEnableSoundsWhenGameMaximized(m_enableEventsSoundWhenGameMaximized);
+    emit enableEventsSoundWhenGameMaximizedChanged();
 
     m_settingsController->getSettings()->enableEventsSoundWhenGameMaximized = m_enableEventsSoundWhenGameMaximized;
     m_settingsController->saveSettings();
@@ -245,7 +256,8 @@ void SettingsPageModel::setEnableEventsSoundWhenGameMinimized(bool newEnableEven
         return;
 
     m_enableEventsSoundWhenGameMinimized = newEnableEventsSoundWhenGameMinimized;
-    emit enableEventsSoundWhenGameMinimizedChanged(m_enableEventsSoundWhenGameMinimized);
+    m_soundProcessorPtr->setEnableSoundsWhenGameMinimized(m_enableEventsSoundWhenGameMinimized);
+    emit enableEventsSoundWhenGameMinimizedChanged();
 
     m_settingsController->getSettings()->enableEventsSoundWhenGameMinimized = m_enableEventsSoundWhenGameMinimized;
     m_settingsController->saveSettings();

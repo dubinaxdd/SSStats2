@@ -35,6 +35,7 @@ public:
     ModsProcessor *modsProcessor() const;
     DiscordWebProcessor *discordWebProcessor() const;
     MapManager *mapManager() const;
+    SoundProcessor *soundProcessor() const;
 
 signals:
     void sendExit();
