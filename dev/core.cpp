@@ -129,11 +129,7 @@ void Core::addConnections()
     QObject::connect(m_uiBackend,                       &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
 
 
-    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendRemoveMap, m_mapManager, &MapManager::receiveRemoveMap,  Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallMap, m_mapManager, &MapManager::receiveInstallMap,  Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallAllMaps, m_mapManager, &MapManager::receiveInstallAllMaps,  Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallDefaultMaps, m_mapManager, &MapManager::receiveInstallDefaultMaps,  Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendLoadMapsInfo, m_mapManager, &MapManager::receiveLoadMapsInfo,  Qt::QueuedConnection);
+
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMaximizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMaximized, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMinimizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMinimized, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameLoadEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameLoadEventSound, Qt::QueuedConnection);
@@ -148,18 +144,10 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
-
-
-
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_soulstormController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendUniquePlayersOnlineStatistic, m_uiBackend->onlineStatisticPanel(), &OnlineStatisticPanel::receiveUniquePlayersOnlineStatistic, Qt::QueuedConnection);
-
-    QObject::connect(m_mapManager, &MapManager::sendMapItem, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapItem, Qt::QueuedConnection);
-    QObject::connect(m_mapManager, &MapManager::sendDownloadingProgress, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveDownloadingProgress, Qt::QueuedConnection);
-    QObject::connect(m_mapManager, &MapManager::sendMapImage, m_uiBackend->imageProvider(), &ImageProvider::receiveMapImage, Qt::QueuedConnection);
-    QObject::connect(m_mapManager, &MapManager::mapsInfoLoaded, m_uiBackend->mapManagerPage(), &MapManagerPage::receiveMapsInfoLoaded, Qt::QueuedConnection);
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendStatisticModName, m_uiBackend, &UiBackend::receiveCurrentModName, Qt::QueuedConnection);
     QObject::connect(m_soulstormController->gameStateReader(),   &GameStateReader::sendCurrentMod,  m_uiBackend, &UiBackend::receiveCurrentModTechnicalName,   Qt::QueuedConnection);
@@ -180,6 +168,11 @@ void Core::addConnections()
 
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+MapManager *Core::mapManager() const
+{
+    return m_mapManager;
 }
 
 DiscordWebProcessor *Core::discordWebProcessor() const

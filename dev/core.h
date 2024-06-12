@@ -27,16 +27,14 @@ public:
     Core(QQmlContext *context, QObject* parent = nullptr);
 
     bool event(QEvent *event) override;
+
     UiBackend *uiBackend() const;
     OverlayWindowController *overlayWindowController() const;
-
     SettingsController *settingsController() const;
-
     BalanceModManager *balanceModManager() const;
-
     ModsProcessor *modsProcessor() const;
-
     DiscordWebProcessor *discordWebProcessor() const;
+    MapManager *mapManager() const;
 
 signals:
     void sendExit();

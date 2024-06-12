@@ -2,12 +2,18 @@
 #include <QDebug>
 #include <QFile>
 
-MapManagerPage::MapManagerPage(SettingsController* settingsController, ImageProvider* imageProvider, QObject *parent)
+MapManagerPage::MapManagerPage(MapManager* mapManager, SettingsController* settingsController, ImageProvider* imageProvider, QObject *parent)
     : QAbstractListModel(parent)
+    , m_mapManagerPtr(mapManager)
     , m_settingsController(settingsController)
     , m_imageProvider(imageProvider)
 {
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManagerPage::onSettingsLoaded, Qt::QueuedConnection );
+
+    QObject::connect(m_mapManagerPtr, &MapManager::sendMapItem, this, &MapManagerPage::receiveMapItem, Qt::QueuedConnection);
+    QObject::connect(m_mapManagerPtr, &MapManager::sendDownloadingProgress, this, &MapManagerPage::receiveDownloadingProgress, Qt::QueuedConnection);
+    QObject::connect(m_mapManagerPtr, &MapManager::sendMapImage, m_imageProvider, &ImageProvider::receiveMapImage, Qt::QueuedConnection);
+    QObject::connect(m_mapManagerPtr, &MapManager::mapsInfoLoaded, this, &MapManagerPage::receiveMapsInfoLoaded, Qt::QueuedConnection);
 }
 
 QVariant MapManagerPage::data(const QModelIndex &index, int role) const
@@ -221,7 +227,7 @@ void MapManagerPage::setUpdatesAvailable(bool newUpdatesAvailable)
 
 void MapManagerPage::removeMap(int index)
 {
-    emit sendRemoveMap(m_mapItemArray[index]);
+    m_mapManagerPtr->receiveRemoveMap(m_mapItemArray[index]);
 }
 
 void MapManagerPage::installMap(int index)
@@ -230,7 +236,7 @@ void MapManagerPage::installMap(int index)
     QModelIndex needIndex = QAbstractItemModel::createIndex(index,0);
     emit dataChanged(needIndex, needIndex);
 
-    emit sendInstallMap(m_mapItemArray[index]);
+    m_mapManagerPtr->receiveInstallMap(m_mapItemArray[index]);
 }
 
 void MapManagerPage::selectMap(int index)
@@ -285,8 +291,7 @@ void MapManagerPage::installAllMaps()
     QModelIndex last = QAbstractItemModel::createIndex(m_mapItemArray.count() - 1, 0);
 
     emit dataChanged(first, last);
-
-    emit sendInstallAllMaps();
+    m_mapManagerPtr->receiveInstallAllMaps();
 }
 
 void MapManagerPage::installDefaultMaps()
@@ -303,8 +308,7 @@ void MapManagerPage::installDefaultMaps()
     QModelIndex last = QAbstractItemModel::createIndex(m_mapItemArray.count() - 1, 0);
 
     emit dataChanged(first, last);
-
-    emit sendInstallDefaultMaps();
+    m_mapManagerPtr->receiveInstallDefaultMaps();
 }
 
 void MapManagerPage::loadMapsInfo()
@@ -322,7 +326,7 @@ void MapManagerPage::loadMapsInfo()
     m_mapItemArray.clear();
     endRemoveRows();
 
-    emit sendLoadMapsInfo();
+    m_mapManagerPtr->receiveLoadMapsInfo();
 }
 
 QImage MapManagerPage::loadMiniMapImage(QString fileName)

@@ -6,6 +6,7 @@
 #include <baseTypes.h>
 #include <imageProvider.h>
 #include <settingsController.h>
+#include <mapManager.h>
 
 class MapManagerPage : public QAbstractListModel
 {
@@ -27,7 +28,7 @@ class MapManagerPage : public QAbstractListModel
 
 
 public:
-    explicit MapManagerPage(SettingsController* settingsController, ImageProvider* imageProvider, QObject *parent = nullptr);
+    explicit MapManagerPage(MapManager* mapManager, SettingsController* settingsController, ImageProvider* imageProvider, QObject *parent = nullptr);
 
     enum DataRoles {   
             MapName = Qt::UserRole + 1,
@@ -94,11 +95,6 @@ public:
 
 signals:
     void updatesAvailableChanged();
-    void sendRemoveMap(MapItem *mapItem);
-    void sendInstallMap(MapItem *mapItem);
-    void sendInstallAllMaps();
-    void sendInstallDefaultMaps();
-    void sendLoadMapsInfo();
 
     void currentMapNameChanged();
     void currentMapAuthorsChanged();
@@ -133,6 +129,7 @@ private:
     QString consolidateTags(QList<QString> tags);
 
 private:
+    MapManager* m_mapManagerPtr;
     SettingsController* m_settingsController;
     ImageProvider* m_imageProvider;
     QString m_ssPath = "";
