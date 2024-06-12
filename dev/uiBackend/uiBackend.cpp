@@ -15,7 +15,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     , m_settingsPageModel(new SettingsPageModel(core->settingsController(), this))
     , m_replayManager(new ReplayManager(m_imageProvider, this))
     , m_mapManagerPage(new MapManagerPage(core->settingsController(), m_imageProvider, this))
-    , m_modsPage(new ModsPage(core->settingsController(), this))
+    , m_modsPage(new ModsPage(core->modsProcessor(), core->settingsController(), this))
     , m_onlineStatisticPanel(new OnlineStatisticPanel(this))
     , m_balanceModPage(new BalanceModPage(core->balanceModManager(), core->settingsController(), this))
     , m_notificationManager(new NotificationManager(this))
@@ -78,7 +78,6 @@ void UiBackend::receiveSsMaximized(bool maximized)
 
 void UiBackend::onSsLaunchStateChanged(bool state)
 {
-    //m_ssLaunchState = state;
     setSsLaunchState(state);
     setExpand(false);
     showClient();

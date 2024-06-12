@@ -34,6 +34,8 @@ public:
 
     BalanceModManager *balanceModManager() const;
 
+    ModsProcessor *modsProcessor() const;
+
 signals:
     void sendExit();
     void languageChanged(QString language);

@@ -1,7 +1,8 @@
 #include "modsPage.h"
 
-ModsPage::ModsPage(SettingsController *settingsController, QObject *parent)
+ModsPage::ModsPage(ModsProcessor* modsProcessor, SettingsController *settingsController, QObject *parent)
     : QObject(parent)
+    , m_modsProcessorPtr(modsProcessor)
     , m_settingsController(settingsController)
     , m_russianFontsMod(new ModItem(this))
     , m_cameraMod(new ModItem(this))
@@ -10,31 +11,36 @@ ModsPage::ModsPage(SettingsController *settingsController, QObject *parent)
 {
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &ModsPage::onSettingsLoaded, Qt::QueuedConnection);
 
-    QObject::connect(m_russianFontsMod, &ModItem::startInstall, this, [&]{emit startInstall(InstMod::RussianFonts);});
-    QObject::connect(m_cameraMod, &ModItem::startInstall, this, [&]{emit startInstall(InstMod::CameraMod);});
-    QObject::connect(m_gridHotkeysMod, &ModItem::startInstall, this, [&]{emit startInstall(InstMod::GridHotkeys);});
-    QObject::connect(m_transparentCameraTrapezoidMod, &ModItem::startInstall, this, [&]{emit startInstall(InstMod::TransparentCameraTrapezoid);});
+    QObject::connect(m_russianFontsMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::RussianFonts);});
+    QObject::connect(m_cameraMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::CameraMod);});
+    QObject::connect(m_gridHotkeysMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::GridHotkeys);});
+    QObject::connect(m_transparentCameraTrapezoidMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::TransparentCameraTrapezoid);});
 
     QObject::connect(m_russianFontsMod, &ModItem::startUninstall, this, [&]{
-        emit startUninstall(InstMod::RussianFonts);
+        m_modsProcessorPtr->uninstallRequest(InstMod::RussianFonts);
         m_settingsController->getSettings()->russianFontsInstalled = false;
         m_settingsController->saveSettings();
     });
     QObject::connect(m_cameraMod, &ModItem::startUninstall, this, [&]{
-        emit startUninstall(InstMod::CameraMod);
+        m_modsProcessorPtr->uninstallRequest(InstMod::CameraMod);
         m_settingsController->getSettings()->cameraModInstalled = false;
         m_settingsController->saveSettings();
     });
     QObject::connect(m_gridHotkeysMod, &ModItem::startUninstall, this, [&]{
-        emit startUninstall(InstMod::GridHotkeys);
+        m_modsProcessorPtr->uninstallRequest(InstMod::GridHotkeys);
         m_settingsController->getSettings()->gridHotkeysInstalled = false;
         m_settingsController->saveSettings();
     });
     QObject::connect(m_transparentCameraTrapezoidMod, &ModItem::startUninstall, this, [&]{
-        emit startUninstall(InstMod::TransparentCameraTrapezoid);
+        m_modsProcessorPtr->uninstallRequest(InstMod::TransparentCameraTrapezoid);
         m_settingsController->getSettings()->transparentCameraTrapezoidInstalled = false;
         m_settingsController->saveSettings();
     });
+
+    QObject::connect(m_modsProcessorPtr, &ModsProcessor::modInstallCompleeted, this, &ModsPage::receiveInstallCompleeted, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessorPtr, &ModsProcessor::installProgress, this, &ModsPage::receiveDownloadProgress, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessorPtr, &ModsProcessor::downloadError, this, &ModsPage::receiveDownloadError, Qt::QueuedConnection);
+    QObject::connect(m_modsProcessorPtr, &ModsProcessor::sendUnlockRacesStatus, this, &ModsPage::receiveUnlockRacesStatus, Qt::QueuedConnection);
 }
 
 void ModsPage::onSettingsLoaded()
@@ -113,5 +119,5 @@ void ModsPage::unlockRaces()
 {
     m_unlockRacesStatus = tr("Status: Processed...");
     emit unlockRacesStatusChanged();
-    emit sendUnlockRaces();
+    m_modsProcessorPtr->unlockRaces();
 }

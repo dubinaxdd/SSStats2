@@ -18,12 +18,12 @@ ModsProcessor::ModsProcessor(QString ssPath, QObject *parent)
     QObject::connect(m_modsDownloader, &ModsDownloader::downladProgress, this, [&](InstMod mod, int progress){emit installProgress(mod, progress);}, Qt::QueuedConnection);
 }
 
-void ModsProcessor::onModInstallRequest(InstMod mod)
+void ModsProcessor::modInstallRequest(InstMod mod)
 {
     m_modsDownloader->downloadMod(mod);
 }
 
-void ModsProcessor::onUninstallRequest(InstMod mod)
+void ModsProcessor::uninstallRequest(InstMod mod)
 {
     m_modsInstaller->uninstallMod(mod);
 }

@@ -5,6 +5,7 @@
 #include <settingsController.h>
 #include <modItem.h>
 #include <baseTypes.h>
+#include <modsProcessor.h>
 
 class ModsPage : public QObject
 {
@@ -18,13 +19,9 @@ class ModsPage : public QObject
     Q_PROPERTY(QString unlockRacesStatus MEMBER m_unlockRacesStatus NOTIFY unlockRacesStatusChanged)
 
 public:
-    explicit ModsPage(SettingsController* settingsController, QObject *parent = nullptr);
+    explicit ModsPage(ModsProcessor* modsProcessor, SettingsController* settingsController, QObject *parent = nullptr);
 
 signals:
-    void startInstall(InstMod mod);
-    void startUninstall(InstMod mod);
-
-    void sendUnlockRaces();
     void unlockRacesStatusChanged();
 
 public slots:
@@ -40,6 +37,7 @@ public:
     Q_INVOKABLE void unlockRaces();
 
 private:
+    ModsProcessor* m_modsProcessorPtr;
     SettingsController* m_settingsController;
 
     ModItem* m_russianFontsMod;

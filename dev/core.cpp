@@ -129,10 +129,6 @@ void Core::addConnections()
     QObject::connect(m_uiBackend,                       &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
     QObject::connect(m_uiBackend->newsPage(),           &MessagesPage::sendLastReadedMessageId,         m_discordWebProcessor,              &DiscordWebProcessor::setLastReadedNewsMessageID,     Qt::QueuedConnection);
     QObject::connect(m_uiBackend->eventsPage(),         &MessagesPage::sendLastReadedMessageId,         m_discordWebProcessor,              &DiscordWebProcessor::setLastReadedEventsMessageID,   Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->modsPage(),           &ModsPage::startInstall,               m_modsProcessor,                    &ModsProcessor::onModInstallRequest,                Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->modsPage(),           &ModsPage::startUninstall,             m_modsProcessor,                    &ModsProcessor::onUninstallRequest,                 Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->modsPage(),           &ModsPage::sendUnlockRaces,            m_modsProcessor,                   &ModsProcessor::unlockRaces,                 Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::volumeChanged, m_soundProcessor, &SoundProcessor::setVolume, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->newsPage(),        &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextNews,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend->eventsPage(),      &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextEvents,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendRemoveMap, m_mapManager, &MapManager::receiveRemoveMap,  Qt::QueuedConnection);
@@ -144,6 +140,8 @@ void Core::addConnections()
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableEventsSoundWhenGameMinimizedChanged, m_soundProcessor,  &SoundProcessor::setEnableSoundsWhenGameMinimized, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameLoadEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameLoadEventSound, Qt::QueuedConnection);
     QObject::connect(m_uiBackend->settingsPageModel(),  &SettingsPageModel::enableGameStartEventSoundChanged, m_soundProcessor,  &SoundProcessor::setEnableGameStartEventSound, Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->settingsPageModel(), &SettingsPageModel::volumeChanged, m_soundProcessor, &SoundProcessor::setVolume, Qt::QueuedConnection);
+
 
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_uiBackend->statisticPanel(),  &StatisticPanel::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor,                    &StatsServerProcessor::sendServerPlayrStats,          m_soulstormController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
@@ -160,10 +158,7 @@ void Core::addConnections()
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
     QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNextEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
 
-    QObject::connect(m_modsProcessor, &ModsProcessor::modInstallCompleeted, m_uiBackend->modsPage(), &ModsPage::receiveInstallCompleeted, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::installProgress, m_uiBackend->modsPage(), &ModsPage::receiveDownloadProgress, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::downloadError, m_uiBackend->modsPage(), &ModsPage::receiveDownloadError, Qt::QueuedConnection);
-    QObject::connect(m_modsProcessor, &ModsProcessor::sendUnlockRacesStatus, m_uiBackend->modsPage(), &ModsPage::receiveUnlockRacesStatus, Qt::QueuedConnection);
+
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_uiBackend->statisticPanel(), &StatisticPanel::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_rankedModServiceProcessor, &RankedModServiceProcessor::sendOnlineCount, m_uiBackend, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
@@ -194,6 +189,11 @@ void Core::addConnections()
 
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+ModsProcessor *Core::modsProcessor() const
+{
+    return m_modsProcessor;
 }
 
 BalanceModManager *Core::balanceModManager() const
