@@ -120,7 +120,7 @@ Rectangle {
 
                     BlueButton {
                         text: qsTr("Install")
-                        enabled: !model.selectedModDownladingProcessed
+                        enabled: !model.selectedModDownladingProcessed|| _uiBackend.ssLaunchState
                         onClicked:{
 
                             if (_uiBackend.ssLaunchState)
