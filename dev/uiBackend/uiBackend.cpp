@@ -118,7 +118,10 @@ void UiBackend::loadStarted()
     m_expand = false;
 
     if(m_settingsPageModel->overlayVisible())
+    {
+        m_corePtr->soulstormController()->blockSsWindowInput(m_expand);
         emit sendExpand(m_expand);
+    }
 
     emit headerPanelVisibleChanged();
     emit patyStatisticVisibleChanged();
@@ -366,7 +369,8 @@ void UiBackend::setRankedModeState(bool newRankedModeState)
     if (m_rankedModeState == newRankedModeState)
         return;
     m_rankedModeState = newRankedModeState;
-    emit rankedModeStateChanged(m_rankedModeState);
+    m_corePtr->rankedModServiceProcessor()->sendRankedMode(m_rankedModeState);
+    emit rankedModeStateChanged();
 }
 
 ReplayManager *UiBackend::replayManager() const
@@ -483,7 +487,7 @@ void UiBackend::onSoftwareBanActivated(QString reason)
 
 void UiBackend::onExit()
 {
-    emit sendExit();
+    m_corePtr->exit();
 }
 
 void UiBackend::launchSoulstorm()
@@ -499,7 +503,7 @@ void UiBackend::launchSoulstorm()
     else if (m_balanceModPage->downloadingProcessed())
         setBalanceModInstallProcessedDialogVisible(true);
     else
-        emit sendLaunchSoulstorm();
+        m_corePtr->soulstormController()->launchSoulstorm();
 }
 
 void UiBackend::setSizeModifer(double size)
@@ -515,6 +519,7 @@ void UiBackend::setSizeModifer(double size)
 void UiBackend::onSettingsLoaded()
 {
     m_noFogState = m_corePtr->settingsController()->getSettings()->noFog;
+    m_corePtr->soulstormController()->soulstormMemoryController()->onNoFogStateChanged(m_noFogState);
     emit noFogStateChanged(m_noFogState);
     m_sizeModifer = m_corePtr->settingsController()->getSettings()->scale;
     emit sizeModiferLoadedFromSettings(m_sizeModifer);
@@ -567,6 +572,7 @@ void UiBackend::setNoFogState(bool state)
     m_noFogState = state;
     m_corePtr->settingsController()->getSettings()->noFog = m_noFogState;
     m_corePtr->settingsController()->saveSettings();
+    m_corePtr->soulstormController()->soulstormMemoryController()->onNoFogStateChanged(m_noFogState);
     emit noFogStateChanged(m_noFogState);
 }
 
@@ -618,7 +624,10 @@ void UiBackend::setExpand(bool newExpand)
     m_expand = newExpand;
 
     if(m_settingsPageModel->overlayVisible())
+    {
+        m_corePtr->soulstormController()->blockSsWindowInput(m_expand);
         emit sendExpand(m_expand);
+    }
 
     if (m_missionStarted)
     {

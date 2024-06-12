@@ -27,6 +27,7 @@ public:
     Core(QQmlContext *context, QObject* parent = nullptr);
 
     bool event(QEvent *event) override;
+    void exit();
 
     UiBackend *uiBackend() const;
     OverlayWindowController *overlayWindowController() const;
@@ -43,9 +44,6 @@ public:
 signals:
     void sendExit();
     void languageChanged(QString language);
-
-private slots:
-    void onExit();
 
 public slots:
     void onKeyEvent(QKeyEvent event);

@@ -183,12 +183,8 @@ signals:
 
     void headerPanelVisibleChanged();
     void patyStatisticVisibleChanged();
-
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
-
-    void sendExit();
-    void sendLaunchSoulstorm();
     void noFogStateChanged(bool);
 
     void sizeModiferChanged(float sizeModifer);
@@ -198,7 +194,7 @@ signals:
     void updateNotification();
     void notificationVisibleChanged();
 
-    void rankedModeStateChanged(bool trainingMode);
+    void rankedModeStateChanged();
     void enableTrainingModeSwitchChanged();
     void onlineCountChanged();
 
