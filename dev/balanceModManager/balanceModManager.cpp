@@ -475,14 +475,11 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
         if (!m_showBalanceModBetaVersions && newModInfo.isBeta)
             continue;
 
-        newModInfo.id = newObject.value("id").toInt();
         newModInfo.technicalName = newObject.value("technicalName").toString();
         newModInfo.uiName = newObject.value("uiName").toString();
         newModInfo.version = newObject.value("version").toString();
-        newModInfo.isLatest = newObject.value("isActual").toBool();
         newModInfo.isInstalled = entryList.contains(newModInfo.technicalName) && entryList.contains(newModInfo.technicalName + ".module");
         newModInfo.isCurrentMod = m_currentModName.toLower() == newModInfo.technicalName.toLower();
-        newModInfo.isPrevious = newObject.value("isPrevious").toBool();
 
         if (newModInfo.isInstalled)
             newModInfo.changelog = getChangeLogFromLocalFiles(newModInfo.technicalName).replace('\t', "    ");
@@ -493,8 +490,25 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
     if (m_templateProfilePath.isEmpty())
         updateTemplateProfilePath(m_settingsController->getSettings()->useCustomTemplateProfilePath);
 
+    bool actualModFinded = false;
+    bool previousModFinded = false;
+
     for (int i = 0; i < m_modInfoList.count(); i++)
     {
+        //Определяем предыдущую версию мода
+        if(!previousModFinded && actualModFinded && m_modInfoList.at(i).isInstalled)
+        {
+            m_modInfoList[i].isPrevious = true;
+            previousModFinded = true;
+        }
+
+        //Определяем актуальную версию мода
+        if(!actualModFinded && !m_modInfoList.at(i).isBeta)
+        {
+            m_modInfoList[i].isLatest = true;
+            actualModFinded = true;
+        }
+
         if (m_modInfoList.at(i).isLatest && m_modInfoList.at(i).technicalName != m_lastActualMod)
         {
             newActualModDetected(m_modInfoList.at(i).technicalName, m_modInfoList.at(i).isInstalled);
@@ -508,7 +522,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
             if (!m_modInfoList.at(i).isInstalled && (!m_settingsController->getSettings()->autoUpdateBalanceMod || m_ssLounchedState))
                 emit sendModReadyForInstall(m_modInfoList.at(i).uiName);
 
-            break;
+           // break;
         }
     }
 
