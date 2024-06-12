@@ -36,6 +36,8 @@ public:
 
     ModsProcessor *modsProcessor() const;
 
+    DiscordWebProcessor *discordWebProcessor() const;
+
 signals:
     void sendExit();
     void languageChanged(QString language);

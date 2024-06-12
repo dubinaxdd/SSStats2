@@ -127,10 +127,8 @@ void Core::addConnections()
     QObject::connect(m_uiBackend,                       &UiBackend::noFogStateChanged,                  m_soulstormController->soulstormMemoryController(), &SoulstormMemoryController::onNoFogStateChanged,             Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::sendLaunchSoulstorm,                m_soulstormController,              &SoulstormController::launchSoulstorm,                     Qt::QueuedConnection);
     QObject::connect(m_uiBackend,                       &UiBackend::rankedModeStateChanged, m_rankedModServiceProcessor, &RankedModServiceProcessor::sendRankedMode , Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->newsPage(),           &MessagesPage::sendLastReadedMessageId,         m_discordWebProcessor,              &DiscordWebProcessor::setLastReadedNewsMessageID,     Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->eventsPage(),         &MessagesPage::sendLastReadedMessageId,         m_discordWebProcessor,              &DiscordWebProcessor::setLastReadedEventsMessageID,   Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->newsPage(),        &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextNews,             Qt::QueuedConnection);
-    QObject::connect(m_uiBackend->eventsPage(),      &MessagesPage::sendNextMessagesRequest,              m_discordWebProcessor,            &DiscordWebProcessor::requestNextEvents,             Qt::QueuedConnection);
+
+
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendRemoveMap, m_mapManager, &MapManager::receiveRemoveMap,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallMap, m_mapManager, &MapManager::receiveInstallMap,  Qt::QueuedConnection);
     QObject::connect(m_uiBackend->mapManagerPage(), &MapManagerPage::sendInstallAllMaps, m_mapManager, &MapManager::receiveInstallAllMaps,  Qt::QueuedConnection);
@@ -150,13 +148,6 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
-    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAvatar, m_uiBackend->imageProvider(), &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
-    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendAttachmentImage, m_uiBackend->imageProvider(), &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
-    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendYoutubeImage, m_uiBackend->imageProvider(), &ImageProvider::addYoutubeImage, Qt::QueuedConnection);
-    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNews, m_uiBackend->newsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
-    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNextNews, m_uiBackend->newsPage(), &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
-    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveMessages, Qt::QueuedConnection);
-    QObject::connect(m_discordWebProcessor, &DiscordWebProcessor::sendNextEvents, m_uiBackend->eventsPage(), &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
 
 
 
@@ -189,6 +180,11 @@ void Core::addConnections()
 
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+DiscordWebProcessor *Core::discordWebProcessor() const
+{
+    return m_discordWebProcessor;
 }
 
 ModsProcessor *Core::modsProcessor() const

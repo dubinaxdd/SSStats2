@@ -45,6 +45,19 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_imageProvider,      &ImageProvider::updateAvatars,                  m_eventsPage,          &MessagesPage::onAvatarUpdate,                    Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->balanceModManager(), &BalanceModManager::sendModsInfo, m_replayManager, &ReplayManager::receiveModsInfo, Qt::QueuedConnection);
+
+    QObject::connect(m_newsPage,           &MessagesPage::sendLastReadedMessageId,         m_corePtr->discordWebProcessor(),              &DiscordWebProcessor::setLastReadedNewsMessageID,     Qt::QueuedConnection);
+    QObject::connect(m_eventsPage,         &MessagesPage::sendLastReadedMessageId,         m_corePtr->discordWebProcessor(),              &DiscordWebProcessor::setLastReadedEventsMessageID,   Qt::QueuedConnection);
+    QObject::connect(m_newsPage,        &MessagesPage::sendNextMessagesRequest,              m_corePtr->discordWebProcessor(),            &DiscordWebProcessor::requestNextNews,             Qt::QueuedConnection);
+    QObject::connect(m_eventsPage,      &MessagesPage::sendNextMessagesRequest,              m_corePtr->discordWebProcessor(),            &DiscordWebProcessor::requestNextEvents,             Qt::QueuedConnection);
+
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendAvatar, m_imageProvider, &ImageProvider::addDiscordAvatar, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendAttachmentImage, m_imageProvider, &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendYoutubeImage, m_imageProvider, &ImageProvider::addYoutubeImage, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNews, m_newsPage, &MessagesPage::receiveMessages, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextNews, m_newsPage, &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendEvents, m_eventsPage, &MessagesPage::receiveMessages, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextEvents, m_eventsPage, &MessagesPage::receiveNextMessages, Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()
