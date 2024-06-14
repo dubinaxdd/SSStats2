@@ -480,7 +480,7 @@
         <translation>Раса: </translation>
     </message>
     <message>
-        <source>Win rate: </source>
+        <source>Wins rate: </source>
         <translation>Процент побед: </translation>
     </message>
     <message>

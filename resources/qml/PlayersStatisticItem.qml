@@ -294,7 +294,7 @@ Rectangle {
 
                     Label {
                         id: label5
-                        text: qsTr("Win rate: ") + root.playerWinRate + "%"
+                        text: qsTr("Wins rate: ") + root.playerWinRate + "%"
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
