@@ -9,6 +9,7 @@
 #include <dev/core.h>
 #include <QDebug>
 #include <QIcon>
+#include <QQuickWindow>
 
 #include <QSystemSemaphore>
 #include <QSharedMemory>
@@ -89,6 +90,8 @@ int main(int argc, char *argv[])
 
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
+
+    QQuickWindow::setDefaultAlphaBuffer(true);
 
     QTranslator translator;
 
