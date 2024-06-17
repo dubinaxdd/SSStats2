@@ -80,6 +80,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool soulstormIsInstalled READ soulstormIsInstalled NOTIFY soulstormIsInstalledChanged)
     Q_PROPERTY(bool ssLaunchState READ ssLaunchState WRITE setSsLaunchState NOTIFY ssLaunchStateChanged)
 
+    Q_PROPERTY(qreal devicePixelRatio READ devicePixelRatio WRITE setDevicePixelRatio NOTIFY devicePixelRatioChanged)
+
 public:
     explicit UiBackend(Core* core, QObject *parent = nullptr);
 
@@ -168,76 +170,58 @@ public:
     const QString &softwareUseBanReason() const;
     void setSoftwareUseBanReason(const QString &newSoftwareUseBanReason);
 
+    qreal devicePixelRatio() const;
+    void setDevicePixelRatio(qreal newDevicePixelRatio);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
-
     void sendExpand(bool);
-
     void sendMousePress();
     void sendMouseMove();
     void sendMouseWheel(int delta);
-
     void sendShowClient(bool);
     void windowTopmostChanged();
     void windowedModeSeted();
-
     void headerPanelVisibleChanged();
     void patyStatisticVisibleChanged();
     void ssWindowedModeChanged();
     void ssWindowPositionChanged();
     void noFogStateChanged(bool);
-
     void sizeModiferChanged(float sizeModifer);
     void sizeModiferLoadedFromSettings(float scale);
-
     void expandButtonPressed();
     void updateNotification();
     void notificationVisibleChanged();
-
     void rankedModeStateChanged();
     void enableTrainingModeSwitchChanged();
     void onlineCountChanged();
-
     void currentModNameChanged();
     void currentModTechnicalNameChanged();
     void balanceModPageChanged();
-
     void notificationManagerChanged();
-
     void latesBalanceModNotInstalledDialogVisibleChanged();
     void ssNotInstalledDialogVisibleChanged();
     void steamNotInstalledDialogVisibleChanged();
     void soulstormLaunchedDialogVisibleChanged();
-
     void soulstormIsInstalledChanged();
-
     void ssLaunchStateChanged();
-
     void balanceModInstallProcessedDialogVisibleChanged();
-
     void softwareUseBanDialogVisibleChanged();
-
     void softwareUseBanReasonChanged();
+    void devicePixelRatioChanged();
 
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
-
     void receiveSsMaximized(bool maximized);
     void onSsLaunchStateChanged(bool state);
-
     void setMissionCurrentState(SsMissionState gameCurrentState);
-
     void receiveNotification(QString notify, bool isWarning);
-
     void receiveOnlineCount(int onlineCount);
-
     void receiveCurrentModName(QString modName);
     void receiveCurrentModTechnicalName(QString modName);
     void receiveActualClientVersion(QString version);
-
     void onSoftwareBanActivated(QString reason);
-
 
     Q_INVOKABLE void onExit();
     Q_INVOKABLE void setSizeModifer(double size);
@@ -247,7 +231,6 @@ private slots:
 
 private:
     void showClient();
-
     void loadStarted();
     void gameStopped();
     void startingMission(SsMissionState gameCurrentState);
@@ -274,6 +257,8 @@ private:
     QString m_ssStatsVersion;
 
     SsMissionState m_gameCurrentState;
+
+    qreal m_devicePixelRatio;
 
     bool m_expand = false;
 
@@ -327,6 +312,7 @@ private:
     bool m_latesBalanceModNotInstalledDialogVisible = false;
     bool m_clientUpdateAvailable = false;
     bool m_softwareBanActivated = false;
+
 };
 
 #endif // UIBACKEND_H

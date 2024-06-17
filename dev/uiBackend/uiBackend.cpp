@@ -150,6 +150,19 @@ void UiBackend::gameOver()
     startingMission(SsMissionState::gameOver);
 }
 
+qreal UiBackend::devicePixelRatio() const
+{
+    return m_devicePixelRatio;
+}
+
+void UiBackend::setDevicePixelRatio(qreal newDevicePixelRatio)
+{
+    if (qFuzzyCompare(m_devicePixelRatio, newDevicePixelRatio))
+        return;
+    m_devicePixelRatio = newDevicePixelRatio;
+    emit devicePixelRatioChanged();
+}
+
 const QString &UiBackend::softwareUseBanReason() const
 {
     return m_softwareUseBanReason;

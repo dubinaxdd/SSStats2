@@ -48,6 +48,9 @@ Window {
                 yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
             }
 
+            xMousePos /= _uiBackend.devicePixelRatio
+            yMousePos /= _uiBackend.devicePixelRatio
+
             GlobalMouseProvider.mouseX = xMousePos;
             GlobalMouseProvider.mouseY = yMousePos;
         }

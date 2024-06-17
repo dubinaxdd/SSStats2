@@ -77,8 +77,8 @@ int main(int argc, char *argv[])
 
         return 0;
     }
-    QCoreApplication::setAttribute(Qt::AA_DisableHighDpiScaling);
 
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QGuiApplication app(argc, argv);
 
     if(runAutoUpdate() == 5){
@@ -87,11 +87,6 @@ int main(int argc, char *argv[])
 
     HookManager::instance();
 
-//#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
-//    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-//#endif
-
-    //QGuiApplication app(argc, argv);
     app.setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::Floor);
     app.setAttribute(Qt::AA_UseHighDpiPixmaps);
 
@@ -159,6 +154,7 @@ int main(int argc, char *argv[])
         engine.retranslate();
     });
 
+    core.uiBackend()->setDevicePixelRatio(app.devicePixelRatio());
     core.overlayWindowController()->grubStatsWindow();
 
     return app.exec();
