@@ -573,7 +573,7 @@ bool MapManager::uncompressGz(QByteArray input, QByteArray &output)
 
                 switch (ret) {
                 case Z_NEED_DICT:
-                    ret = Z_DATA_ERROR;
+                    //ret = Z_DATA_ERROR;
                 case Z_DATA_ERROR:
                 case Z_MEM_ERROR:
                 case Z_STREAM_ERROR:

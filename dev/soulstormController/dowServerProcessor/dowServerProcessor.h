@@ -47,7 +47,7 @@ private slots:
     void playerDiscoonectTimerTimeout();
 
     void checkQueue();
-    void addQuery(QueryType type);
+    void addQuery(DowServerProcessor::QueryType type);
 
 signals:
     void sendPartysArray(QVector<PartyData> partyDataArray);

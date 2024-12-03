@@ -59,10 +59,12 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
     // Расшифровываем клавишу
     char lpszName[0x100] = {0};
-    DWORD dwMsg = 1;
-    dwMsg += cKey.scanCode << 16;
-    dwMsg += cKey.flags << 24;
-    int get_key_name_text_result = GetKeyNameText(dwMsg, (LPTSTR)lpszName, 255);
+
+    //TODO: для отладки
+    //DWORD dwMsg = 1;
+    //dwMsg += cKey.scanCode << 16;
+    //dwMsg += cKey.flags << 24;
+    //int get_key_name_text_result = GetKeyNameText(dwMsg, (LPTSTR)lpszName, 255);
 
     wchar_t buffer[5];
     BYTE keyboard_state[265];
@@ -71,9 +73,11 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
     UpdateKeySate(keyboard_state, VK_CAPITAL);
     UpdateKeySate(keyboard_state, VK_CONTROL);
     UpdateKeySate(keyboard_state, VK_MENU);
-    HKL keyboard_layout = GetKeyboardLayout(0);
 
-    int to_unicode_ex_result = ToUnicodeEx(cKey.vkCode, cKey.scanCode, keyboard_state, buffer, 4, 0, keyboard_layout);
+
+    //TODO: для отладки
+    //HKL keyboard_layout = GetKeyboardLayout(0);
+    //int to_unicode_ex_result = ToUnicodeEx(cKey.vkCode, cKey.scanCode, keyboard_state, buffer, 4, 0, keyboard_layout);
 
     Qt::KeyboardModifier modifer = Qt::NoModifier;
 
