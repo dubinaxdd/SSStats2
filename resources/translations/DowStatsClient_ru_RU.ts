@@ -615,7 +615,7 @@
     </message>
     <message>
         <source>Sort by name</source>
-        <translation>Сортировать по имени релея</translation>
+        <translation>Сортировать по имени реплея</translation>
     </message>
     <message>
         <source>Sort by mod</source>

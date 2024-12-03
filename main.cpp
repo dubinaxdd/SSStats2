@@ -14,6 +14,7 @@
 #include <QSystemSemaphore>
 #include <QSharedMemory>
 #include <QMessageBox>
+#include <QException>
 
 #include "dev/hookManager/hookManager.h"
 
@@ -117,48 +118,54 @@ int main(int argc, char *argv[])
 
     QQmlContext *context = engine.rootContext();
 
-    Core core(context, &app);
+    try {
+        Core core(context, &app);
 
-    engine.addImageProvider("ImageProvider",core.uiBackend()->imageProvider());
+        engine.addImageProvider("ImageProvider",core.uiBackend()->imageProvider());
 
-    app.setWindowIcon(QIcon(":/icons/resources/icons/DowStatsClient.ico"));
+        app.setWindowIcon(QIcon(":/icons/resources/icons/DowStatsClient.ico"));
 
-    QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
-                     &app, [url](QObject *obj, const QUrl &objUrl) {
-        if (!obj && url == objUrl)
-            QCoreApplication::exit(-1);
-    }, Qt::QueuedConnection);
-    engine.load(url);
+        QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
+                         &app, [url](QObject *obj, const QUrl &objUrl) {
+            if (!obj && url == objUrl)
+                QCoreApplication::exit(-1);
+        }, Qt::QueuedConnection);
+        engine.load(url);
 
-    QObject::connect(&core, &Core::sendExit, [&] {
-        engine.removeImageProvider("imageprovider");
-        app.exit(0);});
+        QObject::connect(&core, &Core::sendExit, [&] {
+            engine.removeImageProvider("imageprovider");
+            app.exit(0);});
 
 
-    QObject::connect(core.uiBackend()->settingsPageModel(), &SettingsPageModel::languageChanged, [&](Language::LanguageEnum language) {
-        if (!translator.isEmpty())
-            QCoreApplication::removeTranslator(&translator);
+        QObject::connect(core.uiBackend()->settingsPageModel(), &SettingsPageModel::languageChanged, [&](Language::LanguageEnum language) {
+            if (!translator.isEmpty())
+                QCoreApplication::removeTranslator(&translator);
 
-        if (language == Language::LanguageEnum::System)
-            loadSystemTranslation();
-        else
-        {
-            QString baseName;
+            if (language == Language::LanguageEnum::System)
+                loadSystemTranslation();
+            else
+            {
+                QString baseName;
 
-            if (language == Language::LanguageEnum::Ru)
-                baseName = "DowStatsClient_" + QLocale("ru-RU").name();
+                if (language == Language::LanguageEnum::Ru)
+                    baseName = "DowStatsClient_" + QLocale("ru-RU").name();
 
-            if (language == Language::LanguageEnum::Eng)
-                baseName = "DowStatsClient_" + QLocale("en-US").name();
+                if (language == Language::LanguageEnum::Eng)
+                    baseName = "DowStatsClient_" + QLocale("en-US").name();
 
-            translator.load(baseName, ":/translations/resources/translations");
-            app.installTranslator(&translator);
-        }
-        engine.retranslate();
-    });
+                translator.load(baseName, ":/translations/resources/translations");
+                app.installTranslator(&translator);
+            }
+            engine.retranslate();
+        });
 
-    core.uiBackend()->setDevicePixelRatio(app.devicePixelRatio());
-    core.overlayWindowController()->grubStatsWindow();
+        core.uiBackend()->setDevicePixelRatio(app.devicePixelRatio());
+        core.overlayWindowController()->grubStatsWindow();
 
-    return app.exec();
+        return app.exec();
+
+    }  catch (QException &e) {
+        qCritical(logCritical()) <<  e.what();
+        return 1;
+    }
 }
