@@ -140,8 +140,12 @@ QHash<int, QByteArray> MapManagerPage::roleNames() const
 
 void MapManagerPage::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "MapManagerPage::onSettingsLoaded()" << "load started";
+
     setAutoinstallDefaultMaps(m_settingsController->getSettings()->autoinstallDefaultMaps);
     setAutoinstallAllMaps(m_settingsController->getSettings()->autoinstallAllMaps);
+
+    qInfo(logInfo()) << "MapManagerPage::onSettingsLoaded()" << "load finished";
 }
 
 void MapManagerPage::checkUpdates()

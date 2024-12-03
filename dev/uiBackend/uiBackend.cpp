@@ -537,6 +537,8 @@ void UiBackend::setSizeModifer(double size)
 
 void UiBackend::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "UiBackend::onSettingsLoaded()" << "load started";
+
     m_noFogState = m_corePtr->settingsController()->getSettings()->noFog;
     m_corePtr->soulstormController()->soulstormMemoryController()->onNoFogStateChanged(m_noFogState);
     emit noFogStateChanged(m_noFogState);
@@ -545,6 +547,8 @@ void UiBackend::onSettingsLoaded()
     emit sizeModiferChanged(m_sizeModifer);
 
     setCurrentModTechnicalName(m_corePtr->settingsController()->getSettings()->currentMod);
+
+    qInfo(logInfo()) << "UiBackend::onSettingsLoaded()" << "load finished";
 
 }
 

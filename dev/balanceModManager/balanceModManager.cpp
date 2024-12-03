@@ -198,11 +198,15 @@ void BalanceModManager::onModUninstalled(QString modTechnicalName)
 
 void BalanceModManager::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "BalanceModManager::onSettingsLoaded()" << "load started";
+
     m_templateProfilePath = m_settingsController->getSettings()->templateProfilePath;
     m_lastActualMod = m_settingsController->getSettings()->lastActualBalanceMod;
 
     if(QDir(m_templateProfilePath).exists())
         emit sendTemplateProfilePath(m_templateProfilePath);
+
+    qInfo(logInfo()) << "BalanceModManager::onSettingsLoaded()" << "load finished";
 }
 
 void BalanceModManager::requestChangeLog(QString modTechnicalName)

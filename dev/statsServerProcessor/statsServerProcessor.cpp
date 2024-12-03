@@ -307,6 +307,8 @@ void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
 
 void StatsServerProcessor::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "StatsServerProcessor::onSettingsLoaded()" << "load started";
+
     m_currentMod = m_settingsController->getSettings()->currentMod;
 
     if (m_currentMod.contains("dowstats_balance_mod"))
@@ -317,6 +319,8 @@ void StatsServerProcessor::onSettingsLoaded()
 
     requestRankDiversion();
     m_rankDiversionTimer->start();
+
+    qInfo(logInfo()) << "StatsServerProcessor::onSettingsLoaded()" << "load finished";
 }
 
 void StatsServerProcessor::receiveRankDiversion(QNetworkReply *reply)

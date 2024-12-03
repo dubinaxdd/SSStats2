@@ -24,6 +24,8 @@ BalanceModPage::BalanceModPage(BalanceModManager* balanceModManager, SettingsCon
 
 void BalanceModPage::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "BalanceModPage::onSettingsLoaded()" << "load started";
+
     m_autoUpdateBalanceMod  =  m_settingsController->getSettings()->autoUpdateBalanceMod;
     emit autoUpdateBalanceModChanged();
 
@@ -32,6 +34,8 @@ void BalanceModPage::onSettingsLoaded()
 
     m_useCustomTemplateProfilePath = m_settingsController->getSettings()->useCustomTemplateProfilePath;
     emit useCustomTemplateProfilePathChanged();
+
+    qInfo(logInfo()) << "BalanceModPage::onSettingsLoaded()" << "load finished";
 }
 
 bool BalanceModPage::downloadingProcessed() const

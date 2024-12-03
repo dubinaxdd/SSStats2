@@ -613,8 +613,12 @@ void DiscordWebProcessor::receiveYoutubeImage(QNetworkReply *reply, QString yout
 
 void DiscordWebProcessor::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "DiscordWebProcessor::onSettingsLoaded()" << "load started";
+
     m_lastReadedNewsMessageID = m_settingsController->getSettings()->lastReadedNewsMessageID;
     m_lastReadedEventMessageID = m_settingsController->getSettings()->lastReadedEventsMessageID;
+
+    qInfo(logInfo()) << "DiscordWebProcessor::onSettingsLoaded()" << "load finished";
 }
 
 void DiscordWebProcessor::requestMessages()

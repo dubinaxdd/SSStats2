@@ -423,8 +423,12 @@ void MapManager::receiveLoadMapsInfo()
 
 void MapManager::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "MapManager::onSettingsLoaded()" << "load started";
+
     m_checkUpdatesProcessed = true;
     emit requsetLocalMapFilesList();
+
+    qInfo(logInfo()) << "MapManager::onSettingsLoaded()" << "load finished";
 }
 
 void MapManager::receiveLocalMapFilesList(QList<MapFileHash> localMapFilesList)

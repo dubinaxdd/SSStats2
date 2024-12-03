@@ -13,6 +13,8 @@ SettingsPageModel::SettingsPageModel(SoundProcessor *soundProcessor, SettingsCon
 
 void SettingsPageModel::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "SettingsPageModel::onSettingsLoaded()" << "load started";
+
     m_enableEventsSoundWhenGameMinimized = m_settingsController->getSettings()->enableEventsSoundWhenGameMinimized;
     m_soundProcessorPtr->setEnableSoundsWhenGameMinimized(m_enableEventsSoundWhenGameMinimized);
     emit enableEventsSoundWhenGameMinimizedChanged();
@@ -61,6 +63,8 @@ void SettingsPageModel::onSettingsLoaded()
     emit languageChanged(m_language);
 
     updateAutorunState(m_autorun);
+
+    qInfo(logInfo()) << "SettingsPageModel::onSettingsLoaded()" << "load finished";
 }
 
 Language::LanguageEnum SettingsPageModel::parseLanguage(QString language)

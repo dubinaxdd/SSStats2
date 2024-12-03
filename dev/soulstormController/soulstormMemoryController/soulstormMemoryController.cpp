@@ -36,8 +36,12 @@ void SoulstormMemoryController::onSsLaunchStateChanged(bool state)
 
 void SoulstormMemoryController::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "SoulstormMemoryController::onSettingsLoaded()" << "load started";
+
     currentNoFog = m_settingsController->getSettings()->noFog;
     onNoFogStateChanged(currentNoFog && m_ssLaunchState);
+
+    qInfo(logInfo()) << "SoulstormMemoryController::onSettingsLoaded()" << "load finished";
 }
 
 void SoulstormMemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)

@@ -247,6 +247,8 @@ void RankedModServiceProcessor::receiveCurrentMod(QString modName)
 
 void RankedModServiceProcessor::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "RankedModServiceProcessor::onSettingsLoaded()" << "load started";
+
     m_currentMod = m_settingsController->getSettings()->currentMod;
 
     if (m_currentMod.contains("dowstats_balance_mod"))
@@ -254,6 +256,8 @@ void RankedModServiceProcessor::onSettingsLoaded()
 
     m_pingTimer->start();
     m_rankedStateTimer->start();
+
+    qInfo(logInfo()) << "RankedModServiceProcessor::onSettingsLoaded()" << "load finished";
 }
 
 bool RankedModServiceProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply)

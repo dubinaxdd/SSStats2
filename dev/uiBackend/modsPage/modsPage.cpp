@@ -45,10 +45,14 @@ ModsPage::ModsPage(ModsProcessor* modsProcessor, SettingsController *settingsCon
 
 void ModsPage::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "ModsPage::onSettingsLoaded()" << "load started";
+
     m_russianFontsMod->setInstalledStatus(m_settingsController->getSettings()->russianFontsInstalled);
     m_cameraMod->setInstalledStatus(m_settingsController->getSettings()->cameraModInstalled);
     m_gridHotkeysMod->setInstalledStatus(m_settingsController->getSettings()->gridHotkeysInstalled);
     m_transparentCameraTrapezoidMod->setInstalledStatus(m_settingsController->getSettings()->transparentCameraTrapezoidInstalled);
+
+    qInfo(logInfo()) << "ModsPage::onSettingsLoaded()" << "load finished";
 }
 
 

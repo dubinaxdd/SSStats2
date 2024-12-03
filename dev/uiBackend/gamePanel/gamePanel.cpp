@@ -135,12 +135,16 @@ void GamePanel::expandPlayerRacesButtonClick()
 
 void GamePanel::onSettingsLoaded()
 {
+    qInfo(logInfo()) << "GamePanel::onSettingsLoaded()" << "load started";
+
     m_smallPannelActive = m_settingsController->getSettings()->smallGamePanelActive;
     emit smallPannelActiveChanged(m_smallPannelActive);
     m_showGamePannelPreset = m_settingsController->getSettings()->showGamePanelPreset;
     emit showGamePanelPresetChanged(m_showGamePannelPreset);
 
     updatePlayerRaces();
+
+    qInfo(logInfo()) << "GamePanel::onSettingsLoaded()" << "load finished";
 }
 
 void GamePanel::replaceRaceKeyword(QString *raceString)
