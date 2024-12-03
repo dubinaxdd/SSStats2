@@ -14,7 +14,6 @@
 #include <QSystemSemaphore>
 #include <QSharedMemory>
 #include <QMessageBox>
-#include <QException>
 
 #include "dev/hookManager/hookManager.h"
 
@@ -118,6 +117,7 @@ int main(int argc, char *argv[])
 
     QQmlContext *context = engine.rootContext();
 
+    int retCode;
     try {
         Core core(context, &app);
 
@@ -162,10 +162,13 @@ int main(int argc, char *argv[])
         core.uiBackend()->setDevicePixelRatio(app.devicePixelRatio());
         core.overlayWindowController()->grubStatsWindow();
 
-        return app.exec();
+        retCode = app.exec();
 
-    }  catch (QException &e) {
+    }
+    catch (std::exception &e) {
         qCritical(logCritical()) <<  e.what();
         return 1;
     }
+
+    return retCode;
 }
