@@ -21,7 +21,7 @@ public:
     void getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo);
 
 signals:
-    void sendServerPlaуerStats(ServerPlayerStats serverPlayrStats);
+    void sendServerPlayerStats(ServerPlayerStats serverPlayrStats);
     void sendCurrentPlayerSteamID(QString steamID);
     void sendNotification(QString text, bool isWarning);
     void sendStatisticModName(QString statisticModName);

@@ -7,7 +7,7 @@ StatisticPanel::StatisticPanel(Core *core, ImageProvider *imageProvider, QObject
     , m_corePtr(core)
     , m_imageProvider(imageProvider)
 {
-    QObject::connect(m_corePtr->statsServerProcessor(),                      &StatsServerProcessor::sendServerPlaуerStats,       this, &StatisticPanel::receiveServerPlayerStats,        Qt::QueuedConnection);
+    QObject::connect(m_corePtr->statsServerProcessor(),                      &StatsServerProcessor::sendServerPlayerStats,       this, &StatisticPanel::receiveServerPlayerStats,        Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->lobbyEventReader(),   &LobbyEventReader::quitFromParty,                  this, &StatisticPanel::onQuitParty,                     Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, this, &StatisticPanel::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
     QObject::connect(m_corePtr->rankedModServiceProcessor(),                 &RankedModServiceProcessor::sendPlyersRankedState, this, &StatisticPanel::receivePlyersRankedState ,       Qt::QueuedConnection);
