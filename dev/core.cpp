@@ -106,7 +106,7 @@ void Core::addConnections()
     QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer, m_statsServerProcessor, &StatsServerProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
     QObject::connect(m_soulstormController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer, m_rankedModServiceProcessor, &RankedModServiceProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
 
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendServerPlayrStats,     m_soulstormController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendServerPlaуerStats,     m_soulstormController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_soulstormController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended,             m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);

@@ -549,7 +549,6 @@ void UiBackend::onSettingsLoaded()
     setCurrentModTechnicalName(m_corePtr->settingsController()->getSettings()->currentMod);
 
     qInfo(logInfo()) << "UiBackend::onSettingsLoaded()" << "load finished";
-
 }
 
 void UiBackend::showClient()

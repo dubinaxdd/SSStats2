@@ -296,7 +296,7 @@ void StatsServerProcessor::receivePlayerMediumAvatar(QNetworkReply *reply, QShar
     playerInfo->avatar = avatarMedium;
 
     if (playerInfo->avatarAvailable && playerInfo->statsAvailable)
-        emit sendServerPlayrStats(*playerInfo.data());
+        emit sendServerPlaуerStats(*playerInfo.data());
 }
 
 void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
