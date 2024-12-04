@@ -44,7 +44,7 @@ private:
     QVector<ReplayListInfo> replaysList;
     SortType m_sortType = SortType::SortByTime;
 
-    QList <ModInfo> *m_modInfo;
+    QList <ModInfo> *m_modInfo = nullptr;
 };
 
 #endif // REPLAYSLISTMODEL_H

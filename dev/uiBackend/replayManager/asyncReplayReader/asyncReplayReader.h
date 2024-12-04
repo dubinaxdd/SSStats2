@@ -25,7 +25,7 @@ private:
     bool m_modInfoReceived = false;
     QMutex m_mutex;
 
-    QList <ModInfo> *m_modInfo;
+    QList <ModInfo> *m_modInfo = nullptr;
 };
 
 #endif // ASYNCREPLAYREADER_H
