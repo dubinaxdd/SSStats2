@@ -411,6 +411,9 @@ void StatsServerProcessor::requestClientLastVersion()
 {
     QUrl url = QUrl(m_settingsController->getSettings()->updateCheckAddress);
 
+    if (!url.isValid())
+        return;
+
     QNetworkRequest newRequest = QNetworkRequest(url);
     newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
 
@@ -434,7 +437,20 @@ void StatsServerProcessor::receiveClientLastVersion(QNetworkReply *reply)
     reply->deleteLater();
 
     QString versionDoc = QString(replyByteArray);
+
+    if (versionDoc.isEmpty())
+        return;
+
+    if (!versionDoc.contains("Version="))
+        return;
+
+    if (!versionDoc.contains("URL"))
+        return;
+
     QString version = versionDoc.mid(versionDoc.indexOf("Version=") + 8, versionDoc.indexOf("URL") - 2 - (versionDoc.indexOf("Version=") + 8));
+
+    if(version.isEmpty())
+        return;
 
     emit sendActualClientVersion(version);
 }
