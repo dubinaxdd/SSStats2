@@ -26,6 +26,9 @@ void OverlayWindowController::grubStatsWindow()
     m_defaultWindowLong = GetWindowLongPtr(m_ssStatsHwnd, GWL_EXSTYLE);
     SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
 
+    if (m_uiBackendPtr)
+        m_uiBackendPtr->setWindowTopmost(false);
+
 }
 
 void OverlayWindowController::topmostTimerTimout()
@@ -233,5 +236,7 @@ void OverlayWindowController::setUiBackend(UiBackend *uiBackend)
     if (!m_uiBackendPtr)
         return;
 
+    m_topmostTimer->stop();
+    SetWindowPos(m_ssStatsHwnd, HWND_BOTTOM, m_ssRect.left, m_ssRect.top, m_ssRect.right - m_ssRect.left, m_ssRect.bottom - m_ssRect.top, m_defaultWindowLong );
     m_uiBackendPtr->setWindowTopmost(false);
 }

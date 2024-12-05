@@ -43,7 +43,7 @@ private:
     LONG m_defaultWindowLong;
     RECT m_ssRect;
 
-    UiBackend* m_uiBackendPtr;
+    UiBackend* m_uiBackendPtr = nullptr;
     SoulstormController* p_soulstormController;
     SettingsController* p_settingsController;
 
