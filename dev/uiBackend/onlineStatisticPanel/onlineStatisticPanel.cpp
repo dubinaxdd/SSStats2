@@ -59,6 +59,11 @@ QHash<int, QByteArray> OnlineStatisticPanel::roleNames() const
 
 void OnlineStatisticPanel::receiveModsOnlineCountMap(QMap<QString, int> modsOnlineCountMap)
 {
+    //TODO: Костыль который надо будет убрать как перепишется мик5росервис онлайна
+    modsOnlineCountMap["Other mods"] += modsOnlineCountMap["TournamentPatch"] += modsOnlineCountMap["Tribun mod"];
+    modsOnlineCountMap.remove("TournamentPatch");
+    modsOnlineCountMap.remove("Tribun mod");
+
     if (m_modsOnlineCountMap.count() > 0)
     {
         beginRemoveRows(QModelIndex(), 0, m_modsOnlineCountMap.count() - 1);
