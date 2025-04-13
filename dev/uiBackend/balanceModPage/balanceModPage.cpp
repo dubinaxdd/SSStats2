@@ -7,6 +7,9 @@ BalanceModPage::BalanceModPage(BalanceModManager* balanceModManager, SettingsCon
     , m_balanceModManagerPtr(balanceModManager)
     , m_settingsController(settingsController)
 {
+    m_balanceModPageProxyModel = new BalanceModPageProxyModel(this);
+    m_balanceModPageProxyModel->setSourceModel(this);
+
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &BalanceModPage::onSettingsLoaded, Qt::QueuedConnection);
     QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendModsInfo, this, &BalanceModPage::receiveVersions, Qt::QueuedConnection);
     QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendCurrentModInGame, this, &BalanceModPage::receiveCurrentModInGame, Qt::QueuedConnection);
@@ -18,8 +21,7 @@ BalanceModPage::BalanceModPage(BalanceModManager* balanceModManager, SettingsCon
     QObject::connect(m_balanceModManagerPtr, &BalanceModManager::requestProfileCopyMode, this, &BalanceModPage::receiveProfileCopyModeRequest, Qt::QueuedConnection);
     QObject::connect(m_balanceModManagerPtr, &BalanceModManager::sendModReadyForInstall, this, &BalanceModPage::receiveModReadyForInstall, Qt::QueuedConnection);
     QObject::connect(m_balanceModManagerPtr, &BalanceModManager::onHotKeysUpdated, this, &BalanceModPage::receiveHotKeysUpdated, Qt::QueuedConnection);
-
-
+    QObject::connect(m_balanceModManagerPtr, &BalanceModManager::showBalanceModBetaVersionsChanged, this, &BalanceModPage::onShowBalanceModBetaVersionsChanged, Qt::QueuedConnection);
 }
 
 void BalanceModPage::onSettingsLoaded()
@@ -36,6 +38,29 @@ void BalanceModPage::onSettingsLoaded()
     emit useCustomTemplateProfilePathChanged();
 
     qInfo(logInfo()) << "BalanceModPage::onSettingsLoaded()" << "load finished";
+}
+
+void BalanceModPage::onShowBalanceModBetaVersionsChanged(bool showBalanceModBetaVersions)
+{
+    m_betaVersionsAvialble = showBalanceModBetaVersions;
+    emit betaVersionsAvialbleChanged();
+}
+
+bool BalanceModPage::betaVersionsVisible() const
+{
+    return m_betaVersionsVisible;
+}
+
+void BalanceModPage::setBetaVersionsVisible(bool newBetaVersionsVisible)
+{
+    if (m_betaVersionsVisible == newBetaVersionsVisible)
+        return;
+    m_betaVersionsVisible = newBetaVersionsVisible;
+    emit betaVersionsVisibleChanged();
+
+    m_balanceModPageProxyModel->setBetVersionsVisible(newBetaVersionsVisible);
+
+    slectItem(0);
 }
 
 bool BalanceModPage::downloadingProcessed() const
@@ -84,6 +109,7 @@ QVariant BalanceModPage::data(const QModelIndex &index, int role) const
         case Selected: return index.row() == m_selectedItemIndex;
         case IsCurrentMod: return m_modsInfo.at(index.row()).isCurrentMod;
         case DownladingProcessed: return m_modsInfo.at(index.row()).downloadingProcessed;
+        case IsBeta: return m_modsInfo.at(index.row()).isBeta;
     }
 
     return QVariant();
@@ -97,12 +123,14 @@ int BalanceModPage::rowCount(const QModelIndex &parent) const
 
 void BalanceModPage::slectItem(int itemIndex)
 {
+    QModelIndex proxyIndex = m_balanceModPageProxyModel->index(itemIndex,0);
+    int sourceIndex = m_balanceModPageProxyModel->mapToSource(proxyIndex).row();
     int previousIndex = m_selectedItemIndex;
 
-    m_selectedItemIndex = itemIndex;
+    m_selectedItemIndex = sourceIndex;
 
     QModelIndex previous = QAbstractItemModel::createIndex(previousIndex, 0);
-    QModelIndex current = QAbstractItemModel::createIndex(itemIndex, 0);
+    QModelIndex current = QAbstractItemModel::createIndex(sourceIndex, 0);
 
     emit dataChanged(previous, previous);
     emit dataChanged(current, current);
@@ -342,6 +370,7 @@ QHash<int, QByteArray> BalanceModPage::roleNames() const
     roles[Selected] = "selected";
     roles[IsCurrentMod] = "isCurrentMod";
     roles[DownladingProcessed] = "downladingProcessed";
+    roles[IsBeta] = "isBeta";
 
     return roles;
 }

@@ -287,6 +287,7 @@ void BalanceModManager::receiveBetaTestPlayersList(QNetworkReply *reply)
         {
             m_showBalanceModBetaVersions = true;
             qInfo(logInfo()) << "Beta versions of balance mod is avilable.";
+            emit showBalanceModBetaVersionsChanged(m_showBalanceModBetaVersions);
             break;
         }
     }
@@ -369,6 +370,11 @@ void BalanceModManager::setCurrentPlayerSteamId(QString steamId)
 void BalanceModManager::updateHotKeysOnMod(QString modTechnicalName)
 {
     emit sendUpdateHotKeysOnMod(modTechnicalName, m_ssPath);
+}
+
+bool BalanceModManager::showBalanceModBetaVersions() const
+{
+    return m_showBalanceModBetaVersions;
 }
 
 void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)

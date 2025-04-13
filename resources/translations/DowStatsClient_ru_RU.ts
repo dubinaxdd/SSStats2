@@ -1238,7 +1238,7 @@
     </message>
 </context>
 <context>
-    <name>BalanceModPage</name>
+    <name>DowStatsModSubPage</name>
     <message>
         <source> has been uninstalled.</source>
         <translation> был удален.</translation>
@@ -1287,6 +1287,12 @@
         <source> (Beta)</source>
         <translation> (Бета)</translation>
     </message>
+    <message>
+        <source>Show beta test versions</source>
+        <translation>Показывать бета версии</translation>
+    </message>
+
+
 </context>
 <context>
     <name>ModsPage</name>

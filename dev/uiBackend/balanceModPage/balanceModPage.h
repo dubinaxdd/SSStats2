@@ -6,6 +6,7 @@
 #include <settingsController.h>
 #include <QUuid>
 #include <balanceModManager.h>
+#include <balanceModPageProxyModel.h>
 
 class BalanceModPage : public QAbstractListModel
 {
@@ -32,6 +33,10 @@ class BalanceModPage : public QAbstractListModel
 
     Q_PROPERTY(bool haveAvilableMods READ haveAvilableMods NOTIFY haveAvilableModsChanged)
 
+    Q_PROPERTY(bool betaVersionsAvialble MEMBER m_betaVersionsAvialble NOTIFY betaVersionsAvialbleChanged)
+    Q_PROPERTY(bool betaVersionsVisible READ betaVersionsVisible WRITE setBetaVersionsVisible NOTIFY betaVersionsVisibleChanged)
+    Q_PROPERTY(BalanceModPageProxyModel* proxyModel MEMBER m_balanceModPageProxyModel CONSTANT)
+
 public:
     explicit BalanceModPage(BalanceModManager* balanceModManager, SettingsController* settingsController, QObject *parent = nullptr);
 
@@ -41,6 +46,7 @@ public:
         Version = Qt::UserRole + 3,
         IsCurrentMod = Qt::UserRole + 4,
         DownladingProcessed = Qt::UserRole + 5,
+        IsBeta = Qt::UserRole + 6,
         UiName
     };
 
@@ -88,6 +94,9 @@ public:
     bool downloadingProcessed() const;
     bool haveAvilableMods() const;
 
+    bool betaVersionsVisible() const;
+    void setBetaVersionsVisible(bool newBetaVersionsVisible);
+
 protected:
    QHash<int, QByteArray> roleNames() const override;
 
@@ -112,6 +121,7 @@ public slots:
 
 private slots:
     void onSettingsLoaded();
+    void onShowBalanceModBetaVersionsChanged(bool showBalanceModBetaVersions);
 
 signals:
    void selectedModInfoChanged();
@@ -123,13 +133,15 @@ signals:
    void useCustomTemplateProfilePathChanged();
    void changeLaunchMod(LaunchMod);
    void sendNotification(NotificationInfo notificationString);
-
    void profileCopyModeRequestMessageVisibleChanged();
    void haveAvilableModsChanged();
+   void betaVersionsAvialbleChanged();
+   void betaVersionsVisibleChanged();
 
 private:
    BalanceModManager* m_balanceModManagerPtr;
    SettingsController* m_settingsController;
+   BalanceModPageProxyModel* m_balanceModPageProxyModel;
 
    QList<ModInfo> m_modsInfo;
    int m_selectedItemIndex = 0;
@@ -146,6 +158,8 @@ private:
    QString m_profileCopyModeRequestTechnicalName = "";
    bool m_profileCopyModeRequestMessageVisible = false;
    bool m_modsInfoReceived;
+   bool m_betaVersionsAvialble = false;
+   bool m_betaVersionsVisible = true;
 };
 
 #endif // BALANCEMODPAGE_H

@@ -23,6 +23,8 @@ public:
     void setSsPath(const QString &newSsPath);
     void checkDownloadingQuery();
 
+    bool showBalanceModBetaVersions() const;
+
 private:
     void receiveVersionsInfo(QNetworkReply *reply);
     void receiveMod(QNetworkReply *reply, QString modTechnicalName, bool overwritePrifiles);
@@ -70,6 +72,7 @@ signals:
     void sendModReadyForInstall(QString modUiName);
     void sendUpdateHotKeysOnMod(QString modTechnicalName, QString ssPath);
     void onHotKeysUpdated(QString modTechnicalName, bool result);
+    void showBalanceModBetaVersionsChanged(bool howBalanceModBetaVersions);
 
 private:
 

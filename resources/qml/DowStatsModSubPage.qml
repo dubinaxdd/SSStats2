@@ -255,82 +255,96 @@ Rectangle {
                 }
             }
 
-            Rectangle
+            ColumnLayout
             {
-                Layout.fillHeight: true
-                Layout.preferredWidth: 220
-                radius: 10
-                color: DowStatsStyle.alternateBackgroundColor
-
-                ListView
+                StyledSwitch
                 {
-                    id: listView
-                    anchors.fill: parent
-                    anchors.margins: 10
-                    spacing: 5
-                    clip: true
-                    model: root.model
+                    text: qsTr("Show beta test versions")
+                    visible: root.model.betaVersionsAvialble
+                    checked: root.model.betaVersionsVisible;
+                    onCheckedChanged: root.model.betaVersionsVisible = checked
+                    width: listViewRectangle.width
+                }
 
-                    ScrollBar.vertical: ScrollBar {
-                        id: scrollBarListViev
-                        visible: listView.contentItem.height > listView.height
-                        policy: ScrollBar.AlwaysOn
-                    }
+                Rectangle
+                {
+                    id: listViewRectangle
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 220
+                    radius: 10
+                    color: DowStatsStyle.alternateBackgroundColor
 
-                    delegate: Rectangle{
-                        width: listView.width - (scrollBarListViev.visible ? scrollBarListViev.width + 5 : 0)
-                        height: 70
-                        radius: 10
-                        color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.backgroundColor
+                    ListView
+                    {
+                        id: listView
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        spacing: 5
+                        clip: true
+                        model: root.model.proxyModel
 
-                        ColumnLayout
-                        {
-                            anchors.fill: parent
-                            anchors.margins: 10
+                        ScrollBar.vertical: ScrollBar {
+                            id: scrollBarListViev
+                            visible: listView.contentItem.height > listView.height
+                            policy: ScrollBar.AlwaysOn
+                        }
 
-                            spacing: 3
+                        delegate: Rectangle{
+                            width: listView.width - (scrollBarListViev.visible ? scrollBarListViev.width + 5 : 0)
+                            height: 70
+                            radius: 10
+                            color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.backgroundColor
+                            //visible: (!root.model.betaVersionsVisible && !model.isBeta) || root.model.betaVersionsVisible
 
-                            Label{
-                                Layout.alignment: Qt.AlignVCenter
-                                text: model.uiName
-                                color: DowStatsStyle.textColor
-                                font.pixelSize: 11
-                            }
-
-                            Label{
-                                Layout.alignment: Qt.AlignVCenter
-                                text: qsTr("Version: ") + model.version
-                                color: DowStatsStyle.textColor
-                                font.pixelSize: 11
-                            }
-
-
-                            RowLayout
+                            ColumnLayout
                             {
-                                Rectangle{
-                                    radius:5
+                                anchors.fill: parent
+                                anchors.margins: 10
 
-                                    Layout.preferredHeight: 10
-                                    Layout.preferredWidth: 10
+                                spacing: 3
 
-                                    color:  model.isInstalled ? "#00ff99" : "#ffa9a9"
+                                Label{
+                                    Layout.alignment: Qt.AlignVCenter
+                                    text: model.uiName
+                                    color: DowStatsStyle.textColor
+                                    font.pixelSize: 11
                                 }
 
                                 Label{
                                     Layout.alignment: Qt.AlignVCenter
-                                    text: model.isInstalled ? qsTr("Status: Installed") : qsTr("Status: Not installed")
+                                    text: qsTr("Version: ") + model.version
                                     color: DowStatsStyle.textColor
                                     font.pixelSize: 11
                                 }
+
+
+                                RowLayout
+                                {
+                                    Rectangle{
+                                        radius:5
+
+                                        Layout.preferredHeight: 10
+                                        Layout.preferredWidth: 10
+
+                                        color:  model.isInstalled ? "#00ff99" : "#ffa9a9"
+                                    }
+
+                                    Label{
+                                        Layout.alignment: Qt.AlignVCenter
+                                        text: model.isInstalled ? qsTr("Status: Installed") : qsTr("Status: Not installed")
+                                        color: DowStatsStyle.textColor
+                                        font.pixelSize: 11
+                                    }
+                                }
                             }
-                        }
 
-                        MouseArea{
-                            id:delegateMouseArea
-                            anchors.fill: parent
-                            hoverEnabled: true;
+                            MouseArea{
+                                id:delegateMouseArea
+                                anchors.fill: parent
+                                hoverEnabled: true;
 
-                            onClicked: root.model.slectItem(model.index);
+                                onClicked: root.model.slectItem(model.index);
+                            }
                         }
                     }
                 }
