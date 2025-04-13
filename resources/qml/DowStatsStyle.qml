@@ -77,7 +77,7 @@ QtObject {
             highlightItemColor = "#2471a3";
             selectionColor = "#2980b9";
             textColor = "#F8F9F9";
-            indicatorColor = "#aed6f1";
+            indicatorColor = "#FFFFFF"
         }
     }
 }

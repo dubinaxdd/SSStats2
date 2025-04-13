@@ -665,6 +665,10 @@
         <translation>Тема: Розовая</translation>
     </message>
     <message>
+        <source>Theme: Blue</source>
+        <translation>Тема: Синяя</translation>
+    </message>
+    <message>
         <source>Language: System</source>
         <translation>Язык: Системный</translation>
     </message>
