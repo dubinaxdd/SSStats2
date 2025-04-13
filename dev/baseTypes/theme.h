@@ -11,7 +11,8 @@ public:
     enum Value {
         Light,
         Dark,
-        Pink
+        Pink,
+        Blue
     };
     Q_ENUM(Value)
 private:

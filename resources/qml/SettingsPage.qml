@@ -81,13 +81,14 @@ Rectangle {
                     StyledComboBox{
                         id: themeComboBox
                         Layout.preferredWidth: 255
-                        model: [qsTr("Theme: Light"), qsTr("Theme: Dark"), qsTr("Theme: Pink")]
+                        model: [qsTr("Theme: Light"), qsTr("Theme: Dark"), qsTr("Theme: Pink"), qsTr("Theme: Blue")]
                         onCurrentIndexChanged:{
                             switch (currentIndex)
                             {
                                 case(0): DowStatsStyle.setLightTheme(); break;
                                 case(1): DowStatsStyle.setDarkTheme();  break;
                                 case(2): DowStatsStyle.setPinkTheme();  break;
+                                case(3): DowStatsStyle.setBlueTheme();  break;
                             }
 
                             root.model.currentTheme = themeComboBox.currentIndex;

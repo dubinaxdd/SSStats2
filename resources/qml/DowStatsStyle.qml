@@ -32,6 +32,10 @@ QtObject {
         currentTheme = Theme.Pink;
     }
 
+    function setBlueTheme()
+    {
+        currentTheme = Theme.Blue;
+    }
 
     onCurrentThemeChanged:
     {
@@ -55,7 +59,7 @@ QtObject {
             textColor = "#F8F9F9";
             indicatorColor = "#FFFFFF"
         }
-        else
+        else if(currentTheme === Theme.Pink)
         {
             backgroundColor = "#F5EEF8";
             alternateBackgroundColor = "#EBDEF0";
@@ -64,6 +68,16 @@ QtObject {
             selectionColor = "#AF7AC5";
             textColor = "#1B2631";
             indicatorColor = "#26282a"
+        }
+        else if(currentTheme === Theme.Blue)
+        {
+            backgroundColor = "#1f618d";
+            alternateBackgroundColor = "#1a5276";
+            itemColor = "#154360";
+            highlightItemColor = "#2471a3";
+            selectionColor = "#2980b9";
+            textColor = "#F8F9F9";
+            indicatorColor = "#aed6f1";
         }
     }
 }
