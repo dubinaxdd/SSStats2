@@ -55,10 +55,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendAttachmentImage, m_imageProvider, &ImageProvider::addAttachmentImage, Qt::QueuedConnection);
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendYoutubeImage,    m_imageProvider, &ImageProvider::addYoutubeImage,    Qt::QueuedConnection);
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNews,            m_newsPage, &MessagesPage::receiveMessages,          Qt::QueuedConnection);
-    //QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextNews,        m_newsPage, &MessagesPage::receiveNextMessages,      Qt::QueuedConnection);
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendEvents,          m_eventsPage, &MessagesPage::receiveMessages,        Qt::QueuedConnection);
-    //QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNextEvents,      m_eventsPage, &MessagesPage::receiveNextMessages,    Qt::QueuedConnection);
-
     QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendRankDiversion,        m_informationPage, &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendNotification,         this, &UiBackend::receiveNotification,        Qt::QueuedConnection);

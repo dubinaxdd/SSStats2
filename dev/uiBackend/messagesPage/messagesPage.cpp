@@ -64,14 +64,6 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
 
 void MessagesPage::receiveMessages(QList<DiscordMessage> news)
 {
-    /*if (news.count() < 1)
-        return;
-
-    beginInsertRows(QModelIndex(), 0, news.count() - 1);
-    m_news = formatingMessagesText(news) + m_news;
-    endInsertRows();*/
-
-
     if (news.count() < 1)
         return;
 
@@ -81,18 +73,6 @@ void MessagesPage::receiveMessages(QList<DiscordMessage> news)
 
     m_requestingNextMessagesProcessed = false;
 }
-
-/*void MessagesPage::receiveNextMessages(QList<DiscordMessage> news)
-{
-    if (news.count() < 1)
-        return;
-
-    beginInsertRows(QModelIndex(), m_news.count(), m_news.count() + news.count() - 1);
-    m_news = m_news + formatingMessagesText(news);
-    endInsertRows();
-
-    m_requestingNextMessagesProcessed = false;
-}*/
 
 QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> messages)
 {

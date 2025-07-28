@@ -109,7 +109,6 @@ private:
     QTimer m_reconnectTimer;
     bool m_webSocketConnected = false;
 
-
     SettingsController* m_settingsController;
 
     QTimer* m_requestTimer;
@@ -117,26 +116,11 @@ private:
     QNetworkAccessManager *m_networkManager;
     QList<QString> m_avatarIdList;
 
-    //QString m_afterNewsMessageID = "";
-    //QString m_afterEventsMessageID = "";
-
     QString m_lastNewsMessageID = "";
     QString m_lastEventMessageID = "";
 
     QString m_lastReadedNewsMessageID = "";
     QString m_lastReadedEventMessageID = "";
-
-    //QString m_newsChannelId;
-    //QString m_eventsChannelId;
-
-    //bool m_requestNewsNow = true;
-    //bool m_readyToRequest = true;
-
-    //bool m_needRequestNews = false;
-    //bool m_needRequestEvents = false;
-
-    //bool m_isFirstNewsRequest = true;
-    //bool m_isFirstEventsRequest = true;
 
     bool m_isNewNewsMessage = true;
     bool m_isNewEventsMessage = true;
