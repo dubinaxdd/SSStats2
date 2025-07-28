@@ -19,15 +19,30 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     , m_networkManager(new QNetworkAccessManager(this))
 {
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordWebProcessor::onSettingsLoaded, Qt::QueuedConnection);
-    QObject::connect(m_requestTimer, &QTimer::timeout, this, &DiscordWebProcessor::requestMessages, Qt::QueuedConnection);
+    //QObject::connect(m_requestTimer, &QTimer::timeout, this, &DiscordWebProcessor::requestMessages, Qt::QueuedConnection);
 
-    m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL);
-    m_requestTimer->start();
+   // m_requestTimer->setInterval(REQUEST_TIMER_INTERVAL);
+    //m_requestTimer->start();
+
+    connect(&m_webSocket, &QWebSocket::connected, this, &DiscordWebProcessor::onConnected, Qt::QueuedConnection);
+    connect(&m_webSocket, &QWebSocket::disconnected, this,  &DiscordWebProcessor::onDisconnected, Qt::QueuedConnection);
+    connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &DiscordWebProcessor::readMessage, Qt::QueuedConnection);
+
+    connect(&m_reconnectTimer, &QTimer::timeout, this, &DiscordWebProcessor::reconnect, Qt::QueuedConnection);
+
+    m_reconnectTimer.setInterval(5000);
+    m_reconnectTimer.start();
+
+    m_webSocket.open(QUrl("ws://127.0.0.1:50789"));
+
 }
 
 void DiscordWebProcessor::requestNews()
 {
-    QNetworkRequest newRequest;
+    //requestMessages(RequestNewsFromIdByLimit, true);
+    requestMessagesFromServer(RequestTestFromIdByLimit, true, m_lastNewsMessageID);   //DEBUG TEST CHANNEL
+
+    /*QNetworkRequest newRequest;
 
     QString urlString = "";
 
@@ -50,12 +65,16 @@ void DiscordWebProcessor::requestNews()
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveNews(reply);
         m_readyToRequest = true;
-    });
+    });*/
 }
 
 void DiscordWebProcessor::requestEvents()
 {
-    QNetworkRequest newRequest;
+    requestMessagesFromServer(RequestEventsFromIdByLimit, true, m_lastEventMessageID);
+    //requestMessages(RequestTestFromIdByLimit, true);   //DEBUG TEST CHANNEL
+
+
+    /*QNetworkRequest newRequest;
 
     QString urlString = "";
 
@@ -76,10 +95,10 @@ void DiscordWebProcessor::requestEvents()
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveEvents(reply);
         m_readyToRequest = true;
-    });
+    });*/
 }
 
-void DiscordWebProcessor::requestNewsLastMessageId()
+/*void DiscordWebProcessor::requestNewsLastMessageId()
 {
     QNetworkRequest newRequest;
 
@@ -96,9 +115,9 @@ void DiscordWebProcessor::requestNewsLastMessageId()
         receiveNewsLastMessageId(reply);
         m_readyToRequest = true;
     });
-}
+}*/
 
-void DiscordWebProcessor::requestEventsLastMessageId()
+/*void DiscordWebProcessor::requestEventsLastMessageId()
 {
     QNetworkRequest newRequest;
 
@@ -114,9 +133,9 @@ void DiscordWebProcessor::requestEventsLastMessageId()
         receiveEventsLastMessageId(reply);
         m_readyToRequest = true;
     });
-}
+}*/
 
-void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
+/*void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
 {
     QNetworkRequest newRequest;
 
@@ -129,13 +148,13 @@ void DiscordWebProcessor::requestUserAvatar(QString userId, QString avatarId)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveUserAvatar(reply, avatarId);
     });
-}
+}*/
 
 void DiscordWebProcessor::requestAttachmentImage(QString attachmentId, QString url)
 {
     QNetworkRequest newRequest;
 
-    newRequest.setUrl(QUrl(url));
+    newRequest.setUrl(QUrl(url.toUtf8()));
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -157,7 +176,132 @@ void DiscordWebProcessor::requestYoutubeImage(QString youtubeId)
     });
 }
 
-QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArray)
+QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QJsonArray messagesArray)
+{
+
+    QList<DiscordMessage> discordNewsList;
+
+    for (int i = 0; i < messagesArray.count(); i++)
+    {
+        DiscordMessage newDiscordMessage;
+
+        if(!messagesArray.at(i).isObject())
+            continue;
+
+        QJsonObject newObject = messagesArray.at(i).toObject();
+
+        newDiscordMessage.content = newObject.value("content").toString();
+        newDiscordMessage.messageId = newObject.value("id").toString();
+
+        QDateTime newDateTime;
+        newDateTime.setDate(QDate::fromString(newObject.value("timestamp").toString().left(10),"yyyy-MM-dd"));
+        newDateTime.setTime(QTime::fromString(newObject.value("timestamp").toString().mid(11, 8),"hh:mm:ss"));
+        newDiscordMessage.timestamp = newDateTime;
+
+
+        newDiscordMessage.userId = newObject.value("userId").toString();
+        newDiscordMessage.userName = newObject.value("userName").toString();
+        newDiscordMessage.avatarId = newObject.value("avatarId").toString();
+        newDiscordMessage.avatarUrl = newObject.value("avatarUrl").toString();
+
+        newDiscordMessage.attachmentImageId = newObject.value("attacmentImageId").toString();
+        newDiscordMessage.attachmentImageUrl = newObject.value("attacmentImageUrl").toString();
+        newDiscordMessage.attachmentImageWidth = newObject.value("attacmentImageWidth").toInt();
+        newDiscordMessage.attachmentImageHeight = newObject.value("attacmentImageHeight").toInt();
+
+        if (!newDiscordMessage.attachmentImageId.isEmpty())
+            requestAttachmentImage(newDiscordMessage.attachmentImageId, newDiscordMessage.attachmentImageUrl);
+
+        if(!m_avatarIdList.contains(newDiscordMessage.avatarId))
+        {
+            m_avatarIdList.append(newDiscordMessage.avatarId);
+            requestUserAvatar(newDiscordMessage.avatarId, newDiscordMessage.avatarUrl);
+        }
+
+        //Дергаем превьюху ютубовских видосов
+        if (newDiscordMessage.content.contains("https://youtu.be/")
+            || newDiscordMessage.content.contains("https://www.youtube.com/watch?v=")
+            || newDiscordMessage.content.contains("https://www.youtube.com/live/"))
+        {
+            QString youtubeLink = "";
+
+
+
+            if (newDiscordMessage.content.contains("https://youtu.be/"))
+            {
+                int index = newDiscordMessage.content.indexOf("https://youtu.be/");
+
+                for(int i = index; i < newDiscordMessage.content.count(); i++)
+                {
+                    if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                        youtubeLink.append(newDiscordMessage.content[i]);
+                    else
+                        break;
+                }
+            }
+
+
+            if (youtubeLink.isEmpty())
+            {
+
+                if(newDiscordMessage.content.contains("https://www.youtube.com/watch?v="))
+                {
+                    int index = newDiscordMessage.content.indexOf("https://www.youtube.com/watch?v=");
+
+                    for(int i = index; i < newDiscordMessage.content.count(); i++)
+                    {
+                        if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                            youtubeLink.append(newDiscordMessage.content[i]);
+                        else
+                            break;
+                    }
+                }
+            }
+
+
+            if (youtubeLink.isEmpty())
+            {
+
+                if (newDiscordMessage.content.contains("https://www.youtube.com/live/"))
+                {
+                    int index = newDiscordMessage.content.indexOf("https://www.youtube.com/live/");
+
+                    for(int i = index; i < newDiscordMessage.content.count(); i++)
+                    {
+                        if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                            youtubeLink.append(newDiscordMessage.content[i]);
+                        else
+                            break;
+                    }
+                }
+            }
+
+
+            if (!youtubeLink.isEmpty())
+            {
+                newDiscordMessage.youtubeId = youtubeLink.replace("https://youtu.be/", "").replace("https://www.youtube.com/watch?v=", "");
+                newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.replace("https://www.youtube.com/live/", "");
+
+                for (int i = 0; i < newDiscordMessage.youtubeId.count(); i++)
+                {
+                    if (newDiscordMessage.youtubeId.at(i) == "?" || newDiscordMessage.youtubeId.at(i) == "&" )
+                    {
+                        newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.left(i);
+                        break;
+                    }
+                }
+
+                requestYoutubeImage(newDiscordMessage.youtubeId);
+            }
+        }
+
+        discordNewsList.append(std::move(newDiscordMessage));
+    }
+
+    return discordNewsList;
+}
+
+/*QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArray)
 {
     QJsonDocument jsonDoc = QJsonDocument::fromJson(byteArray);
 
@@ -188,7 +332,7 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
 
         QJsonObject authorObject = newObject.value("author").toObject();
         newDiscordMessage.userId = authorObject.value("id").toString();
-        newDiscordMessage.userName = authorObject.value("global_name").toString();/*username*/
+        newDiscordMessage.userName = authorObject.value("global_name").toString();
         newDiscordMessage.avatarId = authorObject.value("avatar").toString();
 
         newDiscordMessage.attachmentId = "0";
@@ -308,6 +452,97 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QByteArray byteArra
     }
 
     return discordNewsList;
+}*/
+
+void DiscordWebProcessor::requestLastMessageId()
+{
+    QJsonObject messageObject;
+    messageObject.insert("op", RequestLastMessagesId);
+
+    QJsonDocument message;
+    message.setObject(messageObject);
+
+    m_webSocket.sendTextMessage(message.toJson().replace('\n',""));
+}
+
+void DiscordWebProcessor::requestMessagesFromServer(OpCode opCode, bool includeFirst, QString lastMessageID)
+{
+    QJsonObject messageObject;
+    messageObject.insert("op", opCode);
+
+    messageObject.insert("messageId", lastMessageID);
+    messageObject.insert("limit", 5);
+    messageObject.insert("includeFirst", includeFirst);
+
+    QJsonDocument message;
+    message.setObject(messageObject);
+
+    m_webSocket.sendTextMessage(message.toJson().replace('\n',""));
+}
+
+void DiscordWebProcessor::receiveNews(QJsonArray messagesArray)
+{
+    QList<DiscordMessage> newsList = parseMessagesJson(messagesArray);
+
+    if (newsList.count() == 0)
+        return;
+
+    m_lastNewsMessageID = newsList.last().messageId;
+
+    bool isNew = true;
+
+    for(int i = 0; i < newsList.count(); i++)
+    {
+        if (newsList.at(i).messageId == m_lastReadedNewsMessageID)
+        {
+            isNew = false;
+            m_isNewNewsMessage = false;
+        }
+
+        newsList[i].isNew = isNew;
+    }
+
+    emit sendNews(std::move(newsList));
+}
+
+void DiscordWebProcessor::receiveEvents(QJsonArray messagesArray)
+{
+    QList<DiscordMessage> newsList = parseMessagesJson(messagesArray);
+
+    if (newsList.count() == 0)
+        return;
+
+    m_lastEventMessageID = newsList.last().messageId;
+
+    bool isNew = true;
+
+    for(int i = 0; i < newsList.count(); i++)
+    {
+        if (newsList.at(i).messageId == m_lastReadedEventMessageID)
+        {
+            isNew = false;
+            m_isNewEventsMessage = false;
+        }
+
+        newsList[i].isNew = isNew;
+    }
+
+    emit sendEvents(std::move(newsList));
+}
+
+void DiscordWebProcessor::requestUserAvatar(QString avatarId, QString avatarUrl)
+{
+    QNetworkRequest newRequest;
+
+    //newRequest.setUrl(QUrl("https://cdn.discordapp.com/avatars/" + userId + "/" + avatarId + ".png"));
+
+    newRequest.setUrl(QUrl(avatarUrl));
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveUserAvatar(reply, avatarId);
+    });
 }
 
 void DiscordWebProcessor::setLastReadedNewsMessageID(QString id)
@@ -326,7 +561,14 @@ void DiscordWebProcessor::setLastReadedEventsMessageID(QString id)
 
 void DiscordWebProcessor::requestNextNews(QString messageId)
 {
-    QNetworkRequest newRequest;
+    if (m_newsMessagesEnd)
+        return;
+
+    //requestMessages(RequestNewsFromIdByLimit, false);
+    requestMessagesFromServer(RequestTestFromIdByLimit, false, m_lastNewsMessageID);   //DEBUG TEST CHANNEL
+
+
+    /* QNetworkRequest newRequest;
 
     //QString urlString = "https://discord.com/api/v9/channels/" + m_newsChannelId + "/messages?limit=5&before=" + messageId;
 
@@ -342,12 +584,18 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveNextNews(reply);
         m_readyToRequest = true;
-    });
+    });*/
 }
 
 void DiscordWebProcessor::requestNextEvents(QString messageId)
 {
-    QNetworkRequest newRequest;
+    if (m_eventsMessagesEnd)
+        return;
+
+    requestMessagesFromServer(RequestEventsFromIdByLimit, false, m_lastEventMessageID);
+    //requestMessages(RequestTestFromIdByLimit, false);   //DEBUG TEST CHANNEL
+
+    /*QNetworkRequest newRequest;
 
     //QString urlString = "https://discord.com/api/v9/channels/" + m_eventsChannelId + "/messages?limit=5&before=" + messageId;
 
@@ -359,18 +607,18 @@ void DiscordWebProcessor::requestNextEvents(QString messageId)
     newRequest.setRawHeader("User-Agent", "DowStatsClient");
     newRequest.setRawHeader("Content-Type","application/json");
 */
-    m_readyToRequest = false;
+   /* m_readyToRequest = false;
 
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveNextEvents(reply);
         m_readyToRequest = true;
-    });
+    });*/
 
 }
 
-void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
+/*void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -404,9 +652,9 @@ void DiscordWebProcessor::receiveNews(QNetworkReply *reply)
     }
 
     emit sendNews(std::move(newsList));
-}
+}*/
 
-void DiscordWebProcessor::receiveNextNews(QNetworkReply *reply)
+/*void DiscordWebProcessor::receiveNextNews(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -431,9 +679,9 @@ void DiscordWebProcessor::receiveNextNews(QNetworkReply *reply)
     }
 
     emit sendNextNews(std::move(newsList));
-}
+}*/
 
-void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
+/*void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -470,9 +718,9 @@ void DiscordWebProcessor::receiveEvents(QNetworkReply *reply)
     }
 
     emit sendEvents(std::move(eventsList));
-}
+}*/
 
-void DiscordWebProcessor::receiveNextEvents(QNetworkReply *reply)
+/*void DiscordWebProcessor::receiveNextEvents(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -497,9 +745,9 @@ void DiscordWebProcessor::receiveNextEvents(QNetworkReply *reply)
     }
 
     emit sendNextEvents(std::move(eventsList));
-}
+}*/
 
-void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
+/*void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -521,9 +769,9 @@ void DiscordWebProcessor::receiveNewsLastMessageId(QNetworkReply *reply)
         m_lastNewsMessageID = lastMessageId;
         m_needRequestNews  = true;
     }
-}
+}*/
 
-void DiscordWebProcessor::receiveEventsLastMessageId(QNetworkReply *reply)
+/*void DiscordWebProcessor::receiveEventsLastMessageId(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
@@ -545,7 +793,7 @@ void DiscordWebProcessor::receiveEventsLastMessageId(QNetworkReply *reply)
         m_lastEventMessageID = lastMessageId;
         m_needRequestEvents = true;
     }
-}
+}*/
 
 void DiscordWebProcessor::receiveUserAvatar(QNetworkReply *reply, QString avatarId)
 {
@@ -621,8 +869,11 @@ void DiscordWebProcessor::onSettingsLoaded()
     qInfo(logInfo()) << "DiscordWebProcessor::onSettingsLoaded()" << "load finished";
 }
 
-void DiscordWebProcessor::requestMessages()
+/*void DiscordWebProcessor::requestMessages()
 {
+    if (!m_webSocketConnected)
+        return;
+
     if (!m_readyToRequest)
         return;
 
@@ -646,5 +897,65 @@ void DiscordWebProcessor::requestMessages()
     else
         requestEventsLastMessageId();
 
+
     m_requestNewsNow = !m_requestNewsNow;
+}*/
+
+void DiscordWebProcessor::readMessage(QString message)
+{
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(message.toUtf8());
+
+    if (!jsonDocument.isObject())
+        return;
+
+    QJsonObject messageObject = jsonDocument.object();
+
+    EventType eventType = static_cast<EventType>(messageObject.value("op").toInt());
+
+    switch(eventType)
+    {
+        case LastMessagesIdAnswer:
+            //m_lastNewsMessageID = messageObject.value("news_last_message").toString();
+            m_lastEventMessageID = messageObject.value("events_last_message").toString();
+            m_lastNewsMessageID = messageObject.value("test_last_message").toString();  //DEBUG TEST CHANNEL
+            //m_needRequestNews  = true;
+            //m_needRequestEvents = true;
+            requestNews();
+            requestEvents();
+            break;
+        case CreateNewsMessage: break;
+        case UpdateNewsMessage: break;
+        case CreateEventMessage: break;
+        case UpdateEventMessage: break;
+        case CreateTestMessage: break;
+        case UpdateTestMessage: break;
+        case AllMesagesReceive: break;
+        case NewsMessagesAnswer: /*receiveNews(messageObject.value("messages").toArray());*/ break;
+        case EventsMessagesAnswer: receiveEvents(messageObject.value("messages").toArray()); break;
+        case TestMessagesAnswer: receiveNews(messageObject.value("messages").toArray()); break; //DEBUG TEST CHANNEL
+        case NewsMessagesEnd: /*m_newsMessagesEnd = true;*/ break;
+        case EventsMessagesEnd: m_eventsMessagesEnd = true; break;
+        case TestMessagesEnd: m_newsMessagesEnd = true; break; //DEBUG TEST CHANNEL
+    }
+}
+
+void DiscordWebProcessor::reconnect()
+{
+     qDebug() << "ASDASDASDASD Try reconnect";
+    m_webSocket.open(QUrl("ws://127.0.0.1:50789"));
+}
+
+void DiscordWebProcessor::onConnected()
+{
+    m_reconnectTimer.stop();
+    qDebug() << "ASDASDASDASD Connected";
+    m_webSocketConnected = true;
+    requestLastMessageId();
+}
+
+void DiscordWebProcessor::onDisconnected()
+{
+    m_reconnectTimer.start();
+    m_webSocketConnected = false;
+    qDebug() << "ASDASDASDASD Disconnected";
 }

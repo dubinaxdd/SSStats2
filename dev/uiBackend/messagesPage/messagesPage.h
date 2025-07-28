@@ -39,7 +39,7 @@ protected:
 
 public slots:
     void receiveMessages(QList<DiscordMessage> news);
-    void receiveNextMessages(QList<DiscordMessage> news);
+    //void receiveNextMessages(QList<DiscordMessage> news);
     void onAvatarUpdate();
     void onAttachmetImagesUpdate();
     void onYoutubeImagesUpdate();

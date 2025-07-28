@@ -328,7 +328,9 @@ struct DiscordMessage
     QString userName;
     QDateTime timestamp;
     QString avatarId;
-    QString attachmentId;
+    QString avatarUrl;
+    QString attachmentImageId;
+    QString attachmentImageUrl;
     int attachmentImageWidth = 0;
     int attachmentImageHeight = 0;
     bool isNew = true;

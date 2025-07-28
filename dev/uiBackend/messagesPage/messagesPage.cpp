@@ -21,7 +21,7 @@ QVariant MessagesPage::data(const QModelIndex &index, int role) const
     else if (role == AvatarId)
         return message.avatarId;
     else if (role == AttachmentId)
-        return message.attachmentId;
+        return message.attachmentImageId;
     else if (role == AttachmentImageWidth)
         return message.attachmentImageWidth;
     else if (role == AttachmentImageHeight)
@@ -64,16 +64,14 @@ QHash<int, QByteArray> MessagesPage::roleNames() const
 
 void MessagesPage::receiveMessages(QList<DiscordMessage> news)
 {
-    if (news.count() < 1)
+    /*if (news.count() < 1)
         return;
 
     beginInsertRows(QModelIndex(), 0, news.count() - 1);
     m_news = formatingMessagesText(news) + m_news;
-    endInsertRows();
-}
+    endInsertRows();*/
 
-void MessagesPage::receiveNextMessages(QList<DiscordMessage> news)
-{
+
     if (news.count() < 1)
         return;
 
@@ -83,6 +81,18 @@ void MessagesPage::receiveNextMessages(QList<DiscordMessage> news)
 
     m_requestingNextMessagesProcessed = false;
 }
+
+/*void MessagesPage::receiveNextMessages(QList<DiscordMessage> news)
+{
+    if (news.count() < 1)
+        return;
+
+    beginInsertRows(QModelIndex(), m_news.count(), m_news.count() + news.count() - 1);
+    m_news = m_news + formatingMessagesText(news);
+    endInsertRows();
+
+    m_requestingNextMessagesProcessed = false;
+}*/
 
 QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> messages)
 {
@@ -210,16 +220,16 @@ void MessagesPage::onAttachmetImagesUpdate()
 {
     for(int i = 0; i < m_news.count(); i++)
     {
-        QString temp = m_news.at(i).attachmentId;
+        QString temp = m_news.at(i).attachmentImageId;
 
-        m_news[i].attachmentId = "";
+        m_news[i].attachmentImageId = "";
 
         QModelIndex first = QAbstractItemModel::createIndex(i, 0);
         QModelIndex last = QAbstractItemModel::createIndex(i, 0);
 
         emit dataChanged(first, last);
 
-        m_news[i].attachmentId = temp;
+        m_news[i].attachmentImageId = temp;
         emit dataChanged(first, last);
     }
 }

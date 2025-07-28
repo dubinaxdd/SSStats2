@@ -64,8 +64,8 @@ exec_program(
 configure_file( "${CMAKE_SOURCE_DIR}/version.h.template" "${CMAKE_SOURCE_DIR}/version.h" )
 
 
-find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia REQUIRED)
+find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia WebSockets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick QuickControls2 LinguistTools Network Widgets Multimedia WebSockets REQUIRED)
 
 set (LANGUAGES "ru_RU")
 foreach (LANGUAGE ${LANGUAGES})
@@ -112,6 +112,7 @@ target_link_libraries(${TARGET_NAME}
                         Qt${QT_VERSION_MAJOR}::Network
                         Qt${QT_VERSION_MAJOR}::Widgets
                         Qt${QT_VERSION_MAJOR}::Multimedia
+                        Qt${QT_VERSION_MAJOR}::WebSockets
                         OpenSSL::SSL
                         OpenSSL::Crypto
                         QuaZip::QuaZip
