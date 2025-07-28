@@ -30,6 +30,14 @@ if (${BALANCE_MOD_TEST})
 endif()
 
 
+option(TEST_NEWS_CHANNEL "Build with DoW Stats News test channel" OFF)
+
+if (${TEST_NEWS_CHANNEL})
+    add_definitions(-DTEST_NEWS_CHANNEL)
+    message(STATUS "Build with DoW Stats News test channel")
+endif()
+
+
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
 

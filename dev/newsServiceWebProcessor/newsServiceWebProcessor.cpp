@@ -28,14 +28,16 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
 
 void DiscordWebProcessor::requestNews()
 {
-    //requestMessages(RequestNewsFromIdByLimit, true);
+#ifdef TEST_NEWS_CHANNEL
     requestMessagesFromServer(RequestTestFromIdByLimit, true, m_lastNewsMessageID);   //DEBUG TEST CHANNEL
+#else
+    requestMessagesFromServer(RequestNewsFromIdByLimit, true, m_lastNewsMessageID);
+#endif
 }
 
 void DiscordWebProcessor::requestEvents()
 {
     requestMessagesFromServer(RequestEventsFromIdByLimit, true, m_lastEventMessageID);
-    //requestMessages(RequestTestFromIdByLimit, true);   //DEBUG TEST CHANNEL
 }
 
 void DiscordWebProcessor::requestAttachmentImage(QString attachmentId, QString url)
@@ -316,8 +318,11 @@ void DiscordWebProcessor::requestNextNews(QString messageId)
     if (m_newsMessagesEnd)
         return;
 
-    //requestMessages(RequestNewsFromIdByLimit, false);
+#ifdef TEST_NEWS_CHANNEL
     requestMessagesFromServer(RequestTestFromIdByLimit, false, m_lastNewsMessageID);   //DEBUG TEST CHANNEL
+#else
+    requestMessagesFromServer(RequestNewsFromIdByLimit, false, m_lastNewsMessageID);
+#endif
 }
 
 void DiscordWebProcessor::requestNextEvents(QString messageId)
@@ -416,28 +421,39 @@ void DiscordWebProcessor::readMessage(QString message)
     switch(eventType)
     {
         case LastMessagesIdAnswer:
-            //m_lastNewsMessageID = messageObject.value("news_last_message").toString();
-            m_lastEventMessageID = messageObject.value("events_last_message").toString();
+
+#ifdef TEST_NEWS_CHANNEL
             m_lastNewsMessageID = messageObject.value("test_last_message").toString();  //DEBUG TEST CHANNEL
+#else
+            m_lastNewsMessageID = messageObject.value("news_last_message").toString();
+#endif
+            m_lastEventMessageID = messageObject.value("events_last_message").toString();
+
             requestNews();
             requestEvents();
             break;
-        case CreateNewsMessage: /*receiveCreateNewsMessage(messageObject.value("content").toObject());*/ break;
-        case UpdateNewsMessage: /*receiveUpdateNewsMessage(messageObject.value("content").toObject());*/ break;
-        case DeleteNewsMessage: /*emit sendRemoveNewsMessage(messageObject.value("messageId").toString());*/ break;
-        case CreateEventMessage: receiveCreateEventMessage(messageObject.value("content").toObject()); break;
-        case UpdateEventMessage: receiveUpdateEventMessage(messageObject.value("content").toObject()); break;
-        case DeleteEventMessage: emit sendRemoveEventsMessage(messageObject.value("messageId").toString()); break;
+
+#ifdef TEST_NEWS_CHANNEL
         case CreateTestMessage: receiveCreateNewsMessage(messageObject.value("content").toObject()); break; //DEBUG TEST CHANNEL
         case UpdateTestMessage: receiveUpdateNewsMessage(messageObject.value("content").toObject()); break; //DEBUG TEST CHANNEL
         case DeleteTestMessage: emit sendRemoveNewsMessage(messageObject.value("messageId").toString()); break; //DEBUG TEST CHANNEL
-        case AllMesagesReceive: break;
-        case NewsMessagesAnswer: /*receiveNews(messageObject.value("messages").toArray());*/ break;
-        case EventsMessagesAnswer: receiveEvents(messageObject.value("messages").toArray()); break;
         case TestMessagesAnswer: receiveNews(messageObject.value("messages").toArray()); break; //DEBUG TEST CHANNEL
-        case NewsMessagesEnd: /*m_newsMessagesEnd = true;*/ break;
-        case EventsMessagesEnd: m_eventsMessagesEnd = true; break;
         case TestMessagesEnd: m_newsMessagesEnd = true; break; //DEBUG TEST CHANNEL
+#else
+        case CreateNewsMessage: receiveCreateNewsMessage(messageObject.value("content").toObject()); break;
+        case UpdateNewsMessage: receiveUpdateNewsMessage(messageObject.value("content").toObject()); break;
+        case DeleteNewsMessage: emit sendRemoveNewsMessage(messageObject.value("messageId").toString()); break;
+        case NewsMessagesAnswer: receiveNews(messageObject.value("messages").toArray()); break;
+        case NewsMessagesEnd: m_newsMessagesEnd = true; break;
+#endif
+        case CreateEventMessage: receiveCreateEventMessage(messageObject.value("content").toObject()); break;
+        case UpdateEventMessage: receiveUpdateEventMessage(messageObject.value("content").toObject()); break;
+        case DeleteEventMessage: emit sendRemoveEventsMessage(messageObject.value("messageId").toString()); break;
+        case EventsMessagesEnd: m_eventsMessagesEnd = true; break;
+
+        case AllMesagesReceive: break;
+        case EventsMessagesAnswer: receiveEvents(messageObject.value("messages").toArray()); break;
+        default: break;
     }
 }
 
