@@ -121,6 +121,7 @@ private:
     QString m_lastReadedNewsMessageID = "";
     QString m_lastReadedEventMessageID = "";
 
+
     bool m_isNewNewsMessage = true;
     bool m_isNewEventsMessage = true;
 

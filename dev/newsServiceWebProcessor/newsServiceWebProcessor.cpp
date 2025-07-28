@@ -239,17 +239,13 @@ void DiscordWebProcessor::receiveNews(QJsonArray messagesArray)
 
     m_lastNewsMessageID = newsList.last().messageId;
 
-    bool isNew = true;
 
     for(int i = 0; i < newsList.count(); i++)
     {
         if (newsList.at(i).messageId == m_lastReadedNewsMessageID)
-        {
-            isNew = false;
             m_isNewNewsMessage = false;
-        }
 
-        newsList[i].isNew = isNew;
+        newsList[i].isNew = m_isNewNewsMessage;
     }
 
     emit sendNews(std::move(newsList));
@@ -264,17 +260,14 @@ void DiscordWebProcessor::receiveEvents(QJsonArray messagesArray)
 
     m_lastEventMessageID = newsList.last().messageId;
 
-    bool isNew = true;
 
     for(int i = 0; i < newsList.count(); i++)
     {
         if (newsList.at(i).messageId == m_lastReadedEventMessageID)
-        {
-            isNew = false;
             m_isNewEventsMessage = false;
-        }
 
-        newsList[i].isNew = isNew;
+
+        newsList[i].isNew = m_isNewEventsMessage;
     }
 
     emit sendEvents(std::move(newsList));
@@ -450,14 +443,14 @@ void DiscordWebProcessor::readMessage(QString message)
 
 void DiscordWebProcessor::reconnect()
 {
-    qDebug() << "ASDASDASDASD Try reconnect";
+    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Try reconnect";
     m_webSocket.open(QUrl("ws://127.0.0.1:50789"));
 }
 
 void DiscordWebProcessor::onConnected()
 {
     m_reconnectTimer.stop();
-    qDebug() << "ASDASDASDASD Connected";
+    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Connected";
     m_webSocketConnected = true;
     requestLastMessageId();
 }
@@ -466,5 +459,5 @@ void DiscordWebProcessor::onDisconnected()
 {
     m_reconnectTimer.start();
     m_webSocketConnected = false;
-    qDebug() << "ASDASDASDASD Disconnected";
+    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Disconnected";
 }
