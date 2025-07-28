@@ -335,6 +335,25 @@ struct DiscordMessage
     int attachmentImageHeight = 0;
     bool isNew = true;
     QString youtubeId;
+
+   /* DiscordMessage& operator=(const DiscordMessage& message)
+    {
+        messageId = message.messageId;
+        content = message.content;
+        userId = message.userId;
+        userName = message.userName;
+        timestamp = message.timestamp;
+        avatarId = message.avatarId;
+        avatarUrl = message.avatarUrl;
+        attachmentImageId = message.attachmentImageId;
+        attachmentImageUrl = message.attachmentImageUrl;
+        attachmentImageWidth = message.attachmentImageWidth;
+        attachmentImageHeight = message.attachmentImageHeight;
+        isNew = message.isNew;
+        youtubeId = message.youtubeId;
+
+         return *this;
+    }*/
 };
 
 struct ReplayListInfo

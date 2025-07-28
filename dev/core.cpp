@@ -62,6 +62,7 @@ void Core::registerTypes()
     qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
     qRegisterMetaType<PlayerInfoFromDowServer>("PlayerInfoFromDowServer");
     qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");
+    qRegisterMetaType<DiscordMessage>("DiscordMessage");
     qRegisterMetaType<QMap<QString, QImage>>("QMap<QString, QImage>");
     qRegisterMetaType<DiscordMessage>("DiscordMessage");
     qRegisterMetaType<QVector<PartyData>>("QVector<PartyData>");

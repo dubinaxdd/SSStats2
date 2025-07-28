@@ -74,6 +74,43 @@ void MessagesPage::receiveMessages(QList<DiscordMessage> news)
     m_requestingNextMessagesProcessed = false;
 }
 
+void MessagesPage::receiveCreateMessage(DiscordMessage message)
+{
+    beginInsertRows(QModelIndex(), 0, 0);
+    m_news = formatingMessagesText({message}) + m_news;
+    endInsertRows();
+}
+
+void MessagesPage::receiveUpdateMessage(DiscordMessage message)
+{
+    for (int i = 0; i < m_news.count(); i++)
+    {
+        if (m_news.at(i).messageId == message.messageId)
+        {
+            m_news[i] = formatingMessagesText({message}).first();
+
+            QModelIndex index = QAbstractItemModel::createIndex(i, 0);
+            emit dataChanged(index, index);
+
+            break;
+        }
+    }
+}
+
+void MessagesPage::receiveRemoveMessage(QString messageId)
+{
+    for (int i = 0; i < m_news.count(); i++)
+    {
+        if (m_news.at(i).messageId == messageId)
+        {
+            beginRemoveRows(QModelIndex(), i,i);
+            m_news.removeAt(i);
+            endRemoveRows();
+            break;
+        }
+    }
+}
+
 QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> messages)
 {
     for (int i = 0; i < messages.count(); i++)

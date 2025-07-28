@@ -6,7 +6,7 @@ import QtGraphicalEffects 1.0
 import DowStatsStyle 1.0
 
 Rectangle {
-    id: mainRectangle
+    id: root
     Layout.margins: 5
 
     Layout.minimumWidth: 60
@@ -25,6 +25,22 @@ Rectangle {
     property int youtubeImageWidth: 0
     property int youtubeImageHeight: 0
     property bool isNew: false
+
+    property int attachmentImageScaledWidth: 0
+    property int attachmentImageScaledHeight: 0
+
+    function updateAttachmentImage(){
+        if (root.attachmentImageHeight > root.attachmentImageWidth)
+        {
+            attachmentImageScaledHeight = 400;
+            attachmentImageScaledWidth = (attachmentImageScaledHeight * root.attachmentImageWidth / root.attachmentImageHeight);
+        }
+        else
+        {
+            attachmentImageScaledWidth = 400;
+            attachmentImageScaledHeight = (attachmentImageScaledWidth * root.attachmentImageHeight / root.attachmentImageWidth);
+        }
+    }
 
     color: DowStatsStyle.alternateBackgroundColor
     radius: 10
@@ -74,7 +90,7 @@ Rectangle {
                             id: avatarImage
                             cache: false
                             anchors.fill: parent
-                            source: "image://imageprovider/" + mainRectangle.avatarId
+                            source: "image://imageprovider/" + root.avatarId
                             visible: false
                         }
 
@@ -99,7 +115,7 @@ Rectangle {
                         id: userNameLabel
                         Layout.rightMargin: 15
                         color: DowStatsStyle.textColor
-                        text: mainRectangle.userName
+                        text: root.userName
                         font.pixelSize: 18
                     }
                 }
@@ -107,7 +123,7 @@ Rectangle {
 
             Label{
                 id: newMessageLabel
-                visible: mainRectangle.isNew
+                visible: root.isNew
                 color: "#e60000"
                 text: qsTr("NEW")
                 font.pointSize: 10
@@ -121,7 +137,7 @@ Rectangle {
             Label{
                 id: dateTimeLabel
                 color: DowStatsStyle.textColor
-                text: mainRectangle.timesTamp
+                text: root.timesTamp
                 font.pixelSize: 16
                 Layout.rightMargin: 15
             }
@@ -135,13 +151,13 @@ Rectangle {
             Layout.rightMargin: 15
             Layout.fillWidth: true
 
-            text: mainRectangle.content
+            text: root.content
             wrapMode: Text.Wrap
             color: DowStatsStyle.textColor
             font.pixelSize: 14
             textFormat: Text.RichText
 
-            visible: !(mainRectangle.content == "\0" || mainRectangle.content == "")
+            visible: !(root.content == "\0" || root.content == "")
 
             selectByMouse: true
             readOnly: true
@@ -161,19 +177,21 @@ Rectangle {
         Rectangle {
             id: attachmentRectangle
 
-            visible: mainRectangle.attachmentId != "0"
+            visible: root.attachmentId != "0"
             Layout.leftMargin: 15
             Layout.rightMargin: 15
             radius: 10
 
+            Layout.preferredWidth: root.attachmentImageScaledWidth
+            Layout.preferredHeight: root.attachmentImageScaledHeight
+
             MouseArea
             {
                 anchors.fill: parent
-
                 cursorShape: Qt.PointingHandCursor
 
                 onClicked: {
-                    mainRectangle.attachmentImageClicked();
+                    root.attachmentImageClicked();
                 }
             }
 
@@ -181,43 +199,31 @@ Rectangle {
                 id: attachmentImage
                 cache: false
                 anchors.fill: parent
-                source: "image://imageprovider/" + mainRectangle.attachmentId
+                source: "image://imageprovider/" + root.attachmentId
                 visible: false
 
-                onSourceChanged: {
-                    if (mainRectangle.attachmentImageHeight > mainRectangle.attachmentImageWidth)
-                    {
-                        attachmentRectangle.height = 400;
-                        attachmentRectangle.width = (attachmentRectangle.height * mainRectangle.attachmentImageWidth / mainRectangle.attachmentImageHeight);
-                    }
-                    else
-                    {
-                        attachmentRectangle.width = 400;
-                        attachmentRectangle.height = (attachmentRectangle.width * mainRectangle.attachmentImageHeight / mainRectangle.attachmentImageWidth);
-                    }
-                }
+                onSourceChanged:  root.updateAttachmentImage()
             }
 
-             Rectangle {
-                 id: attachmentMaskRectangle
-                 anchors.fill: parent
-                 radius: 10
-                 visible: false
+            Rectangle {
+                id: attachmentMaskRectangle
+                anchors.fill: parent
+                radius: 10
+                visible: false
+            }
 
-             }
-
-             OpacityMask {
-                 id: attachmentOpacityMask
-                 anchors.fill: attachmentImage
-                 source: attachmentImage
-                 maskSource: attachmentMaskRectangle
-             }
+            OpacityMask {
+                id: attachmentOpacityMask
+                anchors.fill: attachmentImage
+                source: attachmentImage
+                maskSource: attachmentMaskRectangle
+            }
         }
 
         Rectangle
         {
            id: fullYoutubeRectangle
-           visible: mainRectangle.youtubeId != ""
+           visible: root.youtubeId != ""
 
            Layout.leftMargin: 15
            Layout.rightMargin: 15
@@ -258,19 +264,19 @@ Rectangle {
                         id: youtubeImage
                         cache: false
                         anchors.fill: parent
-                        source: "image://imageprovider/" + mainRectangle.youtubeId
+                        source: "image://imageprovider/" + root.youtubeId
                         visible: false
 
                         onSourceChanged: {
-                            if (mainRectangle.youtubeImageHeight > mainRectangle.youtubeImageWidth)
+                            if (root.youtubeImageHeight > root.youtubeImageWidth)
                             {
                                 youtubeRectangle.height = 400;
-                                youtubeRectangle.width = (youtubeRectangle.height * mainRectangle.youtubeImageWidth / mainRectangle.youtubetImageHeight);
+                                youtubeRectangle.width = (youtubeRectangle.height * root.youtubeImageWidth / root.youtubetImageHeight);
                             }
                             else
                             {
                                 youtubeRectangle.width = 400;
-                                youtubeRectangle.height = (youtubeRectangle.width * mainRectangle.youtubeImageHeight / mainRectangle.youtubeImageWidth);
+                                youtubeRectangle.height = (youtubeRectangle.width * root.youtubeImageHeight / root.youtubeImageWidth);
                             }
                         }
                     }
@@ -303,7 +309,7 @@ Rectangle {
                cursorShape: Qt.PointingHandCursor
 
                onClicked: {
-                    Qt.openUrlExternally( "https://youtu.be/" + mainRectangle.youtubeId);
+                    Qt.openUrlExternally( "https://youtu.be/" + root.youtubeId);
                }
            }
         }

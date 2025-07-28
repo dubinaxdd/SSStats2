@@ -71,53 +71,76 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QJsonArray messages
 
     for (int i = 0; i < messagesArray.count(); i++)
     {
-        DiscordMessage newDiscordMessage;
-
         if(!messagesArray.at(i).isObject())
             continue;
 
-        QJsonObject newObject = messagesArray.at(i).toObject();
+        discordNewsList.append(std::move(parseMessage (messagesArray.at(i).toObject())));
+    }
 
-        newDiscordMessage.content = newObject.value("content").toString();
-        newDiscordMessage.messageId = newObject.value("id").toString();
+    return discordNewsList;
+}
 
-        QDateTime newDateTime;
-        newDateTime.setDate(QDate::fromString(newObject.value("timestamp").toString().left(10),"yyyy-MM-dd"));
-        newDateTime.setTime(QTime::fromString(newObject.value("timestamp").toString().mid(11, 8),"hh:mm:ss"));
-        newDiscordMessage.timestamp = newDateTime;
+DiscordMessage DiscordWebProcessor::parseMessage(QJsonObject messageJson)
+{
+    DiscordMessage newDiscordMessage;
+
+    newDiscordMessage.content = messageJson.value("content").toString();
+    newDiscordMessage.messageId = messageJson.value("id").toString();
+
+    QDateTime newDateTime;
+    newDateTime.setDate(QDate::fromString(messageJson.value("timestamp").toString().left(10),"yyyy-MM-dd"));
+    newDateTime.setTime(QTime::fromString(messageJson.value("timestamp").toString().mid(11, 8),"hh:mm:ss"));
+    newDiscordMessage.timestamp = newDateTime;
 
 
-        newDiscordMessage.userId = newObject.value("userId").toString();
-        newDiscordMessage.userName = newObject.value("userName").toString();
-        newDiscordMessage.avatarId = newObject.value("avatarId").toString();
-        newDiscordMessage.avatarUrl = newObject.value("avatarUrl").toString();
+    newDiscordMessage.userId = messageJson.value("userId").toString();
+    newDiscordMessage.userName = messageJson.value("userName").toString();
+    newDiscordMessage.avatarId = messageJson.value("avatarId").toString();
+    newDiscordMessage.avatarUrl = messageJson.value("avatarUrl").toString();
 
-        newDiscordMessage.attachmentImageId = newObject.value("attacmentImageId").toString();
-        newDiscordMessage.attachmentImageUrl = newObject.value("attacmentImageUrl").toString();
-        newDiscordMessage.attachmentImageWidth = newObject.value("attacmentImageWidth").toInt();
-        newDiscordMessage.attachmentImageHeight = newObject.value("attacmentImageHeight").toInt();
+    newDiscordMessage.attachmentImageId = messageJson.value("attacmentImageId").toString();
+    newDiscordMessage.attachmentImageUrl = messageJson.value("attacmentImageUrl").toString();
+    newDiscordMessage.attachmentImageWidth = messageJson.value("attacmentImageWidth").toInt();
+    newDiscordMessage.attachmentImageHeight = messageJson.value("attacmentImageHeight").toInt();
 
-        if (!newDiscordMessage.attachmentImageId.isEmpty())
-            requestAttachmentImage(newDiscordMessage.attachmentImageId, newDiscordMessage.attachmentImageUrl);
+    if (!newDiscordMessage.attachmentImageId.isEmpty())
+        requestAttachmentImage(newDiscordMessage.attachmentImageId, newDiscordMessage.attachmentImageUrl);
 
-        if(!m_avatarIdList.contains(newDiscordMessage.avatarId))
+    if(!m_avatarIdList.contains(newDiscordMessage.avatarId))
+    {
+        m_avatarIdList.append(newDiscordMessage.avatarId);
+        requestUserAvatar(newDiscordMessage.avatarId, newDiscordMessage.avatarUrl);
+    }
+
+    //Дергаем превьюху ютубовских видосов
+    if (newDiscordMessage.content.contains("https://youtu.be/")
+        || newDiscordMessage.content.contains("https://www.youtube.com/watch?v=")
+        || newDiscordMessage.content.contains("https://www.youtube.com/live/"))
+    {
+        QString youtubeLink = "";
+
+
+
+        if (newDiscordMessage.content.contains("https://youtu.be/"))
         {
-            m_avatarIdList.append(newDiscordMessage.avatarId);
-            requestUserAvatar(newDiscordMessage.avatarId, newDiscordMessage.avatarUrl);
+            int index = newDiscordMessage.content.indexOf("https://youtu.be/");
+
+            for(int i = index; i < newDiscordMessage.content.count(); i++)
+            {
+                if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                    youtubeLink.append(newDiscordMessage.content[i]);
+                else
+                    break;
+            }
         }
 
-        //Дергаем превьюху ютубовских видосов
-        if (newDiscordMessage.content.contains("https://youtu.be/")
-            || newDiscordMessage.content.contains("https://www.youtube.com/watch?v=")
-            || newDiscordMessage.content.contains("https://www.youtube.com/live/"))
+
+        if (youtubeLink.isEmpty())
         {
-            QString youtubeLink = "";
 
-
-
-            if (newDiscordMessage.content.contains("https://youtu.be/"))
+            if(newDiscordMessage.content.contains("https://www.youtube.com/watch?v="))
             {
-                int index = newDiscordMessage.content.indexOf("https://youtu.be/");
+                int index = newDiscordMessage.content.indexOf("https://www.youtube.com/watch?v=");
 
                 for(int i = index; i < newDiscordMessage.content.count(); i++)
                 {
@@ -127,66 +150,58 @@ QList<DiscordMessage> DiscordWebProcessor::parseMessagesJson(QJsonArray messages
                         break;
                 }
             }
+        }
 
 
-            if (youtubeLink.isEmpty())
+        if (youtubeLink.isEmpty())
+        {
+
+            if (newDiscordMessage.content.contains("https://www.youtube.com/live/"))
             {
+                int index = newDiscordMessage.content.indexOf("https://www.youtube.com/live/");
 
-                if(newDiscordMessage.content.contains("https://www.youtube.com/watch?v="))
+                for(int i = index; i < newDiscordMessage.content.count(); i++)
                 {
-                    int index = newDiscordMessage.content.indexOf("https://www.youtube.com/watch?v=");
-
-                    for(int i = index; i < newDiscordMessage.content.count(); i++)
-                    {
-                        if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
-                            youtubeLink.append(newDiscordMessage.content[i]);
-                        else
-                            break;
-                    }
-                }
-            }
-
-
-            if (youtubeLink.isEmpty())
-            {
-
-                if (newDiscordMessage.content.contains("https://www.youtube.com/live/"))
-                {
-                    int index = newDiscordMessage.content.indexOf("https://www.youtube.com/live/");
-
-                    for(int i = index; i < newDiscordMessage.content.count(); i++)
-                    {
-                        if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
-                            youtubeLink.append(newDiscordMessage.content[i]);
-                        else
-                            break;
-                    }
-                }
-            }
-
-
-            if (!youtubeLink.isEmpty())
-            {
-                newDiscordMessage.youtubeId = youtubeLink.replace("https://youtu.be/", "").replace("https://www.youtube.com/watch?v=", "");
-                newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.replace("https://www.youtube.com/live/", "");
-
-                for (int i = 0; i < newDiscordMessage.youtubeId.count(); i++)
-                {
-                    if (newDiscordMessage.youtubeId.at(i) == "?" || newDiscordMessage.youtubeId.at(i) == "&" )
-                    {
-                        newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.left(i);
+                    if(newDiscordMessage.content[i] != '\n' && newDiscordMessage.content[i] != ' ' && newDiscordMessage.content[i] != '\0' )
+                        youtubeLink.append(newDiscordMessage.content[i]);
+                    else
                         break;
-                    }
                 }
-
-                requestYoutubeImage(newDiscordMessage.youtubeId);
             }
         }
 
-        discordNewsList.append(std::move(newDiscordMessage));
+
+        if (!youtubeLink.isEmpty())
+        {
+            newDiscordMessage.youtubeId = youtubeLink.replace("https://youtu.be/", "").replace("https://www.youtube.com/watch?v=", "");
+            newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.replace("https://www.youtube.com/live/", "");
+
+            for (int i = 0; i < newDiscordMessage.youtubeId.count(); i++)
+            {
+                if (newDiscordMessage.youtubeId.at(i) == "?" || newDiscordMessage.youtubeId.at(i) == "&" )
+                {
+                    newDiscordMessage.youtubeId = newDiscordMessage.youtubeId.left(i);
+                    break;
+                }
+            }
+
+            requestYoutubeImage(newDiscordMessage.youtubeId);
+        }
     }
 
-    return discordNewsList;
+    return newDiscordMessage;
+}
+
+void DiscordWebProcessor::requestUserAvatar(QString avatarId, QString avatarUrl)
+{
+    QNetworkRequest newRequest;
+    newRequest.setUrl(QUrl(avatarUrl));
+
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveUserAvatar(reply, avatarId);
+    });
 }
 
 void DiscordWebProcessor::requestLastMessageId()
@@ -265,16 +280,28 @@ void DiscordWebProcessor::receiveEvents(QJsonArray messagesArray)
     emit sendEvents(std::move(newsList));
 }
 
-void DiscordWebProcessor::requestUserAvatar(QString avatarId, QString avatarUrl)
+void DiscordWebProcessor::receiveCreateNewsMessage(QJsonObject messageObject)
 {
-    QNetworkRequest newRequest;
-    newRequest.setUrl(QUrl(avatarUrl));
+    DiscordMessage newMessage = parseMessage(messageObject);
+    emit sendCreateNewsMessage(std::move(newMessage));
+}
 
-    QNetworkReply *reply = m_networkManager->get(newRequest);
+void DiscordWebProcessor::receiveCreateEventMessage(QJsonObject messageObject)
+{
+    DiscordMessage newMessage = parseMessage(messageObject);
+    emit sendCreateEventsMessage(std::move(newMessage));
+}
 
-    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveUserAvatar(reply, avatarId);
-    });
+void DiscordWebProcessor::receiveUpdateNewsMessage(QJsonObject messageObject)
+{
+    DiscordMessage newMessage = parseMessage(messageObject);
+    emit sendUpdateNewsMessage(std::move(newMessage));
+}
+
+void DiscordWebProcessor::receiveUpdateEventMessage(QJsonObject messageObject)
+{
+    DiscordMessage newMessage = parseMessage(messageObject);
+    emit sendUpdateEventsMessage(std::move(newMessage));
 }
 
 void DiscordWebProcessor::setLastReadedNewsMessageID(QString id)
@@ -402,12 +429,15 @@ void DiscordWebProcessor::readMessage(QString message)
             requestNews();
             requestEvents();
             break;
-        case CreateNewsMessage: break;
-        case UpdateNewsMessage: break;
-        case CreateEventMessage: break;
-        case UpdateEventMessage: break;
-        case CreateTestMessage: break;
-        case UpdateTestMessage: break;
+        case CreateNewsMessage: /*receiveCreateNewsMessage(messageObject.value("content").toObject());*/ break;
+        case UpdateNewsMessage: /*receiveUpdateNewsMessage(messageObject.value("content").toObject());*/ break;
+        case DeleteNewsMessage: /*emit sendRemoveNewsMessage(messageObject.value("messageId").toString());*/ break;
+        case CreateEventMessage: receiveCreateEventMessage(messageObject.value("content").toObject()); break;
+        case UpdateEventMessage: receiveUpdateEventMessage(messageObject.value("content").toObject()); break;
+        case DeleteEventMessage: emit sendRemoveEventsMessage(messageObject.value("messageId").toString()); break;
+        case CreateTestMessage: receiveCreateNewsMessage(messageObject.value("content").toObject()); break; //DEBUG TEST CHANNEL
+        case UpdateTestMessage: receiveUpdateNewsMessage(messageObject.value("content").toObject()); break; //DEBUG TEST CHANNEL
+        case DeleteTestMessage: emit sendRemoveNewsMessage(messageObject.value("messageId").toString()); break; //DEBUG TEST CHANNEL
         case AllMesagesReceive: break;
         case NewsMessagesAnswer: /*receiveNews(messageObject.value("messages").toArray());*/ break;
         case EventsMessagesAnswer: receiveEvents(messageObject.value("messages").toArray()); break;

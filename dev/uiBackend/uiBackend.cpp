@@ -56,6 +56,13 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendYoutubeImage,    m_imageProvider, &ImageProvider::addYoutubeImage,    Qt::QueuedConnection);
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendNews,            m_newsPage, &MessagesPage::receiveMessages,          Qt::QueuedConnection);
     QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendEvents,          m_eventsPage, &MessagesPage::receiveMessages,        Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendCreateNewsMessage, m_newsPage, &MessagesPage::receiveCreateMessage,          Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendCreateEventsMessage, m_eventsPage, &MessagesPage::receiveCreateMessage,          Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendUpdateNewsMessage, m_newsPage, &MessagesPage::receiveUpdateMessage,          Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendUpdateEventsMessage, m_eventsPage, &MessagesPage::receiveUpdateMessage,          Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendRemoveNewsMessage, m_newsPage, &MessagesPage::receiveRemoveMessage,          Qt::QueuedConnection);
+    QObject::connect(m_corePtr->discordWebProcessor(), &DiscordWebProcessor::sendRemoveEventsMessage, m_eventsPage, &MessagesPage::receiveRemoveMessage,          Qt::QueuedConnection);
+
     QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendRankDiversion,        m_informationPage, &InformationPage::receiveRankDiversion, Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->statsServerProcessor(), &StatsServerProcessor::sendNotification,         this, &UiBackend::receiveNotification,        Qt::QueuedConnection);

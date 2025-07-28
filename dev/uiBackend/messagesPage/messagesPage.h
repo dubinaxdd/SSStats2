@@ -39,6 +39,9 @@ protected:
 
 public slots:
     void receiveMessages(QList<DiscordMessage> news);
+    void receiveCreateMessage(DiscordMessage message);
+    void receiveUpdateMessage(DiscordMessage message);
+    void receiveRemoveMessage(QString messageId);
     void onAvatarUpdate();
     void onAttachmetImagesUpdate();
     void onYoutubeImagesUpdate();

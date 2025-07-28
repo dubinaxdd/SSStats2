@@ -32,38 +32,41 @@ public:
         LastMessagesIdAnswer = 1,
         CreateNewsMessage = 2,
         UpdateNewsMessage = 3,
-        CreateEventMessage = 4,
-        UpdateEventMessage = 5,
-        CreateTestMessage = 6,
-        UpdateTestMessage = 7,
-        AllMesagesReceive = 8,
-        NewsMessagesAnswer = 9,
-        EventsMessagesAnswer = 10,
-        TestMessagesAnswer = 11,
-        NewsMessagesEnd = 12,
-        EventsMessagesEnd = 13,
-        TestMessagesEnd = 14
+        DeleteNewsMessage = 4,
+        CreateEventMessage = 5,
+        UpdateEventMessage = 6,
+        DeleteEventMessage = 7,
+        CreateTestMessage = 8,
+        UpdateTestMessage = 9,
+        DeleteTestMessage = 10,
+        AllMesagesReceive = 11,
+        NewsMessagesAnswer = 12,
+        EventsMessagesAnswer = 13,
+        TestMessagesAnswer = 14,
+        NewsMessagesEnd = 15,
+        EventsMessagesEnd = 16,
+        TestMessagesEnd = 17
     };
 
 private:
     void requestNews();
     void requestEvents();
-    //void requestNewsLastMessageId();
-    //void requestEventsLastMessageId();
-
-    //void requestUserAvatar(QString userId, QString avatarId);
     void requestAttachmentImage(QString attachmentId, QString url);
     void requestYoutubeImage(QString youtubeId);
 
-    //QList<DiscordMessage> parseMessagesJson(QByteArray byteArray);
     QList<DiscordMessage> parseMessagesJson(QJsonArray messagesArray);
+    DiscordMessage parseMessage(QJsonObject messageJson);
 
-
-//////////////////////
     void requestLastMessageId();
     void requestMessagesFromServer(OpCode opCode, bool includeFirst, QString lastMessageID);
     void receiveNews(QJsonArray messagesArray);
     void receiveEvents(QJsonArray messagesArray);
+
+    void receiveCreateNewsMessage(QJsonObject messageObject);
+    void receiveCreateEventMessage(QJsonObject messageObject);
+
+    void receiveUpdateNewsMessage(QJsonObject messageObject);
+    void receiveUpdateEventMessage(QJsonObject messageObject);
 
     void requestUserAvatar(QString avatarId, QString avatarUrl);
 
@@ -74,31 +77,27 @@ public slots:
     void requestNextEvents(QString messageId);
 
 private slots:
-    //void receiveNews(QNetworkReply* reply);
-    //void receiveNextNews(QNetworkReply* reply);
-    //void receiveEvents(QNetworkReply* reply);
-    //void receiveNextEvents(QNetworkReply* reply);
-    //void receiveNewsLastMessageId(QNetworkReply* reply);
-    //void receiveEventsLastMessageId(QNetworkReply* reply);
+
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
     void receiveAttachmentImage(QNetworkReply* reply, QString attachmentId);
     void receiveYoutubeImage(QNetworkReply* reply, QString youtubeId);
     void onSettingsLoaded();
-    //void requestMessages();
 
-///////////////
     void readMessage(QString messgae);
     void reconnect();
     void onConnected();
     void onDisconnected();
 
-
-
 signals:
     void sendNews(QList<DiscordMessage> news);
-    //void sendNextNews(QList<DiscordMessage> news);
     void sendEvents(QList<DiscordMessage> news);
-    //void sendNextEvents(QList<DiscordMessage> news);
+    void sendCreateNewsMessage(DiscordMessage news);
+    void sendCreateEventsMessage(DiscordMessage news);
+    void sendUpdateNewsMessage(DiscordMessage news);
+    void sendUpdateEventsMessage(DiscordMessage news);
+    void sendRemoveNewsMessage(QString messageId);
+    void sendRemoveEventsMessage(QString messageId);
+
     void sendAvatar(QString avatarId, QImage discordAvatar);
     void sendAttachmentImage(QString attachmentId, QImage attachmentImage);
     void sendYoutubeImage(QString url, QImage attachmentImage);
