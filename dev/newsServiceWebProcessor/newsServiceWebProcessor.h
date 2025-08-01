@@ -52,6 +52,7 @@ private:
     void requestNews();
     void requestEvents();
     void requestAttachmentImage(QString attachmentId, QString url);
+    void requestUserAvatar(QString avatarId, QString avatarUrl);
     void requestYoutubeImage(QString youtubeId);
 
     QList<DiscordMessage> parseMessagesJson(QJsonArray messagesArray);
@@ -68,7 +69,7 @@ private:
     void receiveUpdateNewsMessage(QJsonObject messageObject);
     void receiveUpdateEventMessage(QJsonObject messageObject);
 
-    void requestUserAvatar(QString avatarId, QString avatarUrl);
+
 
 public slots:
     void setLastReadedNewsMessageID(QString id);
