@@ -23,7 +23,7 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     m_reconnectTimer.setInterval(5000);
     m_reconnectTimer.start();
 
-    m_webSocket.open(QUrl("ws://127.0.0.1:50789"));
+    m_webSocket.open(QUrl(DISCORD_WEB_SERVICE));
 }
 
 void DiscordWebProcessor::requestNews()
@@ -460,7 +460,7 @@ void DiscordWebProcessor::readMessage(QString message)
 void DiscordWebProcessor::reconnect()
 {
     qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Try reconnect";
-    m_webSocket.open(QUrl("ws://127.0.0.1:50789"));
+    m_webSocket.open(QUrl(DISCORD_WEB_SERVICE));
 }
 
 void DiscordWebProcessor::onConnected()
