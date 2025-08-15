@@ -1,5 +1,5 @@
-#ifndef SSCONTROLLER_H
-#define SSCONTROLLER_H
+#ifndef GAMECONTROLLER_H
+#define GAMECONTROLLER_H
 
 #include <QObject>
 #include "Windows.h"
@@ -19,12 +19,12 @@
 #include <QProcess>
 #include <advertisingProcessor.h>
 
-class SoulstormController : public QObject
+class GameController : public QObject
 {
     Q_OBJECT
 public:
-    explicit SoulstormController(SettingsController* settingsController, QObject *parent = nullptr);
-    ~SoulstormController();
+    explicit GameController(SettingsController* settingsController, QObject *parent = nullptr);
+    ~GameController();
 
     GameStateReader   *gameStateReader()    const;
     SoulstormMemoryController    *soulstormMemoryController()     const;
@@ -35,8 +35,6 @@ public:
 
     HWND soulstormHwnd() const;
     LONG defaultSoulstormWindowLong() const;
-
-    const QString &ssPath() const;
 
     bool getInputBlocked() const;
     bool getSsMaximized();
@@ -49,10 +47,12 @@ public:
 
     AdvertisingProcessor *advertisingProcessor() const;
 
+    GamePath *currentGame() const;
+
 public slots:
     void blockSsWindowInput(bool state);
     void minimizeSsWithWin7Support();
-    void launchSoulstorm();
+    void launchGame();
 
 private slots:
     void checkWindowState();
@@ -75,11 +75,17 @@ private:
     void updateSoulstormWindow();
     void writeCurrentModSettingInGame();
 
+    void findSoulstormPath();
+    void findDefinetiveEdition();
+
 private:
-    const QString m_ssPath;
+
+    QVector<GamePath> m_gamePathArray;
+    GamePath* m_currentGame;
+
     const QString m_steamPath;
 
-    HWND m_soulstormHwnd = NULL;
+    HWND m_gameHwnd = NULL;
     LONG m_defaultSoulstormWindowLong = NULL;
 
     QTimer* m_ssWindowControllTimer;
@@ -92,7 +98,7 @@ private:
     bool m_ssWindowed = false;
 
     bool m_gameInitialized = false;
-    bool m_ssWindowCreated = false;
+    bool m_gameWindowCreated = false;
 
     bool m_firstTimerTick = true;
 
@@ -114,9 +120,9 @@ private:
     QProcess *m_soulstormProcess;
     bool m_useWindows7SupportMode = false;
 
-    int m_ssWindowWidth = 0;
-    int m_ssWindowHeight = 0;
+    int m_gameWindowWidth = 0;
+    int m_gameWindowHeight = 0;
 
 };
 
-#endif // SSCONTROLLER_H
+#endif // GAMECONTROLLER_H

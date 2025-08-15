@@ -13,6 +13,8 @@ public:
     explicit AbstractDowServerProcessor(QObject *parent = nullptr);
     virtual ~AbstractDowServerProcessor() = 0;
 
+    virtual void setGameType(GameType newGameType);
+
 public slots:
     void setSessionID(QString sessionID);
 
@@ -23,6 +25,7 @@ protected:
 protected:
     QNetworkAccessManager *m_networkManager;
     QString m_sessionID = "";
+    GameType m_gameType;
 
 };
 

@@ -20,7 +20,7 @@ public:
     ~BalanceModManager();
 
     void downloadMod(QString modTechnicalName, bool overwritePrifiles);
-    void setSsPath(const QString &newSsPath);
+    void setGamePath(GamePath *currentGame);
     void checkDownloadingQuery();
 
     bool showBalanceModBetaVersions() const;
@@ -75,6 +75,7 @@ signals:
     void showBalanceModBetaVersionsChanged(bool howBalanceModBetaVersions);
 
 private:
+    GamePath* m_currentGame;
 
     BalanceModInstaller* m_balanceModInstaller;
     QThread* m_balanceModInstallerThread;
@@ -92,7 +93,6 @@ private:
     QNetworkAccessManager *m_networkManager;
     QByteArray m_modInfoHash;
     QTimer* m_modsInfoRequestTimer;
-    QString m_ssPath = "";
     QString m_currentModName = "";
     QString m_currentProfile = "";
 

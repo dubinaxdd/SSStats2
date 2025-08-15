@@ -14,7 +14,7 @@ class StatsServerProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit StatsServerProcessor(SettingsController* settingsController, QString ssPath, QString steamPath, QObject *parent = nullptr);
+    explicit StatsServerProcessor(SettingsController* settingsController, GamePath* currentGame, QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
     void getPlayerStatsFromServer(QSharedPointer<QList<ServerPlayerStats> > playersInfo);
@@ -55,11 +55,11 @@ private:
 
 
 private:
+    GamePath* m_currentGame;
     SettingsController* m_settingsController;
     QTimer *m_currentPlayerStatsRequestTimer;
     QTimer *m_rankDiversionTimer;
     QString m_steamPath;
-    QString m_ssPath;
     QString m_clientVersion;
     QString m_authKey = "";
     QMap<QString, QString> AllPlayersInfo;

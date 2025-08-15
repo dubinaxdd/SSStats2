@@ -6,7 +6,7 @@
 #include <QQmlContext>
 #include <settingsController.h>
 #include <uiBackend.h>
-#include <soulstormController.h>
+#include <gameController.h>
 #include <newsServiceWebProcessor.h>
 #include <logger.h>
 #include <modsProcessor.h>
@@ -38,7 +38,7 @@ public:
     MapManager *mapManager() const;
     SoundProcessor *soundProcessor() const;
     StatsServerProcessor *statsServerProcessor() const;
-    SoulstormController *soulstormController() const;
+    GameController *soulstormController() const;
     RankedModServiceProcessor *rankedModServiceProcessor() const;
 
 signals:
@@ -58,7 +58,7 @@ private:
     Logger *m_logger;
     SettingsController* m_settingsController;
     KeyboardProcessor* m_keyboardProcessor;
-    SoulstormController* m_soulstormController;
+    GameController* m_gameController;
     OverlayWindowController* m_overlayWindowController;
     DiscordWebProcessor* m_discordWebProcessor;
     ModsProcessor* m_modsProcessor;

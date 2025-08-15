@@ -26,15 +26,30 @@ QNetworkRequest AbstractDowServerProcessor::createDowServerRequest(QString url)
     QNetworkRequest newRequest;
 
     newRequest.setUrl(QUrl(url));
-    newRequest.setRawHeader("Cookie", "reliclink=" + QString(RELICLINK).toLocal8Bit() + "; AWSELB=" + QString(AWSELB).toLocal8Bit());
-    newRequest.setRawHeader("Host", "dow1ss-lobby.reliclink.com");
-    newRequest.setRawHeader("Content-Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+
+    if (m_gameType == SoulstormSteam)
+    {
+        newRequest.setRawHeader("Cookie", "reliclink=" + QString(RELICLINK).toLocal8Bit() + "; AWSELB=" + QString(AWSELB).toLocal8Bit());
+        newRequest.setRawHeader("Host", "dow-api.reliclink.com");
+        newRequest.setRawHeader("Content-Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+    }
+    else if (m_gameType == DefinitiveEdition)
+    {
+        newRequest.setRawHeader("Cookie", "reliclink=" + QString(RELICLINK).toLocal8Bit() + "; AWSELB=" + QString(AWSELB).toLocal8Bit());
+        newRequest.setRawHeader("Host", "dow-api.reliclink.com");
+        newRequest.setRawHeader("Content-Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
+    }
 
     QSslConfiguration sslConf;
     sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
     newRequest.setSslConfiguration(sslConf);
 
     return newRequest;
+}
+
+void AbstractDowServerProcessor::setGameType(GameType newGameType)
+{
+    m_gameType = newGameType;
 }
 
 void AbstractDowServerProcessor::setSessionID(QString sessionID)

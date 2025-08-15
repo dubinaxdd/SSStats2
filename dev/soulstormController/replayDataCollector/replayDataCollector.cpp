@@ -5,9 +5,8 @@
 
 using namespace ReplayReader;
 
-ReplayDataCollector::ReplayDataCollector(QString ssPath, QObject *parent)
+ReplayDataCollector::ReplayDataCollector(QObject *parent)
     : QObject(parent)
-    , m_ssPath(ssPath)
 {
 
 }
@@ -530,14 +529,14 @@ void ReplayDataCollector::receiveCurrentWinConditions(QVector<WinCondition> winC
 
 bool ReplayDataCollector::checkMissionSettingsValide(int gameType)
 {
-    RepReader repReader(m_ssPath+"/Playback/temp.rec");
+    RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
 
     return repReader.isStandart(gameType);
 }
 
 QString ReplayDataCollector::updateTestStatsFilePath()
 {
-    QDir dir(m_ssPath + "\\Profiles\\");
+    QDir dir(m_currentGame->gameSettingsPath + "\\Profiles\\");
 
     QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     QString statsPath;
@@ -558,4 +557,9 @@ QString ReplayDataCollector::updateTestStatsFilePath()
     }
 
     return statsPath;
+}
+
+void ReplayDataCollector::setCurrentGame(GamePath *newCurrentGame)
+{
+    m_currentGame = newCurrentGame;
 }

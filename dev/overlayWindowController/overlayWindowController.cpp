@@ -1,7 +1,7 @@
 #include "overlayWindowController.h"
 #include <QTextCodec>
 
-OverlayWindowController::OverlayWindowController(SettingsController *settingsController, SoulstormController* soulstormController, QObject *parent)
+OverlayWindowController::OverlayWindowController(SettingsController *settingsController, GameController* soulstormController, QObject *parent)
     : QObject(parent)
     , p_soulstormController(soulstormController)
     , p_settingsController(settingsController)

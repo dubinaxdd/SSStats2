@@ -12,7 +12,6 @@
 
 DowServerProcessor::DowServerProcessor(QObject *parent)
     : AbstractDowServerProcessor(parent)
-    //, m_networkManager(new QNetworkAccessManager(this))
 {
     m_queueTimer = new QTimer(this);
     m_queueTimer->setInterval(QUEUE_TIMER_INTERVAL);
@@ -23,37 +22,7 @@ DowServerProcessor::DowServerProcessor(QObject *parent)
 
     QObject::connect(m_queueTimer, &QTimer::timeout, this, &DowServerProcessor::checkQueue, Qt::QueuedConnection);
     QObject::connect(m_requestDataAftrePlayerDisconectTimer, &QTimer::timeout, this, &DowServerProcessor::playerDiscoonectTimerTimeout, Qt::QueuedConnection);
-
-    m_queueTimer->start();
 }
-
-/*bool DowServerProcessor::checkReplyErrors(QString funcName, QNetworkReply *reply)
-{
-    if (reply->error() != QNetworkReply::NoError)
-    {
-        qWarning(logWarning()) << funcName + ":" << "Connection error:" << reply->errorString();
-        reply->deleteLater();
-        return true;
-    }
-
-    return false;
-}
-
-QNetworkRequest DowServerProcessor::createDowServerRequest(QString url)
-{
-    QNetworkRequest newRequest;
-
-    newRequest.setUrl(QUrl(url));
-    newRequest.setRawHeader("Cookie", "reliclink=" + QString(RELICLINK).toLocal8Bit() + "; AWSELB=" + QString(AWSELB).toLocal8Bit());
-    newRequest.setRawHeader("Host", "dow1ss-lobby.reliclink.com");
-    newRequest.setRawHeader("Content-Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
-
-    QSslConfiguration sslConf;
-    sslConf.setPeerVerifyMode(QSslSocket::VerifyNone);
-    newRequest.setSslConfiguration(sslConf);
-
-    return newRequest;
-}*/
 
 QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
 {
@@ -86,7 +55,16 @@ void DowServerProcessor::rquestChannellData(int id)
     if (m_sessionID.isEmpty())
         return;
 
-    QString urlString = "https://dow1ss-lobby.reliclink.com/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_sessionID.toLocal8Bit();
+    QString urlString;
+
+    if (m_gameType == SoulstormSteam)
+        urlString = "https://dow1ss-lobby.reliclink.com/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_sessionID.toLocal8Bit();
+    else if (m_gameType == DefinitiveEdition)
+        urlString = "https://dow-api.reliclink.com:443/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_sessionID.toLocal8Bit();
+    else
+        return;
+
+
     QNetworkRequest newRequest = createDowServerRequest(urlString);
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -100,7 +78,15 @@ void DowServerProcessor::requestProfileID(QString steamID)
     if (m_sessionID.isEmpty())
         return;
 
-    QString urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_sessionID.toLocal8Bit();
+    QString urlString;
+
+    if (m_gameType == SoulstormSteam)
+        urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_sessionID.toLocal8Bit();
+    else if (m_gameType == DefinitiveEdition)
+        urlString = "https://dow-api.reliclink.com:443/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_sessionID.toLocal8Bit();
+    else
+        return;
+
     QNetworkRequest newRequest = createDowServerRequest(urlString);
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -114,12 +100,31 @@ void DowServerProcessor::requestFindAdvertisements()
     if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_sessionID.isEmpty())
         return;
 
-    QString urlString = "https://dow1ss-lobby.reliclink.com/game/advertisement/findAdvertisements?profile_ids=%5b"
-                        + m_profileID + "%5d&statGroup_ids=%5b"
-                        + m_statGroupId + "%5d&race_ids=%5b0%5d&matchType_id=0&modName="
-                        + m_modName + "&modVersion="
-                        + m_modVersion + "&modDLLFile=WXPMod.dll&modDLLChecksum=1077236955&dataChecksum=206085050&appBinaryChecksum=1817556062&cheatsEnabled=0&sessionID="
-                        + m_sessionID.toLocal8Bit();
+
+    QString urlString;
+
+    if (m_gameType == SoulstormSteam)
+    {
+        urlString = "https://dow1ss-lobby.reliclink.com/game/advertisement/findAdvertisements?profile_ids=%5b"
+                    + m_profileID + "%5d&statGroup_ids=%5b"
+                    + m_statGroupId + "%5d&race_ids=%5b0%5d&matchType_id=0&modName="
+                    + m_modName + "&modVersion="
+                    + m_modVersion + "&modDLLFile=WXPMod.dll&modDLLChecksum=1077236955&dataChecksum=206085050&appBinaryChecksum=1817556062&cheatsEnabled=0&sessionID="
+                    + m_sessionID.toLocal8Bit();
+    }
+    else if (m_gameType == DefinitiveEdition)
+    {
+        urlString = "https://dow-api.reliclink.com:443/game/advertisement/findAdvertisements?"
+                    "appBinaryChecksum=-1396102090&dataChecksum=89549991&matchType_id=0&modDLLChecksum=-765135040&modDLLFile=DXP3Mod.dll"
+
+                    "&modName=Soulstorm"
+                    //"&modName=" + m_modName +
+
+                    "&modVersion=" + m_modVersion +
+                    "&sessionID=" + m_sessionID.toLocal8Bit();
+    }
+    else
+        return;
 
     QNetworkRequest newRequest = createDowServerRequest(urlString);
     QNetworkReply *reply = m_networkManager->get(newRequest);
@@ -148,7 +153,15 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 
     profilesIDsString += "%5d";
 
-    QString urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_sessionID.toLocal8Bit();
+    QString urlString;
+
+    if (m_gameType == SoulstormSteam)
+        urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_sessionID.toLocal8Bit();
+    else if (m_gameType == DefinitiveEdition)
+        urlString = "https://dow-api.reliclink.com:443/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_sessionID.toLocal8Bit();
+    else
+        return;
+
     QNetworkRequest newRequest = createDowServerRequest(urlString);
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
@@ -423,4 +436,11 @@ void DowServerProcessor::addQuery(QueryType type)
         return;
 
     m_requestsQueue.append(type);
+}
+
+void DowServerProcessor::setGameType(GameType newGameType)
+{
+    AbstractDowServerProcessor::setGameType(newGameType);
+    m_queueTimer->start();
+    //m_gameType = newGameType;
 }

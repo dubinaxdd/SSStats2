@@ -37,11 +37,11 @@ ReplayManager::~ReplayManager()
     m_asyncReplayReader->deleteLater();
 }
 
-void ReplayManager::setSsPath(const QString &newSsPath)
+void ReplayManager::setGamePath(GamePath* currentGame)
 {
-    m_ssPath = newSsPath;
-    m_ssUrlPathPath = QUrl::fromLocalFile(m_ssPath);
-    m_playbackFolder = m_ssPath + QDir::separator() + "Playback";
+    m_currentGame = currentGame;
+    m_ssUrlPathPath = QUrl::fromLocalFile(m_currentGame->gameSettingsPath);
+    m_playbackFolder = m_currentGame->gameSettingsPath + QDir::separator() + "Playback";
 
     qInfo(logInfo()) << "Default playback folder: " << m_playbackFolder;
 
@@ -50,7 +50,7 @@ void ReplayManager::setSsPath(const QString &newSsPath)
 
 void ReplayManager::openPlaybackFolder()
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(m_ssPath + QDir::separator() + "Playback"));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentGame->gameSettingsPath + QDir::separator() + "Playback"));
 }
 
 void ReplayManager::openPlayback(QString fileName)
@@ -313,7 +313,7 @@ void ReplayManager::choiseOtherPlaybackFolder(QString folder)
 
 void ReplayManager::choiseDefaultPlaybackFolder()
 {
-    m_playbackFolder = m_ssPath + QDir::separator() + "Playback";
+    m_playbackFolder = m_currentGame->gameSettingsPath + QDir::separator() + "Playback";
     getReplaysData();
 }
 

@@ -13,7 +13,7 @@ class MapManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit MapManager(SettingsController* settingsController, QString ssPath, QObject *parent = nullptr);
+    explicit MapManager(SettingsController* settingsController, GamePath* currentGame, QObject *parent = nullptr);
     ~MapManager();
 
     void requestMapList();
@@ -59,9 +59,9 @@ private:
     void updateBlockInfoUpdate();
 
 private:
+    GamePath* m_currentGame;
     SettingsController* m_settingsController;
     QNetworkAccessManager *m_networkManager;
-    QString m_ssPath;
     FileHashReader* m_fileHashReader;
     QThread* m_fileHashReaderThread;
 

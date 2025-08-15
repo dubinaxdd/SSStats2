@@ -18,7 +18,7 @@ class LobbyEventReader : public QObject
 {
     Q_OBJECT
 public:
-    explicit LobbyEventReader(QString sspath, QObject *parent = nullptr);
+    explicit LobbyEventReader(QObject *parent = nullptr);
 
 signals:
     void playerConnected();                 //игрок присоединился к игре которая создана не нами
@@ -42,15 +42,18 @@ private slots:
 public:
     void checkPatyState();
 
+    void setCurrentGame(GamePath *newCurrentGame);
+
 private:
     QTimer* m_lobbyEventsReadTimer;
-    QString m_ssPath;
     QString m_preLastLogTime = "baneblade";
     QString m_lastLogTime;
 
     bool isHostedGame = false;
 
     bool m_readingActivated = false;
+
+    const GamePath* m_currentGame;
 
 };
 

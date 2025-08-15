@@ -37,7 +37,7 @@ public:
     explicit ReplayManager(ImageProvider* imageProvider, QObject *parent = nullptr);
     ~ReplayManager();
 
-    void setSsPath(const QString &newSsPath);
+    void setGamePath(GamePath* currentGame);
 
     Q_INVOKABLE void openPlaybackFolder();
 
@@ -81,8 +81,8 @@ private:
     void resetView();
 
 private:
+    GamePath* m_currentGame;
     QString m_playbackFolder;
-    QString m_ssPath;
     ReplaysListModel* m_replaysListModel;
     PlayersListModel* m_playersListModel;
 
@@ -91,7 +91,6 @@ private:
     QThread m_asyncReplayReaderThread;
 
     QUrl m_currentFilePath;
-    QUrl m_ssUrlPathPath;
     QString m_currentReplayName;
     QString m_currentFileName;
     QString m_currentMod;
@@ -110,6 +109,8 @@ private:
     QString m_mapSourceUrl;
 
     QList <ModInfo> m_modInfo;
+
+    QUrl m_ssUrlPathPath;
 };
 
 #endif // REPLAYMANAGER_H

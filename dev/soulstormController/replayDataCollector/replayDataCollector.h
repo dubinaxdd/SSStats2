@@ -8,7 +8,9 @@ class ReplayDataCollector : public QObject
 {
     Q_OBJECT
 public:
-    explicit ReplayDataCollector(QString ssPath, QObject *parent = nullptr);
+    explicit ReplayDataCollector(QObject *parent = nullptr);
+
+    void setCurrentGame(GamePath *newCurrentGame);
 
 public slots:
     void receiveCurrentMissionState(SsMissionState missionCurrentState);
@@ -38,12 +40,12 @@ private:
     QVector<WinCondition> m_winCoditionsVector;
     int m_lastAverrageApm = 0;
     QList<PlayerInfoFromDowServer> m_playersInfoFromDowServer;
-    QString m_ssPath;
     QString m_currentMode;
     QString m_currentModVerion;
     QString m_testStatsPath;
     bool m_gameWillBePlayedInOtherSession = true;
 
+    const GamePath* m_currentGame;
 };
 
 #endif // REPLAYDATACOLLECTOR_H

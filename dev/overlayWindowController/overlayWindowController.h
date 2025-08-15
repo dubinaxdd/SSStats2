@@ -5,7 +5,7 @@
 #include <QTimer>
 #include "Windows.h"
 #include <uiBackend.h>
-#include <soulstormController.h>
+#include <gameController.h>
 
 class UiBackend;
 
@@ -13,7 +13,7 @@ class OverlayWindowController : public QObject
 {
     Q_OBJECT
 public:
-    explicit OverlayWindowController(SettingsController* settingsController, SoulstormController* soulstormController, QObject *parent = nullptr);
+    explicit OverlayWindowController(SettingsController* settingsController, GameController* soulstormController, QObject *parent = nullptr);
     void grubStatsWindow();
     void onExit();
     void setUiBackend(UiBackend* uiBackend);
@@ -44,7 +44,7 @@ private:
     RECT m_ssRect;
 
     UiBackend* m_uiBackendPtr = nullptr;
-    SoulstormController* p_soulstormController;
+    GameController* p_soulstormController;
     SettingsController* p_settingsController;
 
 

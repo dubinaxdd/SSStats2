@@ -67,7 +67,7 @@ public:
     const QString &currentMapTags() const;
     void setCurrentMapTags(const QString &newCurrentMapTags);
 
-    void setSsPath(const QString &newSsPath);
+    void setGamePath(GamePath *currentGame);
 
     bool currentMapNeedInstall() const;
     void setCurrentMapNeedInstall(bool newCurrentMapNeedInstall);
@@ -129,10 +129,10 @@ private:
     QString consolidateTags(QList<QString> tags);
 
 private:
+    GamePath* m_currentGame;
     MapManager* m_mapManagerPtr;
     SettingsController* m_settingsController;
     ImageProvider* m_imageProvider;
-    QString m_ssPath = "";
 
     QList<MapItem*> m_mapItemArray;
     bool m_updatesAvailable = false;

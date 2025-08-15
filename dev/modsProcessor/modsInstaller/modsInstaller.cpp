@@ -4,9 +4,11 @@
 #include "QDir"
 #include "QDebug"
 
-ModsInstaller::ModsInstaller(QString ssPath, QObject *parent) : QObject(parent)
+ModsInstaller::ModsInstaller(GamePath* gamePath, QObject *parent)
+    : QObject(parent)
+    ,m_currentGame(gamePath)
 {
-    m_ssPath = ssPath;
+
 
     //QuaZip zip("zipFile.zip");
    // zip.open(QuaZip::mdUnzip);
@@ -52,8 +54,11 @@ void ModsInstaller::uninstallMod(InstMod mod)
 
 void ModsInstaller::installRussianFonts(QString path)
 {
-    JlCompress::extractDir(path, m_ssPath + QDir::separator());
-    qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_ssPath;
+    if (m_currentGame->gameType == DefinitiveEdition)
+        return;
+
+    JlCompress::extractDir(path, m_currentGame->gamePath + QDir::separator());
+    qInfo(logInfo()) <<  "Russian fonts installed from " << path << "to" << m_currentGame->gamePath;
 
     QFile tempfile(path);
     tempfile.remove();
@@ -61,13 +66,16 @@ void ModsInstaller::installRussianFonts(QString path)
 
 void ModsInstaller::uninstallRussianFonts()
 {
-    QDir dir1(m_ssPath + "\\Engine\\Locale\\English\\data\\art");
+    if (m_currentGame->gameType == DefinitiveEdition)
+        return;
+
+    QDir dir1(m_currentGame->gamePath + "\\Engine\\Locale\\English\\data\\art");
     dir1.removeRecursively();
 
-    QDir dir2(m_ssPath + "\\Engine\\Locale\\English\\data\\font");
+    QDir dir2(m_currentGame->gamePath + "\\Engine\\Locale\\English\\data\\font");
     dir2.removeRecursively();
 
-    QDir dir3(m_ssPath + "\\Engine\\Locale\\English\\data\\sound");
+    QDir dir3(m_currentGame->gamePath + "\\Engine\\Locale\\English\\data\\sound");
     dir3.removeRecursively();
 
 
@@ -76,8 +84,11 @@ void ModsInstaller::uninstallRussianFonts()
 
 void ModsInstaller::installCameraMod(QString path)
 {
-    JlCompress::extractDir(path, m_ssPath + QDir::separator());
-    qInfo(logInfo()) <<  "Camera mod installed from " << path << "to" << m_ssPath;
+    if (m_currentGame->gameType == DefinitiveEdition)
+        return;
+
+    JlCompress::extractDir(path, m_currentGame->gamePath + QDir::separator());
+    qInfo(logInfo()) <<  "Camera mod installed from " << path << "to" << m_currentGame->gamePath;
 
     QFile tempfile(path);
     tempfile.remove();
@@ -85,23 +96,28 @@ void ModsInstaller::installCameraMod(QString path)
 
 void ModsInstaller::uninstallCameraMod()
 {
-    QFile tempfile1(m_ssPath + "\\Engine\\Data\\camera_ed.lua");
+    if (m_currentGame->gameType == DefinitiveEdition)
+        return;
+
+    QFile tempfile1(m_currentGame->gamePath + "\\Engine\\Data\\camera_ed.lua");
     tempfile1.remove();
 
-    QFile tempfile2(m_ssPath + "\\Engine\\Data\\camera_high.lua");
+    QFile tempfile2(m_currentGame->gamePath + "\\Engine\\Data\\camera_high.lua");
     tempfile2.remove();
 
-    QFile tempfile3(m_ssPath + "\\Engine\\Data\\camera_low.lua");
+    QFile tempfile3(m_currentGame->gamePath + "\\Engine\\Data\\camera_low.lua");
     tempfile3.remove();
 
-    QFile tempfile4(m_ssPath + "\\Engine\\Data\\camera_me.lua");
+    QFile tempfile4(m_currentGame->gamePath + "\\Engine\\Data\\camera_me.lua");
     tempfile4.remove();
 }
 
 void ModsInstaller::installGridHotkeys(QString path)
 {
+    if (m_currentGame->gameType == DefinitiveEdition)
+        return;
 
-    QDir dir(m_ssPath + "\\Profiles\\");
+    QDir dir(m_currentGame->gameSettingsPath + "\\Profiles\\");
     QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
     for (int i = 0; i < dirContent.count(); i++)
@@ -117,7 +133,10 @@ void ModsInstaller::installGridHotkeys(QString path)
 
 void ModsInstaller::uninstallGridHotkeys()
 {
-    QDir dir(m_ssPath + "\\Profiles\\");
+    if (m_currentGame->gameType == DefinitiveEdition)
+        return;
+
+    QDir dir(m_currentGame->gameSettingsPath + "\\Profiles\\");
     QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
     for (int i = 0; i < dirContent.count(); i++)
@@ -133,8 +152,8 @@ void ModsInstaller::uninstallGridHotkeys()
 
 void ModsInstaller::installTransparentCameraTrapezoid(QString path)
 {
-    JlCompress::extractDir(path, m_ssPath + QDir::separator());
-    qInfo(logInfo()) <<  "Transparent camera trapezoid installed from " << path << "to" << m_ssPath;
+    JlCompress::extractDir(path, m_currentGame->gameSettingsPath + QDir::separator());
+    qInfo(logInfo()) <<  "Transparent camera trapezoid installed from " << path << "to" << m_currentGame->gameSettingsPath;
 
     QFile tempfile(path);
     tempfile.remove();
@@ -142,7 +161,14 @@ void ModsInstaller::installTransparentCameraTrapezoid(QString path)
 
 void ModsInstaller::uninstallTransparentCameraTrapezoid()
 {
-    QFile tempfile1(m_ssPath + "\\DXP2\\Data\\Art\\ui\\minimap\\camera.tga");
+    QString gamePath;
+
+    if (m_currentGame->gameType == DefinitiveEdition)
+        gamePath = m_currentGame->gamePath + "\\DoWDE\\Data\\Art\\ui\\minimap\\camera.tga";
+    else
+        gamePath = m_currentGame->gamePath + "\\DXP2\\Data\\Art\\ui\\minimap\\camera.tga";
+
+    QFile tempfile1(gamePath);
     tempfile1.remove();
 
     qInfo(logInfo()) <<  "Transparent camera trapezoid uninstalled";

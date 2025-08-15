@@ -72,8 +72,8 @@ UiBackend::UiBackend(Core* core, QObject *parent)
 
     QObject::connect(m_corePtr->rankedModServiceProcessor(), &RankedModServiceProcessor::sendOnlineCount, this, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
 
-    QObject::connect(m_corePtr->soulstormController(),                        &SoulstormController::ssLaunchStateChanged, this, &UiBackend::onSsLaunchStateChanged,         Qt::QueuedConnection);
-    QObject::connect(m_corePtr->soulstormController(),                        &SoulstormController::ssMaximized,          this, &UiBackend::receiveSsMaximized,             Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController(),                        &GameController::ssLaunchStateChanged, this, &UiBackend::onSsLaunchStateChanged,         Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController(),                        &GameController::ssMaximized,          this, &UiBackend::receiveSsMaximized,             Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->replayDataCollector(), &ReplayDataCollector::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMissionState,  this, &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMod,           this, &UiBackend::receiveCurrentModTechnicalName, Qt::QueuedConnection);
@@ -268,12 +268,12 @@ void UiBackend::setSsNotInstalledDialogVisible(bool newSsNotInstalledDialogVisib
     emit ssNotInstalledDialogVisibleChanged();
 }
 
-void UiBackend::setSsPath(const QString &newSsPath)
+void UiBackend::setGamePath(GamePath* currentGame)
 {
-    if(m_ssPath == newSsPath)
+    if(m_currentGame == currentGame)
         return;
 
-    m_ssPath = newSsPath;
+    m_currentGame = currentGame;
     emit soulstormIsInstalledChanged();
 }
 
@@ -526,7 +526,7 @@ void UiBackend::launchSoulstorm()
     else if (m_balanceModPage->downloadingProcessed())
         setBalanceModInstallProcessedDialogVisible(true);
     else
-        m_corePtr->soulstormController()->launchSoulstorm();
+        m_corePtr->soulstormController()->launchGame();
 }
 
 void UiBackend::setSizeModifer(double size)
@@ -568,9 +568,15 @@ SettingsPageModel *UiBackend::settingsPageModel() const
 
 bool UiBackend::soulstormIsInstalled()
 {
-    QFile ssDir(m_ssPath + QDir::separator() + "Soulstorm.exe");
+    QFile ssDir;
 
-    return !m_ssPath.isEmpty() && ssDir.exists();
+    if (m_currentGame->gameType == DefinitiveEdition)
+        ssDir.setFileName(m_currentGame->gamePath + QDir::separator() + "W40k.exe");
+    else
+        ssDir.setFileName(m_currentGame->gamePath + QDir::separator() + "Soulstorm.exe");
+
+
+    return !m_currentGame->gamePath.isEmpty() && ssDir.exists();
 }
 
 MessagesPage *UiBackend::eventsPage() const

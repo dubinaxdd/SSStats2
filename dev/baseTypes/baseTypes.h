@@ -7,6 +7,18 @@
 #include <QUrl>
 #include <QUuid>
 
+enum GameType{
+    SoulstormDowOnline = 0,
+    SoulstormSteam,
+    DefinitiveEdition
+};
+
+struct GamePath{
+    GameType gameType = SoulstormDowOnline;
+    QString gamePath = "";
+    QString gameSettingsPath = "";
+};
+
 class Language {
     Q_GADGET
 public:

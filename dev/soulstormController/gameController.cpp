@@ -1,4 +1,4 @@
-#include "soulstormController.h"
+#include "gameController.h"
 #include <QTextCodec>
 #include <QDebug>
 #include <QGuiApplication>
@@ -8,35 +8,44 @@
 #include <QJsonObject>
 #include <QStringList>
 #include <QDir>
+#include <QStandardPaths>
+#include <QDesktopServices>
 
 #define SS_FULLSCREENIZE_TIMER_INTERVAL 2000
 
 #define WINDOW_STATE_CHECK_INTERVAL 500
 ///<Интервал таймера проверки запуска/не запускака, свернутости/не развернутости
 
-SoulstormController::SoulstormController(SettingsController *settingsController, QObject *parent)
+GameController::GameController(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
-    , m_ssPath(getSsPathFromRegistry())
     , m_steamPath(getSteamPathFromRegistry())
-    , m_lobbyEventReader(new LobbyEventReader(m_ssPath, this))
+    , m_lobbyEventReader(new LobbyEventReader(this))
     , m_apmMeter(new APMMeter(this))
     , m_soulstormMemoryController(new SoulstormMemoryController(settingsController, this))
     , m_settingsController(settingsController)
-    , m_gameStateReader(new GameStateReader(m_settingsController, m_ssPath, this))
+    , m_gameStateReader(new GameStateReader(m_settingsController, this))
     , m_dowServerProcessor(new DowServerProcessor(this))
-    , m_replayDataCollector(new ReplayDataCollector(m_ssPath, this))
+    , m_replayDataCollector(new ReplayDataCollector(this))
     , m_advertisingProcessor(new AdvertisingProcessor(m_settingsController, this))
     , m_soulstormProcess(nullptr)
 {
+    getSsPathFromRegistry();
+    m_currentGame = &m_gamePathArray.last();
+
+    m_lobbyEventReader->setCurrentGame(m_currentGame);
+    m_gameStateReader->setCurrentGame(m_currentGame);
+    m_replayDataCollector->setCurrentGame(m_currentGame);
+    m_dowServerProcessor->setGameType(m_currentGame->gameType);
+
     if(m_steamPath.isEmpty() || !QDir(m_steamPath).exists())
         qWarning(logWarning()) << "Steam is not installed!" << m_steamPath;
     else
         qInfo(logInfo()) << "Steam path: " << m_steamPath;
 
-    if(m_ssPath.isEmpty() || !QDir(m_ssPath).exists())
-        qWarning(logWarning()) << "Soulstorm is not installed!" << m_ssPath;
+    if(m_currentGame->gamePath.isEmpty() || !QDir(m_currentGame->gamePath).exists())
+        qWarning(logWarning()) << "Soulstorm is not installed!" << m_currentGame->gamePath;
     else
-        qInfo(logInfo()) << "Worked with Soulstorm from: " << m_ssPath;
+        qInfo(logInfo()) << "Worked with Soulstorm from: " << m_currentGame->gamePath;
 
     m_soulstormMemoryReader = new SoulstormMemoryReader(/*this*/);
 
@@ -44,16 +53,16 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
 
 
-    QObject::connect(this, &SoulstormController::ssLaunchStateChanged, m_soulstormMemoryController, &SoulstormMemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
+    QObject::connect(this, &GameController::ssLaunchStateChanged, m_soulstormMemoryController, &SoulstormMemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &SoulstormController::checkWindowState, Qt::QueuedConnection);
+    QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &GameController::checkWindowState, Qt::QueuedConnection);
 
-    QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &SoulstormController::gameInitialized, Qt::QueuedConnection);   
+    QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &GameController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
     //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
 
 
-    QObject::connect(m_gameStateReader, &GameStateReader::ssShutdown,               this, &SoulstormController::ssShutdown, Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::ssShutdown,               this, &GameController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_lobbyEventReader, &LobbyEventReader::receiveCurrentMissionState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_replayDataCollector, &ReplayDataCollector::receiveCurrentMissionState,   Qt::QueuedConnection);
@@ -88,7 +97,7 @@ SoulstormController::SoulstormController(SettingsController *settingsController,
     m_ssWindowControllTimer->start();
 }
 
-SoulstormController::~SoulstormController()
+GameController::~GameController()
 {
     m_soulstormMemoryReader->abort();
     m_soulstormMemoryReaderThread.quit();
@@ -96,44 +105,43 @@ SoulstormController::~SoulstormController()
     m_soulstormMemoryReader->deleteLater();
 }
 
-void SoulstormController::blockSsWindowInput(bool state)
+void GameController::blockSsWindowInput(bool state)
 {
-    if (m_soulstormHwnd)
+    if (m_gameHwnd)
     {
         inputBlocked = state;
-        EnableWindow(m_soulstormHwnd, !inputBlocked);
+        EnableWindow(m_gameHwnd, !inputBlocked);
         emit inputBlockStateChanged(inputBlocked);
     }
 }
 
-void SoulstormController::launchSoulstorm()
+void GameController::launchGame()
 {
-    QDir ssPath(m_ssPath);
+    QDir ssPath(m_currentGame->gamePath);
 
     if(!ssPath.exists())
         return;
 
-
     bool win7SupportMode = m_settingsController->getSettings()->win7SupportMode;
     bool launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
 
-    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* gameSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
 
     if (launchGameInWindow)
-        ssSettings->setValue("global/screenwindowed", 1);
+        gameSettings->setValue("global/screenwindowed", 1);
     else
     {
         if (win7SupportMode)
         {
-            m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
-            m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
-            ssSettings->setValue("global/screenwindowed", 1);
+            m_gameWindowWidth = gameSettings->value("global/screenwidth", 0).toInt();
+            m_gameWindowHeight = gameSettings->value("global/screenheight", 0).toInt();
+            gameSettings->setValue("global/screenwindowed", 1);
         }
         else
-            ssSettings->setValue("global/screenwindowed", 0);
+            gameSettings->setValue("global/screenwindowed", 0);
     }
 
-    delete ssSettings;
+    delete gameSettings;
 
     writeCurrentModSettingInGame();
 
@@ -145,35 +153,49 @@ void SoulstormController::launchSoulstorm()
             params.append("-nomovies");
 
         m_soulstormProcess = new QProcess(this);
-        m_soulstormProcess->startDetached(m_ssPath+"\\Soulstorm.exe", {params});
+
+        if (m_currentGame->gameType == DefinitiveEdition)
+            //m_soulstormProcess->startDetached(m_currentGame->gamePath + "\\W40k.exe");
+            QDesktopServices::openUrl(QUrl("steam://rungameid/3556750"));
+        else
+            m_soulstormProcess->startDetached(m_currentGame->gamePath + "\\Soulstorm.exe", {params});
+
         m_useWindows7SupportMode = win7SupportMode;
     }
+
 }
 
-void SoulstormController::minimizeSsWithWin7Support()
+void GameController::minimizeSsWithWin7Support()
 {
     minimizeSoulstorm();
 }
 
-void SoulstormController::checkWindowState()
+void GameController::checkWindowState()
 {
-    QDir ssPath(m_ssPath);
+    QDir gamePath(m_currentGame->gamePath);
 
-    if(!ssPath.exists())
+    if(!gamePath.exists())
         return;
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
+
+    QString ss;
+
+    if (m_currentGame->gameType == DefinitiveEdition)
+        ss = codec->toUnicode("Warhammer 40,000: Dawn of War");
+    else
+        ss = codec->toUnicode("Dawn of War: Soulstorm");
+
     LPCWSTR lps = (LPCWSTR)ss.utf16();
 
-    m_soulstormHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
+    m_gameHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
 
-    m_soulstormMemoryController->setSoulstormHwnd(m_soulstormHwnd);
-    m_gameStateReader->setGameLounched(m_soulstormHwnd);
+    m_soulstormMemoryController->setSoulstormHwnd(m_gameHwnd);
+    m_gameStateReader->setGameLounched(m_gameHwnd);
 
-    if (m_soulstormHwnd && !m_ssWindowCreated)
+    if (m_gameHwnd && !m_gameWindowCreated)
     {
-        m_ssWindowCreated = true;
+        m_gameWindowCreated = true;
 
         if (m_useWindows7SupportMode)
         {
@@ -198,28 +220,28 @@ void SoulstormController::checkWindowState()
     }
 
 
-    if (m_soulstormHwnd && m_gameInitialized)              ///<Если игра запущена и инициализирована
+    if (m_gameHwnd && m_gameInitialized)              ///<Если игра запущена и инициализирована
     {
         if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
         {
             m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
 
-            m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
+            m_defaultSoulstormWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
             qInfo(logInfo()) << "Soulstorm window accepted";
 
             if (m_settingsController->getSettings()->win7SupportMode && !m_settingsController->getSettings()->launchGameInWindow)
             {
-                QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+                QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
                 if( ssSettings->value("global/screenwindowed", 0).toInt() == 1)
                 {
-                    m_ssWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
-                    m_ssWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
+                    m_gameWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
+                    m_gameWindowHeight = ssSettings->value("global/screenheight", 0).toInt();
                     m_useWindows7SupportMode = true;
                 }
             }
 
-            if( IsIconic(m_soulstormHwnd) || GetForegroundWindow() != m_soulstormHwnd)                      ///<Если игра свернута
+            if( IsIconic(m_gameHwnd) || GetForegroundWindow() != m_gameHwnd)                      ///<Если игра свернута
             {
                 m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
                 emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
@@ -238,7 +260,7 @@ void SoulstormController::checkWindowState()
         {
             if (m_useWindows7SupportMode)
             {
-                if (!IsIconic(m_soulstormHwnd) && GetForegroundWindow() == m_soulstormHwnd)
+                if (!IsIconic(m_gameHwnd) && GetForegroundWindow() == m_gameHwnd)
                 {
                     if (!m_ssMaximized)
                         fullscrenizeSoulstorm();
@@ -247,7 +269,7 @@ void SoulstormController::checkWindowState()
             }
             else
             {
-                if( IsIconic(m_soulstormHwnd) || GetForegroundWindow() != m_soulstormHwnd)                      ///<Если игра свернута
+                if( IsIconic(m_gameHwnd) || GetForegroundWindow() != m_gameHwnd)                      ///<Если игра свернута
                 {
                     if(m_ssMaximized)                                   ///<Если перед этим игра была развернута
                     {
@@ -277,9 +299,9 @@ void SoulstormController::checkWindowState()
             m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
             m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
             m_gameInitialized = false;
-            m_ssWindowCreated = false;
+            m_gameWindowCreated = false;
             ChangeDisplaySettings(0, 0);
-            m_soulstormHwnd=NULL;                               ///<Окно игры делаем  null
+            m_gameHwnd=NULL;                               ///<Окно игры делаем  null
             m_gameStateReader->stopedGame();
             m_gameStateReader->setGameLounched(false);
             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
@@ -300,18 +322,160 @@ void SoulstormController::checkWindowState()
     }
 }
 
-void SoulstormController::gameInitialized()
+void GameController::gameInitialized()
 {
     parseSsSettings();
     m_lobbyEventReader->activateReading(true);
 }
 
-void SoulstormController::ssShutdown()
+void GameController::ssShutdown()
 {
     m_lobbyEventReader->activateReading(false);
 }
 
-QString SoulstormController::getSsPathFromRegistry()
+QString GameController::getSsPathFromRegistry()
+{
+    findSoulstormPath();
+    findDefinetiveEdition();
+
+    if (m_gamePathArray.isEmpty())
+        return "";
+    else
+        return m_gamePathArray.last().gamePath;
+
+    /*    QString path = "";
+
+    QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War - Soulstorm", QSettings::NativeFormat);
+    path = sega.value("installlocation", "").toString();
+
+    if(path.isEmpty())
+    {
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+    }
+
+    if(path.isEmpty())
+    {
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+    }
+
+    if(path.isEmpty())
+    {
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War - Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+    }
+
+    if(path.isEmpty())
+    {
+        QSettings steam("HKEY_CURRENT_USER\\SOFTWARE\\Valve\\Steam", QSettings::NativeFormat);
+        path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
+    }
+
+    if(!path.isEmpty())
+    {
+        GamePath soulstormGamePath;
+        soulstormGamePath.gamePath = path;
+        soulstormGamePath.gameType = SoulstormSteam;
+
+        m_gamePathArray.append(soulstormGamePath);
+    }
+
+    return path;
+*/
+}
+
+QString GameController::getSteamPathFromRegistry()
+{
+    QSettings settings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam\\", QSettings::NativeFormat);
+
+    QString steam_path =  settings.value("InstallPath").toString();
+    if(steam_path.isEmpty())
+    {
+        QSettings settings_second("HKEY_CURRENT_USER\\Software\\Valve\\Steam", QSettings::NativeFormat);
+        steam_path = settings_second.value("SteamPath").toString();
+    }
+    return steam_path;
+}
+
+void GameController::parseSsSettings()
+{
+    QDir ssPath(m_currentGame->gameSettingsPath);
+
+    if(!ssPath.exists())
+        return;
+
+    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
+    m_ssWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
+    m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
+
+    m_gameStateReader->setCurrentProfile(m_currentProfile);
+
+    qInfo(logInfo()) << "Current profile: " << m_currentProfile;
+    qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
+
+    delete ssSettings;
+}
+
+void GameController::updateSoulstormWindow()
+{
+    minimizeSoulstorm();
+    fullscrenizeSoulstorm();
+    SetForegroundWindow(m_gameHwnd);
+}
+
+void GameController::writeCurrentModSettingInGame()
+{
+    QDir gamePath(m_currentGame->gameSettingsPath);
+    QDir gameSettingsDir(m_currentGame->gameSettingsPath);
+
+    if(!gamePath.exists() || !gameSettingsDir.exists())
+        return;
+
+    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
+
+    LaunchMod launchMode = m_settingsController->getSettings()->launchMode;
+
+    switch (launchMode)
+    {
+        case LaunchMod::OriginalSoulstorm :
+        {
+            ssSettings->setValue("global/currentmoddc", "dxp2");
+
+            QFile fileCheck(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
+            QFile file(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
+
+            if (fileCheck.exists() && file.exists())
+                fileCheck.remove();
+
+            if (file.exists())
+                file.rename(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds");
+
+            break;
+        }
+        case LaunchMod::DowStatsBalanceMod :
+        {
+            ssSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
+
+
+            QFile fileCheck(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
+            QFile file(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
+
+            if (fileCheck.exists() && file.exists())
+                fileCheck.remove();
+
+            if (file.exists())
+                file.rename(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds");
+
+            break;
+        }
+        default: break;
+    }
+
+    delete ssSettings;
+}
+
+void GameController::findSoulstormPath()
 {
     QString path = "";
 
@@ -342,136 +506,78 @@ QString SoulstormController::getSsPathFromRegistry()
         path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
     }
 
-    return path;
-}
-
-QString SoulstormController::getSteamPathFromRegistry()
-{
-    QSettings settings("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Valve\\Steam\\", QSettings::NativeFormat);
-
-    QString steam_path =  settings.value("InstallPath").toString();
-    if(steam_path.isEmpty())
+    if(!path.isEmpty())
     {
-        QSettings settings_second("HKEY_CURRENT_USER\\Software\\Valve\\Steam", QSettings::NativeFormat);
-        steam_path = settings_second.value("SteamPath").toString();
+        GamePath gamePath;
+        gamePath.gamePath = path;
+        gamePath.gameSettingsPath = path;
+        gamePath.gameType = SoulstormSteam;
+
+        m_gamePathArray.append(gamePath);
     }
-    return steam_path;
 }
 
-void SoulstormController::parseSsSettings()
+void GameController::findDefinetiveEdition()
 {
-    QDir ssPath(m_ssPath);
+    QString steamPath = getSteamPathFromRegistry();
 
-    if(!ssPath.exists())
-        return;
+    QString path = steamPath + "\\steamapps\\common\\Dawn of War Definitive Edition";
+    QString gameSettingsPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).replace('/',"\\").replace("\\Roaming\\DowStatsClient", "") + "\\Roaming\\Relic Entertainment\\Dawn of War";
 
-    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
-    m_ssWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
-    m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
-
-    m_gameStateReader->setCurrentProfile(m_currentProfile);
-
-    qInfo(logInfo()) << "Current profile: " << m_currentProfile;
-    qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
-
-    delete ssSettings;
-}
-
-void SoulstormController::updateSoulstormWindow()
-{
-    minimizeSoulstorm();
-    fullscrenizeSoulstorm();
-    SetForegroundWindow(m_soulstormHwnd);
-}
-
-void SoulstormController::writeCurrentModSettingInGame()
-{
-    QDir ssPath(m_ssPath);
-
-    if(!ssPath.exists())
-        return;
-
-    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
-
-    LaunchMod launchMode = m_settingsController->getSettings()->launchMode;
-
-    switch (launchMode)
+    if (!path.isEmpty())
     {
-        case LaunchMod::OriginalSoulstorm :
-        {
-            ssSettings->setValue("global/currentmoddc", "dxp2");
+        GamePath gamePath;
+        gamePath.gamePath = path;
+        gamePath.gameSettingsPath = gameSettingsPath;
+        gamePath.gameType = DefinitiveEdition;
 
-            QFile fileCheck(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
-            QFile file(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
-
-            if (fileCheck.exists() && file.exists())
-                fileCheck.remove();
-
-            if (file.exists())
-                file.rename(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds");
-
-            break;
-        }
-        case LaunchMod::DowStatsBalanceMod :
-        {
-            ssSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
-
-
-            QFile fileCheck(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
-            QFile file(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
-
-            if (fileCheck.exists() && file.exists())
-                fileCheck.remove();
-
-            if (file.exists())
-                file.rename(m_ssPath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds");
-
-            break;
-        }
-        default: break;
+        m_gamePathArray.append(gamePath);
     }
-
-    delete ssSettings;
 }
 
-AdvertisingProcessor *SoulstormController::advertisingProcessor() const
+GamePath *GameController::currentGame() const
+{
+    return m_currentGame;
+}
+
+AdvertisingProcessor *GameController::advertisingProcessor() const
 {
     return m_advertisingProcessor;
 }
 
-ReplayDataCollector *SoulstormController::replayDataCollector() const
+ReplayDataCollector *GameController::replayDataCollector() const
 {
     return m_replayDataCollector;
 }
 
-const QString &SoulstormController::steamPath() const
+const QString &GameController::steamPath() const
 {
     return m_steamPath;
 }
 
-DowServerProcessor *SoulstormController::dowServerProcessor() const
+DowServerProcessor *GameController::dowServerProcessor() const
 {
     return m_dowServerProcessor;
 }
 
-void SoulstormController::fullscrenizeSoulstorm()
+void GameController::fullscrenizeSoulstorm()
 {
-    if(m_soulstormHwnd)
+    if(m_gameHwnd)
     {
         DEVMODE deviceMode;
 
         deviceMode.dmSize = sizeof(deviceMode);
-        deviceMode.dmPelsWidth = m_ssWindowWidth;
-        deviceMode.dmPelsHeight = m_ssWindowHeight;
+        deviceMode.dmPelsWidth = m_gameWindowWidth;
+        deviceMode.dmPelsHeight = m_gameWindowHeight;
         deviceMode.dmFields = DM_PELSWIDTH | DM_PELSHEIGHT;
 
         ChangeDisplaySettings(&deviceMode, CDS_FULLSCREEN);
 
-        SetWindowLongW(m_soulstormHwnd, GWL_STYLE , /*GetWindowLong(m_soulstormHwnd, GWL_STYLE) |*/ WS_OVERLAPPED /*|  WS_POPUP*/ | WS_VISIBLE );
-        SetWindowPos(m_soulstormHwnd,0,0,0,m_ssWindowWidth + 1, m_ssWindowHeight + 1, SWP_SHOWWINDOW );
-        ShowWindow(m_soulstormHwnd, SW_SHOWNORMAL);
+        SetWindowLongW(m_gameHwnd, GWL_STYLE , /*GetWindowLong(m_soulstormHwnd, GWL_STYLE) |*/ WS_OVERLAPPED /*|  WS_POPUP*/ | WS_VISIBLE );
+        SetWindowPos(m_gameHwnd,0,0,0,m_gameWindowWidth + 1, m_gameWindowHeight + 1, SWP_SHOWWINDOW );
+        ShowWindow(m_gameHwnd, SW_SHOWNORMAL);
 
-        m_defaultSoulstormWindowLong = GetWindowLong(m_soulstormHwnd, GWL_EXSTYLE);
+        m_defaultSoulstormWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
 
         m_ssMaximized = true;
         emit ssMaximized(m_ssMaximized);
@@ -479,75 +585,70 @@ void SoulstormController::fullscrenizeSoulstorm()
     }
 }
 
-void SoulstormController::minimizeSoulstorm()
+void GameController::minimizeSoulstorm()
 {
     if (!m_useWindows7SupportMode)
         return;
 
     ChangeDisplaySettings(0, 0);
 
-    ShowWindow(m_soulstormHwnd, SW_MINIMIZE);
+    ShowWindow(m_gameHwnd, SW_MINIMIZE);
     m_ssMaximized = false;
     emit ssMaximized(m_ssMaximized);
     qInfo(logInfo()) << "Soulstorm minimized with win7 support mode";
 }
 
-bool SoulstormController::getUseWindows7SupportMode() const
+bool GameController::getUseWindows7SupportMode() const
 {
     return m_useWindows7SupportMode;
 }
 
-LobbyEventReader *SoulstormController::lobbyEventReader() const
+LobbyEventReader *GameController::lobbyEventReader() const
 {
     return m_lobbyEventReader;
 }
 
-LONG SoulstormController::defaultSoulstormWindowLong() const
+LONG GameController::defaultSoulstormWindowLong() const
 {
     return m_defaultSoulstormWindowLong;
 }
 
-SoulstormMemoryReader *SoulstormController::soulstormMemoryReader() const
+SoulstormMemoryReader *GameController::soulstormMemoryReader() const
 {
     return m_soulstormMemoryReader;
 }
 
-APMMeter *SoulstormController::apmMeter() const
+APMMeter *GameController::apmMeter() const
 {
     return m_apmMeter;
 }
 
-SoulstormMemoryController *SoulstormController::soulstormMemoryController() const
+SoulstormMemoryController *GameController::soulstormMemoryController() const
 {
     return m_soulstormMemoryController;
 }
 
-HWND SoulstormController::soulstormHwnd() const
+HWND GameController::soulstormHwnd() const
 {
-    return m_soulstormHwnd;
+    return m_gameHwnd;
 }
 
-bool SoulstormController::ssWindowed() const
+bool GameController::ssWindowed() const
 {
     return m_ssWindowed && !m_useWindows7SupportMode;
 }
 
-GameStateReader *SoulstormController::gameStateReader() const
+GameStateReader *GameController::gameStateReader() const
 {
     return m_gameStateReader;
 }
 
-const QString &SoulstormController::ssPath() const
-{
-    return m_ssPath;
-}
-
-bool SoulstormController::getSsMaximized()
+bool GameController::getSsMaximized()
 {
     return m_ssMaximized;
 }
 
-bool SoulstormController::getInputBlocked() const
+bool GameController::getInputBlocked() const
 {
     return inputBlocked;
 }

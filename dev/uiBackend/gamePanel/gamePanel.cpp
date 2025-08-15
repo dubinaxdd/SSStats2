@@ -3,7 +3,7 @@
 
 #define GAME_LEAVE_TIMER_INTERVAL 1000
 
-GamePanel::GamePanel(SoulstormController *soulstormController, SettingsController *settingsController, QObject *parent)
+GamePanel::GamePanel(GameController *soulstormController, SettingsController *settingsController, QObject *parent)
     : QObject(parent)
     , m_soulstormControllerPtr(soulstormController)
     , m_settingsController(settingsController)

@@ -8,10 +8,9 @@
 #include <QSettings>
 #include <QDir>
 
-GameStateReader::GameStateReader(SettingsController *settingsController, QString sspath, QObject *parent)
+GameStateReader::GameStateReader(SettingsController *settingsController, QObject *parent)
     : QObject(parent)
     , m_settingsController(settingsController)
-    , m_ssPath(sspath)
 {
     m_readRacesSingleShootTimer = new QTimer(this);
     m_readRacesSingleShootTimer->setInterval(RACES_READ_TIMER_INTERVAL);
@@ -20,8 +19,6 @@ GameStateReader::GameStateReader(SettingsController *settingsController, QString
     m_gameInfoReadTimer = new QTimer(this);
     m_gameInfoReadTimer->setInterval(GAME_INFO_READER_TIMER_INTERVAL);
     QObject::connect(m_gameInfoReadTimer, &QTimer::timeout, this, &GameStateReader::readGameInfo, Qt::QueuedConnection );
-
-    m_gameInfoReadTimer->start();
 }
 
 void GameStateReader::readGameInfo()
@@ -29,10 +26,14 @@ void GameStateReader::readGameInfo()
     if (!m_gameLounched)
         return;
 
-    QFile file(m_ssPath+"\\warnings.log");
+    qDebug() << "ASDASDASDASD 33333" << m_currentGame->gameSettingsPath + "\\warnings.log";
+
+    QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
 
     if(file.open(QIODevice::ReadOnly))
     {
+        qDebug() << "ASDASDASDASD 44444";
+
         QTextStream textStream(&file);
         QStringList* fileLines = new QStringList();
 
@@ -293,7 +294,7 @@ void GameStateReader::checkGameInitialize()
 
 void GameStateReader::checkCurrentMode()
 {
-    QFile file(m_ssPath+"\\warnings.log");
+    QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
 
     if(file.open(QIODevice::ReadOnly))
     {
@@ -367,14 +368,14 @@ void GameStateReader::readTestStatsTemp()
 
 void GameStateReader::parseSsSettings()
 {
-    QSettings* ssSettings = new QSettings(m_ssPath+"\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
     m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
     delete ssSettings;
 }
 
 QString GameStateReader::updateTestStatsFilePath()
 {
-    QDir dir(m_ssPath + "\\Profiles\\");
+    QDir dir(m_currentGame->gameSettingsPath + "\\Profiles\\");
 
     QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
     QString statsPath;
@@ -737,4 +738,10 @@ void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
         m_lockRanked = true;
 
     emit sendGameRankedMode(m_rankedMode);
+}
+
+void GameStateReader::setCurrentGame(GamePath *newCurrentGame)
+{
+    m_currentGame = newCurrentGame;
+    m_gameInfoReadTimer->start();
 }

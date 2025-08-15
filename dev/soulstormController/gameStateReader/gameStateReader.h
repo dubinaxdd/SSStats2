@@ -11,7 +11,7 @@ class GameStateReader : public QObject
 { 
     Q_OBJECT
 public:
-    explicit GameStateReader(SettingsController *settingsController, QString sspath, QObject *parent = nullptr);
+    explicit GameStateReader(SettingsController *settingsController, QObject *parent = nullptr);
 
     void ssWindowClosed();
     bool getGameInitialized();
@@ -20,6 +20,8 @@ public:
     void setCurrentProfile(const QString &newCurrentProfile);
     void setGameLounched(bool newGameLounched);
     void stopedGame();
+
+    void setCurrentGame(GamePath *newCurrentGame);
 
 public slots:
     void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
@@ -68,7 +70,6 @@ private:
     QTimer* m_gameInfoReadTimer;
     QTimer* m_readRacesSingleShootTimer;
 
-    QString m_ssPath;
     QString m_currentProfile;
     QString m_currentModeVersion;
     QString m_testStatsPath;
@@ -85,6 +86,8 @@ private:
     QVector<PlyersRankedState> m_plyersRankedState;
     bool m_lockRanked = false;
     bool m_rankedMode = true;
+
+    const GamePath* m_currentGame;
 };
 
 #endif // GAMESTATEREADER_H

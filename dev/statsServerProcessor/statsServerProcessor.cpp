@@ -17,12 +17,12 @@
 
 using namespace ReplayReader;
 
-StatsServerProcessor::StatsServerProcessor(SettingsController *settingsController, QString ssPath, QString steamPath, QObject *parent)
+StatsServerProcessor::StatsServerProcessor(SettingsController *settingsController, GamePath *currentGame, QString steamPath, QObject *parent)
     : QObject(parent)
+    , m_currentGame(currentGame)
     , m_settingsController(settingsController)
     , m_rankDiversionTimer(new QTimer(this))
     , m_steamPath(steamPath)
-    , m_ssPath(ssPath)
     , m_networkManager( new QNetworkAccessManager(this))
 {
     m_machineUniqueId = QSysInfo::machineUniqueId();
@@ -546,7 +546,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
    // url += "key=" + QLatin1String(SERVER_KEY);
 
 
-    RepReader repReader(m_ssPath+"/Playback/temp.rec");
+    RepReader repReader(m_currentGame->gamePath + "/Playback/temp.rec");
 
     repReader.convertReplayToSteamVersion();
     repReader.isStandart(replayInfo.gameType);

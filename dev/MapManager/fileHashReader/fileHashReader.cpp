@@ -2,9 +2,9 @@
 #include <QDir>
 #include <QCryptographicHash>
 
-FileHashReader::FileHashReader(QString ssPath, QObject *parent)
+FileHashReader::FileHashReader(GamePath *currentGame, QObject *parent)
     : QObject(parent)
-    , m_ssPath(ssPath)
+    , m_currentGame(currentGame)
 {
 
 }
@@ -13,10 +13,17 @@ void FileHashReader::getLocalMapFilesList()
 {
     QList<MapFileHash> localMapFilesHashes;
 
-    if(m_ssPath.isEmpty())
+    if(m_currentGame->gamePath.isEmpty())
         return;
 
-    QDir dir(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp");
+    QString path;
+
+    if (m_currentGame->gameType == DefinitiveEdition)
+        path = m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp";
+    else
+        path = m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp";
+
+    QDir dir(path);
     QFileInfoList dirContent = dir.entryInfoList(QDir::Files);
 
     for (int i = 0; i < dirContent.count(); i++)

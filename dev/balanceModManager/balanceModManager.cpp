@@ -91,12 +91,12 @@ void BalanceModManager::downloadModsInfo()
 
 void BalanceModManager::checkCurrentModInGame()
 {
-    QDir ssPath(m_ssPath);
+    QDir ssPath(m_currentGame->gameSettingsPath);
 
     if(!ssPath.exists())
         return;
 
-    QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
     QString currentModName = ssSettings->value("global/currentmoddc", "").toString();
     delete ssSettings;
 
@@ -109,7 +109,7 @@ void BalanceModManager::checkCurrentModInGame()
 
 QString BalanceModManager::getChangeLogFromLocalFiles(QString modTechnicalName)
 {
-    QFile chanfeLogFile(m_ssPath + QDir::separator() + modTechnicalName + QDir::separator() + modTechnicalName + ".txt");
+    QFile chanfeLogFile(m_currentGame->gamePath + QDir::separator() + modTechnicalName + QDir::separator() + modTechnicalName + ".txt");
 
     if (!chanfeLogFile.open(QFile::ReadOnly))
         return "";
@@ -120,7 +120,7 @@ QString BalanceModManager::getChangeLogFromLocalFiles(QString modTechnicalName)
 bool BalanceModManager::getProfileExist(QString modTechnicalName)
 {
 
-    QDir dir(m_ssPath + "\\Profiles\\");
+    QDir dir(m_currentGame->gameSettingsPath + "\\Profiles\\");
     QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
     for (int i = 0; i < dirContent.count(); i++)
@@ -151,7 +151,7 @@ void BalanceModManager::modsInfoTimerTimeout()
         return;
     }
 
-    if(m_ssPath.isEmpty() || !m_ssLounchedStateReceived)
+    if(m_currentGame->gamePath.isEmpty() || !m_ssLounchedStateReceived)
         return;
 
     checkCurrentModInGame();
@@ -302,7 +302,7 @@ void BalanceModManager::receiveBetaTestPlayersList(QNetworkReply *reply)
 
 void BalanceModManager::uninstalMod(QString modTechnicalName)
 {
-    emit uninstallMod(m_ssPath, modTechnicalName);
+    emit uninstallMod(m_currentGame->gamePath, modTechnicalName);
 }
 
 void BalanceModManager::receiveTemplateProfilePath(QString templateProfilePath)
@@ -315,7 +315,7 @@ void BalanceModManager::receiveTemplateProfilePath(QString templateProfilePath)
 
 void BalanceModManager::activateMod(QString modTechnicalName)
 {
-    QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
     ssSettings->setValue("global/currentmoddc", modTechnicalName.toLower());
     delete ssSettings;
 }
@@ -369,7 +369,7 @@ void BalanceModManager::setCurrentPlayerSteamId(QString steamId)
 
 void BalanceModManager::updateHotKeysOnMod(QString modTechnicalName)
 {
-    emit sendUpdateHotKeysOnMod(modTechnicalName, m_ssPath);
+    emit sendUpdateHotKeysOnMod(modTechnicalName, m_currentGame->gameSettingsPath);
 }
 
 bool BalanceModManager::showBalanceModBetaVersions() const
@@ -381,14 +381,14 @@ void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
 {
     QChar sepr = QDir::separator();
 
-    QSettings* ssSettings = new QSettings(m_ssPath + "\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
     m_currentProfile = ssSettings->value("global/playerprofile", "").toString();
     delete ssSettings;
 
     if (m_currentProfile.isEmpty())
         return;
 
-    QString path = m_ssPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + modTechnicalName.toLower();
+    QString path = m_currentGame->gameSettingsPath + sepr + "Profiles" + sepr + m_currentProfile + sepr + modTechnicalName.toLower();
 
     if (QDir(path).exists())
         m_templateProfilePath = path;
@@ -402,16 +402,13 @@ void BalanceModManager::updateTemplateProfilePath(QString modTechnicalName)
 
 }
 
-void BalanceModManager::setSsPath(const QString &newSsPath)
+void BalanceModManager::setGamePath(GamePath* currentGame)
 {
-    QDir ssPath(newSsPath);
+    m_currentGame = currentGame;
 
-    if(!ssPath.exists())
-        return;
+    QDir gamePath(currentGame->gamePath);
 
-    m_ssPath = newSsPath;
-
-    if(m_ssPath.isEmpty())
+    if(!gamePath.exists())
         return;
 
     if (m_currentPlayerSteamId.isEmpty())
@@ -474,7 +471,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 
     QJsonArray jsonArray = jsonDoc.array();
 
-    QDir dir1(m_ssPath);
+    QDir dir1(m_currentGame->gamePath);
     QStringList entryList = dir1.entryList();
 
     for (int i = 0; i < jsonArray.count(); i++)
@@ -571,10 +568,10 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
 
     data.modByteArray = replyByteArray;
     data.filePath = path;
-    data.decompressPath = m_ssPath + QDir::separator();
+    data.decompressPath = m_currentGame->gamePath + QDir::separator();
     data.modTechnicalName = modTechnicalName;
     data.templateProfilePath = m_templateProfilePath;
-    data.ssPath = m_ssPath;
+    data.ssPath = m_currentGame->gamePath;
 
     emit installMod(data, overwritePrifiles);
 }

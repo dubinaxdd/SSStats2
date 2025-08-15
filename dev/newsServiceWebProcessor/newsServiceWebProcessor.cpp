@@ -21,9 +21,7 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     connect(&m_reconnectTimer, &QTimer::timeout, this, &DiscordWebProcessor::reconnect, Qt::QueuedConnection);
 
     m_reconnectTimer.setInterval(5000);
-    m_reconnectTimer.start();
 
-    m_webSocket.open(QUrl(DISCORD_WEB_SERVICE));
 }
 
 void DiscordWebProcessor::requestNews()
@@ -405,6 +403,9 @@ void DiscordWebProcessor::onSettingsLoaded()
     m_lastReadedEventMessageID = m_settingsController->getSettings()->lastReadedEventsMessageID;
 
     qInfo(logInfo()) << "DiscordWebProcessor::onSettingsLoaded()" << "load finished";
+
+    m_webSocket.open(QUrl(DISCORD_WEB_SERVICE));
+    m_reconnectTimer.start();
 }
 
 void DiscordWebProcessor::readMessage(QString message)

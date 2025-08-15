@@ -145,7 +145,7 @@ public:
     bool latesBalanceModNotInstalledDialogVisible() const;
     void setLatesBalanceModNotInstalledDialogVisible(bool newLatesBalanceModNotInstalledDialogVisible);
 
-    void setSsPath(const QString &newSsPath);
+    void setGamePath(GamePath *currentGame);
 
     bool ssNotInstalledDialogVisible() const;
     void setSsNotInstalledDialogVisible(bool newSsNotInstalledDialogVisible);
@@ -237,6 +237,7 @@ private:
     void gameOver();
 
 private:
+    GamePath* m_currentGame;
     Core* m_corePtr;
     ImageProvider* m_imageProvider;
     GamePanel* m_gamePanel;
@@ -306,7 +307,6 @@ private:
 
     QString m_currentModName = "";
     QString m_currentModTechnicalName = "";
-    QString m_ssPath = "";
     QString m_steamPath = "";
 
     bool m_latesBalanceModNotInstalledDialogVisible = false;

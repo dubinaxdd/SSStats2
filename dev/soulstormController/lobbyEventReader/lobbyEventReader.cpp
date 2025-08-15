@@ -5,8 +5,7 @@
 
 #define READ_EVETS_TIMER_INTERVAL 200
 
-LobbyEventReader::LobbyEventReader(QString sspath, QObject *parent) : QObject(parent)
-  , m_ssPath(sspath)
+LobbyEventReader::LobbyEventReader(QObject *parent) : QObject(parent)
   , m_lobbyEventsReadTimer(new QTimer(this))
 {
     m_lobbyEventsReadTimer->setInterval(READ_EVETS_TIMER_INTERVAL);
@@ -39,7 +38,7 @@ void LobbyEventReader::readLobbyEvents()
     if (!m_readingActivated)
         return;
 
-    QFile file(m_ssPath+"\\warnings.log");
+    QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
 
     if(file.open(QIODevice::ReadOnly))
     {
@@ -168,7 +167,7 @@ void LobbyEventReader::readLobbyEvents()
 
 void LobbyEventReader::checkPatyState()
 {
-    QFile file(m_ssPath+"\\warnings.log");
+    QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
 
     if(file.open(QIODevice::ReadOnly))
     {
@@ -206,4 +205,9 @@ void LobbyEventReader::checkPatyState()
             counter--;
         }
     }
+}
+
+void LobbyEventReader::setCurrentGame(GamePath *newCurrentGame)
+{
+    m_currentGame = newCurrentGame;
 }

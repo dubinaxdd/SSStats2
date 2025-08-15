@@ -14,12 +14,12 @@
 #define GZIP_WINDOWS_BIT 15 + 16
 #define GZIP_CHUNK_SIZE 32 * 1024
 
-MapManager::MapManager(SettingsController *settingsController, QString ssPath, QObject *parent)
+MapManager::MapManager(SettingsController *settingsController, GamePath *currentGame, QObject *parent)
     : QObject(parent)
+    , m_currentGame(currentGame)
     , m_settingsController(settingsController)
     , m_networkManager (new QNetworkAccessManager(this))
-    , m_ssPath(ssPath)
-    , m_fileHashReader( new FileHashReader(m_ssPath))
+    , m_fileHashReader( new FileHashReader(currentGame))
     , m_fileHashReaderThread(new QThread(this))
 {
      QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManager::onSettingsLoaded, Qt::QueuedConnection);
@@ -265,7 +265,13 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
     if (!uncompressGz(replyByteArray, uncompressedByteArray))
         return;
 
-    QFile newFile( m_ssPath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
+    QFile newFile;
+
+    if (m_currentGame->gameType == DefinitiveEdition)
+        newFile.setFileName( m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
+    else
+        newFile.setFileName( m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
+
     if( newFile.open( QIODevice::WriteOnly ) ) {
         newFile.write(uncompressedByteArray);
         newFile.close();
@@ -365,7 +371,12 @@ void MapManager::receiveRemoveMap(MapItem *mapItem)
 {
     for (int i = 0; i < mapItem->filesList.count(); i++)
     {
-        QString path = (m_ssPath + "\\DXP2\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
+        QString path;
+
+        if (m_currentGame->gameType == DefinitiveEdition)
+            path = (m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
+        else
+            path = (m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
 
         QFile tempfile(path);
         tempfile.remove();

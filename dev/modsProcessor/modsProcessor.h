@@ -11,7 +11,7 @@ class ModsProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit ModsProcessor(QString ssPath, QObject *parent = nullptr);
+    explicit ModsProcessor(GamePath* gamePath, QObject *parent = nullptr);
 
 signals:
     void modInstallCompleeted(InstMod);
@@ -26,11 +26,9 @@ public slots:
     void unlockRaces();
 
 private:
+    GamePath* m_currentGame;
     ModsDownloader* m_modsDownloader;
     ModsInstaller* m_modsInstaller;
-
-    QString m_ssPath = "";
-
 };
 
 #endif // MODSPROCESSOR_H
