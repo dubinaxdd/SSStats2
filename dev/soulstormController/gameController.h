@@ -29,7 +29,7 @@ public:
     GameStateReader   *gameStateReader()    const;
     SoulstormMemoryController    *soulstormMemoryController()     const;
     APMMeter            *apmMeter()             const;
-    SoulstormMemoryReader *soulstormMemoryReader()  const;
+    GameMemoryReader *soulstormMemoryReader()  const;
     LobbyEventReader    *lobbyEventReader()     const;
     DowServerProcessor  *dowServerProcessor()   const;
 
@@ -105,7 +105,7 @@ private:
 
     LobbyEventReader* m_lobbyEventReader;
 
-    SoulstormMemoryReader* m_soulstormMemoryReader;
+    GameMemoryReader* m_gameMemoryReader;
 
     QThread m_soulstormMemoryReaderThread;
 

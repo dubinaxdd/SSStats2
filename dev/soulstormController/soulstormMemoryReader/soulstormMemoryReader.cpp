@@ -5,15 +5,27 @@
 #include <fstream>
 #include <QTextCodec>
 #include <logger.h>
+//#include <ntdll.h>
+#include <winternl.h>
+
 
 //#define SCAN_STEAM_PLAYERS_INTERVAL 3000
 
 #define SCAN_STEAM_PLAYERS_INTERVAL 1000
 
 using namespace std;
+//typedef int (__cdecl *DLL_FUNCTION_PTR)(int, int);
+
+typedef NTSTATUS(WINAPI* DLL_FUNCTION_PTR)(
+    HANDLE hProcess,
+    DWORD64 lpAddress,
+    PVOID val,
+    ULONG64 sizetoread,
+    PULONG64 numofbytes
+    );
 
 
-SoulstormMemoryReader::SoulstormMemoryReader(QObject *parent)
+GameMemoryReader::GameMemoryReader(QObject *parent)
     : QObject(parent)
 {
     m_scanTimer = new QTimer(this);
@@ -21,24 +33,24 @@ SoulstormMemoryReader::SoulstormMemoryReader(QObject *parent)
 
     m_scanTimer->setSingleShot(true);
 
-    QObject::connect(m_scanTimer, &QTimer::timeout, this, &SoulstormMemoryReader::refreshSteamPlayersInfo, Qt::QueuedConnection );
+    QObject::connect(m_scanTimer, &QTimer::timeout, this, &GameMemoryReader::refreshSteamPlayersInfo, Qt::QueuedConnection );
     // m_scanTimer->start();
 }
 
-void SoulstormMemoryReader::refreshSteamPlayersInfo()
+void GameMemoryReader::refreshSteamPlayersInfo()
 {
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
     LPCWSTR lps = (LPCWSTR)ss.utf16();
 
-    m_soulstormHwnd = FindWindowW(NULL, lps);
+    m_gameHwnd = FindWindowW(NULL, lps);
 
-    if(!m_soulstormHwnd)
+    if(!m_gameHwnd)
         return;
 
     DWORD PID;
-    GetWindowThreadProcessId(m_soulstormHwnd, &PID);
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
     //qDebug() << "PID = " << PID;
 
     // Получение дескриптора процесса
@@ -267,14 +279,14 @@ void SoulstormMemoryReader::refreshSteamPlayersInfo()
 }
 
 
-QTimer *SoulstormMemoryReader::scanTimer() const
+QTimer *GameMemoryReader::scanTimer() const
 {
     return m_scanTimer;
 }
 
-void SoulstormMemoryReader::setSoulstormHwnd(HWND newSoulstormHwnd)
+void GameMemoryReader::setSoulstormHwnd(HWND newSoulstormHwnd)
 {
-    m_soulstormHwnd = newSoulstormHwnd;
+    m_gameHwnd = newSoulstormHwnd;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -282,19 +294,19 @@ void SoulstormMemoryReader::setSoulstormHwnd(HWND newSoulstormHwnd)
 /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void SoulstormMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
+void GameMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
     LPCWSTR lps = (LPCWSTR)ss.utf16();
 
-    m_soulstormHwnd = FindWindowW(NULL, lps);
+    m_gameHwnd = FindWindowW(NULL, lps);
 
-    if(!m_soulstormHwnd)
+    if(!m_gameHwnd)
         return;
 
     DWORD PID;
-    GetWindowThreadProcessId(m_soulstormHwnd, &PID);
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
@@ -392,90 +404,34 @@ void SoulstormMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
     }
 }
 
-void SoulstormMemoryReader::findSessionId()
+void GameMemoryReader::findSessionId()
 {
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
-    LPCWSTR lps = (LPCWSTR)ss.utf16();
+    QString sessionId;
 
-    m_soulstormHwnd = FindWindowW(NULL, lps);
-
-    if(!m_soulstormHwnd)
+    if (m_gameType == DefinitiveEdition)
+        sessionId = findDefinetiveEditionSessionId();
+    else if (m_gameType == SoulstormSteam)
+        sessionId = findSteamSoulstormSessionId();
+    else
         return;
 
-    DWORD PID;
-    GetWindowThreadProcessId(m_soulstormHwnd, &PID);
-
-    // Получение дескриптора процесса
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
-    if(hProcess==nullptr)
-        return;
-
-    QByteArray buffer(/*30400*/100000, 0);
-
-
-   //unsigned long ptr1Count = 160116800;
-    unsigned long ptr1Count = /*100000000*/0x00000000;
-    while (ptr1Count < /*200000000*/0x7FFE0000)
-    {
-
-        SIZE_T bytesRead = 0;
-
-        // Если функция вернула не ноль, то продолжим цикл
-        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), /*30400*/100000 , &bytesRead))
-        {
-            if(GetLastError()!=299)
-            {
-                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
-                continue;
-            }
-        }
-
-        for (int i = 100; i < static_cast<int>(bytesRead) - 44; i++)
-        {
-            bool match = false;
-            for (int j = 0; j < static_cast<int>(sizeof(sessionHeader)); j++)
-            {
-                if (buffer.at(i + j) != sessionHeader[j])
-                {
-                    match = false;
-                    break;
-                }
-                else
-                    match = true;
-            }
-
-            if (!match)
-                continue;
-
-            QString sessionIdStr = QString::fromUtf8((char*)buffer.mid(i, 44).data()).right(34);
-
-            if (sessionIdStr.right(4) != "&ack")
-                continue;
-
-            sessionIdStr = sessionIdStr.left(30);
-
-            emit sendSessionId(sessionIdStr);
-            return;
-        }
-
-        ptr1Count += 100000;
-    }
+    if (!sessionId.isEmpty())
+        emit sendSessionId(sessionId);
 }
 
-void SoulstormMemoryReader::findAuthKey()
+void GameMemoryReader::findAuthKey()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
     QString ss = codec->toUnicode("Dawn of War: Soulstorm");
     LPCWSTR lps = (LPCWSTR)ss.utf16();
 
-    m_soulstormHwnd = FindWindowW(NULL, lps);
+    m_gameHwnd = FindWindowW(NULL, lps);
 
-    if(!m_soulstormHwnd)
+    if(!m_gameHwnd)
         return;
 
     DWORD PID;
-    GetWindowThreadProcessId(m_soulstormHwnd, &PID);
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
 
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
@@ -555,9 +511,167 @@ void SoulstormMemoryReader::findAuthKey()
     }
 }
 
-void SoulstormMemoryReader::abort()
+void GameMemoryReader::abort()
 {
     m_playersSteamScannerMutex.lock();
     m_abort = true;
+    m_playersSteamScannerMutex.unlock();
+}
+
+QString GameMemoryReader::findSteamSoulstormSessionId()
+{
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+
+    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
+    LPCWSTR lps = (LPCWSTR)ss.utf16();
+
+    m_gameHwnd = FindWindowW(NULL, lps);
+
+    if(!m_gameHwnd)
+        return "";
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
+
+    // Получение дескриптора процесса
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+    if(hProcess==nullptr)
+        return "";
+
+    QByteArray buffer(/*30400*/100000, 0);
+
+    //unsigned long ptr1Count = 160116800;
+    unsigned long ptr1Count = /*100000000*/0x00000000;
+    while (ptr1Count < /*200000000*/0x7FFE0000)
+    {
+
+        SIZE_T bytesRead = 0;
+
+        // Если функция вернула не ноль, то продолжим цикл
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), /*30400*/100000 , &bytesRead))
+        {
+            if(GetLastError()!=299)
+            {
+                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
+                continue;
+            }
+        }
+
+        for (int i = 100; i < static_cast<int>(bytesRead) - 44; i++)
+        {
+            bool match = false;
+            for (int j = 0; j < static_cast<int>(sizeof(sessionHeader)); j++)
+            {
+                if (buffer.at(i + j) != sessionHeader[j])
+                {
+                    match = false;
+                    break;
+                }
+                else
+                    match = true;
+            }
+
+            if (!match)
+                continue;
+
+            QString sessionIdStr = QString::fromUtf8((char*)buffer.mid(i, 44).data()).right(34);
+
+            if (sessionIdStr.right(4) != "&ack")
+                continue;
+
+            sessionIdStr = sessionIdStr.left(30);
+            return sessionIdStr;
+        }
+
+        ptr1Count += 100000;
+    }
+
+    return "";
+}
+
+QString GameMemoryReader::findDefinetiveEditionSessionId()
+{
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+
+    QString game = codec->toUnicode("Warhammer 40,000: Dawn of War");
+    LPCWSTR lps = (LPCWSTR)game.utf16();
+
+    m_gameHwnd = FindWindowW(NULL, lps);
+
+    if(!m_gameHwnd)
+        return "";
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
+
+    // Получение дескриптора процесса
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+    if(hProcess==nullptr)
+        return "";
+
+    int bufferSize = 100000;
+    QByteArray buffer(bufferSize, 0);
+    DWORD64 ptr1Count = 0x1AE20000000;
+
+    QByteArray sesionHead = "sessionID=";
+
+    HMODULE hNtdll = LoadLibrary("ntdll.dll");
+
+    if (hNtdll == NULL)
+    {
+        qDebug() << "NTLIB NOT LOADED";
+        return "";
+    }
+
+    DLL_FUNCTION_PTR NtWow64ReadVirtualMemory64 = (DLL_FUNCTION_PTR)GetProcAddress(hNtdll, "NtWow64ReadVirtualMemory64");
+
+    if (NtWow64ReadVirtualMemory64 == NULL) {
+        qDebug() << "NTLIB NOT LOADED 2";
+        FreeLibrary(hNtdll);
+    }
+
+    while (ptr1Count < 0x1AF00000000)
+    {
+        DWORD64  bytesRead = 0;
+
+        if(!NtWow64ReadVirtualMemory64(hProcess, ptr1Count, buffer.data(), bufferSize , &bytesRead))
+        {
+            ptr1Count += bufferSize;
+            continue;
+
+            /*if(GetLastError()!=299)
+            {
+                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
+                continue;
+            }*/
+        }
+
+        if (!buffer.contains(sesionHead))
+        {
+            ptr1Count += bufferSize;
+            continue;
+        }
+        else
+        {
+            int index = buffer.indexOf(sesionHead);
+
+            QString sessionIdStr = QString::fromUtf8((char*)buffer.mid(index, 40).data()).right(30);
+
+            //if (sessionIdStr.right(4) != "&sta")
+            //    continue;
+
+            //sessionIdStr = sessionIdStr.left(30);
+
+            return sessionIdStr;
+        }
+    }
+
+    return "";
+}
+
+void GameMemoryReader::setGameType(GameType newGameType)
+{
+    m_playersSteamScannerMutex.lock();
+    m_gameType = newGameType;
     m_playersSteamScannerMutex.unlock();
 }

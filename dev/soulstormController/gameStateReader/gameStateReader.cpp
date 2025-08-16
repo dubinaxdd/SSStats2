@@ -26,14 +26,10 @@ void GameStateReader::readGameInfo()
     if (!m_gameLounched)
         return;
 
-    qDebug() << "ASDASDASDASD 33333" << m_currentGame->gameSettingsPath + "\\warnings.log";
-
     QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
 
     if(file.open(QIODevice::ReadOnly))
     {
-        qDebug() << "ASDASDASDASD 44444";
-
         QTextStream textStream(&file);
         QStringList* fileLines = new QStringList();
 
@@ -113,8 +109,6 @@ void GameStateReader::readGameInfo()
         delete fileLines;
     }
 }
-
-
 
 void GameStateReader::readRacesTimerTimeout()
 {
@@ -322,6 +316,9 @@ void GameStateReader::checkCurrentMode()
                         currentMode = currentMode.left(i);
                     }
                 }
+
+                if (currentMode.contains("itializing Mod DoWDE"))
+                    currentMode = "dowde";
 
                 qInfo(logInfo()) << "Current mode:" << currentMode;
                 qInfo(logInfo()) << "Current mode version:" << m_currentModeVersion;

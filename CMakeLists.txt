@@ -37,6 +37,13 @@ if (${TEST_NEWS_CHANNEL})
     message(STATUS "Build with DoW Stats News test channel")
 endif()
 
+option(DISAPLE_HOOK_FOR_DEBUG "Disable hook for debug without lags" OFF)
+
+if (${DISAPLE_HOOK_FOR_DEBUG})
+    add_definitions(-DDISAPLE_HOOK_FOR_DEBUG)
+    message(STATUS "Disable hook for debug without lags")
+endif()
+
 
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
@@ -124,6 +131,7 @@ target_link_libraries(${TARGET_NAME}
                         OpenSSL::SSL
                         OpenSSL::Crypto
                         QuaZip::QuaZip
+                        ntdll
                         ReplayReaderLibrary)
 
 

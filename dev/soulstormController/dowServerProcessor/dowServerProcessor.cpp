@@ -100,7 +100,6 @@ void DowServerProcessor::requestFindAdvertisements()
     if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_sessionID.isEmpty())
         return;
 
-
     QString urlString;
 
     if (m_gameType == SoulstormSteam)
@@ -217,8 +216,6 @@ void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
 
     if(!jsonDoc.isArray())
         return;
-
-    //qDebug() << jsonDoc.array();
 }
 
 void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
@@ -242,7 +239,8 @@ void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
             if (palyersArray.count() >= 1 && palyersArray.at(0).isArray())
             {
                 QJsonArray palyerDataArray = palyersArray.at(0).toArray();
-                if (palyerDataArray.count() == 8)
+
+                if (palyerDataArray.count() >= 8)
                 {
                     m_profileID = QString::number(palyerDataArray.at(1).toInt());
                     m_statGroupId = QString::number(palyerDataArray.at(6).toInt());
@@ -282,7 +280,6 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
 
             for (int i = 0; i < partysArrayJson.count(); i++)
             {
-
                 if (!partysArrayJson.at(i).isArray())
                     continue;
 
@@ -355,7 +352,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
 
                 QJsonArray needPlayerJson = playersJsonArray.at(i).toArray();
 
-                if (needPlayerJson.count() != 8)
+                if (needPlayerJson.count() < 8)
                     continue;
 
                 PlayerInfoFromDowServer newPlayerInfo;
@@ -372,7 +369,6 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
             }
         }
     }
-
 
     for (int i = 0; i < playersInfo.count(); i++)
     {

@@ -47,7 +47,8 @@ GameController::GameController(SettingsController *settingsController, QObject *
     else
         qInfo(logInfo()) << "Worked with Soulstorm from: " << m_currentGame->gamePath;
 
-    m_soulstormMemoryReader = new SoulstormMemoryReader(/*this*/);
+    m_gameMemoryReader = new GameMemoryReader(/*this*/);
+    m_gameMemoryReader->setGameType(m_currentGame->gameType);
 
     m_ssWindowControllTimer = new QTimer(this);
     m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
@@ -58,7 +59,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &GameController::checkWindowState, Qt::QueuedConnection);
 
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &GameController::gameInitialized, Qt::QueuedConnection);
-    QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
     //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
 
 
@@ -75,7 +76,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty,        m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
     //QObject::connect(m_lobbyEventReader, &LobbyEventReader::hostParty,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
 
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_soulstormMemoryReader, &SoulstormMemoryReader::findSessionId, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_replayDataCollector,    &ReplayDataCollector::onQuitParty, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
@@ -85,24 +86,24 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_replayDataCollector,  &ReplayDataCollector::receiveAverrageApm,       Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
-    QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendSessionId, m_advertisingProcessor, &AdvertisingProcessor::setSessionID, Qt::QueuedConnection);
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_advertisingProcessor, &AdvertisingProcessor::setSessionID, Qt::QueuedConnection);
 
     //QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendAuthKey, this, &SoulstormController::sendAuthKey, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 
-    m_soulstormMemoryReader->moveToThread(&m_soulstormMemoryReaderThread);
+    m_gameMemoryReader->moveToThread(&m_soulstormMemoryReaderThread);
     m_soulstormMemoryReaderThread.start();
     m_ssWindowControllTimer->start();
 }
 
 GameController::~GameController()
 {
-    m_soulstormMemoryReader->abort();
+    m_gameMemoryReader->abort();
     m_soulstormMemoryReaderThread.quit();
     m_soulstormMemoryReaderThread.wait();
-    m_soulstormMemoryReader->deleteLater();
+    m_gameMemoryReader->deleteLater();
 }
 
 void GameController::blockSsWindowInput(bool state)
@@ -613,9 +614,9 @@ LONG GameController::defaultSoulstormWindowLong() const
     return m_defaultSoulstormWindowLong;
 }
 
-SoulstormMemoryReader *GameController::soulstormMemoryReader() const
+GameMemoryReader *GameController::soulstormMemoryReader() const
 {
-    return m_soulstormMemoryReader;
+    return m_gameMemoryReader;
 }
 
 APMMeter *GameController::apmMeter() const

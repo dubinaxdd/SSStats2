@@ -131,6 +131,7 @@ LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 
 DWORD WINAPI MyMouseLogger(LPVOID lpParm)
 {
+#ifndef DISAPLE_HOOK_FOR_DEBUG
     mouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
 
     MSG message;
@@ -141,12 +142,14 @@ DWORD WINAPI MyMouseLogger(LPVOID lpParm)
     }
 
     UnhookWindowsHookEx(mouseHook);
+#endif
     return 0;
 }
 
 
 DWORD WINAPI MyKeyboadLogger(LPVOID lpParm)
 {
+#ifndef DISAPLE_HOOK_FOR_DEBUG
     keyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
 
     MSG message;
@@ -157,6 +160,7 @@ DWORD WINAPI MyKeyboadLogger(LPVOID lpParm)
     }
 
     UnhookWindowsHookEx(keyboardHook);
+#endif
     return 0;
 }
 
