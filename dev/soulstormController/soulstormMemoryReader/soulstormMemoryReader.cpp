@@ -5,9 +5,6 @@
 #include <fstream>
 #include <QTextCodec>
 #include <logger.h>
-//#include <ntdll.h>
-#include <winternl.h>
-
 
 //#define SCAN_STEAM_PLAYERS_INTERVAL 3000
 
@@ -16,14 +13,14 @@
 using namespace std;
 //typedef int (__cdecl *DLL_FUNCTION_PTR)(int, int);
 
-typedef NTSTATUS(WINAPI* DLL_FUNCTION_PTR)(
+/*typedef NTSTATUS(WINAPI* DLL_FUNCTION_PTR)(
     HANDLE hProcess,
     DWORD64 lpAddress,
     PVOID val,
     ULONG64 sizetoread,
     PULONG64 numofbytes
     );
-
+*/
 
 GameMemoryReader::GameMemoryReader(QObject *parent)
     : QObject(parent)
@@ -417,6 +414,8 @@ void GameMemoryReader::findSessionId()
 
     if (!sessionId.isEmpty())
         emit sendSessionId(sessionId);
+    else
+        qWarning(logWarning()) << "sessionId not finded!!!";
 }
 
 void GameMemoryReader::findAuthKey()
@@ -612,38 +611,18 @@ QString GameMemoryReader::findDefinetiveEditionSessionId()
     int bufferSize = 100000;
     QByteArray buffer(bufferSize, 0);
     DWORD64 ptr1Count = 0x1AE20000000;
+    DWORD64 ptr2Count = ptr1Count + 0x20000000000;
 
     QByteArray sesionHead = "sessionID=";
 
-    HMODULE hNtdll = LoadLibrary("ntdll.dll");
-
-    if (hNtdll == NULL)
-    {
-        qDebug() << "NTLIB NOT LOADED";
-        return "";
-    }
-
-    DLL_FUNCTION_PTR NtWow64ReadVirtualMemory64 = (DLL_FUNCTION_PTR)GetProcAddress(hNtdll, "NtWow64ReadVirtualMemory64");
-
-    if (NtWow64ReadVirtualMemory64 == NULL) {
-        qDebug() << "NTLIB NOT LOADED 2";
-        FreeLibrary(hNtdll);
-    }
-
-    while (ptr1Count < 0x1AF00000000)
+    while (ptr1Count < ptr2Count)
     {
         DWORD64  bytesRead = 0;
 
-        if(!NtWow64ReadVirtualMemory64(hProcess, ptr1Count, buffer.data(), bufferSize , &bytesRead))
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
         {
-            ptr1Count += bufferSize;
+            ptr1Count += bufferSize * 10;
             continue;
-
-            /*if(GetLastError()!=299)
-            {
-                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
-                continue;
-            }*/
         }
 
         if (!buffer.contains(sesionHead))
@@ -657,10 +636,11 @@ QString GameMemoryReader::findDefinetiveEditionSessionId()
 
             QString sessionIdStr = QString::fromUtf8((char*)buffer.mid(index, 40).data()).right(30);
 
-            //if (sessionIdStr.right(4) != "&sta")
-            //    continue;
-
-            //sessionIdStr = sessionIdStr.left(30);
+            if (sessionIdStr.count() != 30)
+            {
+                ptr1Count += bufferSize;
+                continue;
+            }
 
             return sessionIdStr;
         }

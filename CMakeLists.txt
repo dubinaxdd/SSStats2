@@ -109,12 +109,12 @@ add_executable(${TARGET_NAME} WIN32 ${HEADERS_FILES} ${SOURCES_FILES} ${APP_ICON
 set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x64")
 
 find_package(OpenSSL)
-#if (OPENSSL_FOUND)
-#    message (STATUS "OPENSSL found")
-#    message (STATUS "OpenSSL INclude directories:" ${OPENSSL_INCLUDE_DIR})
-#else()
-#message (FATAL_ERROR "OpenSSL Not found.")
-#    endif()
+if (OPENSSL_FOUND)
+    message (STATUS "OPENSSL found")
+    message (STATUS "OpenSSL INclude directories:" ${OPENSSL_INCLUDE_DIR})
+else()
+message (FATAL_ERROR "OpenSSL Not found.")
+    endif()
 
 
 target_compile_definitions(${TARGET_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
@@ -131,7 +131,6 @@ target_link_libraries(${TARGET_NAME}
                         OpenSSL::SSL
                         OpenSSL::Crypto
                         QuaZip::QuaZip
-                        ntdll
                         ReplayReaderLibrary)
 
 

@@ -29,7 +29,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     , m_advertisingProcessor(new AdvertisingProcessor(m_settingsController, this))
     , m_soulstormProcess(nullptr)
 {
-    getSsPathFromRegistry();
+    getGamePathFromRegistry();
     m_currentGame = &m_gamePathArray.last();
 
     m_lobbyEventReader->setCurrentGame(m_currentGame);
@@ -334,7 +334,7 @@ void GameController::ssShutdown()
     m_lobbyEventReader->activateReading(false);
 }
 
-QString GameController::getSsPathFromRegistry()
+QString GameController::getGamePathFromRegistry()
 {
     findSoulstormPath();
     findDefinetiveEdition();
@@ -343,47 +343,6 @@ QString GameController::getSsPathFromRegistry()
         return "";
     else
         return m_gamePathArray.last().gamePath;
-
-    /*    QString path = "";
-
-    QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War - Soulstorm", QSettings::NativeFormat);
-    path = sega.value("installlocation", "").toString();
-
-    if(path.isEmpty())
-    {
-        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War Soulstorm", QSettings::NativeFormat);
-        path = sega.value("installlocation", "").toString();
-    }
-
-    if(path.isEmpty())
-    {
-        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War Soulstorm", QSettings::NativeFormat);
-        path = sega.value("installlocation", "").toString();
-    }
-
-    if(path.isEmpty())
-    {
-        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War - Soulstorm", QSettings::NativeFormat);
-        path = sega.value("installlocation", "").toString();
-    }
-
-    if(path.isEmpty())
-    {
-        QSettings steam("HKEY_CURRENT_USER\\SOFTWARE\\Valve\\Steam", QSettings::NativeFormat);
-        path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
-    }
-
-    if(!path.isEmpty())
-    {
-        GamePath soulstormGamePath;
-        soulstormGamePath.gamePath = path;
-        soulstormGamePath.gameType = SoulstormSteam;
-
-        m_gamePathArray.append(soulstormGamePath);
-    }
-
-    return path;
-*/
 }
 
 QString GameController::getSteamPathFromRegistry()

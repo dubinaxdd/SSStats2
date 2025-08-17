@@ -69,7 +69,7 @@ signals:
     void sendAuthKey(QString authKey);
 
 private:
-    QString getSsPathFromRegistry();
+    QString getGamePathFromRegistry();
     QString getSteamPathFromRegistry();
     void parseSsSettings();
     void updateSoulstormWindow();
