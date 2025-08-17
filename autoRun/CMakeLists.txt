@@ -77,12 +77,12 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     ${DEPLOY_DIR}/Qt/labs/platform/${PLATFORM_LIB_NAME}
 )
 
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E
-    copy
-    ${_qt_bin_dir}/../qml/Qt/labs/platform/qmldir
-    ${DEPLOY_DIR}/Qt/labs/platform/qmldir
-)
+#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#    COMMAND "${CMAKE_COMMAND}" -E
+#    copy
+#    ${_qt_bin_dir}/../qml/Qt/labs/platform/qmldir
+#    ${DEPLOY_DIR}/Qt/labs/platform/qmldir
+#)
 
 #add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
 #    COMMAND "${CMAKE_COMMAND}" -E
