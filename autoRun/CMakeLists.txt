@@ -63,7 +63,7 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     --plugindir "${DEPLOY_DIR}/plugins"
     --dir "${DEPLOY_DIR}"
     --libdir "${DEPLOY_DIR}"
-    --qmldir "${_qt_bin_dir}/../qml"
+    #--qmldir "${_qt_bin_dir}/../qml"
     ${BUILD_TYPE_ARG}
     $<TARGET_FILE:${TARGET_NAME}>
     COMMENT "Running windeployqt for DowStatsAutorun..."
@@ -84,26 +84,26 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     ${DEPLOY_DIR}/Qt/labs/platform/qmldir
 )
 
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E
-    copy
-    ${_qt_bin_dir}/../qml/Qt/labs/platform/plugins.qmltypes
-    ${DEPLOY_DIR}/Qt/labs/platform/plugins.qmltypes
-)
+#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#    COMMAND "${CMAKE_COMMAND}" -E
+#    copy
+#    ${_qt_bin_dir}/../qml/Qt/labs/platform/plugins.qmltypes
+#    ${DEPLOY_DIR}/Qt/labs/platform/plugins.qmltypes
+#)
 
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E
-    copy
-    ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1.dll
-    ${DEPLOY_DIR}/libcrypto-1_1.dll
-)
+#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#    COMMAND "${CMAKE_COMMAND}" -E
+#    copy
+#    ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1.dll
+#    ${DEPLOY_DIR}/libcrypto-1_1.dll
+#)
 
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E
-    copy
-    ${OPENSSL_ROOT_DIR}/bin/libssl-1_1.dll
-    ${DEPLOY_DIR}/libssl-1_1.dll
-)
+#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#    COMMAND "${CMAKE_COMMAND}" -E
+#    copy
+#    ${OPENSSL_ROOT_DIR}/bin/libssl-1_1.dll
+#    ${DEPLOY_DIR}/libssl-1_1.dll
+#)
 
 
 

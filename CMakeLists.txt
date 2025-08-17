@@ -106,15 +106,15 @@ set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
 
 add_executable(${TARGET_NAME} WIN32 ${HEADERS_FILES} ${SOURCES_FILES} ${APP_ICON_RESOURCE_WINDOWS})
 
-#set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x86")
+set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x64")
 
 find_package(OpenSSL)
-if (OPENSSL_FOUND)
-    message (STATUS "OPENSSL found")
-    message (STATUS "OpenSSL INclude directories:" ${OPENSSL_INCLUDE_DIR})
-else()
-message (FATAL_ERROR "OpenSSL Not found.")
-    endif()
+#if (OPENSSL_FOUND)
+#    message (STATUS "OPENSSL found")
+#    message (STATUS "OpenSSL INclude directories:" ${OPENSSL_INCLUDE_DIR})
+#else()
+#message (FATAL_ERROR "OpenSSL Not found.")
+#    endif()
 
 
 target_compile_definitions(${TARGET_NAME} PRIVATE $<$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>:QT_QML_DEBUG>)
@@ -210,7 +210,6 @@ else()
 endif()
 
 
-
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E
     env PATH="${_qt_bin_dir}" "${WINDEPLOYQT_EXECUTABLE}"
@@ -240,25 +239,25 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     ${DEPLOY_DIR}/Qt/labs/platform/qmldir
 )
 
+#add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
+#    COMMAND "${CMAKE_COMMAND}" -E
+#    copy
+#    ${_qt_bin_dir}/../qml/Qt/labs/platform/plugins.qmltypes
+#    ${DEPLOY_DIR}/Qt/labs/platform/plugins.qmltypes
+#)
+
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E
     copy
-    ${_qt_bin_dir}/../qml/Qt/labs/platform/plugins.qmltypes
-    ${DEPLOY_DIR}/Qt/labs/platform/plugins.qmltypes
+    ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1-x64.dll
+    ${DEPLOY_DIR}/libcrypto-1_1-x64.dll
 )
 
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E
     copy
-    ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1.dll
-    ${DEPLOY_DIR}/libcrypto-1_1.dll
-)
-
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E
-    copy
-    ${OPENSSL_ROOT_DIR}/bin/libssl-1_1.dll
-    ${DEPLOY_DIR}/libssl-1_1.dll
+    ${OPENSSL_ROOT_DIR}/bin/libssl-1_1-x64.dll
+    ${DEPLOY_DIR}/libssl-1_1-x64.dll
 )
 
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
