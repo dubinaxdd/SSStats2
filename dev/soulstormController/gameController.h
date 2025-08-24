@@ -76,7 +76,7 @@ private:
     void writeCurrentModSettingInGame();
 
     void findSoulstormPath();
-    void findDefinetiveEdition();
+    void findDefinitiveEdition();
 
 private:
 

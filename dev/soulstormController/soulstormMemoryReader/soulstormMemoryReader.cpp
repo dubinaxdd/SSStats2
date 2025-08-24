@@ -406,7 +406,7 @@ void GameMemoryReader::findSessionId()
     QString sessionId;
 
     if (m_gameType == DefinitiveEdition)
-        sessionId = findDefinetiveEditionSessionId();
+        sessionId = findDefinitiveEditionSessionId();
     else if (m_gameType == SoulstormSteam)
         sessionId = findSteamSoulstormSessionId();
     else
@@ -588,7 +588,7 @@ QString GameMemoryReader::findSteamSoulstormSessionId()
     return "";
 }
 
-QString GameMemoryReader::findDefinetiveEditionSessionId()
+QString GameMemoryReader::findDefinitiveEditionSessionId()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
 

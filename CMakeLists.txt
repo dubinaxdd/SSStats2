@@ -23,7 +23,6 @@ set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 #set(BALANCE_MOD_TEST OFF CACHE BOOL "")
 
 option(BALANCE_MOD_TEST "Build with DoW Stats Balance Mod TEST server" OFF)
-
 if (${BALANCE_MOD_TEST})
     add_definitions(-DBALANCE_MOD_TEST)
     message(STATUS "Build with DoW Stats Balance Mod TEST server")
@@ -31,14 +30,19 @@ endif()
 
 
 option(TEST_NEWS_CHANNEL "Build with DoW Stats News test channel" OFF)
-
 if (${TEST_NEWS_CHANNEL})
     add_definitions(-DTEST_NEWS_CHANNEL)
     message(STATUS "Build with DoW Stats News test channel")
 endif()
 
-option(DISAPLE_HOOK_FOR_DEBUG "Disable hook for debug without lags" OFF)
 
+option(TEST_DISCORD_MICROSERVICE "Build with local test discord microservice" OFF)
+if (${TEST_DISCORD_MICROSERVICE})
+    add_definitions(-DTEST_DISCORD_MICROSERVICE)
+    message(STATUS "Build with local test discord microservice")
+endif()
+
+option(DISAPLE_HOOK_FOR_DEBUG "Disable hook for debug without lags" OFF)
 if (${DISAPLE_HOOK_FOR_DEBUG})
     add_definitions(-DDISAPLE_HOOK_FOR_DEBUG)
     message(STATUS "Disable hook for debug without lags")

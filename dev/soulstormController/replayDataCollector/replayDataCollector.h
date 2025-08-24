@@ -33,6 +33,11 @@ private:
     bool checkEqualNamesInStats();
     bool readReplayData();
 
+    bool readSoulstormReplayData();
+    bool readDefinitiveReplayData();
+
+
+
     bool checkMissionSettingsValide(int gameType);
     QString updateTestStatsFilePath();
 
@@ -46,6 +51,9 @@ private:
     bool m_gameWillBePlayedInOtherSession = true;
 
     const GamePath* m_currentGame;
+
+    QList<FinalState> m_playerFinalStateList;
+
 };
 
 #endif // REPLAYDATACOLLECTOR_H

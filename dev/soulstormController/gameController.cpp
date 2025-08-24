@@ -337,7 +337,7 @@ void GameController::ssShutdown()
 QString GameController::getGamePathFromRegistry()
 {
     findSoulstormPath();
-    findDefinetiveEdition();
+    findDefinitiveEdition();
 
     if (m_gamePathArray.isEmpty())
         return "";
@@ -477,7 +477,7 @@ void GameController::findSoulstormPath()
     }
 }
 
-void GameController::findDefinetiveEdition()
+void GameController::findDefinitiveEdition()
 {
     QString steamPath = getSteamPathFromRegistry();
 
