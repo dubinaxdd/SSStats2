@@ -262,7 +262,7 @@ void GameStateReader::ssWindowClosed()
 
     m_ssCurrentState = SsState::ssShutdowned;
     emit ssShutdown();
-    qInfo(logInfo()) << "SS Shutdown";
+    qInfo(logInfo()) << "Game Shutdown";
 }
 
 bool GameStateReader::getGameInitialized()
@@ -277,7 +277,7 @@ void GameStateReader::checkGameInitialize()
 {
     if(m_ssCurrentState != SsState::ssInitialized)
     {
-        qInfo(logInfo()) << "SS Initialized";
+        qInfo(logInfo()) << "Game Initialized";
         m_ssCurrentState = SsState::ssInitialized;
         parseSsSettings();
         readTestStatsTemp();
@@ -304,21 +304,25 @@ void GameStateReader::checkCurrentMode()
             ///Дергаем текущий мод
             if(line.contains("MOD -- Initializing Mod"))
             {
-                QString currentMode;
+                int prefixIndex = line.indexOf("MOD -- Initializing Mod");
 
-                currentMode = line.right(line.size() - 39);
+                QString currentMode = line.right(line.count() - prefixIndex - 24);
 
-                for (int i = 0; i < currentMode.size(); i++)
-                {
-                    if(currentMode.at(i) == ',')
-                    {
-                        m_currentModeVersion  = currentMode.right(currentMode.size() - i - 2);
-                        currentMode = currentMode.left(i);
-                    }
-                }
+                if (!currentMode.contains(", "))
+                    return;
 
-                if (currentMode.contains("itializing Mod DoWDE"))
-                    currentMode = "dowde";
+                int postfixIndex = currentMode.indexOf(", ");
+
+                int nameLength =  postfixIndex;
+
+                if (nameLength <= 0)
+                    return;
+
+                currentMode = currentMode.left(nameLength);
+
+
+                postfixIndex = line.indexOf(", ");
+                m_currentModeVersion = line.right(line.size() - postfixIndex - 2);
 
                 qInfo(logInfo()) << "Current mode:" << currentMode;
                 qInfo(logInfo()) << "Current mode version:" << m_currentModeVersion;
@@ -623,7 +627,7 @@ void GameStateReader::playerDroppedToObserver(QString str)
 
     int postfixIndex = playerName.indexOf("has been killed");
 
-    int nameLength =  postfixIndex - 1;
+    int nameLength =  postfixIndex -1;
 
     if (nameLength <= 0)
         return;
