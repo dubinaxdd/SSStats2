@@ -73,12 +73,12 @@ void SoundProcessor::activeIsFirstConnection()
     m_isFirstConnection = true;
 }
 
-void SoundProcessor::receiveCurrentMissionState(SsMissionState gameCurrentState)
+void SoundProcessor::receiveCurrentMissionState(GameMissionState gameCurrentState)
 {
-    if (gameCurrentState == SsMissionState::gameLoadStarted)
+    if (gameCurrentState == GameMissionState::gameLoadStarted)
         playGameLoadSound();
 
-    if (gameCurrentState == SsMissionState::gameStarted)
+    if (gameCurrentState == GameMissionState::gameStarted)
         playGameStartSound();
 }
 

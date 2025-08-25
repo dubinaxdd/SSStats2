@@ -28,7 +28,7 @@ public slots:
 
     void activeIsFirstConnection();
 
-    void receiveCurrentMissionState(SsMissionState gameCurrentState);
+    void receiveCurrentMissionState(GameMissionState gameCurrentState);
 
     void setVolume(int volume);
 

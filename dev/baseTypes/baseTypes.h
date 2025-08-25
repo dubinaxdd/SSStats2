@@ -105,14 +105,14 @@ enum FinalState
 
 };
 
-enum SsState
+enum GameState
 {
-    ssShutdowned = 0,           //Сс выключен
-    ssInitialized = 1,          //Сс загружен
+    gameShutdowned = 0,           //Сс выключен
+    gameInitialized = 1,          //Сс загружен
 };
 
 
-enum SsMissionState
+enum GameMissionState
 {
     unknown = 0,
 

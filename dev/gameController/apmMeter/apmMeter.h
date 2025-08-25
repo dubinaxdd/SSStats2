@@ -22,7 +22,7 @@ public:
 public slots:
     void onKeyPressEvent();
     void onMousePressEvent();
-    void receiveMissionCurrentState(SsMissionState gameCurrentState);
+    void receiveMissionCurrentState(GameMissionState gameCurrentState);
 
 signals:
     void apmCalculated(int capm, int aapm);

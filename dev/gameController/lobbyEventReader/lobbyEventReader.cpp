@@ -21,14 +21,14 @@ void LobbyEventReader::activateReading(bool activated)
         m_lobbyEventsReadTimer->stop();
 }
 
-void LobbyEventReader::receiveCurrentMissionState(SsMissionState gameCurrentState)
+void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentState)
 {
     switch (gameCurrentState)
     {
-        case SsMissionState::gameStoped :
-        case SsMissionState::playbackStoped :
-        case SsMissionState::savedGameStoped :
-        case SsMissionState::unknownGameStoped : activateReading(true); break;
+        case GameMissionState::gameStoped :
+        case GameMissionState::playbackStoped :
+        case GameMissionState::savedGameStoped :
+        case GameMissionState::unknownGameStoped : activateReading(true); break;
         default: activateReading(false);
     }
 }

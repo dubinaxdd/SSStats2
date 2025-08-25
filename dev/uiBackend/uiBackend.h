@@ -215,7 +215,7 @@ public slots:
     void expandPatyStatisticButtonClick();
     void receiveSsMaximized(bool maximized);
     void onSsLaunchStateChanged(bool state);
-    void setMissionCurrentState(SsMissionState gameCurrentState);
+    void setMissionCurrentState(GameMissionState gameCurrentState);
     void receiveNotification(QString notify, bool isWarning);
     void receiveOnlineCount(int onlineCount);
     void receiveCurrentModName(QString modName);
@@ -233,7 +233,7 @@ private:
     void showClient();
     void loadStarted();
     void gameStopped();
-    void startingMission(SsMissionState gameCurrentState);
+    void startingMission(GameMissionState gameCurrentState);
     void gameOver();
 
 private:
@@ -257,7 +257,7 @@ private:
 
     QString m_ssStatsVersion;
 
-    SsMissionState m_gameCurrentState;
+    GameMissionState m_gameCurrentState;
 
     qreal m_devicePixelRatio;
 

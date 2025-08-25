@@ -58,7 +58,7 @@ void Core::registerTypes()
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");
     qRegisterMetaType<QList<PlayerInfoFromDowServer>>("QList<PlayerInfoFromDowServer>");
-    qRegisterMetaType<SsMissionState>("SsMissionState");
+    qRegisterMetaType<GameMissionState>("SsMissionState");
     qRegisterMetaType<SendingReplayInfo>("SendingReplayInfo");
     qRegisterMetaType<PlayerInfoFromDowServer>("PlayerInfoFromDowServer");
     qRegisterMetaType<QList<DiscordMessage>>("QList<DiscordMessage>");

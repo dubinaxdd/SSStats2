@@ -44,7 +44,7 @@ void GameStateReader::readGameInfo()
             ///Проверка на выключение соулсторма
             if(line.contains("GAME -- Shutdown quit") || line.contains("MOD -- Shutting down Mod"))
             {
-                if (m_ssCurrentState != SsState::ssShutdowned)
+                if (m_ssCurrentState != GameState::gameShutdowned)
                     ssWindowClosed();
                 break;
             }
@@ -232,13 +232,13 @@ void GameStateReader::setGameLounched(bool newGameLounched)
 
 void GameStateReader::stopedGame()
 {
-    if (m_missionCurrentState != SsMissionState::gameStoped
-            && m_missionCurrentState != SsMissionState::playbackStoped
-            && m_missionCurrentState != SsMissionState::savedGameStoped
-            && m_missionCurrentState != SsMissionState::unknownGameStoped)
+    if (m_missionCurrentState != GameMissionState::gameStoped
+            && m_missionCurrentState != GameMissionState::playbackStoped
+            && m_missionCurrentState != GameMissionState::savedGameStoped
+            && m_missionCurrentState != GameMissionState::unknownGameStoped)
     {
         qInfo(logInfo()) << "Game Stoped";
-        m_missionCurrentState = SsMissionState::gameStoped;
+        m_missionCurrentState = GameMissionState::gameStoped;
         emit sendCurrentMissionState(m_missionCurrentState);
     }
 }
@@ -257,17 +257,17 @@ void GameStateReader::ssWindowClosed()
 {
     stopedGame();
 
-    if (m_ssCurrentState == SsState::ssShutdowned)
+    if (m_ssCurrentState == GameState::gameShutdowned)
         return;
 
-    m_ssCurrentState = SsState::ssShutdowned;
+    m_ssCurrentState = GameState::gameShutdowned;
     emit ssShutdown();
     qInfo(logInfo()) << "Game Shutdown";
 }
 
 bool GameStateReader::getGameInitialized()
 {
-    if (m_ssCurrentState == SsState::ssInitialized)
+    if (m_ssCurrentState == GameState::gameInitialized)
         return true;
     else
         return false;
@@ -275,11 +275,11 @@ bool GameStateReader::getGameInitialized()
 
 void GameStateReader::checkGameInitialize()
 {
-    if(m_ssCurrentState != SsState::ssInitialized)
+    if(m_ssCurrentState != GameState::gameInitialized)
     {
         qInfo(logInfo()) << "Game Initialized";
-        m_ssCurrentState = SsState::ssInitialized;
-        parseSsSettings();
+        m_ssCurrentState = GameState::gameInitialized;
+        parseGmaeSettings();
         readTestStatsTemp();
         emit gameInitialized();
         checkCurrentMode();
@@ -367,7 +367,7 @@ void GameStateReader::readTestStatsTemp()
     qInfo(logInfo()) << "testStats temp readed in" << m_testStatsPath;
 }
 
-void GameStateReader::parseSsSettings()
+void GameStateReader::parseGmaeSettings()
 {
     QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
     m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
@@ -411,9 +411,9 @@ void GameStateReader::missionLoad(QStringList* fileLines, int counter)
         ///Проверка на реплей
         if(checkLine.contains("APP -- Game Playback"))
         {
-            if (m_missionCurrentState != SsMissionState::playbackLoadStarted)
+            if (m_missionCurrentState != GameMissionState::playbackLoadStarted)
             {
-                m_missionCurrentState = SsMissionState::playbackLoadStarted;
+                m_missionCurrentState = GameMissionState::playbackLoadStarted;
                 checkGameInitialize();
                 m_readRacesSingleShootTimer->start();
                 emit sendCurrentMissionState(m_missionCurrentState);
@@ -425,10 +425,10 @@ void GameStateReader::missionLoad(QStringList* fileLines, int counter)
         ///Проверка на загруженную игру
         if (checkLine.contains("APP -- Game Load"))
         {
-            if (m_missionCurrentState != SsMissionState::savedGameLoadStarted)
+            if (m_missionCurrentState != GameMissionState::savedGameLoadStarted)
             {
                 m_playerDroppedToObserver = false;
-                m_missionCurrentState = SsMissionState::savedGameLoadStarted;
+                m_missionCurrentState = GameMissionState::savedGameLoadStarted;
                 checkGameInitialize();
                 readTestStatsTemp();
                 m_readRacesSingleShootTimer->start();
@@ -442,12 +442,12 @@ void GameStateReader::missionLoad(QStringList* fileLines, int counter)
     }
 
     ///Проверка на обычную игру
-    if (m_missionCurrentState != SsMissionState::savedGameLoadStarted
-        && m_missionCurrentState != SsMissionState::playbackLoadStarted
-        && m_missionCurrentState != SsMissionState::gameLoadStarted)
+    if (m_missionCurrentState != GameMissionState::savedGameLoadStarted
+        && m_missionCurrentState != GameMissionState::playbackLoadStarted
+        && m_missionCurrentState != GameMissionState::gameLoadStarted)
     {
         m_playerDroppedToObserver = false;
-        m_missionCurrentState = SsMissionState::gameLoadStarted;
+        m_missionCurrentState = GameMissionState::gameLoadStarted;
         checkGameInitialize();
         m_readRacesSingleShootTimer->start();
         emit sendCurrentMissionState(m_missionCurrentState);
@@ -457,24 +457,24 @@ void GameStateReader::missionLoad(QStringList* fileLines, int counter)
 
 void GameStateReader::missionStarted(QStringList* fileLines, int counter)
 {
-    if(m_missionCurrentState == SsMissionState::gameLoadStarted
-       || m_missionCurrentState == SsMissionState::playbackLoadStarted
-       || m_missionCurrentState == SsMissionState::savedGameLoadStarted)
+    if(m_missionCurrentState == GameMissionState::gameLoadStarted
+       || m_missionCurrentState == GameMissionState::playbackLoadStarted
+       || m_missionCurrentState == GameMissionState::savedGameLoadStarted)
     {
-        if(m_missionCurrentState == SsMissionState::gameLoadStarted)
+        if(m_missionCurrentState == GameMissionState::gameLoadStarted)
         {
-            m_missionCurrentState = SsMissionState::gameStarted;
+            m_missionCurrentState = GameMissionState::gameStarted;
             readWinConditions(fileLines, counter);
             qInfo(logInfo()) << "Starting game mission";
         }
-        else if (m_missionCurrentState == SsMissionState::playbackLoadStarted)
+        else if (m_missionCurrentState == GameMissionState::playbackLoadStarted)
         {
-            m_missionCurrentState = SsMissionState::playbackStarted;
+            m_missionCurrentState = GameMissionState::playbackStarted;
             qInfo(logInfo()) << "Starting playback mission";
         }
-        else if (m_missionCurrentState == SsMissionState::savedGameLoadStarted)
+        else if (m_missionCurrentState == GameMissionState::savedGameLoadStarted)
         {
-            m_missionCurrentState = SsMissionState::savedGameStarted;
+            m_missionCurrentState = GameMissionState::savedGameStarted;
             qInfo(logInfo()) << "Starting saved game mission";
         }
         checkGameInitialize();
@@ -489,13 +489,13 @@ void GameStateReader::missionStarted(QStringList* fileLines, int counter)
             emit localPlayerDroppedToObserver();
 
     }
-    else if(m_missionCurrentState != SsMissionState::gameStarted
-          && m_missionCurrentState != SsMissionState::playbackStarted
-          && m_missionCurrentState != SsMissionState::savedGameStarted
-          && m_missionCurrentState != SsMissionState::unknownGameStarted
-          && m_missionCurrentState != SsMissionState::gameOver)
+    else if(m_missionCurrentState != GameMissionState::gameStarted
+          && m_missionCurrentState != GameMissionState::playbackStarted
+          && m_missionCurrentState != GameMissionState::savedGameStarted
+          && m_missionCurrentState != GameMissionState::unknownGameStarted
+          && m_missionCurrentState != GameMissionState::gameOver)
     {
-        m_missionCurrentState = SsMissionState::unknownGameStarted;
+        m_missionCurrentState = GameMissionState::unknownGameStarted;
         qInfo(logInfo()) << "Starting unknown mission";
         checkGameInitialize();
         testStatsTemp = QStringList();
@@ -506,17 +506,17 @@ void GameStateReader::missionStarted(QStringList* fileLines, int counter)
 
 void GameStateReader::missionOver()
 {
-    if (m_missionCurrentState != SsMissionState::gameOver
-            && m_missionCurrentState != SsMissionState::playbackOver
-            && m_missionCurrentState != SsMissionState::savedGameOver
-            && m_missionCurrentState != SsMissionState::unknownGameOver)
+    if (m_missionCurrentState != GameMissionState::gameOver
+            && m_missionCurrentState != GameMissionState::playbackOver
+            && m_missionCurrentState != GameMissionState::savedGameOver
+            && m_missionCurrentState != GameMissionState::unknownGameOver)
     {
         switch(m_missionCurrentState)
         {
-            case SsMissionState::gameStarted : m_missionCurrentState = SsMissionState::gameOver; break;
-            case SsMissionState::playbackStarted : m_missionCurrentState = SsMissionState::playbackOver; break;
-            case SsMissionState::savedGameStarted : m_missionCurrentState = SsMissionState::savedGameOver; break;
-            case unknownGameStarted : m_missionCurrentState = SsMissionState::unknownGameOver; break;
+            case GameMissionState::gameStarted : m_missionCurrentState = GameMissionState::gameOver; break;
+            case GameMissionState::playbackStarted : m_missionCurrentState = GameMissionState::playbackOver; break;
+            case GameMissionState::savedGameStarted : m_missionCurrentState = GameMissionState::savedGameOver; break;
+            case unknownGameStarted : m_missionCurrentState = GameMissionState::unknownGameOver; break;
             default: break;
         }
 
@@ -532,25 +532,25 @@ void GameStateReader::missionOver()
 
 void GameStateReader::missionStoped()
 {
-    if (m_missionCurrentState != SsMissionState::gameStoped
-        && m_missionCurrentState != SsMissionState::playbackStoped
-        && m_missionCurrentState != SsMissionState::savedGameStoped
-        && m_missionCurrentState != SsMissionState::unknownGameStoped)
+    if (m_missionCurrentState != GameMissionState::gameStoped
+        && m_missionCurrentState != GameMissionState::playbackStoped
+        && m_missionCurrentState != GameMissionState::savedGameStoped
+        && m_missionCurrentState != GameMissionState::unknownGameStoped)
     {
         checkGameInitialize();
         readTestStatsTemp();
 
         switch(m_missionCurrentState)
         {
-            case SsMissionState::gameOver :
-            case SsMissionState::gameStarted : m_missionCurrentState = SsMissionState::gameStoped; break;
-            case SsMissionState::playbackOver :
-            case SsMissionState::playbackStarted : m_missionCurrentState = SsMissionState::playbackStoped; break;
-            case SsMissionState::savedGameOver :
-            case SsMissionState::savedGameStarted : m_missionCurrentState = SsMissionState::savedGameStoped; break;
+            case GameMissionState::gameOver :
+            case GameMissionState::gameStarted : m_missionCurrentState = GameMissionState::gameStoped; break;
+            case GameMissionState::playbackOver :
+            case GameMissionState::playbackStarted : m_missionCurrentState = GameMissionState::playbackStoped; break;
+            case GameMissionState::savedGameOver :
+            case GameMissionState::savedGameStarted : m_missionCurrentState = GameMissionState::savedGameStoped; break;
             case unknown :
             case unknownGameOver :
-            case unknownGameStarted : m_missionCurrentState = SsMissionState::unknownGameStoped; break;
+            case unknownGameStarted : m_missionCurrentState = GameMissionState::unknownGameStoped; break;
             default: break;
         }
 
@@ -562,19 +562,19 @@ void GameStateReader::missionStoped()
 
 bool GameStateReader::forceMissionStoped()
 {
-    if(m_missionCurrentState == SsMissionState::unknownGameStoped
-            || m_missionCurrentState == SsMissionState::gameOver
-            || m_missionCurrentState == SsMissionState::gameStoped
-            || m_missionCurrentState == SsMissionState::savedGameOver
-            || m_missionCurrentState == SsMissionState::savedGameStoped
-            || m_missionCurrentState == SsMissionState::playbackOver
-            || m_missionCurrentState == SsMissionState::playbackStoped)
+    if(m_missionCurrentState == GameMissionState::unknownGameStoped
+            || m_missionCurrentState == GameMissionState::gameOver
+            || m_missionCurrentState == GameMissionState::gameStoped
+            || m_missionCurrentState == GameMissionState::savedGameOver
+            || m_missionCurrentState == GameMissionState::savedGameStoped
+            || m_missionCurrentState == GameMissionState::playbackOver
+            || m_missionCurrentState == GameMissionState::playbackStoped)
         return false;
 
     checkGameInitialize();
     readTestStatsTemp();
 
-    m_missionCurrentState = SsMissionState::unknownGameStoped;
+    m_missionCurrentState = GameMissionState::unknownGameStoped;
     m_lockRanked = false;
 
     emit sendCurrentMissionState(m_missionCurrentState);
@@ -749,12 +749,12 @@ void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
 
     m_rankedMode = isRanked;
 
-    if (m_missionCurrentState == SsMissionState::unknown
-        ||  m_missionCurrentState == SsMissionState::unknownGameStarted
-        ||  m_missionCurrentState == SsMissionState::unknownGameStoped
-        ||  m_missionCurrentState == SsMissionState::gameOver
-        ||  m_missionCurrentState == SsMissionState::playbackLoadStarted
-        ||  m_missionCurrentState == SsMissionState::savedGameLoadStarted
+    if (m_missionCurrentState == GameMissionState::unknown
+        ||  m_missionCurrentState == GameMissionState::unknownGameStarted
+        ||  m_missionCurrentState == GameMissionState::unknownGameStoped
+        ||  m_missionCurrentState == GameMissionState::gameOver
+        ||  m_missionCurrentState == GameMissionState::playbackLoadStarted
+        ||  m_missionCurrentState == GameMissionState::savedGameLoadStarted
         )
         m_rankedMode = false;
 

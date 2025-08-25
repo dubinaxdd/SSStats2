@@ -81,9 +81,9 @@ UiBackend::UiBackend(Core* core, QObject *parent)
 
 void UiBackend::expandKeyPressed()
 {
-    if (m_gameCurrentState != SsMissionState::gameLoadStarted
-            && m_gameCurrentState != SsMissionState::playbackLoadStarted
-            && m_gameCurrentState != SsMissionState::savedGameLoadStarted
+    if (m_gameCurrentState != GameMissionState::gameLoadStarted
+            && m_gameCurrentState != GameMissionState::playbackLoadStarted
+            && m_gameCurrentState != GameMissionState::savedGameLoadStarted
      )
     {
         setExpand(!m_expand);
@@ -137,7 +137,7 @@ void UiBackend::loadStarted()
     emit patyStatisticVisibleChanged();
 }
 
-void UiBackend::startingMission(SsMissionState gameCurrentState)
+void UiBackend::startingMission(GameMissionState gameCurrentState)
 {
     m_gamePanel->onGameStarted(gameCurrentState);
 
@@ -151,7 +151,7 @@ void UiBackend::startingMission(SsMissionState gameCurrentState)
 
 void UiBackend::gameOver()
 {
-    startingMission(SsMissionState::gameOver);
+    startingMission(GameMissionState::gameOver);
 }
 
 qreal UiBackend::devicePixelRatio() const
@@ -354,15 +354,15 @@ void UiBackend::setOnlineCount(int newOnlineCount)
 
 void UiBackend::determinateRankedModePanelVisible()
 {
-    if (m_gameCurrentState == SsMissionState::playbackLoadStarted
-        || m_gameCurrentState == SsMissionState::playbackStarted
-        || m_gameCurrentState == SsMissionState::playbackOver
-        || m_gameCurrentState == SsMissionState::savedGameLoadStarted
-        || m_gameCurrentState == SsMissionState::savedGameStarted
-        || m_gameCurrentState == SsMissionState::savedGameOver
-        || m_gameCurrentState == SsMissionState::unknown
-        || m_gameCurrentState == SsMissionState::unknownGameStarted
-        || m_gameCurrentState == SsMissionState::unknownGameOver
+    if (m_gameCurrentState == GameMissionState::playbackLoadStarted
+        || m_gameCurrentState == GameMissionState::playbackStarted
+        || m_gameCurrentState == GameMissionState::playbackOver
+        || m_gameCurrentState == GameMissionState::savedGameLoadStarted
+        || m_gameCurrentState == GameMissionState::savedGameStarted
+        || m_gameCurrentState == GameMissionState::savedGameOver
+        || m_gameCurrentState == GameMissionState::unknown
+        || m_gameCurrentState == GameMissionState::unknownGameStarted
+        || m_gameCurrentState == GameMissionState::unknownGameOver
             )
         m_gamePanel->setRankedModePanelVisible(false);
     else
@@ -415,7 +415,7 @@ void UiBackend::setNotificationVisible(bool newNotificationVisible)
     emit notificationVisibleChanged();
 }
 
-void UiBackend::setMissionCurrentState(SsMissionState gameCurrentState)
+void UiBackend::setMissionCurrentState(GameMissionState gameCurrentState)
 {
     if (m_gameCurrentState == gameCurrentState)
         return;
@@ -427,24 +427,24 @@ void UiBackend::setMissionCurrentState(SsMissionState gameCurrentState)
 
     switch (m_gameCurrentState)
     {
-        case SsMissionState::gameLoadStarted :
-        case SsMissionState::playbackLoadStarted :
-        case SsMissionState::savedGameLoadStarted : loadStarted(); break;
+        case GameMissionState::gameLoadStarted :
+        case GameMissionState::playbackLoadStarted :
+        case GameMissionState::savedGameLoadStarted : loadStarted(); break;
 
-        case SsMissionState::gameStoped :
-        case SsMissionState::playbackStoped :
-        case SsMissionState::savedGameStoped :
-        case SsMissionState::unknownGameStoped : gameStopped(); break;
+        case GameMissionState::gameStoped :
+        case GameMissionState::playbackStoped :
+        case GameMissionState::savedGameStoped :
+        case GameMissionState::unknownGameStoped : gameStopped(); break;
 
-        case SsMissionState::gameStarted :
-        case SsMissionState::playbackStarted :
-        case SsMissionState::savedGameStarted :
-        case SsMissionState::unknownGameStarted : startingMission(m_gameCurrentState); break;
+        case GameMissionState::gameStarted :
+        case GameMissionState::playbackStarted :
+        case GameMissionState::savedGameStarted :
+        case GameMissionState::unknownGameStarted : startingMission(m_gameCurrentState); break;
 
-        case SsMissionState::gameOver :
-        case SsMissionState::playbackOver :
-        case SsMissionState::savedGameOver :
-        case SsMissionState::unknownGameOver : gameOver(); break;
+        case GameMissionState::gameOver :
+        case GameMissionState::playbackOver :
+        case GameMissionState::savedGameOver :
+        case GameMissionState::unknownGameOver : gameOver(); break;
 
         default: break;
     }

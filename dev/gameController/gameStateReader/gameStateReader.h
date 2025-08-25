@@ -34,7 +34,7 @@ signals:
     void gameInitialized();                                 //Сигнал о инициализации игры, когда игра включилась и появилось меню
     void ssShutdown();                                      //Сигнал о выключении игры
 
-    void sendCurrentMissionState(SsMissionState missionCurrentState);
+    void sendCurrentMissionState(GameMissionState missionCurrentState);
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendCurrentMod(QString currentMod);
     void sendCurrentModVersion(QString modVersion);
@@ -46,7 +46,7 @@ signals:
 private:
     void checkCurrentMode();
     void readTestStatsTemp();
-    void parseSsSettings(); 
+    void parseGmaeSettings();
 
     QString updateTestStatsFilePath();
 
@@ -75,8 +75,8 @@ private:
     QString m_testStatsPath;
     QString m_localPlayerName;
 
-    SsState m_ssCurrentState = SsState::ssShutdowned;
-    SsMissionState m_missionCurrentState = SsMissionState::unknown;
+    GameState m_ssCurrentState = GameState::gameShutdowned;
+    GameMissionState m_missionCurrentState = GameMissionState::unknown;
 
     bool m_gameLounched = false;
     bool m_playerDroppedToObserver = false;

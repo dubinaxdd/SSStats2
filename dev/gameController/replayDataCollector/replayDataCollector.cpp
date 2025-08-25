@@ -11,11 +11,11 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
 
 }
 
-void ReplayDataCollector::receiveCurrentMissionState(SsMissionState missionCurrentState)
+void ReplayDataCollector::receiveCurrentMissionState(GameMissionState missionCurrentState)
 {
     switch (missionCurrentState)
     {
-        case SsMissionState::gameStoped : readReplayData(); break;
+        case GameMissionState::gameStoped : readReplayData(); break;
         default: break;
     }
 }

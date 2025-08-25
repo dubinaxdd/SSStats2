@@ -50,9 +50,9 @@ void APMMeter::onMousePressEvent()
         ++m_currentTickMouseActionsCount;
 }
 
-void APMMeter::receiveMissionCurrentState(SsMissionState gameCurrentState)
+void APMMeter::receiveMissionCurrentState(GameMissionState gameCurrentState)
 {
-    if(gameCurrentState == SsMissionState::gameStarted || gameCurrentState == SsMissionState::savedGameStarted)
+    if(gameCurrentState == GameMissionState::gameStarted || gameCurrentState == GameMissionState::savedGameStarted)
         startAnalys();
     else
         stopAnalys();

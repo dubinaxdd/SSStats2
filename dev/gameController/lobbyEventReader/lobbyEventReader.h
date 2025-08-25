@@ -34,7 +34,7 @@ public slots:
     void activateReading(bool activated);
 
 
-    void receiveCurrentMissionState(SsMissionState gameCurrentState);
+    void receiveCurrentMissionState(GameMissionState gameCurrentState);
 
 private slots:
     void readLobbyEvents();

@@ -13,7 +13,7 @@ public:
     void setCurrentGame(GamePath *newCurrentGame);
 
 public slots:
-    void receiveCurrentMissionState(SsMissionState missionCurrentState);
+    void receiveCurrentMissionState(GameMissionState missionCurrentState);
     void receiveAverrageApm(int apm);
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoFromDowServer );
     void onQuitParty();
