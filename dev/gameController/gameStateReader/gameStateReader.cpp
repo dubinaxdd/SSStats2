@@ -49,7 +49,7 @@ void GameStateReader::readGameInfo()
                 break;
             }
 
-            ///Проверка на окончание инициализации соулсторма
+            ///Проверка на окончание инициализации игры
             if(line.contains("MOD -- Initializing Mod"))
             {
                 checkGameInitialize();
