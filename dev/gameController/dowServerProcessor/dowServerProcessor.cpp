@@ -97,6 +97,11 @@ void DowServerProcessor::requestProfileID(QString steamID)
 
 void DowServerProcessor::requestFindAdvertisements()
 {
+    QString appBinaryChecksum = "114327449";
+    QString dataChecksum = "903462269";
+    QString modDLLChecksum = "-1386716144";
+
+
     if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_sessionID.isEmpty())
         return;
 
@@ -114,7 +119,7 @@ void DowServerProcessor::requestFindAdvertisements()
     else if (m_gameType == DefinitiveEdition)
     {
         urlString = "https://dow-api.reliclink.com:443/game/advertisement/findAdvertisements?"
-                    "appBinaryChecksum=-1396102090&dataChecksum=89549991&matchType_id=0&modDLLChecksum=-765135040&modDLLFile=DXP3Mod.dll"
+                    "appBinaryChecksum=" + appBinaryChecksum + "&dataChecksum=" + dataChecksum + "&matchType_id=0&modDLLChecksum=" + modDLLChecksum + "&modDLLFile=DXP3Mod.dll"
 
                     "&modName=Soulstorm"
                     //"&modName=" + m_modName +
