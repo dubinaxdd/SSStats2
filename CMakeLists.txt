@@ -171,7 +171,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
 endif()
 
 file(GLOB  dev_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev ${CMAKE_CURRENT_SOURCE_DIR}/dev/*)
-file(GLOB  soulstormController_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/*)
+file(GLOB  gameController_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/gameController ${CMAKE_CURRENT_SOURCE_DIR}/dev/gameController/*)
 file(GLOB  mapManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager/*)
 file(GLOB  uiBackend_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/*)
 file(GLOB  modsProcessor_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/*)
@@ -181,7 +181,7 @@ file(GLOB  balanceModManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/balanceModManag
 
 set(SOURCE_DIRECTORIES
     ${dev_DIR}
-    ${soulstormController_DIR}
+    ${gameController_DIR}
     ${mapManager_DIR}
     ${uiBackend_DIR}
     ${modsProcessor_DIR}

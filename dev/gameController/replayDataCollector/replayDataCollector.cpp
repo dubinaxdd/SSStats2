@@ -23,9 +23,9 @@ void ReplayDataCollector::receiveCurrentMissionState(SsMissionState missionCurre
 
 bool ReplayDataCollector::readReplayData()
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    /*if (m_currentGame->gameType == DefinitiveEdition)
         return readDefinitiveReplayData();
-    else
+    else*/
         return readSoulstormReplayData();
 }
 

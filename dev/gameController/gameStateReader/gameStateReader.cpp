@@ -62,8 +62,8 @@ void GameStateReader::readGameInfo()
                 setLocalPlayerName(line);
             }
 
-            ///Проверка на выбадение в обсы локального игрока
-            if(line.contains("MOD -- Player"))
+            ///Проверка на выпадение в обсы локального игрока
+            if(line.contains("MOD -- Player") && line.contains("has been killed"))
             {
                 playerDroppedToObserver(line);
             }
@@ -580,16 +580,24 @@ bool GameStateReader::forceMissionStoped()
 
 void GameStateReader::setLocalPlayerName(QString str)
 {
-    QString localPlayerName = str.right(str.length() - 37);
+    if (!str.contains("GAME -- Local player"))
+        return;
 
-    for(int i = localPlayerName.count() - 1; i != 0; i--)
-    {
-        if(localPlayerName.at(i) == ',')
-        {
-            localPlayerName = localPlayerName.left(i);
-            break;
-        }
-    }
+    int prefixIndex = str.indexOf("GAME -- Local player");
+
+    QString localPlayerName = str.right(str.count() - prefixIndex - 22);
+
+    if (!localPlayerName.contains("finished loading"))
+        return;
+
+    int postfixIndex = localPlayerName.indexOf("finished loading");
+
+    int nameLength =  postfixIndex - 5;
+
+    if (nameLength <= 0)
+        return;
+
+    localPlayerName = localPlayerName.left(nameLength);
 
     if(m_localPlayerName != localPlayerName)
     {
@@ -603,9 +611,26 @@ void GameStateReader::playerDroppedToObserver(QString str)
     if (m_playerDroppedToObserver)
         return;
 
-    QString playerName = str.right(str.length() - 29);
+    if (!str.contains("MOD -- Player"))
+        return;
 
-    if (str.contains(m_localPlayerName))
+    int prefixIndex = str.indexOf("MOD -- Player");
+
+    QString playerName = str.right(str.count() - prefixIndex - 14);
+
+    if (!playerName.contains("has been killed"))
+        return;
+
+    int postfixIndex = playerName.indexOf("has been killed");
+
+    int nameLength =  postfixIndex - 1;
+
+    if (nameLength <= 0)
+        return;
+
+    playerName = playerName.left(nameLength);
+
+    if (!m_localPlayerName.isEmpty() && playerName == m_localPlayerName)
     {
         m_playerDroppedToObserver = true;
         emit localPlayerDroppedToObserver();
@@ -623,8 +648,6 @@ void GameStateReader::readWinConditions(QStringList *fileLines, int counter)
 
     while (!winConditionsReadLine.contains("APP -- Game Start"))
     {
-        //m_gameWillBePlayedInOtherSession = true;
-
         winConditionsReadLine = fileLines->at(winConditionsReadCounter-1);
 
         if(winConditionsReadLine.contains("MOD -- Loading Win Condition"))
