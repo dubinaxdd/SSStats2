@@ -79,6 +79,7 @@ void Core::registerTypes()
     qRegisterMetaType<NotificationInfo>("NotificationInfo");
     qRegisterMetaType<RankDiversion>("RankDiversion");
     qRegisterMetaType<UniqueOnlineStatistic>("UniqueOnlineStatistic");
+    qRegisterMetaType<DowServerRequestParametres>("DowServerRequestParametres");
 }
 
 void Core::addConnections()

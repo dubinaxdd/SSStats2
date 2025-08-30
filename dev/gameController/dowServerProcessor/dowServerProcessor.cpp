@@ -52,15 +52,15 @@ QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyDat
 
 void DowServerProcessor::rquestChannellData(int id)
 {
-    if (m_sessionID.isEmpty())
+    if (m_parametres.sesionId.isEmpty())
         return;
 
     QString urlString;
 
     if (m_gameType == SoulstormSteam)
-        urlString = "https://dow1ss-lobby.reliclink.com/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow1ss-lobby.reliclink.com/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else if (m_gameType == DefinitiveEdition)
-        urlString = "https://dow-api.reliclink.com:443/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow-api.reliclink.com:443/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
 
@@ -75,15 +75,15 @@ void DowServerProcessor::rquestChannellData(int id)
 
 void DowServerProcessor::requestProfileID(QString steamID)
 {
-    if (m_sessionID.isEmpty())
+    if (m_parametres.sesionId.isEmpty())
         return;
 
     QString urlString;
 
     if (m_gameType == SoulstormSteam)
-        urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else if (m_gameType == DefinitiveEdition)
-        urlString = "https://dow-api.reliclink.com:443/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow-api.reliclink.com:443/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
 
@@ -102,7 +102,7 @@ void DowServerProcessor::requestFindAdvertisements()
     QString modDLLChecksum = "-1386716144";
 
 
-    if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_sessionID.isEmpty())
+    if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_parametres.sesionId.isEmpty())
         return;
 
     QString urlString;
@@ -114,18 +114,18 @@ void DowServerProcessor::requestFindAdvertisements()
                     + m_statGroupId + "%5d&race_ids=%5b0%5d&matchType_id=0&modName="
                     + m_modName + "&modVersion="
                     + m_modVersion + "&modDLLFile=WXPMod.dll&modDLLChecksum=1077236955&dataChecksum=206085050&appBinaryChecksum=1817556062&cheatsEnabled=0&sessionID="
-                    + m_sessionID.toLocal8Bit();
+                    + m_parametres.sesionId.toLocal8Bit();
     }
     else if (m_gameType == DefinitiveEdition)
     {
         urlString = "https://dow-api.reliclink.com:443/game/advertisement/findAdvertisements?"
-                    "appBinaryChecksum=" + appBinaryChecksum + "&dataChecksum=" + dataChecksum + "&matchType_id=0&modDLLChecksum=" + modDLLChecksum + "&modDLLFile=DXP3Mod.dll"
+                    "appBinaryChecksum=" + m_parametres.appBinaryChecksum.toLocal8Bit() + "&dataChecksum=" + m_parametres.dataChecksum.toLocal8Bit() + "&matchType_id=0&modDLLChecksum=" + m_parametres.modDLLChecksum.toLocal8Bit() + "&modDLLFile=DXP3Mod.dll"
 
                     "&modName=Soulstorm"
                     //"&modName=" + m_modName +
 
                     "&modVersion=" + m_modVersion +
-                    "&sessionID=" + m_sessionID.toLocal8Bit();
+                    "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     }
     else
         return;
@@ -140,7 +140,7 @@ void DowServerProcessor::requestFindAdvertisements()
 
 void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 {
-    if (m_sessionID.isEmpty() || profilesData.count() < 1)
+    if (m_parametres.sesionId.isEmpty() || profilesData.count() < 1)
         return;
 
     QString profilesIDsString;
@@ -160,9 +160,9 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
     QString urlString;
 
     if (m_gameType == SoulstormSteam)
-        urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else if (m_gameType == DefinitiveEdition)
-        urlString = "https://dow-api.reliclink.com:443/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow-api.reliclink.com:443/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
 
@@ -180,11 +180,11 @@ void DowServerProcessor::onPlayerDisconnected()
     //addQuery(QueryType::FindAdvertisements);
 }
 
-void DowServerProcessor::setSessionID(QString sessionID)
+void DowServerProcessor::setDowServerRequestParametres(DowServerRequestParametres parametres)
 {
-    AbstractDowServerProcessor::setSessionID(sessionID);
+    AbstractDowServerProcessor::setDeowServerRequestParametres(parametres);
 
-    if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
+    if(!m_steamID.isEmpty() && !m_parametres.sesionId.isEmpty())
         addQuery(QueryType::ProfileID);
 }
 
@@ -192,7 +192,7 @@ void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)
 {
     m_steamID = steamID;
 
-    if(!m_steamID.isEmpty() && !m_sessionID.isEmpty())
+    if(!m_steamID.isEmpty() && !m_parametres.sesionId.isEmpty())
         addQuery(QueryType::ProfileID);
 }
 
@@ -203,7 +203,7 @@ void DowServerProcessor::setCurrentModVersion(QString modVersion)
 
 void DowServerProcessor::requestPartysData()
 {
-    if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_sessionID.isEmpty())
+    if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_parametres.sesionId.isEmpty())
         m_needUpdateLatter = true;
 
     addQuery(QueryType::FindAdvertisements);

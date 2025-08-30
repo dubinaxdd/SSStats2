@@ -5,7 +5,7 @@
 #include "Windows.h"
 #include <QTimer>
 #include <gameStateReader.h>
-#include <soulstormMemoryReader.h>
+#include <gameMemoryReader.h>
 #include <baseTypes.h>
 #include <QVector>
 #include <soulstormMemoryController.h>

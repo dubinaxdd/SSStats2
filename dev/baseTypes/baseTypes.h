@@ -19,6 +19,14 @@ struct GamePath{
     QString gameSettingsPath = "";
 };
 
+struct DowServerRequestParametres
+{
+    QString sesionId = "";
+    QString appBinaryChecksum = "";
+    QString dataChecksum = "";
+    QString modDLLChecksum = "";
+};
+
 class Language {
     Q_GADGET
 public:

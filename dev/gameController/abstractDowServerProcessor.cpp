@@ -52,10 +52,11 @@ void AbstractDowServerProcessor::setGameType(GameType newGameType)
     m_gameType = newGameType;
 }
 
-void AbstractDowServerProcessor::setSessionID(QString sessionID)
+void AbstractDowServerProcessor::setDeowServerRequestParametres(DowServerRequestParametres parametres)
 {
-    m_sessionID = sessionID;
-    qInfo(logInfo()) << "sessionID =" << m_sessionID;
+    m_parametres = parametres;
+    qInfo(logInfo()) << "sessionID =" << parametres.sesionId << "appBinaryChecksum:" << parametres.appBinaryChecksum
+                     << "dataChecksum:" << parametres.dataChecksum << "modDLLChecksum:" << parametres.modDLLChecksum;
 }
 
 AbstractDowServerProcessor::~AbstractDowServerProcessor() {}

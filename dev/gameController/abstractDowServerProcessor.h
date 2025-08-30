@@ -16,7 +16,7 @@ public:
     virtual void setGameType(GameType newGameType);
 
 public slots:
-    void setSessionID(QString sessionID);
+    void setDeowServerRequestParametres(DowServerRequestParametres parametres);
 
 protected:
     bool checkReplyErrors(QString funcName, QNetworkReply *reply);
@@ -24,7 +24,7 @@ protected:
 
 protected:
     QNetworkAccessManager *m_networkManager;
-    QString m_sessionID = "";
+    DowServerRequestParametres m_parametres;
     GameType m_gameType;
 
 };

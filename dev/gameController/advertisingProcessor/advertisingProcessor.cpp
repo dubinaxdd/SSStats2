@@ -32,15 +32,15 @@ void AdvertisingProcessor::receiveServerPlayerStats(ServerPlayerStats serverPlay
 
 void AdvertisingProcessor::joinChannel()
 {
-    if (m_sessionID.isEmpty())
+    if (m_parametres.sesionId.isEmpty())
         return;
 
     QString urlString;
 
     if (m_gameType == SoulstormSteam)
-        urlString = "https://dow1ss-lobby.reliclink.com/game/chat/joinChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&doRetry=1&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow1ss-lobby.reliclink.com/game/chat/joinChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&doRetry=1&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else if (m_gameType == DefinitiveEdition)
-        urlString = "https://dow-api.reliclink.com:443/game/chat/joinChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&doRetry=1&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow-api.reliclink.com:443/game/chat/joinChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&doRetry=1&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
 
@@ -89,15 +89,15 @@ void AdvertisingProcessor::joinChannel()
 
 void AdvertisingProcessor::sendAdvertisingMessage()
 {
-    if (m_sessionID.isEmpty())
+    if (m_parametres.sesionId.isEmpty())
         return;
 
     QString urlString;
 
     if (m_gameType == SoulstormSteam)
-        urlString = "https://dow1ss-lobby.reliclink.com:443/game/chat/sendText?message=" + m_currentText + "&subject=&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow1ss-lobby.reliclink.com:443/game/chat/sendText?message=" + m_currentText + "&subject=&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else if (m_gameType == DefinitiveEdition)
-        urlString = "https://dow-api.reliclink.com:443/game/chat/sendText?message=" + m_currentText + "&subject=&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow-api.reliclink.com:443/game/chat/sendText?message=" + m_currentText + "&subject=&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
 
@@ -134,15 +134,15 @@ void AdvertisingProcessor::sendAdvertisingMessage()
 
 void AdvertisingProcessor::leaveChannel()
 {
-    if (m_sessionID.isEmpty())
+    if (m_parametres.sesionId.isEmpty())
         return;
 
     QString urlString;
 
     if (m_gameType == SoulstormSteam)
-        urlString = "https://dow1ss-lobby.reliclink.com:443/game/chat/leaveChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow1ss-lobby.reliclink.com:443/game/chat/leaveChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else if (m_gameType == DefinitiveEdition)
-        urlString = "https://dow-api.reliclink.com:443/game/chat/leaveChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_sessionID.toLocal8Bit();
+        urlString = "https://dow-api.reliclink.com:443/game/chat/leaveChannel?&chatroomID=" + QString::number(m_currentRoom)+ "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
 

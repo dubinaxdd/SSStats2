@@ -1,5 +1,5 @@
-#ifndef SOULSTORMMEMORYREADER_H
-#define SOULSTORMMEMORYREADER_H
+#ifndef GAMEMEMORYREADER_H
+#define GAMEMEMORYREADER_H
 
 #include <QObject>
 #include <QCoreApplication>
@@ -16,16 +16,13 @@ public:
     explicit GameMemoryReader(QObject *parent = nullptr);
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
-
     QTimer *scanTimer() const;
-
-
     void setGameType(GameType newGameType);
 
 signals:
     void sendSteamPlayersInfoMap(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
     void sendSteamPlayerInfoForHostedGame(PlayerInfoFromDowServer playersInfo);
-    void sendSessionId(QString sessionId);
+    void sendDowServerRequestParametres(DowServerRequestParametres sessionId);
     void sendAuthKey(QString authKey);
 
 public slots:
@@ -36,8 +33,10 @@ public slots:
     void abort();
 
 private:
-    QString findSteamSoulstormSessionId();
-    QString findDefinitiveEditionSessionId();
+    DowServerRequestParametres findSteamSoulstormSessionId();
+    DowServerRequestParametres findDefinitiveEditionSessionId();
+    QString findParameter(QByteArray *buffer, QByteArray head, int length);
+    QString findChecksummParameter(QByteArray *buffer, QByteArray head);
 
 private:
     unsigned char steamHeader[18] =  { 0x18, 0x0, 0x0, 0x0, 0x2F, 0x0, 0x73, 0x0, 0x74, 0x0, 0x65, 0x0, 0x61, 0x0, 0x6D, 0x0, 0x2F, 0x0 };
@@ -46,9 +45,6 @@ private:
     unsigned char sessionHeader[10] = { 0x73, 0x65, 0x73, 0x73, 0x69, 0x6F, 0x6E, 0x49, 0x44, 0x3D};
     unsigned char authHeader[20] = {0x70, 0x6C, 0x61, 0x74, 0x66, 0x6F, 0x72, 0x6D, 0x6C, 0x6F, 0x67, 0x69, 0x6E, 0x3F, 0x61, 0x75, 0x74, 0x68, 0x3D, 0x43};
 
-    //QString authHeader = "platformlogin?auth=";
-   // QByteArray sessionHeader = {"sessionID="};
-
     QTimer *m_scanTimer;
     HWND m_gameHwnd = NULL;
     QMutex m_playersSteamScannerMutex;
@@ -56,4 +52,4 @@ private:
 
     GameType m_gameType;
 };
-#endif // SOULSTORMMEMORYREADER_H
+#endif // GAMEMEMORYREADER_H

@@ -86,8 +86,8 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_replayDataCollector,  &ReplayDataCollector::receiveAverrageApm,       Qt::QueuedConnection);
 
-    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionID, Qt::QueuedConnection);
-    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_advertisingProcessor, &AdvertisingProcessor::setSessionID, Qt::QueuedConnection);
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_dowServerProcessor, &DowServerProcessor::setDowServerRequestParametres, Qt::QueuedConnection);
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_advertisingProcessor, &AdvertisingProcessor::setDeowServerRequestParametres, Qt::QueuedConnection);
 
     //QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendAuthKey, this, &SoulstormController::sendAuthKey, Qt::QueuedConnection);
 
