@@ -33,12 +33,12 @@ public:
     LobbyEventReader    *lobbyEventReader()     const;
     DowServerProcessor  *dowServerProcessor()   const;
 
-    HWND soulstormHwnd() const;
+    HWND gameHwnd() const;
     LONG defaultSoulstormWindowLong() const;
 
     bool getInputBlocked() const;
     bool getSsMaximized();
-    bool ssWindowed() const;
+    bool gameWindowed() const;
     bool getUseWindows7SupportMode() const;
 
     const QString &steamPath() const;
@@ -95,7 +95,7 @@ private:
     bool inputBlocked = false;
     bool m_ssLounchState = false;
     bool m_ssMaximized = false;
-    bool m_ssWindowed = false;
+    bool m_gameWindowed = false;
 
     bool m_gameInitialized = false;
     bool m_gameWindowCreated = false;

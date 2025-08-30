@@ -296,7 +296,7 @@ void GameController::checkWindowState()
         if(m_ssLounchState)                                    ///<Если игра была перед этим запущена
         {
             m_useWindows7SupportMode = false;
-            m_ssWindowed = false;                               ///<Устанавливаем не оконный режим
+            m_gameWindowed = false;                               ///<Устанавливаем не оконный режим
             m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
             m_ssLounchState = false;                               ///<Устанавливаем выключенное состояние
             m_gameInitialized = false;
@@ -366,13 +366,15 @@ void GameController::parseSsSettings()
         return;
 
     QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
-    m_ssWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
+
+    int gameWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
+    m_gameWindowed = gameWindowed == 1;
     m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
 
     m_gameStateReader->setCurrentProfile(m_currentProfile);
 
     qInfo(logInfo()) << "Current profile: " << m_currentProfile;
-    qInfo(logInfo()) << "Windowed mode = " << m_ssWindowed;
+    qInfo(logInfo()) << "Windowed mode = " << m_gameWindowed;
 
     delete ssSettings;
 }
@@ -588,14 +590,14 @@ SoulstormMemoryController *GameController::soulstormMemoryController() const
     return m_soulstormMemoryController;
 }
 
-HWND GameController::soulstormHwnd() const
+HWND GameController::gameHwnd() const
 {
     return m_gameHwnd;
 }
 
-bool GameController::ssWindowed() const
+bool GameController::gameWindowed() const
 {
-    return m_ssWindowed && !m_useWindows7SupportMode;
+    return m_gameWindowed && !m_useWindows7SupportMode;
 }
 
 GameStateReader *GameController::gameStateReader() const

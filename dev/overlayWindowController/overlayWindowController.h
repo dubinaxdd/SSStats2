@@ -39,12 +39,12 @@ private:
     int m_widthInGame;
     int m_heightInGame;
 
-    HWND m_ssStatsHwnd;
+    HWND m_dowStatsHwnd;
     LONG m_defaultWindowLong;
-    RECT m_ssRect;
+    RECT m_gameRect;
 
     UiBackend* m_uiBackendPtr = nullptr;
-    GameController* p_soulstormController;
+    GameController* p_gameController;
     SettingsController* p_settingsController;
 
 
