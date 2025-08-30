@@ -40,5 +40,6 @@
         <file>resources/qml/OnlineCounter.qml</file>
         <file>resources/qml/UniqueOnlineStatistic.qml</file>
         <file>resources/qml/CounterComponent.qml</file>
+        <file>resources/qml/GamePage.qml</file>
     </qresource>
 </RCC>

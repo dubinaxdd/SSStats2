@@ -17,6 +17,8 @@ Window {
     minimumWidth: 1200
     minimumHeight: 700
 
+    property var selectedPage: newsButton
+
     Connections
     {
         target: _uiBackend
@@ -268,64 +270,48 @@ Window {
                 HeaderButton{
                     id: newsButton
                     text: qsTr("DoW Stats News")
-                    pressedState: true
+                    pressedState: root.selectedPage === newsButton
                     newsAvailable: newsPage.model.newsAvailable
 
-                    //width: 170
-
-                    onClicked: {
-                        eventsButton.pressedState = false;
-                        infoButton.pressedState = false;
-                        settingsButton.pressedState = false;
-                        replayManagerButton.pressedState = false;
-                        modsButton.pressedState = false
-
-                    }
+                    onClicked: root.selectedPage = newsButton
                 }
 
                 HeaderButton{
                     id: eventsButton
                     text: qsTr("Community News")
                     newsAvailable: eventsPage.model.newsAvailable
+                    pressedState: root.selectedPage === eventsButton
 
-                    //width: 170
-
-                    onClicked: {
-                        newsButton.pressedState = false;
-                        infoButton.pressedState = false;
-                        settingsButton.pressedState = false;
-                        replayManagerButton.pressedState = false;
-                        modsButton.pressedState = false
-                    }
+                    onClicked: root.selectedPage = eventsButton
                 }
 
+                HeaderButton{
+                    id: gameButton
+                    text: qsTr("Game")
+                    pressedState: root.selectedPage === gameButton
+
+                    onClicked: root.selectedPage = gameButton
+                }
 
                 HeaderButton{
                     id: infoButton
                     text: qsTr("Information")
+                    pressedState: root.selectedPage === infoButton
+                    enabled: false
 
-                    onClicked: {
-                        newsButton.pressedState = false;
-                        eventsButton.pressedState = false;
-                        settingsButton.pressedState = false;
-                        replayManagerButton.pressedState = false;
-                        modsButton.pressedState = false
-                    }
+                    onClicked: root.selectedPage = infoButton
                 }
 
                 HeaderButton{
                     id: replayManagerButton
                     text: qsTr("Replay Manager")
                     enabled: _uiBackend.soulstormIsInstalled
+                    pressedState: root.selectedPage === replayManagerButton
 
                     onClicked: {
                         if (_uiBackend.soulstormIsInstalled)
                         {
-                            newsButton.pressedState = false;
-                            eventsButton.pressedState = false;
-                            infoButton.pressedState = false;
-                            settingsButton.pressedState = false;
-                            modsButton.pressedState = false
+                            root.selectedPage = replayManagerButton
                         }
                         else
                         {
@@ -340,15 +326,12 @@ Window {
                     text: qsTr("Mods")
                     newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
                     enabled: _uiBackend.soulstormIsInstalled
+                    pressedState: root.selectedPage === modsButton
 
                     onClicked: {
                         if (_uiBackend.soulstormIsInstalled)
                         {
-                            newsButton.pressedState = false;
-                            eventsButton.pressedState = false;
-                            infoButton.pressedState = false;
-                            replayManagerButton.pressedState = false;
-                            settingsButton.pressedState = false;
+                            root.selectedPage = modsButton
                         }
                         else
                         {
@@ -372,7 +355,7 @@ Window {
                     color:"#00000000"
 
                     Layout.rightMargin: 15
-                    property bool pressedState: false
+                    property bool pressedState: root.selectedPage === settingsButton
 
                     MouseArea
                     {
@@ -382,15 +365,7 @@ Window {
 
                         cursorShape: Qt.PointingHandCursor
 
-                        onClicked:
-                        {
-                            settingsButton.pressedState = true;
-                            newsButton.pressedState = false;
-                            eventsButton.pressedState = false;
-                            infoButton.pressedState = false;
-                            replayManagerButton.pressedState = false;
-                            modsButton.pressedState = false
-                        }
+                        onClicked: root.selectedPage = settingsButton
 
                         ToolTip.visible: containsMouse
                         ToolTip.delay: 1000
@@ -411,38 +386,6 @@ Window {
                 OnlineCounter{
                     id: onlineCounter
                 }
-
-               /* Rectangle
-                {
-                    width: 25
-                    height: 25
-                    color:"#00000000"
-
-                    Image {
-                       anchors.fill: parent
-                       source: "qrc:/images/resources/images/man_user.svg"
-                       sourceSize.width: 25
-                       sourceSize.height: 25
-                    }
-
-                    MouseArea
-                    {
-                        anchors.fill: parent
-                        hoverEnabled: true
-
-                        ToolTip.visible: containsMouse
-                        ToolTip.delay: 1000
-                        ToolTip.text: ("Online DowStats users")
-                    }
-                }
-
-                Label
-                {
-                    text: _uiBackend.onlineCount
-                    font.pixelSize: 15
-                    color: "#ffffff"
-                    Layout.rightMargin: 15
-                }*/
             }
         }
 
@@ -479,6 +422,12 @@ Window {
 
                     visible: eventsButton.pressedState
                     model: _uiBackend.eventsPage
+                    anchors.fill: parent
+                }
+
+                GamePage{
+                    id: gamePage
+                    visible: gameButton.pressedState
                     anchors.fill: parent
                 }
 
@@ -610,10 +559,6 @@ Window {
                     Layout.fillHeight: true
                     Layout.rightMargin: 5
                     Layout.leftMargin: 0
-/*
-                    onVisibleChanged: {
-                         patyStatisticColumnLayout.visible = patyStatistic.visible;
-                    }*/
                 }
 
                 OnlineStatisticPanel{

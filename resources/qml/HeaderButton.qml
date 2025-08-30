@@ -83,17 +83,8 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-
         cursorShape: Qt.PointingHandCursor
-
-        onClicked: {
-            if (enabled)
-                pressedState = true;
-            else
-                pressedState = false;
-
-            mainRectangle.clicked();
-        }
+        onClicked: mainRectangle.clicked();
     }
 
 }
