@@ -5,6 +5,9 @@
 #include <fstream>
 #include <QTextCodec>
 #include <logger.h>
+//#include <omp.h>
+//#include <concrt.h>
+//#include <ppl.h>
 
 //#define SCAN_STEAM_PLAYERS_INTERVAL 3000
 
@@ -393,18 +396,53 @@ void GameMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
 
 void GameMemoryReader::findSessionId()
 {
+    m_dataFinded = false;
     DowServerRequestParametres parametres;
 
     if (m_gameType == DefinitiveEdition)
     {
-        parametres = findDefinitiveEditionSessionId();
+        parametres = findDefinitiveEditionSessionId(0x18000000000);
 
         if (!parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
+        {
             emit sendDowServerRequestParametres(parametres);
-        else
-            qWarning(logWarning()) << "Dow server request parametres not finded!!! sesionId:" << parametres.sesionId << "appBinaryChecksum:" << parametres.appBinaryChecksum
-            << "dataChecksum:" << parametres.dataChecksum << "modDLLChecksum:" << parametres.modDLLChecksum;
+            //m_dataFinded = true;
+            return;
+        }
 
+        //DWORD64 ptr1Coun = 0x18000000000;
+
+        /*#pragma omp parallel for
+        for (DWORD64 i = 0x18000000000; i < 0x30000000000; i += 0x1000000000) {
+            parametres = findDefinitiveEditionSessionId(i);
+
+            if (!parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
+            {
+                emit sendDowServerRequestParametres(parametres);
+                m_dataFinded = true;
+                return;
+            }
+        }*/
+
+        /*QVector<DWORD64> numbers;
+
+        for (DWORD64 i = 0x18000000000; i < 0x30000000000; i += 0x1000000000) {
+            numbers.append(i);
+        }
+
+        concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
+            parametres = findDefinitiveEditionSessionId(n);
+
+            if (!parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
+            {
+                emit sendDowServerRequestParametres(parametres);
+                m_dataFinded = true;
+                return;
+            }
+        });*/
+
+        qWarning(logWarning()) << "Dow server request parametres not finded!!! sesionId:" << parametres.sesionId << "appBinaryChecksum:" << parametres.appBinaryChecksum
+                               << "dataChecksum:" << parametres.dataChecksum << "modDLLChecksum:" << parametres.modDLLChecksum;
     }
     else if (m_gameType == SoulstormSteam)
     {
@@ -594,7 +632,7 @@ DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
     return DowServerRequestParametres();
 }
 
-DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
+DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId(DWORD64 startAdress)
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
 
@@ -614,10 +652,10 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
     if(hProcess==nullptr)
         return DowServerRequestParametres();
 
-    int bufferSize = 100000;
+    int bufferSize = 1000000;
     QByteArray buffer(bufferSize, 0);
-    DWORD64 ptr1Count = 0x18000000000;
-    DWORD64 ptr2Count = ptr1Count + 0x30000000000;
+    DWORD64 ptr1Count = startAdress;//0x18000000000;
+    DWORD64 ptr2Count = ptr1Count + /*0x1000000000;*/0x30000000000;
 
     QByteArray sesionIdHead = "sessionID=";
     QByteArray appBinaryChecksumHead = "appBinaryChecksum=";
@@ -628,6 +666,9 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
 
     while (ptr1Count < ptr2Count)
     {
+        if(m_dataFinded)
+            return DowServerRequestParametres();
+
         DWORD64  bytesRead = 0;
 
         if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))

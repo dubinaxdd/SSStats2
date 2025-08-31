@@ -34,7 +34,7 @@ public slots:
 
 private:
     DowServerRequestParametres findSteamSoulstormSessionId();
-    DowServerRequestParametres findDefinitiveEditionSessionId();
+    DowServerRequestParametres findDefinitiveEditionSessionId(DWORD64 startAdress);
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
 
@@ -51,5 +51,6 @@ private:
     bool m_abort = false;
 
     GameType m_gameType;
+    bool m_dataFinded = false;
 };
 #endif // GAMEMEMORYREADER_H
