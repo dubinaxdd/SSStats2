@@ -614,7 +614,7 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
     if(hProcess==nullptr)
         return DowServerRequestParametres();
 
-    int bufferSize = 10000;
+    int bufferSize = 100000;
     QByteArray buffer(bufferSize, 0);
     DWORD64 ptr1Count = 0x18000000000;
     DWORD64 ptr2Count = ptr1Count + 0x30000000000;
@@ -632,7 +632,7 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
 
         if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
         {
-            ptr1Count += bufferSize * 30;
+            ptr1Count += bufferSize;
             continue;
         }
 
