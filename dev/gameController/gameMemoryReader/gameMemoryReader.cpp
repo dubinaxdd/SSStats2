@@ -5,8 +5,6 @@
 #include <fstream>
 #include <QTextCodec>
 #include <logger.h>
-//#include <omp.h>
-//#include <concrt.h>
 #include <ppl.h>
 
 //#define SCAN_STEAM_PLAYERS_INTERVAL 3000
