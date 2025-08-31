@@ -23,6 +23,7 @@ signals:
     void sendSteamPlayersInfoMap(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
     void sendSteamPlayerInfoForHostedGame(PlayerInfoFromDowServer playersInfo);
     void sendDowServerRequestParametres(DowServerRequestParametres sessionId);
+    void sendDowServerRequestParametresError();
     void sendAuthKey(QString authKey);
 
 public slots:

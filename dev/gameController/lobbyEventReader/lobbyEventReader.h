@@ -32,17 +32,20 @@ signals:
 
 public slots:
     void activateReading(bool activated);
-
-
     void receiveCurrentMissionState(GameMissionState gameCurrentState);
 
 private slots:
     void readLobbyEvents();
+    void tryRequestSessionId();
 
 public:
     void checkPatyState();
-
     void setCurrentGame(GamePath *newCurrentGame);
+    void setSessionIdReceived(bool newSessionIdReceived);
+
+    bool sessionIdRequested() const;
+
+    void setSessionIdRequested(bool newSessionIdRequested);
 
 private:
     QTimer* m_lobbyEventsReadTimer;
@@ -54,6 +57,10 @@ private:
     bool m_readingActivated = false;
 
     const GamePath* m_currentGame;
+
+    bool m_sessionIdReceived = false;
+    bool m_sessionIdRequested = false;
+
 
 };
 

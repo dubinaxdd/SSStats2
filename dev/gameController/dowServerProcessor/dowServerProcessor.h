@@ -68,6 +68,7 @@ private:
     QString m_modVersion = "1.0";
 
     bool m_needUpdateLatter = false;
+    bool m_neeedRequestAdvertisements = false;
 };
 
 #endif // DOWSERVERPROCESSOR_H

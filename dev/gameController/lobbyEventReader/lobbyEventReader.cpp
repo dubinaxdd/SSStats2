@@ -47,7 +47,6 @@ void LobbyEventReader::readLobbyEvents()
 
         int counter = fileLines.size();
 
-
         while (counter!=0)
         {
             QString line = fileLines.at(counter-1);
@@ -64,15 +63,25 @@ void LobbyEventReader::readLobbyEvents()
                 break;
             }
 
-
             if (line.contains("Lobby - LIE_GetNews received"))
             {
                 if(line.contains(m_preLastLogTime))
                     break;
 
                 m_preLastLogTime = m_lastLogTime;
-                emit requestSessionId();
+                tryRequestSessionId();
                 qInfo(logInfo()) << "Lobby news received";
+                break;
+            }
+
+            if (line.contains("GAME -- Closing session"))
+            {
+                if(line.contains(m_preLastLogTime))
+                    break;
+
+                m_preLastLogTime = m_lastLogTime;
+                emit quitFromParty();
+                qInfo(logInfo()) << "Lobby closing session";
                 break;
             }
 
@@ -95,6 +104,7 @@ void LobbyEventReader::readLobbyEvents()
                 m_preLastLogTime = m_lastLogTime;
 
                 isHostedGame = false;
+                tryRequestSessionId();
                 emit joinToParty();
                 qInfo(logInfo()) << "Join to paty";
                 break;
@@ -107,6 +117,7 @@ void LobbyEventReader::readLobbyEvents()
 
                 m_preLastLogTime = m_lastLogTime;
                 isHostedGame = true;
+                tryRequestSessionId();
                 emit hostParty();
                 qInfo(logInfo()) << "Hosting party";
                 break;
@@ -128,22 +139,18 @@ void LobbyEventReader::readLobbyEvents()
 
 
             if (line.contains("Ignoring New Peer for local player")
-                   // || line.contains("Lobby -- Net UPDATE PLAYER information for player")
                     || line.contains("New Peer for remote player")
-                    //|| line.contains("MatchEvent:")
-                    //|| line.contains("Lobby - Join success")
-                    //|| line.contains("Lobby - LIE_OnPlayerUpdate received")
                     )
             {
                 if(line.contains(m_preLastLogTime))
                     break;
 
                 m_preLastLogTime = m_lastLogTime;
+                tryRequestSessionId();
                 emit playerConnected();
                 qInfo(logInfo()) << "Player connected";
                 break;
             }
-
 
 
             if (line.contains("Lobby -- Remote player disconnected")
@@ -162,6 +169,15 @@ void LobbyEventReader::readLobbyEvents()
 
             counter--;
         }
+    }
+}
+
+void LobbyEventReader::tryRequestSessionId()
+{
+    if(!m_sessionIdReceived && !m_sessionIdRequested)
+    {
+        m_sessionIdRequested = true;
+        emit requestSessionId();
     }
 }
 
@@ -211,3 +227,14 @@ void LobbyEventReader::setCurrentGame(GamePath *newCurrentGame)
 {
     m_currentGame = newCurrentGame;
 }
+
+void LobbyEventReader::setSessionIdReceived(bool newSessionIdReceived)
+{
+    m_sessionIdReceived = newSessionIdReceived;
+}
+
+void LobbyEventReader::setSessionIdRequested(bool newSessionIdRequested)
+{
+    m_sessionIdRequested = newSessionIdRequested;
+}
+

@@ -97,13 +97,11 @@ void DowServerProcessor::requestProfileID(QString steamID)
 
 void DowServerProcessor::requestFindAdvertisements()
 {
-    QString appBinaryChecksum = "114327449";
-    QString dataChecksum = "903462269";
-    QString modDLLChecksum = "-1386716144";
-
-
     if (m_profileID.isEmpty() || m_statGroupId.isEmpty() || m_modName.isEmpty() || m_modVersion.isEmpty() || m_parametres.sesionId.isEmpty())
+    {
+        m_neeedRequestAdvertisements = true;
         return;
+    }
 
     QString urlString;
 
@@ -119,11 +117,11 @@ void DowServerProcessor::requestFindAdvertisements()
     else if (m_gameType == DefinitiveEdition)
     {
         urlString = "https://dow-api.reliclink.com:443/game/advertisement/findAdvertisements?"
-                    "appBinaryChecksum=" + m_parametres.appBinaryChecksum.toLocal8Bit() + "&dataChecksum=" + m_parametres.dataChecksum.toLocal8Bit() + "&matchType_id=0&modDLLChecksum=" + m_parametres.modDLLChecksum.toLocal8Bit() + "&modDLLFile=DXP3Mod.dll"
-
+                    "appBinaryChecksum=" + m_parametres.appBinaryChecksum.toLocal8Bit() +
+                    "&dataChecksum=" + m_parametres.dataChecksum.toLocal8Bit() +
+                    "&matchType_id=0&modDLLChecksum=" + m_parametres.modDLLChecksum.toLocal8Bit() +
+                    "&modDLLFile=DXP3Mod.dll"
                     "&modName=Soulstorm"
-                    //"&modName=" + m_modName +
-
                     "&modVersion=" + m_modVersion +
                     "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     }
@@ -184,8 +182,19 @@ void DowServerProcessor::setDowServerRequestParametres(DowServerRequestParametre
 {
     AbstractDowServerProcessor::setDeowServerRequestParametres(parametres);
 
+    qInfo(logInfo()) << "sessionID =" << parametres.sesionId << "appBinaryChecksum:" << parametres.appBinaryChecksum
+                     << "dataChecksum:" << parametres.dataChecksum << "modDLLChecksum:" << parametres.modDLLChecksum;
+
     if(!m_steamID.isEmpty() && !m_parametres.sesionId.isEmpty())
+    {
         addQuery(QueryType::ProfileID);
+
+        if (m_neeedRequestAdvertisements)
+        {
+            addQuery(QueryType::FindAdvertisements);
+            m_neeedRequestAdvertisements = false;
+        }
+    }
 }
 
 void DowServerProcessor::setCurrentPlayerSteamID(QString steamID)

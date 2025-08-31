@@ -59,7 +59,10 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &GameController::checkWindowState, Qt::QueuedConnection);
 
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &GameController::gameInitialized, Qt::QueuedConnection);
-    QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
+
+    //TODO: Надо разлочить если играем в СС
+    //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
+
     //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findAuthKey, Qt::QueuedConnection);
 
 
@@ -88,6 +91,9 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_dowServerProcessor, &DowServerProcessor::setDowServerRequestParametres, Qt::QueuedConnection);
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_advertisingProcessor, &AdvertisingProcessor::setDeowServerRequestParametres, Qt::QueuedConnection);
+
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true);});
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdRequested(false);});
 
     //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 
@@ -332,6 +338,8 @@ void GameController::gameInitialized()
 void GameController::ssShutdown()
 {
     m_lobbyEventReader->activateReading(false);
+    m_lobbyEventReader->setSessionIdRequested(false);
+    m_lobbyEventReader->setSessionIdReceived(false);
 }
 
 QString GameController::getGamePathFromRegistry()
