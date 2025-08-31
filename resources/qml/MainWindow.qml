@@ -297,8 +297,6 @@ Window {
                     id: infoButton
                     text: qsTr("Information")
                     pressedState: root.selectedPage === infoButton
-                    enabled: false
-
                     onClicked: root.selectedPage = infoButton
                 }
 

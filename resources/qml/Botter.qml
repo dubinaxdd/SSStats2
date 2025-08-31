@@ -209,7 +209,7 @@ Rectangle {
 
 
 
-        ColumnLayout
+       /* ColumnLayout
         {
             clip: true
 
@@ -242,7 +242,7 @@ Rectangle {
                     }
                 }
             }
-        }
+        }*/
 
         Rectangle{
             id: lounchSoulstormButtonRectangle
@@ -300,7 +300,7 @@ Rectangle {
                 hoverEnabled: true
 
                 onClicked: {
-                    _uiBackend.launchSoulstorm()
+                    _uiBackend.launchGame()
                 }
             }
         }

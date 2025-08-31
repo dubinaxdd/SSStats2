@@ -27,7 +27,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     , m_dowServerProcessor(new DowServerProcessor(this))
     , m_replayDataCollector(new ReplayDataCollector(this))
     , m_advertisingProcessor(new AdvertisingProcessor(m_settingsController, this))
-    , m_soulstormProcess(nullptr)
+    , m_gameProcess(nullptr)
 {
     getGamePathFromRegistry();
     m_currentGame = &m_gamePathArray.last();
@@ -43,9 +43,9 @@ GameController::GameController(SettingsController *settingsController, QObject *
         qInfo(logInfo()) << "Steam path: " << m_steamPath;
 
     if(m_currentGame->gamePath.isEmpty() || !QDir(m_currentGame->gamePath).exists())
-        qWarning(logWarning()) << "Soulstorm is not installed!" << m_currentGame->gamePath;
+        qWarning(logWarning()) << "Game is not installed!" << m_currentGame->gamePath;
     else
-        qInfo(logInfo()) << "Worked with Soulstorm from: " << m_currentGame->gamePath;
+        qInfo(logInfo()) << "Worked with Game from: " << m_currentGame->gamePath;
 
     m_gameMemoryReader = new GameMemoryReader(/*this*/);
     m_gameMemoryReader->setGameType(m_currentGame->gameType);
@@ -60,7 +60,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &GameController::gameInitialized, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
-    //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findAuthKey, Qt::QueuedConnection);
 
 
     QObject::connect(m_gameStateReader, &GameStateReader::ssShutdown,               this, &GameController::ssShutdown, Qt::QueuedConnection);
@@ -73,8 +73,8 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentWinConditions,   m_replayDataCollector, &ReplayDataCollector::receiveCurrentWinConditions, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
 
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty,        m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::hostParty,          m_soulstormMemoryReader, &SoulstormMemoryReader::findAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty,        m_gameMemoryReader, &gameMemoryReader::findAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::hostParty,          m_gameMemoryReader, &gameMemoryReader::findAuthKey, Qt::QueuedConnection);
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_replayDataCollector,    &ReplayDataCollector::onQuitParty, Qt::QueuedConnection);
@@ -89,24 +89,24 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_dowServerProcessor, &DowServerProcessor::setDowServerRequestParametres, Qt::QueuedConnection);
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_advertisingProcessor, &AdvertisingProcessor::setDeowServerRequestParametres, Qt::QueuedConnection);
 
-    //QObject::connect(m_soulstormMemoryReader, &SoulstormMemoryReader::sendAuthKey, this, &SoulstormController::sendAuthKey, Qt::QueuedConnection);
+    //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 
-    m_gameMemoryReader->moveToThread(&m_soulstormMemoryReaderThread);
-    m_soulstormMemoryReaderThread.start();
+    m_gameMemoryReader->moveToThread(&m_gameMemoryReaderThread);
+    m_gameMemoryReaderThread.start();
     m_ssWindowControllTimer->start();
 }
 
 GameController::~GameController()
 {
     m_gameMemoryReader->abort();
-    m_soulstormMemoryReaderThread.quit();
-    m_soulstormMemoryReaderThread.wait();
+    m_gameMemoryReaderThread.quit();
+    m_gameMemoryReaderThread.wait();
     m_gameMemoryReader->deleteLater();
 }
 
-void GameController::blockSsWindowInput(bool state)
+void GameController::blockGameWindowInput(bool state)
 {
     if (m_gameHwnd)
     {
@@ -146,20 +146,20 @@ void GameController::launchGame()
 
     writeCurrentModSettingInGame();
 
-    if(m_soulstormProcess == nullptr || !m_soulstormProcess->isOpen())
+    if(m_gameProcess == nullptr || !m_gameProcess->isOpen())
     {
         QString params = "";
 
         if (m_settingsController->getSettings()->skipIntroVideo)
             params.append("-nomovies");
 
-        m_soulstormProcess = new QProcess(this);
+        m_gameProcess = new QProcess(this);
 
         if (m_currentGame->gameType == DefinitiveEdition)
             //m_soulstormProcess->startDetached(m_currentGame->gamePath + "\\W40k.exe");
             QDesktopServices::openUrl(QUrl("steam://rungameid/3556750"));
         else
-            m_soulstormProcess->startDetached(m_currentGame->gamePath + "\\Soulstorm.exe", {params});
+            m_gameProcess->startDetached(m_currentGame->gamePath + "\\Soulstorm.exe", {params});
 
         m_useWindows7SupportMode = win7SupportMode;
     }
@@ -168,7 +168,7 @@ void GameController::launchGame()
 
 void GameController::minimizeSsWithWin7Support()
 {
-    minimizeSoulstorm();
+    minimizeGame();
 }
 
 void GameController::checkWindowState()
@@ -191,7 +191,7 @@ void GameController::checkWindowState()
 
     m_gameHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
 
-    m_soulstormMemoryController->setSoulstormHwnd(m_gameHwnd);
+    m_soulstormMemoryController->setGameHwnd(m_gameHwnd);
     m_gameStateReader->setGameLounched(m_gameHwnd);
 
     if (m_gameHwnd && !m_gameWindowCreated)
@@ -200,7 +200,7 @@ void GameController::checkWindowState()
 
         if (m_useWindows7SupportMode)
         {
-            fullscrenizeSoulstorm();
+            fullscrenizeGame();
         }
     }
 
@@ -227,9 +227,9 @@ void GameController::checkWindowState()
         {
             m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
 
-            m_defaultSoulstormWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
+            m_defaultGameWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
-            qInfo(logInfo()) << "Soulstorm window accepted";
+            qInfo(logInfo()) << "Game window accepted";
 
             if (m_settingsController->getSettings()->win7SupportMode && !m_settingsController->getSettings()->launchGameInWindow)
             {
@@ -246,15 +246,15 @@ void GameController::checkWindowState()
             {
                 m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
                 emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
-                qInfo(logInfo()) << "Soulstorm minimized";
+                qInfo(logInfo()) << "Game minimized";
             }
             else                                                 ///<Если игра развернута
             {
                 if (getUseWindows7SupportMode())
-                    updateSoulstormWindow();
+                    updateGameWindow();
                 m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
                 emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
-                qInfo(logInfo()) << "Soulstorm fullscreenized";
+                qInfo(logInfo()) << "Game fullscreenized";
             }
         }
         else                                                ///<Если перед этим игра уже была запущена
@@ -264,7 +264,7 @@ void GameController::checkWindowState()
                 if (!IsIconic(m_gameHwnd) && GetForegroundWindow() == m_gameHwnd)
                 {
                     if (!m_ssMaximized)
-                        fullscrenizeSoulstorm();
+                        fullscrenizeGame();
                 }
 
             }
@@ -276,7 +276,7 @@ void GameController::checkWindowState()
                     {
                         m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
                         emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
-                        qInfo(logInfo()) << "Soulstorm minimized";
+                        qInfo(logInfo()) << "Game minimized";
                     }
                 }
                 else                                                 ///<Если игра развернута
@@ -285,7 +285,7 @@ void GameController::checkWindowState()
                     {
                         m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
                         emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
-                        qInfo(logInfo()) << "Soulstorm fullscreenized";
+                        qInfo(logInfo()) << "Game fullscreenized";
                     }
                 }
             }
@@ -307,12 +307,12 @@ void GameController::checkWindowState()
             m_gameStateReader->setGameLounched(false);
             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
             emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
-            qWarning(logWarning()) << "Soulstorm window closed";
+            qWarning(logWarning()) << "Game window closed";
         }
         else
         {
             m_gameInitialized = false;
-            qWarning(logWarning()) << "Soulstorm window not accepted";
+            qWarning(logWarning()) << "Game window not accepted";
         }
     }
 
@@ -379,10 +379,10 @@ void GameController::parseSsSettings()
     delete ssSettings;
 }
 
-void GameController::updateSoulstormWindow()
+void GameController::updateGameWindow()
 {
-    minimizeSoulstorm();
-    fullscrenizeSoulstorm();
+    minimizeGame();
+    fullscrenizeGame();
     SetForegroundWindow(m_gameHwnd);
 }
 
@@ -522,7 +522,7 @@ DowServerProcessor *GameController::dowServerProcessor() const
     return m_dowServerProcessor;
 }
 
-void GameController::fullscrenizeSoulstorm()
+void GameController::fullscrenizeGame()
 {
     if(m_gameHwnd)
     {
@@ -535,11 +535,11 @@ void GameController::fullscrenizeSoulstorm()
 
         ChangeDisplaySettings(&deviceMode, CDS_FULLSCREEN);
 
-        SetWindowLongW(m_gameHwnd, GWL_STYLE , /*GetWindowLong(m_soulstormHwnd, GWL_STYLE) |*/ WS_OVERLAPPED /*|  WS_POPUP*/ | WS_VISIBLE );
+        SetWindowLongW(m_gameHwnd, GWL_STYLE , WS_OVERLAPPED | WS_VISIBLE );
         SetWindowPos(m_gameHwnd,0,0,0,m_gameWindowWidth + 1, m_gameWindowHeight + 1, SWP_SHOWWINDOW );
         ShowWindow(m_gameHwnd, SW_SHOWNORMAL);
 
-        m_defaultSoulstormWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
+        m_defaultGameWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
 
         m_ssMaximized = true;
         emit ssMaximized(m_ssMaximized);
@@ -547,7 +547,7 @@ void GameController::fullscrenizeSoulstorm()
     }
 }
 
-void GameController::minimizeSoulstorm()
+void GameController::minimizeGame()
 {
     if (!m_useWindows7SupportMode)
         return;
@@ -570,12 +570,12 @@ LobbyEventReader *GameController::lobbyEventReader() const
     return m_lobbyEventReader;
 }
 
-LONG GameController::defaultSoulstormWindowLong() const
+LONG GameController::defaultGameWindowLong() const
 {
-    return m_defaultSoulstormWindowLong;
+    return m_defaultGameWindowLong;
 }
 
-GameMemoryReader *GameController::soulstormMemoryReader() const
+GameMemoryReader *GameController::gameMemoryReader() const
 {
     return m_gameMemoryReader;
 }

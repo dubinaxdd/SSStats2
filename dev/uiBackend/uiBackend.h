@@ -100,7 +100,7 @@ public:
     bool getWindowTopmost();
     void setMouseArea(int width, int height);
 
-    void setSsWindowed(bool newSsWindowed);
+    void setGameWindowed(bool newSsWindowed);
     void setSsWindowPosition(int x, int y);
     bool getFogState() const;
     void onMouseWheel(int delta);
@@ -120,7 +120,7 @@ public:
 
     bool soulstormIsInstalled();
 
-    Q_INVOKABLE void launchSoulstorm();
+    Q_INVOKABLE void launchGame();
 
     bool notificationVisible() const;
     void setNotificationVisible(bool newNotificationVisible);

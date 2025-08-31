@@ -129,7 +129,7 @@ void UiBackend::loadStarted()
 
     if(m_settingsPageModel->overlayVisible())
     {
-        m_corePtr->soulstormController()->blockSsWindowInput(m_expand);
+        m_corePtr->soulstormController()->blockGameWindowInput(m_expand);
         emit sendExpand(m_expand);
     }
 
@@ -513,7 +513,7 @@ void UiBackend::onExit()
     m_corePtr->exit();
 }
 
-void UiBackend::launchSoulstorm()
+void UiBackend::launchGame()
 {
     QDir steamDir(m_steamPath);
 
@@ -623,7 +623,7 @@ StatisticPanel *UiBackend::statisticPanel() const
     return m_statisticPanel;
 }
 
-void UiBackend::setSsWindowed(bool newSsWindowed)
+void UiBackend::setGameWindowed(bool newSsWindowed)
 {
     m_ssWindowed = newSsWindowed;
     emit ssWindowedModeChanged();
@@ -657,7 +657,7 @@ void UiBackend::setExpand(bool newExpand)
 
     if(m_settingsPageModel->overlayVisible())
     {
-        m_corePtr->soulstormController()->blockSsWindowInput(m_expand);
+        m_corePtr->soulstormController()->blockGameWindowInput(m_expand);
         emit sendExpand(m_expand);
     }
 

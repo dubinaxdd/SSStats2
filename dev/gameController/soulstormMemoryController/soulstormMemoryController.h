@@ -15,7 +15,7 @@ class SoulstormMemoryController : public QObject
 public:
     explicit SoulstormMemoryController(SettingsController* settingsController, QObject *parent = nullptr);
 
-    void setSoulstormHwnd(HWND newSoulstormHwnd);
+    void setGameHwnd(HWND newSoulstormHwnd);
 
 public slots:
     void onNoFogStateChanged(bool state);

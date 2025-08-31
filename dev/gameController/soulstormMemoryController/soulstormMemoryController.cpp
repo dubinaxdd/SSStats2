@@ -44,7 +44,7 @@ void SoulstormMemoryController::onSettingsLoaded()
     qInfo(logInfo()) << "SoulstormMemoryController::onSettingsLoaded()" << "load finished";
 }
 
-void SoulstormMemoryController::setSoulstormHwnd(HWND newSoulstormHwnd)
+void SoulstormMemoryController::setGameHwnd(HWND newSoulstormHwnd)
 {
     m_soulstormHwnd = newSoulstormHwnd;
 }

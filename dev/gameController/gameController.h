@@ -29,12 +29,12 @@ public:
     GameStateReader   *gameStateReader()    const;
     SoulstormMemoryController    *soulstormMemoryController()     const;
     APMMeter            *apmMeter()             const;
-    GameMemoryReader *soulstormMemoryReader()  const;
+    GameMemoryReader *gameMemoryReader()  const;
     LobbyEventReader    *lobbyEventReader()     const;
     DowServerProcessor  *dowServerProcessor()   const;
 
     HWND gameHwnd() const;
-    LONG defaultSoulstormWindowLong() const;
+    LONG defaultGameWindowLong() const;
 
     bool getInputBlocked() const;
     bool getSsMaximized();
@@ -50,7 +50,7 @@ public:
     GamePath *currentGame() const;
 
 public slots:
-    void blockSsWindowInput(bool state);
+    void blockGameWindowInput(bool state);
     void minimizeSsWithWin7Support();
     void launchGame();
 
@@ -58,8 +58,8 @@ private slots:
     void checkWindowState();
     void gameInitialized();
     void ssShutdown();
-    void fullscrenizeSoulstorm();
-    void minimizeSoulstorm();
+    void fullscrenizeGame();
+    void minimizeGame();
 
 
 signals:
@@ -72,7 +72,7 @@ private:
     QString getGamePathFromRegistry();
     QString getSteamPathFromRegistry();
     void parseSsSettings();
-    void updateSoulstormWindow();
+    void updateGameWindow();
     void writeCurrentModSettingInGame();
 
     void findSoulstormPath();
@@ -86,7 +86,7 @@ private:
     const QString m_steamPath;
 
     HWND m_gameHwnd = NULL;
-    LONG m_defaultSoulstormWindowLong = NULL;
+    LONG m_defaultGameWindowLong = NULL;
 
     QTimer* m_ssWindowControllTimer;
     
@@ -107,7 +107,7 @@ private:
 
     GameMemoryReader* m_gameMemoryReader;
 
-    QThread m_soulstormMemoryReaderThread;
+    QThread m_gameMemoryReaderThread;
 
     APMMeter* m_apmMeter;
     SoulstormMemoryController* m_soulstormMemoryController;
@@ -117,7 +117,7 @@ private:
     ReplayDataCollector* m_replayDataCollector;
     AdvertisingProcessor* m_advertisingProcessor;
 
-    QProcess *m_soulstormProcess;
+    QProcess *m_gameProcess;
     bool m_useWindows7SupportMode = false;
 
     int m_gameWindowWidth = 0;

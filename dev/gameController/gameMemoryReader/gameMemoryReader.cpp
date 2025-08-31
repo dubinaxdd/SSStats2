@@ -614,10 +614,10 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
     if(hProcess==nullptr)
         return DowServerRequestParametres();
 
-    int bufferSize = 100000;
+    int bufferSize = 10000;
     QByteArray buffer(bufferSize, 0);
-    DWORD64 ptr1Count = 0x1AE20000000;
-    DWORD64 ptr2Count = ptr1Count + 0x20000000000;
+    DWORD64 ptr1Count = 0x18000000000;
+    DWORD64 ptr2Count = ptr1Count + 0x30000000000;
 
     QByteArray sesionIdHead = "sessionID=";
     QByteArray appBinaryChecksumHead = "appBinaryChecksum=";
@@ -632,19 +632,13 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
 
         if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
         {
-            ptr1Count += bufferSize * 10;
+            ptr1Count += bufferSize * 100;
             continue;
         }
 
         if (parametres.sesionId.isEmpty() && buffer.contains( sesionIdHead ))
         {
             QString sessionIdStr = findParameter(&buffer, sesionIdHead, 30);
-
-            /*if (sessionIdStr.isEmpty())
-            {
-                ptr1Count += bufferSize;
-                continue;
-            }*/
 
             if (!sessionIdStr.isEmpty())
                 parametres.sesionId = sessionIdStr;
@@ -681,26 +675,6 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
         }
 
         return parametres;
-
-       /* if (!buffer.contains(sesionIdHead))
-        {
-            ptr1Count += bufferSize;
-            continue;
-        }
-        else
-        {
-            int index = buffer.indexOf(sesionIdHead);
-
-            QString sessionIdStr = QString::fromUtf8((char*)buffer.mid(index, 40).data()).right(30);
-
-            if (sessionIdStr.count() != 30)
-            {
-                ptr1Count += bufferSize;
-                continue;
-            }
-
-            return sessionIdStr;
-        }*/
     }
 
     return DowServerRequestParametres();
