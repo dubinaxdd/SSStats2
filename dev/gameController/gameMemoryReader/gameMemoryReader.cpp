@@ -632,7 +632,7 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId()
 
         if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
         {
-            ptr1Count += bufferSize * 100;
+            ptr1Count += bufferSize * 30;
             continue;
         }
 
