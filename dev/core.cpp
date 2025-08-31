@@ -47,6 +47,9 @@ Core::Core(QQmlContext *context, QObject* parent)
     m_uiBackend->setSteamPath(m_gameController->steamPath());
 
     m_settingsController->initializeSettings();
+
+    m_uiBackend->setGamePathArray(m_gameController->gamePathArray());
+
 }
 
 void Core::registerTypes()
@@ -119,6 +122,11 @@ void Core::addConnections()
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+GameController *Core::gameController() const
+{
+    return m_gameController;
 }
 
 RankedModServiceProcessor *Core::rankedModServiceProcessor() const

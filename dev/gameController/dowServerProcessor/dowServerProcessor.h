@@ -23,7 +23,7 @@ public:
         ChannelData = 3
     };
 
-    void setGameType(GameType newGameType) override;
+    void setGameType(GameType::GameTypeEnum newGameType) override;
 
 private:
     QVector<PlayerData> getPlayersInCurrentRoom(QVector<PartyData> partyDataArray);

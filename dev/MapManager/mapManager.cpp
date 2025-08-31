@@ -267,7 +267,7 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
 
     QFile newFile;
 
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         newFile.setFileName( m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
     else
         newFile.setFileName( m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
@@ -373,7 +373,7 @@ void MapManager::receiveRemoveMap(MapItem *mapItem)
     {
         QString path;
 
-        if (m_currentGame->gameType == DefinitiveEdition)
+        if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
             path = (m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
         else
             path = (m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);

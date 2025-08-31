@@ -20,7 +20,8 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     , m_balanceModPage(new BalanceModPage(core->balanceModManager(), core->settingsController(), this))
     , m_notificationManager(new NotificationManager(this))
     , m_informationPage(new InformationPage(this))
-    , m_notificationVisibleTimer(new QTimer(this))  
+    , m_notificationVisibleTimer(new QTimer(this))
+    , m_gamePage(new GamePage(this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");
@@ -77,6 +78,8 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_corePtr->soulstormController()->replayDataCollector(), &ReplayDataCollector::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMissionState,  this, &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMod,           this, &UiBackend::receiveCurrentModTechnicalName, Qt::QueuedConnection);
+
+    QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_corePtr->gameController(), &GameController::onCurrentGameChanged, Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()
@@ -152,6 +155,17 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(GameMissionState::gameOver);
+}
+
+void UiBackend::setGamePathArray(QVector<GamePath> *gamePathArray)
+{
+    p_gamePathArray = gamePathArray;
+    m_gamePage->setGamePathArray(p_gamePathArray);
+}
+
+GamePage *UiBackend::gamePage() const
+{
+    return m_gamePage;
 }
 
 qreal UiBackend::devicePixelRatio() const
@@ -274,6 +288,9 @@ void UiBackend::setGamePath(GamePath* currentGame)
         return;
 
     m_currentGame = currentGame;
+
+    m_gamePage->setCurrentGame(currentGame);
+
     emit soulstormIsInstalledChanged();
 }
 
@@ -570,7 +587,7 @@ bool UiBackend::soulstormIsInstalled()
 {
     QFile ssDir;
 
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         ssDir.setFileName(m_currentGame->gamePath + QDir::separator() + "W40k.exe");
     else
         ssDir.setFileName(m_currentGame->gamePath + QDir::separator() + "Soulstorm.exe");

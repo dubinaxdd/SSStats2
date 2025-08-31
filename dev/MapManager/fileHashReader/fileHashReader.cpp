@@ -18,7 +18,7 @@ void FileHashReader::getLocalMapFilesList()
 
     QString path;
 
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         path = m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp";
     else
         path = m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp";

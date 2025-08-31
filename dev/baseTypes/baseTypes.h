@@ -7,16 +7,25 @@
 #include <QUrl>
 #include <QUuid>
 
-enum GameType{
-    SoulstormDowOnline = 0,
-    SoulstormSteam,
-    DefinitiveEdition
+class GameType {
+    Q_GADGET
+public:
+    enum GameTypeEnum: int{
+        SoulstormDowOnline = 0,
+        SoulstormSteam,
+        DefinitiveEdition
+    };
+    Q_ENUM(GameTypeEnum)
+private:
+    GameType(){}
 };
 
+
 struct GamePath{
-    GameType gameType = SoulstormDowOnline;
+    GameType::GameTypeEnum gameType = GameType::GameTypeEnum::SoulstormDowOnline;
     QString gamePath = "";
     QString gameSettingsPath = "";
+    QString uiGameName = "";
 };
 
 struct DowServerRequestParametres

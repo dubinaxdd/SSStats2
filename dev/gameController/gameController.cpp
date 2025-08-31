@@ -30,25 +30,25 @@ GameController::GameController(SettingsController *settingsController, QObject *
     , m_gameProcess(nullptr)
 {
     getGamePathFromRegistry();
-    m_currentGame = &m_gamePathArray.last();
+    m_currentGame = m_gamePathArray.last();
 
-    m_lobbyEventReader->setCurrentGame(m_currentGame);
-    m_gameStateReader->setCurrentGame(m_currentGame);
-    m_replayDataCollector->setCurrentGame(m_currentGame);
-    m_dowServerProcessor->setGameType(m_currentGame->gameType);
+    m_lobbyEventReader->setCurrentGame(&m_currentGame);
+    m_gameStateReader->setCurrentGame(&m_currentGame);
+    m_replayDataCollector->setCurrentGame(&m_currentGame);
+    m_dowServerProcessor->setGameType(m_currentGame.gameType);
 
     if(m_steamPath.isEmpty() || !QDir(m_steamPath).exists())
         qWarning(logWarning()) << "Steam is not installed!" << m_steamPath;
     else
         qInfo(logInfo()) << "Steam path: " << m_steamPath;
 
-    if(m_currentGame->gamePath.isEmpty() || !QDir(m_currentGame->gamePath).exists())
-        qWarning(logWarning()) << "Game is not installed!" << m_currentGame->gamePath;
+    if(m_currentGame.gamePath.isEmpty() || !QDir(m_currentGame.gamePath).exists())
+        qWarning(logWarning()) << "Game is not installed!" << m_currentGame.gamePath;
     else
-        qInfo(logInfo()) << "Worked with Game from: " << m_currentGame->gamePath;
+        qInfo(logInfo()) << "Worked with Game from: " << m_currentGame.gamePath;
 
     m_gameMemoryReader = new GameMemoryReader(/*this*/);
-    m_gameMemoryReader->setGameType(m_currentGame->gameType);
+    m_gameMemoryReader->setGameType(m_currentGame.gameType);
 
     m_ssWindowControllTimer = new QTimer(this);
     m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
@@ -124,7 +124,7 @@ void GameController::blockGameWindowInput(bool state)
 
 void GameController::launchGame()
 {
-    QDir ssPath(m_currentGame->gamePath);
+    QDir ssPath(m_currentGame.gamePath);
 
     if(!ssPath.exists())
         return;
@@ -132,7 +132,7 @@ void GameController::launchGame()
     bool win7SupportMode = m_settingsController->getSettings()->win7SupportMode;
     bool launchGameInWindow = m_settingsController->getSettings()->launchGameInWindow;
 
-    QSettings* gameSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* gameSettings = new QSettings(m_currentGame.gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
 
     if (launchGameInWindow)
         gameSettings->setValue("global/screenwindowed", 1);
@@ -150,7 +150,7 @@ void GameController::launchGame()
 
     delete gameSettings;
 
-    if (m_currentGame->gameType != DefinitiveEdition)
+    if (m_currentGame.gameType != GameType::GameTypeEnum::DefinitiveEdition)
         writeCurrentModSettingInGame();
 
     if(m_gameProcess == nullptr || !m_gameProcess->isOpen())
@@ -162,15 +162,24 @@ void GameController::launchGame()
 
         m_gameProcess = new QProcess(this);
 
-        if (m_currentGame->gameType == DefinitiveEdition)
+        if (m_currentGame.gameType == GameType::GameTypeEnum::DefinitiveEdition)
             //m_soulstormProcess->startDetached(m_currentGame->gamePath + "\\W40k.exe");
             QDesktopServices::openUrl(QUrl("steam://rungameid/3556750"));
         else
-            m_gameProcess->startDetached(m_currentGame->gamePath + "\\Soulstorm.exe", {params});
+            m_gameProcess->startDetached(m_currentGame.gamePath + "\\Soulstorm.exe", {params});
 
         m_useWindows7SupportMode = win7SupportMode;
     }
 
+}
+
+void GameController::onCurrentGameChanged()
+{
+    QMutex mutex;
+    mutex.lock();
+    m_dowServerProcessor->setGameType(m_currentGame.gameType);
+    m_gameMemoryReader->setGameType(m_currentGame.gameType);
+    mutex.unlock();
 }
 
 void GameController::minimizeSsWithWin7Support()
@@ -180,7 +189,7 @@ void GameController::minimizeSsWithWin7Support()
 
 void GameController::checkWindowState()
 {
-    QDir gamePath(m_currentGame->gamePath);
+    QDir gamePath(m_currentGame.gamePath);
 
     if(!gamePath.exists())
         return;
@@ -189,7 +198,7 @@ void GameController::checkWindowState()
 
     QString ss;
 
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame.gameType == GameType::GameTypeEnum::DefinitiveEdition)
         ss = codec->toUnicode("Warhammer 40,000: Dawn of War");
     else
         ss = codec->toUnicode("Dawn of War: Soulstorm");
@@ -240,7 +249,7 @@ void GameController::checkWindowState()
 
             if (m_settingsController->getSettings()->win7SupportMode && !m_settingsController->getSettings()->launchGameInWindow)
             {
-                QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
+                QSettings* ssSettings = new QSettings(m_currentGame.gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
                 if( ssSettings->value("global/screenwindowed", 0).toInt() == 1)
                 {
                     m_gameWindowWidth = ssSettings->value("global/screenwidth", 0).toInt();
@@ -369,12 +378,12 @@ QString GameController::getSteamPathFromRegistry()
 
 void GameController::parseSsSettings()
 {
-    QDir ssPath(m_currentGame->gameSettingsPath);
+    QDir ssPath(m_currentGame.gameSettingsPath);
 
     if(!ssPath.exists())
         return;
 
-    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* ssSettings = new QSettings(m_currentGame.gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
 
     int gameWindowed = ssSettings->value("global/screenwindowed", 0).toInt();
     m_gameWindowed = gameWindowed == 1;
@@ -397,13 +406,13 @@ void GameController::updateGameWindow()
 
 void GameController::writeCurrentModSettingInGame()
 {
-    QDir gamePath(m_currentGame->gamePath);
-    QDir gameSettingsDir(m_currentGame->gamePath);
+    QDir gamePath(m_currentGame.gamePath);
+    QDir gameSettingsDir(m_currentGame.gamePath);
 
     if(!gamePath.exists() || !gameSettingsDir.exists())
         return;
 
-    QSettings* gameSettings = new QSettings(m_currentGame->gamePath + "\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* gameSettings = new QSettings(m_currentGame.gamePath + "\\Local.ini", QSettings::Format::IniFormat);
 
     LaunchMod launchMode = m_settingsController->getSettings()->launchMode;
 
@@ -482,7 +491,8 @@ void GameController::findSoulstormPath()
         GamePath gamePath;
         gamePath.gamePath = path;
         gamePath.gameSettingsPath = path;
-        gamePath.gameType = SoulstormSteam;
+        gamePath.gameType = GameType::GameTypeEnum::SoulstormSteam;
+        gamePath.uiGameName = "Warhammer 40,000: Dawn of War - Soulstorm";
 
         m_gamePathArray.append(gamePath);
     }
@@ -500,15 +510,21 @@ void GameController::findDefinitiveEdition()
         GamePath gamePath;
         gamePath.gamePath = path;
         gamePath.gameSettingsPath = gameSettingsPath;
-        gamePath.gameType = DefinitiveEdition;
+        gamePath.gameType = GameType::GameTypeEnum::DefinitiveEdition;
+        gamePath.uiGameName = "Warhammer 40,000: Dawn of War - Definitive Edition";
 
         m_gamePathArray.append(gamePath);
     }
 }
 
-GamePath *GameController::currentGame() const
+QVector<GamePath> *GameController::gamePathArray()
 {
-    return m_currentGame;
+    return &m_gamePathArray;
+}
+
+GamePath *GameController::currentGame()
+{
+    return &m_currentGame;
 }
 
 AdvertisingProcessor *GameController::advertisingProcessor() const

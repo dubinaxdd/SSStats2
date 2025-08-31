@@ -29,7 +29,7 @@ void ModsProcessor::uninstallRequest(InstMod mod)
 
 void ModsProcessor::unlockRaces()
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         return;
 
     BOOL f64 = FALSE;

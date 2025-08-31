@@ -397,7 +397,7 @@ void GameMemoryReader::findSessionId()
     m_dataFinded = false;
     DowServerRequestParametres parametres;
 
-    if (m_gameType == DefinitiveEdition)
+    if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
     {
         /*parametres = findDefinitiveEditionSessionId(0x10000000000);
 
@@ -430,7 +430,7 @@ void GameMemoryReader::findSessionId()
 
         emit sendDowServerRequestParametresError();
     }
-    else if (m_gameType == SoulstormSteam)
+    else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
     {
         parametres = findSteamSoulstormSessionId();
 
@@ -749,7 +749,7 @@ QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray 
     return parameterStr;
 }
 
-void GameMemoryReader::setGameType(GameType newGameType)
+void GameMemoryReader::setGameType(GameType::GameTypeEnum newGameType)
 {
     m_playersSteamScannerMutex.lock();
     m_gameType = newGameType;

@@ -13,7 +13,7 @@ public:
     explicit AbstractDowServerProcessor(QObject *parent = nullptr);
     virtual ~AbstractDowServerProcessor() = 0;
 
-    virtual void setGameType(GameType newGameType);
+    virtual void setGameType(GameType::GameTypeEnum newGameType);
 
 public slots:
     void setDeowServerRequestParametres(DowServerRequestParametres parametres);
@@ -25,7 +25,7 @@ protected:
 protected:
     QNetworkAccessManager *m_networkManager;
     DowServerRequestParametres m_parametres;
-    GameType m_gameType;
+    GameType::GameTypeEnum m_gameType;
 
 };
 

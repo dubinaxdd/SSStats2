@@ -57,9 +57,9 @@ void DowServerProcessor::rquestChannellData(int id)
 
     QString urlString;
 
-    if (m_gameType == SoulstormSteam)
+    if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
         urlString = "https://dow1ss-lobby.reliclink.com/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_parametres.sesionId.toLocal8Bit();
-    else if (m_gameType == DefinitiveEdition)
+    else if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
         urlString = "https://dow-api.reliclink.com:443/game/chat/joinChannel?chatroomID=1&doRetry=1&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
@@ -80,9 +80,9 @@ void DowServerProcessor::requestProfileID(QString steamID)
 
     QString urlString;
 
-    if (m_gameType == SoulstormSteam)
+    if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
         urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_parametres.sesionId.toLocal8Bit();
-    else if (m_gameType == DefinitiveEdition)
+    else if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
         urlString = "https://dow-api.reliclink.com:443/game/account/getProfileID?profile_names=%5b%22%2fsteam%2f" + steamID.toLocal8Bit() + "%22%5d&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
@@ -105,7 +105,7 @@ void DowServerProcessor::requestFindAdvertisements()
 
     QString urlString;
 
-    if (m_gameType == SoulstormSteam)
+    if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
     {
         urlString = "https://dow1ss-lobby.reliclink.com/game/advertisement/findAdvertisements?profile_ids=%5b"
                     + m_profileID + "%5d&statGroup_ids=%5b"
@@ -114,7 +114,7 @@ void DowServerProcessor::requestFindAdvertisements()
                     + m_modVersion + "&modDLLFile=WXPMod.dll&modDLLChecksum=1077236955&dataChecksum=206085050&appBinaryChecksum=1817556062&cheatsEnabled=0&sessionID="
                     + m_parametres.sesionId.toLocal8Bit();
     }
-    else if (m_gameType == DefinitiveEdition)
+    else if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
     {
         urlString = "https://dow-api.reliclink.com:443/game/advertisement/findAdvertisements?"
                     "appBinaryChecksum=" + m_parametres.appBinaryChecksum.toLocal8Bit() +
@@ -157,9 +157,9 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 
     QString urlString;
 
-    if (m_gameType == SoulstormSteam)
+    if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
         urlString = "https://dow1ss-lobby.reliclink.com/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
-    else if (m_gameType == DefinitiveEdition)
+    else if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
         urlString = "https://dow-api.reliclink.com:443/game/account/getProfileName?profile_ids=" + profilesIDsString.toLocal8Bit() + "&sessionID=" + m_parametres.sesionId.toLocal8Bit();
     else
         return;
@@ -448,7 +448,7 @@ void DowServerProcessor::addQuery(QueryType type)
     m_requestsQueue.append(type);
 }
 
-void DowServerProcessor::setGameType(GameType newGameType)
+void DowServerProcessor::setGameType(GameType::GameTypeEnum newGameType)
 {
     AbstractDowServerProcessor::setGameType(newGameType);
     m_queueTimer->start();

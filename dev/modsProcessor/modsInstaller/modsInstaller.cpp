@@ -54,7 +54,7 @@ void ModsInstaller::uninstallMod(InstMod mod)
 
 void ModsInstaller::installRussianFonts(QString path)
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         return;
 
     JlCompress::extractDir(path, m_currentGame->gamePath + QDir::separator());
@@ -66,7 +66,7 @@ void ModsInstaller::installRussianFonts(QString path)
 
 void ModsInstaller::uninstallRussianFonts()
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         return;
 
     QDir dir1(m_currentGame->gamePath + "\\Engine\\Locale\\English\\data\\art");
@@ -84,7 +84,7 @@ void ModsInstaller::uninstallRussianFonts()
 
 void ModsInstaller::installCameraMod(QString path)
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         return;
 
     JlCompress::extractDir(path, m_currentGame->gamePath + QDir::separator());
@@ -96,7 +96,7 @@ void ModsInstaller::installCameraMod(QString path)
 
 void ModsInstaller::uninstallCameraMod()
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         return;
 
     QFile tempfile1(m_currentGame->gamePath + "\\Engine\\Data\\camera_ed.lua");
@@ -114,7 +114,7 @@ void ModsInstaller::uninstallCameraMod()
 
 void ModsInstaller::installGridHotkeys(QString path)
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         return;
 
     QDir dir(m_currentGame->gameSettingsPath + "\\Profiles\\");
@@ -133,7 +133,7 @@ void ModsInstaller::installGridHotkeys(QString path)
 
 void ModsInstaller::uninstallGridHotkeys()
 {
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         return;
 
     QDir dir(m_currentGame->gameSettingsPath + "\\Profiles\\");
@@ -163,7 +163,7 @@ void ModsInstaller::uninstallTransparentCameraTrapezoid()
 {
     QString gamePath;
 
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         gamePath = m_currentGame->gamePath + "\\DoWDE\\Data\\Art\\ui\\minimap\\camera.tga";
     else
         gamePath = m_currentGame->gamePath + "\\DXP2\\Data\\Art\\ui\\minimap\\camera.tga";

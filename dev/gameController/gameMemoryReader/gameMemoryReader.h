@@ -17,7 +17,7 @@ public:
 
     void setSoulstormHwnd(HWND newSoulstormHwnd);
     QTimer *scanTimer() const;
-    void setGameType(GameType newGameType);
+    void setGameType(GameType::GameTypeEnum newGameType);
 
 signals:
     void sendSteamPlayersInfoMap(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
@@ -51,7 +51,7 @@ private:
     QMutex m_playersSteamScannerMutex;
     bool m_abort = false;
 
-    GameType m_gameType;
+    GameType::GameTypeEnum m_gameType;
     bool m_dataFinded = false;
 };
 #endif // GAMEMEMORYREADER_H

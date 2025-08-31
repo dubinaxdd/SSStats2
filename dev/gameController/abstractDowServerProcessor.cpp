@@ -27,13 +27,13 @@ QNetworkRequest AbstractDowServerProcessor::createDowServerRequest(QString url)
 
     newRequest.setUrl(QUrl(url));
 
-    if (m_gameType == SoulstormSteam)
+    if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
     {
         newRequest.setRawHeader("Cookie", "reliclink=" + QString(RELICLINK).toLocal8Bit() + "; AWSELB=" + QString(AWSELB).toLocal8Bit());
         newRequest.setRawHeader("Host", "dow-api.reliclink.com");
         newRequest.setRawHeader("Content-Content-Type","application/x-www-form-urlencoded; charset=UTF-8");
     }
-    else if (m_gameType == DefinitiveEdition)
+    else if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
     {
         newRequest.setRawHeader("Cookie", "reliclink=" + QString(RELICLINK).toLocal8Bit() + "; AWSELB=" + QString(AWSELB).toLocal8Bit());
         newRequest.setRawHeader("Host", "dow-api.reliclink.com");
@@ -47,7 +47,7 @@ QNetworkRequest AbstractDowServerProcessor::createDowServerRequest(QString url)
     return newRequest;
 }
 
-void AbstractDowServerProcessor::setGameType(GameType newGameType)
+void AbstractDowServerProcessor::setGameType(GameType::GameTypeEnum newGameType)
 {
     m_gameType = newGameType;
 }

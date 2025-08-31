@@ -8,7 +8,7 @@ import DowStatsStyle 1.0
 Rectangle {
     id: root
     opacity: 1
-    color: DowStatsStyle.backgroundColor//"#ffffff"
+    color: DowStatsStyle.backgroundColor
     border.color: "#00000000"
     border.width: 0
     anchors.fill: parent
@@ -19,6 +19,7 @@ Rectangle {
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
     radius: 10
 
+    property var model: _uiBackend.gamePage
 
     ColumnLayout
     {
@@ -27,7 +28,12 @@ Rectangle {
 
         StyledComboBox{
             Layout.fillWidth: true
-            model: [qsTr("Warhammer 40,000: Dawn of War - Definitive Edition"), qsTr("Warhammer 40,000: Dawn of War - Soulstorm")]
+            model: root.model
+            textRole: "gameName"
+
+            onCurrentIndexChanged: {
+                model.updateCurrentGame(currentIndex);
+            }
         }
 
         ColumnLayout

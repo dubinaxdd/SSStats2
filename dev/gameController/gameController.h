@@ -47,12 +47,15 @@ public:
 
     AdvertisingProcessor *advertisingProcessor() const;
 
-    GamePath *currentGame() const;
+    GamePath *currentGame();
+
+    QVector<GamePath> *gamePathArray();
 
 public slots:
     void blockGameWindowInput(bool state);
     void minimizeSsWithWin7Support();
     void launchGame();
+    void onCurrentGameChanged();
 
 private slots:
     void checkWindowState();
@@ -81,7 +84,7 @@ private:
 private:
 
     QVector<GamePath> m_gamePathArray;
-    GamePath* m_currentGame;
+    GamePath m_currentGame;
 
     const QString m_steamPath;
 

@@ -18,6 +18,7 @@
 #include <notificationManager.h>
 #include <informationPage.h>
 #include <core.h>
+#include <GamePage.h>
 
 class Core;
 class StatisticPanel;
@@ -57,6 +58,7 @@ class UiBackend : public QObject
     Q_PROPERTY(BalanceModPage * balanceModPage MEMBER m_balanceModPage CONSTANT)
     Q_PROPERTY(NotificationManager * notificationManager MEMBER m_notificationManager CONSTANT)
     Q_PROPERTY(InformationPage * informationPage MEMBER m_informationPage CONSTANT)
+    Q_PROPERTY(GamePage *gamePage READ gamePage CONSTANT FINAL)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -118,6 +120,7 @@ public:
     BalanceModPage *balanceModPage() const;
     InformationPage *informationPage() const;
 
+
     bool soulstormIsInstalled();
 
     Q_INVOKABLE void launchGame();
@@ -172,6 +175,10 @@ public:
 
     qreal devicePixelRatio() const;
     void setDevicePixelRatio(qreal newDevicePixelRatio);
+
+    GamePage *gamePage() const;
+
+    void setGamePathArray(QVector<GamePath> *gamePathArray);
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -238,6 +245,7 @@ private:
 
 private:
     GamePath* m_currentGame;
+    QVector<GamePath> *p_gamePathArray;
     Core* m_corePtr;
     ImageProvider* m_imageProvider;
     GamePanel* m_gamePanel;
@@ -252,6 +260,7 @@ private:
     BalanceModPage* m_balanceModPage;
     NotificationManager* m_notificationManager;
     InformationPage* m_informationPage;
+    GamePage* m_gamePage;
 
     QTimer* m_notificationVisibleTimer;
 
@@ -312,7 +321,6 @@ private:
     bool m_latesBalanceModNotInstalledDialogVisible = false;
     bool m_clientUpdateAvailable = false;
     bool m_softwareBanActivated = false;
-
 };
 
 #endif // UIBACKEND_H

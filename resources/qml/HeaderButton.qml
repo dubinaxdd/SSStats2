@@ -12,8 +12,8 @@ Rectangle {
 
     signal clicked()
 
-    Layout.preferredWidth: buttonInfoLabel.width + 40//140
-    //width: buttonInfoLabel.width + 40//140
+    Layout.preferredWidth: buttonInfoLabel.width + 30
+
     color: {
         if(!enabled)
             return "#3A3B3C"

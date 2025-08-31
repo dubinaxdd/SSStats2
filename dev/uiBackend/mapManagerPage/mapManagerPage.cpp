@@ -337,7 +337,7 @@ QImage MapManagerPage::loadMiniMapImage(QString fileName)
 {
     QFile miniMapImageFile;
 
-    if (m_currentGame->gameType == DefinitiveEdition)
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         miniMapImageFile.setFileName(m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp\\" + fileName);
     else
         miniMapImageFile.setFileName(m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp\\" + fileName);

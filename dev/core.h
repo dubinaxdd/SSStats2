@@ -40,6 +40,7 @@ public:
     StatsServerProcessor *statsServerProcessor() const;
     GameController *soulstormController() const;
     RankedModServiceProcessor *rankedModServiceProcessor() const;
+    GameController *gameController() const;
 
 signals:
     void sendExit();
