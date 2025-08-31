@@ -150,7 +150,8 @@ void GameController::launchGame()
 
     delete gameSettings;
 
-    writeCurrentModSettingInGame();
+    if (m_currentGame->gameType != DefinitiveEdition)
+        writeCurrentModSettingInGame();
 
     if(m_gameProcess == nullptr || !m_gameProcess->isOpen())
     {
@@ -396,13 +397,13 @@ void GameController::updateGameWindow()
 
 void GameController::writeCurrentModSettingInGame()
 {
-    QDir gamePath(m_currentGame->gameSettingsPath);
-    QDir gameSettingsDir(m_currentGame->gameSettingsPath);
+    QDir gamePath(m_currentGame->gamePath);
+    QDir gameSettingsDir(m_currentGame->gamePath);
 
     if(!gamePath.exists() || !gameSettingsDir.exists())
         return;
 
-    QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
+    QSettings* gameSettings = new QSettings(m_currentGame->gamePath + "\\Local.ini", QSettings::Format::IniFormat);
 
     LaunchMod launchMode = m_settingsController->getSettings()->launchMode;
 
@@ -410,8 +411,8 @@ void GameController::writeCurrentModSettingInGame()
     {
         case LaunchMod::OriginalSoulstorm :
         {
-            ssSettings->setValue("global/currentmoddc", "dxp2");
-
+                gameSettings->setValue("global/currentmoddc", "dxp2");
+/*
             QFile fileCheck(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
             QFile file(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
 
@@ -420,14 +421,14 @@ void GameController::writeCurrentModSettingInGame()
 
             if (file.exists())
                 file.rename(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds");
-
+*/
             break;
         }
         case LaunchMod::DowStatsBalanceMod :
         {
-            ssSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
+            gameSettings->setValue("global/currentmoddc", m_settingsController->getSettings()->lastActualBalanceMod.toLower());
 
-
+/*
             QFile fileCheck(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds" );
             QFile file(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war111.dds" );
 
@@ -436,13 +437,13 @@ void GameController::writeCurrentModSettingInGame()
 
             if (file.exists())
                 file.rename(m_currentGame->gamePath + "\\Engine\\Data\\art\\ui\\textures\\wxp_loadscreen_dawn_of_war.dds");
-
+*/
             break;
         }
         default: break;
     }
 
-    delete ssSettings;
+    delete gameSettings;
 }
 
 void GameController::findSoulstormPath()
