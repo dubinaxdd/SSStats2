@@ -80,6 +80,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMod,           this, &UiBackend::receiveCurrentModTechnicalName, Qt::QueuedConnection);
 
     QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_corePtr->gameController(), &GameController::onCurrentGameChanged, Qt::QueuedConnection);
+    QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_replayManager, &ReplayManager::onGamePathChanged, Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()

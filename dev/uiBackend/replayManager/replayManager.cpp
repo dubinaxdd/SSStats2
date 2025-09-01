@@ -231,6 +231,14 @@ void ReplayManager::receiveModsInfo(QList<ModInfo> modInfo)
     emit updateReplayInfo();
 }
 
+void ReplayManager::onGamePathChanged()
+{
+    m_ssUrlPathPath = QUrl::fromLocalFile(m_currentGame->gameSettingsPath);
+    m_playbackFolder = m_currentGame->gameSettingsPath + QDir::separator() + "Playback";
+    qInfo(logInfo()) << "Default playback folder: " << m_playbackFolder;
+    getReplaysData();
+}
+
 void ReplayManager::update()
 {
     getReplaysData();
