@@ -12,6 +12,10 @@
         <translation>Новости DoW Stats</translation>
     </message>
     <message>
+        <source>Game</source>
+        <translation>Игра</translation>
+    </message>
+    <message>
         <source>Information</source>
         <translation>Информация</translation>
     </message>
@@ -107,6 +111,36 @@
         <translation>Помощь</translation>
     </message>
     <message>
+        <source>Play</source>
+        <translation>Играть</translation>
+    </message>
+</context>
+<context>
+    <name>OnlineCounter</name>
+    <message>
+        <source>Online DoW Stats users</source>
+        <translation>Количество пользователей DoW Stats в сети</translation>
+    </message>
+</context>
+<context>
+    <name>GamePage</name>
+    <message>
+        <source>Options:</source>
+        <translation>Опции:</translation>
+    </message>
+    <message>
+        <source>No FOG</source>
+        <translation>Отключить туман</translation>
+    </message>
+    <message>
+        <source>Skip the intro video</source>
+        <translation>Пропускать заставку при запуске игры</translation>
+    </message>
+    <message>
+        <source>Launch Game in window</source>
+        <translation>Запускать игру в окне</translation>
+    </message>
+    <message>
         <source>Active mod: </source>
         <translation>Активный мод: </translation>
     </message>
@@ -121,17 +155,6 @@
     <message>
         <source>Current active mod</source>
         <translation>Текущий активный мод</translation>
-    </message>
-    <message>
-        <source>Play</source>
-        <translation>Играть</translation>
-    </message>
-</context>
-<context>
-    <name>OnlineCounter</name>
-    <message>
-        <source>Online DoW Stats users</source>
-        <translation>Количество пользователей DoW Stats в сети</translation>
     </message>
 </context>
 <context>
@@ -713,8 +736,8 @@
         <translation>Отображать оверлей в режиме совместимости с Windows 7</translation>
     </message>
     <message>
-        <source>Launch Soulstorm in window</source>
-        <translation>Запускать Soulstorm в окне</translation>
+        <source>Launch Game in window</source>
+        <translation>Запускать игру в окне</translation>
     </message>
     <message>
         <source>APM panel visible in game</source>

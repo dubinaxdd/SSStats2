@@ -1,12 +1,10 @@
 cmake_minimum_required(VERSION 3.19)
 cmake_policy(SET CMP0048 NEW)
 
-project(DowStatsClient VERSION 2.5 LANGUAGES CXX)
+project(DowStatsClient VERSION 3.0 LANGUAGES CXX)
 
 set(TARGET_NAME DowStatsClient)
 
-#set(PROJECT_VERSION_MAJOR "0")
-#set(PROJECT_VERSION_MINOR "1")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -20,7 +18,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
-#set(BALANCE_MOD_TEST OFF CACHE BOOL "")
 
 option(BALANCE_MOD_TEST "Build with DoW Stats Balance Mod TEST server" OFF)
 if (${BALANCE_MOD_TEST})
@@ -41,6 +38,7 @@ if (${TEST_DISCORD_MICROSERVICE})
     add_definitions(-DTEST_DISCORD_MICROSERVICE)
     message(STATUS "Build with local test discord microservice")
 endif()
+
 
 option(DISAPLE_HOOK_FOR_DEBUG "Disable hook for debug without lags" OFF)
 if (${DISAPLE_HOOK_FOR_DEBUG})
