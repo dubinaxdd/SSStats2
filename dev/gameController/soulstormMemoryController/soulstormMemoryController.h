@@ -19,12 +19,12 @@ public:
 
 public slots:
     void onNoFogStateChanged(bool state);
-    void onSsLaunchStateChanged(bool state);
+    void onGameLaunchStateChanged(bool state);
     void onSettingsLoaded();
 signals:
 
 private:
-    bool m_ssLaunchState = false;
+    bool m_gameLaunchState = false;
     HWND m_soulstormHwnd = NULL;
     bool targetNoFog = false;
     bool currentNoFog = false;

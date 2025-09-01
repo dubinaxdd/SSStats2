@@ -62,7 +62,7 @@ Rectangle
                     Layout.preferredWidth: 200 + columnLayout.spacing
 
                     onClicked: {
-                        if (_uiBackend.ssLaunchState)
+                        if (_uiBackend.gameLaunchState)
                             _uiBackend.soulstormLaunchedDialogVisible = true
                         else
                         {

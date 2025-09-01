@@ -51,11 +51,40 @@ Rectangle {
             }
         }
 
+        Item{
+            Layout.preferredHeight: 30
+        }
+
+        Label{
+            text: qsTr("Options:")
+        }
+
+        StyledSwitch{
+            text: qsTr("Launch Game in window")
+            checked: root.settingsModel.launchGameInWindow
+            onCheckedChanged: root.settingsModel.launchGameInWindow = checked;
+            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
+        }
+
+        StyledSwitch{
+            text: qsTr("Skip the intro video")
+            checked: root.settingsModel.skipIntroVideo
+            onCheckedChanged: root.settingsModel.skipIntroVideo = checked;
+            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
+        }
+
+        StyledSwitch{
+            id: noFogSwitch
+            text: qsTr("No FOG")
+            onCheckedChanged: _uiBackend.noFogState = checked;
+            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
+        }
+
         ColumnLayout
         {
             clip: true
-
-            visible: _uiBackend.soulstormIsInstalled
+            visible: _uiBackend.gameIsInstalled && root.model.currentGameType  !==  GameType.DefinitiveEdition
+            Layout.topMargin: 10
 
             Label{
                 Layout.preferredWidth: 250
@@ -86,32 +115,11 @@ Rectangle {
             }
         }
 
-        StyledSwitch{
-            text: qsTr("Launch Soulstorm in window")
-            checked: root.settingsModel.launchGameInWindow
-            onCheckedChanged: root.settingsModel.launchGameInWindow = checked;
-            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
-        }
-
-        StyledSwitch{
-            text: qsTr("Skip the intro video")
-            checked: root.settingsModel.skipIntroVideo
-            onCheckedChanged: root.settingsModel.skipIntroVideo = checked;
-            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
-        }
-
-        StyledSwitch{
-            id: noFogSwitch
-            text: qsTr("No FOG")
-            onCheckedChanged: _uiBackend.noFogState = checked;
-            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
-        }
-
         Item{
             Layout.fillHeight: true
         }
 
-        Rectangle{
+        /*Rectangle{
             id: lounchGameButtonRectangle
             Layout.preferredWidth:  15 + lounchGameLabel.width + 15 + iconImage.width + 5
             Layout.preferredHeight: 35
@@ -157,18 +165,18 @@ Rectangle {
                         source: "qrc:/images/resources/icons/ssIcon.png"
                     }
                 }
+            }
 
-                MouseArea{
-                    id: lounchGameMouseArea
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    hoverEnabled: true
+            MouseArea{
+                id: lounchGameMouseArea
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
 
-                    onClicked: {
-                        _uiBackend.launchGame()
-                    }
+                onClicked: {
+                    _uiBackend.launchGame()
                 }
             }
-        }
+        }*/
     }
 }

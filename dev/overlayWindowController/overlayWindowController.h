@@ -23,7 +23,7 @@ public slots:
     void onSsShutdowned();
     void ssMaximized(bool maximized);
     void gameInitialized();
-    void ssLaunched(bool ssLaunched);
+    void gameLaunched(bool ssLaunched);
 
 private slots:
     void topmostTimerTimout();

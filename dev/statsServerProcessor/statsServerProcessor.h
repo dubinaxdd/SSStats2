@@ -41,11 +41,11 @@ private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
     void currentPlayerStatsRequestTimerTimeout();
-    void onSettingsLoaded();
     void receiveRankDiversion(QNetworkReply* reply);
     void onRankDiversionTimerTimeout();
     void requestClientLastVersion();
     void receiveClientLastVersion(QNetworkReply *reply);
+    void onSettingsLoaded();
 
 private:
     void registerPlayer(QString name, QString sid, bool init);

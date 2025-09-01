@@ -151,7 +151,7 @@ void BalanceModManager::modsInfoTimerTimeout()
         return;
     }
 
-    if(m_currentGame->gamePath.isEmpty() || !m_ssLounchedStateReceived)
+    if(m_currentGame->gamePath.isEmpty() || !m_gameLounchedStateReceived)
         return;
 
     checkCurrentModInGame();
@@ -348,10 +348,10 @@ void BalanceModManager::setProfileCopyMode(bool overwritePrifiles, QString modTe
     downloadMod(modTechnicalName, overwritePrifiles);
 }
 
-void BalanceModManager::onSsLaunchStateChanged(bool lounched)
+void BalanceModManager::onGameLaunchStateChanged(bool lounched)
 {
-    m_ssLounchedState = lounched;
-    m_ssLounchedStateReceived = true;
+    m_gameLounchedState = lounched;
+    m_gameLounchedStateReceived = true;
 
     if (m_currentPlayerSteamId.isEmpty())
         return;
@@ -419,7 +419,7 @@ void BalanceModManager::setGamePath(GamePath* currentGame)
 
 void BalanceModManager::checkDownloadingQuery()
 {
-    if(m_downloadingQuery.isEmpty() || m_ssLounchedState || m_modDownloadingProcessed || m_currentPlayerSteamId == "")
+    if(m_downloadingQuery.isEmpty() || m_gameLounchedState || m_modDownloadingProcessed || m_currentPlayerSteamId == "")
         return;
 
     if (getProfileExist(m_downloadingQuery.last()))
@@ -535,7 +535,7 @@ void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
                 requestDownloadMod(m_modInfoList.at(i).technicalName);
             }
 
-            if (!m_modInfoList.at(i).isInstalled && (!m_settingsController->getSettings()->autoUpdateBalanceMod || m_ssLounchedState))
+            if (!m_modInfoList.at(i).isInstalled && (!m_settingsController->getSettings()->autoUpdateBalanceMod || m_gameLounchedState))
                 emit sendModReadyForInstall(m_modInfoList.at(i).uiName);
         }
     }

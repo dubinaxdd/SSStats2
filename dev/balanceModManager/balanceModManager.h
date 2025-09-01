@@ -54,7 +54,7 @@ public slots:
     void activateMod(QString modTechnicalName);
     void updateTemplateProfilePath(bool useCustomTemplateProfilePath);
     void setProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
-    void onSsLaunchStateChanged(bool lounched);
+    void onGameLaunchStateChanged(bool lounched);
     void setCurrentPlayerSteamId(QString steamId);
     void updateHotKeysOnMod(QString modTechnicalName);
 
@@ -102,8 +102,8 @@ private:
     QString m_templateProfilePath = "";
     QString m_lastActualMod = "";
 
-    bool m_ssLounchedState = false;
-    bool m_ssLounchedStateReceived = false;
+    bool m_gameLounchedState = false;
+    bool m_gameLounchedStateReceived = false;
     bool m_showBalanceModBetaVersions = false;
     bool m_betaTestPlayersListReceived = false;
 

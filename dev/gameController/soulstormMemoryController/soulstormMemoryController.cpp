@@ -24,14 +24,14 @@ SoulstormMemoryController::SoulstormMemoryController(SettingsController* setting
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &SoulstormMemoryController::onSettingsLoaded,Qt::QueuedConnection);
 }
 
-void SoulstormMemoryController::onSsLaunchStateChanged(bool state)
+void SoulstormMemoryController::onGameLaunchStateChanged(bool state)
 {
-    m_ssLaunchState = state;
+    m_gameLaunchState = state;
 
-    if (!m_ssLaunchState)
+    if (!m_gameLaunchState)
         return;
 
-    onNoFogStateChanged(currentNoFog && m_ssLaunchState);
+    onNoFogStateChanged(currentNoFog && m_gameLaunchState);
 }
 
 void SoulstormMemoryController::onSettingsLoaded()
@@ -39,7 +39,7 @@ void SoulstormMemoryController::onSettingsLoaded()
     qInfo(logInfo()) << "SoulstormMemoryController::onSettingsLoaded()" << "load started";
 
     currentNoFog = m_settingsController->getSettings()->noFog;
-    onNoFogStateChanged(currentNoFog && m_ssLaunchState);
+    onNoFogStateChanged(currentNoFog && m_gameLaunchState);
 
     qInfo(logInfo()) << "SoulstormMemoryController::onSettingsLoaded()" << "load finished";
 }

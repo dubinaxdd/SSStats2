@@ -73,7 +73,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
 
     QObject::connect(m_corePtr->rankedModServiceProcessor(), &RankedModServiceProcessor::sendOnlineCount, this, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
 
-    QObject::connect(m_corePtr->soulstormController(),                        &GameController::ssLaunchStateChanged, this, &UiBackend::onSsLaunchStateChanged,         Qt::QueuedConnection);
+    QObject::connect(m_corePtr->soulstormController(),                        &GameController::gameLaunchStateChanged, this, &UiBackend::onGameLaunchStateChanged,         Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController(),                        &GameController::ssMaximized,          this, &UiBackend::receiveSsMaximized,             Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->replayDataCollector(), &ReplayDataCollector::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
     QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMissionState,  this, &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
@@ -112,9 +112,9 @@ void UiBackend::receiveSsMaximized(bool maximized)
     showClient();
 }
 
-void UiBackend::onSsLaunchStateChanged(bool state)
+void UiBackend::onGameLaunchStateChanged(bool state)
 {
-    setSsLaunchState(state);
+    setGameLaunchState(state);
     setExpand(false);
     showClient();
 }
@@ -226,17 +226,17 @@ InformationPage *UiBackend::informationPage() const
     return m_informationPage;
 }
 
-bool UiBackend::ssLaunchState() const
+bool UiBackend::gameLaunchState() const
 {
-    return m_ssLaunchState;
+    return m_gameLaunchState;
 }
 
-void UiBackend::setSsLaunchState(bool newSsLaunchState)
+void UiBackend::setGameLaunchState(bool newGameLaunchState)
 {
-    if (m_ssLaunchState == newSsLaunchState)
+    if (m_gameLaunchState == newGameLaunchState)
         return;
-    m_ssLaunchState = newSsLaunchState;
-    emit ssLaunchStateChanged();
+    m_gameLaunchState = newGameLaunchState;
+    emit gameLaunchStateChanged();
 }
 
 bool UiBackend::getSoulstormLaunchedDialogVisible() const
@@ -292,7 +292,7 @@ void UiBackend::setGamePath(GamePath* currentGame)
 
     m_gamePage->setCurrentGame(currentGame);
 
-    emit soulstormIsInstalledChanged();
+    emit gameIsInstalledChanged();
 }
 
 bool UiBackend::latesBalanceModNotInstalledDialogVisible() const
@@ -535,7 +535,7 @@ void UiBackend::launchGame()
 {
     QDir steamDir(m_steamPath);
 
-    if(!soulstormIsInstalled())
+    if(!gameIsInstalled())
         setSsNotInstalledDialogVisible(true);
     else if(m_steamPath.isEmpty() || !steamDir.exists())
         setSteamNotInstalledDialogVisible(true);
@@ -575,7 +575,7 @@ void UiBackend::onSettingsLoaded()
 
 void UiBackend::showClient()
 {
-    m_showClient = m_ssLaunchState && m_ssMaximized;
+    m_showClient = m_gameLaunchState && m_ssMaximized;
     emit sendShowClient(m_showClient);
 }
 
@@ -584,7 +584,7 @@ SettingsPageModel *UiBackend::settingsPageModel() const
     return m_settingsPageModel;
 }
 
-bool UiBackend::soulstormIsInstalled()
+bool UiBackend::gameIsInstalled()
 {
     QFile ssDir;
 

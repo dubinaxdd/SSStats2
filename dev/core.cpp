@@ -92,9 +92,9 @@ void Core::addConnections()
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_gameController, &GameController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
     QObject::connect(m_gameController,                    &GameController::ssMaximized,          m_overlayWindowController,    &OverlayWindowController::ssMaximized,      Qt::DirectConnection);
-    QObject::connect(m_gameController,                    &GameController::ssMaximized,          m_soundProcessor,             &SoundProcessor::setSoulstormMaximized,     Qt::DirectConnection);
-    QObject::connect(m_gameController,                    &GameController::ssLaunchStateChanged, m_overlayWindowController,    &OverlayWindowController::ssLaunched,       Qt::QueuedConnection);
-    QObject::connect(m_gameController,                    &GameController::ssLaunchStateChanged, m_balanceModManager,          &BalanceModManager::onSsLaunchStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_gameController,                    &GameController::ssMaximized,          m_soundProcessor,             &SoundProcessor::setGameMaximized,     Qt::DirectConnection);
+    QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_overlayWindowController,    &OverlayWindowController::gameLaunched,       Qt::QueuedConnection);
+    QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_balanceModManager,          &BalanceModManager::onGameLaunchStateChanged, Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::inputBlockStateChanged, HookManager::instance(),    &HookManager::onInputBlockStateChanged,     Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::gameInitialized,         m_overlayWindowController,  &OverlayWindowController::gameInitialized, Qt::DirectConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,  Qt::QueuedConnection);

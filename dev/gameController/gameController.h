@@ -66,7 +66,7 @@ private slots:
 
 
 signals:
-    void ssLaunchStateChanged(bool lounched);
+    void gameLaunchStateChanged(bool lounched);
     void ssMaximized(bool maximized);
     void inputBlockStateChanged(bool);
     void sendAuthKey(QString authKey);
@@ -91,7 +91,7 @@ private:
     HWND m_gameHwnd = NULL;
     LONG m_defaultGameWindowLong = NULL;
 
-    QTimer* m_ssWindowControllTimer;
+    QTimer* m_gameWindowControllTimer;
     
     QString m_currentProfile;
 

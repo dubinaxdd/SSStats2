@@ -63,7 +63,7 @@ void SoundProcessor::playGameLoadSound()
         playAudio("qrc:/sounds/resources/sounds/game_loading.wav");
 }
 
-void SoundProcessor::setSoulstormMaximized(bool isMaximized)
+void SoundProcessor::setGameMaximized(bool isMaximized)
 {
     m_soulstormMaximized = isMaximized;
 }

@@ -79,8 +79,8 @@ class UiBackend : public QObject
     Q_PROPERTY(bool softwareUseBanDialogVisible READ softwareUseBanDialogVisible WRITE setSoftwareUseBanDialogVisible NOTIFY softwareUseBanDialogVisibleChanged)
     Q_PROPERTY(QString softwareUseBanReason READ softwareUseBanReason WRITE setSoftwareUseBanReason NOTIFY softwareUseBanReasonChanged)
 
-    Q_PROPERTY(bool soulstormIsInstalled READ soulstormIsInstalled NOTIFY soulstormIsInstalledChanged)
-    Q_PROPERTY(bool ssLaunchState READ ssLaunchState WRITE setSsLaunchState NOTIFY ssLaunchStateChanged)
+    Q_PROPERTY(bool gameIsInstalled READ gameIsInstalled NOTIFY gameIsInstalledChanged)
+    Q_PROPERTY(bool gameLaunchState READ gameLaunchState WRITE setGameLaunchState NOTIFY gameLaunchStateChanged)
 
     Q_PROPERTY(qreal devicePixelRatio READ devicePixelRatio WRITE setDevicePixelRatio NOTIFY devicePixelRatioChanged)
 
@@ -121,7 +121,7 @@ public:
     InformationPage *informationPage() const;
 
 
-    bool soulstormIsInstalled();
+    bool gameIsInstalled();
 
     Q_INVOKABLE void launchGame();
 
@@ -161,8 +161,8 @@ public:
     bool getSoulstormLaunchedDialogVisible() const;
     void setSoulstormLaunchedDialogVisible(bool newSoulstormLaunchedDialogVisible);
 
-    bool ssLaunchState() const;
-    void setSsLaunchState(bool newSsLaunchState);
+    bool gameLaunchState() const;
+    void setGameLaunchState(bool newGameLaunchState);
 
     bool balanceModInstallProcessedDialogVisible() const;
     void setBalanceModInstallProcessedDialogVisible(bool newBalanceModInstallProcessedDialogVisible);
@@ -210,8 +210,8 @@ signals:
     void ssNotInstalledDialogVisibleChanged();
     void steamNotInstalledDialogVisibleChanged();
     void soulstormLaunchedDialogVisibleChanged();
-    void soulstormIsInstalledChanged();
-    void ssLaunchStateChanged();
+    void gameIsInstalledChanged();
+    void gameLaunchStateChanged();
     void balanceModInstallProcessedDialogVisibleChanged();
     void softwareUseBanDialogVisibleChanged();
     void softwareUseBanReasonChanged();
@@ -221,7 +221,7 @@ public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
     void receiveSsMaximized(bool maximized);
-    void onSsLaunchStateChanged(bool state);
+    void onGameLaunchStateChanged(bool state);
     void setMissionCurrentState(GameMissionState gameCurrentState);
     void receiveNotification(QString notify, bool isWarning);
     void receiveOnlineCount(int onlineCount);
@@ -274,7 +274,7 @@ private:
 
     QPoint m_mousePosition;
     bool m_ssMaximized = false;
-    bool m_ssLaunchState = false;
+    bool m_gameLaunchState = false;
     bool m_showClient = false;
 
     bool m_windowTopmost = false;

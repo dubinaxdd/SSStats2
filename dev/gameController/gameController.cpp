@@ -47,24 +47,17 @@ GameController::GameController(SettingsController *settingsController, QObject *
     else
         qInfo(logInfo()) << "Worked with Game from: " << m_currentGame.gamePath;
 
-    m_gameMemoryReader = new GameMemoryReader(/*this*/);
+    m_gameMemoryReader = new GameMemoryReader();
     m_gameMemoryReader->setGameType(m_currentGame.gameType);
 
-    m_ssWindowControllTimer = new QTimer(this);
-    m_ssWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
+    m_gameWindowControllTimer = new QTimer(this);
+    m_gameWindowControllTimer->setInterval(WINDOW_STATE_CHECK_INTERVAL);
 
 
-    QObject::connect(this, &GameController::ssLaunchStateChanged, m_soulstormMemoryController, &SoulstormMemoryController::onSsLaunchStateChanged, Qt::QueuedConnection);
-
-    QObject::connect(m_ssWindowControllTimer, &QTimer::timeout, this, &GameController::checkWindowState, Qt::QueuedConnection);
-
+    QObject::connect(this, &GameController::gameLaunchStateChanged, m_soulstormMemoryController, &SoulstormMemoryController::onGameLaunchStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_gameWindowControllTimer, &QTimer::timeout, this, &GameController::checkWindowState, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &GameController::gameInitialized, Qt::QueuedConnection);
-
-    //TODO: Надо разлочить если играем в СС
-    //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
-
     //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findAuthKey, Qt::QueuedConnection);
-
 
     QObject::connect(m_gameStateReader, &GameStateReader::ssShutdown,               this, &GameController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
@@ -101,7 +94,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     m_gameMemoryReader->moveToThread(&m_gameMemoryReaderThread);
     m_gameMemoryReaderThread.start();
-    m_ssWindowControllTimer->start();
+    m_gameWindowControllTimer->start();
 }
 
 GameController::~GameController()
@@ -180,6 +173,8 @@ void GameController::onCurrentGameChanged()
     m_dowServerProcessor->setGameType(m_currentGame.gameType);
     m_gameMemoryReader->setGameType(m_currentGame.gameType);
     mutex.unlock();
+
+    checkWindowState();
 }
 
 void GameController::minimizeSsWithWin7Support()
@@ -230,7 +225,7 @@ void GameController::checkWindowState()
              if (m_firstTimerTick)
              {
                  m_firstTimerTick = false;
-                 emit ssLaunchStateChanged(false);
+                 emit gameLaunchStateChanged(false);
              }
              return;
          }
@@ -244,7 +239,7 @@ void GameController::checkWindowState()
             m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
 
             m_defaultGameWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
-            emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
+            emit gameLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о запуске игры
             qInfo(logInfo()) << "Game window accepted";
 
             if (m_settingsController->getSettings()->win7SupportMode && !m_settingsController->getSettings()->launchGameInWindow)
@@ -322,7 +317,7 @@ void GameController::checkWindowState()
             m_gameStateReader->stopedGame();
             m_gameStateReader->setGameLounched(false);
             emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
-            emit ssLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
+            emit gameLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
             qWarning(logWarning()) << "Game window closed";
         }
         else
@@ -335,7 +330,7 @@ void GameController::checkWindowState()
     if (m_firstTimerTick)
     {
         m_firstTimerTick = false;
-        emit ssLaunchStateChanged(m_ssLounchState);
+        emit gameLaunchStateChanged(m_ssLounchState);
     }
 }
 

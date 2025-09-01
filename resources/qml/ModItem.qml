@@ -45,7 +45,7 @@ Rectangle
             Layout.preferredWidth: 100
 
             onClicked: {
-                if (_uiBackend.ssLaunchState)
+                if (_uiBackend.gameLaunchState)
                     _uiBackend.soulstormLaunchedDialogVisible = true
                 else
                     model.installMod();
@@ -58,7 +58,7 @@ Rectangle
             Layout.preferredWidth: 100
 
             onClicked: {
-                if (_uiBackend.ssLaunchState)
+                if (_uiBackend.gameLaunchState)
                     _uiBackend.soulstormLaunchedDialogVisible = true
                 else
                     model.uninstallMod();

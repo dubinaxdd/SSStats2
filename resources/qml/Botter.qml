@@ -213,7 +213,7 @@ Rectangle {
         {
             clip: true
 
-            visible: _uiBackend.soulstormIsInstalled
+            visible: _uiBackend.gameIsInstalled
 
             Label{
                 Layout.preferredWidth: 250

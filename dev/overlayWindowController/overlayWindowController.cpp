@@ -221,7 +221,7 @@ void OverlayWindowController::gameInitialized()
     }
 }
 
-void OverlayWindowController::ssLaunched(bool ssLaunched)
+void OverlayWindowController::gameLaunched(bool ssLaunched)
 {
     if (!m_uiBackendPtr)
         return;

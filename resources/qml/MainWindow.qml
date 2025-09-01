@@ -289,10 +289,10 @@ Window {
                     id: gameButton
                     text: qsTr("Game")
                     pressedState: root.selectedPage === gameButton
-                    enabled: _uiBackend.soulstormIsInstalled
+                    enabled: _uiBackend.gameIsInstalled
                     onClicked: //
                     {
-                        if (_uiBackend.soulstormIsInstalled)
+                        if (_uiBackend.gameIsInstalled)
                             root.selectedPage = gameButton
                         else
                             _uiBackend.ssNotInstalledDialogVisible = true
@@ -309,11 +309,11 @@ Window {
                 HeaderButton{
                     id: replayManagerButton
                     text: qsTr("Replay Manager")
-                    enabled: _uiBackend.soulstormIsInstalled
+                    enabled: _uiBackend.gameIsInstalled
                     pressedState: root.selectedPage === replayManagerButton
 
                     onClicked: {
-                        if (_uiBackend.soulstormIsInstalled)
+                        if (_uiBackend.gameIsInstalled)
                             root.selectedPage = replayManagerButton
                         else
                             _uiBackend.ssNotInstalledDialogVisible = true
@@ -324,11 +324,11 @@ Window {
                     id: modsButton
                     text: qsTr("Mods")
                     newsAvailable: _uiBackend.mapManagerPage.updatesAvailable
-                    enabled: _uiBackend.soulstormIsInstalled
+                    enabled: _uiBackend.gameIsInstalled
                     pressedState: root.selectedPage === modsButton
 
                     onClicked: {
-                        if (_uiBackend.soulstormIsInstalled)
+                        if (_uiBackend.gameIsInstalled)
                             root.selectedPage = modsButton
                         else
                             _uiBackend.ssNotInstalledDialogVisible = true
@@ -509,8 +509,8 @@ Window {
                     {
                         Layout.alignment: Qt.AlignCenter
                         Layout.preferredHeight: 30
-                        Layout.minimumWidth: _uiBackend.ssLaunchState ? 245 : 280
-                        Layout.maximumWidth: _uiBackend.ssLaunchState ? 245 : 280
+                        Layout.minimumWidth: _uiBackend.gameLaunchState ? 245 : 280
+                        Layout.maximumWidth: _uiBackend.gameLaunchState ? 245 : 280
                         radius: 10
                         color: DowStatsStyle.backgroundColor
 
@@ -533,7 +533,7 @@ Window {
                         toolTipText: qsTr("Update")
                         Layout.rightMargin: 5
 
-                        visible: _uiBackend.ssLaunchState
+                        visible: _uiBackend.gameLaunchState
 
                         Layout.preferredHeight: 30
                         Layout.preferredWidth: 30
