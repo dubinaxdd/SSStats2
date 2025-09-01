@@ -156,6 +156,10 @@
         <source>Current active mod</source>
         <translation>Текущий активный мод</translation>
     </message>
+    <message>
+        <source>Auto ad sender</source>
+        <translation>Автоматическая отправка рекламы в лобби</translation>
+    </message>
 </context>
 <context>
     <name>DiscordMessage</name>

@@ -82,6 +82,13 @@ Rectangle {
             enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
         }
 
+        StyledSwitch{
+            id: advertisingSwitch
+            text: qsTr("Auto ad sender")
+            checked: root.settingsModel.enableAdvertising
+            onCheckedChanged: root.settingsModel.enableAdvertising = checked;
+        }
+
         ColumnLayout
         {
             clip: true

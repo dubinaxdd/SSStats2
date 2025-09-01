@@ -194,13 +194,6 @@ Rectangle {
                         onCheckedChanged: _uiBackend.gamePanel.smallPannelActive = checked;
                     }
 
-                    StyledSwitch{
-                        id: advertisingSwitch
-                        text: qsTr("Auto ad sender")
-                        checked: model.enableAdvertising
-                        onCheckedChanged: model.enableAdvertising = checked;
-                    }
-
                     Rectangle
                     {
                         Layout.fillHeight: true
