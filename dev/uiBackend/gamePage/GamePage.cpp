@@ -11,8 +11,8 @@ QVariant GamePage::data(const QModelIndex &index, int role) const
         return QVariant();
 
     switch (role) {
-        case GameName: return p_gamePathArray->at(index.row()).uiGameName;
-        case GameType: return p_gamePathArray->at(index.row()).gameType;
+        case GameNameRole: return p_gamePathArray->at(index.row()).uiGameName;
+        case GameTypeRole: return p_gamePathArray->at(index.row()).gameType;
     }
 
     return QVariant();
@@ -42,11 +42,16 @@ void GamePage::updateCurrentGame(int itemIndex)
     emit currentGameChanged();
 }
 
+GameType::GameTypeEnum GamePage::getCurrentGameType()
+{
+    return m_currentGame->gameType;
+}
+
 QHash<int, QByteArray> GamePage::roleNames() const
 {
     QHash<int, QByteArray> roles;
-    roles[GameName] = "gameName";
-    roles[GameType] = "gameType";
+    roles[GameNameRole] = "gameName";
+    roles[GameTypeRole] = "gameType";
 
     return roles;
 }

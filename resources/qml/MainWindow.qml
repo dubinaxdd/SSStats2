@@ -289,8 +289,14 @@ Window {
                     id: gameButton
                     text: qsTr("Game")
                     pressedState: root.selectedPage === gameButton
-
-                    onClicked: root.selectedPage = gameButton
+                    enabled: _uiBackend.soulstormIsInstalled
+                    onClicked: //
+                    {
+                        if (_uiBackend.soulstormIsInstalled)
+                            root.selectedPage = gameButton
+                        else
+                            _uiBackend.ssNotInstalledDialogVisible = true
+                    }
                 }
 
                 HeaderButton{
@@ -308,14 +314,9 @@ Window {
 
                     onClicked: {
                         if (_uiBackend.soulstormIsInstalled)
-                        {
                             root.selectedPage = replayManagerButton
-                        }
                         else
-                        {
-                            pressedState = false;
                             _uiBackend.ssNotInstalledDialogVisible = true
-                        }
                     }
                 }
 
@@ -328,15 +329,9 @@ Window {
 
                     onClicked: {
                         if (_uiBackend.soulstormIsInstalled)
-                        {
                             root.selectedPage = modsButton
-                        }
                         else
-                        {
-                            pressedState = false;
                             _uiBackend.ssNotInstalledDialogVisible = true
-                        }
-
                     }
                 }
 

@@ -7,21 +7,24 @@
 class GamePage : public QAbstractListModel
 {
     Q_OBJECT
+
+    Q_PROPERTY(GameType::GameTypeEnum currentGameType READ getCurrentGameType NOTIFY currentGameChanged)
 public:
     explicit GamePage(QObject *parent = nullptr);
 
     enum DataRoles {
-        GameName = Qt::UserRole + 1,
-        GameType
+        GameNameRole = Qt::UserRole + 1,
+        GameTypeRole
     };
 
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    Q_INVOKABLE QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     int rowCount( const QModelIndex& parent ) const override;
 
     void setCurrentGame(GamePath *newCurrentGame);
     void setGamePathArray(QVector<GamePath> *newGamePathArray);
 
     Q_INVOKABLE void updateCurrentGame(int itemIndex);
+    Q_INVOKABLE GameType::GameTypeEnum getCurrentGameType();
 
 signals:
     void currentGameChanged();

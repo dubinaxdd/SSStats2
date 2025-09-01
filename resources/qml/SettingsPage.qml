@@ -24,16 +24,6 @@ Rectangle {
 
     Connections
     {
-        target: _uiBackend
-
-        function onNoFogStateChanged()
-        {
-            noFogSwitch.checked = _uiBackend.noFogState;
-        }
-    }
-
-    Connections
-    {
         target: _uiBackend.gamePanel
 
         function onShowGamePannelPresetChanged()
@@ -193,12 +183,6 @@ Rectangle {
                     }
 
                     StyledSwitch{
-                        text: qsTr("Launch Soulstorm in window")
-                        checked: model.launchGameInWindow
-                        onCheckedChanged: model.launchGameInWindow = checked;
-                    }
-
-                    StyledSwitch{
                         id: showGamePannelSwitch
                         text: qsTr("APM panel visible in game")
                         onCheckedChanged: _uiBackend.gamePanel.showGamePannelPreset = checked;
@@ -208,18 +192,6 @@ Rectangle {
                         id: smallPannelActiveSwitch
                         text: qsTr("Small APM panel in game")
                         onCheckedChanged: _uiBackend.gamePanel.smallPannelActive = checked;
-                    }
-
-                    StyledSwitch{
-                        text: qsTr("Skip the intro video")
-                        checked: model.skipIntroVideo
-                        onCheckedChanged: model.skipIntroVideo = checked;
-                    }
-
-                    StyledSwitch{
-                        id: noFogSwitch
-                        text: qsTr("No FOG")
-                        onCheckedChanged: _uiBackend.noFogState = checked;
                     }
 
                     StyledSwitch{

@@ -57,6 +57,7 @@ void Core::registerTypes()
     qmlRegisterUncreatableType<DowStatsStyle::Theme>("Theme", 1, 0, "Theme", "theme style");
     qmlRegisterUncreatableType<BanType>("BanType", 1, 0, "BanType", "ban type");
     qmlRegisterUncreatableType<NotificationType>("NotificationType", 1, 0, "NotificationType", "notification type");
+    qmlRegisterUncreatableType<GameType>("GameType", 1, 0, "GameType", "GameType");
 
     qRegisterMetaType<QVector<PlayerStats>>("QVector<PlayerStats>");
     qRegisterMetaType<ServerPlayerStats>("ServerPlayerStats");

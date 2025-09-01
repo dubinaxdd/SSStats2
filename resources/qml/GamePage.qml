@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.12
 import QtQuick.Dialogs 1.2
 import Qt.labs.platform 1.1
 import DowStatsStyle 1.0
+import GameType 1.0
 
 Rectangle {
     id: root
@@ -20,6 +21,18 @@ Rectangle {
     radius: 10
 
     property var model: _uiBackend.gamePage
+    property var settingsModel: _uiBackend.settingsPageModel
+
+    Connections
+    {
+        target: _uiBackend
+
+        function onNoFogStateChanged()
+        {
+            noFogSwitch.checked = _uiBackend.noFogState;
+        }
+    }
+
 
     ColumnLayout
     {
@@ -27,6 +40,8 @@ Rectangle {
         anchors.margins: 10
 
         StyledComboBox{
+            id: gameSelectComboBox
+
             Layout.fillWidth: true
             model: root.model
             textRole: "gameName"
@@ -69,6 +84,27 @@ Rectangle {
                     }
                 }
             }
+        }
+
+        StyledSwitch{
+            text: qsTr("Launch Soulstorm in window")
+            checked: root.settingsModel.launchGameInWindow
+            onCheckedChanged: root.settingsModel.launchGameInWindow = checked;
+            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
+        }
+
+        StyledSwitch{
+            text: qsTr("Skip the intro video")
+            checked: root.settingsModel.skipIntroVideo
+            onCheckedChanged: root.settingsModel.skipIntroVideo = checked;
+            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
+        }
+
+        StyledSwitch{
+            id: noFogSwitch
+            text: qsTr("No FOG")
+            onCheckedChanged: _uiBackend.noFogState = checked;
+            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
         }
 
         Item{
