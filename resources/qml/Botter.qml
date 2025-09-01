@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Layouts 1.12
 import QtQuick.Controls 2.12
 import DowStatsStyle 1.0
+import GameType 1.0
 
 Rectangle {
     width: 50
@@ -288,7 +289,7 @@ Rectangle {
                     Image{
                         id: iconImage
                         anchors.fill: parent
-                        source: "qrc:/images/resources/icons/ssIcon.png"
+                        source: _uiBackend.gamePage.currentGameType  !==  GameType.DefinitiveEdition ? "qrc:/images/resources/icons/ssIcon.png" : "qrc:/icons/resources/icons/DefinitiveEdition.png"
                     }
                 }
             }
