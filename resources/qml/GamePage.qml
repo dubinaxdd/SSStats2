@@ -45,6 +45,7 @@ Rectangle {
             Layout.fillWidth: true
             model: root.model
             textRole: "gameName"
+            enabled: !_uiBackend.gameLaunchState
 
             onCurrentIndexChanged: {
                 model.updateCurrentGame(currentIndex);
@@ -57,6 +58,7 @@ Rectangle {
 
         Label{
             text: qsTr("Options:")
+            color: DowStatsStyle.textColor
         }
 
         StyledSwitch{
