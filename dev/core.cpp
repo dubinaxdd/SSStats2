@@ -119,6 +119,8 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_gameController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
+    QObject::connect(m_uiBackend->gamePage(), &GamePage::currentGameChanged, m_mapManager, &MapManager::receiveLoadMapsInfo, Qt::QueuedConnection);
+
 
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
     //TODO: нужно для отладки спамилки рекламы

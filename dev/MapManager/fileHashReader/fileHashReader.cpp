@@ -1,34 +1,26 @@
 #include "fileHashReader.h"
 #include <QDir>
 #include <QCryptographicHash>
+#include <QDebug>
 
-FileHashReader::FileHashReader(GamePath *currentGame, QObject *parent)
+FileHashReader::FileHashReader(QObject *parent)
     : QObject(parent)
-    , m_currentGame(currentGame)
 {
 
 }
 
-void FileHashReader::getLocalMapFilesList()
+void FileHashReader::getLocalMapFilesList(QString gamePath)
 {
     QList<MapFileHash> localMapFilesHashes;
 
-    if(m_currentGame->gamePath.isEmpty())
+    if(gamePath.isEmpty())
         return;
 
-    QString path;
-
-    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
-        path = m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp";
-    else
-        path = m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp";
-
-    QDir dir(path);
+    QDir dir(gamePath);
     QFileInfoList dirContent = dir.entryInfoList(QDir::Files);
 
     for (int i = 0; i < dirContent.count(); i++)
     {
-
         MapFileHash newMapFileHash;
         newMapFileHash.fileName = dirContent.at(i).fileName();
 

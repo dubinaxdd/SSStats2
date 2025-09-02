@@ -18,6 +18,7 @@ public:
 
     void requestMapList();
     void receiveMapList(QNetworkReply *reply);
+    void updateMapList();
 
     void requestMapInfo(MapItem *mapItem);
     void receiveMapInfo(QNetworkReply *reply, MapItem *mapItem);
@@ -42,7 +43,7 @@ private slots:
 signals:
     void sendMapItem(MapItem *mapItem);
     void sendDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
-    void requsetLocalMapFilesList();
+    void requsetLocalMapFilesList(QString gamePath);
     void sendMapImage(QImage mapImage, QString mapImageId);
     void mapsInfoLoaded();
 
@@ -67,6 +68,7 @@ private:
 
     QList<MapFileHash> m_localMapFilesHashes;
     QList<MapItem> m_mapItemArray;
+    bool m_mapListLoaded = false;
 
     bool m_blockInfoUpdate = false;
     int m_requestetMapInfoCount = 0;
