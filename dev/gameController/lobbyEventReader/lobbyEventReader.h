@@ -65,6 +65,8 @@ private:
     bool isHostedGame = false;
     bool m_readingActivated = false;
 
+    bool m_automatchPlayersListChanged = false;
+
     const GamePath* m_currentGame;
 
     bool m_sessionIdReceived = false;

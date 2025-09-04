@@ -192,7 +192,7 @@ void LobbyEventReader::readAutomatchEvents()
             QString line = fileLines.at(counter-1);
 
             if (counter == fileLines.size() - 1)
-                m_lastAutomatchLogTime = line;//line.mid(1, 11);
+                m_lastAutomatchLogTime = line;
 
             if (counter == 1)
                 m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
@@ -211,9 +211,10 @@ void LobbyEventReader::readAutomatchEvents()
                 m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = true;
                 m_automatchPlayersList.clear();
+                m_automatchPlayersListChanged = true;
                 tryRequestSessionId();
                 emit automachModeChanged(m_automatchProcessed);
-                qInfo(logInfo()) << "Automtach search started";
+                qInfo(logInfo()) << "Automatch search started";
                 break;
             }
 
@@ -226,8 +227,7 @@ void LobbyEventReader::readAutomatchEvents()
                 m_automatchProcessed = false;
                 m_automatchPlayersList.clear();
                 emit automachModeChanged(m_automatchProcessed);
-                //emit automatchPlayersListChanged(QStringList());
-                qInfo(logInfo()) << "Automtach search stoped";
+                qInfo(logInfo()) << "Automatch search stoped";
                 break;
             }
 
@@ -235,16 +235,22 @@ void LobbyEventReader::readAutomatchEvents()
             {
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
-                //m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+
                 parseAytomatchPlayers(line);
-                qInfo(logInfo()) << "Automtach player connected";
-                //break;
+                qInfo(logInfo()) << "Automatch player connected";
             }
 
             counter--;
         }
 
+
         m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+
+        if (m_automatchPlayersListChanged)
+        {
+            emit automatchPlayersListChanged(m_automatchPlayersList);
+            m_automatchPlayersListChanged = false;
+        }
     }
 }
 
@@ -266,16 +272,21 @@ void LobbyEventReader::parseAytomatchPlayers(QString str)
     QString playerId = str.mid(startIndex, 8);
 
     if(!m_automatchPlayersList.contains(playerId))
+    {
         m_automatchPlayersList.append(playerId);
+        m_automatchPlayersListChanged = true;
+    }
 
     searchPattern = "Local:";
     startIndex = str.indexOf(searchPattern) + searchPattern.length() + 1;
     playerId = str.mid(startIndex, 8);
 
     if(!m_automatchPlayersList.contains(playerId))
+    {
         m_automatchPlayersList.append(playerId);
+        m_automatchPlayersListChanged = true;
+    }
 
-    emit automatchPlayersListChanged(m_automatchPlayersList);
 }
 
 void LobbyEventReader::checkPatyState()
