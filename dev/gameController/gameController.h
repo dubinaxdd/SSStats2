@@ -63,6 +63,7 @@ private slots:
     void ssShutdown();
     void fullscrenizeGame();
     void minimizeGame();
+    void requestDowPlayersData();
 
 
 signals:

@@ -123,12 +123,12 @@ void UiBackend::loadStarted()
 {
     m_loadStarted = true;
     m_gamePanel->onGameStopped();
-    m_statisticPanel->setBlockUpdate(true);
+    //m_statisticPanel->setBlockUpdate(true);
 
     setEnableTrainingModeSwitch(false);
 
     m_headerVisible = false;
-    m_patyStatisticVisible = false;
+    //m_patyStatisticVisible = false;
     m_expand = false;
 
     if(m_settingsPageModel->overlayVisible())
@@ -138,7 +138,7 @@ void UiBackend::loadStarted()
     }
 
     emit headerPanelVisibleChanged();
-    emit patyStatisticVisibleChanged();
+    //emit patyStatisticVisibleChanged();
 }
 
 void UiBackend::startingMission(GameMissionState gameCurrentState)
@@ -148,6 +148,8 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
     m_missionStarted = true;
     m_headerVisible = false;
     m_patyStatisticVisible = false;
+
+    m_statisticPanel->setBlockUpdate(true);
 
     emit headerPanelVisibleChanged();
     emit patyStatisticVisibleChanged();

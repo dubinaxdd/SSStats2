@@ -460,7 +460,7 @@ void DiscordWebProcessor::readMessage(QString message)
 
 void DiscordWebProcessor::reconnect()
 {
-    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Try reconnect";
+    //qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Try reconnect";
     m_webSocket.open(QUrl(DISCORD_WEB_SERVICE));
 }
 
@@ -476,5 +476,5 @@ void DiscordWebProcessor::onDisconnected()
 {
     m_reconnectTimer.start();
     m_webSocketConnected = false;
-    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Disconnected";
+    //qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Disconnected";
 }

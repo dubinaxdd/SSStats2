@@ -30,36 +30,46 @@ signals:
     void quitFromParty();
     void requestSessionId();
 
+    void automatchPlayersListChanged(QStringList automatchPlayersList);
+    void automachModeChanged(bool automachMode);
+
 public slots:
     void activateReading(bool activated);
     void receiveCurrentMissionState(GameMissionState gameCurrentState);
 
 private slots:
     void readLobbyEvents();
+    void readAutomatchEvents();
     void tryRequestSessionId();
+    void parseAytomatchPlayers(QString str);
 
 public:
     void checkPatyState();
     void setCurrentGame(GamePath *newCurrentGame);
     void setSessionIdReceived(bool newSessionIdReceived);
-
     bool sessionIdRequested() const;
-
     void setSessionIdRequested(bool newSessionIdRequested);
+
+    bool automatchProcessed() const;
 
 private:
     QTimer* m_lobbyEventsReadTimer;
     QString m_preLastLogTime = "baneblade";
     QString m_lastLogTime;
 
-    bool isHostedGame = false;
+    QString m_preLastAutomatchLogTime = "baneblade";
+    QString m_lastAutomatchLogTime;
 
+    QStringList m_automatchPlayersList;
+
+    bool isHostedGame = false;
     bool m_readingActivated = false;
 
     const GamePath* m_currentGame;
 
     bool m_sessionIdReceived = false;
     bool m_sessionIdRequested = false;
+    bool m_automatchProcessed = false;
 
 
 };

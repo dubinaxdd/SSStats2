@@ -74,9 +74,22 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_replayDataCollector,    &ReplayDataCollector::onQuitParty, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
+
+
+
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
+    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
+
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
+
+
+
+
+
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::automatchPlayersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
+
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
 
@@ -578,6 +591,12 @@ void GameController::minimizeGame()
     m_ssMaximized = false;
     emit ssMaximized(m_ssMaximized);
     qInfo(logInfo()) << "Soulstorm minimized with win7 support mode";
+}
+
+void GameController::requestDowPlayersData()
+{
+    if (!m_lobbyEventReader->automatchProcessed())
+        m_dowServerProcessor->requestPartysData();
 }
 
 bool GameController::getUseWindows7SupportMode() const

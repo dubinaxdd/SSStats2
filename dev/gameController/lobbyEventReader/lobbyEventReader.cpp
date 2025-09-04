@@ -10,6 +10,7 @@ LobbyEventReader::LobbyEventReader(QObject *parent) : QObject(parent)
 {
     m_lobbyEventsReadTimer->setInterval(READ_EVETS_TIMER_INTERVAL);
     QObject::connect(m_lobbyEventsReadTimer, &QTimer::timeout, this, &LobbyEventReader::readLobbyEvents, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventsReadTimer, &QTimer::timeout, this, &LobbyEventReader::readAutomatchEvents, Qt::QueuedConnection);
 }
 
 void LobbyEventReader::activateReading(bool activated)
@@ -172,6 +173,81 @@ void LobbyEventReader::readLobbyEvents()
     }
 }
 
+void LobbyEventReader::readAutomatchEvents()
+{
+    if (!m_readingActivated)
+        return;
+
+    QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTextStream textStream(&file);
+        QStringList fileLines = textStream.readAll().split("\r");
+
+        int counter = fileLines.size();
+
+        while (counter!=0)
+        {
+            QString line = fileLines.at(counter-1);
+
+            if (counter == fileLines.size() - 1)
+                m_lastAutomatchLogTime = line;//line.mid(1, 11);
+
+            if (counter == 1)
+                m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+
+            if (line.contains(m_preLastAutomatchLogTime))
+            {
+                m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+                break;
+            }
+
+            if (line.contains("Lobby - LIE_StartAutoMatch received"))
+            {
+                if(line.contains(m_preLastAutomatchLogTime))
+                    break;
+
+                m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+                m_automatchProcessed = true;
+                m_automatchPlayersList.clear();
+                tryRequestSessionId();
+                emit automachModeChanged(m_automatchProcessed);
+                qInfo(logInfo()) << "Automtach search started";
+                break;
+            }
+
+            if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission"))
+            {
+                if(line.contains(m_preLastAutomatchLogTime))
+                    break;
+
+                m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+                m_automatchProcessed = false;
+                m_automatchPlayersList.clear();
+                emit automachModeChanged(m_automatchProcessed);
+                //emit automatchPlayersListChanged(QStringList());
+                qInfo(logInfo()) << "Automtach search stoped";
+                break;
+            }
+
+            if (m_automatchProcessed && line.contains("Lobby - New Peer for remote player:"))
+            {
+                if(line.contains(m_preLastAutomatchLogTime))
+                    break;
+                //m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+                parseAytomatchPlayers(line);
+                qInfo(logInfo()) << "Automtach player connected";
+                //break;
+            }
+
+            counter--;
+        }
+
+        m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+    }
+}
+
 void LobbyEventReader::tryRequestSessionId()
 {
     if(!m_sessionIdReceived && !m_sessionIdRequested)
@@ -179,6 +255,27 @@ void LobbyEventReader::tryRequestSessionId()
         m_sessionIdRequested = true;
         emit requestSessionId();
     }
+}
+
+void LobbyEventReader::parseAytomatchPlayers(QString str)
+{
+    //Lobby - New Peer for remote player: 12427431 Local: 10008417
+
+    QString searchPattern = "Lobby - New Peer for remote player:";
+    int startIndex = str.indexOf(searchPattern) + searchPattern.length() + 1;
+    QString playerId = str.mid(startIndex, 8);
+
+    if(!m_automatchPlayersList.contains(playerId))
+        m_automatchPlayersList.append(playerId);
+
+    searchPattern = "Local:";
+    startIndex = str.indexOf(searchPattern) + searchPattern.length() + 1;
+    playerId = str.mid(startIndex, 8);
+
+    if(!m_automatchPlayersList.contains(playerId))
+        m_automatchPlayersList.append(playerId);
+
+    emit automatchPlayersListChanged(m_automatchPlayersList);
 }
 
 void LobbyEventReader::checkPatyState()
@@ -236,5 +333,10 @@ void LobbyEventReader::setSessionIdReceived(bool newSessionIdReceived)
 void LobbyEventReader::setSessionIdRequested(bool newSessionIdRequested)
 {
     m_sessionIdRequested = newSessionIdRequested;
+}
+
+bool LobbyEventReader::automatchProcessed() const
+{
+    return m_automatchProcessed;
 }
 

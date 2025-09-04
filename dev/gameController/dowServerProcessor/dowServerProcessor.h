@@ -39,6 +39,7 @@ public slots:
     void setCurrentModVersion(QString modVersion);
     void requestPartysData();
     void onPlayerDisconnected();
+    void onAutomatchPlayersListChanged(QStringList playersList);
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
@@ -52,7 +53,6 @@ private slots:
     void addQuery(DowServerProcessor::QueryType type);
 
 signals:
-    void sendPartysArray(QVector<PartyData> partyDataArray);
     void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo );
 
 private:

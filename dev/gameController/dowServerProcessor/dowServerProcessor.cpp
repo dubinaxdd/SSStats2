@@ -178,6 +178,27 @@ void DowServerProcessor::onPlayerDisconnected()
     //addQuery(QueryType::FindAdvertisements);
 }
 
+void DowServerProcessor::onAutomatchPlayersListChanged(QStringList playersList)
+{
+    qDebug() << "ASDASDASDA" << playersList;
+
+    QVector<PlayerData> profilesData;
+
+    for (auto& item : playersList)
+    {
+        PlayerData newPlayerData;
+        newPlayerData.profileID = item;
+
+        profilesData.append(newPlayerData);
+    }
+
+    //requestPlayersSids(profilesData);
+
+    m_profileIdsForQueue = profilesData;
+    addQuery(QueryType::PlayersSids);
+
+}
+
 void DowServerProcessor::setDowServerRequestParametres(DowServerRequestParametres parametres)
 {
     AbstractDowServerProcessor::setDeowServerRequestParametres(parametres);
@@ -330,8 +351,6 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
                 }
                 partysArray.append(newPartyData);
             }
-
-            emit sendPartysArray(partysArray);
 
             m_profileIdsForQueue = getPlayersInCurrentRoom(partysArray);
             addQuery(QueryType::PlayersSids);
