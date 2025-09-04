@@ -43,6 +43,7 @@ struct Settings
     //bool showBalanceModBetaVersions = false;
     QString updateCheckAddress = "";
     QString language = "system";
+    QString lastGamePath = "";
 };
 
 class SettingsController : public QObject
@@ -63,7 +64,7 @@ signals:
 
 
 private:
-    QSettings *ss_stats_settings;
+    QSettings *dow_stats_settings;
     QSettings *m_updaterSettings;
     Settings* m_settings;
 

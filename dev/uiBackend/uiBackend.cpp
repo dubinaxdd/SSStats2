@@ -21,7 +21,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     , m_notificationManager(new NotificationManager(this))
     , m_informationPage(new InformationPage(this))
     , m_notificationVisibleTimer(new QTimer(this))
-    , m_gamePage(new GamePage(this))
+    , m_gamePage(new GamePage(core->settingsController(), this))
 {
     m_ssStatsVersion.append(PROJECT_VERSION_MAJOR);
     m_ssStatsVersion.append(".");

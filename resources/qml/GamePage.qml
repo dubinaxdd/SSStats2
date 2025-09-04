@@ -33,7 +33,6 @@ Rectangle {
         }
     }
 
-
     ColumnLayout
     {
         anchors.fill: parent
@@ -46,10 +45,8 @@ Rectangle {
             model: root.model
             textRole: "gameName"
             enabled: !_uiBackend.gameLaunchState
-
-            onCurrentIndexChanged: {
-                model.updateCurrentGame(currentIndex);
-            }
+            onObjectSelected: root.model.currentItem = currentIndex;
+            Component.onCompleted: currentIndex = root.model.currentItem
         }
 
         Item{

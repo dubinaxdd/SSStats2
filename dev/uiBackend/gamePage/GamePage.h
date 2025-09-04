@@ -3,14 +3,16 @@
 
 #include <QAbstractListModel>
 #include <baseTypes.h>
+#include <settingsController.h>
 
 class GamePage : public QAbstractListModel
 {
     Q_OBJECT
 
     Q_PROPERTY(GameType::GameTypeEnum currentGameType READ getCurrentGameType NOTIFY currentGameChanged)
+    Q_PROPERTY(int currentItem READ getCurrentItem WRITE setCurrentItem NOTIFY currentItemChanged FINAL)
 public:
-    explicit GamePage(QObject *parent = nullptr);
+    explicit GamePage(SettingsController *settingsController, QObject *parent = nullptr);
 
     enum DataRoles {
         GameNameRole = Qt::UserRole + 1,
@@ -25,9 +27,13 @@ public:
 
     Q_INVOKABLE void updateCurrentGame(int itemIndex);
     Q_INVOKABLE GameType::GameTypeEnum getCurrentGameType();
+    Q_INVOKABLE int getCurrentItem();
+
+    void setCurrentItem(int newCurrentItem);
 
 signals:
     void currentGameChanged();
+    void currentItemChanged();
 
 protected:
     QHash<int, QByteArray> roleNames() const override;
@@ -35,6 +41,9 @@ protected:
 private:
     GamePath* m_currentGame;
     QVector<GamePath> *p_gamePathArray;
+    SettingsController *p_settingsController;
+    int m_currentItem = 0;
+
 };
 
 #endif // GAMEPAGE_H
