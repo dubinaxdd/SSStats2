@@ -418,6 +418,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
     for (int i = 0; i < playersInfo.count(); i++)
         qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId;
 
+    m_lastPlayersInfo = playersInfo;
     emit sendPlayersInfoFromDowServer(playersInfo);
 }
 
@@ -465,6 +466,11 @@ void DowServerProcessor::addQuery(QueryType type)
         return;
 
     m_requestsQueue.append(type);
+}
+
+QList<PlayerInfoFromDowServer> DowServerProcessor::lastPlayersInfo() const
+{
+    return m_lastPlayersInfo;
 }
 
 void DowServerProcessor::setGameType(GameType::GameTypeEnum newGameType)

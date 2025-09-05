@@ -25,6 +25,8 @@ public:
 
     void setGameType(GameType::GameTypeEnum newGameType) override;
 
+    QList<PlayerInfoFromDowServer> lastPlayersInfo() const;
+
 private:
     QVector<PlayerData> getPlayersInCurrentRoom(QVector<PartyData> partyDataArray);
 
@@ -60,6 +62,8 @@ private:
     QTimer *m_queueTimer;
     QTimer *m_requestDataAftrePlayerDisconectTimer;
     QVector<PlayerData> m_profileIdsForQueue;
+
+    QList<PlayerInfoFromDowServer> m_lastPlayersInfo;
 
     QString m_steamID = "";
     QString m_profileID = "";

@@ -25,6 +25,7 @@ signals:
     void sendDowServerRequestParametres(DowServerRequestParametres sessionId);
     void sendDowServerRequestParametresError();
     void sendAuthKey(QString authKey);
+    void sendPlayersIdList(QStringList playersInfo);
 
 public slots:
     void refreshSteamPlayersInfo();
@@ -33,11 +34,15 @@ public slots:
     void findAuthKey();
     void abort();
 
+    void findIgnoredPlaersId(QStringList playerNames);
+
 private:
     DowServerRequestParametres findSteamSoulstormSessionId();
     DowServerRequestParametres findDefinitiveEditionSessionId(DWORD64 startAdress);
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
+
+    QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endeAdress, QStringList names, QString gameName);
 
 private:
     unsigned char steamHeader[18] =  { 0x18, 0x0, 0x0, 0x0, 0x2F, 0x0, 0x73, 0x0, 0x74, 0x0, 0x65, 0x0, 0x61, 0x0, 0x6D, 0x0, 0x2F, 0x0 };
@@ -53,5 +58,6 @@ private:
 
     GameType::GameTypeEnum m_gameType;
     bool m_dataFinded = false;
+    bool m_ignoredPlayersIdFinded = false;
 };
 #endif // GAMEMEMORYREADER_H

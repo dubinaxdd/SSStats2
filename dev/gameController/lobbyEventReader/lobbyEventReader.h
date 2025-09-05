@@ -33,6 +33,8 @@ signals:
     void automatchPlayersListChanged(QStringList automatchPlayersList);
     void automachModeChanged(bool automachMode);
 
+    void findIgnordPlayersId(QStringList automatchNamesList);
+
 public slots:
     void activateReading(bool activated);
     void receiveCurrentMissionState(GameMissionState gameCurrentState);
@@ -41,7 +43,6 @@ private slots:
     void readLobbyEvents();
     void readAutomatchEvents();
     void tryRequestSessionId();
-    void parseAytomatchPlayers(QString str);
 
 public:
     void checkPatyState();
@@ -49,8 +50,11 @@ public:
     void setSessionIdReceived(bool newSessionIdReceived);
     bool sessionIdRequested() const;
     void setSessionIdRequested(bool newSessionIdRequested);
-
     bool automatchProcessed() const;
+
+private:
+    void parseAytomatchPlayers(QString str);
+    void parseAutomatchPlayerName(QString str);
 
 private:
     QTimer* m_lobbyEventsReadTimer;
@@ -61,11 +65,15 @@ private:
     QString m_lastAutomatchLogTime;
 
     QStringList m_automatchPlayersList;
+    QStringList m_automatchNamesList;
+
+    QString m_localPlayerId = "";
 
     bool isHostedGame = false;
     bool m_readingActivated = false;
 
     bool m_automatchPlayersListChanged = false;
+    bool m_automatchNamesListChanged = false;
 
     const GamePath* m_currentGame;
 

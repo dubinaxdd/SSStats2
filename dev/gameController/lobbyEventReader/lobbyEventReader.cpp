@@ -203,19 +203,25 @@ void LobbyEventReader::readAutomatchEvents()
                 break;
             }
 
-            if (line.contains("Lobby - LIE_StartAutoMatch received"))
+            if (line.contains("Lobby - LIE_StartAutoMatch received") || line.contains("Lobby - LIE_HostGame received"))
             {
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
 
-                m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
+                //m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = true;
                 m_automatchPlayersList.clear();
+                m_automatchNamesList.clear();
                 m_automatchPlayersListChanged = true;
+                m_automatchNamesListChanged = true;
+
+                if (!m_localPlayerId.isEmpty())
+                    m_automatchPlayersList.append(m_localPlayerId);
+
                 tryRequestSessionId();
                 emit automachModeChanged(m_automatchProcessed);
                 qInfo(logInfo()) << "Automatch search started";
-                break;
+                //break;
             }
 
             if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission"))
@@ -226,6 +232,7 @@ void LobbyEventReader::readAutomatchEvents()
                 m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = false;
                 m_automatchPlayersList.clear();
+                m_automatchNamesList.clear();
                 emit automachModeChanged(m_automatchProcessed);
                 qInfo(logInfo()) << "Automatch search stoped";
                 break;
@@ -240,6 +247,16 @@ void LobbyEventReader::readAutomatchEvents()
                 qInfo(logInfo()) << "Automatch player connected";
             }
 
+
+            if (m_automatchProcessed && line.contains("Lobby -- Net UPDATE PLAYER information for player"))
+            {
+                if(line.contains(m_preLastAutomatchLogTime))
+                    break;
+
+                parseAutomatchPlayerName(line);
+                qInfo(logInfo()) << "Automatch player name parse";
+            }
+
             counter--;
         }
 
@@ -250,6 +267,15 @@ void LobbyEventReader::readAutomatchEvents()
         {
             emit automatchPlayersListChanged(m_automatchPlayersList);
             m_automatchPlayersListChanged = false;
+        }
+
+
+        if (m_automatchNamesListChanged && m_automatchNamesList.count() > m_automatchPlayersList.count())
+        {
+            qDebug() << "Start Find Ignored Players Id";
+
+            emit findIgnordPlayersId(m_automatchPlayersList);
+            m_automatchNamesListChanged = false;
         }
     }
 }
@@ -283,10 +309,27 @@ void LobbyEventReader::parseAytomatchPlayers(QString str)
 
     if(!m_automatchPlayersList.contains(playerId))
     {
+        m_localPlayerId = playerId;
         m_automatchPlayersList.append(playerId);
         m_automatchPlayersListChanged = true;
     }
 
+}
+
+void LobbyEventReader::parseAutomatchPlayerName(QString str)
+{
+    //Lobby -- Net UPDATE PLAYER information for player (0 - 1 - [ELM] Nazgul) received
+
+    QString searchPattern = "Lobby -- Net UPDATE PLAYER information for player";
+    int startIndex = str.indexOf(searchPattern) + searchPattern.length() + 10;
+    QString playerName = str.right(str.length() - startIndex).replace(") received", "");
+
+    if(!m_automatchNamesList.contains(playerName))
+    {
+        qDebug() << "ASDASDASDASD Append name: " << playerName;
+        m_automatchNamesList.append(playerName);
+        m_automatchNamesListChanged = true;
+    }
 }
 
 void LobbyEventReader::checkPatyState()

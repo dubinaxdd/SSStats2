@@ -399,15 +399,6 @@ void GameMemoryReader::findSessionId()
 
     if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
     {
-        /*parametres = findDefinitiveEditionSessionId(0x10000000000);
-
-        if (!parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
-        {
-            emit sendDowServerRequestParametres(parametres);
-            return;
-        }*/
-
-
         QVector<DWORD64> numbers;
 
         for (DWORD64 i = 0x00000000000; i < 0x30000000000; i += 0x1000000000)
@@ -540,6 +531,52 @@ void GameMemoryReader::abort()
     m_playersSteamScannerMutex.lock();
     m_abort = true;
     m_playersSteamScannerMutex.unlock();
+}
+
+void GameMemoryReader::findIgnoredPlaersId(QStringList playersIdList)
+{
+    qDebug() << "Start Find Ignored Players Id 222" << playersIdList;
+
+    m_ignoredPlayersIdFinded = false;
+    QStringList findedPlayersIdList;
+
+    QVector<DWORD64> numbers;
+
+    DWORD64 step;
+    QString gameName;
+
+    if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
+    {
+        step = 0x1000000000;
+        gameName = "Warhammer 40,000: Dawn of War";
+
+        //for (DWORD64 i = 0x00000000000; i < 0x30000000000; i += step)
+
+        for (DWORD64 i = 0x23000000000; i > 0x00000000000; i -= step)
+            numbers.append(i);
+    }
+    else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
+    {
+        step = 0x10000000;
+        gameName = "Dawn of War: Soulstorm";
+
+        for (DWORD64 i = 0x00000000; i < 0x80000000; i += step)
+            numbers.append(i);
+    }
+
+    concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
+        findedPlayersIdList = findIgnoredPlayersIdInMemorySection(n, n + step, playersIdList, gameName);
+
+        if (!findedPlayersIdList.isEmpty() && !m_ignoredPlayersIdFinded)
+        {
+            qDebug() << "Finded full list of players ID" << findedPlayersIdList;
+            m_ignoredPlayersIdFinded = true;
+            emit sendPlayersIdList(findedPlayersIdList);
+            return;
+        }
+    });
+
+    qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlaersId: players id not finded";
 }
 
 DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
@@ -747,6 +784,116 @@ QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray 
     }
 
     return parameterStr;
+}
+
+QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playersId, QString gameName)
+{
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    LPCWSTR lps = (LPCWSTR)gameName.utf16();
+    m_gameHwnd = FindWindowW(NULL, lps);
+
+    if(!m_gameHwnd)
+        return QStringList();
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
+
+    // Получение дескриптора процесса
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+    if(hProcess==nullptr)
+        return QStringList();
+
+    int bufferSize = 2000000;
+    QByteArray buffer(bufferSize, 0);
+    DWORD64 ptr1Count = startAdress;
+    DWORD64 ptr2Count = endAdress;
+
+    QByteArray searchedID = playersId.first().toLocal8Bit();
+    QString maskString = "0123456789";
+
+    while (ptr1Count < ptr2Count)
+    {
+        if(m_ignoredPlayersIdFinded)
+            return QStringList();
+
+        DWORD64  bytesRead = 0;
+
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
+        {
+            ptr1Count += bufferSize;
+            continue;
+        }
+
+        //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
+        bufferSize = 100000;
+
+        for (int i = 151; i < buffer.size() - 151; i++)
+        {
+            bool match = true;
+
+            for (int j = 0; j < searchedID.size(); j++)
+            {
+                if (buffer.at(i + j) != searchedID[j])
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (!match)
+                continue;
+
+            auto temp2 = buffer.mid(i - 150, 300);
+
+            //qDebug() << "First match" << temp2;
+
+            bool allIdFinded = true;
+
+            for(auto& needName2 : playersId)
+            {
+                if (!temp2.contains(needName2.toLocal8Bit()))
+                {
+                    allIdFinded = false;
+                    break;
+                }
+            }
+
+            if(allIdFinded)
+            {
+                qDebug() << "Second matched" << temp2;
+
+                if (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + ",") || temp2.contains("," + searchedID + "]") )
+                {
+                    QStringList idList;
+                    QString currentId;
+
+                    for (auto& symbol : temp2)
+                    {
+                        if (maskString.contains(symbol))
+                        {
+                            currentId.append(symbol);
+                        }
+                        else
+                        {
+                            if(currentId.size() == 8 && !idList.contains(currentId))
+                                idList.append(currentId);
+
+                            currentId.clear();
+                        }
+                    }
+
+                    if(idList.count() > playersId.count())
+                        return idList;
+
+                }
+                //qDebug() << "Second match" << temp2;
+            }
+        }
+
+        ptr1Count += bufferSize;
+    }
+
+    return QStringList();
 }
 
 void GameMemoryReader::setGameType(GameType::GameTypeEnum newGameType)

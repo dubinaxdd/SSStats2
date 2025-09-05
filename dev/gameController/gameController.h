@@ -64,7 +64,7 @@ private slots:
     void fullscrenizeGame();
     void minimizeGame();
     void requestDowPlayersData();
-
+    void onAutomatchNamesListChanged(QStringList automatchNamesList);
 
 signals:
     void gameLaunchStateChanged(bool lounched);

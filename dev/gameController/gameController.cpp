@@ -75,8 +75,6 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_replayDataCollector,    &ReplayDataCollector::onQuitParty, Qt::QueuedConnection);
 
-
-
     //QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
     //QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
 
@@ -84,12 +82,9 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
 
 
-
-
-
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::automatchPlayersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
-
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnordPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlaersId, Qt::QueuedConnection);
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
 
@@ -101,6 +96,8 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true);});
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdRequested(false);});
 
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
+
     //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
@@ -108,6 +105,9 @@ GameController::GameController(SettingsController *settingsController, QObject *
     m_gameMemoryReader->moveToThread(&m_gameMemoryReaderThread);
     m_gameMemoryReaderThread.start();
     m_gameWindowControllTimer->start();
+
+
+    //m_gameMemoryReader->findIgnoredPlaersId({"10008417" , "11130987", "10301060"});
 }
 
 GameController::~GameController()
@@ -597,6 +597,17 @@ void GameController::requestDowPlayersData()
 {
     if (!m_lobbyEventReader->automatchProcessed())
         m_dowServerProcessor->requestPartysData();
+}
+
+void GameController::onAutomatchNamesListChanged(QStringList automatchNamesList)
+{
+    for (auto& item : m_dowServerProcessor->lastPlayersInfo())
+    {
+        if(automatchNamesList.contains(item.name))
+            automatchNamesList.removeAll(item.name);
+    }
+
+    m_gameMemoryReader->findIgnoredPlaersId(automatchNamesList);
 }
 
 bool GameController::getUseWindows7SupportMode() const
