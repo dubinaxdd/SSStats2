@@ -175,12 +175,11 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 void DowServerProcessor::onPlayerDisconnected()
 {
     m_requestDataAftrePlayerDisconectTimer->start();
-    //addQuery(QueryType::FindAdvertisements);
 }
 
 void DowServerProcessor::onAutomatchPlayersListChanged(QStringList playersList)
 {
-    qDebug() << "ASDASDASDA" << playersList;
+    qInfo(logInfo()) << "DowServerProcessor::onAutomatchPlayersListChanged: - " << playersList;
 
     QVector<PlayerData> profilesData;
 

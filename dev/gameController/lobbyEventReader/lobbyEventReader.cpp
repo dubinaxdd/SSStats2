@@ -41,12 +41,7 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
     if (gameCurrentState == GameMissionState::gameLoadStarted)
     {
         if (m_automatchProcessed && m_automatchNamesList.count() > m_automatchPlayersList.count())
-        {
-            //qDebug() << "Start Find Ignored Players Id";
-            //emit findIgnordPlayersId(m_automatchPlayersList);
-
             m_ignotingPlayersListRequestTimer.start();
-        }
     }
 }
 
@@ -224,7 +219,6 @@ void LobbyEventReader::readAutomatchEvents()
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
 
-                //m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = true;
                 m_automatchPlayersList.clear();
                 m_automatchNamesList.clear();
@@ -237,7 +231,6 @@ void LobbyEventReader::readAutomatchEvents()
                 tryRequestSessionId();
                 emit automachModeChanged(m_automatchProcessed);
                 qInfo(logInfo()) << "Automatch search started";
-                //break;
             }
 
             if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission"))
@@ -285,19 +278,8 @@ void LobbyEventReader::readAutomatchEvents()
             m_automatchPlayersListChanged = false;
         }
 
-
         if (m_automatchNamesListChanged)
-        {
             m_automatchNamesListChanged = false;
-        }
-
-        /*if (m_automatchNamesListChanged && m_automatchNamesList.count() > m_automatchPlayersList.count())
-        {
-            qDebug() << "Start Find Ignored Players Id";
-
-            emit findIgnordPlayersId(m_automatchPlayersList);
-            m_automatchNamesListChanged = false;
-        }*/
     }
 }
 
@@ -312,7 +294,7 @@ void LobbyEventReader::tryRequestSessionId()
 
 void LobbyEventReader::requestIgnoredPlayers()
 {
-    qDebug() << "Start Find Ignored Players Id";
+    qInfo(logInfo()) << "LobbyEventReader::requestIgnoredPlayers() - Start Find Ignored Players Id:" << m_automatchPlayersList;
     emit findIgnordPlayersId(m_automatchPlayersList);
 }
 
@@ -353,7 +335,7 @@ void LobbyEventReader::parseAutomatchPlayerName(QString str)
 
     if(!m_automatchNamesList.contains(playerName))
     {
-        qDebug() << "ASDASDASDASD Append name: " << playerName;
+        qInfo(logInfo()) << "LobbyEventReader::parseAutomatchPlayerName(QString str) - Name added" << playerName;
         m_automatchNamesList.append(playerName);
         m_automatchNamesListChanged = true;
     }

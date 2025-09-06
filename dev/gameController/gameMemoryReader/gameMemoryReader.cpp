@@ -408,7 +408,7 @@ void GameMemoryReader::findSessionId()
         concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
             parametres = findDefinitiveEditionSessionId(n);
 
-            if (!parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
+            if (!m_dataFinded && !parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
             {
                 emit sendDowServerRequestParametres(parametres);
                 m_dataFinded = true;
@@ -416,10 +416,13 @@ void GameMemoryReader::findSessionId()
             }
         });
 
-        qWarning(logWarning()) << "Dow server request parametres not finded!!! sesionId:" << parametres.sesionId << "appBinaryChecksum:" << parametres.appBinaryChecksum
+        if (!m_dataFinded)
+        {
+            qWarning(logWarning()) << "Dow server request parametres not finded!!! sesionId:" << parametres.sesionId << "appBinaryChecksum:" << parametres.appBinaryChecksum
                                << "dataChecksum:" << parametres.dataChecksum << "modDLLChecksum:" << parametres.modDLLChecksum;
 
-        emit sendDowServerRequestParametresError();
+            emit sendDowServerRequestParametresError();
+        }
     }
     else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
     {
@@ -535,8 +538,6 @@ void GameMemoryReader::abort()
 
 void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
 {
-    qDebug() << "Start Find Ignored Players Id 222" << playersIdList;
-
     m_ignoredPlayersIdFinded = false;
     QStringList findedPlayersIdList;
 
@@ -550,8 +551,6 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
         step = 0x1000000000;
         gameName = "Warhammer 40,000: Dawn of War";
 
-        //for (DWORD64 i = 0x00000000000; i < 0x30000000000; i += step)
-
         for (DWORD64 i = 0x30000000000; i > 0x00000000000; i -= step)
             numbers.append(i);
     }
@@ -564,15 +563,18 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
             numbers.append(i);
     }
 
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    LPCWSTR lps = (LPCWSTR)gameName.utf16();
+    m_gameHwnd = FindWindowW(NULL, lps);
+
     concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
-        findedPlayersIdList = findIgnoredPlayersIdInMemorySection(n, n + step, playersIdList, gameName);
+        findedPlayersIdList = findIgnoredPlayersIdInMemorySection(n, n + step, playersIdList);
 
         if (!findedPlayersIdList.isEmpty() && !m_ignoredPlayersIdFinded)
         {
-            qDebug() << "Finded full list of players ID" << findedPlayersIdList;
+            qInfo(logInfo()) << "Finded full list of players ID" << findedPlayersIdList;
             m_ignoredPlayersIdFinded = true;
             emit sendPlayersIdList(findedPlayersIdList);
-            //return;
         }
     });
 
@@ -787,12 +789,8 @@ QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray 
     return parameterStr;
 }
 
-QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playersId, QString gameName)
+QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playersId)
 {
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    LPCWSTR lps = (LPCWSTR)gameName.utf16();
-    m_gameHwnd = FindWindowW(NULL, lps);
-
     if(!m_gameHwnd)
         return QStringList();
 
@@ -826,13 +824,12 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
         }
 
         //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
-        bufferSize = 100000;
+        bufferSize = 200000;
 
         for (int i = 151; i < buffer.size() - 151; i++)
         {
             if(m_ignoredPlayersIdFinded)
                 return QStringList();
-
 
             bool match = true;
 
@@ -859,6 +856,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                 if (!temp2.contains(needName2.toLocal8Bit()))
                 {
                     allIdFinded = false;
+                    i+=151;
                     break;
                 }
             }
