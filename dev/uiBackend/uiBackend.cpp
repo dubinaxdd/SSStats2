@@ -149,7 +149,7 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
     m_headerVisible = false;
     m_patyStatisticVisible = false;
 
-    m_statisticPanel->setBlockUpdate(true);
+    //m_statisticPanel->setBlockUpdate(true);
 
     emit headerPanelVisibleChanged();
     emit patyStatisticVisibleChanged();

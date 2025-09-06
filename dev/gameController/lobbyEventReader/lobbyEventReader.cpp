@@ -8,9 +8,14 @@
 LobbyEventReader::LobbyEventReader(QObject *parent) : QObject(parent)
   , m_lobbyEventsReadTimer(new QTimer(this))
 {
+    m_ignotingPlayersListRequestTimer.setInterval(3000);
+    m_ignotingPlayersListRequestTimer.setSingleShot(true);
+
     m_lobbyEventsReadTimer->setInterval(READ_EVETS_TIMER_INTERVAL);
     QObject::connect(m_lobbyEventsReadTimer, &QTimer::timeout, this, &LobbyEventReader::readLobbyEvents, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventsReadTimer, &QTimer::timeout, this, &LobbyEventReader::readAutomatchEvents, Qt::QueuedConnection);
+
+    QObject::connect(&m_ignotingPlayersListRequestTimer, &QTimer::timeout, this, &LobbyEventReader::requestIgnoredPlayers, Qt::QueuedConnection);
 }
 
 void LobbyEventReader::activateReading(bool activated)
@@ -31,6 +36,17 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
         case GameMissionState::savedGameStoped :
         case GameMissionState::unknownGameStoped : activateReading(true); break;
         default: activateReading(false);
+    }
+
+    if (gameCurrentState == GameMissionState::gameLoadStarted)
+    {
+        if (m_automatchProcessed && m_automatchNamesList.count() > m_automatchPlayersList.count())
+        {
+            //qDebug() << "Start Find Ignored Players Id";
+            //emit findIgnordPlayersId(m_automatchPlayersList);
+
+            m_ignotingPlayersListRequestTimer.start();
+        }
     }
 }
 
@@ -270,13 +286,18 @@ void LobbyEventReader::readAutomatchEvents()
         }
 
 
-        if (m_automatchNamesListChanged && m_automatchNamesList.count() > m_automatchPlayersList.count())
+        if (m_automatchNamesListChanged)
+        {
+            m_automatchNamesListChanged = false;
+        }
+
+        /*if (m_automatchNamesListChanged && m_automatchNamesList.count() > m_automatchPlayersList.count())
         {
             qDebug() << "Start Find Ignored Players Id";
 
             emit findIgnordPlayersId(m_automatchPlayersList);
             m_automatchNamesListChanged = false;
-        }
+        }*/
     }
 }
 
@@ -287,6 +308,12 @@ void LobbyEventReader::tryRequestSessionId()
         m_sessionIdRequested = true;
         emit requestSessionId();
     }
+}
+
+void LobbyEventReader::requestIgnoredPlayers()
+{
+    qDebug() << "Start Find Ignored Players Id";
+    emit findIgnordPlayersId(m_automatchPlayersList);
 }
 
 void LobbyEventReader::parseAytomatchPlayers(QString str)

@@ -44,6 +44,8 @@ private slots:
     void readAutomatchEvents();
     void tryRequestSessionId();
 
+    void requestIgnoredPlayers();
+
 public:
     void checkPatyState();
     void setCurrentGame(GamePath *newCurrentGame);
@@ -68,6 +70,7 @@ private:
     QStringList m_automatchNamesList;
 
     QString m_localPlayerId = "";
+    QTimer m_ignotingPlayersListRequestTimer;
 
     bool isHostedGame = false;
     bool m_readingActivated = false;

@@ -533,7 +533,7 @@ void GameMemoryReader::abort()
     m_playersSteamScannerMutex.unlock();
 }
 
-void GameMemoryReader::findIgnoredPlaersId(QStringList playersIdList)
+void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
 {
     qDebug() << "Start Find Ignored Players Id 222" << playersIdList;
 
@@ -552,7 +552,7 @@ void GameMemoryReader::findIgnoredPlaersId(QStringList playersIdList)
 
         //for (DWORD64 i = 0x00000000000; i < 0x30000000000; i += step)
 
-        for (DWORD64 i = 0x23000000000; i > 0x00000000000; i -= step)
+        for (DWORD64 i = 0x30000000000; i > 0x00000000000; i -= step)
             numbers.append(i);
     }
     else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
@@ -572,11 +572,12 @@ void GameMemoryReader::findIgnoredPlaersId(QStringList playersIdList)
             qDebug() << "Finded full list of players ID" << findedPlayersIdList;
             m_ignoredPlayersIdFinded = true;
             emit sendPlayersIdList(findedPlayersIdList);
-            return;
+            //return;
         }
     });
 
-    qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlaersId: players id not finded";
+    if (!m_ignoredPlayersIdFinded)
+        qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlaersId: players id not finded";
 }
 
 DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
@@ -829,6 +830,10 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
         for (int i = 151; i < buffer.size() - 151; i++)
         {
+            if(m_ignoredPlayersIdFinded)
+                return QStringList();
+
+
             bool match = true;
 
             for (int j = 0; j < searchedID.size(); j++)
@@ -860,7 +865,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
             if(allIdFinded)
             {
-                qDebug() << "Second matched" << temp2;
+                //qDebug() << "Second matched" << temp2;
 
                 if (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + ",") || temp2.contains("," + searchedID + "]") )
                 {
@@ -886,7 +891,6 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                         return idList;
 
                 }
-                //qDebug() << "Second match" << temp2;
             }
         }
 

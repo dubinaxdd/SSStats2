@@ -34,7 +34,7 @@ public slots:
     void findAuthKey();
     void abort();
 
-    void findIgnoredPlaersId(QStringList playerNames);
+    void findIgnoredPlayersId(QStringList playerNames);
 
 private:
     DowServerRequestParametres findSteamSoulstormSessionId();

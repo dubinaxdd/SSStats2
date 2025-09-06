@@ -192,8 +192,6 @@ void DowServerProcessor::onAutomatchPlayersListChanged(QStringList playersList)
         profilesData.append(newPlayerData);
     }
 
-    //requestPlayersSids(profilesData);
-
     m_profileIdsForQueue = profilesData;
     addQuery(QueryType::PlayersSids);
 

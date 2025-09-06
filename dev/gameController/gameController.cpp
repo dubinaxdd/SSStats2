@@ -81,10 +81,9 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
 
-
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::automatchPlayersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnordPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlaersId, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnordPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlayersId, Qt::QueuedConnection);
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
 
@@ -607,7 +606,7 @@ void GameController::onAutomatchNamesListChanged(QStringList automatchNamesList)
             automatchNamesList.removeAll(item.name);
     }
 
-    m_gameMemoryReader->findIgnoredPlaersId(automatchNamesList);
+    m_gameMemoryReader->findIgnoredPlayersId(automatchNamesList);
 }
 
 bool GameController::getUseWindows7SupportMode() const
