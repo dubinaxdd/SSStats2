@@ -415,7 +415,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
     }
 
     for (int i = 0; i < playersInfo.count(); i++)
-        qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId;
+        qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId << playersInfo.at(i).playerID;
 
     m_lastPlayersInfo = playersInfo;
     emit sendPlayersInfoFromDowServer(playersInfo);

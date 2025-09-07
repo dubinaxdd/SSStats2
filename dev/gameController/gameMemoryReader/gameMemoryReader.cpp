@@ -803,11 +803,8 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
         if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
         {
-            //bufferSize = 2000000;
-
             ptr1Count += bufferSize;
             continue;
-
         }
 
         //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
@@ -874,7 +871,6 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
                     if(idList.count() == playersId.count() + 1)
                         return idList;
-
                 }
             }
         }*/
