@@ -394,6 +394,8 @@ void GameMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
 
 void GameMemoryReader::findSessionId()
 {
+    qDebug() << "GameMemoryReader::findSessionId() - Start find SessionId";
+
     m_dataFinded = false;
     DowServerRequestParametres parametres;
 
@@ -567,8 +569,26 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
     LPCWSTR lps = (LPCWSTR)gameName.utf16();
     m_gameHwnd = FindWindowW(NULL, lps);
 
+    if(!m_gameHwnd)
+    {
+        qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlayersId - Process Not Openned";
+        return;
+    }
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
+
+    // Получение дескриптора процесса
+    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+
+    if(hProcess==nullptr)
+    {
+        qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlayersId - Process handle not finded";
+        return;
+    }
+
     concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
-        findedPlayersIdList = findIgnoredPlayersIdInMemorySection(n, n + step, playersIdList);
+        findedPlayersIdList = findIgnoredPlayersIdInMemorySection(n, n + step, playersIdList, hProcess);
 
         if (!findedPlayersIdList.isEmpty() && !m_ignoredPlayersIdFinded)
         {
@@ -789,19 +809,8 @@ QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray 
     return parameterStr;
 }
 
-QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playersId)
+QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playersId, HANDLE hProcess)
 {
-    if(!m_gameHwnd)
-        return QStringList();
-
-    DWORD PID;
-    GetWindowThreadProcessId(m_gameHwnd, &PID);
-
-    // Получение дескриптора процесса
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
-    if(hProcess==nullptr)
-        return QStringList();
-
     int bufferSize = 2000000;
     QByteArray buffer(bufferSize, 0);
     DWORD64 ptr1Count = startAdress;
@@ -810,7 +819,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
     QByteArray searchedID = playersId.first().toLocal8Bit();
     QString maskString = "0123456789";
 
-    QByteArray matchStartMessage = ",\"MatchStartMessage\",";
+    //QByteArray matchStartMessage = ",\"MatchStartMessage\",";
 
     while (ptr1Count < ptr2Count)
     {

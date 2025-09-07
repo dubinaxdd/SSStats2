@@ -42,7 +42,7 @@ private:
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
 
-    QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endeAdress, QStringList playerIdList);
+    QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endeAdress, QStringList playerIdList, HANDLE hProcess);
 
 private:
     unsigned char steamHeader[18] =  { 0x18, 0x0, 0x0, 0x0, 0x2F, 0x0, 0x73, 0x0, 0x74, 0x0, 0x65, 0x0, 0x61, 0x0, 0x6D, 0x0, 0x2F, 0x0 };

@@ -48,6 +48,14 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
 void LobbyEventReader::receiveCurrentPlayerId(QString id)
 {
     m_localPlayerId = id;
+
+    /*m_automatchPlayersList.append("10864246");
+    m_automatchPlayersList.append(m_localPlayerId);
+    m_automatchPlayersList.append("11865451");
+
+
+///////////////////////////////////////////////////
+    requestIgnoredPlayers();*/
 }
 
 void LobbyEventReader::readLobbyEvents()
