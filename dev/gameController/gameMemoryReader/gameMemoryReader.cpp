@@ -846,12 +846,12 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
             if(allIdFinded)
             {
-                qDebug() << "Second matched" << temp2;
-
                 if (playersId.count() > 2 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + ",") || temp2.contains("," + searchedID + "]") ) ||
                     playersId.count() == 1 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + "]") )
                     )
                 {
+                    //qDebug() << "Second matched" << temp2;
+
                     QStringList idList;
                     QString currentId;
 

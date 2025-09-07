@@ -47,6 +47,9 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
 
 void LobbyEventReader::receiveCurrentPlayerId(QString id)
 {
+    if (id.isEmpty())
+        return;
+
     m_localPlayerId = id;
 
     /*m_automatchPlayersList.append("10864246");
@@ -227,7 +230,7 @@ void LobbyEventReader::readAutomatchEvents()
                 break;
             }
 
-            if (line.contains("Lobby - LIE_StartAutoMatch received"))
+            if (line.contains("Lobby - LIE_StartAutoMatch received") /*|| line.contains("Lobby - LOE_TA_Matching received")*/)
             {
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
@@ -321,10 +324,10 @@ void LobbyEventReader::tryRequestSessionId()
 
 void LobbyEventReader::requestIgnoredPlayers()
 {
-    qInfo(logInfo()) << "LobbyEventReader::requestIgnoredPlayers() - Start Find Ignored Players Id:" << m_automatchPlayersList;
-
     if (m_automatchPlayersList.isEmpty())
         m_automatchPlayersList.append(m_localPlayerId);
+
+    qInfo(logInfo()) << "LobbyEventReader::requestIgnoredPlayers() - Start Find Ignored Players Id:" << m_automatchPlayersList;
 
     emit findIgnoredPlayersId(m_automatchPlayersList);
 }
