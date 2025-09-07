@@ -811,7 +811,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
         //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
         bufferSize = 200000;
 
-        for (int i = 151; i < bytesRead/*buffer.size()*/ - 151; i++)
+        for (int i = 201; i < bytesRead/*buffer.size()*/ - 201; i++)
         {
             if(m_ignoredPlayersIdFinded)
                 return QStringList();
@@ -830,7 +830,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
             if (!match)
                 continue;
 
-            auto temp2 = buffer.mid(i - 150, 300);
+            auto temp2 = buffer.mid(i - 200, 400);
 
             bool allIdFinded = true;
 
@@ -850,7 +850,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                     playersId.count() == 1 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + "]") )
                     )
                 {
-                    //qDebug() << "Second matched" << temp2;
+                    qDebug() << "Second matched" << temp2;
 
                     QStringList idList;
                     QString currentId;
