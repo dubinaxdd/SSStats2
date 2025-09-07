@@ -56,6 +56,7 @@ private slots:
 
 signals:
     void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo );
+    void sendCurrentPlayerId(QString id);
 
 private:
     QVector<QueryType> m_requestsQueue;

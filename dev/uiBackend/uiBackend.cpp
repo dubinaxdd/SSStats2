@@ -8,7 +8,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     : QObject(parent)
     , m_corePtr(core)
     , m_imageProvider(new ImageProvider(this))
-    , m_gamePanel(new GamePanel(core->soulstormController(), core->settingsController(), this))
+    , m_gamePanel(new GamePanel(core->gameController(), core->settingsController(), this))
     , m_statisticPanel(new StatisticPanel(core, m_imageProvider, this))
     , m_newsPage(new MessagesPage(this))
     , m_eventsPage(new MessagesPage(this))
@@ -73,14 +73,16 @@ UiBackend::UiBackend(Core* core, QObject *parent)
 
     QObject::connect(m_corePtr->rankedModServiceProcessor(), &RankedModServiceProcessor::sendOnlineCount, this, &UiBackend::receiveOnlineCount, Qt::QueuedConnection);
 
-    QObject::connect(m_corePtr->soulstormController(),                        &GameController::gameLaunchStateChanged, this, &UiBackend::onGameLaunchStateChanged,         Qt::QueuedConnection);
-    QObject::connect(m_corePtr->soulstormController(),                        &GameController::ssMaximized,          this, &UiBackend::receiveSsMaximized,             Qt::QueuedConnection);
-    QObject::connect(m_corePtr->soulstormController()->replayDataCollector(), &ReplayDataCollector::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
-    QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMissionState,  this, &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
-    QObject::connect(m_corePtr->soulstormController()->gameStateReader(),     &GameStateReader::sendCurrentMod,           this, &UiBackend::receiveCurrentModTechnicalName, Qt::QueuedConnection);
+    QObject::connect(m_corePtr->gameController(),                        &GameController::gameLaunchStateChanged, this, &UiBackend::onGameLaunchStateChanged,         Qt::QueuedConnection);
+    QObject::connect(m_corePtr->gameController(),                        &GameController::gameMaximized,          this, &UiBackend::receiveSsMaximized,             Qt::QueuedConnection);
+    QObject::connect(m_corePtr->gameController()->replayDataCollector(), &ReplayDataCollector::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
+    QObject::connect(m_corePtr->gameController()->gameStateReader(),     &GameStateReader::sendCurrentMissionState,  this, &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
+    QObject::connect(m_corePtr->gameController()->gameStateReader(),     &GameStateReader::sendCurrentMod,           this, &UiBackend::receiveCurrentModTechnicalName, Qt::QueuedConnection);
 
     QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_corePtr->gameController(), &GameController::onCurrentGameChanged, Qt::QueuedConnection);
     QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_replayManager, &ReplayManager::onGamePathChanged, Qt::QueuedConnection);
+
+    QObject::connect(m_corePtr->gameController()->lobbyEventReader(), &LobbyEventReader::automatchModeChanged, this, &UiBackend::setAutomatchState, Qt::QueuedConnection);
 }
 
 void UiBackend::expandKeyPressed()
@@ -133,7 +135,7 @@ void UiBackend::loadStarted()
 
     if(m_settingsPageModel->overlayVisible())
     {
-        m_corePtr->soulstormController()->blockGameWindowInput(m_expand);
+        m_corePtr->gameController()->blockGameWindowInput(m_expand);
         emit sendExpand(m_expand);
     }
 
@@ -158,6 +160,23 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(GameMissionState::gameOver);
+}
+
+bool UiBackend::automatchState() const
+{
+    return m_automatchState;
+}
+
+void UiBackend::setAutomatchState(bool newAutomatchState)
+{
+    if (m_automatchState == newAutomatchState)
+        return;
+
+    m_automatchState = newAutomatchState;
+    emit automatchStateChanged();
+
+    if (m_automatchState)
+        setRankedModeState(true);
 }
 
 void UiBackend::setGamePathArray(QVector<GamePath> *gamePathArray)
@@ -546,7 +565,7 @@ void UiBackend::launchGame()
     else if (m_balanceModPage->downloadingProcessed())
         setBalanceModInstallProcessedDialogVisible(true);
     else
-        m_corePtr->soulstormController()->launchGame();
+        m_corePtr->gameController()->launchGame();
 }
 
 void UiBackend::setSizeModifer(double size)
@@ -564,7 +583,7 @@ void UiBackend::onSettingsLoaded()
     qInfo(logInfo()) << "UiBackend::onSettingsLoaded()" << "load started";
 
     m_noFogState = m_corePtr->settingsController()->getSettings()->noFog;
-    m_corePtr->soulstormController()->soulstormMemoryController()->onNoFogStateChanged(m_noFogState);
+    m_corePtr->gameController()->soulstormMemoryController()->onNoFogStateChanged(m_noFogState);
     emit noFogStateChanged(m_noFogState);
     m_sizeModifer = m_corePtr->settingsController()->getSettings()->scale;
     emit sizeModiferLoadedFromSettings(m_sizeModifer);
@@ -624,7 +643,7 @@ void UiBackend::setNoFogState(bool state)
     m_noFogState = state;
     m_corePtr->settingsController()->getSettings()->noFog = m_noFogState;
     m_corePtr->settingsController()->saveSettings();
-    m_corePtr->soulstormController()->soulstormMemoryController()->onNoFogStateChanged(m_noFogState);
+    m_corePtr->gameController()->soulstormMemoryController()->onNoFogStateChanged(m_noFogState);
     emit noFogStateChanged(m_noFogState);
 }
 
@@ -677,7 +696,7 @@ void UiBackend::setExpand(bool newExpand)
 
     if(m_settingsPageModel->overlayVisible())
     {
-        m_corePtr->soulstormController()->blockGameWindowInput(m_expand);
+        m_corePtr->gameController()->blockGameWindowInput(m_expand);
         emit sendExpand(m_expand);
     }
 

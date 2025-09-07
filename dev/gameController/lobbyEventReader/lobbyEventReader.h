@@ -31,13 +31,14 @@ signals:
     void requestSessionId();
 
     void automatchPlayersListChanged(QStringList automatchPlayersList);
-    void automachModeChanged(bool automachMode);
+    void automatchModeChanged(bool automachMode);
 
-    void findIgnordPlayersId(QStringList automatchNamesList);
+    void findIgnoredPlayersId(QStringList automatchNamesList);
 
 public slots:
     void activateReading(bool activated);
     void receiveCurrentMissionState(GameMissionState gameCurrentState);
+    void receiveCurrentPlayerId(QString id);
 
 private slots:
     void readLobbyEvents();

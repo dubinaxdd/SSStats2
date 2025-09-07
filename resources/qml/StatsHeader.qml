@@ -183,7 +183,6 @@ ColumnLayout
         Layout.alignment: Qt.AlignRight | Qt.AlignTop
         Layout.fillHeight: false
         Layout.fillWidth: true
-       // color: "#ffffff"
 
         color: trainingModeSwitch.checked ? "#00ff99" : "#ffa9a9";
         radius: 10 * _uiBackend.sizeModifer
@@ -206,10 +205,9 @@ ColumnLayout
             text: qsTr("Ranked mode")
 
             property bool hoverState : false
-            property bool checkedState : _uiBackend.rankedModeState
-
             fontPxSize: 15 * _uiBackend.sizeModifer
-            checked: checkedState
+            checked: _uiBackend.rankedModeState
+
             leftPadding: 10 * _uiBackend.sizeModifer
             hoveredState: trainingModeSwitchMouseArea.hovered
             sizeModifer: _uiBackend.sizeModifer
@@ -217,14 +215,18 @@ ColumnLayout
             backgroundCheckedColor: "#A9A9A9"
             backgroundUncheckedColor: "#c8c8c8"
             indicatorColor: "#FFFFFF"
+            backgroundDisblaedColor: "#eaeaea"
+
+            enabled: !_uiBackend.automatchState
 
             GlobalMouseArea{
                 id: trainingModeSwitchMouseArea
                 anchors.fill: parent
+                onClicked:{
+                    if (_uiBackend.automatchState)
+                        return;
 
-                onClicked: {
-                    trainingModeSwitch.checkedState = !trainingModeSwitch.checkedState;
-                    _uiBackend.rankedModeState = trainingModeSwitch.checkedState;
+                    _uiBackend.rankedModeState = !_uiBackend.rankedModeState
                 }
             }
         }

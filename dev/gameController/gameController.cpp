@@ -83,7 +83,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::automatchPlayersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnordPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlayersId, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnoredPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlayersId, Qt::QueuedConnection);
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
 
@@ -91,11 +91,10 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_dowServerProcessor, &DowServerProcessor::setDowServerRequestParametres, Qt::QueuedConnection);
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_advertisingProcessor, &AdvertisingProcessor::setDeowServerRequestParametres, Qt::QueuedConnection);
-
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true);});
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdRequested(false);});
-
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
+    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendCurrentPlayerId, m_lobbyEventReader, &LobbyEventReader::receiveCurrentPlayerId, Qt::QueuedConnection);
 
     //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 
@@ -268,7 +267,7 @@ void GameController::checkWindowState()
             if( IsIconic(m_gameHwnd) || GetForegroundWindow() != m_gameHwnd)                      ///<Если игра свернута
             {
                 m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
-                emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+                emit gameMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
                 qInfo(logInfo()) << "Game minimized";
             }
             else                                                 ///<Если игра развернута
@@ -276,7 +275,7 @@ void GameController::checkWindowState()
                 if (getUseWindows7SupportMode())
                     updateGameWindow();
                 m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
-                emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
+                emit gameMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
                 qInfo(logInfo()) << "Game fullscreenized";
             }
         }
@@ -298,7 +297,7 @@ void GameController::checkWindowState()
                     if(m_ssMaximized)                                   ///<Если перед этим игра была развернута
                     {
                         m_ssMaximized = false;                              ///<Устанавливаем свернутое состояние
-                        emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+                        emit gameMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
                         qInfo(logInfo()) << "Game minimized";
                     }
                 }
@@ -307,7 +306,7 @@ void GameController::checkWindowState()
                     if(!m_ssMaximized)
                     {
                         m_ssMaximized = true;                               ///<Естанавливаем развернутое состояние
-                        emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
+                        emit gameMaximized(m_ssMaximized);                    ///<Отправляем сигнал о развернутости
                         qInfo(logInfo()) << "Game fullscreenized";
                     }
                 }
@@ -328,7 +327,7 @@ void GameController::checkWindowState()
             m_gameHwnd=NULL;                               ///<Окно игры делаем  null
             m_gameStateReader->stopedGame();
             m_gameStateReader->setGameLounched(false);
-            emit ssMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
+            emit gameMaximized(m_ssMaximized);                    ///<Отправляем сигнал о свернутости
             emit gameLaunchStateChanged(m_ssLounchState);                      ///<Отправляем сигнал о том что сс выключен
             qWarning(logWarning()) << "Game window closed";
         }
@@ -574,7 +573,7 @@ void GameController::fullscrenizeGame()
         m_defaultGameWindowLong = GetWindowLong(m_gameHwnd, GWL_EXSTYLE);
 
         m_ssMaximized = true;
-        emit ssMaximized(m_ssMaximized);
+        emit gameMaximized(m_ssMaximized);
         qInfo(logInfo()) << "Soulstorm maximized with win7 support mode";
     }
 }
@@ -588,7 +587,7 @@ void GameController::minimizeGame()
 
     ShowWindow(m_gameHwnd, SW_MINIMIZE);
     m_ssMaximized = false;
-    emit ssMaximized(m_ssMaximized);
+    emit gameMaximized(m_ssMaximized);
     qInfo(logInfo()) << "Soulstorm minimized with win7 support mode";
 }
 

@@ -84,6 +84,8 @@ class UiBackend : public QObject
 
     Q_PROPERTY(qreal devicePixelRatio READ devicePixelRatio WRITE setDevicePixelRatio NOTIFY devicePixelRatioChanged)
 
+    Q_PROPERTY(bool automatchState READ automatchState WRITE setAutomatchState NOTIFY automatchStateChanged FINAL)
+
 public:
     explicit UiBackend(Core* core, QObject *parent = nullptr);
 
@@ -180,6 +182,9 @@ public:
 
     void setGamePathArray(QVector<GamePath> *gamePathArray);
 
+    bool automatchState() const;
+    void setAutomatchState(bool newAutomatchState);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
     void sendExpand(bool);
@@ -216,6 +221,8 @@ signals:
     void softwareUseBanDialogVisibleChanged();
     void softwareUseBanReasonChanged();
     void devicePixelRatioChanged();
+
+    void automatchStateChanged();
 
 public slots:
     void expandKeyPressed();
@@ -304,6 +311,8 @@ private:
     bool m_soulstormLaunchedDialogVisible = false;
     bool m_balanceModInstallProcessedDialogVisible = false;
     bool m_softwareUseBanDialogVisible = false;
+    bool m_automatchState = false;
+
     QString m_softwareUseBanReason = "";
 
     double m_sizeModifer = 1.0;

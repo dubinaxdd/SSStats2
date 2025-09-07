@@ -489,10 +489,12 @@ Window {
                         textColor: "#26282a"
                         backgroundCheckedColor: "#A9A9A9"
                         backgroundUncheckedColor: "#c8c8c8"
+                        backgroundDisblaedColor: "#eaeaea"
                         indicatorColor: "#FFFFFF"
 
                         anchors.fill: parent
                         anchors.leftMargin: 10
+                        enabled: !_uiBackend.automatchState
 
                         onCheckedChanged: {
                             _uiBackend.rankedModeState = checked;

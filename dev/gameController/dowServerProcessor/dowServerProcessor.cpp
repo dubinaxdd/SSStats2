@@ -277,6 +277,8 @@ void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
                     m_profileID = QString::number(palyerDataArray.at(1).toInt());
                     m_statGroupId = QString::number(palyerDataArray.at(6).toInt());
                     qInfo(logInfo()) << "profileID=" << m_profileID;
+
+                    emit sendCurrentPlayerId(m_profileID);
                     qInfo(logInfo()) << "statsGroupID=" << m_statGroupId;
 
                     if (m_needUpdateLatter)

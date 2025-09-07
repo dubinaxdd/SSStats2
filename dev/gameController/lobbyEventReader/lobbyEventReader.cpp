@@ -45,6 +45,11 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
     }
 }
 
+void LobbyEventReader::receiveCurrentPlayerId(QString id)
+{
+    m_localPlayerId = id;
+}
+
 void LobbyEventReader::readLobbyEvents()
 {
     if (!m_readingActivated)
@@ -214,11 +219,12 @@ void LobbyEventReader::readAutomatchEvents()
                 break;
             }
 
-            if (line.contains("Lobby - LIE_StartAutoMatch received") || line.contains("Lobby - LIE_HostGame received"))
+            if (line.contains("Lobby - LIE_StartAutoMatch received"))
             {
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
 
+                m_preLastAutomatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = true;
                 m_automatchPlayersList.clear();
                 m_automatchNamesList.clear();
@@ -229,8 +235,9 @@ void LobbyEventReader::readAutomatchEvents()
                     m_automatchPlayersList.append(m_localPlayerId);
 
                 tryRequestSessionId();
-                emit automachModeChanged(m_automatchProcessed);
+                emit automatchModeChanged(m_automatchProcessed);
                 qInfo(logInfo()) << "Automatch search started";
+                break;
             }
 
             if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission"))
@@ -242,10 +249,22 @@ void LobbyEventReader::readAutomatchEvents()
                 m_automatchProcessed = false;
                 m_automatchPlayersList.clear();
                 m_automatchNamesList.clear();
-                emit automachModeChanged(m_automatchProcessed);
+                emit automatchModeChanged(m_automatchProcessed);
                 qInfo(logInfo()) << "Automatch search stoped";
                 break;
             }
+
+            if (m_automatchProcessed && line.contains("Lobby - LIE_HostGame received"))
+            {
+                if(line.contains(m_preLastAutomatchLogTime))
+                    break;
+
+                m_automatchPlayersList.clear();
+                m_automatchNamesList.clear();
+                qInfo(logInfo()) << "Hosting Automatch";
+                break;
+            }
+
 
             if (m_automatchProcessed && line.contains("Lobby - New Peer for remote player:"))
             {
@@ -295,7 +314,11 @@ void LobbyEventReader::tryRequestSessionId()
 void LobbyEventReader::requestIgnoredPlayers()
 {
     qInfo(logInfo()) << "LobbyEventReader::requestIgnoredPlayers() - Start Find Ignored Players Id:" << m_automatchPlayersList;
-    emit findIgnordPlayersId(m_automatchPlayersList);
+
+    if (m_automatchPlayersList.isEmpty())
+        m_automatchPlayersList.append(m_localPlayerId);
+
+    emit findIgnoredPlayersId(m_automatchPlayersList);
 }
 
 void LobbyEventReader::parseAytomatchPlayers(QString str)

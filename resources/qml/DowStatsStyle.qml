@@ -10,10 +10,10 @@ QtObject {
     property color alternateBackgroundColor: "#eaeaea"
     property color itemColor: "#c8c8c8"
     property color highlightItemColor: "#DCDCDC"
-    property color selectionColor: "#A9A9A9"
-    property color textColor: "#26282a"
+    property color selectionColor: "#c8c8c8"
+    property color textColor: "#1B2631"
     property color disbaledTextColor: "#A9A9A9"
-    property color indicatorColor: "#FFFFFF"
+    property color indicatorColor: "#26282a"
 
     property color greenColor: "#00ff99"
     property color redColor: "#ffa9a9"

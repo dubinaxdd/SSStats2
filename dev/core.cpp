@@ -91,8 +91,8 @@ void Core::addConnections()
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::expandKeyPressed, m_uiBackend, &UiBackend::expandKeyPressed, Qt::QueuedConnection);
     QObject::connect(m_keyboardProcessor, &KeyboardProcessor::altTabPressed, m_gameController, &GameController::minimizeSsWithWin7Support, Qt::QueuedConnection);
 
-    QObject::connect(m_gameController,                    &GameController::ssMaximized,          m_overlayWindowController,    &OverlayWindowController::ssMaximized,      Qt::DirectConnection);
-    QObject::connect(m_gameController,                    &GameController::ssMaximized,          m_soundProcessor,             &SoundProcessor::setGameMaximized,     Qt::DirectConnection);
+    QObject::connect(m_gameController,                    &GameController::gameMaximized,          m_overlayWindowController,    &OverlayWindowController::ssMaximized,      Qt::DirectConnection);
+    QObject::connect(m_gameController,                    &GameController::gameMaximized,          m_soundProcessor,             &SoundProcessor::setGameMaximized,     Qt::DirectConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_overlayWindowController,    &OverlayWindowController::gameLaunched,       Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_balanceModManager,          &BalanceModManager::onGameLaunchStateChanged, Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::inputBlockStateChanged, HookManager::instance(),    &HookManager::onInputBlockStateChanged,     Qt::QueuedConnection);
@@ -135,11 +135,6 @@ GameController *Core::gameController() const
 RankedModServiceProcessor *Core::rankedModServiceProcessor() const
 {
     return m_rankedModServiceProcessor;
-}
-
-GameController *Core::soulstormController() const
-{
-    return m_gameController;
 }
 
 StatsServerProcessor *Core::statsServerProcessor() const

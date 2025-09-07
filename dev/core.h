@@ -38,9 +38,8 @@ public:
     MapManager *mapManager() const;
     SoundProcessor *soundProcessor() const;
     StatsServerProcessor *statsServerProcessor() const;
-    GameController *soulstormController() const;
-    RankedModServiceProcessor *rankedModServiceProcessor() const;
     GameController *gameController() const;
+    RankedModServiceProcessor *rankedModServiceProcessor() const;
 
 signals:
     void sendExit();
