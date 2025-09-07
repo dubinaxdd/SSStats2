@@ -8,7 +8,7 @@
 LobbyEventReader::LobbyEventReader(QObject *parent) : QObject(parent)
   , m_lobbyEventsReadTimer(new QTimer(this))
 {
-    m_ignotingPlayersListRequestTimer.setInterval(3000);
+    m_ignotingPlayersListRequestTimer.setInterval(1000);
     m_ignotingPlayersListRequestTimer.setSingleShot(true);
 
     m_lobbyEventsReadTimer->setInterval(READ_EVETS_TIMER_INTERVAL);

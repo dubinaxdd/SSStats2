@@ -398,17 +398,25 @@ void GameMemoryReader::findSessionId()
 
     m_dataFinded = false;
     DowServerRequestParametres parametres;
+    QString gameName = "";
+    DWORD64 step;
 
     if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
     {
         QVector<DWORD64> numbers;
+        step = 0x1000000000;
+        gameName = "Warhammer 40,000: Dawn of War";
 
-        for (DWORD64 i = 0x00000000000; i < 0x30000000000; i += 0x1000000000)
+        for (DWORD64 i = 0x00000000000; i < 0x30000000000; i += step)
             numbers.append(i);
 
+        HANDLE hProcess = getProcessHandle(gameName);
+
+        if(hProcess == nullptr)
+            return;
 
         concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
-            parametres = findDefinitiveEditionSessionId(n);
+            parametres = findDefinitiveEditionSessionId(n, n+step, hProcess);
 
             if (!m_dataFinded && !parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
             {
@@ -553,7 +561,7 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
         step = 0x1000000000;
         gameName = "Warhammer 40,000: Dawn of War";
 
-        for (DWORD64 i = 0x30000000000; i > 0x10000000000; i -= step)
+        for (DWORD64 i = 0x30000000000; i > 0x00000000000; i -= step)
             numbers.append(i);
     }
     else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
@@ -565,27 +573,10 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
             numbers.append(i);
     }
 
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    LPCWSTR lps = (LPCWSTR)gameName.utf16();
-    m_gameHwnd = FindWindowW(NULL, lps);
+    HANDLE hProcess = getProcessHandle(gameName);
 
-    if(!m_gameHwnd)
-    {
-        qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlayersId - Process Not Openned";
+    if(hProcess == nullptr)
         return;
-    }
-
-    DWORD PID;
-    GetWindowThreadProcessId(m_gameHwnd, &PID);
-
-    // Получение дескриптора процесса
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
-
-    if(hProcess==nullptr)
-    {
-        qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlayersId - Process handle not finded";
-        return;
-    }
 
     concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
         findedPlayersIdList = findIgnoredPlayersIdInMemorySection(n, n + step, playersIdList, hProcess);
@@ -678,30 +669,12 @@ DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
     return DowServerRequestParametres();
 }
 
-DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId(DWORD64 startAdress)
+DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId(DWORD64 startAdress, DWORD64 endAdress, HANDLE hProcess)
 {
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-
-    QString game = codec->toUnicode("Warhammer 40,000: Dawn of War");
-    LPCWSTR lps = (LPCWSTR)game.utf16();
-
-    m_gameHwnd = FindWindowW(NULL, lps);
-
-    if(!m_gameHwnd)
-        return DowServerRequestParametres();
-
-    DWORD PID;
-    GetWindowThreadProcessId(m_gameHwnd, &PID);
-
-    // Получение дескриптора процесса
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
-    if(hProcess==nullptr)
-        return DowServerRequestParametres();
-
     int bufferSize = 2000000;
     QByteArray buffer(bufferSize, 0);
     DWORD64 ptr1Count = startAdress;
-    DWORD64 ptr2Count = ptr1Count + 0x30000000000;
+    DWORD64 ptr2Count = endAdress;
 
     QByteArray sesionIdHead = "sessionID=";
     QByteArray appBinaryChecksumHead = "appBinaryChecksum=";
@@ -819,8 +792,6 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
     QByteArray searchedID = playersId.first().toLocal8Bit();
     QString maskString = "0123456789";
 
-    //QByteArray matchStartMessage = ",\"MatchStartMessage\",";
-
     while (ptr1Count < ptr2Count)
     {
         if(m_ignoredPlayersIdFinded)
@@ -860,8 +831,6 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                 continue;
 
             auto temp2 = buffer.mid(i - 150, 300);
-
-            //qDebug() << "First match" << temp2;
 
             bool allIdFinded = true;
 
@@ -908,60 +877,36 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
             }
         }
 
-
-      /*  for (int i = 0; i < buffer.size() - 300; i++)
-        {
-
-            bool match = true;
-
-            for (int j = 0; j < matchStartMessage.size(); j++)
-            {
-                if (buffer.at(i + j) != matchStartMessage[j])
-                {
-                    match = false;
-                    break;
-                }
-            }
-
-            if (!match)
-                continue;
-
-            auto temp2 = buffer.mid(i, 300);
-
-            //qDebug() << "First match" << temp2;
-
-            qDebug() << "Second matched" << temp2;
-
-
-            QStringList idList;
-            QString currentId;
-
-            for (auto& symbol : temp2)
-            {
-                if (maskString.contains(symbol))
-                {
-                    currentId.append(symbol);
-                }
-                else
-                {
-                    if(currentId.size() == 8 && !idList.contains(currentId))
-                        idList.append(currentId);
-
-                    currentId.clear();
-                }
-            }
-
-            if(idList.count() == playersId.count() + 1)
-                return idList;
-        }*/
-
-
-
-
         ptr1Count += bufferSize;
     }
 
     return QStringList();
+}
+
+HANDLE GameMemoryReader::getProcessHandle(QString gameName)
+{
+
+    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    LPCWSTR lps = (LPCWSTR)gameName.utf16();
+    m_gameHwnd = FindWindowW(NULL, lps);
+
+    if(!m_gameHwnd)
+    {
+        qWarning(logWarning()) << "GameMemoryReader::getProcessHandle - Process Not Openned";
+        return nullptr;
+    }
+
+    DWORD PID;
+    GetWindowThreadProcessId(m_gameHwnd, &PID);
+
+    // Получение дескриптора процесса
+    HANDLE hProcess= OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
+
+    if(hProcess==nullptr)
+        qWarning(logWarning()) << "GameMemoryReader::getProcessHandle - Process handle not finded";
+
+    return hProcess;
+
 }
 
 void GameMemoryReader::setGameType(GameType::GameTypeEnum newGameType)

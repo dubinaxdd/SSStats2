@@ -31,18 +31,19 @@ public slots:
     void refreshSteamPlayersInfo();
     void findPlayerBySsId(int ssId, int playerPosititon);
     void findSessionId();
+    void findIgnoredPlayersId(QStringList playerNames);
     void findAuthKey();
     void abort();
 
-    void findIgnoredPlayersId(QStringList playerNames);
 
 private:
     DowServerRequestParametres findSteamSoulstormSessionId();
-    DowServerRequestParametres findDefinitiveEditionSessionId(DWORD64 startAdress);
+    DowServerRequestParametres findDefinitiveEditionSessionId(DWORD64 startAdress, DWORD64 endAdress, HANDLE hProcess);
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
+    QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
 
-    QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endeAdress, QStringList playerIdList, HANDLE hProcess);
+    HANDLE getProcessHandle(QString gameName);
 
 private:
     unsigned char steamHeader[18] =  { 0x18, 0x0, 0x0, 0x0, 0x2F, 0x0, 0x73, 0x0, 0x74, 0x0, 0x65, 0x0, 0x61, 0x0, 0x6D, 0x0, 0x2F, 0x0 };
