@@ -511,8 +511,8 @@ Window {
                     {
                         Layout.alignment: Qt.AlignCenter
                         Layout.preferredHeight: 30
-                        Layout.minimumWidth: _uiBackend.gameLaunchState ? 245 : 280
-                        Layout.maximumWidth: _uiBackend.gameLaunchState ? 245 : 280
+                        Layout.minimumWidth: updateButton.visible ? 245 : 280
+                        Layout.maximumWidth: updateButton.visible ? 245 : 280
                         radius: 10
                         color: DowStatsStyle.backgroundColor
 
@@ -531,11 +531,12 @@ Window {
                     }
 
                     IconButton{
+                        id: updateButton
                         sourceUrl: "qrc:/images/resources/images/update.svg"
                         toolTipText: qsTr("Update")
                         Layout.rightMargin: 5
 
-                        visible: _uiBackend.gameLaunchState
+                        visible: _uiBackend.gameLaunchState && !_uiBackend.automatchState && _uiBackend.expandStatisticButtonVisible
 
                         Layout.preferredHeight: 30
                         Layout.preferredWidth: 30
