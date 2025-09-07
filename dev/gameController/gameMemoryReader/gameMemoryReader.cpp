@@ -792,6 +792,8 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
     QByteArray searchedID = playersId.first().toLocal8Bit();
     QString maskString = "0123456789";
 
+    QByteArray matchStartMessageHeader = ",\"MatchStartMessage\",";
+
     while (ptr1Count < ptr2Count)
     {
         if(m_ignoredPlayersIdFinded)
@@ -811,7 +813,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
         //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
         bufferSize = 200000;
 
-        for (int i = 201; i < bytesRead/*buffer.size()*/ - 201; i++)
+       /* for (int i = 201; i < bytesRead - 201; i++)
         {
             if(m_ignoredPlayersIdFinded)
                 return QStringList();
@@ -839,7 +841,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                 if (!temp2.contains(needName2.toLocal8Bit()))
                 {
                     allIdFinded = false;
-                    i+=151;
+                    i+=200;
                     break;
                 }
             }
@@ -874,6 +876,67 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                         return idList;
 
                 }
+            }
+        }*/
+
+
+        for (int i = 0; i < bytesRead - 400; i++)
+        {
+            if(m_ignoredPlayersIdFinded)
+                return QStringList();
+
+            bool match = true;
+
+            for (int j = 0; j < matchStartMessageHeader.size(); j++)
+            {
+                if (buffer.at(i + j) != matchStartMessageHeader[j])
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (!match)
+                continue;
+
+            auto temp2 = buffer.mid(i, 400);
+
+            bool allIdFinded = true;
+
+            for(auto& needName2 : playersId)
+            {
+                if (!temp2.contains(needName2.toLocal8Bit()))
+                {
+                    allIdFinded = false;
+                    i+=400;
+                    break;
+                }
+            }
+
+            if(allIdFinded)
+            {
+                qDebug() << "Second matched" << temp2;
+
+                QStringList idList;
+                QString currentId;
+
+                for (auto& symbol : temp2)
+                {
+                    if (maskString.contains(symbol))
+                    {
+                        currentId.append(symbol);
+                    }
+                    else
+                    {
+                        if(currentId.size() == 8 && !idList.contains(currentId))
+                            idList.append(currentId);
+
+                        currentId.clear();
+                    }
+                }
+
+                if(idList.count() == playersId.count() + 1)
+                    return idList;
             }
         }
 
