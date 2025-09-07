@@ -172,6 +172,7 @@ Rectangle {
                 id: expandPatyStatisticButtonRectangle
 
                 property bool howeredState: expandButton.hovered
+                visible: _uiBackend.expandStatisticButtonVisible
 
                 property Gradient grLight: Gradient {
                     GradientStop {

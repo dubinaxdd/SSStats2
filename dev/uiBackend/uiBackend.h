@@ -85,6 +85,8 @@ class UiBackend : public QObject
     Q_PROPERTY(qreal devicePixelRatio READ devicePixelRatio WRITE setDevicePixelRatio NOTIFY devicePixelRatioChanged)
 
     Q_PROPERTY(bool automatchState READ automatchState WRITE setAutomatchState NOTIFY automatchStateChanged FINAL)
+    Q_PROPERTY(bool expandStatisticButtonVisible READ expandStatisticButtonVisible WRITE setExpandStatisticButtonVisible NOTIFY expandStatisticButtonVisibleChanged FINAL)
+
 
 public:
     explicit UiBackend(Core* core, QObject *parent = nullptr);
@@ -185,6 +187,9 @@ public:
     bool automatchState() const;
     void setAutomatchState(bool newAutomatchState);
 
+    bool expandStatisticButtonVisible() const;
+    void setExpandStatisticButtonVisible(bool newExpandStatisticButtonVisible);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
     void sendExpand(bool);
@@ -223,6 +228,8 @@ signals:
     void devicePixelRatioChanged();
 
     void automatchStateChanged();
+
+    void expandStatisticButtonVisibleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -330,6 +337,9 @@ private:
     bool m_latesBalanceModNotInstalledDialogVisible = false;
     bool m_clientUpdateAvailable = false;
     bool m_softwareBanActivated = false;
+
+    bool m_expandStatisticButtonVisible = true;
+
 };
 
 #endif // UIBACKEND_H

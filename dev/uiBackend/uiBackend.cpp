@@ -130,8 +130,12 @@ void UiBackend::loadStarted()
     setEnableTrainingModeSwitch(false);
 
     m_headerVisible = false;
-    //m_patyStatisticVisible = false;
+    m_patyStatisticVisible = true;
+    m_statisticPanel->setExpandPatyStatistic(false);
+    m_patyStatisticVisibleButtonPressedState = false;
     m_expand = false;
+
+    setExpandStatisticButtonVisible(false);
 
     if(m_settingsPageModel->overlayVisible())
     {
@@ -140,7 +144,7 @@ void UiBackend::loadStarted()
     }
 
     emit headerPanelVisibleChanged();
-    //emit patyStatisticVisibleChanged();
+    emit patyStatisticVisibleChanged();
 }
 
 void UiBackend::startingMission(GameMissionState gameCurrentState)
@@ -160,6 +164,19 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(GameMissionState::gameOver);
+}
+
+bool UiBackend::expandStatisticButtonVisible() const
+{
+    return m_expandStatisticButtonVisible;
+}
+
+void UiBackend::setExpandStatisticButtonVisible(bool newExpandStatisticButtonVisible)
+{
+    if (m_expandStatisticButtonVisible == newExpandStatisticButtonVisible)
+        return;
+    m_expandStatisticButtonVisible = newExpandStatisticButtonVisible;
+    emit expandStatisticButtonVisibleChanged();
 }
 
 bool UiBackend::automatchState() const
@@ -781,6 +798,7 @@ void UiBackend::gameStopped()
     m_statisticPanel->setBlockUpdate(false);
 
     setEnableTrainingModeSwitch(true);
+    setExpandStatisticButtonVisible(true);
 
     if(m_patyStatisticVisibleButtonPressedState)
     {
