@@ -17,7 +17,6 @@ struct Settings
     bool russianFontsInstalled = false;
     bool cameraModInstalled = false;
     bool gridHotkeysInstalled = false;
-    bool transparentCameraTrapezoidInstalled = false;
     bool overlayVisible = true;
     bool win7SupportMode = false;
     bool launchGameInWindow = false;

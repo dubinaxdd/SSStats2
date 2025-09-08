@@ -24,6 +24,7 @@ public slots:
     void modInstallRequest(InstMod mod);
     void uninstallRequest(InstMod mod);
     void unlockRaces();
+    bool checkModInstalled(InstMod mod);
 
 private:
     GamePath* m_currentGame;

@@ -91,3 +91,12 @@ void ModsProcessor::unlockRaces()
 
     emit sendUnlockRacesStatus(true);
 }
+
+bool ModsProcessor::checkModInstalled(InstMod mod)
+{
+    if (mod == InstMod::TransparentCameraTrapezoid)
+    {
+        QFile tempfile1(m_currentGame->gamePath + "\\DXP2\\Data\\Art\\ui\\minimap\\camera.tga");
+        return tempfile1.exists();
+    }
+}

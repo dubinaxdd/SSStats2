@@ -152,7 +152,8 @@ void ModsInstaller::uninstallGridHotkeys()
 
 void ModsInstaller::installTransparentCameraTrapezoid(QString path)
 {
-    JlCompress::extractDir(path, m_currentGame->gameSettingsPath + QDir::separator());
+    JlCompress::extractDir(path, m_currentGame->gamePath + QDir::separator());
+
     qInfo(logInfo()) <<  "Transparent camera trapezoid installed from " << path << "to" << m_currentGame->gameSettingsPath;
 
     QFile tempfile(path);
@@ -161,15 +162,7 @@ void ModsInstaller::installTransparentCameraTrapezoid(QString path)
 
 void ModsInstaller::uninstallTransparentCameraTrapezoid()
 {
-    QString gamePath;
-
-    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
-        gamePath = m_currentGame->gamePath + "\\DoWDE\\Data\\Art\\ui\\minimap\\camera.tga";
-    else
-        gamePath = m_currentGame->gamePath + "\\DXP2\\Data\\Art\\ui\\minimap\\camera.tga";
-
-    QFile tempfile1(gamePath);
+    QFile tempfile1(m_currentGame->gamePath + "\\DXP2\\Data\\Art\\ui\\minimap\\camera.tga");
     tempfile1.remove();
-
     qInfo(logInfo()) <<  "Transparent camera trapezoid uninstalled";
 }

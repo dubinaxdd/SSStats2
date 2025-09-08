@@ -81,6 +81,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
 
     QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_corePtr->gameController(), &GameController::onCurrentGameChanged, Qt::QueuedConnection);
     QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_replayManager, &ReplayManager::onGamePathChanged, Qt::QueuedConnection);
+    QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_modsPage, &ModsPage::onCurrentGameChanged, Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->gameController()->lobbyEventReader(), &LobbyEventReader::automatchModeChanged, this, &UiBackend::setAutomatchState, Qt::QueuedConnection);
 }

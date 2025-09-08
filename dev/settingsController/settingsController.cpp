@@ -52,7 +52,6 @@ void SettingsController::initializeSettings()
     m_settings->russianFontsInstalled = dow_stats_settings->value("mods/russian_fonts_installed", false).toBool();
     m_settings->cameraModInstalled = dow_stats_settings->value("mods/camera_mod_installed", false).toBool();
     m_settings->gridHotkeysInstalled = dow_stats_settings->value("mods/grid_hotkeys_installed", false).toBool();
-    m_settings->transparentCameraTrapezoidInstalled = dow_stats_settings->value("mods/transparent_camera_trapezoid_installed", false).toBool();
     m_settings->autoinstallDefaultMaps = dow_stats_settings->value("mods/autoinstall_default_maps", true).toBool();
     m_settings->autoinstallAllMaps = dow_stats_settings->value("mods/autoinstall_all_maps", false).toBool();
 
@@ -106,7 +105,6 @@ void SettingsController::saveSettings()
     dow_stats_settings->setValue("mods/russian_fonts_installed", m_settings->russianFontsInstalled);
     dow_stats_settings->setValue("mods/camera_mod_installed", m_settings->cameraModInstalled);
     dow_stats_settings->setValue("mods/grid_hotkeys_installed", m_settings->gridHotkeysInstalled);
-    dow_stats_settings->setValue("mods/transparent_camera_trapezoid_installed", m_settings->transparentCameraTrapezoidInstalled);
     dow_stats_settings->setValue("mods/autoinstall_default_maps", m_settings->autoinstallDefaultMaps);
     dow_stats_settings->setValue("mods/autoinstall_all_maps", m_settings->autoinstallAllMaps);
 

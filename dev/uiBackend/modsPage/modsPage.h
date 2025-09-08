@@ -29,6 +29,7 @@ public slots:
     void receiveInstallCompleeted(InstMod mod);
     void receiveDownloadError(InstMod mod);
     void receiveUnlockRacesStatus(bool status);
+    void onCurrentGameChanged();
 
 private slots:
     void onSettingsLoaded();
