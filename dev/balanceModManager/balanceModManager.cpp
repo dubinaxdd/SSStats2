@@ -372,6 +372,12 @@ void BalanceModManager::updateHotKeysOnMod(QString modTechnicalName)
     emit sendUpdateHotKeysOnMod(modTechnicalName, m_currentGame->gameSettingsPath);
 }
 
+void BalanceModManager::onCurrentGameChanged()
+{
+    m_modInfoHash = "";
+    downloadModsInfo();
+}
+
 bool BalanceModManager::showBalanceModBetaVersions() const
 {
     return m_showBalanceModBetaVersions;
@@ -436,6 +442,7 @@ void BalanceModManager::checkDownloadingQuery()
 
 void BalanceModManager::receiveVersionsInfo(QNetworkReply *reply)
 {
+
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "BalanceModManager::receiveVersionsInfo - Connection error:" << reply->errorString();
@@ -571,7 +578,9 @@ void BalanceModManager::receiveMod(QNetworkReply *reply, QString modTechnicalNam
     data.decompressPath = m_currentGame->gamePath + QDir::separator();
     data.modTechnicalName = modTechnicalName;
     data.templateProfilePath = m_templateProfilePath;
-    data.ssPath = m_currentGame->gamePath;
+    data.gamePath = m_currentGame->gamePath;
+    data.profilePath = m_currentGame->gameSettingsPath;
+    data.gameType = m_currentGame->gameType;
 
     emit installMod(data, overwritePrifiles);
 }

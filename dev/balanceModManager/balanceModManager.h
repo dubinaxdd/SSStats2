@@ -57,6 +57,7 @@ public slots:
     void onGameLaunchStateChanged(bool lounched);
     void setCurrentPlayerSteamId(QString steamId);
     void updateHotKeysOnMod(QString modTechnicalName);
+    void onCurrentGameChanged();
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
