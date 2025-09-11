@@ -130,6 +130,13 @@ void GameController::blockGameWindowInput(bool state)
 
 void GameController::launchGame()
 {
+    if (m_currentGame.gameType == GameType::GameTypeEnum::DefinitiveEdition)
+    {
+        ///TODO: Если собрался это переделать - помни, так сделать потому что игра начила тупить при запуске если сделать как ты хочешь.
+        QDesktopServices::openUrl(QUrl("steam://rungameid/3556750"));
+        return;
+    }
+
     QDir ssPath(m_currentGame.gamePath);
 
     if(!ssPath.exists())
@@ -167,12 +174,7 @@ void GameController::launchGame()
             params.append("-nomovies");
 
         m_gameProcess = new QProcess(this);
-
-        if (m_currentGame.gameType == GameType::GameTypeEnum::DefinitiveEdition)
-            //m_soulstormProcess->startDetached(m_currentGame->gamePath + "\\W40k.exe");
-            QDesktopServices::openUrl(QUrl("steam://rungameid/3556750"));
-        else
-            m_gameProcess->startDetached(m_currentGame.gamePath + "\\Soulstorm.exe", {params});
+        m_gameProcess->startDetached(m_currentGame.gamePath + "\\Soulstorm.exe", {params});
 
         m_useWindows7SupportMode = win7SupportMode;
     }
