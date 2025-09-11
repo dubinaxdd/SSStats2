@@ -30,7 +30,7 @@ signals:
     void quitFromParty();
     void requestSessionId();
 
-    void automatchPlayersListChanged(QStringList automatchPlayersList);
+    void playersListChanged(QStringList automatchPlayersList);
     void automatchModeChanged(bool automachMode);
 
     void findIgnoredPlayersId(QStringList automatchNamesList);

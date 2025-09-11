@@ -21,12 +21,12 @@ void ReplayDataCollector::receiveCurrentMissionState(GameMissionState missionCur
 }
 
 
-bool ReplayDataCollector::readReplayData()
+void ReplayDataCollector::readReplayData()
 {
-    /*if (m_currentGame->gameType == DefinitiveEdition)
-        return readDefinitiveReplayData();
-    else*/
-        return readSoulstormReplayData();
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        readDefinitiveReplayData();
+    else
+        readSoulstormReplayData();
 }
 
 bool ReplayDataCollector::readSoulstormReplayData()
@@ -418,286 +418,10 @@ bool ReplayDataCollector::readSoulstormReplayData()
     return true;
 }
 
-bool ReplayDataCollector::readDefinitiveReplayData()
+void ReplayDataCollector::readDefinitiveReplayData()
 {
-    if (m_gameWillBePlayedInOtherSession)
-    {
-        qWarning(logWarning()) << "Game will be played in other session, replay not sended";
-        return false;
-    }
-
-    RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
-
-
-    bool checkFailed = false;
-        QString warning = tr("    The replay has not been uploaded to the server!") + "\n";
-
-    if (repReader.isValide())
-    {
-        checkFailed = true;
-        warning += tr("    Replay is not valide\n");
-    }
-
-    //Проверка на одинаковые никнеймы
-    QStringList playerNames;
-
-    for (auto player : repReader.replay.Players)
-        playerNames.append(player->Name);
-
-    if (checkEqualNames(&playerNames))
-    {
-        checkFailed = true;
-        warning += tr("    The players have equal names\n");
-    }
-
-    //Проверка на количество команд
-    if (repReader.replay.TeamsCount > 2)
-    {
-        checkFailed = true;
-        warning += tr("    There were more than two teams in the game") + "\n";
-    }
-
-    QVector<PlayerStats> playerStats;
-    int playersCount = repReader.replay.PlayerCount;
-
-    int playerStateIndex = 0;
-
-    for (auto player : repReader.replay.Players)
-    {
-        if (player->Type == ReplayReader::Player::Spectator || player->Type == ReplayReader::Player::EmptySlot)
-            continue;
-
-        PlayerStats newPlayerStats;
-        newPlayerStats.name = player->Name;
-        newPlayerStats.race = player->Race;
-        newPlayerStats.team = player->Team;
-        newPlayerStats.pHuman = player->Type == ReplayReader::Player::Host || player->Type == ReplayReader::Player::OtherPlayer;
-        newPlayerStats.finalState = m_playerFinalStateList.at(playerStateIndex);
-
-        playerStats.append(newPlayerStats);
-    }
-
-    //Сортировка игроков по команде
-    std::sort(playerStats.begin(), playerStats.end(), [](PlayerStats &a, PlayerStats &b)
-    {
-      return a.team > a.team;
-    });
-
-    //Проверка на равенство команд
-    QMap<QString, int> teamsCounter;
-
-    for (int i = 0; i < playerStats.count(); i++)
-    {
-        if (teamsCounter.contains(playerStats.at(i).team))
-            teamsCounter.insert(playerStats.at(i).team, teamsCounter.value(playerStats.at(i).team) + 1);
-        else
-            teamsCounter.insert(playerStats.at(i).team, 1);
-    }
-
-    int count = 0;
-
-    if (teamsCounter.count() > 0)
-        count = teamsCounter.first();
-
-    else
-    {
-        checkFailed = true;
-        warning += tr("    Team identification failure occured") + "\n";
-    }
-
-    for (int i = 0; i < teamsCounter.count(); i++)
-    {
-        if (teamsCounter.values().at(i) != count)
-        {
-            checkFailed = true;
-            warning += tr("    Teams didn't have an equal number of players") + "\n";
-        }
-    }
-
-    //Проверка на длительность игры
-    if(repReader.replay.Duration <= 45)
-    {
-        checkFailed = true;
-        warning += tr("    Game lasted less than 45 seconds") + "\n";
-    }
-
-    //Проверка на наличие компьютера
-    bool computersFinded = checkAi(&playerStats);
-
-    //Проверка на наличие ИИ
-    if (computersFinded)
-    {
-        checkFailed = true;
-        warning += tr("    There was AI in the game") + "\n";
-    }
-
-    //Выводим информацию об игре
-    qInfo(logInfo()) << "Players count:" << repReader.replay.PlayerCount;
-    qInfo(logInfo()) << "Computers finded:" << computersFinded;
-    qInfo(logInfo()) << "Teams count:" << repReader.replay.TeamsCount;
-    qInfo(logInfo()) << "Duration:" << repReader.replay.Duration;
-    //qInfo(logInfo()) << "Win by:" << repReader.replay.;
-    qInfo(logInfo()) << "Scenario:" << repReader.replay.Map;
-    qInfo(logInfo()) << "APM:" << m_lastAverrageApm;
-
-
-    bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
-                              && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
-                              && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
-                              && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
-                              && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
-
-    if (!isStdWinConditions)
-    {
-        checkFailed = true;
-        warning += tr("    Standard winning conditions were not set up for the game") + "\n";
-    }
-
-    bool isFullStdGame = false;
-
-    if (repReader.replay.PlayerCount == 2)
-    {
-        //Проверка условий победы для игр 1х1
-        isFullStdGame = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
-                        && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
-                        && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
-                        && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
-                        && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
-                        && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
-                        && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
-    }
-
-
-    //Выводим в лог информацию о состоянии игрока
-    for(int i = 0; i < playerStats.count(); i++)
-    {
-        qInfo(logInfo()) << "Player name:" << playerStats.at(i).name;
-
-        switch (playerStats.at(i).finalState)
-        {
-        case inGame: qInfo(logInfo()) << "State In Game"; break;
-        case winner: qInfo(logInfo()) << "State Winner";  break;
-        case loser: qInfo(logInfo()) << "State Looser";   break;
-        default: qInfo(logInfo()) << "State Unknown";     break;
-        }
-    }
-
-
-    //Проверка на наличие победителя
-    bool winnerAccepted = checkWinner(&playerStats);
-
-    if (!winnerAccepted)
-    {
-        checkFailed = true;
-        warning += tr("    No game winner has been determined") + "\n";
-    }
-
-    //Отправка реплея
-    SendingReplayInfo replayInfo;
-
-    for(int i = 0; i < playersCount; i++)
-    {
-        PlayerInfoForReplaySending newPlayer;
-        newPlayer.playerName = playerStats[i].name;
-
-        //Выставляем сиды для всех игроков, кроме текущего игрока, определение сида для текущего игрока происходит в statsServerProcessor
-        for(int j = 0; j < m_playersInfoFromDowServer.count(); j++)
-        {
-            if(m_playersInfoFromDowServer[j].isCurrentPlayer)
-                continue;
-
-            if(newPlayer.playerName == m_playersInfoFromDowServer[j].name ||
-                newPlayer.playerName == "[" + m_playersInfoFromDowServer[j].name + "]"  ||
-                newPlayer.playerName == "[[" + m_playersInfoFromDowServer[j].name + "]]"
-                )
-            {
-                newPlayer.playerSid = m_playersInfoFromDowServer[j].steamId;
-                newPlayer.playerName = m_playersInfoFromDowServer[j].name;
-                break;
-            }
-        }
-
-        if (playerStats[i].race == "guard_race")
-            newPlayer.playerRace = Race::ImperialGuard;
-        if (playerStats[i].race == "tau_race")
-            newPlayer.playerRace = Race::TauEmpire;
-        if (playerStats[i].race == "ork_race")
-            newPlayer.playerRace = Race::Orks;
-        if (playerStats[i].race == "chaos_marine_race")
-            newPlayer.playerRace = Race::ChaosMarines;
-        if (playerStats[i].race == "necron_race")
-            newPlayer.playerRace = Race::Necrons;
-        if (playerStats[i].race == "space_marine_race")
-            newPlayer.playerRace = Race::SpaceMarines;
-        if (playerStats[i].race == "sisters_race")
-            newPlayer.playerRace = Race::SistersOfBattle;
-        if (playerStats[i].race == "dark_eldar_race")
-            newPlayer.playerRace = Race::DarkEldar;
-        if (playerStats[i].race == "eldar_race")
-            newPlayer.playerRace = Race::Eldar;
-
-        newPlayer.isWinner = playerStats[i].finalState == FinalState::winner;
-
-        replayInfo.playersInfo.append(newPlayer);
-    }
-
-    replayInfo.apm = m_lastAverrageApm;
-
-    int gameType;
-
-    switch (repReader.replay.PlayerCount)
-    {
-    case 1: return false;
-    case 2: gameType = GameTypeForReplaySending::GameType1x1; break;
-    case 3: return false;
-    case 4: gameType = GameTypeForReplaySending::GameType2x2; break;
-    case 5: return false;
-    case 6: gameType = GameTypeForReplaySending::GameType3x3; break;
-    case 7: return false;
-    case 8: gameType = GameTypeForReplaySending::GameType4x4; break;
-    }
-
-    bool lastGameSettingsValide = checkMissionSettingsValide(gameType);
-
-
-    if (!lastGameSettingsValide)
-    {
-        checkFailed = true;
-        warning += tr("    Game settings not valide") + "\n";
-    }
-
-    if (checkFailed)
-    {
-        emit sendNotification(warning, true);
-        qWarning(logWarning()) << warning;
-        return false;
-    }
-
-    replayInfo.mapName = repReader.replay.Map;
-    replayInfo.gameTime = repReader.replay.Duration;
-
-    QString modName = m_currentMode;
-
-    if(modName.contains("dowstats_balance_mod"))
-        modName = "dowstats_balance_mod";
-    replayInfo.modVersion = m_currentModVerion;
-    replayInfo.mod = modName;
-    replayInfo.isFullStdGame = isFullStdGame;
-
-    //if (winBy == "ANNIHILATE" || winBy == "annihilate" )
-        replayInfo.winBy = WinCondition::ANNIHILATE;
-    /*if (winBy == "CONTROLAREA")
-        replayInfo.winBy = WinCondition::CONTROLAREA;
-    if (winBy == "STRATEGICOBJECTIVE")
-        replayInfo.winBy = WinCondition::STRATEGICOBJECTIVE;*/
-
-
-    qInfo(logInfo()) << "Readed played game settings";
-
-    emit sendReplayToServer(std::move(replayInfo));
-
-    m_playerFinalStateList.clear();
-    return true;
+    qDebug() << "ReplayDataCollector::readDefinitiveReplayData() Request game results";
+    emit requestGameResults(m_currentPlayersId);
 }
 
 void ReplayDataCollector::receiveAverrageApm(int apm)
@@ -847,6 +571,11 @@ QString ReplayDataCollector::updateTestStatsFilePath()
     }
 
     return statsPath;
+}
+
+void ReplayDataCollector::setCurrentPlayersId(const QStringList &newCurrentPlayersId)
+{
+    m_currentPlayersId = newCurrentPlayersId;
 }
 
 void ReplayDataCollector::setCurrentGame(GamePath *newCurrentGame)

@@ -265,7 +265,7 @@ void LobbyEventReader::readAutomatchEvents()
                 break;
             }
 
-            if (m_automatchProcessed && line.contains("Lobby - LIE_HostGame received"))
+            if (/*m_automatchProcessed &&*/ line.contains("Lobby - LIE_HostGame received"))
             {
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
@@ -277,7 +277,7 @@ void LobbyEventReader::readAutomatchEvents()
             }
 
 
-            if (m_automatchProcessed && line.contains("Lobby - New Peer for remote player:"))
+            if (/*m_automatchProcessed &&*/ line.contains("Lobby - New Peer for remote player:"))
             {
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
@@ -287,7 +287,7 @@ void LobbyEventReader::readAutomatchEvents()
             }
 
 
-            if (m_automatchProcessed && line.contains("Lobby -- Net UPDATE PLAYER information for player"))
+            if (/*m_automatchProcessed &&*/ line.contains("Lobby -- Net UPDATE PLAYER information for player"))
             {
                 if(line.contains(m_preLastAutomatchLogTime))
                     break;
@@ -304,7 +304,7 @@ void LobbyEventReader::readAutomatchEvents()
 
         if (m_automatchPlayersListChanged)
         {
-            emit automatchPlayersListChanged(m_automatchPlayersList);
+            emit playersListChanged(m_automatchPlayersList);
             m_automatchPlayersListChanged = false;
         }
 

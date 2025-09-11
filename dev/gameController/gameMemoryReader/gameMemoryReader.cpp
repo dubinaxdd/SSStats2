@@ -595,6 +595,58 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
         qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlaersId: players id not finded";
 }
 
+void GameMemoryReader::findGameResults(QStringList playersIdList)
+{
+    if(playersIdList.isEmpty()|| playersIdList.count() == 1)
+        return;
+
+    qDebug() << "GameMemoryReader::findGameResults start finding";
+    m_gameResultsFinded = false;
+    QString findedGameResults;
+
+    QVector<DWORD64> numbers;
+
+    DWORD64 step;
+    QString gameName;
+
+    if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
+    {
+        step = 0x1000000000;
+        gameName = "Warhammer 40,000: Dawn of War";
+
+        for (DWORD64 i = 0x30000000000; i > 0x00000000000; i -= step)
+            numbers.append(i);
+    }
+    else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
+    {
+        step = 0x10000000;
+        gameName = "Dawn of War: Soulstorm";
+
+        for (DWORD64 i = 0x00000000; i < 0x80000000; i += step)
+            numbers.append(i);
+    }
+
+    HANDLE hProcess = getProcessHandle(gameName);
+
+    if(hProcess == nullptr)
+        return;
+
+    concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
+        findedGameResults = findGameResultsInMemorySection(n, n + step, playersIdList, hProcess);
+
+        if (!findedGameResults.isEmpty() && !m_gameResultsFinded)
+        {
+            qInfo(logInfo()) << "Finded game results" << findedGameResults;
+            m_gameResultsFinded = true;
+
+            //emit sendPlayersIdList(findedPlayersIdList);
+        }
+    });
+
+    if (!m_gameResultsFinded)
+        qWarning(logWarning()) << "GameMemoryReader::findGameResults - game results not finded!";
+}
+
 QString GameMemoryReader::findSteamSoulstormSessionId()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
@@ -745,14 +797,14 @@ QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray 
     return parameterStr;
 }
 
-QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playersId, HANDLE hProcess)
+QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess)
 {
     int bufferSize = 2000000;
     QByteArray buffer(bufferSize, 0);
     DWORD64 ptr1Count = startAdress;
     DWORD64 ptr2Count = endAdress;
 
-    QByteArray searchedID = playersId.first().toLocal8Bit();
+    QByteArray searchedID = playerIdList.first().toLocal8Bit();
     QString maskString = "0123456789";
 
     QByteArray matchStartMessageHeader = ",\"MatchStartMessage\",";
@@ -796,7 +848,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
             bool allIdFinded = true;
 
-            for(auto& needName2 : playersId)
+            for(auto& needName2 : playerIdList)
             {
                 if (!temp2.contains(needName2.toLocal8Bit()))
                 {
@@ -808,8 +860,8 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
             if(allIdFinded)
             {
-                if (playersId.count() > 2 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + ",") || temp2.contains("," + searchedID + "]") ) ||
-                    playersId.count() == 1 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + "]") )
+                if (playerIdList.count() > 2 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + ",") || temp2.contains("," + searchedID + "]") ) ||
+                    playerIdList.count() == 1 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + "]") )
                     )
                 {
                     qDebug() << "Second matched" << temp2;
@@ -832,7 +884,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                         }
                     }
 
-                    if(idList.count() == playersId.count() + 1)
+                    if(idList.count() == playerIdList.count() + 1)
                         return idList;
                 }
             }
@@ -862,7 +914,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
 
             bool allIdFinded = true;
 
-            for(auto& needName2 : playersId)
+            for(auto& needName2 : playerIdList)
             {
                 if (!temp2.contains(needName2.toLocal8Bit()))
                 {
@@ -894,7 +946,7 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
                     }
                 }
 
-                if(idList.count() == playersId.count() + 1)
+                if(idList.count() == playerIdList.count() + 1)
                     return idList;
             }
         }
@@ -903,6 +955,99 @@ QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startA
     }
 
     return QStringList();
+}
+
+QString GameMemoryReader::findGameResultsInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess)
+{
+    int bufferSize = 2000000;
+    QByteArray buffer(bufferSize, 0);
+    DWORD64 ptr1Count = startAdress;
+    DWORD64 ptr2Count = endAdress;
+    QString maskString = "0123456789";
+
+    QByteArray matchStartMessageHeader = "\"GameResultNotificationMessage\",";
+
+    while (ptr1Count < ptr2Count)
+    {
+        if(m_ignoredPlayersIdFinded)
+            return QString();
+
+        DWORD64  bytesRead = 0;
+
+        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
+        {
+            ptr1Count += bufferSize;
+            continue;
+        }
+
+        //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
+        bufferSize = 200000;
+
+        for (int i = 0; i < bytesRead - 400; i++)
+        {
+            if(m_gameResultsFinded)
+                return QString();
+
+            bool match = true;
+
+            for (int j = 0; j < matchStartMessageHeader.size(); j++)
+            {
+                if (buffer.at(i + j) != matchStartMessageHeader[j])
+                {
+                    match = false;
+                    break;
+                }
+            }
+
+            if (!match)
+                continue;
+
+            auto temp2 = buffer.mid(i, 400);
+
+            bool allIdFinded = true;
+
+            for(auto& needName2 : playerIdList)
+            {
+                if (!temp2.contains(needName2.toLocal8Bit()))
+                {
+                    allIdFinded = false;
+                    i+=1000;
+                    break;
+                }
+            }
+
+            if(allIdFinded)
+            {
+                qDebug() << "Second matched" << temp2;
+
+                /*QString gameResults;
+                QStringList idList;
+                QString currentId;
+
+                for (auto& symbol : temp2)
+                {
+                    if (maskString.contains(symbol))
+                    {
+                        currentId.append(symbol);
+                    }
+                    else
+                    {
+                        if(currentId.size() == 8 && !idList.contains(currentId))
+                            idList.append(currentId);
+
+                        currentId.clear();
+                    }
+                }*/
+
+                //if(idList.count() == playerIdList.count() + 1)
+                    return temp2;
+            }
+        }
+
+        ptr1Count += bufferSize;
+    }
+
+    return QString();
 }
 
 HANDLE GameMemoryReader::getProcessHandle(QString gameName)

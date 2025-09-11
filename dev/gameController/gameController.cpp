@@ -83,10 +83,13 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
-    QObject::connect(m_lobbyEventReader, &LobbyEventReader::automatchPlayersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnoredPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlayersId, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::playersListChanged,       m_replayDataCollector, &ReplayDataCollector::setCurrentPlayersId, Qt::QueuedConnection);
+
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
+     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendCurrentPlayerId, m_lobbyEventReader, &LobbyEventReader::receiveCurrentPlayerId, Qt::QueuedConnection);
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_replayDataCollector,  &ReplayDataCollector::receiveAverrageApm,       Qt::QueuedConnection);
 
@@ -94,10 +97,9 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_advertisingProcessor, &AdvertisingProcessor::setSessionId, Qt::QueuedConnection);
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true); m_lobbyEventReader->setSessionIdRequested(false);});
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
-    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendCurrentPlayerId, m_lobbyEventReader, &LobbyEventReader::receiveCurrentPlayerId, Qt::QueuedConnection);
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_replayDataCollector, &ReplayDataCollector::setCurrentPlayersId, Qt::QueuedConnection);
 
-
-
+    QObject::connect(m_replayDataCollector, &ReplayDataCollector::requestGameResults, m_gameMemoryReader, &GameMemoryReader::findGameResults, Qt::QueuedConnection);
 
     //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 
@@ -106,9 +108,6 @@ GameController::GameController(SettingsController *settingsController, QObject *
     m_gameMemoryReader->moveToThread(&m_gameMemoryReaderThread);
     m_gameMemoryReaderThread.start();
     m_gameWindowControllTimer->start();
-
-
-    //m_gameMemoryReader->findIgnoredPlaersId({"10008417" , "11130987", "10301060"});
 }
 
 GameController::~GameController()
@@ -205,14 +204,14 @@ void GameController::checkWindowState()
 
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
 
-    QString ss;
+    QString gameName;
 
     if (m_currentGame.gameType == GameType::GameTypeEnum::DefinitiveEdition)
-        ss = codec->toUnicode("Warhammer 40,000: Dawn of War");
+        gameName = codec->toUnicode("Warhammer 40,000: Dawn of War");
     else
-        ss = codec->toUnicode("Dawn of War: Soulstorm");
+        gameName = codec->toUnicode("Dawn of War: Soulstorm");
 
-    LPCWSTR lps = (LPCWSTR)ss.utf16();
+    LPCWSTR lps = (LPCWSTR)gameName.utf16();
 
     m_gameHwnd = FindWindowW(NULL, lps);           ///<Ищем окно соулсторма
 
@@ -228,21 +227,26 @@ void GameController::checkWindowState()
             fullscrenizeGame();
         }
     }
+   /* else
+    {
+        emit gameLaunchStateChanged(false);
+        return;
+    }*/
 
 
     if(m_gameInitialized != m_gameStateReader->getGameInitialized())
         m_gameInitialized = m_gameStateReader->getGameInitialized();
     else
     {
-         if (!m_gameInitialized)
-         {
-             if (m_firstTimerTick)
-             {
-                 m_firstTimerTick = false;
-                 emit gameLaunchStateChanged(false);
-             }
-             return;
-         }
+        if (!m_gameInitialized)
+        {
+            if (m_firstTimerTick)
+            {
+                m_firstTimerTick = false;
+                emit gameLaunchStateChanged(false);
+            }
+            return;
+        }
     }
 
 
@@ -359,6 +363,10 @@ void GameController::ssShutdown()
     m_lobbyEventReader->activateReading(false);
     m_lobbyEventReader->setSessionIdRequested(false);
     m_lobbyEventReader->setSessionIdReceived(false);
+
+    /*m_gameHwnd = NULL;
+    m_defaultGameWindowLong = NULL;
+    m_gameProcess->deleteLater();*/
 }
 
 QString GameController::getGamePathFromRegistry()

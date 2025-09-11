@@ -9,7 +9,6 @@ class ReplayDataCollector : public QObject
     Q_OBJECT
 public:
     explicit ReplayDataCollector(QObject *parent = nullptr);
-
     void setCurrentGame(GamePath *newCurrentGame);
 
 public slots:
@@ -20,23 +19,22 @@ public slots:
     void receiveCurrentMod(QString currentMode);
     void receiveCurrentModVersion(QString version);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
-
+    void setCurrentPlayersId(const QStringList &newCurrentPlayersId);
 
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void sendNotification(QString warningString, bool isWarning);
+    void requestGameResults(QStringList playersIdList);
 
 private:
     bool checkEqualNames(QStringList* playerNames);
     bool checkAi(QVector<PlayerStats> *playerStats);
     bool checkWinner(QVector<PlayerStats> *playerStats);
     bool checkEqualNamesInStats();
-    bool readReplayData();
+    void readReplayData();
 
     bool readSoulstormReplayData();
-    bool readDefinitiveReplayData();
-
-
+    void readDefinitiveReplayData();
 
     bool checkMissionSettingsValide(int gameType);
     QString updateTestStatsFilePath();
@@ -49,6 +47,7 @@ private:
     QString m_currentModVerion;
     QString m_testStatsPath;
     bool m_gameWillBePlayedInOtherSession = true;
+    QStringList m_currentPlayersId;
 
     const GamePath* m_currentGame;
 

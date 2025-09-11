@@ -32,9 +32,9 @@ public slots:
     void findPlayerBySsId(int ssId, int playerPosititon);
     void findSessionId();
     void findIgnoredPlayersId(QStringList playerNames);
+    void findGameResults(QStringList playersIdList);
     void findAuthKey();
     void abort();
-
 
 private:
     QString findSteamSoulstormSessionId();
@@ -42,6 +42,7 @@ private:
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
     QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
+    QString findGameResultsInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
 
     HANDLE getProcessHandle(QString gameName);
 
@@ -60,5 +61,6 @@ private:
     GameType::GameTypeEnum m_gameType;
     bool m_dataFinded = false;
     bool m_ignoredPlayersIdFinded = false;
+    bool m_gameResultsFinded = false;
 };
 #endif // GAMEMEMORYREADER_H

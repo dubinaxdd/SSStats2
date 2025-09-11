@@ -80,26 +80,14 @@ void OverlayWindowController::topmostTimerTimout()
             }
             else if(p_gameController->currentGame()->gameType == GameType::DefinitiveEdition)
             {
-                RECT ssRect;
+                /*RECT ssRect;
                 if (GetWindowRect(p_gameController->gameHwnd(), &ssRect))
                 {
-
                     int titleBarHeight = getGameTitleBarHeight();
-
 
                     m_gameRect = ssRect;
                     SetWindowPos(m_dowStatsHwnd, HWND_TOP, m_gameRect.left, m_gameRect.top + titleBarHeight, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top - titleBarHeight, m_defaultWindowLong );
-
-
-                    //m_uiBackendPtr->setSsWindowPosition(m_gameRect.left, m_gameRect.top + titleBarHeight);
-
-                    //m_topmostTimer->stop();
-
-                    //LONG ssLong = GetWindowLongPtr(p_gameController->soulstormHwnd(), 0);
-                    //SetWindowPos(p_gameController->soulstormHwnd(), m_ssStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
-
-                    //m_uiBackendPtr->setSsWindowed(p_gameController->ssWindowed());
-                }
+                }*/
             }
             else
             {
