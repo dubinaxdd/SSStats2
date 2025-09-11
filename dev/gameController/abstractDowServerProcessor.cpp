@@ -52,9 +52,14 @@ void AbstractDowServerProcessor::setGameType(GameType::GameTypeEnum newGameType)
     m_gameType = newGameType;
 }
 
-void AbstractDowServerProcessor::setDeowServerRequestParametres(DowServerRequestParametres parametres)
+void AbstractDowServerProcessor::setRequestParametres(DowServerRequestParametres parametres)
 {
     m_parametres = parametres;
+}
+
+void AbstractDowServerProcessor::setSessionId(QString sessionId)
+{
+    m_sessionId = sessionId;
 }
 
 AbstractDowServerProcessor::~AbstractDowServerProcessor() {}

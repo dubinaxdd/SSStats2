@@ -36,7 +36,8 @@ private:
     void requestPlayersSids(QVector<PlayerData> profilesData);
 
 public slots:
-    void setDowServerRequestParametres(DowServerRequestParametres parametres);
+    void setRequestParametres(DowServerRequestParametres parametres) override;
+    void setSessionId(QString sessionId) override;
     void setCurrentPlayerSteamID(QString steamID);
     void setCurrentModVersion(QString modVersion);
     void requestPartysData();

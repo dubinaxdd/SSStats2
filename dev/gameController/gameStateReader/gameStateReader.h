@@ -43,10 +43,14 @@ signals:
     void sendCurrentWinConditions(QVector<WinCondition>);
     void sendGameRankedMode(bool gameRankedMode);
 
+    void sendRequestParametres(DowServerRequestParametres requestParametres);
+
 private:
     void checkCurrentMode();
     void readTestStatsTemp();
     void parseGmaeSettings();
+    void readCheckSumm(QString line);
+    QString readParam(QString& line, QString pattern);
 
     QString updateTestStatsFilePath();
 
@@ -86,6 +90,8 @@ private:
     QVector<PlyersRankedState> m_plyersRankedState;
     bool m_lockRanked = false;
     bool m_rankedMode = true;
+
+    bool m_dataChecksummReaded = false;
 
     const GamePath* m_currentGame;
 };

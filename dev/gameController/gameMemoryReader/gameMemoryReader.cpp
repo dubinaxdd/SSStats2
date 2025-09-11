@@ -394,10 +394,10 @@ void GameMemoryReader::findPlayerBySsId(int ssId, int playerPosititon)
 
 void GameMemoryReader::findSessionId()
 {
-    qDebug() << "GameMemoryReader::findSessionId() - Start find SessionId";
+    qInfo(logInfo()) << "GameMemoryReader::findSessionId() - Start find SessionId";
 
     m_dataFinded = false;
-    DowServerRequestParametres parametres;
+    QString sessionId;
     QString gameName = "";
     DWORD64 step;
 
@@ -416,11 +416,12 @@ void GameMemoryReader::findSessionId()
             return;
 
         concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
-            parametres = findDefinitiveEditionSessionId(n, n+step, hProcess);
+            sessionId = findDefinitiveEditionSessionId(n, n+step, hProcess);
 
-            if (!m_dataFinded && !parametres.sesionId.isEmpty() && !parametres.appBinaryChecksum.isEmpty() && !parametres.dataChecksum.isEmpty() && !parametres.modDLLChecksum.isEmpty())
+            if (!m_dataFinded && !sessionId.isEmpty())
             {
-                emit sendDowServerRequestParametres(parametres);
+                qInfo(logInfo()) << "Session id finded:" << sessionId;
+                emit sendSessionId(sessionId);
                 m_dataFinded = true;
                 return;
             }
@@ -428,20 +429,21 @@ void GameMemoryReader::findSessionId()
 
         if (!m_dataFinded)
         {
-            qWarning(logWarning()) << "Dow server request parametres not finded!!! sesionId:" << parametres.sesionId << "appBinaryChecksum:" << parametres.appBinaryChecksum
-                               << "dataChecksum:" << parametres.dataChecksum << "modDLLChecksum:" << parametres.modDLLChecksum;
-
-            emit sendDowServerRequestParametresError();
+            qWarning(logWarning()) << "Session id not finded!!!";
+            emit sendSessionIdError();
         }
     }
     else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
     {
-        parametres = findSteamSoulstormSessionId();
+        sessionId = findSteamSoulstormSessionId();
 
-        if (!parametres.sesionId.isEmpty())
-            emit sendDowServerRequestParametres(parametres);
+        if (!sessionId.isEmpty())
+        {
+            qInfo(logInfo()) << "Session id finded:" << sessionId;
+            emit sendSessionId(sessionId);
+        }
         else
-            qWarning(logWarning()) << "sessionId not finded!!!";
+            qWarning(logWarning()) << "SessionId not finded!!!";
     }
     else
         return;
@@ -593,7 +595,7 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
         qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlaersId: players id not finded";
 }
 
-DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
+QString GameMemoryReader::findSteamSoulstormSessionId()
 {
     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
 
@@ -603,7 +605,7 @@ DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
     m_gameHwnd = FindWindowW(NULL, lps);
 
     if(!m_gameHwnd)
-        return DowServerRequestParametres();
+        return QString();
 
     DWORD PID;
     GetWindowThreadProcessId(m_gameHwnd, &PID);
@@ -611,7 +613,7 @@ DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
     // Получение дескриптора процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
     if(hProcess==nullptr)
-        return DowServerRequestParametres();
+        return QString();
 
     QByteArray buffer(/*30400*/100000, 0);
 
@@ -656,20 +658,16 @@ DowServerRequestParametres GameMemoryReader::findSteamSoulstormSessionId()
 
             sessionIdStr = sessionIdStr.left(30);
 
-
-            DowServerRequestParametres parametres;
-            parametres.sesionId = sessionIdStr;
-
-            return parametres;
+            return sessionIdStr;
         }
 
         ptr1Count += 100000;
     }
 
-    return DowServerRequestParametres();
+    return QString();
 }
 
-DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId(DWORD64 startAdress, DWORD64 endAdress, HANDLE hProcess)
+QString GameMemoryReader::findDefinitiveEditionSessionId(DWORD64 startAdress, DWORD64 endAdress, HANDLE hProcess)
 {
     int bufferSize = 2000000;
     QByteArray buffer(bufferSize, 0);
@@ -677,16 +675,11 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId(DWOR
     DWORD64 ptr2Count = endAdress;
 
     QByteArray sesionIdHead = "sessionID=";
-    QByteArray appBinaryChecksumHead = "appBinaryChecksum=";
-    QByteArray dataChecksumHead = "dataChecksum=";
-    QByteArray modDLLChecksumHead = "modDLLChecksum=";
-
-    DowServerRequestParametres parametres;
 
     while (ptr1Count < ptr2Count)
     {
         if(m_dataFinded)
-            return DowServerRequestParametres();
+            return QString();
 
         DWORD64  bytesRead = 0;
 
@@ -699,48 +692,18 @@ DowServerRequestParametres GameMemoryReader::findDefinitiveEditionSessionId(DWOR
         //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
         bufferSize = 100000;
 
-        if (parametres.sesionId.isEmpty() && buffer.contains( sesionIdHead ))
+        if (buffer.contains( sesionIdHead ))
         {
             QString sessionIdStr = findParameter(&buffer, sesionIdHead, 30);
 
             if (!sessionIdStr.isEmpty())
-                parametres.sesionId = sessionIdStr;
+                return sessionIdStr;
         }
 
-        if (parametres.appBinaryChecksum.isEmpty() && buffer.contains( appBinaryChecksumHead ))
-        {
-            QString appBinaryChecksum = findChecksummParameter(&buffer, appBinaryChecksumHead);
-
-            if (!appBinaryChecksum.isEmpty())
-                parametres.appBinaryChecksum = appBinaryChecksum;
-        }
-
-        if (parametres.dataChecksum.isEmpty() && buffer.contains( dataChecksumHead ))
-        {
-            QString dataChecksum = findChecksummParameter(&buffer, dataChecksumHead);
-
-            if (!dataChecksum.isEmpty())
-                parametres.dataChecksum = dataChecksum;
-        }
-
-        if (parametres.modDLLChecksum.isEmpty() && buffer.contains( modDLLChecksumHead ))
-        {
-            QString modDLLChecksum = findChecksummParameter(&buffer, modDLLChecksumHead);
-
-            if (!modDLLChecksum.isEmpty())
-                parametres.modDLLChecksum = modDLLChecksum;
-        }
-
-        if (parametres.sesionId.isEmpty() || parametres.appBinaryChecksum.isEmpty() || parametres.dataChecksum.isEmpty() || parametres.modDLLChecksum.isEmpty())
-        {
-            ptr1Count += bufferSize;
-            continue;
-        }
-
-        return parametres;
+        ptr1Count += bufferSize;
     }
 
-    return DowServerRequestParametres();
+    return QString();
 }
 
 QString GameMemoryReader::findParameter(QByteArray *buffer, QByteArray head, int length)

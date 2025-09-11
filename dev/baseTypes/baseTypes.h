@@ -30,10 +30,12 @@ struct GamePath{
 
 struct DowServerRequestParametres
 {
-    QString sesionId = "";
     QString appBinaryChecksum = "";
     QString dataChecksum = "";
     QString modDLLChecksum = "";
+    QString modName = "";
+    QString modDllFile = "";
+    QString modVersion = "";
 };
 
 class Language {

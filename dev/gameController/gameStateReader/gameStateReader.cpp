@@ -96,13 +96,20 @@ void GameStateReader::readGameInfo()
                 break;
             }
 
-
             ///Проверка на старт загрузки игры
             if (line.contains("APP -- Game Start"))
             {
                 missionLoad(fileLines, counter);
                 break;
             }
+
+            ///Чтение чексумм
+            if (line.contains("SetOwnVersionAndDataChecksums") && !m_dataChecksummReaded)
+            {
+                readCheckSumm(line);
+                break;
+            }
+
             counter--;
         }
 
@@ -283,6 +290,7 @@ void GameStateReader::checkGameInitialize()
         readTestStatsTemp();
         emit gameInitialized();
         checkCurrentMode();
+        m_dataChecksummReaded = false;
     }  
 }
 
@@ -372,6 +380,54 @@ void GameStateReader::parseGmaeSettings()
     QSettings* ssSettings = new QSettings(m_currentGame->gameSettingsPath + "\\Local.ini", QSettings::Format::IniFormat);
     m_currentProfile = ssSettings->value("global/playerprofile","profile").toString();
     delete ssSettings;
+}
+
+void GameStateReader::readCheckSumm(QString line)
+{
+    //SetOwnVersionAndDataChecksums modName:Soulstorm   modDllFile:DXP3Mod.dll   modVersion:1.0  appBinaryCRC:3235273467 dataCRC:58725797 modDllCRC:1581112045
+
+    DowServerRequestParametres requestParametres;
+
+    requestParametres.modName = readParam(line, "modName:");
+    requestParametres.modDllFile = readParam(line, "modDllFile:");
+    requestParametres.modVersion = readParam(line, "modVersion:");
+
+    //В лог пишется как unsigned int но в запросах отправляется как int, поэтому кастим в int
+    requestParametres.appBinaryChecksum = QString::number(static_cast<int>(readParam(line, "appBinaryCRC:").toUInt()));
+    requestParametres.dataChecksum = QString::number(static_cast<int>(readParam(line, "dataCRC:").toUInt()));
+    requestParametres.modDLLChecksum = QString::number(static_cast<int>(readParam(line, "modDllCRC:").toUInt()));
+
+    m_dataChecksummReaded = true;
+
+    emit sendRequestParametres(requestParametres);
+}
+
+QString GameStateReader::readParam(QString &line, QString pattern)
+{
+    if(line.contains(pattern))
+    {
+        int startIndex = line.indexOf(pattern) + pattern.size();
+        int endIndex = startIndex;
+
+        for(int i = startIndex; i < line.size(); i++)
+        {
+            if (i == line.size()-1)
+            {
+                endIndex = i;
+                break;
+            }
+
+            if(line.at(i) == " ")
+            {
+                endIndex = i - 1;
+                break;
+            }
+        }
+
+        return line.mid(startIndex, endIndex - startIndex + 1);
+    }
+
+    return "";
 }
 
 QString GameStateReader::updateTestStatsFilePath()

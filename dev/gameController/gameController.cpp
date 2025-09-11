@@ -68,6 +68,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMod,          m_replayDataCollector, &ReplayDataCollector::receiveCurrentMod, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentWinConditions,   m_replayDataCollector, &ReplayDataCollector::receiveCurrentWinConditions, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::sendRequestParametres,  m_dowServerProcessor, &DowServerProcessor::setRequestParametres,   Qt::QueuedConnection);
 
     //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty,        m_gameMemoryReader, &gameMemoryReader::findAuthKey, Qt::QueuedConnection);
     //QObject::connect(m_lobbyEventReader, &LobbyEventReader::hostParty,          m_gameMemoryReader, &gameMemoryReader::findAuthKey, Qt::QueuedConnection);
@@ -89,12 +90,14 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_apmMeter, &APMMeter::sendAverrageApm, m_replayDataCollector,  &ReplayDataCollector::receiveAverrageApm,       Qt::QueuedConnection);
 
-    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_dowServerProcessor, &DowServerProcessor::setDowServerRequestParametres, Qt::QueuedConnection);
-    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_advertisingProcessor, &AdvertisingProcessor::setDeowServerRequestParametres, Qt::QueuedConnection);
-    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true);});
-    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendDowServerRequestParametres, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdRequested(false);});
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionId, Qt::QueuedConnection);
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_advertisingProcessor, &AdvertisingProcessor::setSessionId, Qt::QueuedConnection);
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true); m_lobbyEventReader->setSessionIdRequested(false);});
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendCurrentPlayerId, m_lobbyEventReader, &LobbyEventReader::receiveCurrentPlayerId, Qt::QueuedConnection);
+
+
+
 
     //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 

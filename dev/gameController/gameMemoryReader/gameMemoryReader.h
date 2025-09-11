@@ -22,8 +22,8 @@ public:
 signals:
     void sendSteamPlayersInfoMap(QList<PlayerInfoFromDowServer> playersInfo, int playersCount);
     void sendSteamPlayerInfoForHostedGame(PlayerInfoFromDowServer playersInfo);
-    void sendDowServerRequestParametres(DowServerRequestParametres sessionId);
-    void sendDowServerRequestParametresError();
+    void sendSessionId(QString sessionId);
+    void sendSessionIdError();
     void sendAuthKey(QString authKey);
     void sendPlayersIdList(QStringList playersInfo);
 
@@ -37,8 +37,8 @@ public slots:
 
 
 private:
-    DowServerRequestParametres findSteamSoulstormSessionId();
-    DowServerRequestParametres findDefinitiveEditionSessionId(DWORD64 startAdress, DWORD64 endAdress, HANDLE hProcess);
+    QString findSteamSoulstormSessionId();
+    QString findDefinitiveEditionSessionId(DWORD64 startAdress, DWORD64 endAdress, HANDLE hProcess);
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
     QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
