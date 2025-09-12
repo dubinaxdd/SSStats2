@@ -64,11 +64,11 @@ private:
     QString m_preLastLogTime = "baneblade";
     QString m_lastLogTime;
 
-    QString m_preLastAutomatchLogTime = "baneblade";
+    QString m_preLastMatchLogTime = "baneblade";
     QString m_lastAutomatchLogTime;
 
-    QStringList m_automatchPlayersList;
-    QStringList m_automatchNamesList;
+    QStringList m_matchPlayersList;
+    QStringList m_matchNamesList;
 
     QString m_localPlayerId = "";
     QTimer m_ignotingPlayersListRequestTimer;

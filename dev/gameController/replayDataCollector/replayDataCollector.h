@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <baseTypes.h>
+#include <QTimer>
 
 class ReplayDataCollector : public QObject
 {
@@ -20,6 +21,7 @@ public slots:
     void receiveCurrentModVersion(QString version);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
     void setCurrentPlayersId(const QStringList &newCurrentPlayersId);
+    void receiveGameResults(QString gameResults);
 
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
@@ -32,12 +34,14 @@ private:
     bool checkWinner(QVector<PlayerStats> *playerStats);
     bool checkEqualNamesInStats();
     void readReplayData();
+    Race getRaceByNumber(int number);
 
     bool readSoulstormReplayData();
     void readDefinitiveReplayData();
 
     bool checkMissionSettingsValide(int gameType);
     QString updateTestStatsFilePath();
+    void parseGameResults(QString gameResults);
 
 private:
     QVector<WinCondition> m_winCoditionsVector;
@@ -52,6 +56,8 @@ private:
     const GamePath* m_currentGame;
 
     QList<FinalState> m_playerFinalStateList;
+
+    QTimer m_findGameResultsTimer;
 
 };
 

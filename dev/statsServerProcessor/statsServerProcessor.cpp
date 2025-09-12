@@ -466,13 +466,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     //Определяем сид для текущего игрока
     for (int i = 0; i < replayInfo.playersInfo.count(); i++)
     {
-        if (replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).name ||
+        if (replayInfo.playersInfo[i].playerSid.isEmpty() &&
+            (replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).name ||
             replayInfo.playersInfo[i].playerName == "[" + m_currentPlayerStats.data()->at(0).name + "]" ||
             replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).name + "]]"||
             replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).dowServerName ||
             replayInfo.playersInfo[i].playerName == "[" + m_currentPlayerStats.data()->at(0).dowServerName + "]" ||
             replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).dowServerName + "]]"
-            )
+        ))
         {
             replayInfo.playersInfo[i].playerSid = m_currentPlayerStats.data()->at(0).steamId;
             replayInfo.playersInfo[i].playerName = m_currentPlayerStats.data()->at(0).dowServerName;
@@ -549,7 +550,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
    // url += "key=" + QLatin1String(SERVER_KEY);
 
 
-    RepReader repReader(m_currentGame->gamePath + "/Playback/temp.rec");
+    RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
 
     repReader.convertReplayToSteamVersion();
     repReader.isStandart(replayInfo.gameType);

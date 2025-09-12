@@ -26,6 +26,7 @@ signals:
     void sendSessionIdError();
     void sendAuthKey(QString authKey);
     void sendPlayersIdList(QStringList playersInfo);
+    void sendGameResults(QString gameResults);
 
 public slots:
     void refreshSteamPlayersInfo();

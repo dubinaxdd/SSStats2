@@ -333,8 +333,12 @@ struct PlayerInfoForReplaySending
 {
     QString playerName;
     QString playerSid = "";
+    QString relicId = "";
     Race playerRace;
     bool isWinner;
+    int playerType = 0;
+    int playerTeam = 0;
+
 };
 
 struct SendingReplayInfo
@@ -348,6 +352,8 @@ struct SendingReplayInfo
     QString modVersion;
     WinCondition winBy;
     bool isFullStdGame = false;
+    QString gameId;
+    bool isAutomatch;
 };
 
 
