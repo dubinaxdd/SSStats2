@@ -14,13 +14,14 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
     m_findGameResultsTimer.setInterval(4000);
 
     connect(&m_findGameResultsTimer, &QTimer::timeout, this, [&]{
-        emit requestGameResults(m_currentPlayersId);
-        qDebug() << "ReplayDataCollector::readDefinitiveReplayData() Request game results";
+
+        if(!m_lastGameId.isEmpty())
+        {
+            emit requestGameResults(m_lastGameId);
+            m_lastGameId = "";
+            qDebug() << "ReplayDataCollector::readDefinitiveReplayData() Request game results";
+        }
     });
-
-    //QString gameResults = "\"GameResultNotificationMessage\",10008417,[[[10008417,2,5,1,[1,1],8551,[],0,3109,[],null,[],[],[],[],[],[]],[10212054,2,1,0,[1,1],339666,[],0,0,[],null,[],[],[],[],[],[]],[10702144,2,3,0,[1,1],353596,[],0,0,[],null,[],[],[],[],[],[]],[11541163,2,7,1,[1,1],76318,[],0,2483,[],null,[],[],[],[],[],[]]],[[8551,15,5,2,1,0,1,-1,-1,-1,-1,-1,1010,1757671662,0,0,0],[339666,11,13,7,-1,0,0,18,83,18,83,1,1179,1757671662,10,1,1243],[353596,13,11,11,-1,0,2,140,277,140,277,1,1027,1757671662,67,1,1113],[76318,17,11,1,7,0,1,14,299,14,299,1,1316,1757671662,14,1,1316]],[],1259657,\"\",[]]]";
-
-    //receiveGameResults(gameResults);
 }
 
 void ReplayDataCollector::receiveCurrentMissionState(GameMissionState missionCurrentState)
@@ -677,8 +678,8 @@ void ReplayDataCollector::parseGameResults(QString gameResults)
         if (!teams.contains(player.playerTeam))
             teams.append(player.playerTeam);
 
-        if(player.playerType != 2)
-            computersFinded = true;
+        //if(player.playerType != 2 && player.playerType != 0)
+        computersFinded = !(player.playerType == 2 || player.playerType == 0);  //2 - в автоматче, 0 - в кастомке
 
         if (player.isWinner)
             winnerAccepted = true;
@@ -704,13 +705,13 @@ void ReplayDataCollector::parseGameResults(QString gameResults)
         replayInfo.playersInfo.append(player);
 
         qInfo(logInfo()) << "Parsed player info";
-        qInfo(logInfo()) << player.playerName;
-        qInfo(logInfo()) << player.relicId;
-        qInfo(logInfo()) << player.playerSid;
-        qInfo(logInfo()) << player.playerRace;
-        qInfo(logInfo()) << player.isWinner;
-        qInfo(logInfo()) << player.playerType;
-        qInfo(logInfo()) << player.playerTeam;
+        qInfo(logInfo()) << "Player Name" << player.playerName;
+        qInfo(logInfo()) << "Player relicId" << player.relicId;
+        qInfo(logInfo()) << "Player sid" << player.playerSid;
+        qInfo(logInfo()) << "Player Race" << player.playerRace;
+        qInfo(logInfo()) << "Is Winner" << player.isWinner;
+        qInfo(logInfo()) << "Player type" << player.playerType;
+        qInfo(logInfo()) << "Player team" << player.playerTeam;
         qInfo(logInfo()) << playerJson.at(4).toArray();
     }
 
@@ -867,15 +868,15 @@ void ReplayDataCollector::parseGameResults(QString gameResults)
     qInfo(logInfo()) << "Readed played game settings";
 }
 
-void ReplayDataCollector::setCurrentPlayersId(const QStringList &newCurrentPlayersId)
-{
-    m_currentPlayersId = newCurrentPlayersId;
-}
-
 void ReplayDataCollector::receiveGameResults(QString gameResults)
 {
     parseGameResults(gameResults);
     m_playersInfoFromDowServer.clear();
+}
+
+void ReplayDataCollector::reciveGameId(QString gameId)
+{
+    m_lastGameId = gameId;
 }
 
 void ReplayDataCollector::setCurrentGame(GamePath *newCurrentGame)

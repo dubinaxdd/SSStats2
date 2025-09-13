@@ -78,7 +78,7 @@ void GameStateReader::readGameInfo()
             ///Проверка на окончание игры
             if(line.contains("APP -- Game Stop"))
             {
-                missionStoped();
+                missionStoped(fileLines, counter);
                 break;
             }
 
@@ -586,7 +586,7 @@ void GameStateReader::missionOver()
     }
 }
 
-void GameStateReader::missionStoped()
+void GameStateReader::missionStoped(QStringList* fileLines, int counter)
 {
     if (m_missionCurrentState != GameMissionState::gameStoped
         && m_missionCurrentState != GameMissionState::playbackStoped
@@ -609,6 +609,28 @@ void GameStateReader::missionStoped()
             case unknownGameStarted : m_missionCurrentState = GameMissionState::unknownGameStoped; break;
             default: break;
         }
+
+        if (m_missionCurrentState == GameMissionState::gameStoped)
+        {
+            m_lastMatchId = "";
+            QString pattern = "ReportSimStats - storing simulation results for match";
+
+            qDebug() << "ASDASDASDASDASD" << fileLines->at(counter - 2);
+
+            //Ищем в следующей строке ID матча
+            if (fileLines->at(counter - 2).contains(pattern))
+            {
+                QString line = fileLines->at(counter - 2);
+                int startIndex = line.indexOf(pattern) + pattern.size() + 3;
+                m_lastMatchId = line.right(line.size() - startIndex);
+                qInfo(logInfo()) << "Match ID: " << m_lastMatchId;
+
+                emit matchIdParsed(m_lastMatchId);
+            }
+            else
+                qWarning(logWarning()) << "Match ID not finded";
+        }
+
 
         m_lockRanked = false;
         emit sendCurrentMissionState(m_missionCurrentState);

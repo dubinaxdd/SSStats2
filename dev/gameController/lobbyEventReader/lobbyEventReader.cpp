@@ -232,8 +232,8 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (line.contains("Lobby - LIE_StartAutoMatch received") /*|| line.contains("Lobby - LOE_TA_Matching received")*/)
             {
-                if(line.contains(m_preLastMatchLogTime))
-                    break;
+                //if(line.contains(m_preLastMatchLogTime))
+                //    break;
 
                 m_preLastMatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = true;
@@ -253,8 +253,8 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission")/* || ("GAME -- Ending mission (Connection Lost)")*/)
             {
-                if(line.contains(m_preLastMatchLogTime))
-                    break;
+                //if(line.contains(m_preLastMatchLogTime))
+                //    break;
 
                 m_preLastMatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = false;
@@ -265,10 +265,10 @@ void LobbyEventReader::readAutomatchEvents()
                 break;
             }
 
-            if (/*m_automatchProcessed &&*/ line.contains("Lobby - LIE_HostGame received"))
+            if (m_automatchProcessed && line.contains("Lobby - LIE_HostGame received"))
             {
-                if(line.contains(m_preLastMatchLogTime))
-                    break;
+                //if(line.contains(m_preLastMatchLogTime))
+                //    break;
 
                 m_matchPlayersList.clear();
                 m_matchNamesList.clear();
@@ -277,24 +277,37 @@ void LobbyEventReader::readAutomatchEvents()
             }
 
 
-            if (/*m_automatchProcessed &&*/ line.contains("Lobby - New Peer for remote player:"))
+            if (m_automatchProcessed && line.contains("Lobby - New Peer for remote player:"))
             {
-                if(line.contains(m_preLastMatchLogTime))
-                    break;
+                //if(line.contains(m_preLastMatchLogTime))
+                //    break;
 
                 parseAytomatchPlayers(line);
                 qInfo(logInfo()) << "Automatch player connected";
             }
 
 
-            if (/*m_automatchProcessed &&*/ line.contains("Lobby -- Net UPDATE PLAYER information for player"))
+            if (m_automatchProcessed && line.contains("Lobby -- Net UPDATE PLAYER information for player"))
             {
-                if(line.contains(m_preLastMatchLogTime))
-                    break;
+                //if(line.contains(m_preLastMatchLogTime))
+                //    break;
 
                 parseAutomatchPlayerName(line);
                 qInfo(logInfo()) << "Automatch player name parse";
             }
+
+
+            if (m_automatchProcessed && line.contains("Lobby -- Net UPDATE PLAYER information for player"))
+            {
+                //if(line.contains(m_preLastMatchLogTime))
+                //    break;
+
+                parseAutomatchPlayerName(line);
+                qInfo(logInfo()) << "Automatch player name parse";
+            }
+
+
+
 
             counter--;
         }

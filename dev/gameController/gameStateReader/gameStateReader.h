@@ -39,11 +39,10 @@ signals:
     void sendCurrentMod(QString currentMod);
     void sendCurrentModVersion(QString modVersion);
     void localPlayerDroppedToObserver();
-
     void sendCurrentWinConditions(QVector<WinCondition>);
     void sendGameRankedMode(bool gameRankedMode);
-
     void sendRequestParametres(DowServerRequestParametres requestParametres);
+    void matchIdParsed(QString matchId);
 
 private:
     void checkCurrentMode();
@@ -57,15 +56,11 @@ private:
     void missionLoad(QStringList* fileLines, int counter);
     void missionStarted(QStringList *fileLines, int counter);
     void missionOver();
-    void missionStoped();
-
+    void missionStoped(QStringList* fileLines, int counter);
     bool forceMissionStoped();
-
     void setLocalPlayerName(QString str);
     void playerDroppedToObserver(QString str);
-
     void readWinConditions(QStringList *fileLines, int counter);
-
     void determinateRankedMode(QVector<PlayerStats> playerStats);
 
 private:
@@ -78,6 +73,7 @@ private:
     QString m_currentModeVersion;
     QString m_testStatsPath;
     QString m_localPlayerName;
+    QString m_lastMatchId;
 
     GameState m_ssCurrentState = GameState::gameShutdowned;
     GameMissionState m_missionCurrentState = GameMissionState::unknown;

@@ -20,13 +20,13 @@ public slots:
     void receiveCurrentMod(QString currentMode);
     void receiveCurrentModVersion(QString version);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
-    void setCurrentPlayersId(const QStringList &newCurrentPlayersId);
     void receiveGameResults(QString gameResults);
+    void reciveGameId(QString gameId);
 
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void sendNotification(QString warningString, bool isWarning);
-    void requestGameResults(QStringList playersIdList);
+    void requestGameResults(QString lastGameId);
 
 private:
     bool checkEqualNames(QStringList* playerNames);
@@ -50,13 +50,10 @@ private:
     QString m_currentMode;
     QString m_currentModVerion;
     QString m_testStatsPath;
+    QString m_lastGameId;
     bool m_gameWillBePlayedInOtherSession = true;
-    QStringList m_currentPlayersId;
 
     const GamePath* m_currentGame;
-
-    QList<FinalState> m_playerFinalStateList;
-
     QTimer m_findGameResultsTimer;
 
 };

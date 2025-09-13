@@ -33,7 +33,7 @@ public slots:
     void findPlayerBySsId(int ssId, int playerPosititon);
     void findSessionId();
     void findIgnoredPlayersId(QStringList playerNames);
-    void findGameResults(QStringList playersIdList);
+    void findGameResults(QString lastGameId);
     void findAuthKey();
     void abort();
 
@@ -43,7 +43,7 @@ private:
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
     QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
-    QString findGameResultsInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
+    QString findGameResultsInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QString lastGameId, HANDLE hProcess);
 
     HANDLE getProcessHandle(QString gameName);
 
@@ -63,5 +63,7 @@ private:
     bool m_dataFinded = false;
     bool m_ignoredPlayersIdFinded = false;
     bool m_gameResultsFinded = false;
+    bool m_firstGameResultsSearch = true;
+    bool m_firstIgnoredPlayersSearch = true;
 };
 #endif // GAMEMEMORYREADER_H
