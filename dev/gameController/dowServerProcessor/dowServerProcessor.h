@@ -7,6 +7,7 @@
 #include <logger.h>
 #include <baseTypes.h>
 #include <QTimer>
+#include <QJsonObject>
 
 class DowServerProcessor : public AbstractDowServerProcessor
 {
@@ -43,12 +44,15 @@ public slots:
     void requestPartysData();
     void onPlayerDisconnected();
     void onAutomatchPlayersListChanged(QStringList playersList);
+    void requestGameResult(QString gameId);
+
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
     void receiveProfileID(QNetworkReply *reply, QString steamID);
     void receiveFindAdvertisements(QNetworkReply *reply);
     void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData);
+    void receiveGameResults(QNetworkReply *reply, QString gameId);
 
     void playerDiscoonectTimerTimeout();
 
@@ -58,11 +62,13 @@ private slots:
 signals:
     void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo );
     void sendCurrentPlayerId(QString id);
+    void sendGameResults(QJsonObject gameResult);
 
 private:
     QVector<QueryType> m_requestsQueue;
     QTimer *m_queueTimer;
     QTimer *m_requestDataAftrePlayerDisconectTimer;
+    QTimer m_secondGameResultRequestTimer;
     QVector<PlayerData> m_profileIdsForQueue;
 
     QList<PlayerInfoFromDowServer> m_lastPlayersInfo;
@@ -75,6 +81,11 @@ private:
 
     bool m_needUpdateLatter = false;
     bool m_neeedRequestAdvertisements = false;
+
+    QJsonObject m_gameResult;
+    bool m_needSendGameResult = false;
+    bool m_isFirstGameResultsRequest = true;
+    QString m_gameIdForSecondGameResultSearch;
 };
 
 #endif // DOWSERVERPROCESSOR_H

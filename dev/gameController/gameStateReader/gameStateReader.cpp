@@ -615,19 +615,26 @@ void GameStateReader::missionStoped(QStringList* fileLines, int counter)
             m_lastMatchId = "";
             QString pattern = "ReportSimStats - storing simulation results for match";
 
-            qDebug() << "ASDASDASDASDASD" << fileLines->at(counter - 2);
-
             //Ищем в следующей строке ID матча
-            if (fileLines->at(counter - 2).contains(pattern))
-            {
-                QString line = fileLines->at(counter - 2);
-                int startIndex = line.indexOf(pattern) + pattern.size() + 3;
-                m_lastMatchId = line.right(line.size() - startIndex);
-                qInfo(logInfo()) << "Match ID: " << m_lastMatchId;
+            int i = 2;
 
-                emit matchIdParsed(m_lastMatchId);
+            while (i < 70)
+            {
+                qDebug() << "ASDASDASDASDASD" << fileLines->at(counter - i);
+                if (fileLines->at(counter - i).contains(pattern))
+                {
+                    QString line = fileLines->at(counter - i);
+                    int startIndex = line.indexOf(pattern) + pattern.size() + 3;
+                    m_lastMatchId = line.right(line.size() - startIndex);
+                    qInfo(logInfo()) << "Match ID: " << m_lastMatchId;
+                    emit matchIdParsed(m_lastMatchId);
+                    break;
+                }
+                else
+                    i++;
             }
-            else
+
+            if (m_lastMatchId.isEmpty())
                 qWarning(logWarning()) << "Match ID not finded";
         }
 

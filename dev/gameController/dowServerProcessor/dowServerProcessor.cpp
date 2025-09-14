@@ -1,7 +1,6 @@
 #include "dowServerProcessor.h"
 #include <QNetworkReply>
 #include <QJsonDocument>
-#include <QJsonObject>
 #include <QJsonArray>
 #include <QDebug>
 #include <QSslConfiguration>
@@ -20,8 +19,13 @@ DowServerProcessor::DowServerProcessor(QObject *parent)
     m_requestDataAftrePlayerDisconectTimer->setInterval(ASD_TIMER_INTERVAL);
     m_requestDataAftrePlayerDisconectTimer->setSingleShot(true);
 
+    m_secondGameResultRequestTimer.setSingleShot(true);
+    m_secondGameResultRequestTimer.setInterval(100000); //Через 100 секунд игра стопудов должна появуиться на сервере
+
     QObject::connect(m_queueTimer, &QTimer::timeout, this, &DowServerProcessor::checkQueue, Qt::QueuedConnection);
     QObject::connect(m_requestDataAftrePlayerDisconectTimer, &QTimer::timeout, this, &DowServerProcessor::playerDiscoonectTimerTimeout, Qt::QueuedConnection);
+    QObject::connect(&m_secondGameResultRequestTimer, &QTimer::timeout, this, [&]{requestGameResult(m_gameIdForSecondGameResultSearch);}, Qt::QueuedConnection);
+
 }
 
 QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
@@ -169,6 +173,27 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayersSids(reply, profilesData);
+    });
+}
+
+void DowServerProcessor::requestGameResult(QString gameId)
+{
+    if (m_profileID.isEmpty())
+        return;
+
+    QString urlString;
+
+    if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        urlString = "https://dow-api.reliclink.com/community/leaderboard/getrecentmatchhistorybyprofileid?title=dow1-de&profile_id=" + m_profileID;
+    else
+        return;
+
+    QNetworkRequest newRequest;
+    newRequest.setUrl(urlString);
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        receiveGameResults(reply, gameId);
     });
 }
 
@@ -434,6 +459,76 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
 
     m_lastPlayersInfo = playersInfo;
     emit sendPlayersInfoFromDowServer(playersInfo);
+
+    if (m_needSendGameResult)
+        emit sendGameResults(m_gameResult);
+
+    m_needSendGameResult = false;
+}
+
+void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId)
+{
+    if (checkReplyErrors("DowServerProcessor::receivePlayersSids", reply))
+        return;
+
+    QByteArray replyByteArray = reply->readAll();
+    reply->deleteLater();
+
+    QJsonDocument jsonDocument = QJsonDocument::fromJson(replyByteArray);
+
+    if (!jsonDocument.isObject())
+    {
+        qWarning(logWarning()) << "DowServerProcessor::receiveGameResults - game results parse error";
+        return;
+    }
+
+    QJsonObject jsonObject = jsonDocument.object();
+
+    if (jsonObject.value("result").toObject().value("message").toString() != "SUCCESS")
+    {
+        qWarning(logWarning()) << "DowServerProcessor::receiveGameResults - game results is not SUCCESS";
+        return;
+    }
+
+    QJsonArray matchHistoryStats = jsonObject.value("matchHistoryStats").toArray();
+
+    bool gameResultsFinded = false;
+
+    for(auto item : matchHistoryStats)
+    {
+        m_gameResult = item.toObject();
+
+        if(QString::number(m_gameResult.value("id").toInt()) != gameId)
+            continue;
+
+        QJsonArray matchhistorymember = m_gameResult.value("matchhistorymember").toArray();
+        m_profileIdsForQueue.clear();
+
+        for(auto item : matchhistorymember)
+        {
+            QString playerId = QString::number(item.toObject().value("profile_id").toInt());
+
+            PlayerData newPlayerData;
+            newPlayerData.profileID = playerId;
+            newPlayerData.partyID = gameId;
+            m_profileIdsForQueue.append(newPlayerData);
+        }
+
+        m_needSendGameResult = true;
+        requestPlayersSids(m_profileIdsForQueue);
+
+        gameResultsFinded = true;
+        break;
+    }
+
+    if(!gameResultsFinded && m_isFirstGameResultsRequest)
+    {
+        m_isFirstGameResultsRequest = false;
+        m_gameIdForSecondGameResultSearch = gameId;
+        m_secondGameResultRequestTimer.start();
+    }
+    else
+        m_isFirstGameResultsRequest = true;
 }
 
 void DowServerProcessor::playerDiscoonectTimerTimeout()

@@ -20,7 +20,8 @@ public slots:
     void receiveCurrentMod(QString currentMode);
     void receiveCurrentModVersion(QString version);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
-    void receiveGameResults(QString gameResults);
+    //void receiveGameResults(QString gameResults);
+    void receiveGameResults(QJsonObject gameResults);
     void reciveGameId(QString gameId);
 
 signals:
@@ -41,7 +42,8 @@ private:
 
     bool checkMissionSettingsValide(int gameType);
     QString updateTestStatsFilePath();
-    void parseGameResults(QString gameResults);
+    //void parseGameResults(QString gameResults);
+    void parseGameResults(QJsonObject gameResults);
 
 private:
     QVector<WinCondition> m_winCoditionsVector;
@@ -55,7 +57,6 @@ private:
 
     const GamePath* m_currentGame;
     QTimer m_findGameResultsTimer;
-
 };
 
 #endif // REPLAYDATACOLLECTOR_H

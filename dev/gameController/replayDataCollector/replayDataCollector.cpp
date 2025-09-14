@@ -1,9 +1,10 @@
 #include "replayDataCollector.h"
 #include <logger.h>
-#include <repreader.h>
+#include <qjsonobject.h>
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <repreader.h>
 
 using namespace ReplayReader;
 
@@ -11,7 +12,7 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
     : QObject(parent)
 {
     m_findGameResultsTimer.setSingleShot(true);
-    m_findGameResultsTimer.setInterval(4000);
+    m_findGameResultsTimer.setInterval(5000);
 
     connect(&m_findGameResultsTimer, &QTimer::timeout, this, [&]{
 
@@ -603,7 +604,227 @@ QString ReplayDataCollector::updateTestStatsFilePath()
     return statsPath;
 }
 
-void ReplayDataCollector::parseGameResults(QString gameResults)
+void ReplayDataCollector::parseGameResults(QJsonObject gameResults)
+{
+    QJsonArray playersJsonArray = gameResults.value("matchhistoryreportresults").toArray();
+
+    SendingReplayInfo replayInfo;
+    replayInfo.isAutomatch = gameResults.value("description").toString() == "AUTOMATCH";
+
+    QVector<int> teams;
+    bool winnerAccepted = false;
+
+    for(const auto &item : qAsConst(playersJsonArray))
+    {
+        PlayerInfoForReplaySending player;
+        QJsonObject playerJson = item.toObject();
+
+        player.relicId = QString::number(playerJson.value("profile_id").toInt());
+        player.playerRace = getRaceByNumber(playerJson.value("race_id").toInt());
+        player.playerType = 0;//playerJson.value("resulttype").toInt();
+        player.playerTeam = playerJson.value("teamid").toInt();
+        player.isWinner = playerJson.value("resulttype").toInt() > 0;
+
+
+        if (!teams.contains(player.playerTeam))
+            teams.append(player.playerTeam);
+
+        if (player.isWinner)
+            winnerAccepted = true;
+
+        bool playerFindedInDowPlayersArray = false;
+        for(auto& playerFromDowServer : m_playersInfoFromDowServer)
+        {
+            if (player.relicId == playerFromDowServer.playerID)
+            {
+                player.playerName = playerFromDowServer.name;
+                player.playerSid = playerFromDowServer.steamId;
+                playerFindedInDowPlayersArray = true;
+                break;
+            }
+        }
+
+        if (!playerFindedInDowPlayersArray)
+        {
+            qWarning(logWarning()) << "ReplayDataCollector::receiveGameResults - player not finded in dowServerPlayersArray" << player.relicId;
+            return;
+        }
+
+        replayInfo.playersInfo.append(player);
+
+        qInfo(logInfo()) << "Parsed player info";
+        qInfo(logInfo()) << "Player Name" << player.playerName;
+        qInfo(logInfo()) << "Player relicId" << player.relicId;
+        qInfo(logInfo()) << "Player sid" << player.playerSid;
+        qInfo(logInfo()) << "Player Race" << player.playerRace;
+        qInfo(logInfo()) << "Is Winner" << player.isWinner;
+        qInfo(logInfo()) << "Player type" << player.playerType;
+        qInfo(logInfo()) << "Player team" << player.playerTeam;
+    }
+
+    //Сортировка игроков по победе
+    std::sort(replayInfo.playersInfo.begin(), replayInfo.playersInfo.end(), [](PlayerInfoForReplaySending &a, PlayerInfoForReplaySending &b){
+        return a.isWinner > b.isWinner;
+    });
+
+    QString warning = tr("    The replay has not been uploaded to the server!") + "\n";
+    bool checkFailed = false;
+
+    RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
+
+    replayInfo.mapName = repReader.replay.Map;
+    replayInfo.gameTime = repReader.replay.Duration;
+
+    //Проверка на наличие ИИ
+
+    bool computersFinded = false;
+    for(auto& item : repReader.replay.Players)
+    {
+        if (item->Type == 1 || item->Type == 3 || item->Type == 11){
+            computersFinded = true;
+            break;
+        }
+    }
+
+    if (computersFinded)
+    {
+        checkFailed = true;
+        warning += tr("    There was AI in the game") + "\n";
+    }
+
+    //Выводим информацию об игре
+    qInfo(logInfo()) << "Players count:" << replayInfo.playersInfo.count();
+    qInfo(logInfo()) << "Computers finded:" << computersFinded;
+    qInfo(logInfo()) << "Teams count:" << teams.count();
+    qInfo(logInfo()) << "Duration:" << replayInfo.gameTime;
+    qInfo(logInfo()) << "Scenario:" << replayInfo.mapName;
+    qInfo(logInfo()) << "APM:" << m_lastAverrageApm;
+
+
+    bool isStdWinConditions = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
+                              && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
+                              && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
+                              && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
+                              && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
+
+    if (!isStdWinConditions)
+    {
+        checkFailed = true;
+        warning += tr("    Standard winning conditions were not set up for the game") + "\n";
+    }
+
+    bool isFullStdGame = false;
+
+    if (replayInfo.playersInfo.count() == 2)
+    {
+        //Проверка условий победы для игр 1х1
+        isFullStdGame = m_winCoditionsVector.contains( WinCondition::ANNIHILATE)
+                        && m_winCoditionsVector.contains( WinCondition::CONTROLAREA)
+                        && m_winCoditionsVector.contains( WinCondition::STRATEGICOBJECTIVE)
+                        && !m_winCoditionsVector.contains( WinCondition::ASSASSINATE)
+                        && !m_winCoditionsVector.contains( WinCondition::DESTROYHQ)
+                        && !m_winCoditionsVector.contains( WinCondition::ECONOMICVICTORY)
+                        && !m_winCoditionsVector.contains( WinCondition::SUDDENDEATH);
+    }
+
+
+    //Проверка на количество команд
+    if (teams.count() > 2)
+    {
+        checkFailed = true;
+        warning += tr("    There were more than two teams in the game") + "\n";
+    }
+
+    //Проверка на равенство команд
+    QMap<int, int> teamsCounter;
+
+    for (int i = 0; i < replayInfo.playersInfo.count(); i++)
+    {
+        int playerTeam = replayInfo.playersInfo.at(i).playerTeam;
+
+        if (teamsCounter.contains(playerTeam))
+            teamsCounter.insert(playerTeam, teamsCounter.value(playerTeam) + 1);
+        else
+            teamsCounter.insert(playerTeam, 1);
+    }
+
+    int count = 0;
+
+    if (teamsCounter.count() > 0)
+        count = teamsCounter.first();
+    else
+    {
+        checkFailed = true;
+        warning += tr("    Team identification failure occured") + "\n";
+    }
+
+    for (int i = 0; i < teamsCounter.count(); i++)
+    {
+        if (teamsCounter.values().at(i) != count)
+        {
+            checkFailed = true;
+            warning += tr("    Teams didn't have an equal number of players") + "\n";
+        }
+    }
+
+    //Проверка на длительность игры
+    if(repReader.replay.Duration <= 45)
+    {
+        checkFailed = true;
+        warning += tr("    Game lasted less than 45 seconds") + "\n";
+    }
+
+    //Проверка на наличие победителя
+    if (!winnerAccepted)
+    {
+        checkFailed = true;
+        warning += tr("    No game winner has been determined") + "\n";
+    }
+
+    //Отправка реплея
+    replayInfo.apm = m_lastAverrageApm;
+
+    switch (replayInfo.playersInfo.count())
+    {
+    case 2: replayInfo.gameType = GameTypeForReplaySending::GameType1x1; break;
+    case 4: replayInfo.gameType = GameTypeForReplaySending::GameType2x2; break;
+    case 6: replayInfo.gameType = GameTypeForReplaySending::GameType3x3; break;
+    case 8: replayInfo.gameType = GameTypeForReplaySending::GameType4x4; break;
+    default: return;
+    }
+
+    bool lastGameSettingsValide = repReader.isStandart(replayInfo.gameType);
+
+    if (!lastGameSettingsValide)
+    {
+        checkFailed = true;
+        warning += tr("    Game settings not valide") + "\n";
+    }
+
+    if (checkFailed)
+    {
+        emit sendNotification(warning, true);
+        qWarning(logWarning()) << warning;
+        return;
+    }
+
+    QString modName = m_currentMode;
+
+    if(modName.toLower().contains("dowstats_balance_mod"))
+        modName = "dowstats_balance_mod";
+
+    replayInfo.modVersion = m_currentModVerion;
+    replayInfo.mod = modName;
+    replayInfo.isFullStdGame = isFullStdGame;
+    //анигиляция, потому что невозможно определить условие победы
+    replayInfo.winBy = WinCondition::ANNIHILATE;
+
+    emit sendReplayToServer(std::move(replayInfo));
+
+    qInfo(logInfo()) << "Readed played game settings";
+}
+
+/*void ReplayDataCollector::parseGameResults(QString gameResults)
 {
     QString pattern = "GameResultNotificationMessage";
     int startIndex = gameResults.indexOf(pattern) + pattern.size() + 11;
@@ -866,9 +1087,15 @@ void ReplayDataCollector::parseGameResults(QString gameResults)
     emit sendReplayToServer(std::move(replayInfo));
 
     qInfo(logInfo()) << "Readed played game settings";
-}
+}*/
 
-void ReplayDataCollector::receiveGameResults(QString gameResults)
+/*void ReplayDataCollector::receiveGameResults(QString gameResults)
+{
+    parseGameResults(gameResults);
+    m_playersInfoFromDowServer.clear();
+}*/
+
+void ReplayDataCollector::receiveGameResults(QJsonObject gameResults)
 {
     parseGameResults(gameResults);
     m_playersInfoFromDowServer.clear();

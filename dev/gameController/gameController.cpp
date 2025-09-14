@@ -98,8 +98,12 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
 
     QObject::connect(m_gameStateReader, &GameStateReader::matchIdParsed, m_replayDataCollector, &ReplayDataCollector::reciveGameId, Qt::QueuedConnection);
-    QObject::connect(m_replayDataCollector, &ReplayDataCollector::requestGameResults, m_gameMemoryReader, &GameMemoryReader::findGameResults, Qt::QueuedConnection);
-    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendGameResults, m_replayDataCollector, &ReplayDataCollector::receiveGameResults, Qt::QueuedConnection);
+    //QObject::connect(m_replayDataCollector, &ReplayDataCollector::requestGameResults, m_gameMemoryReader, &GameMemoryReader::findGameResults, Qt::QueuedConnection);
+    QObject::connect(m_replayDataCollector, &ReplayDataCollector::requestGameResults, m_dowServerProcessor, &DowServerProcessor::requestGameResult, Qt::QueuedConnection);
+    //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendGameResults, m_replayDataCollector, &ReplayDataCollector::receiveGameResults, Qt::QueuedConnection);
+    QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendGameResults, m_replayDataCollector, &ReplayDataCollector::receiveGameResults , Qt::QueuedConnection);
+
+
 
     //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 
