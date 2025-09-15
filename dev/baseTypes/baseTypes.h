@@ -6,6 +6,7 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QUuid>
+#include <repreader.h>
 
 class GameType {
     Q_GADGET
@@ -344,6 +345,7 @@ struct PlayerInfoForReplaySending
 struct SendingReplayInfo
 {
     QList<PlayerInfoForReplaySending> playersInfo;
+    QList<PlayerInfoFromDowServer> playersInfoFromDowServer;
     int apm;
     GameTypeForReplaySending gameType;
     QString mapName;
@@ -354,6 +356,7 @@ struct SendingReplayInfo
     bool isFullStdGame = false;
     QString gameId;
     bool isAutomatch;
+    QString replayPath;
 };
 
 

@@ -65,7 +65,6 @@ private:
     QMap<QString, QString> AllPlayersInfo;
     QNetworkAccessManager *m_networkManager;
     QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
-    QList<ServerPlayerStats*> m_playerStats;
     bool m_rankedMode = true;
 
     QString m_machineUniqueId = "";

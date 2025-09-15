@@ -34,7 +34,7 @@ private:
     void rquestChannellData(int id);
     void requestProfileID(QString steamID);
     void requestFindAdvertisements();
-    void requestPlayersSids(QVector<PlayerData> profilesData);
+    void requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults = false);
 
 public slots:
     void setRequestParametres(DowServerRequestParametres parametres) override;
@@ -51,7 +51,7 @@ private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
     void receiveProfileID(QNetworkReply *reply, QString steamID);
     void receiveFindAdvertisements(QNetworkReply *reply);
-    void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData);
+    void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults);
     void receiveGameResults(QNetworkReply *reply, QString gameId);
 
     void playerDiscoonectTimerTimeout();
@@ -60,15 +60,16 @@ private slots:
     void addQuery(DowServerProcessor::QueryType type);
 
 signals:
-    void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo );
+    void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo);
     void sendCurrentPlayerId(QString id);
-    void sendGameResults(QJsonObject gameResult);
+    void sendGameResults(QJsonObject gameResult, QList<PlayerInfoFromDowServer> playersInfo);
+    void sendNotification(QString warningString, bool isWarning);
 
 private:
     QVector<QueryType> m_requestsQueue;
     QTimer *m_queueTimer;
     QTimer *m_requestDataAftrePlayerDisconectTimer;
-    QTimer m_secondGameResultRequestTimer;
+    QTimer m_repeatGameResultRequestTimer;
     QVector<PlayerData> m_profileIdsForQueue;
 
     QList<PlayerInfoFromDowServer> m_lastPlayersInfo;
@@ -83,8 +84,7 @@ private:
     bool m_neeedRequestAdvertisements = false;
 
     QJsonObject m_gameResult;
-    bool m_needSendGameResult = false;
-    bool m_isFirstGameResultsRequest = true;
+    int m_repeatRequestGameResultsCount = 0;
     QString m_gameIdForSecondGameResultSearch;
 };
 

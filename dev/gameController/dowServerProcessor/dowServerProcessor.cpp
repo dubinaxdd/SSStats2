@@ -19,12 +19,11 @@ DowServerProcessor::DowServerProcessor(QObject *parent)
     m_requestDataAftrePlayerDisconectTimer->setInterval(ASD_TIMER_INTERVAL);
     m_requestDataAftrePlayerDisconectTimer->setSingleShot(true);
 
-    m_secondGameResultRequestTimer.setSingleShot(true);
-    m_secondGameResultRequestTimer.setInterval(100000); //Через 100 секунд игра стопудов должна появуиться на сервере
+    m_repeatGameResultRequestTimer.setInterval(10000); //Раз в 10 секунд пытаемся найти результаты игры, повторяем 12 раз
 
     QObject::connect(m_queueTimer, &QTimer::timeout, this, &DowServerProcessor::checkQueue, Qt::QueuedConnection);
     QObject::connect(m_requestDataAftrePlayerDisconectTimer, &QTimer::timeout, this, &DowServerProcessor::playerDiscoonectTimerTimeout, Qt::QueuedConnection);
-    QObject::connect(&m_secondGameResultRequestTimer, &QTimer::timeout, this, [&]{requestGameResult(m_gameIdForSecondGameResultSearch);}, Qt::QueuedConnection);
+    QObject::connect(&m_repeatGameResultRequestTimer, &QTimer::timeout, this, [&]{requestGameResult(m_gameIdForSecondGameResultSearch);}, Qt::QueuedConnection);
 
 }
 
@@ -140,7 +139,7 @@ void DowServerProcessor::requestFindAdvertisements()
     });
 }
 
-void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
+void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults)
 {
     if (m_sessionId.isEmpty() || profilesData.count() < 1)
         return;
@@ -172,7 +171,7 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData)
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receivePlayersSids(reply, profilesData);
+        receivePlayersSids(reply, profilesData, needSedGameResults);
     });
 }
 
@@ -180,6 +179,11 @@ void DowServerProcessor::requestGameResult(QString gameId)
 {
     if (m_profileID.isEmpty())
         return;
+
+    m_gameIdForSecondGameResultSearch = gameId;
+
+    if (m_repeatRequestGameResultsCount == 0)
+        m_repeatGameResultRequestTimer.start();
 
     QString urlString;
 
@@ -397,7 +401,7 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
     }
 }
 
-void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData)
+void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults)
 {
     if (checkReplyErrors("DowServerProcessor::receivePlayersSids", reply))
         return;
@@ -458,12 +462,12 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
         qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId << playersInfo.at(i).playerID;
 
     m_lastPlayersInfo = playersInfo;
-    emit sendPlayersInfoFromDowServer(playersInfo);
 
-    if (m_needSendGameResult)
-        emit sendGameResults(m_gameResult);
+    if(!needSendGameResults)
+        emit sendPlayersInfoFromDowServer(playersInfo);
 
-    m_needSendGameResult = false;
+    if (needSendGameResults)
+        emit sendGameResults(m_gameResult, playersInfo);
 }
 
 void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId)
@@ -493,7 +497,6 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId
     QJsonArray matchHistoryStats = jsonObject.value("matchHistoryStats").toArray();
 
     bool gameResultsFinded = false;
-
     for(auto item : matchHistoryStats)
     {
         m_gameResult = item.toObject();
@@ -514,21 +517,34 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId
             m_profileIdsForQueue.append(newPlayerData);
         }
 
-        m_needSendGameResult = true;
-        requestPlayersSids(m_profileIdsForQueue);
-
         gameResultsFinded = true;
+        m_repeatRequestGameResultsCount = 0;
+        m_repeatGameResultRequestTimer.stop();
+
+        requestPlayersSids(m_profileIdsForQueue, true);
         break;
     }
 
-    if(!gameResultsFinded && m_isFirstGameResultsRequest)
+    if (gameResultsFinded)
     {
-        m_isFirstGameResultsRequest = false;
-        m_gameIdForSecondGameResultSearch = gameId;
-        m_secondGameResultRequestTimer.start();
+        qInfo(logInfo()) << "Game results finded";
+        return;
+    }
+
+    if (m_repeatRequestGameResultsCount >= 12)
+    {
+        m_repeatGameResultRequestTimer.stop();
+        m_repeatRequestGameResultsCount = 0;
+        emit sendNotification(tr("The game results are not finded."), true);
     }
     else
-        m_isFirstGameResultsRequest = true;
+    {
+        if (m_repeatRequestGameResultsCount == 0)
+            emit sendNotification(tr("The game results are not ready yet, the game will be sent within two minutes."), true);
+
+        qDebug() << "Try to find geme results";
+        m_repeatRequestGameResultsCount++;
+    }
 }
 
 void DowServerProcessor::playerDiscoonectTimerTimeout()

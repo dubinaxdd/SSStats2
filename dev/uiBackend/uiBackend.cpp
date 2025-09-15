@@ -76,6 +76,7 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_corePtr->gameController(),                        &GameController::gameLaunchStateChanged, this, &UiBackend::onGameLaunchStateChanged,         Qt::QueuedConnection);
     QObject::connect(m_corePtr->gameController(),                        &GameController::gameMaximized,          this, &UiBackend::receiveSsMaximized,             Qt::QueuedConnection);
     QObject::connect(m_corePtr->gameController()->replayDataCollector(), &ReplayDataCollector::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
+    QObject::connect(m_corePtr->gameController()->dowServerProcessor(),  &DowServerProcessor::sendNotification,     this, &UiBackend::receiveNotification,            Qt::QueuedConnection);
     QObject::connect(m_corePtr->gameController()->gameStateReader(),     &GameStateReader::sendCurrentMissionState,  this, &UiBackend::setMissionCurrentState,         Qt::QueuedConnection);
     QObject::connect(m_corePtr->gameController()->gameStateReader(),     &GameStateReader::sendCurrentMod,           this, &UiBackend::receiveCurrentModTechnicalName, Qt::QueuedConnection);
 

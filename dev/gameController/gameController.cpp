@@ -57,7 +57,6 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(this, &GameController::gameLaunchStateChanged, m_soulstormMemoryController, &SoulstormMemoryController::onGameLaunchStateChanged, Qt::QueuedConnection);
     QObject::connect(m_gameWindowControllTimer, &QTimer::timeout, this, &GameController::checkWindowState, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          this, &GameController::gameInitialized, Qt::QueuedConnection);
-    //QObject::connect(m_gameStateReader, &GameStateReader::gameInitialized,          m_gameMemoryReader, &GameMemoryReader::findAuthKey, Qt::QueuedConnection);
 
     QObject::connect(m_gameStateReader, &GameStateReader::ssShutdown,               this, &GameController::ssShutdown, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
@@ -70,14 +69,8 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameStateReader, &GameStateReader::localPlayerDroppedToObserver,  m_apmMeter, [=]{m_apmMeter->stopAnalys();},   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendRequestParametres,  m_dowServerProcessor, &DowServerProcessor::setRequestParametres,   Qt::QueuedConnection);
 
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::joinToParty,        m_gameMemoryReader, &gameMemoryReader::findAuthKey, Qt::QueuedConnection);
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::hostParty,          m_gameMemoryReader, &gameMemoryReader::findAuthKey, Qt::QueuedConnection);
-
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestSessionId,   m_gameMemoryReader, &GameMemoryReader::findSessionId, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::quitFromParty,      m_replayDataCollector,    &ReplayDataCollector::onQuitParty, Qt::QueuedConnection);
-
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
-    //QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, m_dowServerProcessor, &DowServerProcessor::requestPartysData, Qt::QueuedConnection);
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerConnected,    this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerDisconnected, this, &GameController::requestDowPlayersData, Qt::QueuedConnection);
@@ -85,7 +78,6 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnoredPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlayersId, Qt::QueuedConnection);
-
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendCurrentPlayerId, m_lobbyEventReader, &LobbyEventReader::receiveCurrentPlayerId, Qt::QueuedConnection);
@@ -97,15 +89,9 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true); m_lobbyEventReader->setSessionIdRequested(false);});
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
 
-    QObject::connect(m_gameStateReader, &GameStateReader::matchIdParsed, m_replayDataCollector, &ReplayDataCollector::reciveGameId, Qt::QueuedConnection);
-    //QObject::connect(m_replayDataCollector, &ReplayDataCollector::requestGameResults, m_gameMemoryReader, &GameMemoryReader::findGameResults, Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::matchIdParsed, m_replayDataCollector, &ReplayDataCollector::setGameId, Qt::QueuedConnection);
     QObject::connect(m_replayDataCollector, &ReplayDataCollector::requestGameResults, m_dowServerProcessor, &DowServerProcessor::requestGameResult, Qt::QueuedConnection);
-    //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendGameResults, m_replayDataCollector, &ReplayDataCollector::receiveGameResults, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendGameResults, m_replayDataCollector, &ReplayDataCollector::receiveGameResults , Qt::QueuedConnection);
-
-
-
-    //QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendAuthKey, this, &GameController::sendAuthKey, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 

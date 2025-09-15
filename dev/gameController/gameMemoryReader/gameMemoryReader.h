@@ -24,17 +24,14 @@ signals:
     void sendSteamPlayerInfoForHostedGame(PlayerInfoFromDowServer playersInfo);
     void sendSessionId(QString sessionId);
     void sendSessionIdError();
-    void sendAuthKey(QString authKey);
     void sendPlayersIdList(QStringList playersInfo);
-    void sendGameResults(QString gameResults);
+
 
 public slots:
     void refreshSteamPlayersInfo();
     void findPlayerBySsId(int ssId, int playerPosititon);
     void findSessionId();
     void findIgnoredPlayersId(QStringList playerNames);
-    void findGameResults(QString lastGameId);
-    void findAuthKey();
     void abort();
 
 private:
@@ -43,8 +40,6 @@ private:
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
     QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
-    QString findGameResultsInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QString lastGameId, HANDLE hProcess);
-
     HANDLE getProcessHandle(QString gameName);
 
 private:

@@ -492,7 +492,8 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay2.php?";
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay3.php?";
-    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay4.php?";
+    //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay4.php?";
+    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay5.php?";
 
     int winnerCount = 0;
 
@@ -522,6 +523,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     else
         url += "isFullStdGame=" + QString::number(0) + "&";
 
+
+    if (replayInfo.isAutomatch)
+        url += "isAuto=" + QString::number(1) + "&";
+    else
+        url += "isAuto=" + QString::number(0) + "&";
+
+
+
     QString winCondition;
 
     switch (replayInfo.winBy)
@@ -549,14 +558,22 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
    // url += "key=" + QLatin1String(SERVER_KEY);
 
-
-    RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
+    RepReader repReader(replayInfo.replayPath);
 
     repReader.convertReplayToSteamVersion();
     repReader.isStandart(replayInfo.gameType);
     repReader.RenameReplay();
 
     QByteArray playback = repReader.getReplayData();
+
+
+    //RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
+
+    //repReader.convertReplayToSteamVersion();
+    //repReader.isStandart(replayInfo.gameType);
+    //repReader.RenameReplay();
+
+    //QByteArray playback = repReader.getReplayData();
 
 
     QNetworkRequest request = QNetworkRequest(QUrl(url));
