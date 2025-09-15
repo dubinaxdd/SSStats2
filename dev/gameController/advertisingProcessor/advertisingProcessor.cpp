@@ -21,7 +21,8 @@ AdvertisingProcessor::AdvertisingProcessor(SettingsController *settingsControlle
 
 void AdvertisingProcessor::onReplaySended()
 {
-    m_delayTimer->start();
+    if (m_gameType != GameType::GameTypeEnum::DefinitiveEdition)
+       m_delayTimer->start();
 }
 
 void AdvertisingProcessor::receiveServerPlayerStats(ServerPlayerStats serverPlayerStats)

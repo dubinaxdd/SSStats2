@@ -574,6 +574,12 @@ void UiBackend::onExit()
 
 void UiBackend::launchGame()
 {
+    if(m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+    {
+        m_corePtr->gameController()->launchGame();
+        return;
+    }
+
     QDir steamDir(m_steamPath);
 
     if(!gameIsInstalled())

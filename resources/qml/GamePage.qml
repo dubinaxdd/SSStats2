@@ -84,12 +84,13 @@ Rectangle {
             text: qsTr("Auto ad sender")
             checked: root.settingsModel.enableAdvertising
             onCheckedChanged: root.settingsModel.enableAdvertising = checked;
+            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
         }
 
         ColumnLayout
         {
             clip: true
-            visible: _uiBackend.gameIsInstalled && root.model.currentGameType  !==  GameType.DefinitiveEdition
+            visible: _uiBackend.gameIsInstalled && root.model.currentGameType !==  GameType.DefinitiveEdition
             Layout.topMargin: 10
 
             Label{
