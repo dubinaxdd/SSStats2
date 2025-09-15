@@ -625,6 +625,7 @@ void ReplayDataCollector::parseGameResults(QJsonObject gameResults, QList<Player
 
     replayInfo.playersInfoFromDowServer = playersInfo;
     replayInfo.isAutomatch = gameResults.value("description").toString() == "AUTOMATCH";
+    replayInfo.gameId = QString::number(gameResults.value("id").toInt());
 
     QVector<int> teams;
     bool winnerAccepted = false;
@@ -636,7 +637,7 @@ void ReplayDataCollector::parseGameResults(QJsonObject gameResults, QList<Player
 
         player.relicId = QString::number(playerJson.value("profile_id").toInt());
         player.playerRace = getRaceByNumber(playerJson.value("race_id").toInt());
-        player.playerType = 0;//playerJson.value("resulttype").toInt();
+        player.playerType = 0;
         player.playerTeam = playerJson.value("teamid").toInt();
         player.isWinner = playerJson.value("resulttype").toInt() > 0;
 

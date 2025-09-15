@@ -548,6 +548,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "winby=" + winCondition + "&";
 
     url += "version=" + m_clientVersion + "&";
+    url += "relicGameId=" + replayInfo.gameId + "&";
 
     if (m_rankedMode)
         url += "isRanked=1";

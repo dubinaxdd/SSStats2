@@ -620,7 +620,6 @@ void GameStateReader::missionStoped(QStringList* fileLines, int counter)
 
             while (i < 70)
             {
-                qDebug() << "ASDASDASDASDASD" << fileLines->at(counter - i);
                 if (fileLines->at(counter - i).contains(pattern))
                 {
                     QString line = fileLines->at(counter - i);
