@@ -40,6 +40,8 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
 
     if (gameCurrentState == GameMissionState::gameLoadStarted)
     {
+        emit playersListChanged(m_matchPlayersList);
+
         if (m_automatchProcessed && m_matchNamesList.count() > m_matchPlayersList.count())
             m_ignotingPlayersListRequestTimer.start();
     }
@@ -51,14 +53,6 @@ void LobbyEventReader::receiveCurrentPlayerId(QString id)
         return;
 
     m_localPlayerId = id;
-
-    /*m_automatchPlayersList.append("10864246");
-    m_automatchPlayersList.append(m_localPlayerId);
-    m_automatchPlayersList.append("11865451");
-
-
-///////////////////////////////////////////////////
-    requestIgnoredPlayers();*/
 }
 
 void LobbyEventReader::readLobbyEvents()
@@ -232,9 +226,6 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (line.contains("Lobby - LIE_StartAutoMatch received") /*|| line.contains("Lobby - LOE_TA_Matching received")*/)
             {
-                //if(line.contains(m_preLastMatchLogTime))
-                //    break;
-
                 m_preLastMatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = true;
                 m_matchPlayersList.clear();
@@ -253,9 +244,6 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission")/* || ("GAME -- Ending mission (Connection Lost)")*/)
             {
-                //if(line.contains(m_preLastMatchLogTime))
-                //    break;
-
                 m_preLastMatchLogTime = m_lastAutomatchLogTime;
                 m_automatchProcessed = false;
                 m_matchPlayersList.clear();
@@ -267,9 +255,6 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (m_automatchProcessed && line.contains("Lobby - LIE_HostGame received"))
             {
-                //if(line.contains(m_preLastMatchLogTime))
-                //    break;
-
                 m_matchPlayersList.clear();
                 m_matchNamesList.clear();
                 qInfo(logInfo()) << "Hosting Automatch";
@@ -279,9 +264,6 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (m_automatchProcessed && line.contains("Lobby - New Peer for remote player:"))
             {
-                //if(line.contains(m_preLastMatchLogTime))
-                //    break;
-
                 parseAytomatchPlayers(line);
                 qInfo(logInfo()) << "Automatch player connected";
             }
@@ -289,9 +271,6 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (m_automatchProcessed && line.contains("Lobby -- Net UPDATE PLAYER information for player"))
             {
-                //if(line.contains(m_preLastMatchLogTime))
-                //    break;
-
                 parseAutomatchPlayerName(line);
                 qInfo(logInfo()) << "Automatch player name parse";
             }
@@ -299,15 +278,9 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (m_automatchProcessed && line.contains("Lobby -- Net UPDATE PLAYER information for player"))
             {
-                //if(line.contains(m_preLastMatchLogTime))
-                //    break;
-
                 parseAutomatchPlayerName(line);
                 qInfo(logInfo()) << "Automatch player name parse";
             }
-
-
-
 
             counter--;
         }
@@ -317,7 +290,7 @@ void LobbyEventReader::readAutomatchEvents()
 
         if (m_automatchPlayersListChanged)
         {
-            emit playersListChanged(m_matchPlayersList);
+            //emit playersListChanged(m_matchPlayersList);
             m_automatchPlayersListChanged = false;
         }
 
