@@ -532,9 +532,6 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
         return;
     }
 
-    m_repeatGameResultRequestTimer.disconnect();
-    QObject::connect(&m_repeatGameResultRequestTimer, &QTimer::timeout, this, [&]{requestGameResult(lastGameResult);}, Qt::QueuedConnection);
-
     if (m_repeatRequestGameResultsCount >= 12)
     {
         m_repeatGameResultRequestTimer.stop();
@@ -546,6 +543,8 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
         if (m_repeatRequestGameResultsCount == 0)
             emit sendNotification(tr("The game results are not ready yet, the game will be sent within two minutes."), true);
 
+        m_repeatGameResultRequestTimer.disconnect();
+        QObject::connect(&m_repeatGameResultRequestTimer, &QTimer::timeout, this, [=]{requestGameResult(lastGameResult);}, Qt::QueuedConnection);
         m_repeatGameResultRequestTimer.start();
         qDebug() << "Try to find geme results";
         m_repeatRequestGameResultsCount++;
