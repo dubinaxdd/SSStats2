@@ -54,10 +54,20 @@ void ReplayDataCollector::readReplayData()
         return;
     }
 
+    m_lastReplayInfo = SendingReplayInfo();
+    m_lastReplayInfo.apm = m_lastAverrageApm;
+    m_lastReplayInfo.replayPath = m_currentGame->gameSettingsPath + "/Playback/dowstatstemp.rec";
+    //m_lastReplayInfo.replayPath = m_currentGame->gameSettingsPath + "/Playback/temp.rec";
+    m_lastReplayInfo.gameId = m_lastGameId;
+    m_lastReplayInfo.mod = m_currentMode;
+    m_lastReplayInfo.modVersion = m_currentModVerion;
+    m_lastReplayInfo.isRnked = m_rankedState;
+
+
     if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         readDefinitiveReplayData();
     else
-        readSoulstormReplayData();
+        readSoulstormReplayData(m_lastReplayInfo);
 }
 
 Race ReplayDataCollector::getRaceByNumber(int number)
@@ -77,7 +87,7 @@ Race ReplayDataCollector::getRaceByNumber(int number)
     }
 }
 
-bool ReplayDataCollector::readSoulstormReplayData()
+bool ReplayDataCollector::readSoulstormReplayData(SendingReplayInfo replayInfo)
 {
     m_testStatsPath = updateTestStatsFilePath();
 
@@ -356,8 +366,6 @@ bool ReplayDataCollector::readSoulstormReplayData()
     }
 
     //Отправка реплея
-    SendingReplayInfo replayInfo;
-
     for(int i = 0; i < playersCount; i++)
     {
         PlayerInfoForReplaySending newPlayer;
@@ -404,7 +412,7 @@ bool ReplayDataCollector::readSoulstormReplayData()
         replayInfo.playersInfo.append(newPlayer);
     }
 
-    replayInfo.apm = m_lastAverrageApm;
+    //replayInfo.apm = m_lastAverrageApm;
 
     switch (playersCount)
     {
@@ -440,8 +448,8 @@ bool ReplayDataCollector::readSoulstormReplayData()
 
     if(modName.contains("dowstats_balance_mod"))
         modName = "dowstats_balance_mod";
-    replayInfo.modVersion = m_currentModVerion;
-    replayInfo.mod = modName;
+    //replayInfo.modVersion = m_currentModVerion;
+    //replayInfo.mod = modName;
     replayInfo.isFullStdGame = isFullStdGame;
 
     if (winBy == "ANNIHILATE" || winBy == "annihilate" )
@@ -463,14 +471,6 @@ bool ReplayDataCollector::readSoulstormReplayData()
 
 void ReplayDataCollector::readDefinitiveReplayData()
 {
-    m_lastReplayInfo = SendingReplayInfo();
-    m_lastReplayInfo.apm = m_lastAverrageApm;
-    m_lastReplayInfo.replayPath = m_currentGame->gameSettingsPath + "/Playback/dowstatstemp.rec";
-    m_lastReplayInfo.gameId = m_lastGameId;
-    m_lastReplayInfo.mod = m_currentMode;
-    m_lastReplayInfo.modVersion = m_currentModVerion;
-    m_lastReplayInfo.isRnked = m_rankedState;
-
     m_findGameResultsTimer.start();
 }
 

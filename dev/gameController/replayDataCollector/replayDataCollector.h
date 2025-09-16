@@ -38,7 +38,7 @@ private:
     void readReplayData();
     Race getRaceByNumber(int number);
 
-    bool readSoulstormReplayData();
+    bool readSoulstormReplayData(SendingReplayInfo replayInfo);
     void readDefinitiveReplayData();
 
     bool checkMissionSettingsValide(int gameType);
