@@ -92,6 +92,8 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameStateReader, &GameStateReader::matchIdParsed, m_replayDataCollector, &ReplayDataCollector::setGameId, Qt::QueuedConnection);
     QObject::connect(m_replayDataCollector, &ReplayDataCollector::requestGameResults, m_dowServerProcessor, &DowServerProcessor::requestGameResult, Qt::QueuedConnection);
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendGameResults, m_replayDataCollector, &ReplayDataCollector::receiveGameResults , Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::sendGameRankedMode, m_replayDataCollector, &ReplayDataCollector::setRankedState, Qt::QueuedConnection);
+
 
     m_lobbyEventReader->checkPatyState();
 

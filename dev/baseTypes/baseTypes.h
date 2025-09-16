@@ -357,6 +357,7 @@ struct SendingReplayInfo
     QString gameId;
     bool isAutomatch;
     QString replayPath;
+    bool isRnked = true;
 };
 
 

@@ -21,13 +21,14 @@ public slots:
     void receiveCurrentMod(QString currentMode);
     void receiveCurrentModVersion(QString version);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
-    void receiveGameResults(QJsonObject gameResults, QList<PlayerInfoFromDowServer> playersInfo);
+    void receiveGameResults(QJsonObject gameResults, SendingReplayInfo lastGameResult);
     void setGameId(QString gameId);
+    void setRankedState(bool newRankedState);
 
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void sendNotification(QString warningString, bool isWarning);
-    void requestGameResults(QString lastGameId);
+    void requestGameResults(SendingReplayInfo lastGameResults);
 
 private:
     bool checkEqualNames(QStringList* playerNames);
@@ -42,7 +43,7 @@ private:
 
     bool checkMissionSettingsValide(int gameType);
     QString updateTestStatsFilePath();
-    void parseGameResults(QJsonObject gameResults, QList<PlayerInfoFromDowServer> playersInfo);
+    void parseGameResults(QJsonObject gameResults,  SendingReplayInfo lastGameResult);
 
 private:
     QVector<WinCondition> m_winCoditionsVector;
@@ -53,10 +54,12 @@ private:
     QString m_testStatsPath;
     QString m_lastGameId;
     bool m_gameWillBePlayedInOtherSession = true;
+    bool m_rankedState = true;;
 
     const GamePath* m_currentGame;
     QTimer m_findGameResultsTimer;
-    QString m_lastReplayPath;
+   // QString m_lastReplayPath;
+    SendingReplayInfo m_lastReplayInfo;
 };
 
 #endif // REPLAYDATACOLLECTOR_H

@@ -20,11 +20,10 @@ DowServerProcessor::DowServerProcessor(QObject *parent)
     m_requestDataAftrePlayerDisconectTimer->setSingleShot(true);
 
     m_repeatGameResultRequestTimer.setInterval(10000); //Раз в 10 секунд пытаемся найти результаты игры, повторяем 12 раз
+    m_repeatGameResultRequestTimer.setSingleShot(true);
 
     QObject::connect(m_queueTimer, &QTimer::timeout, this, &DowServerProcessor::checkQueue, Qt::QueuedConnection);
     QObject::connect(m_requestDataAftrePlayerDisconectTimer, &QTimer::timeout, this, &DowServerProcessor::playerDiscoonectTimerTimeout, Qt::QueuedConnection);
-    QObject::connect(&m_repeatGameResultRequestTimer, &QTimer::timeout, this, [&]{requestGameResult(m_gameIdForSecondGameResultSearch);}, Qt::QueuedConnection);
-
 }
 
 QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyData> partyDataArray)
@@ -139,7 +138,7 @@ void DowServerProcessor::requestFindAdvertisements()
     });
 }
 
-void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults)
+void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults, SendingReplayInfo lastGameResult)
 {
     if (m_sessionId.isEmpty() || profilesData.count() < 1)
         return;
@@ -171,16 +170,14 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData, bo
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receivePlayersSids(reply, profilesData, needSedGameResults);
+        receivePlayersSids(reply, profilesData, needSedGameResults, lastGameResult);
     });
 }
 
-void DowServerProcessor::requestGameResult(QString gameId)
+void DowServerProcessor::requestGameResult(SendingReplayInfo lastGameResult)
 {
     if (m_profileID.isEmpty())
         return;
-
-    m_gameIdForSecondGameResultSearch = gameId;
 
     if (m_repeatRequestGameResultsCount == 0)
         m_repeatGameResultRequestTimer.start();
@@ -197,7 +194,7 @@ void DowServerProcessor::requestGameResult(QString gameId)
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveGameResults(reply, gameId);
+        receiveGameResults(reply, lastGameResult);
     });
 }
 
@@ -401,7 +398,7 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
     }
 }
 
-void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults)
+void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults, SendingReplayInfo lastGameResult)
 {
     if (checkReplyErrors("DowServerProcessor::receivePlayersSids", reply))
         return;
@@ -461,16 +458,20 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
     for (int i = 0; i < playersInfo.count(); i++)
         qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId << playersInfo.at(i).playerID;
 
-    m_lastPlayersInfo = playersInfo;
+    //m_lastPlayersInfo = playersInfo;
+
 
     if(!needSendGameResults)
         emit sendPlayersInfoFromDowServer(playersInfo);
 
     if (needSendGameResults)
-        emit sendGameResults(m_gameResult, playersInfo);
+    {
+        lastGameResult.playersInfoFromDowServer = playersInfo;
+        emit sendGameResults(m_gameResult, lastGameResult);
+    }
 }
 
-void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId)
+void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult)
 {
     if (checkReplyErrors("DowServerProcessor::receivePlayersSids", reply))
         return;
@@ -501,7 +502,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId
     {
         m_gameResult = item.toObject();
 
-        if(QString::number(m_gameResult.value("id").toInt()) != gameId)
+        if(QString::number(m_gameResult.value("id").toInt()) != lastGameResult.gameId)
             continue;
 
         QJsonArray matchhistorymember = m_gameResult.value("matchhistorymember").toArray();
@@ -513,7 +514,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId
 
             PlayerData newPlayerData;
             newPlayerData.profileID = playerId;
-            newPlayerData.partyID = gameId;
+            //newPlayerData.partyID = gameId;
             m_profileIdsForQueue.append(newPlayerData);
         }
 
@@ -521,7 +522,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId
         m_repeatRequestGameResultsCount = 0;
         m_repeatGameResultRequestTimer.stop();
 
-        requestPlayersSids(m_profileIdsForQueue, true);
+        requestPlayersSids(m_profileIdsForQueue, true, lastGameResult);
         break;
     }
 
@@ -530,6 +531,9 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId
         qInfo(logInfo()) << "Game results finded";
         return;
     }
+
+    m_repeatGameResultRequestTimer.disconnect();
+    QObject::connect(&m_repeatGameResultRequestTimer, &QTimer::timeout, this, [&]{requestGameResult(lastGameResult);}, Qt::QueuedConnection);
 
     if (m_repeatRequestGameResultsCount >= 12)
     {
@@ -542,6 +546,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, QString gameId
         if (m_repeatRequestGameResultsCount == 0)
             emit sendNotification(tr("The game results are not ready yet, the game will be sent within two minutes."), true);
 
+        m_repeatGameResultRequestTimer.start();
         qDebug() << "Try to find geme results";
         m_repeatRequestGameResultsCount++;
     }

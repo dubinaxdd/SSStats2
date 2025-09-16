@@ -34,7 +34,7 @@ private:
     void rquestChannellData(int id);
     void requestProfileID(QString steamID);
     void requestFindAdvertisements();
-    void requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults = false);
+    void requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults = false, SendingReplayInfo lastGameResult = SendingReplayInfo());
 
 public slots:
     void setRequestParametres(DowServerRequestParametres parametres) override;
@@ -44,15 +44,15 @@ public slots:
     void requestPartysData();
     void onPlayerDisconnected();
     void onAutomatchPlayersListChanged(QStringList playersList);
-    void requestGameResult(QString gameId);
+    void requestGameResult(SendingReplayInfo lastGameResult);
 
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
     void receiveProfileID(QNetworkReply *reply, QString steamID);
     void receiveFindAdvertisements(QNetworkReply *reply);
-    void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults);
-    void receiveGameResults(QNetworkReply *reply, QString gameId);
+    void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults, SendingReplayInfo lastGameResult = SendingReplayInfo());
+    void receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult);
 
     void playerDiscoonectTimerTimeout();
 
@@ -62,7 +62,7 @@ private slots:
 signals:
     void sendPlayersInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo);
     void sendCurrentPlayerId(QString id);
-    void sendGameResults(QJsonObject gameResult, QList<PlayerInfoFromDowServer> playersInfo);
+    void sendGameResults(QJsonObject gameResult,  SendingReplayInfo lastGameResult);
     void sendNotification(QString warningString, bool isWarning);
 
 private:
@@ -73,6 +73,7 @@ private:
     QVector<PlayerData> m_profileIdsForQueue;
 
     QList<PlayerInfoFromDowServer> m_lastPlayersInfo;
+    //SendingReplayInfo m_lastGameResult;
 
     QString m_steamID = "";
     QString m_profileID = "";
@@ -85,7 +86,6 @@ private:
 
     QJsonObject m_gameResult;
     int m_repeatRequestGameResultsCount = 0;
-    QString m_gameIdForSecondGameResultSearch;
 };
 
 #endif // DOWSERVERPROCESSOR_H
