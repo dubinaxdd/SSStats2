@@ -550,7 +550,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "version=" + m_clientVersion + "&";
     url += "relicGameId=" + replayInfo.gameId + "&";
 
-    if (m_rankedMode)
+    if (m_rankedMode || replayInfo.isAutomatch)
         url += "isRanked=1";
     else
         url += "isRanked=0";
@@ -561,7 +561,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     RepReader repReader(replayInfo.replayPath);
 
-    repReader.convertReplayToSteamVersion();
+    //repReader.convertReplayToSteamVersion();
     repReader.isStandart(replayInfo.gameType);
     repReader.RenameReplay();
 
