@@ -134,6 +134,11 @@ QString StatisticPanelItem::getPlayerMmr1v1() const
     return QString::number(m_playersStats.mmr1v1);
 }
 
+QString StatisticPanelItem::getCustomGamesMmr() const
+{
+    return QString::number(m_playersStats.customGamesMmr);
+}
+
 QString StatisticPanelItem::getPlayerGamesCount() const
 {
     return QString::number(m_playersStats.gamesCount);

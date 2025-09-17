@@ -12,6 +12,7 @@ Rectangle {
     property string playerName
     property int playerMmr
     property int playerMmr1v1
+    property int customGamesMmr
     property int playerGamesCount
     property int playerRank
     property string playerRace
@@ -35,10 +36,10 @@ Rectangle {
     property var textColor: root.hoveredState ? DowStatsStyle.textColor : (playerIsBanned ? "#26282a" : DowStatsStyle.textColor)
 
     Layout.maximumWidth: 280 * sizeModifer
-    Layout.maximumHeight: 120 * sizeModifer
+    Layout.maximumHeight: 130 * sizeModifer
     Layout.minimumWidth: 280 * sizeModifer
-    Layout.minimumHeight: 120 * sizeModifer
-    height: 120 * sizeModifer
+    Layout.minimumHeight: 130 * sizeModifer
+    height: 130 * sizeModifer
     Layout.alignment: Qt.AlignRight | Qt.AlignTop
     Layout.fillHeight: false
     Layout.fillWidth: true
@@ -268,6 +269,15 @@ Rectangle {
                     Label {
                         id: label2
                         text: qsTr("Team MMR: ") + root.playerMmr
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillWidth: true
+                        Layout.fillHeight: true
+                        color: root.textColor
+                    }
+
+                    Label {
+                        id: customGameslabel
+                        text: qsTr("Custom games MMR: ") + root.customGamesMmr
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillWidth: true
                         Layout.fillHeight: true

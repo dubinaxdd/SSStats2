@@ -28,6 +28,7 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case PlayerName: return item->getPlayerName();
         case PlayerMmr: return item->getPlayerMmr();
         case PlayerMmr1v1: return item->getPlayerMmr1v1();
+        case CustomGamesMmr: return item->getCustomGamesMmr();
         case PlayerGamesCount: return item->getPlayerGamesCount();
         case PlayerRank: return item->getPlayerRank();
         case PlayerRace: return item->getPlayerRace();
@@ -60,6 +61,7 @@ QHash<int, QByteArray> StatisticPanel::roleNames() const
     roles[PlayerName]       = "playerName";
     roles[PlayerMmr]        = "playerMmr";
     roles[PlayerMmr1v1]     = "playerMmr1v1";
+    roles[CustomGamesMmr]   = "customGamesMmr";
     roles[PlayerGamesCount] = "playerGamesCount";
     roles[PlayerRank]       = "playerRank";
     roles[PlayerRace]       = "playerRace";

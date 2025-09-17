@@ -22,22 +22,23 @@ public:
 
 
     enum DataRoles {
-        PlayerName = Qt::UserRole + 1,
-        PlayerMmr = Qt::UserRole + 2,
-        PlayerMmr1v1 = Qt::UserRole + 3,
-        PlayerGamesCount = Qt::UserRole + 4,
-        PlayerRace = Qt::UserRole + 5,
-        PlayerWinRate = Qt::UserRole + 6,
-        PlayerApm = Qt::UserRole + 7,
-        PlayerIsBanned = Qt::UserRole + 8,
-        PlayerAvatarId = Qt::UserRole + 9,
-        SteamId = Qt::UserRole + 10,
-        CalibrateGamesLeft = Qt::UserRole + 11,
-        IsOnline = Qt::UserRole + 12,
-        IsRanked = Qt::UserRole + 13,
-        BanType = Qt::UserRole + 14,
-        PlayerRank = Qt::UserRole + 15,
-        PlayerVisible = Qt::UserRole
+        PlayerName = Qt::UserRole,
+        PlayerMmr,
+        PlayerMmr1v1,
+        CustomGamesMmr,
+        PlayerGamesCount,
+        PlayerRace,
+        PlayerWinRate,
+        PlayerApm,
+        PlayerIsBanned,
+        PlayerAvatarId,
+        SteamId,
+        CalibrateGamesLeft,
+        IsOnline,
+        IsRanked,
+        BanType,
+        PlayerRank,
+        PlayerVisible
     };
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;

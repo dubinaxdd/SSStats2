@@ -169,7 +169,7 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
     if(!nickNames.isEmpty())
         nickNames = "&nicks=" + nickNames;
 
-    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats4.php?sids=" + sidsString
+    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats5.php?sids=" + sidsString
                     + "&version=" + m_clientVersion
                     + "&sender_sid=" + m_currentPlayerStats.data()->at(0).steamId
                     + "&mod_tech_name=" + m_currentMod
@@ -230,6 +230,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).gamesCount = statsArray.at(i)["gamesCount"].toInt();
         playersInfo.get()->operator[](i).mmr = statsArray.at(i)["mmr"].toInt();
         playersInfo.get()->operator[](i).mmr1v1 = statsArray.at(i)["mmr1v1"].toInt();
+        playersInfo.get()->operator[](i).customGamesMmr = statsArray.at(i)["custom_games_mmr"].toInt();
         playersInfo.get()->operator[](i).isBanned = statsArray.at(i)["isBanned"].toBool();
         playersInfo.get()->operator[](i).name = statsArray.at(i)["name"].toString();
         playersInfo.get()->operator[](i).rank = statsArray.at(i)["rank"].toInt();

@@ -435,6 +435,17 @@
     </message>
 </context>
 <context>
+    <name>DowServerProcessor</name>
+    <message>
+        <source>The game results are not finded.</source>
+        <translation>Результаты игры не найдены</translation>
+    </message>
+    <message>
+        <source>The game results are not ready yet, the game will be sent within two minutes.</source>
+        <translation>Результаты игры ещё не готовы, игра будет отправлена в течение двух минут.</translation>
+    </message>
+</context>
+<context>
     <name>OverlaySettingsPage</name>
     <message>
         <source>No FOG</source>
@@ -497,6 +508,10 @@
     <message>
         <source>Team MMR: </source>
         <translation>Командный MMR: </translation>
+    </message>
+    <message>
+        <source>Custom games MMR: </source>
+        <translation>Кастомный MMR: </translation>
     </message>
     <message>
         <source>Games played: </source>

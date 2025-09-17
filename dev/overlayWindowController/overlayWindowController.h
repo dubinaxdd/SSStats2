@@ -34,10 +34,10 @@ private:
 private:
     QTimer* m_topmostTimer;
 
-    int m_defaultWidth;
-    int m_defaultHeight;
-    int m_widthInGame;
-    int m_heightInGame;
+    int m_defaultWidth = 0;
+    int m_defaultHeight = 0;
+    int m_widthInGame = 0;
+    int m_heightInGame = 0;
 
     HWND m_dowStatsHwnd;
     LONG m_defaultWindowLong;

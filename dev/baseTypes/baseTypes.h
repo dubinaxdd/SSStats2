@@ -209,6 +209,7 @@ struct ServerPlayerStats
     int gamesCount = 0;
     int mmr = 0;
     int mmr1v1 = 0;
+    int customGamesMmr = 0;
     QString name = "";
     QString dowServerName = "";
     QString avatarUrl = "";

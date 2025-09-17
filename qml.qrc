@@ -42,5 +42,6 @@
         <file>resources/qml/CounterComponent.qml</file>
         <file>resources/qml/GamePage.qml</file>
         <file>resources/qml/LinkButton.qml</file>
+        <file>resources/qml/PlayersStatisticColumn.qml</file>
     </qresource>
 </RCC>

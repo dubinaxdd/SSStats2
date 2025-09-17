@@ -13,6 +13,7 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(QString  playerName       READ getPlayerName         NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerMmr        READ getPlayerMmr          NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerMmr1v1     READ getPlayerMmr1v1       NOTIFY playersStatsChanged)
+    Q_PROPERTY(QString  customGamesMmr   READ getCustomGamesMmr     NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerGamesCount READ getPlayerGamesCount   NOTIFY playersStatsChanged)
     Q_PROPERTY(int      playerRank       READ getPlayerRank         NOTIFY playersStatsChanged)
     Q_PROPERTY(QString  playerRace       READ getPlayerRace         NOTIFY playersStatsChanged)
@@ -45,6 +46,7 @@ public:
     QString getPlayerName() const;
     QString getPlayerMmr() const;
     QString getPlayerMmr1v1() const;
+    QString getCustomGamesMmr() const;
     QString getPlayerGamesCount() const;
     int     getPlayerRank() const;
     QString getPlayerRace() const;
