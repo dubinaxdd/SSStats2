@@ -206,10 +206,21 @@ Player *RepReader::ReadPlayer()
 
         player->Race = BinReader->ReadStringUTF8(BinReader->ReadInt32());
 
-        if(replay.getVersion()==9)
+        BinReader->skipRawData(21);
+        BinReader->ReadStringUTF8(BinReader->ReadInt32()); //Если раскраска отключена, то в этом месте будет стринга ui_skirmish
+
+        //Старое чтение реплея без проверки на отключенную раскраску
+        /*if(replay.getVersion()==9)
             BinReader->skipRawData(49);
         else
-            BinReader->skipRawData(61);
+            BinReader->skipRawData(61);*/
+
+
+        if(replay.getVersion()==9)
+            BinReader->skipRawData(24);
+        else
+            BinReader->skipRawData(36);
+
 
         //replay.BeginPlayerDiffirences.append(BinReader->pos());
 
