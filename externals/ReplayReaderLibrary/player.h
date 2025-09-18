@@ -35,15 +35,15 @@ public:
         OtherPlayer
     };
 
-    QString Name;
-    QString Race;
-    uint Type;
-    uint Team;
-    ushort ActionCount;
-    uint LastActionTick;
+    QString Name = "";
+    QString Race = "";
+    uint Type = 7;
+    uint Team = 1;
+    ushort ActionCount = 0;
+    uint LastActionTick = 0;
 
-    QString Bytes;
-    ulong LenghtFOLDGPLY;
+    QString Bytes = "";
+    ulong LenghtFOLDGPLY = 0;
 
     QImage badge;
     QImage banner;
