@@ -121,6 +121,9 @@ void GameStateReader::readRacesTimerTimeout()
 {
     m_readRacesSingleShootTimer->stop();
 
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        return;
+
     m_testStatsPath = updateTestStatsFilePath();
 
     QFile file(m_testStatsPath);

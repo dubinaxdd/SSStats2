@@ -41,6 +41,7 @@ void ReplayDataCollector::receiveCurrentMissionState(GameMissionState missionCur
     switch (missionCurrentState)
     {
         case GameMissionState::gameStoped : readReplayData(); break;
+        case GameMissionState::gameLoadStarted : determinateRankedState(); break;
         default: break;
     }
 }
@@ -841,9 +842,55 @@ void ReplayDataCollector::parseGameResults(QJsonObject gameResults,  SendingRepl
     qInfo(logInfo()) << "Readed played game settings";
 }
 
+void ReplayDataCollector::determinateRankedState()
+{
+    if(m_currentGame->gameType != GameType::GameTypeEnum::DefinitiveEdition)
+        return;
+
+    bool ranked = false;
+
+    for (auto& player : m_playersInfoFromDowServer)
+    {
+        bool finded = false;
+        bool playerisRanked = false;
+
+        for (auto& item : m_plyersRankedState){
+            if(player.steamId == item.steamId)
+            {
+                finded = true;
+                playerisRanked = item.isRanked;
+                break;
+            }
+        }
+
+        if (finded && playerisRanked)
+        {
+            ranked = true;
+            break;
+        }
+        else
+        {
+            if(!finded)
+            {
+                ranked = true;
+                break;
+            }
+        }
+    }
+
+    setRankedState(ranked);
+    emit sendRankedState(ranked);
+
+}
+
 void ReplayDataCollector::setRankedState(bool newRankedState)
 {
     m_rankedState = newRankedState;
+}
+
+void ReplayDataCollector::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
+{
+    m_plyersRankedState = plyersRankedState;
 }
 
 void ReplayDataCollector::receiveGameResults(QJsonObject gameResults, SendingReplayInfo lastGameResult)

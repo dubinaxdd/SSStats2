@@ -102,7 +102,6 @@ void Core::addConnections()
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::sendCurrentMod,  m_rankedModServiceProcessor, &RankedModServiceProcessor::receiveCurrentMod,   Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::sendCurrentMod,  m_statsServerProcessor, &StatsServerProcessor::receiveCurrentMod,   Qt::QueuedConnection);
-    QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::sendGameRankedMode, m_statsServerProcessor, &StatsServerProcessor::receiveRankedMode, Qt::QueuedConnection);
     QObject::connect(m_gameController->lobbyEventReader(),    &LobbyEventReader::quitFromParty,      m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
     QObject::connect(m_gameController->lobbyEventReader(),    &LobbyEventReader::hostParty,          m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
     QObject::connect(m_gameController->lobbyEventReader(),    &LobbyEventReader::playerConnected,    m_soundProcessor,  &SoundProcessor::playPlayerJoinSound,  Qt::QueuedConnection);
@@ -120,6 +119,9 @@ void Core::addConnections()
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_gameController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_uiBackend->gamePage(), &GamePage::currentGameChanged, m_mapManager, &MapManager::receiveLoadMapsInfo, Qt::QueuedConnection);
+
+
+    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_gameController->replayDataCollector(), &ReplayDataCollector::receivePlyersRankedState , Qt::QueuedConnection);
 
 
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);

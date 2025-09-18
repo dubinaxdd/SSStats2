@@ -5,7 +5,7 @@
 
 GamePanel::GamePanel(GameController *soulstormController, SettingsController *settingsController, QObject *parent)
     : QObject(parent)
-    , m_soulstormControllerPtr(soulstormController)
+    , m_gameControllerPtr(soulstormController)
     , m_settingsController(settingsController)
 {
     m_racePanelVisibleTimer = new QTimer(this);
@@ -19,9 +19,10 @@ GamePanel::GamePanel(GameController *soulstormController, SettingsController *se
     QObject::connect(m_gameLeaveTimer, &QTimer::timeout, this, &GamePanel::gameLeaveTimerTimeout, Qt::QueuedConnection);
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &GamePanel::onSettingsLoaded, Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormControllerPtr->gameStateReader(), &GameStateReader::sendPlayersTestStats, this, &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
-    QObject::connect(m_soulstormControllerPtr->apmMeter(),        &APMMeter::apmCalculated,               this,  &GamePanel::onApmChanged,            Qt::QueuedConnection);
-    QObject::connect(m_soulstormControllerPtr->gameStateReader(), &GameStateReader::sendGameRankedMode,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->gameStateReader(), &GameStateReader::sendPlayersTestStats, this, &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->apmMeter(),        &APMMeter::apmCalculated,               this,  &GamePanel::onApmChanged,            Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->gameStateReader(), &GameStateReader::sendGameRankedMode,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->replayDataCollector(), &ReplayDataCollector::sendRankedState,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
 }
 
 void GamePanel::racePanelVisibleTimerTimeout()

@@ -24,11 +24,13 @@ public slots:
     void receiveGameResults(QJsonObject gameResults, SendingReplayInfo lastGameResult);
     void setGameId(QString gameId);
     void setRankedState(bool newRankedState);
+    void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
 
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
     void sendNotification(QString warningString, bool isWarning);
     void requestGameResults(SendingReplayInfo lastGameResults);
+    void sendRankedState(bool isRanked);
 
 private:
     bool checkEqualNames(QStringList* playerNames);
@@ -45,6 +47,8 @@ private:
     QString updateTestStatsFilePath();
     void parseGameResults(QJsonObject gameResults,  SendingReplayInfo lastGameResult);
 
+    void determinateRankedState();
+
 private:
     QVector<WinCondition> m_winCoditionsVector;
     int m_lastAverrageApm = 0;
@@ -54,12 +58,14 @@ private:
     QString m_testStatsPath;
     QString m_lastGameId;
     bool m_gameWillBePlayedInOtherSession = true;
-    bool m_rankedState = true;;
+    bool m_rankedState = true;
 
     const GamePath* m_currentGame;
     QTimer m_findGameResultsTimer;
    // QString m_lastReplayPath;
     SendingReplayInfo m_lastReplayInfo;
+
+    QVector<PlyersRankedState> m_plyersRankedState;
 };
 
 #endif // REPLAYDATACOLLECTOR_H

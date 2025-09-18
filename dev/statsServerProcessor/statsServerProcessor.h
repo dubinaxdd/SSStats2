@@ -33,7 +33,6 @@ signals:
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );
     void sendReplayToServer(SendingReplayInfo replayInfo);
-    void receiveRankedMode(bool reankedMode);
     void receiveCurrentMod(QString modName);
     void receiveAuthKey(const QString &newAuthKey);
 

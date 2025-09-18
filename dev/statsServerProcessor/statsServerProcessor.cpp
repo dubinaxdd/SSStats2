@@ -530,7 +530,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     else
         url += "isAuto=" + QString::number(0) + "&";
 
-
+    //url += "isAuto=" + QString::number(1) + "&";
 
     QString winCondition;
 
@@ -620,7 +620,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     emit replaySended();
 
 
-    if (m_rankedMode)
+    if (replayInfo.isRnked || replayInfo.isAutomatch)
     {
         qInfo(logInfo()) << "The ranked game has been uploaded to the server";
         emit sendNotification(tr("The ranked game has been uploaded to the server"), false);
@@ -634,11 +634,6 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
     });
-}
-
-void StatsServerProcessor::receiveRankedMode(bool reankedMode)
-{
-    m_rankedMode = reankedMode;
 }
 
 void StatsServerProcessor::receiveCurrentMod(QString modName)

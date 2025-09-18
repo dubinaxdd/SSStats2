@@ -101,7 +101,7 @@ private:
     void updatePlayerRaces();
 
 private:
-    GameController* m_soulstormControllerPtr;
+    GameController* m_gameControllerPtr;
     SettingsController* m_settingsController;
 
     QTimer* m_racePanelVisibleTimer;
