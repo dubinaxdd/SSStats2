@@ -277,6 +277,7 @@ Rectangle {
 
                     Label {
                         id: customGameslabel
+                        visible: root.customGamesMmr != 0
                         text: qsTr("Custom games MMR: ") + root.customGamesMmr
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillWidth: true

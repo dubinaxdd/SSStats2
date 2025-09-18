@@ -5,7 +5,7 @@ C++
 Qt 5.15.2
 CMake 3.14
 MingGW 8.1.0 32-bit / MSVC19 X64
-OpenSSL
+OpenSSL 1.1.1
 WinSDK (for manifest)
 
 CMake optoins example:

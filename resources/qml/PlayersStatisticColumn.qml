@@ -56,9 +56,9 @@ ColumnLayout {
 
         model: root.model//_uiBackend.statisticPanel
 
-        Layout.preferredHeight: ((120 + 5) * count  - 5) * root.sizeModifer
-        Layout.maximumHeight: ((120 + 5) * count - 5) * root.sizeModifer
-        Layout.minimumHeight: ((120 + 5) * count - 5) * root.sizeModifer
+        Layout.preferredHeight: ((130 + 5) * count  - 5) * root.sizeModifer
+        Layout.maximumHeight: ((130 + 5) * count - 5) * root.sizeModifer
+        Layout.minimumHeight: ((130 + 5) * count - 5) * root.sizeModifer
 
         spacing: 5 * root.sizeModifer
 
@@ -85,7 +85,7 @@ ColumnLayout {
             sizeModifer: root.sizeModifer
             hoverEnabled: root.hoverEnabled
 
-            height: 120 * root.sizeModifer
+            height: 130 * root.sizeModifer
             width: 280 * root.sizeModifer
         }
     }
