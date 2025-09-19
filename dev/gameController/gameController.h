@@ -81,6 +81,7 @@ private:
 
     void findSoulstormPath();
     void findDefinitiveEdition();
+    bool checkGamePath(QString path, QString exeName);
 
 private:
 

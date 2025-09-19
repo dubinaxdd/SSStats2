@@ -470,37 +470,82 @@ void GameController::findSoulstormPath()
 {
     QString path = "";
 
-    QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War - Soulstorm", QSettings::NativeFormat);
-    path = sega.value("installlocation", "").toString();
+    QSettings steam("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9450", QSettings::NativeFormat);
+    path = steam.value("installlocation", "").toString();
+
+    if (path.isEmpty())
+        path = steam.value("InstallLocation", "").toString();
+
+    if (!checkGamePath(path, "Soulstorm.exe"))
+        path = "";
+
+    if(path.isEmpty())
+    {
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\THQ\\Dawn of War - Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+
+        if (path.isEmpty())
+            path = sega.value("InstallLocation", "").toString();
+
+        if (!checkGamePath(path, "Soulstorm.exe"))
+            path = "";
+    }
 
     if(path.isEmpty())
     {
         QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War Soulstorm", QSettings::NativeFormat);
         path = sega.value("installlocation", "").toString();
+
+        if (path.isEmpty())
+            path = sega.value("InstallLocation", "").toString();
+
+        if (!checkGamePath(path, "Soulstorm.exe"))
+            path = "";
     }
 
     if(path.isEmpty())
     {
         QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War Soulstorm", QSettings::NativeFormat);
         path = sega.value("installlocation", "").toString();
+
+        if (path.isEmpty())
+            path = sega.value("InstallLocation", "").toString();
+
+        if (!checkGamePath(path, "Soulstorm.exe"))
+            path = "";
     }
 
     if(path.isEmpty())
     {
         QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\THQ\\Dawn of War - Soulstorm", QSettings::NativeFormat);
         path = sega.value("installlocation", "").toString();
+
+        if (path.isEmpty())
+            path = sega.value("InstallLocation", "").toString();
+
+        if (!checkGamePath(path, "Soulstorm.exe"))
+            path = "";
     }
 
     if(path.isEmpty())
     {
-        QSettings steam("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9450", QSettings::NativeFormat);
-        path = steam.value("InstallLocation", "").toString();
+        QSettings sega("HKEY_LOCAL_MACHINE\\SOFTWARE\\SEGA\\Dawn of War - Soulstorm", QSettings::NativeFormat);
+        path = sega.value("installlocation", "").toString();
+
+        if (path.isEmpty())
+            path = sega.value("InstallLocation", "").toString();
+
+        if (!checkGamePath(path, "Soulstorm.exe"))
+            path = "";
     }
 
     if(path.isEmpty())
     {
         QSettings steam("HKEY_CURRENT_USER\\SOFTWARE\\Valve\\Steam", QSettings::NativeFormat);
         path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
+
+        if (!checkGamePath(path, "Soulstorm.exe"))
+            return;
     }
 
     if(!path.isEmpty())
@@ -521,9 +566,19 @@ void GameController::findDefinitiveEdition()
     QString path = relic.value("installlocation", "").toString();
 
     if (path.isEmpty())
+        path = relic.value("InstallLocation", "").toString();
+
+
+    if (!checkGamePath(path, "W40k.exe"))
+        path = "";
+
+    if (path.isEmpty())
     {
         QString steamPath = getSteamPathFromRegistry();
         path = steamPath + "\\steamapps\\common\\Dawn of War Definitive Edition";
+
+        if (!checkGamePath(path, "W40k.exe"))
+            return;
     }
 
     QString gameSettingsPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).replace('/',"\\").replace("\\Roaming\\DowStatsClient", "") + "\\Roaming\\Relic Entertainment\\Dawn of War";
@@ -538,6 +593,13 @@ void GameController::findDefinitiveEdition()
 
         m_gamePathArray.append(gamePath);
     }
+}
+
+bool GameController::checkGamePath(QString path, QString exeName)
+{
+    QFile ssDir;
+    ssDir.setFileName(path + QDir::separator() + exeName);
+    return ssDir.exists();
 }
 
 QVector<GamePath> *GameController::gamePathArray()
