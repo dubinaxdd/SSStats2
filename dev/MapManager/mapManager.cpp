@@ -10,16 +10,17 @@
 #include "JlCompress.h"
 #include <QCryptographicHash>
 #include <QtConcurrent/QtConcurrent>
+#include <QDir>
 
 #define GZIP_WINDOWS_BIT 15 + 16
 #define GZIP_CHUNK_SIZE 32 * 1024
 
-MapManager::MapManager(SettingsController *settingsController, QString ssPath, QObject *parent)
+MapManager::MapManager(SettingsController *settingsController, GamePath *currentGame, QObject *parent)
     : QObject(parent)
+    , m_currentGame(currentGame)
     , m_settingsController(settingsController)
     , m_networkManager (new QNetworkAccessManager(this))
-    , m_ssPath(ssPath)
-    , m_fileHashReader( new FileHashReader(m_ssPath))
+    , m_fileHashReader( new FileHashReader())
     , m_fileHashReaderThread(new QThread(this))
 {
      QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManager::onSettingsLoaded, Qt::QueuedConnection);
@@ -40,7 +41,6 @@ MapManager::~MapManager()
 
 void MapManager::requestMapList()
 {
-
     if(m_blockInfoUpdate)
         return;
 
@@ -116,12 +116,59 @@ void MapManager::receiveMapList(QNetworkReply *reply)
     }
 
     for(int i = 0; i < m_mapItemArray.count(); i++)
-    {
+    {   
         requestMapInfo( &m_mapItemArray[i] );
         requestMapImage(m_mapItemArray[i].id);
     }
 
     m_checkUpdatesProcessed = false;
+    m_mapListLoaded = true;
+}
+
+void MapManager::updateMapList()
+{
+    m_requestetMapInfoCount = 0;
+
+    for(auto& item : m_mapItemArray)
+    {
+        checkLocalFilesState(&item);
+
+        if ((item.needInstall || item.needUpdate) )
+        {
+            if (m_settingsController->getSettings()->autoinstallAllMaps
+                || (m_settingsController->getSettings()->autoinstallDefaultMaps
+                    && consolidateTags(item.tags).contains("default-map"))
+                )
+                item.downloadProcessed = true;
+        }
+
+        m_requestetMapInfoCount++;
+
+        emit sendMapItem(&item);
+
+        if(m_requestetMapInfoCount == m_mapItemArray.count())
+        {
+            m_blockInfoUpdate = false;
+            emit mapsInfoLoaded();
+
+            if( m_settingsController->getSettings()->autoinstallAllMaps)
+            {
+                receiveInstallAllMaps();
+                return;
+            }
+
+            if( m_settingsController->getSettings()->autoinstallDefaultMaps)
+            {
+                receiveInstallDefaultMaps();
+                return;
+            }
+        }
+    }
+
+    m_checkUpdatesProcessed = false;
+    m_mapListLoaded = true;
+
+    emit mapsInfoLoaded();
 }
 
 void MapManager::requestMapInfo(MapItem *mapItem)
@@ -265,7 +312,31 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
     if (!uncompressGz(replyByteArray, uncompressedByteArray))
         return;
 
-    QFile newFile( m_ssPath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
+    QFile newFile;
+
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+    {
+        QString path = m_currentGame->gamePath + "\\DXP3\\Data\\Scenarios\\mp";
+
+        QDir dir(path);
+
+        if(!dir.exists())
+            dir.mkpath(path);
+
+        newFile.setFileName( path + QDir::separator() + fileName );
+    }
+    else
+    {
+        QString path = m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp";
+
+        QDir dir(path);
+
+        if(!dir.exists())
+            dir.mkpath(path);
+
+        newFile.setFileName( m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
+    }
+
     if( newFile.open( QIODevice::WriteOnly ) ) {
         newFile.write(uncompressedByteArray);
         newFile.close();
@@ -365,7 +436,12 @@ void MapManager::receiveRemoveMap(MapItem *mapItem)
 {
     for (int i = 0; i < mapItem->filesList.count(); i++)
     {
-        QString path = (m_ssPath + "\\DXP2\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
+        QString path;
+
+        if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+            path = (m_currentGame->gamePath + "\\DXP3\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
+        else
+            path = (m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp\\" + mapItem->filesList.at(i).fileName);
 
         QFile tempfile(path);
         tempfile.remove();
@@ -418,23 +494,31 @@ void MapManager::receiveLoadMapsInfo()
         return;
 
     m_checkUpdatesProcessed = true;
-    emit requsetLocalMapFilesList();
+
+    QString path;
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        path = m_currentGame->gamePath + "\\DXP3\\Data\\Scenarios\\mp";
+    else
+        path = m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp";
+
+    emit requsetLocalMapFilesList(path);
 }
 
 void MapManager::onSettingsLoaded()
 {
     qInfo(logInfo()) << "MapManager::onSettingsLoaded()" << "load started";
-
-    m_checkUpdatesProcessed = true;
-    emit requsetLocalMapFilesList();
-
+    receiveLoadMapsInfo();
     qInfo(logInfo()) << "MapManager::onSettingsLoaded()" << "load finished";
 }
 
 void MapManager::receiveLocalMapFilesList(QList<MapFileHash> localMapFilesList)
 {
     m_localMapFilesHashes = localMapFilesList;
-    requestMapList();
+
+    if (!m_mapListLoaded)
+        requestMapList();
+    else
+        updateMapList();
 }
 
 QString MapManager::getUrl(QString mapHash)
@@ -453,7 +537,6 @@ QString MapManager::getUrl(QString mapHash)
 
 void MapManager::checkLocalFilesState(MapItem *mapItem)
 {
-
     bool needInstall = true;
     bool needUpdate = false;
     int foundedFiles = 0;

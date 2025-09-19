@@ -172,7 +172,7 @@ Rectangle {
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
-                        if (_uiBackend.ssLaunchState)
+                        if (_uiBackend.gameLaunchState)
                             _uiBackend.soulstormLaunchedDialogVisible = true
                         else
                             _uiBackend.mapManagerPage.installDefaultMaps();
@@ -186,7 +186,7 @@ Rectangle {
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
-                        if (_uiBackend.ssLaunchState)
+                        if (_uiBackend.gameLaunchState)
                             _uiBackend.soulstormLaunchedDialogVisible = true
                         else
                             _uiBackend.mapManagerPage.installAllMaps();
@@ -317,7 +317,7 @@ Rectangle {
                         z:2
                         visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
                         onClicked:{
-                            if (_uiBackend.ssLaunchState)
+                            if (_uiBackend.gameLaunchState)
                                 _uiBackend.soulstormLaunchedDialogVisible = true
                             else
                                 _uiBackend.mapManagerPage.installMap(model.index)
@@ -329,7 +329,7 @@ Rectangle {
                         z:2
                         visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
                         onClicked: {
-                            if (_uiBackend.ssLaunchState)
+                            if (_uiBackend.gameLaunchState)
                                 _uiBackend.soulstormLaunchedDialogVisible = true
                             else
                                 _uiBackend.mapManagerPage.removeMap(model.index);

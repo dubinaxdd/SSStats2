@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
+import GameType 1.0
 
 Rectangle {
     id: settingsRectangle
@@ -89,11 +90,16 @@ Rectangle {
             sizeModifer: _uiBackend.sizeModifer
             hoveredState: noFogMouseArea.hovered
 
+            enabled: _uiBackend.gamePage.currentGameType  !==  GameType.DefinitiveEdition
+
             GlobalMouseArea{
                 id: noFogMouseArea
                 anchors.fill: parent
 
                 onClicked: {
+                    if (!enabled)
+                        return;
+
                     noFogSwitch.checkedState = !noFogSwitch.checkedState;
                     _uiBackend.noFogState = noFogSwitch.checkedState;
                 }

@@ -1,0 +1,35 @@
+#ifndef SOULSTORMMEMORYCONTROLLER_H
+#define SOULSTORMMEMORYCONTROLLER_H
+
+#include <QObject>
+#include <QDebug>
+#include <QTextCodec>
+
+#include <Windows.h>
+#include <logger.h>
+#include <settingsController.h>
+
+class SoulstormMemoryController : public QObject
+{
+    Q_OBJECT
+public:
+    explicit SoulstormMemoryController(SettingsController* settingsController, QObject *parent = nullptr);
+
+    void setGameHwnd(HWND newSoulstormHwnd);
+
+public slots:
+    void onNoFogStateChanged(bool state);
+    void onGameLaunchStateChanged(bool state);
+    void onSettingsLoaded();
+signals:
+
+private:
+    bool m_gameLaunchState = false;
+    HWND m_soulstormHwnd = NULL;
+    bool targetNoFog = false;
+    bool currentNoFog = false;
+    bool force = false; // применить изменения принудительно
+    SettingsController* m_settingsController;
+};
+
+#endif // SOULSTORMMEMORYCONTROLLER_H

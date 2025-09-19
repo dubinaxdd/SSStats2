@@ -1,27 +1,26 @@
 #include "fileHashReader.h"
 #include <QDir>
 #include <QCryptographicHash>
+#include <QDebug>
 
-FileHashReader::FileHashReader(QString ssPath, QObject *parent)
+FileHashReader::FileHashReader(QObject *parent)
     : QObject(parent)
-    , m_ssPath(ssPath)
 {
 
 }
 
-void FileHashReader::getLocalMapFilesList()
+void FileHashReader::getLocalMapFilesList(QString gamePath)
 {
     QList<MapFileHash> localMapFilesHashes;
 
-    if(m_ssPath.isEmpty())
+    if(gamePath.isEmpty())
         return;
 
-    QDir dir(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp");
+    QDir dir(gamePath);
     QFileInfoList dirContent = dir.entryInfoList(QDir::Files);
 
     for (int i = 0; i < dirContent.count(); i++)
     {
-
         MapFileHash newMapFileHash;
         newMapFileHash.fileName = dirContent.at(i).fileName();
 

@@ -6,6 +6,38 @@
 #include <QDateTime>
 #include <QUrl>
 #include <QUuid>
+#include <repreader.h>
+
+class GameType {
+    Q_GADGET
+public:
+    enum GameTypeEnum: int{
+        SoulstormDowOnline = 0,
+        SoulstormSteam,
+        DefinitiveEdition
+    };
+    Q_ENUM(GameTypeEnum)
+private:
+    GameType(){}
+};
+
+
+struct GamePath{
+    GameType::GameTypeEnum gameType = GameType::GameTypeEnum::SoulstormDowOnline;
+    QString gamePath = "";
+    QString gameSettingsPath = "";
+    QString uiGameName = "";
+};
+
+struct DowServerRequestParametres
+{
+    QString appBinaryChecksum = "";
+    QString dataChecksum = "";
+    QString modDLLChecksum = "";
+    QString modName = "";
+    QString modDllFile = "";
+    QString modVersion = "";
+};
 
 class Language {
     Q_GADGET
@@ -93,14 +125,14 @@ enum FinalState
 
 };
 
-enum SsState
+enum GameState
 {
-    ssShutdowned = 0,           //Сс выключен
-    ssInitialized = 1,          //Сс загружен
+    gameShutdowned = 0,           //Сс выключен
+    gameInitialized = 1,          //Сс загружен
 };
 
 
-enum SsMissionState
+enum GameMissionState
 {
     unknown = 0,
 
@@ -177,6 +209,7 @@ struct ServerPlayerStats
     int gamesCount = 0;
     int mmr = 0;
     int mmr1v1 = 0;
+    int customGamesMmr = 0;
     QString name = "";
     QString dowServerName = "";
     QString avatarUrl = "";
@@ -302,13 +335,18 @@ struct PlayerInfoForReplaySending
 {
     QString playerName;
     QString playerSid = "";
+    QString relicId = "";
     Race playerRace;
     bool isWinner;
+    int playerType = 0;
+    int playerTeam = 0;
+
 };
 
 struct SendingReplayInfo
 {
     QList<PlayerInfoForReplaySending> playersInfo;
+    QList<PlayerInfoFromDowServer> playersInfoFromDowServer;
     int apm;
     GameTypeForReplaySending gameType;
     QString mapName;
@@ -317,6 +355,10 @@ struct SendingReplayInfo
     QString modVersion;
     WinCondition winBy;
     bool isFullStdGame = false;
+    QString gameId;
+    bool isAutomatch;
+    QString replayPath;
+    bool isRnked = true;
 };
 
 

@@ -16,18 +16,6 @@ Rectangle {
 
     property var model
 
-    //Костыль для перезагрузки картинки, рил так на формух делают
-    Connections {
-        target: model
-
-        function onCurrentPlayerStatsChanged()
-        {
-            var oldSource = curentPlayer.avatarSource;
-            curentPlayer.avatarSource = "";
-            curentPlayer.avatarSource = oldSource;
-        }
-    }
-
     ScrollView {
         id: scrollView
 
@@ -41,65 +29,9 @@ Rectangle {
             anchors.fill: parent
             spacing: 5
 
-            PlayersStatisticItem
+            PlayersStatisticColumn
             {
-                id:curentPlayer
-                visible: model.curentPlayerStatsItem.itemVisible && model.curentPlayerStatsItem.playerName !== ""
-
-                playerName: model.curentPlayerStatsItem.playerName
-                playerMmr: model.curentPlayerStatsItem.playerMmr
-                playerMmr1v1: model.curentPlayerStatsItem.playerMmr1v1
-                playerGamesCount: model.curentPlayerStatsItem.playerGamesCount
-                playerRank: model.curentPlayerStatsItem.playerRank
-                playerRace: model.curentPlayerStatsItem.playerRace
-                playerWinRate: model.curentPlayerStatsItem.playerWinRate
-                playerApm: model.curentPlayerStatsItem.playerApm
-                playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
-                playerVisible: model.curentPlayerStatsItem.itemVisible
-                steamId: model.curentPlayerStatsItem.steamId
-                //calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
-                banType: model.curentPlayerStatsItem.banType
-                isRanked: model.curentPlayerStatsItem.isRanked
-                isOnline: model.curentPlayerStatsItem.isOnline
-
-                avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
-
-            }
-
-            ListView
-            {
-                id: playersListView
-                model:_uiBackend.statisticPanel
-
-                Layout.preferredHeight: ((120 + 5) * count  - 5)
-                Layout.maximumHeight: ((120 + 5) * count - 5)
-                Layout.minimumHeight: ((120 + 5) * count - 5)
-
-                spacing: 5
-
-                delegate: PlayersStatisticItem{
-
-                    playerName: model.playerName
-                    playerMmr: model.playerMmr
-                    playerMmr1v1: model.playerMmr1v1
-                    playerGamesCount: model.playerGamesCount
-                    playerRank: model.playerRank
-                    playerRace: model.playerRace
-                    playerWinRate: model.playerWinRate
-                    playerApm: model.playerApm
-                    playerIsBanned: model.playerIsBanned
-                    playerVisible: model.playerVisible
-                    steamId: model.steamId
-                    //calibrateGamesLeft: model.calibrateGamesLeft
-                    banType: model.banType
-                    isRanked: model.isRanked
-                    isOnline: model.isOnline
-
-                    avatarSource: "image://imageprovider/" + model.avatarId
-
-                    height: 120
-                    width: 280
-                }
+                hoverEnabled: true
             }
 
             Rectangle {

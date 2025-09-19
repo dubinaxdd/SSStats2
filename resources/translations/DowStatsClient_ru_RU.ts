@@ -12,6 +12,10 @@
         <translation>Новости DoW Stats</translation>
     </message>
     <message>
+        <source>Game</source>
+        <translation>Игра</translation>
+    </message>
+    <message>
         <source>Information</source>
         <translation>Информация</translation>
     </message>
@@ -107,6 +111,36 @@
         <translation>Помощь</translation>
     </message>
     <message>
+        <source>Play</source>
+        <translation>Играть</translation>
+    </message>
+</context>
+<context>
+    <name>OnlineCounter</name>
+    <message>
+        <source>Online DoW Stats users</source>
+        <translation>Количество пользователей DoW Stats в сети</translation>
+    </message>
+</context>
+<context>
+    <name>GamePage</name>
+    <message>
+        <source>Options:</source>
+        <translation>Опции:</translation>
+    </message>
+    <message>
+        <source>No FOG</source>
+        <translation>Отключить туман</translation>
+    </message>
+    <message>
+        <source>Skip the intro video</source>
+        <translation>Пропускать заставку при запуске игры</translation>
+    </message>
+    <message>
+        <source>Launch Game in window</source>
+        <translation>Запускать игру в окне</translation>
+    </message>
+    <message>
         <source>Active mod: </source>
         <translation>Активный мод: </translation>
     </message>
@@ -123,15 +157,8 @@
         <translation>Текущий активный мод</translation>
     </message>
     <message>
-        <source>Play</source>
-        <translation>Играть</translation>
-    </message>
-</context>
-<context>
-    <name>OnlineCounter</name>
-    <message>
-        <source>Online DoW Stats users</source>
-        <translation>Количество пользователей DoW Stats в сети</translation>
+        <source>Auto ad sender</source>
+        <translation>Автоматическая отправка рекламы в лобби</translation>
     </message>
 </context>
 <context>
@@ -408,6 +435,17 @@
     </message>
 </context>
 <context>
+    <name>DowServerProcessor</name>
+    <message>
+        <source>The game results are not finded.</source>
+        <translation>Результаты игры не найдены</translation>
+    </message>
+    <message>
+        <source>The game results are not ready yet, the game will be sent within two minutes.</source>
+        <translation>Результаты игры ещё не готовы, игра будет отправлена в течение двух минут.</translation>
+    </message>
+</context>
+<context>
     <name>OverlaySettingsPage</name>
     <message>
         <source>No FOG</source>
@@ -470,6 +508,10 @@
     <message>
         <source>Team MMR: </source>
         <translation>Командный MMR: </translation>
+    </message>
+    <message>
+        <source>Custom games MMR: </source>
+        <translation>Кастомный MMR: </translation>
     </message>
     <message>
         <source>Games played: </source>
@@ -713,8 +755,8 @@
         <translation>Отображать оверлей в режиме совместимости с Windows 7</translation>
     </message>
     <message>
-        <source>Launch Soulstorm in window</source>
-        <translation>Запускать Soulstorm в окне</translation>
+        <source>Launch Game in window</source>
+        <translation>Запускать игру в окне</translation>
     </message>
     <message>
         <source>APM panel visible in game</source>

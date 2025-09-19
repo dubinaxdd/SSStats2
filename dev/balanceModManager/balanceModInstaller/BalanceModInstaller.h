@@ -2,6 +2,7 @@
 #define BALANCEMODINSTALLER_H
 
 #include <QObject>
+#include <baseTypes.h>
 
 struct InstallModData
 {
@@ -10,7 +11,9 @@ struct InstallModData
     QString decompressPath;
     QString modTechnicalName;
     QString templateProfilePath;
-    QString ssPath;
+    QString gamePath;
+    QString profilePath;
+    GameType::GameTypeEnum gameType;
 };
 
 
@@ -22,7 +25,7 @@ public:
 
 public slots:
     void installMod(InstallModData data, bool overwriteProfiles);
-    void uninstallMod(QString ssPath, QString modTechnicalName);
+    void uninstallMod(QString gamePath, QString modTechnicalName);
     void updateHotKeysOnMod(QString modTechnicalName, QString ssPath);
 
 private:

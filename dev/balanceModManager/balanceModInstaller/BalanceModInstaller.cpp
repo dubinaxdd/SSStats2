@@ -40,7 +40,7 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
 
     if (overwriteProfiles)
     {
-        QDir dir(data.ssPath + "\\Profiles\\");
+        QDir dir(data.profilePath + "\\Profiles\\");
         QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
         for (int i = 0; i < dirContent.count(); i++)
@@ -52,13 +52,13 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
         //Копируем хоткеи
         if (hotKeyFile.exists())
         {
-            QDir dir(data.ssPath + "\\Profiles\\");
+            QDir dir(data.profilePath + "\\Profiles\\");
             QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
             for (int i = 0; i < dirContent.count(); i++)
                 installHotKeys(dirContent.at(i).absoluteFilePath() + QDir::separator() + data.modTechnicalName.toLower()
                                , templateHotKeyPath
-                               , data.ssPath + QDir::separator() + data.modTechnicalName + QDir::separator() + "missing_hotkeys.lua");
+                               , data.profilePath + QDir::separator() + data.modTechnicalName + QDir::separator() + "missing_hotkeys.lua");
         }
 
         //Копируем раскраски
@@ -67,7 +67,7 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
         if (templateSchemesDir.exists())
         {
              QFileInfoList schemesContent = templateSchemesDir.entryInfoList(QDir::Files | QDir::NoDotAndDotDot);
-             QDir dir(data.ssPath + "\\Profiles\\");
+             QDir dir(data.profilePath + "\\Profiles\\");
 
              QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
@@ -84,7 +84,7 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
     }
 
     //Отключаем туториал
-    QDir dir(data.ssPath + "\\Profiles\\");
+    QDir dir(data.profilePath + "\\Profiles\\");
     QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
     for (int i = 0; i < dirContent.count(); i++)
@@ -97,10 +97,17 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
 
             configString.replace("\0", "");
 
+            QString modName;
+
+            if (data.gameType == GameType::GameTypeEnum::DefinitiveEdition)
+                modName = data.modTechnicalName;
+            else
+                data.modTechnicalName.toLower();
+
             //Удалем предыдущую запись в настройках о туториале
-            if (configString.contains("Tutorial_" + data.modTechnicalName.toLower()))
+            if (configString.contains("Tutorial_" + modName))
             {
-                int startIndex = configString.indexOf("Tutorial_" + data.modTechnicalName.toLower());
+                int startIndex = configString.indexOf("Tutorial_" + modName);
 
                 for (int j = startIndex; j < configString.count(); j++)
                 {
@@ -113,7 +120,7 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
             }
 
             //Устанавливаем новые настройки туториала
-            configString.append("\nTutorial_" + data.modTechnicalName.toLower() + "  =  \n"
+            configString.append("\nTutorial_" + modName + "  =  \n"
                                 "{\n"
                                 "    HasClickedCampaign = true,\n"
                                 "	HasClickedMulti = true,\n"
@@ -132,9 +139,9 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
             }
 
             //Удаляем предыдущю запись в настрйоках о настройках пати
-            if (configString.contains(data.modTechnicalName.toLower() + "_game_preferences ="))
+            if (configString.contains(modName + "_game_preferences ="))
             {
-                int startIndex = configString.indexOf(data.modTechnicalName.toLower() + "_game_preferences =");
+                int startIndex = configString.indexOf(modName + "_game_preferences =");
                 int needCounter = 0;
                 for (int j = startIndex; j < configString.count(); j++)
                 {
@@ -152,7 +159,10 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
                 }
             }
 
-            configString.append("\n" + data.modTechnicalName.toLower() + "_game_preferences =  \n"
+
+
+
+            configString.append("\n" + modName + "_game_preferences =  \n"
                                 "{\n"
                                 "	num_teams = 2,\n"
                                 "	options = \n"
@@ -231,23 +241,23 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
 
 }
 
-void BalanceModInstaller::uninstallMod(QString ssPath, QString modTechnicalName)
+void BalanceModInstaller::uninstallMod(QString gamePath, QString modTechnicalName)
 {
-    QDir modDir(ssPath + QDir::separator() + modTechnicalName);
+    QDir modDir(gamePath + QDir::separator() + modTechnicalName);
     modDir.removeRecursively();
 
-    QFile moduleFile(ssPath + QDir::separator() + modTechnicalName + ".module");
+    QFile moduleFile(gamePath + QDir::separator() + modTechnicalName + ".module");
     moduleFile.remove();
 
     emit modUninstalled(modTechnicalName);
 }
 
-void BalanceModInstaller::updateHotKeysOnMod(QString modTechnicalName, QString ssPath)
+void BalanceModInstaller::updateHotKeysOnMod(QString modTechnicalName, QString gameSettingsPath)
 {
-    QDir dir(ssPath + "\\Profiles\\");
+    QDir dir(gameSettingsPath + "\\Profiles\\");
     QFileInfoList dirContent = dir.entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot);
 
-    QString missingHotkeysPath = ssPath + QDir::separator() + modTechnicalName + QDir::separator() + "missing_hotkeys.lua";
+    QString missingHotkeysPath = gameSettingsPath + QDir::separator() + modTechnicalName + QDir::separator() + "missing_hotkeys.lua";
 
     bool result = true;
 

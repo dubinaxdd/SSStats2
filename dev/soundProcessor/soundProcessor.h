@@ -24,11 +24,11 @@ public slots:
     void playGameStartSound();
     void playGameLoadSound();
 
-    void setSoulstormMaximized(bool isMaximized);
+    void setGameMaximized(bool isMaximized);
 
     void activeIsFirstConnection();
 
-    void receiveCurrentMissionState(SsMissionState gameCurrentState);
+    void receiveCurrentMissionState(GameMissionState gameCurrentState);
 
     void setVolume(int volume);
 

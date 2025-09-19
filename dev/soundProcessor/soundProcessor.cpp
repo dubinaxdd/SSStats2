@@ -63,7 +63,7 @@ void SoundProcessor::playGameLoadSound()
         playAudio("qrc:/sounds/resources/sounds/game_loading.wav");
 }
 
-void SoundProcessor::setSoulstormMaximized(bool isMaximized)
+void SoundProcessor::setGameMaximized(bool isMaximized)
 {
     m_soulstormMaximized = isMaximized;
 }
@@ -73,12 +73,12 @@ void SoundProcessor::activeIsFirstConnection()
     m_isFirstConnection = true;
 }
 
-void SoundProcessor::receiveCurrentMissionState(SsMissionState gameCurrentState)
+void SoundProcessor::receiveCurrentMissionState(GameMissionState gameCurrentState)
 {
-    if (gameCurrentState == SsMissionState::gameLoadStarted)
+    if (gameCurrentState == GameMissionState::gameLoadStarted)
         playGameLoadSound();
 
-    if (gameCurrentState == SsMissionState::gameStarted)
+    if (gameCurrentState == GameMissionState::gameStarted)
         playGameStartSound();
 }
 

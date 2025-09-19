@@ -15,25 +15,13 @@ Rectangle {
 
     property var model
     property real scrollViewPosition: 0
-    property int playersCount: 1 + playersListView.count
+    property int playersCount: playersList.plyersCount
     property int relativeMouseX
     property int relativeMouseY
 
     function resetScrollView()
     {
         scrollView.setDefault();
-    }
-
-    //Костыль для перезагрузки картинки, рил так на формух делают
-    Connections {
-        target: model
-
-        function onCurrentPlayerStatsChanged()
-        {
-            var oldSource = curentPlayer.avatarSource;
-            curentPlayer.avatarSource = "";
-            curentPlayer.avatarSource = oldSource;
-        }
     }
 
     Connections
@@ -103,75 +91,19 @@ Rectangle {
 
             spacing: 5 * _uiBackend.sizeModifer
 
-            PlayersStatisticItem
+            PlayersStatisticColumn
             {
-                id:curentPlayer
-                visible: model.curentPlayerStatsItem.itemVisible && (!model.expandPatyStatistic || _uiBackend.expand) && model.curentPlayerStatsItem.playerName !== ""
-
-                playerName: model.curentPlayerStatsItem.playerName
-                playerMmr: model.curentPlayerStatsItem.playerMmr
-                playerMmr1v1: model.curentPlayerStatsItem.playerMmr1v1
-                playerGamesCount: model.curentPlayerStatsItem.playerGamesCount
-                playerRank: model.curentPlayerStatsItem.playerRank
-                playerRace: model.curentPlayerStatsItem.playerRace
-                playerWinRate: model.curentPlayerStatsItem.playerWinRate
-                playerApm: model.curentPlayerStatsItem.playerApm
-                playerIsBanned: model.curentPlayerStatsItem.playerIsBanned
-                playerVisible: model.curentPlayerStatsItem.itemVisible
-                banType: model.curentPlayerStatsItem.banType
-                //calibrateGamesLeft: model.curentPlayerStatsItem.calibrateGamesLeft
-                isRanked: model.curentPlayerStatsItem.isRanked
-                isOnline: model.curentPlayerStatsItem.isOnline
-
-                avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
-                sizeModifer: _uiBackend.sizeModifer
+                id: playersList
                 hoverEnabled: false
-
-            }
-
-            ListView
-            {
-                id: playersListView
-
-                model:_uiBackend.statisticPanel
-                visible: (!model.expandPatyStatistic || _uiBackend.expand)
-
-                Layout.preferredHeight: ((120 + 5) * count  - 5) * _uiBackend.sizeModifer
-                Layout.maximumHeight: ((120 + 5) * count - 5) * _uiBackend.sizeModifer
-                Layout.minimumHeight: ((120 + 5) * count - 5) * _uiBackend.sizeModifer
-
-                spacing: 5 * _uiBackend.sizeModifer
-
-                delegate: PlayersStatisticItem{
-
-                    playerName: model.playerName
-                    playerMmr: model.playerMmr
-                    playerMmr1v1: model.playerMmr1v1
-                    playerGamesCount: model.playerGamesCount
-                    playerRank: model.playerRank
-                    playerRace: model.playerRace
-                    playerWinRate: model.playerWinRate
-                    playerApm: model.playerApm
-                    playerIsBanned: model.playerIsBanned
-                    playerVisible: model.playerVisible
-                    banType: model.banType
-                    //calibrateGamesLeft: model.calibrateGamesLeft
-                    isRanked: model.isRanked
-                    isOnline: model.isOnline
-
-                    avatarSource: "image://imageprovider/" + model.avatarId
-                    sizeModifer: _uiBackend.sizeModifer
-                    hoverEnabled: false
-
-                    height: 120 * _uiBackend.sizeModifer
-                    width: 280 * _uiBackend.sizeModifer
-                }
+                sizeModifer: _uiBackend.sizeModifer
+                visible: !model.expandPatyStatistic || _uiBackend.expand
             }
 
             Rectangle {
                 id: expandPatyStatisticButtonRectangle
 
                 property bool howeredState: expandButton.hovered
+                visible: _uiBackend.expandStatisticButtonVisible
 
                 property Gradient grLight: Gradient {
                     GradientStop {

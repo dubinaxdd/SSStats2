@@ -335,7 +335,12 @@ void MapManagerPage::loadMapsInfo()
 
 QImage MapManagerPage::loadMiniMapImage(QString fileName)
 {
-    QFile miniMapImageFile(m_ssPath + "\\DXP2\\Data\\Scenarios\\mp\\" + fileName);
+    QFile miniMapImageFile;
+
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        miniMapImageFile.setFileName(m_currentGame->gamePath + "\\DoWDE\\Data\\Scenarios\\mp\\" + fileName);
+    else
+        miniMapImageFile.setFileName(m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp\\" + fileName);
 
     if (!miniMapImageFile.open(QIODevice::ReadOnly))
             return QImage();
@@ -531,7 +536,7 @@ void MapManagerPage::setCurrentMapNeedInstall(bool newCurrentMapNeedInstall)
     emit currentMapNeedInstallChanged();
 }
 
-void MapManagerPage::setSsPath(const QString &newSsPath)
+void MapManagerPage::setGamePath(GamePath* currentGame)
 {
-    m_ssPath = newSsPath;
+    m_currentGame = currentGame;
 }

@@ -8,17 +8,13 @@ class FileHashReader : public QObject
 {
     Q_OBJECT
 public:
-    explicit FileHashReader(QString ssPath, QObject *parent = nullptr);
+    explicit FileHashReader(QObject *parent = nullptr);
 
 public slots:
-    void getLocalMapFilesList();
+    void getLocalMapFilesList(QString gamePath);
 
 signals:
     void sendLocalMapFilesList(QList<MapFileHash>);
-
-private:
-    QString m_ssPath = "";
-
 
 };
 

@@ -196,15 +196,33 @@ Player *RepReader::ReadPlayer()
         // "Тип игрока 0 Host/2 player/4 specc/7 empty/1,3,11 computer"
         player->Type = BinReader->ReadInt32();
         player->Team = BinReader->ReadInt32() + 1;
+
+        //в автоматчевые реплеи в эти данные пишется хер пойми что, поэтому есть этот костыль
+        if (player->Type > 11)
+        {
+            player->Type = 7;
+            player->Team = 1;
+        }
+
         player->Race = BinReader->ReadStringUTF8(BinReader->ReadInt32());
 
-//        qDebug() << BinReader->pos();
-        if(replay.getVersion()==9)
+        BinReader->skipRawData(21);
+        BinReader->ReadStringUTF8(BinReader->ReadInt32()); //Если раскраска отключена, то в этом месте будет стринга ui_skirmish
+
+        //Старое чтение реплея без проверки на отключенную раскраску
+        /*if(replay.getVersion()==9)
             BinReader->skipRawData(49);
         else
-            BinReader->skipRawData(61);
+            BinReader->skipRawData(61);*/
 
-//        replay.BeginPlayerDiffirences.append(BinReader->pos());
+
+        if(replay.getVersion()==9)
+            BinReader->skipRawData(24);
+        else
+            BinReader->skipRawData(36);
+
+
+        //replay.BeginPlayerDiffirences.append(BinReader->pos());
 
         // если игрок не обозреватель
         if(player->Type!=7)
@@ -212,7 +230,6 @@ Player *RepReader::ReadPlayer()
             readerString = BinReader->ReadStringUTF8(8);
             if (readerString == "FOLDTCUC")
             {
-//                qDebug() << readerString  << BinReader->pos();
                 BinReader->skipRawData(4);
                 BinReader->skipRawData(BinReader->ReadInt32()+4);
 
@@ -343,7 +360,7 @@ Player *RepReader::ReadPlayer()
     {
         BinReader->seek(BinReader->pos()-8);
     }
-//    qDebug() << player->Name;
+
     return player;
 }
 

@@ -5,7 +5,7 @@
 #include <QTimer>
 #include "Windows.h"
 #include <uiBackend.h>
-#include <soulstormController.h>
+#include <gameController.h>
 
 class UiBackend;
 
@@ -13,7 +13,7 @@ class OverlayWindowController : public QObject
 {
     Q_OBJECT
 public:
-    explicit OverlayWindowController(SettingsController* settingsController, SoulstormController* soulstormController, QObject *parent = nullptr);
+    explicit OverlayWindowController(SettingsController* settingsController, GameController* soulstormController, QObject *parent = nullptr);
     void grubStatsWindow();
     void onExit();
     void setUiBackend(UiBackend* uiBackend);
@@ -23,7 +23,7 @@ public slots:
     void onSsShutdowned();
     void ssMaximized(bool maximized);
     void gameInitialized();
-    void ssLaunched(bool ssLaunched);
+    void gameLaunched(bool ssLaunched);
 
 private slots:
     void topmostTimerTimout();
@@ -34,17 +34,17 @@ private:
 private:
     QTimer* m_topmostTimer;
 
-    int m_defaultWidth;
-    int m_defaultHeight;
-    int m_widthInGame;
-    int m_heightInGame;
+    int m_defaultWidth = 0;
+    int m_defaultHeight = 0;
+    int m_widthInGame = 0;
+    int m_heightInGame = 0;
 
-    HWND m_ssStatsHwnd;
+    HWND m_dowStatsHwnd;
     LONG m_defaultWindowLong;
-    RECT m_ssRect;
+    RECT m_gameRect;
 
     UiBackend* m_uiBackendPtr = nullptr;
-    SoulstormController* p_soulstormController;
+    GameController* p_gameController;
     SettingsController* p_settingsController;
 
 

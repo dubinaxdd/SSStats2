@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import DowStatsStyle 1.0
+import GameType 1.0
 
 Rectangle
 {
@@ -29,6 +30,8 @@ Rectangle
             radius: 10
             //color: "#00ff99"
             color: DowStatsStyle.itemColor//highlightItemColor//"#DCDCDC"
+
+            visible: _uiBackend.gamePage.currentGameType !==  GameType.DefinitiveEdition
 
             RowLayout
             {
@@ -62,7 +65,7 @@ Rectangle
                     Layout.preferredWidth: 200 + columnLayout.spacing
 
                     onClicked: {
-                        if (_uiBackend.ssLaunchState)
+                        if (_uiBackend.gameLaunchState)
                             _uiBackend.soulstormLaunchedDialogVisible = true
                         else
                         {
@@ -78,18 +81,21 @@ Rectangle
         {
             model: root.model.russianFontsMod
             text: qsTr("Russian fonts:")
+            visible: _uiBackend.gamePage.currentGameType !==  GameType.DefinitiveEdition
         }
 
         ModItem
         {
             model: root.model.cameraMod
             text: qsTr("Advanced camera mod:")
+            visible: _uiBackend.gamePage.currentGameType !==  GameType.DefinitiveEdition
         }
 
         ModItem
         {
             model: root.model.gridHotkeysMod
             text: qsTr("QWERTY hotkeys:")
+            visible: _uiBackend.gamePage.currentGameType !==  GameType.DefinitiveEdition
         }
 
         ModItem

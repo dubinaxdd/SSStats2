@@ -18,6 +18,7 @@
 #include <notificationManager.h>
 #include <informationPage.h>
 #include <core.h>
+#include <GamePage.h>
 
 class Core;
 class StatisticPanel;
@@ -57,6 +58,7 @@ class UiBackend : public QObject
     Q_PROPERTY(BalanceModPage * balanceModPage MEMBER m_balanceModPage CONSTANT)
     Q_PROPERTY(NotificationManager * notificationManager MEMBER m_notificationManager CONSTANT)
     Q_PROPERTY(InformationPage * informationPage MEMBER m_informationPage CONSTANT)
+    Q_PROPERTY(GamePage *gamePage READ gamePage CONSTANT FINAL)
 
     Q_PROPERTY(QString lastNotification MEMBER m_lastNotification NOTIFY updateNotification)
     Q_PROPERTY(bool lastNotificationIsWarning MEMBER m_lastNotificationIsWarning NOTIFY updateNotification)
@@ -77,10 +79,14 @@ class UiBackend : public QObject
     Q_PROPERTY(bool softwareUseBanDialogVisible READ softwareUseBanDialogVisible WRITE setSoftwareUseBanDialogVisible NOTIFY softwareUseBanDialogVisibleChanged)
     Q_PROPERTY(QString softwareUseBanReason READ softwareUseBanReason WRITE setSoftwareUseBanReason NOTIFY softwareUseBanReasonChanged)
 
-    Q_PROPERTY(bool soulstormIsInstalled READ soulstormIsInstalled NOTIFY soulstormIsInstalledChanged)
-    Q_PROPERTY(bool ssLaunchState READ ssLaunchState WRITE setSsLaunchState NOTIFY ssLaunchStateChanged)
+    Q_PROPERTY(bool gameIsInstalled READ gameIsInstalled NOTIFY gameIsInstalledChanged)
+    Q_PROPERTY(bool gameLaunchState READ gameLaunchState WRITE setGameLaunchState NOTIFY gameLaunchStateChanged)
 
     Q_PROPERTY(qreal devicePixelRatio READ devicePixelRatio WRITE setDevicePixelRatio NOTIFY devicePixelRatioChanged)
+
+    Q_PROPERTY(bool automatchState READ automatchState WRITE setAutomatchState NOTIFY automatchStateChanged FINAL)
+    Q_PROPERTY(bool expandStatisticButtonVisible READ expandStatisticButtonVisible WRITE setExpandStatisticButtonVisible NOTIFY expandStatisticButtonVisibleChanged FINAL)
+
 
 public:
     explicit UiBackend(Core* core, QObject *parent = nullptr);
@@ -100,7 +106,7 @@ public:
     bool getWindowTopmost();
     void setMouseArea(int width, int height);
 
-    void setSsWindowed(bool newSsWindowed);
+    void setGameWindowed(bool newSsWindowed);
     void setSsWindowPosition(int x, int y);
     bool getFogState() const;
     void onMouseWheel(int delta);
@@ -118,9 +124,10 @@ public:
     BalanceModPage *balanceModPage() const;
     InformationPage *informationPage() const;
 
-    bool soulstormIsInstalled();
 
-    Q_INVOKABLE void launchSoulstorm();
+    bool gameIsInstalled();
+
+    Q_INVOKABLE void launchGame();
 
     bool notificationVisible() const;
     void setNotificationVisible(bool newNotificationVisible);
@@ -145,7 +152,7 @@ public:
     bool latesBalanceModNotInstalledDialogVisible() const;
     void setLatesBalanceModNotInstalledDialogVisible(bool newLatesBalanceModNotInstalledDialogVisible);
 
-    void setSsPath(const QString &newSsPath);
+    void setGamePath(GamePath *currentGame);
 
     bool ssNotInstalledDialogVisible() const;
     void setSsNotInstalledDialogVisible(bool newSsNotInstalledDialogVisible);
@@ -158,8 +165,8 @@ public:
     bool getSoulstormLaunchedDialogVisible() const;
     void setSoulstormLaunchedDialogVisible(bool newSoulstormLaunchedDialogVisible);
 
-    bool ssLaunchState() const;
-    void setSsLaunchState(bool newSsLaunchState);
+    bool gameLaunchState() const;
+    void setGameLaunchState(bool newGameLaunchState);
 
     bool balanceModInstallProcessedDialogVisible() const;
     void setBalanceModInstallProcessedDialogVisible(bool newBalanceModInstallProcessedDialogVisible);
@@ -172,6 +179,16 @@ public:
 
     qreal devicePixelRatio() const;
     void setDevicePixelRatio(qreal newDevicePixelRatio);
+
+    GamePage *gamePage() const;
+
+    void setGamePathArray(QVector<GamePath> *gamePathArray);
+
+    bool automatchState() const;
+    void setAutomatchState(bool newAutomatchState);
+
+    bool expandStatisticButtonVisible() const;
+    void setExpandStatisticButtonVisible(bool newExpandStatisticButtonVisible);
 
 signals:
     void sendSwitchNoFogHoverState(bool);
@@ -203,19 +220,23 @@ signals:
     void ssNotInstalledDialogVisibleChanged();
     void steamNotInstalledDialogVisibleChanged();
     void soulstormLaunchedDialogVisibleChanged();
-    void soulstormIsInstalledChanged();
-    void ssLaunchStateChanged();
+    void gameIsInstalledChanged();
+    void gameLaunchStateChanged();
     void balanceModInstallProcessedDialogVisibleChanged();
     void softwareUseBanDialogVisibleChanged();
     void softwareUseBanReasonChanged();
     void devicePixelRatioChanged();
 
+    void automatchStateChanged();
+
+    void expandStatisticButtonVisibleChanged();
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
     void receiveSsMaximized(bool maximized);
-    void onSsLaunchStateChanged(bool state);
-    void setMissionCurrentState(SsMissionState gameCurrentState);
+    void onGameLaunchStateChanged(bool state);
+    void setMissionCurrentState(GameMissionState gameCurrentState);
     void receiveNotification(QString notify, bool isWarning);
     void receiveOnlineCount(int onlineCount);
     void receiveCurrentModName(QString modName);
@@ -233,10 +254,12 @@ private:
     void showClient();
     void loadStarted();
     void gameStopped();
-    void startingMission(SsMissionState gameCurrentState);
+    void startingMission(GameMissionState gameCurrentState);
     void gameOver();
 
 private:
+    GamePath* m_currentGame;
+    QVector<GamePath> *p_gamePathArray;
     Core* m_corePtr;
     ImageProvider* m_imageProvider;
     GamePanel* m_gamePanel;
@@ -251,12 +274,13 @@ private:
     BalanceModPage* m_balanceModPage;
     NotificationManager* m_notificationManager;
     InformationPage* m_informationPage;
+    GamePage* m_gamePage;
 
     QTimer* m_notificationVisibleTimer;
 
     QString m_ssStatsVersion;
 
-    SsMissionState m_gameCurrentState;
+    GameMissionState m_gameCurrentState;
 
     qreal m_devicePixelRatio;
 
@@ -264,7 +288,7 @@ private:
 
     QPoint m_mousePosition;
     bool m_ssMaximized = false;
-    bool m_ssLaunchState = false;
+    bool m_gameLaunchState = false;
     bool m_showClient = false;
 
     bool m_windowTopmost = false;
@@ -294,6 +318,8 @@ private:
     bool m_soulstormLaunchedDialogVisible = false;
     bool m_balanceModInstallProcessedDialogVisible = false;
     bool m_softwareUseBanDialogVisible = false;
+    bool m_automatchState = false;
+
     QString m_softwareUseBanReason = "";
 
     double m_sizeModifer = 1.0;
@@ -306,12 +332,13 @@ private:
 
     QString m_currentModName = "";
     QString m_currentModTechnicalName = "";
-    QString m_ssPath = "";
     QString m_steamPath = "";
 
     bool m_latesBalanceModNotInstalledDialogVisible = false;
     bool m_clientUpdateAvailable = false;
     bool m_softwareBanActivated = false;
+
+    bool m_expandStatisticButtonVisible = true;
 
 };
 

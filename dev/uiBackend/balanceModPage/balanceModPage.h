@@ -118,6 +118,7 @@ public slots:
    void receiveProfileCopyModeRequest(QString modTechnicalName);
    void receiveModReadyForInstall(QString modTechnicalName);
    void receiveHotKeysUpdated(QString modTechnicalName, bool result);
+   void onCurrentGameChanged();
 
 private slots:
     void onSettingsLoaded();

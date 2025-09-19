@@ -17,12 +17,12 @@
 
 using namespace ReplayReader;
 
-StatsServerProcessor::StatsServerProcessor(SettingsController *settingsController, QString ssPath, QString steamPath, QObject *parent)
+StatsServerProcessor::StatsServerProcessor(SettingsController *settingsController, GamePath *currentGame, QString steamPath, QObject *parent)
     : QObject(parent)
+    , m_currentGame(currentGame)
     , m_settingsController(settingsController)
     , m_rankDiversionTimer(new QTimer(this))
     , m_steamPath(steamPath)
-    , m_ssPath(ssPath)
     , m_networkManager( new QNetworkAccessManager(this))
 {
     m_machineUniqueId = QSysInfo::machineUniqueId();
@@ -166,11 +166,14 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
         nickNames += playersInfo.data()->at(i).dowServerName.toUtf8().toBase64();
     }
 
-    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats4.php?sids=" + sidsString
+    if(!nickNames.isEmpty())
+        nickNames = "&nicks=" + nickNames;
+
+    QUrl url = QUrl(QString::fromStdString(SERVER_ADDRESS) + "/api/stats5.php?sids=" + sidsString
                     + "&version=" + m_clientVersion
                     + "&sender_sid=" + m_currentPlayerStats.data()->at(0).steamId
                     + "&mod_tech_name=" + m_currentMod
-                    + "&nicks=" + nickNames);
+                    + nickNames);
 
     QNetworkRequest newRequest = QNetworkRequest(url);
 
@@ -227,6 +230,7 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).gamesCount = statsArray.at(i)["gamesCount"].toInt();
         playersInfo.get()->operator[](i).mmr = statsArray.at(i)["mmr"].toInt();
         playersInfo.get()->operator[](i).mmr1v1 = statsArray.at(i)["mmr1v1"].toInt();
+        playersInfo.get()->operator[](i).customGamesMmr = statsArray.at(i)["custom_games_mmr"].toInt();
         playersInfo.get()->operator[](i).isBanned = statsArray.at(i)["isBanned"].toBool();
         playersInfo.get()->operator[](i).name = statsArray.at(i)["name"].toString();
         playersInfo.get()->operator[](i).rank = statsArray.at(i)["rank"].toInt();
@@ -463,13 +467,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     //Определяем сид для текущего игрока
     for (int i = 0; i < replayInfo.playersInfo.count(); i++)
     {
-        if (replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).name ||
+        if (replayInfo.playersInfo[i].playerSid.isEmpty() &&
+            (replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).name ||
             replayInfo.playersInfo[i].playerName == "[" + m_currentPlayerStats.data()->at(0).name + "]" ||
             replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).name + "]]"||
             replayInfo.playersInfo[i].playerName == m_currentPlayerStats.data()->at(0).dowServerName ||
             replayInfo.playersInfo[i].playerName == "[" + m_currentPlayerStats.data()->at(0).dowServerName + "]" ||
             replayInfo.playersInfo[i].playerName == "[[" + m_currentPlayerStats.data()->at(0).dowServerName + "]]"
-            )
+        ))
         {
             replayInfo.playersInfo[i].playerSid = m_currentPlayerStats.data()->at(0).steamId;
             replayInfo.playersInfo[i].playerName = m_currentPlayerStats.data()->at(0).dowServerName;
@@ -488,7 +493,8 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay.php?";
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay2.php?";
     //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay3.php?";
-    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay4.php?";
+    //url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay4.php?";
+    url = QString::fromStdString(SERVER_ADDRESS) + "/api/send_replay5.php?";
 
     int winnerCount = 0;
 
@@ -518,6 +524,14 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     else
         url += "isFullStdGame=" + QString::number(0) + "&";
 
+
+    if (replayInfo.isAutomatch)
+        url += "isAuto=" + QString::number(1) + "&";
+    else
+        url += "isAuto=" + QString::number(0) + "&";
+
+    //url += "isAuto=" + QString::number(1) + "&";
+
     QString winCondition;
 
     switch (replayInfo.winBy)
@@ -535,8 +549,9 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     url += "winby=" + winCondition + "&";
 
     url += "version=" + m_clientVersion + "&";
+    url += "relicGameId=" + replayInfo.gameId + "&";
 
-    if (m_rankedMode)
+    if (replayInfo.isRnked || replayInfo.isAutomatch)
         url += "isRanked=1";
     else
         url += "isRanked=0";
@@ -545,14 +560,22 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
    // url += "key=" + QLatin1String(SERVER_KEY);
 
+    RepReader repReader(replayInfo.replayPath);
 
-    RepReader repReader(m_ssPath+"/Playback/temp.rec");
-
-    repReader.convertReplayToSteamVersion();
+    //repReader.convertReplayToSteamVersion();
     repReader.isStandart(replayInfo.gameType);
     repReader.RenameReplay();
 
     QByteArray playback = repReader.getReplayData();
+
+
+    //RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
+
+    //repReader.convertReplayToSteamVersion();
+    //repReader.isStandart(replayInfo.gameType);
+    //repReader.RenameReplay();
+
+    //QByteArray playback = repReader.getReplayData();
 
 
     QNetworkRequest request = QNetworkRequest(QUrl(url));
@@ -597,7 +620,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     emit replaySended();
 
 
-    if (m_rankedMode)
+    if (replayInfo.isRnked || replayInfo.isAutomatch)
     {
         qInfo(logInfo()) << "The ranked game has been uploaded to the server";
         emit sendNotification(tr("The ranked game has been uploaded to the server"), false);
@@ -611,11 +634,6 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
     });
-}
-
-void StatsServerProcessor::receiveRankedMode(bool reankedMode)
-{
-    m_rankedMode = reankedMode;
 }
 
 void StatsServerProcessor::receiveCurrentMod(QString modName)

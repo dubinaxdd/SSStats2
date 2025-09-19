@@ -33,14 +33,14 @@ ComboBox{
         ColorOverlay{
             anchors.fill: image
             source:image
-            color: DowStatsStyle.textColor
+            color: root.enabled ? DowStatsStyle.textColor : DowStatsStyle.disbaledTextColor
             antialiasing: true
         }
 
     }
 
     contentItem: Text {
-        color: DowStatsStyle.textColor
+        color: root.enabled ? DowStatsStyle.textColor : DowStatsStyle.disbaledTextColor
         text: "  " + root.currentText
         verticalAlignment: Text.AlignVCenter
         horizontalAlignment: Text.AlignLeft

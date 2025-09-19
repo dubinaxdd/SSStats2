@@ -5,7 +5,7 @@
 #include <QTimer>
 #include <baseTypes.h>
 #include <settingsController.h>
-#include <soulstormController.h>
+#include <gameController.h>
 
 class SettingsController;
 
@@ -46,7 +46,7 @@ class GamePanel : public QObject
     Q_PROPERTY(QString player7Color MEMBER m_player7Color NOTIFY playerTestStatsUpdate)
 
 public:
-    explicit GamePanel(SoulstormController* soulstormController, SettingsController* settingsController, QObject *parent = nullptr);
+    explicit GamePanel(GameController* soulstormController, SettingsController* settingsController, QObject *parent = nullptr);
 
     void setGamePanelVisible(bool newGamePanelVisible);
 
@@ -85,7 +85,7 @@ signals:
 public slots:
     void onApmChanged(int capm, int aapm);
     void onGameStopped();
-    void onGameStarted(SsMissionState gameCurrentState);
+    void onGameStarted(GameMissionState gameCurrentState);
     void receivePlayersTestStats(QVector<PlayerStats> testStats);
     void expandPlayerRacesButtonClick();
     void onSettingsLoaded();
@@ -101,7 +101,7 @@ private:
     void updatePlayerRaces();
 
 private:
-    SoulstormController* m_soulstormControllerPtr;
+    GameController* m_gameControllerPtr;
     SettingsController* m_settingsController;
 
     QTimer* m_racePanelVisibleTimer;

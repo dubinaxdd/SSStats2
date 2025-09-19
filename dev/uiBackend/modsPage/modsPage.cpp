@@ -33,7 +33,6 @@ ModsPage::ModsPage(ModsProcessor* modsProcessor, SettingsController *settingsCon
     });
     QObject::connect(m_transparentCameraTrapezoidMod, &ModItem::startUninstall, this, [&]{
         m_modsProcessorPtr->uninstallRequest(InstMod::TransparentCameraTrapezoid);
-        m_settingsController->getSettings()->transparentCameraTrapezoidInstalled = false;
         m_settingsController->saveSettings();
     });
 
@@ -41,6 +40,8 @@ ModsPage::ModsPage(ModsProcessor* modsProcessor, SettingsController *settingsCon
     QObject::connect(m_modsProcessorPtr, &ModsProcessor::installProgress, this, &ModsPage::receiveDownloadProgress, Qt::QueuedConnection);
     QObject::connect(m_modsProcessorPtr, &ModsProcessor::downloadError, this, &ModsPage::receiveDownloadError, Qt::QueuedConnection);
     QObject::connect(m_modsProcessorPtr, &ModsProcessor::sendUnlockRacesStatus, this, &ModsPage::receiveUnlockRacesStatus, Qt::QueuedConnection);
+
+    onCurrentGameChanged();
 }
 
 void ModsPage::onSettingsLoaded()
@@ -50,7 +51,6 @@ void ModsPage::onSettingsLoaded()
     m_russianFontsMod->setInstalledStatus(m_settingsController->getSettings()->russianFontsInstalled);
     m_cameraMod->setInstalledStatus(m_settingsController->getSettings()->cameraModInstalled);
     m_gridHotkeysMod->setInstalledStatus(m_settingsController->getSettings()->gridHotkeysInstalled);
-    m_transparentCameraTrapezoidMod->setInstalledStatus(m_settingsController->getSettings()->transparentCameraTrapezoidInstalled);
 
     qInfo(logInfo()) << "ModsPage::onSettingsLoaded()" << "load finished";
 }
@@ -90,7 +90,6 @@ void ModsPage::receiveInstallCompleeted(InstMod mod)
 
         case InstMod::TransparentCameraTrapezoid :{
             m_transparentCameraTrapezoidMod->setInstallCompleeted();
-            m_settingsController->getSettings()->transparentCameraTrapezoidInstalled = true;
             break;
         }
     }
@@ -116,6 +115,11 @@ void ModsPage::receiveUnlockRacesStatus(bool status)
         m_unlockRacesStatus = tr("Status: Unlock races error");
 
     emit unlockRacesStatusChanged();
+}
+
+void ModsPage::onCurrentGameChanged()
+{
+    m_transparentCameraTrapezoidMod->setInstalledStatus(m_modsProcessorPtr->checkModInstalled(InstMod::TransparentCameraTrapezoid));
 }
 
 

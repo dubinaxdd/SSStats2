@@ -377,16 +377,6 @@ QHash<int, QByteArray> BalanceModPage::roleNames() const
 
 void BalanceModPage::receiveVersions(QList <ModInfo> modsInfo)
 {
-   /* if ((m_modsInfo.count() == 0 && modsInfo.count() > 0 && m_modsInfoReceived) ||
-         (m_modsInfo.count() < modsInfo.count() && m_modsInfoReceived))
-    {
-        NotificationInfo notificationInfo;
-        notificationInfo.text = "New DoW Stats balance mod version is available.";
-        notificationInfo.type = NotificationType::Info;
-        notificationInfo.uuid = m_uuid;
-        emit sendNotification(notificationInfo);
-    }*/
-
     m_modsInfoReceived = true;
 
     if(modsInfo.count() < 1)
@@ -589,6 +579,12 @@ void BalanceModPage::receiveHotKeysUpdated(QString modTechnicalName, bool result
             emit sendNotification(notificationInfo);
         }
     }
+}
+
+void BalanceModPage::onCurrentGameChanged()
+{
+    m_modsInfoReceived = false;
+    m_balanceModManagerPtr->onCurrentGameChanged();
 }
 
 bool BalanceModPage::useCustomTemplateProfilePath() const

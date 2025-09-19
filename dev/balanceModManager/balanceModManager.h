@@ -20,7 +20,7 @@ public:
     ~BalanceModManager();
 
     void downloadMod(QString modTechnicalName, bool overwritePrifiles);
-    void setSsPath(const QString &newSsPath);
+    void setGamePath(GamePath *currentGame);
     void checkDownloadingQuery();
 
     bool showBalanceModBetaVersions() const;
@@ -54,9 +54,10 @@ public slots:
     void activateMod(QString modTechnicalName);
     void updateTemplateProfilePath(bool useCustomTemplateProfilePath);
     void setProfileCopyMode(bool overwritePrifiles, QString modTechnicalName);
-    void onSsLaunchStateChanged(bool lounched);
+    void onGameLaunchStateChanged(bool lounched);
     void setCurrentPlayerSteamId(QString steamId);
     void updateHotKeysOnMod(QString modTechnicalName);
+    void onCurrentGameChanged();
 
 signals:
     void sendModsInfo(QList <ModInfo> modInfo);
@@ -75,6 +76,7 @@ signals:
     void showBalanceModBetaVersionsChanged(bool howBalanceModBetaVersions);
 
 private:
+    GamePath* m_currentGame;
 
     BalanceModInstaller* m_balanceModInstaller;
     QThread* m_balanceModInstallerThread;
@@ -92,7 +94,6 @@ private:
     QNetworkAccessManager *m_networkManager;
     QByteArray m_modInfoHash;
     QTimer* m_modsInfoRequestTimer;
-    QString m_ssPath = "";
     QString m_currentModName = "";
     QString m_currentProfile = "";
 
@@ -102,8 +103,8 @@ private:
     QString m_templateProfilePath = "";
     QString m_lastActualMod = "";
 
-    bool m_ssLounchedState = false;
-    bool m_ssLounchedStateReceived = false;
+    bool m_gameLounchedState = false;
+    bool m_gameLounchedStateReceived = false;
     bool m_showBalanceModBetaVersions = false;
     bool m_betaTestPlayersListReceived = false;
 

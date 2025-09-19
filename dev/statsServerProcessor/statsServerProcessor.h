@@ -14,7 +14,7 @@ class StatsServerProcessor : public QObject
 {
     Q_OBJECT
 public:
-    explicit StatsServerProcessor(SettingsController* settingsController, QString ssPath, QString steamPath, QObject *parent = nullptr);
+    explicit StatsServerProcessor(SettingsController* settingsController, GamePath* currentGame, QString steamPath, QObject *parent = nullptr);
 
     void parseCurrentPlayerSteamId();
     void getPlayerStatsFromServer(QSharedPointer<QList<ServerPlayerStats> > playersInfo);
@@ -33,7 +33,6 @@ signals:
 public slots:
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer );
     void sendReplayToServer(SendingReplayInfo replayInfo);
-    void receiveRankedMode(bool reankedMode);
     void receiveCurrentMod(QString modName);
     void receiveAuthKey(const QString &newAuthKey);
 
@@ -41,11 +40,11 @@ private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
     void currentPlayerStatsRequestTimerTimeout();
-    void onSettingsLoaded();
     void receiveRankDiversion(QNetworkReply* reply);
     void onRankDiversionTimerTimeout();
     void requestClientLastVersion();
     void receiveClientLastVersion(QNetworkReply *reply);
+    void onSettingsLoaded();
 
 private:
     void registerPlayer(QString name, QString sid, bool init);
@@ -55,17 +54,16 @@ private:
 
 
 private:
+    GamePath* m_currentGame;
     SettingsController* m_settingsController;
     QTimer *m_currentPlayerStatsRequestTimer;
     QTimer *m_rankDiversionTimer;
     QString m_steamPath;
-    QString m_ssPath;
     QString m_clientVersion;
     QString m_authKey = "";
     QMap<QString, QString> AllPlayersInfo;
     QNetworkAccessManager *m_networkManager;
     QSharedPointer <QList<ServerPlayerStats>> m_currentPlayerStats;
-    QList<ServerPlayerStats*> m_playerStats;
     bool m_rankedMode = true;
 
     QString m_machineUniqueId = "";

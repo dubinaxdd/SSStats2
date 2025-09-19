@@ -14,7 +14,7 @@ class ModsInstaller : public QObject
     Q_OBJECT
 
 public:
-    explicit ModsInstaller(QString ssPath, QObject *parent = nullptr);
+    explicit ModsInstaller(GamePath* gamePath, QObject *parent = nullptr);
 
 signals:
     void modInstalled(InstMod mod);
@@ -37,9 +37,8 @@ private:
     void uninstallTransparentCameraTrapezoid();
 
 
-
 private:
-    QString m_ssPath = "";
+    GamePath* m_currentGame;
 
 };
 

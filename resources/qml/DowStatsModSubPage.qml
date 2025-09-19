@@ -120,10 +120,10 @@ Rectangle {
 
                     BlueButton {
                         text: qsTr("Install")
-                        enabled: !model.selectedModDownladingProcessed|| _uiBackend.ssLaunchState
+                        enabled: !model.selectedModDownladingProcessed|| _uiBackend.gameLaunchState
                         onClicked:{
 
-                            if (_uiBackend.ssLaunchState)
+                            if (_uiBackend.gameLaunchState)
                                 _uiBackend.soulstormLaunchedDialogVisible = true
                             else
                                 model.downloadSelectedMod();
@@ -137,7 +137,7 @@ Rectangle {
                         visible: model.selectedModIsInstalled
 
                         onClicked: {
-                            if (_uiBackend.ssLaunchState)
+                            if (_uiBackend.gameLaunchState)
                                 _uiBackend.soulstormLaunchedDialogVisible = true
                             else
                                 model.uninstallSelectedMod();
@@ -151,7 +151,7 @@ Rectangle {
                         enabled: !model.selectedModIsCurrent
 
                         onClicked:{
-                            if (_uiBackend.ssLaunchState)
+                            if (_uiBackend.gameLaunchState)
                                 _uiBackend.soulstormLaunchedDialogVisible = true
                             else
                                 model.activateSelectedModInGame();
@@ -163,7 +163,7 @@ Rectangle {
                         text: qsTr("Add extended Hotkeys")
                         visible: model.selectedModIsInstalled
                         onClicked: {
-                            if (_uiBackend.ssLaunchState)
+                            if (_uiBackend.gameLaunchState)
                                 _uiBackend.soulstormLaunchedDialogVisible = true
                             else
                                 model.updateHotKeysOnSelectedMod()

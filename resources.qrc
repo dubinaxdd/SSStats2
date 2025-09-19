@@ -3,6 +3,7 @@
         <file>resources/icons/ssstats.ico</file>
         <file>resources/icons/DowStatsClient.ico</file>
         <file>resources/icons/DowStatsClientBig.ico</file>
+        <file>resources/icons/DefinitiveEdition.png</file>
     </qresource>
     <qresource prefix="/images">
         <file>resources/images/ssstats.png</file>

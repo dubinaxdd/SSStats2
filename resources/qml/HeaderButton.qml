@@ -12,8 +12,8 @@ Rectangle {
 
     signal clicked()
 
-    Layout.preferredWidth: buttonInfoLabel.width + 40//140
-    //width: buttonInfoLabel.width + 40//140
+    Layout.preferredWidth: buttonInfoLabel.width + 30
+
     color: {
         if(!enabled)
             return "#3A3B3C"
@@ -83,17 +83,8 @@ Rectangle {
         id: mouseArea
         anchors.fill: parent
         hoverEnabled: true
-
         cursorShape: Qt.PointingHandCursor
-
-        onClicked: {
-            if (enabled)
-                pressedState = true;
-            else
-                pressedState = false;
-
-            mainRectangle.clicked();
-        }
+        onClicked: mainRectangle.clicked();
     }
 
 }

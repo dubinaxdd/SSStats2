@@ -3,9 +3,9 @@
 
 #define GAME_LEAVE_TIMER_INTERVAL 1000
 
-GamePanel::GamePanel(SoulstormController *soulstormController, SettingsController *settingsController, QObject *parent)
+GamePanel::GamePanel(GameController *soulstormController, SettingsController *settingsController, QObject *parent)
     : QObject(parent)
-    , m_soulstormControllerPtr(soulstormController)
+    , m_gameControllerPtr(soulstormController)
     , m_settingsController(settingsController)
 {
     m_racePanelVisibleTimer = new QTimer(this);
@@ -19,9 +19,10 @@ GamePanel::GamePanel(SoulstormController *soulstormController, SettingsControlle
     QObject::connect(m_gameLeaveTimer, &QTimer::timeout, this, &GamePanel::gameLeaveTimerTimeout, Qt::QueuedConnection);
     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &GamePanel::onSettingsLoaded, Qt::QueuedConnection);
 
-    QObject::connect(m_soulstormControllerPtr->gameStateReader(), &GameStateReader::sendPlayersTestStats, this, &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
-    QObject::connect(m_soulstormControllerPtr->apmMeter(),        &APMMeter::apmCalculated,               this,  &GamePanel::onApmChanged,            Qt::QueuedConnection);
-    QObject::connect(m_soulstormControllerPtr->gameStateReader(), &GameStateReader::sendGameRankedMode,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->gameStateReader(), &GameStateReader::sendPlayersTestStats, this, &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->apmMeter(),        &APMMeter::apmCalculated,               this,  &GamePanel::onApmChanged,            Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->gameStateReader(), &GameStateReader::sendGameRankedMode,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->replayDataCollector(), &ReplayDataCollector::sendRankedState,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
 }
 
 void GamePanel::racePanelVisibleTimerTimeout()
@@ -81,16 +82,16 @@ void GamePanel::onGameStopped()
     emit racePanelVisibleChanged(m_racePanelVisible);
 }
 
-void GamePanel::onGameStarted(SsMissionState gameCurrentState)
+void GamePanel::onGameStarted(GameMissionState gameCurrentState)
 {
-    if (gameCurrentState == SsMissionState::unknownGameStarted || gameCurrentState == SsMissionState::playbackStarted)
+    if (gameCurrentState == GameMissionState::unknownGameStarted || gameCurrentState == GameMissionState::playbackStarted)
     {
         m_currentApm = QString("-");
         m_averageApm = QString("-");
         emit apmUpdate();
     }
 
-    if (gameCurrentState != SsMissionState::gameStarted && gameCurrentState != SsMissionState::savedGameStarted && gameCurrentState != SsMissionState::playbackStarted)
+    if (gameCurrentState != GameMissionState::gameStarted && gameCurrentState != GameMissionState::savedGameStarted && gameCurrentState != GameMissionState::playbackStarted)
     {
         m_gameLeaveTimerVisible = false;
         emit gameLeaveTimerVisibleChanged(m_gameLeaveTimerVisible);
@@ -100,7 +101,7 @@ void GamePanel::onGameStarted(SsMissionState gameCurrentState)
     m_gamePanelVisible = true;
     emit gamePanelVisibleChanged(m_gamePanelVisible);
 
-    if (gameCurrentState == SsMissionState::gameStarted)
+    if (gameCurrentState == GameMissionState::gameStarted)
     {
         m_gameLeaveTimeLeft = 45;
         emit gemeLeaveTimeLeftChanged(m_gameLeaveTimeLeft);

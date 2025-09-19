@@ -37,11 +37,11 @@ ReplayManager::~ReplayManager()
     m_asyncReplayReader->deleteLater();
 }
 
-void ReplayManager::setSsPath(const QString &newSsPath)
+void ReplayManager::setGamePath(GamePath* currentGame)
 {
-    m_ssPath = newSsPath;
-    m_ssUrlPathPath = QUrl::fromLocalFile(m_ssPath);
-    m_playbackFolder = m_ssPath + QDir::separator() + "Playback";
+    m_currentGame = currentGame;
+    m_ssUrlPathPath = QUrl::fromLocalFile(m_currentGame->gameSettingsPath);
+    m_playbackFolder = m_currentGame->gameSettingsPath + QDir::separator() + "Playback";
 
     qInfo(logInfo()) << "Default playback folder: " << m_playbackFolder;
 
@@ -50,7 +50,7 @@ void ReplayManager::setSsPath(const QString &newSsPath)
 
 void ReplayManager::openPlaybackFolder()
 {
-    QDesktopServices::openUrl(QUrl::fromLocalFile(m_ssPath + QDir::separator() + "Playback"));
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentGame->gameSettingsPath + QDir::separator() + "Playback"));
 }
 
 void ReplayManager::openPlayback(QString fileName)
@@ -231,6 +231,14 @@ void ReplayManager::receiveModsInfo(QList<ModInfo> modInfo)
     emit updateReplayInfo();
 }
 
+void ReplayManager::onGamePathChanged()
+{
+    m_ssUrlPathPath = QUrl::fromLocalFile(m_currentGame->gameSettingsPath);
+    m_playbackFolder = m_currentGame->gameSettingsPath + QDir::separator() + "Playback";
+    qInfo(logInfo()) << "Default playback folder: " << m_playbackFolder;
+    getReplaysData();
+}
+
 void ReplayManager::update()
 {
     getReplaysData();
@@ -262,6 +270,15 @@ void ReplayManager::saveBadges(QString filePath, QString imageUrl, int width, in
     QSize imgSize(width, height);
     QImage savedImage = p_imageProvider->requestImage(imageUrl, &imgSize, imgSize);
 
+    if(savedImage.width() > 256 || savedImage.height() > 256)
+    {
+        qWarning(logWarning()) << "Image size is too large, image not saved";
+        return;
+    }
+
+    quint16 imgWidth = savedImage.width();
+    quint16 imgHeight = savedImage.height();
+
     QByteArray imageByteArray;
     imageByteArray.resize(18);
 
@@ -277,16 +294,18 @@ void ReplayManager::saveBadges(QString filePath, QString imageUrl, int width, in
     imageByteArray[9] = 0x00;
     imageByteArray[10] = 0x00;
     imageByteArray[11] = 0x00;
-    imageByteArray[12] = static_cast<quint8>(width);
+    //imageByteArray[12] = static_cast<quint8>(width);
+    imageByteArray[12] = static_cast<quint8>(imgWidth);
     imageByteArray[13] = 0x00;
-    imageByteArray[14] = static_cast<quint8>(height);
+    //imageByteArray[14] = static_cast<quint8>(height);
+    imageByteArray[14] = static_cast<quint8>(imgHeight);
     imageByteArray[15] = 0x00;
     imageByteArray[16] = 0x20;
     imageByteArray[17] = 0x08;
 
-    for (int y = height - 1; y >= 0 ; y--)
+    for (int y = /*height*/imgHeight - 1; y >= 0 ; y--)
     {
-        for (int x = 0; x < width; x++)
+        for (int x = 0; x < /*width*/imgWidth; x++)
         {
             QColor color = savedImage.pixelColor(x,y);
 
@@ -303,6 +322,8 @@ void ReplayManager::saveBadges(QString filePath, QString imageUrl, int width, in
         return;
 
     file.write(imageByteArray);
+
+    file.close();
 }
 
 void ReplayManager::choiseOtherPlaybackFolder(QString folder)
@@ -313,7 +334,7 @@ void ReplayManager::choiseOtherPlaybackFolder(QString folder)
 
 void ReplayManager::choiseDefaultPlaybackFolder()
 {
-    m_playbackFolder = m_ssPath + QDir::separator() + "Playback";
+    m_playbackFolder = m_currentGame->gameSettingsPath + QDir::separator() + "Playback";
     getReplaysData();
 }
 

@@ -17,7 +17,6 @@ struct Settings
     bool russianFontsInstalled = false;
     bool cameraModInstalled = false;
     bool gridHotkeysInstalled = false;
-    bool transparentCameraTrapezoidInstalled = false;
     bool overlayVisible = true;
     bool win7SupportMode = false;
     bool launchGameInWindow = false;
@@ -43,6 +42,7 @@ struct Settings
     //bool showBalanceModBetaVersions = false;
     QString updateCheckAddress = "";
     QString language = "system";
+    QString lastGamePath = "";
 };
 
 class SettingsController : public QObject
@@ -63,7 +63,7 @@ signals:
 
 
 private:
-    QSettings *ss_stats_settings;
+    QSettings *dow_stats_settings;
     QSettings *m_updaterSettings;
     Settings* m_settings;
 

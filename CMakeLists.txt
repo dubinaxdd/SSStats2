@@ -1,12 +1,10 @@
 cmake_minimum_required(VERSION 3.19)
 cmake_policy(SET CMP0048 NEW)
 
-project(DowStatsClient VERSION 2.5 LANGUAGES CXX)
+project(DowStatsClient VERSION 3.0 LANGUAGES CXX)
 
 set(TARGET_NAME DowStatsClient)
 
-#set(PROJECT_VERSION_MAJOR "0")
-#set(PROJECT_VERSION_MINOR "1")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -20,10 +18,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(QUAZIP_USE_QT_ZLIB ON CACHE BOOL "" FORCE)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
-#set(BALANCE_MOD_TEST OFF CACHE BOOL "")
 
 option(BALANCE_MOD_TEST "Build with DoW Stats Balance Mod TEST server" OFF)
-
 if (${BALANCE_MOD_TEST})
     add_definitions(-DBALANCE_MOD_TEST)
     message(STATUS "Build with DoW Stats Balance Mod TEST server")
@@ -31,10 +27,23 @@ endif()
 
 
 option(TEST_NEWS_CHANNEL "Build with DoW Stats News test channel" OFF)
-
 if (${TEST_NEWS_CHANNEL})
     add_definitions(-DTEST_NEWS_CHANNEL)
     message(STATUS "Build with DoW Stats News test channel")
+endif()
+
+
+option(TEST_DISCORD_MICROSERVICE "Build with local test discord microservice" OFF)
+if (${TEST_DISCORD_MICROSERVICE})
+    add_definitions(-DTEST_DISCORD_MICROSERVICE)
+    message(STATUS "Build with local test discord microservice")
+endif()
+
+
+option(DISAPLE_HOOK_FOR_DEBUG "Disable hook for debug without lags" OFF)
+if (${DISAPLE_HOOK_FOR_DEBUG})
+    add_definitions(-DDISAPLE_HOOK_FOR_DEBUG)
+    message(STATUS "Disable hook for debug without lags")
 endif()
 
 
@@ -99,7 +108,7 @@ set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/qt5app.rc")
 
 add_executable(${TARGET_NAME} WIN32 ${HEADERS_FILES} ${SOURCES_FILES} ${APP_ICON_RESOURCE_WINDOWS})
 
-#set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x86")
+#set( OPENSSL_ROOT_DIR "C:/Qt/Tools/OpenSSL/Win_x64")
 
 find_package(OpenSSL)
 if (OPENSSL_FOUND)
@@ -160,7 +169,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Release)
 endif()
 
 file(GLOB  dev_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev ${CMAKE_CURRENT_SOURCE_DIR}/dev/*)
-file(GLOB  soulstormController_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController ${CMAKE_CURRENT_SOURCE_DIR}/dev/soulstormController/*)
+file(GLOB  gameController_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/gameController ${CMAKE_CURRENT_SOURCE_DIR}/dev/gameController/*)
 file(GLOB  mapManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/mapManager/*)
 file(GLOB  uiBackend_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/*)
 file(GLOB  modsProcessor_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor/*)
@@ -170,7 +179,7 @@ file(GLOB  balanceModManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/balanceModManag
 
 set(SOURCE_DIRECTORIES
     ${dev_DIR}
-    ${soulstormController_DIR}
+    ${gameController_DIR}
     ${mapManager_DIR}
     ${uiBackend_DIR}
     ${modsProcessor_DIR}
@@ -200,7 +209,6 @@ else()
     set(BUILD_TYPE_ARG --release)
     set(PLATFORM_LIB_NAME qtlabsplatformplugin.dll)
 endif()
-
 
 
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
@@ -242,15 +250,15 @@ add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E
     copy
-    ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1.dll
-    ${DEPLOY_DIR}/libcrypto-1_1.dll
+    ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1-x64.dll
+    ${DEPLOY_DIR}/libcrypto-1_1-x64.dll
 )
 
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E
     copy
-    ${OPENSSL_ROOT_DIR}/bin/libssl-1_1.dll
-    ${DEPLOY_DIR}/libssl-1_1.dll
+    ${OPENSSL_ROOT_DIR}/bin/libssl-1_1-x64.dll
+    ${DEPLOY_DIR}/libssl-1_1-x64.dll
 )
 
 add_custom_command(TARGET ${TARGET_NAME} POST_BUILD

@@ -10,9 +10,10 @@ QtObject {
     property color alternateBackgroundColor: "#eaeaea"
     property color itemColor: "#c8c8c8"
     property color highlightItemColor: "#DCDCDC"
-    property color selectionColor: "#A9A9A9"
-    property color textColor: "#26282a"
-    property color indicatorColor: "#FFFFFF"
+    property color selectionColor: "#c8c8c8"
+    property color textColor: "#1B2631"
+    property color disbaledTextColor: "#A9A9A9"
+    property color indicatorColor: "#26282a"
 
     property color greenColor: "#00ff99"
     property color redColor: "#ffa9a9"
@@ -47,6 +48,7 @@ QtObject {
             highlightItemColor = "#DCDCDC";
             selectionColor = "#c8c8c8";
             textColor = "#1B2631";
+            disbaledTextColor = "#A9A9A9";
             indicatorColor = "#26282a"
         }
         else if(currentTheme === Theme.Dark)
@@ -55,8 +57,9 @@ QtObject {
             alternateBackgroundColor = "#34495E";
             itemColor = "#2E4053";//"#85929E";
             highlightItemColor = "#566573";
-            selectionColor = "#5D6D7E"//"#2C3E50"//"#ABB2B9";
+            selectionColor = "#5D6D7E"
             textColor = "#F8F9F9";
+            disbaledTextColor = "#808080";
             indicatorColor = "#FFFFFF"
         }
         else if(currentTheme === Theme.Pink)
@@ -67,6 +70,7 @@ QtObject {
             highlightItemColor = "#BB8FCE";
             selectionColor = "#AF7AC5";
             textColor = "#1B2631";
+            disbaledTextColor = "#A9A9A9";
             indicatorColor = "#26282a"
         }
         else if(currentTheme === Theme.Blue)
@@ -77,6 +81,7 @@ QtObject {
             highlightItemColor = "#2471a3";
             selectionColor = "#2980b9";
             textColor = "#F8F9F9";
+            disbaledTextColor = "#808080";
             indicatorColor = "#FFFFFF"
         }
     }

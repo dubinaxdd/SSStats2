@@ -154,8 +154,11 @@ Window {
                         {
                             Layout.alignment: Qt.AlignCenter
                             Layout.preferredHeight: 30 * _uiBackend.sizeModifer
-                            Layout.minimumWidth: 245 * _uiBackend.sizeModifer
-                            Layout.maximumWidth: 245 * _uiBackend.sizeModifer
+                            Layout.minimumWidth: updateButton.visible ? (245 * _uiBackend.sizeModifer) : (280  * _uiBackend.sizeModifer)
+                            Layout.maximumWidth: updateButton.visible ? (245 * _uiBackend.sizeModifer) : (280  * _uiBackend.sizeModifer)
+
+                            Layout.fillWidth: true
+
                             radius: 10 * _uiBackend.sizeModifer
                             color: DowStatsStyle.backgroundColor
 
@@ -175,6 +178,7 @@ Window {
                         }
 
                         IconButton{
+                            id: updateButton
                             sourceUrl: "qrc:/images/resources/images/update.svg"
                             toolTipText: qsTr("Update")
                             containsMouse: updateButtonMouseArea.hovered
@@ -182,6 +186,7 @@ Window {
                             Layout.preferredHeight: 30 * _uiBackend.sizeModifer
                             Layout.preferredWidth: 30 * _uiBackend.sizeModifer
                             sizeModifer: _uiBackend.sizeModifer
+                            visible: !_uiBackend.automatchState && _uiBackend.expandStatisticButtonVisible
 
                             GlobalMouseArea{
 
