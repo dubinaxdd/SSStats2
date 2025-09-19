@@ -493,14 +493,14 @@ void GameController::findSoulstormPath()
 
     if(path.isEmpty())
     {
-        QSettings steam("HKEY_CURRENT_USER\\SOFTWARE\\Valve\\Steam", QSettings::NativeFormat);
-        path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
+        QSettings steam("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9450", QSettings::NativeFormat);
+        path = steam.value("InstallLocation", "").toString();
     }
 
     if(path.isEmpty())
     {
-        QSettings steam("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9450", QSettings::NativeFormat);
-        path = steam.value("InstallLocation", "").toString();
+        QSettings steam("HKEY_CURRENT_USER\\SOFTWARE\\Valve\\Steam", QSettings::NativeFormat);
+        path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
     }
 
     if(!path.isEmpty())
