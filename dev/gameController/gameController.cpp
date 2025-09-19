@@ -497,6 +497,14 @@ void GameController::findSoulstormPath()
         path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
     }
 
+    if(path.isEmpty())
+    {
+        QSettings steam("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9450", QSettings::NativeFormat);
+        path = steam.value("InstallLocation", "").toString();
+
+        qDebug() << "ASDASDASDASDASD 11111";
+    }
+
     if(!path.isEmpty())
     {
         GamePath gamePath;
@@ -513,7 +521,6 @@ void GameController::findDefinitiveEdition()
 {
     QSettings relic("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 3556750", QSettings::NativeFormat);
     QString path = relic.value("installlocation", "").toString();
-        //Компьютер\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 3556750
 
     if (path.isEmpty())
     {
