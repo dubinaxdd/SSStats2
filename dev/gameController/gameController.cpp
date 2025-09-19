@@ -511,9 +511,16 @@ void GameController::findSoulstormPath()
 
 void GameController::findDefinitiveEdition()
 {
-    QString steamPath = getSteamPathFromRegistry();
+    QSettings relic("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 3556750", QSettings::NativeFormat);
+    QString path = relic.value("installlocation", "").toString();
+        //Компьютер\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 3556750
 
-    QString path = steamPath + "\\steamapps\\common\\Dawn of War Definitive Edition";
+    if (path.isEmpty())
+    {
+        QString steamPath = getSteamPathFromRegistry();
+        path = steamPath + "\\steamapps\\common\\Dawn of War Definitive Edition";
+    }
+
     QString gameSettingsPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).replace('/',"\\").replace("\\Roaming\\DowStatsClient", "") + "\\Roaming\\Relic Entertainment\\Dawn of War";
 
     if (!path.isEmpty())
