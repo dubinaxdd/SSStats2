@@ -501,8 +501,6 @@ void GameController::findSoulstormPath()
     {
         QSettings steam("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\Steam App 9450", QSettings::NativeFormat);
         path = steam.value("InstallLocation", "").toString();
-
-        qDebug() << "ASDASDASDASDASD 11111";
     }
 
     if(!path.isEmpty())
