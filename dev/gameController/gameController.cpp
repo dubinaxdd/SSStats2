@@ -29,8 +29,10 @@ GameController::GameController(SettingsController *settingsController, QObject *
     , m_advertisingProcessor(new AdvertisingProcessor(m_settingsController, this))
     , m_gameProcess(nullptr)
 {
-    getGamePathFromRegistry();
-    m_currentGame = m_gamePathArray.first();
+    loadGamePathFromRegistry();
+
+    if(!m_gamePathArray.isEmpty())
+        m_currentGame = m_gamePathArray.first();
 
     m_lobbyEventReader->setCurrentGame(&m_currentGame);
     m_gameStateReader->setCurrentGame(&m_currentGame);
@@ -363,15 +365,10 @@ void GameController::ssShutdown()
     m_gameProcess->deleteLater();*/
 }
 
-QString GameController::getGamePathFromRegistry()
+void GameController::loadGamePathFromRegistry()
 {
     findDefinitiveEdition();
     findSoulstormPath();
-
-    if (m_gamePathArray.isEmpty())
-        return "";
-    else
-        return m_gamePathArray.last().gamePath;
 }
 
 QString GameController::getSteamPathFromRegistry()

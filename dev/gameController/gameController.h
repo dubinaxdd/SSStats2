@@ -73,7 +73,7 @@ signals:
     void sendAuthKey(QString authKey);
 
 private:
-    QString getGamePathFromRegistry();
+    void loadGamePathFromRegistry();
     QString getSteamPathFromRegistry();
     void parseSsSettings();
     void updateGameWindow();
