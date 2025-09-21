@@ -849,6 +849,9 @@ void ReplayDataCollector::determinateRankedState()
 
     bool ranked = false;
 
+    if (m_playersInfoFromDowServer.isEmpty() || m_plyersRankedState.isEmpty())
+        ranked = true;
+
     for (auto& player : m_playersInfoFromDowServer)
     {
         bool finded = false;

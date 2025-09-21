@@ -40,7 +40,7 @@ signals:
     void sendCurrentModVersion(QString modVersion);
     void localPlayerDroppedToObserver();
     void sendCurrentWinConditions(QVector<WinCondition>);
-    void sendGameRankedMode(bool gameRankedMode);
+    void sendRankedState(bool gameRankedMode);
     void sendRequestParametres(DowServerRequestParametres requestParametres);
     void matchIdParsed(QString matchId);
 

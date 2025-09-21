@@ -848,7 +848,7 @@ void GameStateReader::determinateRankedMode(QVector<PlayerStats> playerStats)
     if (!playersNotFinded)
         m_lockRanked = true;
 
-    emit sendGameRankedMode(m_rankedMode);
+    emit sendRankedState(m_rankedMode);
 }
 
 void GameStateReader::setCurrentGame(GamePath *newCurrentGame)

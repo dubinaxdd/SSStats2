@@ -21,7 +21,7 @@ GamePanel::GamePanel(GameController *soulstormController, SettingsController *se
 
     QObject::connect(m_gameControllerPtr->gameStateReader(), &GameStateReader::sendPlayersTestStats, this, &GamePanel::receivePlayersTestStats,     Qt::QueuedConnection);
     QObject::connect(m_gameControllerPtr->apmMeter(),        &APMMeter::apmCalculated,               this,  &GamePanel::onApmChanged,            Qt::QueuedConnection);
-    QObject::connect(m_gameControllerPtr->gameStateReader(), &GameStateReader::sendGameRankedMode,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
+    QObject::connect(m_gameControllerPtr->gameStateReader(), &GameStateReader::sendRankedState,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
     QObject::connect(m_gameControllerPtr->replayDataCollector(), &ReplayDataCollector::sendRankedState,   this, [&](bool gameRankedMode){ this->setGameRankedMode(gameRankedMode);},         Qt::QueuedConnection);
 }
 
