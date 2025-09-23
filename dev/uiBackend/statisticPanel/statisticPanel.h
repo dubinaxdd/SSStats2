@@ -74,7 +74,6 @@ private:
     QVector<StatisticPanelItem*> m_playersStatsItems;
 
     PlayerInfoFromDowServer m_crrentPlayerInfo;
-    QList<PlayerInfoFromDowServer> m_playersInfo;
 
     ImageProvider *m_imageProvider;
     int m_playersCount = 0;

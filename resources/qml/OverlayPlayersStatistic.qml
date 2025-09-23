@@ -24,6 +24,8 @@ Rectangle {
         scrollView.setDefault();
     }
 
+    onPlayersCountChanged: resetScrollView()
+
     Connections
     {
         target: _uiBackend

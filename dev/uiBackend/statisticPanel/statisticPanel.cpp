@@ -112,7 +112,7 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
             }
         }
 
-        sortStatsBySoloMmr();
+        //sortStatsBySoloMmr();
 
         if (m_playersStatsItems.count() > 0)
         {
@@ -125,33 +125,67 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
 
 void StatisticPanel::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo)
 {
-    m_playersInfo = playersInfo;
-
     if (m_playersStatsItems.count() > 0)
     {
         beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
-        for(int i = 0; i < m_playersStatsItems.count(); i++)
-            delete m_playersStatsItems.at(i);
 
-        m_playersStatsItems.clear();
+        for(int i = 0; i < m_playersStatsItems.count(); i++)
+        {
+
+            bool finded = false;
+
+            for(int j = 0; j < playersInfo.count(); j++)
+            {
+                if(playersInfo.at(j).steamId == m_playersStatsItems.at(i)->getSteamId())
+                {
+                    finded = true;
+                    break;
+                }
+            }
+
+            if (!finded)
+            {
+                delete m_playersStatsItems.at(i);
+                m_playersStatsItems.removeAt(i);
+                i--;
+            }
+        }
+
+        //m_playersStatsItems.clear();
 
         endRemoveRows();
     }
 
 
-    if(m_playersInfo.count() > 1)
+    if(playersInfo.count() > 1)
     {
-        beginInsertRows(QModelIndex(), 0, m_playersInfo.count()-2); //TODO: тут баг
+        beginInsertRows(QModelIndex(), 0, playersInfo.count()-2); //TODO: тут баг
 
-        for(int i = 0; i < m_playersInfo.count(); i++)
+        for(int i = 0; i < playersInfo.count(); i++)
         {
-            if(m_playersInfo[i].isCurrentPlayer)
+            if(playersInfo[i].isCurrentPlayer)
                 continue;
 
-            StatisticPanelItem* newItem = new StatisticPanelItem(this);
-            newItem->setPlayerSteamId(m_playersInfo.at(i).steamId);
-            newItem->setPlayerName(m_playersInfo.at(i).name);
-            m_playersStatsItems.append(newItem);
+
+            bool finded = false;
+
+            for(int j = 0; j < m_playersStatsItems.count(); j++)
+            {
+                if(playersInfo.at(i).steamId == m_playersStatsItems.at(j)->getSteamId())
+                {
+                    finded = true;
+                    m_playersStatsItems.at(j)->setPlayerName(playersInfo.at(i).name);
+                    break;
+                }
+            }
+
+            if (!finded)
+            {
+                StatisticPanelItem* newItem = new StatisticPanelItem(this);
+                newItem->setPlayerSteamId(playersInfo.at(i).steamId);
+                newItem->setPlayerName(playersInfo.at(i).name);
+                m_playersStatsItems.append(newItem);
+            }
         }
 
         endInsertRows();
