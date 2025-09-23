@@ -98,14 +98,14 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
     {
         for(int i = 0; i < m_playersStatsItems.count(); i++)
         {
-            if (serverPlayerStats.steamId == m_playersStatsItems.at(i)->getTempSid())
+            if (serverPlayerStats.steamId == m_playersStatsItems.at(i)->getSteamId())
             {
                 m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
 
                 if (serverPlayerStats.avatarAvailable)
                 {
-                    m_imageProvider->addPlayerAvatar("playerAvatar" + m_playersStatsItems.at(i)->getTempSid(), m_playersStatsItems.at(i)->getAvatar());
-                    m_playersStatsItems[i]->setAvatarId( "playerAvatar" + m_playersStatsItems.at(i)->getTempSid());
+                    m_imageProvider->addPlayerAvatar("playerAvatar" + m_playersStatsItems.at(i)->getSteamId(), m_playersStatsItems.at(i)->getAvatar());
+                    m_playersStatsItems[i]->setAvatarId( "playerAvatar" + m_playersStatsItems.at(i)->getSteamId());
                 }
 
                 break;
@@ -127,7 +127,6 @@ void StatisticPanel::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServ
 {
     if (m_playersStatsItems.count() > 0)
     {
-        beginRemoveRows(QModelIndex(), 0, m_playersStatsItems.count() - 1);
 
         for(int i = 0; i < m_playersStatsItems.count(); i++)
         {
@@ -145,27 +144,22 @@ void StatisticPanel::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServ
 
             if (!finded)
             {
+                beginRemoveRows(QModelIndex(), i, i);
                 delete m_playersStatsItems.at(i);
                 m_playersStatsItems.removeAt(i);
                 i--;
+                endRemoveRows();
             }
         }
-
-        //m_playersStatsItems.clear();
-
-        endRemoveRows();
     }
 
 
     if(playersInfo.count() > 1)
     {
-        beginInsertRows(QModelIndex(), 0, playersInfo.count()-2); //TODO: тут баг
-
         for(int i = 0; i < playersInfo.count(); i++)
         {
             if(playersInfo[i].isCurrentPlayer)
                 continue;
-
 
             bool finded = false;
 
@@ -181,14 +175,16 @@ void StatisticPanel::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServ
 
             if (!finded)
             {
+                beginInsertRows(QModelIndex(), m_playersStatsItems.count(), m_playersStatsItems.count());
+
                 StatisticPanelItem* newItem = new StatisticPanelItem(this);
                 newItem->setPlayerSteamId(playersInfo.at(i).steamId);
                 newItem->setPlayerName(playersInfo.at(i).name);
                 m_playersStatsItems.append(newItem);
+
+                endInsertRows();
             }
         }
-
-        endInsertRows();
     }
 
     qInfo(logInfo()) << "StatisticPanel::receivePlayresInfoFromDowServer" << "players info received";

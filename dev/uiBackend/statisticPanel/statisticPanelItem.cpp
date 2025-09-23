@@ -29,11 +29,6 @@ QString StatisticPanelItem::getRaceFromNumber(int raceNumber) const
     return "";
 }
 
-const QString &StatisticPanelItem::getTempSid() const
-{
-    return tempSid;
-}
-
 const QString &StatisticPanelItem::avatarId() const
 {
     return m_avatarId;
@@ -115,7 +110,6 @@ BanType::BanTypeEnum StatisticPanelItem::banType() const
 
 void StatisticPanelItem::setPlayerSteamId(QString steamId)
 {
-    tempSid = steamId;
     m_playersStats.steamId = steamId;
 }
 

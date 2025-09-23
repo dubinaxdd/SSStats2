@@ -63,8 +63,6 @@ public:
 
     QString getRaceFromNumber(int raceNumber) const;
 
-    const QString &getTempSid() const;
-
     const QString &avatarId() const;
     void setAvatarId(const QString &newAvatarId);
 
@@ -76,7 +74,6 @@ public:
 
 private:
     ServerPlayerStats m_playersStats;
-    QString tempSid = "";
     QString m_avatarId = "";
     bool m_visible = false;
     bool isRanked = true;
