@@ -119,6 +119,12 @@ void StatisticPanelItem::setPlayerSteamId(QString steamId)
     m_playersStats.steamId = steamId;
 }
 
+void StatisticPanelItem::setPlayerName(QString name)
+{
+    m_playersStats.name = name;
+    playersStatsChanged();
+}
+
 QString StatisticPanelItem::getPlayerName() const
 {
     return m_playersStats.name;

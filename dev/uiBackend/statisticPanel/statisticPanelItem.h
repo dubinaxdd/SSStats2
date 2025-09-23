@@ -33,6 +33,7 @@ public:
     void setPlayersStats(ServerPlayerStats newPlayersStats);
     void setVisible(bool newVisible);
     void setPlayerSteamId(QString steamId);
+    void setPlayerName(QString name);
 
     ServerPlayerStats playersStats();
 

@@ -13,7 +13,7 @@
 #include <version.h>
 #include <QDebug>
 
-#define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 5000
+#define CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL 10000
 
 using namespace ReplayReader;
 
@@ -65,6 +65,7 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
         newPlayerInfo.steamId = playersInfoInfoFromDowServer.at(i).steamId;
         newPlayerInfo.position = playersInfoInfoFromDowServer.at(i).position;
         newPlayerInfo.dowServerName = playersInfoInfoFromDowServer.at(i).name;
+        newPlayerInfo.name = playersInfoInfoFromDowServer.at(i).name;
 
         playersInfo.data()->append(newPlayerInfo);
     }
@@ -180,9 +181,6 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
     newRequest.setRawHeader("key", QString::fromStdString(SERVER_KEY).toLatin1());
     newRequest.setRawHeader("machineUniqueId", m_machineUniqueId.toLatin1());
 
-    //if (!m_authKey.isEmpty())
-    //    newRequest.setRawHeader("steamAuthId", m_authKey.toLatin1());
-
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
@@ -232,7 +230,10 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
         playersInfo.get()->operator[](i).mmr1v1 = statsArray.at(i)["mmr1v1"].toInt();
         playersInfo.get()->operator[](i).customGamesMmr = statsArray.at(i)["custom_games_mmr"].toInt();
         playersInfo.get()->operator[](i).isBanned = statsArray.at(i)["isBanned"].toBool();
-        playersInfo.get()->operator[](i).name = statsArray.at(i)["name"].toString();
+
+        if(playersInfo.get()->operator[](i).name.isEmpty())
+            playersInfo.get()->operator[](i).name = statsArray.at(i)["name"].toString();
+
         playersInfo.get()->operator[](i).rank = statsArray.at(i)["rank"].toInt();
         playersInfo.get()->operator[](i).race = statsArray.at(i)["race"].toInt();
         playersInfo.get()->operator[](i).winRate = statsArray.at(i)["winRate"].toInt();
@@ -284,6 +285,7 @@ void StatsServerProcessor::receivePlayerMediumAvatar(QNetworkReply *reply, QShar
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "StatsServerProcessor::receivePlayerMediumAvatar:" << "Connection error:" << reply->errorString();
+        emit sendServerPlayerStats(*playerInfo.data());
         reply->deleteLater();
         return;
     }

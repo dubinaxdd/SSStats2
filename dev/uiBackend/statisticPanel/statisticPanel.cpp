@@ -87,9 +87,11 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
     if (serverPlayerStats.isCurrentPlayer)
     {
         m_curentPlayerStatsItem->setPlayersStats(serverPlayerStats);
-        m_imageProvider->setCurrentPlayerAvatarMedium(serverPlayerStats.avatar);
-        m_curentPlayerStatsItem->setVisible(true);
 
+        if (serverPlayerStats.avatarAvailable)
+            m_imageProvider->setCurrentPlayerAvatarMedium(serverPlayerStats.avatar);
+
+        m_curentPlayerStatsItem->setVisible(true);
         emit currentPlayerStatsChanged();
     }
     else
@@ -98,10 +100,15 @@ void StatisticPanel::receiveServerPlayerStats(ServerPlayerStats serverPlayerStat
         {
             if (serverPlayerStats.steamId == m_playersStatsItems.at(i)->getTempSid())
             {
-                 m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
-                 m_imageProvider->addPlayerAvatar("playerAvatar" + m_playersStatsItems.at(i)->getTempSid(), m_playersStatsItems.at(i)->getAvatar());
-                 m_playersStatsItems[i]->setAvatarId( "playerAvatar" + m_playersStatsItems.at(i)->getTempSid());
-                 break;
+                m_playersStatsItems[i]->setPlayersStats(serverPlayerStats);
+
+                if (serverPlayerStats.avatarAvailable)
+                {
+                    m_imageProvider->addPlayerAvatar("playerAvatar" + m_playersStatsItems.at(i)->getTempSid(), m_playersStatsItems.at(i)->getAvatar());
+                    m_playersStatsItems[i]->setAvatarId( "playerAvatar" + m_playersStatsItems.at(i)->getTempSid());
+                }
+
+                break;
             }
         }
 
@@ -143,6 +150,7 @@ void StatisticPanel::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServ
 
             StatisticPanelItem* newItem = new StatisticPanelItem(this);
             newItem->setPlayerSteamId(m_playersInfo.at(i).steamId);
+            newItem->setPlayerName(m_playersInfo.at(i).name);
             m_playersStatsItems.append(newItem);
         }
 
