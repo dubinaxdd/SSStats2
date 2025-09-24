@@ -537,6 +537,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
         m_repeatGameResultRequestTimer.stop();
         m_repeatRequestGameResultsCount = 0;
         emit sendNotification(tr("The game results are not finded."), true);
+         QFile::remove(lastGameResult.replayPath);
     }
     else
     {
@@ -562,9 +563,7 @@ void DowServerProcessor::checkQueue()
         return;
 
     QueryType needType = m_requestsQueue.first();
-
     m_requestsQueue.remove(0);
-
 
     switch (needType) {
         case QueryType::FindAdvertisements :{

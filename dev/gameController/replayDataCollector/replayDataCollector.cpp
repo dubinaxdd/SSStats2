@@ -57,8 +57,7 @@ void ReplayDataCollector::readReplayData()
 
     m_lastReplayInfo = SendingReplayInfo();
     m_lastReplayInfo.apm = m_lastAverrageApm;
-    m_lastReplayInfo.replayPath = m_currentGame->gameSettingsPath + "/Playback/dowstatstemp.rec";
-    //m_lastReplayInfo.replayPath = m_currentGame->gameSettingsPath + "/Playback/temp.rec";
+    m_lastReplayInfo.replayPath = getDowstatsTempReplayPath();
     m_lastReplayInfo.gameId = m_lastGameId;
     m_lastReplayInfo.mod = m_currentMode;
     m_lastReplayInfo.modVersion = m_currentModVerion;
@@ -595,7 +594,6 @@ void ReplayDataCollector::receiveCurrentWinConditions(QVector<WinCondition> winC
 bool ReplayDataCollector::checkMissionSettingsValide(int gameType)
 {
     RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
-
     return repReader.isStandart(gameType);
 }
 
@@ -886,6 +884,11 @@ void ReplayDataCollector::determinateRankedState()
 
 }
 
+QString ReplayDataCollector::getDowstatsTempReplayPath()
+{
+    return m_currentGame->gameSettingsPath + "\\Playback\\dowstatstemp.rec";
+}
+
 void ReplayDataCollector::setRankedState(bool newRankedState)
 {
     m_rankedState = newRankedState;
@@ -909,4 +912,5 @@ void ReplayDataCollector::setGameId(QString gameId)
 void ReplayDataCollector::setCurrentGame(GamePath *newCurrentGame)
 {
     m_currentGame = newCurrentGame;
+    QFile::remove(getDowstatsTempReplayPath());
 }

@@ -48,6 +48,7 @@ private:
     void parseGameResults(QJsonObject gameResults,  SendingReplayInfo lastGameResult);
 
     void determinateRankedState();
+    QString getDowstatsTempReplayPath();
 
 private:
     QVector<WinCondition> m_winCoditionsVector;

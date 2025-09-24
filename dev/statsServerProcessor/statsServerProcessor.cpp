@@ -560,17 +560,16 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     qInfo(logInfo()) << "Replay sending url:" << url;
 
-   // url += "key=" + QLatin1String(SERVER_KEY);
+    QByteArray playback;
 
-    RepReader repReader(replayInfo.replayPath);
+    {
+        RepReader repReader(replayInfo.replayPath);
+        repReader.isStandart(replayInfo.gameType);
+        repReader.RenameReplay();
+        playback = repReader.getReplayData();
+    }
 
-    //repReader.convertReplayToSteamVersion();
-    repReader.isStandart(replayInfo.gameType);
-    repReader.RenameReplay();
-
-    QByteArray playback = repReader.getReplayData();
-
-
+    QFile::remove(replayInfo.replayPath);
     //RepReader repReader(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
 
     //repReader.convertReplayToSteamVersion();
@@ -620,7 +619,6 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     QNetworkReply *reply = m_networkManager->post(request, postData);
     emit replaySended();
-
 
     if (replayInfo.isRnked || replayInfo.isAutomatch)
     {
