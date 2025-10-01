@@ -19,8 +19,13 @@ DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController,
     connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &DiscordWebProcessor::readMessage, Qt::QueuedConnection);
 
     connect(&m_reconnectTimer, &QTimer::timeout, this, &DiscordWebProcessor::reconnect, Qt::QueuedConnection);
+    connect(&m_pingTimer, &QTimer::timeout, this, &DiscordWebProcessor::sendPing, Qt::QueuedConnection);
+    connect(&m_pingResponceTimer, &QTimer::timeout, this, [&]{m_webSocket.close();});
 
     m_reconnectTimer.setInterval(5000);
+    m_pingTimer.setInterval(20000);
+    m_pingResponceTimer.setInterval(10000);
+    m_pingResponceTimer.setSingleShot(true);
 
 }
 
@@ -221,7 +226,7 @@ void DiscordWebProcessor::requestMessagesFromServer(OpCode opCode, bool includeF
     messageObject.insert("op", opCode);
 
     messageObject.insert("messageId", lastMessageID);
-    messageObject.insert("limit", 5);
+    messageObject.insert("limit", 10);
     messageObject.insert("includeFirst", includeFirst);
 
     QJsonDocument message;
@@ -295,6 +300,11 @@ void DiscordWebProcessor::receiveUpdateEventMessage(QJsonObject messageObject)
 {
     DiscordMessage newMessage = parseMessage(messageObject);
     emit sendUpdateEventsMessage(std::move(newMessage));
+}
+
+void DiscordWebProcessor::receivePingResponce()
+{
+    m_pingResponceTimer.stop();
 }
 
 void DiscordWebProcessor::setLastReadedNewsMessageID(QString id)
@@ -454,6 +464,7 @@ void DiscordWebProcessor::readMessage(QString message)
 
         case AllMesagesReceive: break;
         case EventsMessagesAnswer: receiveEvents(messageObject.value("messages").toArray()); break;
+        case PingResponce: receivePingResponce(); break;
         default: break;
     }
 }
@@ -466,6 +477,7 @@ void DiscordWebProcessor::reconnect()
 
 void DiscordWebProcessor::onConnected()
 {
+    m_pingTimer.start();
     m_reconnectTimer.stop();
     qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Connected";
     m_webSocketConnected = true;
@@ -474,7 +486,20 @@ void DiscordWebProcessor::onConnected()
 
 void DiscordWebProcessor::onDisconnected()
 {
+    m_pingTimer.stop();
     m_reconnectTimer.start();
     m_webSocketConnected = false;
     qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Disconnected";
+}
+
+void DiscordWebProcessor::sendPing()
+{
+    QJsonObject messageObject;
+    messageObject.insert("op", Ping);
+
+    QJsonDocument message;
+    message.setObject(messageObject);
+
+    m_webSocket.sendTextMessage(message.toJson().replace('\n',""));
+    m_pingResponceTimer.start();
 }

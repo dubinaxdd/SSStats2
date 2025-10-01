@@ -24,7 +24,9 @@ public:
         RequestTestFromIdToId = 4,
         RequestNewsFromIdByLimit = 5,
         RequestEventsFromIdByLimit = 6,
-        RequestTestFromIdByLimit = 7
+        RequestTestFromIdByLimit = 7,
+        Ping = 8
+
     };
 
     enum EventType: int
@@ -45,7 +47,8 @@ public:
         TestMessagesAnswer = 14,
         NewsMessagesEnd = 15,
         EventsMessagesEnd = 16,
-        TestMessagesEnd = 17
+        TestMessagesEnd = 17,
+        PingResponce = 18
     };
 
 private:
@@ -69,7 +72,7 @@ private:
     void receiveUpdateNewsMessage(QJsonObject messageObject);
     void receiveUpdateEventMessage(QJsonObject messageObject);
 
-
+    void receivePingResponce();
 
 public slots:
     void setLastReadedNewsMessageID(QString id);
@@ -88,6 +91,8 @@ private slots:
     void reconnect();
     void onConnected();
     void onDisconnected();
+
+    void sendPing();
 
 signals:
     void sendNews(QList<DiscordMessage> news);
@@ -108,6 +113,8 @@ private:
     QWebSocket m_webSocket;
     QTimer m_reconnectTimer;
     bool m_webSocketConnected = false;
+    QTimer m_pingTimer;
+    QTimer m_pingResponceTimer;
 
     SettingsController* m_settingsController;
 
