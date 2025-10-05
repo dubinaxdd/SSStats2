@@ -182,6 +182,7 @@ struct PlayerData
     QString partyID = "";
     QString profileID = "";
     int position = 0;
+    bool isObserver = false;
 };
 
 struct PartyData
@@ -235,6 +236,7 @@ struct PlayerInfoFromDowServer
     QString name;
     bool isCurrentPlayer = false;
     bool closeConnection = false;
+    bool isObserver = false;
 };
 
 struct RankDiversion

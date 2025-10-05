@@ -673,17 +673,6 @@ void GameController::requestDowPlayersData()
         m_dowServerProcessor->requestPartysData();
 }
 
-void GameController::onAutomatchNamesListChanged(QStringList automatchNamesList)
-{
-    for (auto& item : m_dowServerProcessor->lastPlayersInfo())
-    {
-        if(automatchNamesList.contains(item.name))
-            automatchNamesList.removeAll(item.name);
-    }
-
-    m_gameMemoryReader->findIgnoredPlayersId(automatchNamesList);
-}
-
 bool GameController::getUseWindows7SupportMode() const
 {
     return m_useWindows7SupportMode;

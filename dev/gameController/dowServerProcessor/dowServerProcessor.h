@@ -26,8 +26,6 @@ public:
 
     void setGameType(GameType::GameTypeEnum newGameType) override;
 
-    QList<PlayerInfoFromDowServer> lastPlayersInfo() const;
-
 private:
     QVector<PlayerData> getPlayersInCurrentRoom(QVector<PartyData> partyDataArray);
 
@@ -70,10 +68,7 @@ private:
     QTimer *m_queueTimer;
     QTimer *m_requestDataAftrePlayerDisconectTimer;
     QTimer m_repeatGameResultRequestTimer;
-    QVector<PlayerData> m_profileIdsForQueue;
-
-    QList<PlayerInfoFromDowServer> m_lastPlayersInfo;
-    //SendingReplayInfo m_lastGameResult;
+    QVector<PlayerData> m_profilesDataForQueue;
 
     QString m_steamID = "";
     QString m_profileID = "";
@@ -83,6 +78,9 @@ private:
 
     bool m_needUpdateLatter = false;
     bool m_neeedRequestAdvertisements = false;
+    bool m_currentPlayerIsObserver = false;
+
+    QString m_nonObserverPlayerId = "";
 
     QJsonObject m_gameResult;
     int m_repeatRequestGameResultsCount = 0;

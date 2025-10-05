@@ -41,6 +41,8 @@ QVector<PlayerData> DowServerProcessor::getPlayersInCurrentRoom(QVector<PartyDat
         {
             if (playersDataArray.at(j).profileID == m_profileID)
             {
+                m_currentPlayerIsObserver = playersDataArray.at(j).isObserver;
+
                 for (int k = 0; k < playersDataArray.count(); k++)
                     playersData.append(playersDataArray.at(k));
 
@@ -184,8 +186,17 @@ void DowServerProcessor::requestGameResult(SendingReplayInfo lastGameResult)
 
     QString urlString;
 
+    QString needPlayerId = "";
+
+    if (m_currentPlayerIsObserver)
+        needPlayerId = m_nonObserverPlayerId;
+    else
+        needPlayerId = m_profileID;
+
+    qDebug() << "Current Player Is Observer: " << m_currentPlayerIsObserver;
+
     if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
-        urlString = "https://dow-api.reliclink.com/community/leaderboard/getrecentmatchhistorybyprofileid?title=dow1-de&profile_id=" + m_profileID;
+        urlString = "https://dow-api.reliclink.com/community/leaderboard/getrecentmatchhistorybyprofileid?title=dow1-de&profile_id=" + needPlayerId;
     else
         return;
 
@@ -213,11 +224,14 @@ void DowServerProcessor::onAutomatchPlayersListChanged(QStringList playersList)
     {
         PlayerData newPlayerData;
         newPlayerData.profileID = item;
-
         profilesData.append(newPlayerData);
     }
 
-    m_profileIdsForQueue = profilesData;
+    if (profilesData.isEmpty())
+        return;
+
+    m_currentPlayerIsObserver = false;
+    m_profilesDataForQueue = profilesData;
     addQuery(QueryType::PlayersSids);
 
 }
@@ -377,6 +391,8 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
                     if (!playersJsonArray.at(j).isArray())
                         continue;
 
+                    qDebug() << playersJsonArray.at(j);
+
                     QJsonArray playerDataJson = playersJsonArray.at(j).toArray();
                     PlayerData newPlayerData;
 
@@ -385,6 +401,10 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
 
                     newPlayerData.partyID = QString::number(playerDataJson.at(0).toInt());
                     newPlayerData.profileID = QString::number(playerDataJson.at(1).toInt());
+
+                    if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
+                        newPlayerData.isObserver = playerDataJson.at(5).toInt() == -1;
+
                     //newPlayerData.position = playerDataJson.at(5).toInt();
 
                     newPartyData.profilesIds.append(newPlayerData);
@@ -392,7 +412,20 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
                 partysArray.append(newPartyData);
             }
 
-            m_profileIdsForQueue = getPlayersInCurrentRoom(partysArray);
+            m_profilesDataForQueue = getPlayersInCurrentRoom(partysArray);
+
+            if (m_currentPlayerIsObserver)
+            {
+                for(auto& item : m_profilesDataForQueue)
+                {
+                    if (!item.isObserver)
+                    {
+                        m_nonObserverPlayerId = item.profileID;
+                        break;
+                    }
+                }
+            }
+
             addQuery(QueryType::PlayersSids);
         }
     }
@@ -438,6 +471,7 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
                 newPlayerInfo.playerID = QString::number(needPlayerJson.at(1).toInt());
                 newPlayerInfo.closeConnection = false;
                 newPlayerInfo.name = needPlayerJson.at(4).toString();
+
                 playersInfo.append(newPlayerInfo);
             }
         }
@@ -450,16 +484,14 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
             if (playersInfo.at(i).playerID == profilesData.at(j).profileID )
             {
                 playersInfo[i].position = profilesData.at(j).position + 1;
+                playersInfo[i].isObserver = profilesData.at(j).isObserver;
                 break;
             }
         }
     }
 
     for (int i = 0; i < playersInfo.count(); i++)
-        qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId << playersInfo.at(i).playerID;
-
-    //m_lastPlayersInfo = playersInfo;
-
+        qInfo(logInfo()) << "Receive player data from DOW server:" << playersInfo.at(i).name << playersInfo.at(i).steamId << playersInfo.at(i).playerID << "is observer:" << playersInfo.at(i).isObserver;
 
     if(!needSendGameResults)
         emit sendPlayersInfoFromDowServer(playersInfo);
@@ -506,7 +538,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
             continue;
 
         QJsonArray matchhistorymember = m_gameResult.value("matchhistorymember").toArray();
-        m_profileIdsForQueue.clear();
+        m_profilesDataForQueue.clear();
 
         for(auto item : matchhistorymember)
         {
@@ -515,14 +547,14 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
             PlayerData newPlayerData;
             newPlayerData.profileID = playerId;
             //newPlayerData.partyID = gameId;
-            m_profileIdsForQueue.append(newPlayerData);
+            m_profilesDataForQueue.append(newPlayerData);
         }
 
         gameResultsFinded = true;
         m_repeatRequestGameResultsCount = 0;
         m_repeatGameResultRequestTimer.stop();
 
-        requestPlayersSids(m_profileIdsForQueue, true, lastGameResult);
+        requestPlayersSids(m_profilesDataForQueue, true, lastGameResult);
         break;
     }
 
@@ -572,7 +604,7 @@ void DowServerProcessor::checkQueue()
         }
 
         case QueryType::PlayersSids :{
-            requestPlayersSids(m_profileIdsForQueue);
+            requestPlayersSids(m_profilesDataForQueue);
             break;
         }
 
@@ -596,14 +628,8 @@ void DowServerProcessor::addQuery(QueryType type)
     m_requestsQueue.append(type);
 }
 
-QList<PlayerInfoFromDowServer> DowServerProcessor::lastPlayersInfo() const
-{
-    return m_lastPlayersInfo;
-}
-
 void DowServerProcessor::setGameType(GameType::GameTypeEnum newGameType)
 {
     AbstractDowServerProcessor::setGameType(newGameType);
     m_queueTimer->start();
-    //m_gameType = newGameType;
 }
