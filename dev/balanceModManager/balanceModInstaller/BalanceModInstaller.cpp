@@ -102,7 +102,7 @@ void BalanceModInstaller::installMod(InstallModData data, bool overwriteProfiles
             if (data.gameType == GameType::GameTypeEnum::DefinitiveEdition)
                 modName = data.modTechnicalName;
             else
-                data.modTechnicalName.toLower();
+                modName = data.modTechnicalName.toLower();
 
             //Удалем предыдущую запись в настройках о туториале
             if (configString.contains("Tutorial_" + modName))
