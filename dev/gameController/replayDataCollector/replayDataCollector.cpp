@@ -443,13 +443,6 @@ bool ReplayDataCollector::readSoulstormReplayData(SendingReplayInfo replayInfo)
 
     replayInfo.mapName = scenario;
     replayInfo.gameTime = duration;
-
-    QString modName = m_currentMode;
-
-    if(modName.contains("dowstats_balance_mod"))
-        modName = "dowstats_balance_mod";
-    //replayInfo.modVersion = m_currentModVerion;
-    //replayInfo.mod = modName;
     replayInfo.isFullStdGame = isFullStdGame;
 
     if (winBy == "ANNIHILATE" || winBy == "annihilate" )
@@ -576,6 +569,9 @@ void ReplayDataCollector::onQuitParty()
 void ReplayDataCollector::receiveCurrentMod(QString currentMode)
 {
     m_currentMode = currentMode;
+
+    if(m_currentMode.toLower().contains("dowstats_balance_mod"))
+        m_currentMode = "dowstats_balance_mod";
 }
 
 void ReplayDataCollector::receiveCurrentModVersion(QString version)
@@ -824,13 +820,7 @@ void ReplayDataCollector::parseGameResults(QJsonObject gameResults,  SendingRepl
         return;
     }
 
-    QString modName = m_currentMode;
 
-    if(modName.toLower().contains("dowstats_balance_mod"))
-        modName = "dowstats_balance_mod";
-
-    lastGameResults.modVersion = m_currentModVerion;
-    lastGameResults.mod = modName;
     lastGameResults.isFullStdGame = isFullStdGame;
     //анигиляция, потому что невозможно определить условие победы
     lastGameResults.winBy = WinCondition::ANNIHILATE;

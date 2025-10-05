@@ -351,13 +351,13 @@ struct SendingReplayInfo
     GameTypeForReplaySending gameType;
     QString mapName;
     int gameTime;
-    QString mod;
+    QString mod = "";
     QString modVersion;
     WinCondition winBy;
     bool isFullStdGame = false;
-    QString gameId;
+    QString gameId = "";
     bool isAutomatch;
-    QString replayPath;
+    QString replayPath = "";
     bool isRnked = true;
 };
 

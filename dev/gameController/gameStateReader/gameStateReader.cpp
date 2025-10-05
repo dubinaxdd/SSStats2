@@ -329,7 +329,7 @@ void GameStateReader::checkCurrentMode()
                 if (nameLength <= 0)
                     return;
 
-                currentMode = currentMode.left(nameLength);
+                currentMode = currentMode.left(nameLength).toLower();
 
 
                 postfixIndex = line.indexOf(", ");
