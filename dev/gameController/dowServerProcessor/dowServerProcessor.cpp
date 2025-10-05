@@ -193,8 +193,6 @@ void DowServerProcessor::requestGameResult(SendingReplayInfo lastGameResult)
     else
         needPlayerId = m_profileID;
 
-    qDebug() << "Current Player Is Observer: " << m_currentPlayerIsObserver;
-
     if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
         urlString = "https://dow-api.reliclink.com/community/leaderboard/getrecentmatchhistorybyprofileid?title=dow1-de&profile_id=" + needPlayerId;
     else
@@ -391,13 +389,8 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
                     if (!playersJsonArray.at(j).isArray())
                         continue;
 
-                    qDebug() << playersJsonArray.at(j);
-
                     QJsonArray playerDataJson = playersJsonArray.at(j).toArray();
                     PlayerData newPlayerData;
-
-                    //if (playerDataJson.at(5).toInt() == 3)
-                    //    continue;
 
                     newPlayerData.partyID = QString::number(playerDataJson.at(0).toInt());
                     newPlayerData.profileID = QString::number(playerDataJson.at(1).toInt());
@@ -579,7 +572,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
         m_repeatGameResultRequestTimer.disconnect();
         QObject::connect(&m_repeatGameResultRequestTimer, &QTimer::timeout, this, [=]{requestGameResult(lastGameResult);}, Qt::QueuedConnection);
         m_repeatGameResultRequestTimer.start();
-        qDebug() << "Try to find geme results";
+        qInfo(logInfo()) << "Try to find geme results";
         m_repeatRequestGameResultsCount++;
     }
 }

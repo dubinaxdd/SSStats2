@@ -4,6 +4,7 @@
 #include <QDir>
 #include <QJsonDocument>
 #include <QJsonArray>
+#include <QCoreApplication>
 
 using namespace ReplayReader;
 
@@ -31,7 +32,7 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
 
             emit requestGameResults(m_lastReplayInfo);
             m_lastGameId = "";
-            qDebug() << "ReplayDataCollector::readDefinitiveReplayData() Request game results";
+            qInfo(logInfo()) << "ReplayDataCollector::readDefinitiveReplayData() Request game results";
         }
     });
 }
@@ -876,7 +877,7 @@ void ReplayDataCollector::determinateRankedState()
 
 QString ReplayDataCollector::getDowstatsTempReplayPath()
 {
-    return m_currentGame->gameSettingsPath + "\\Playback\\dowstatstemp.rec";
+    return QCoreApplication::applicationDirPath() + "\\dowstatstemp.rec";
 }
 
 void ReplayDataCollector::setRankedState(bool newRankedState)
