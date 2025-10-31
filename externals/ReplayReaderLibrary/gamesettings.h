@@ -19,7 +19,7 @@ public:
     int GameSpeed;
     int ResShare;
     int ResRate;
-    int NoFlyers;
+    int NoFlyers = 0;
 
     QString getResolvedAIDiff() const;
     QString getResolvedResourceSpeed() const;
@@ -29,6 +29,7 @@ public:
     QString getResolvedResources() const;
     QString getResolvedLockTeams() const;
     QString getResolvedPositions() const;
+    QString getResolvedNoFlayers() const;
     bool isStandart(int game_type);
 };
 }

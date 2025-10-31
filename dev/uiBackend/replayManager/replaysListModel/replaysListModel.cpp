@@ -22,7 +22,10 @@ QVariant ReplaysListModel::data(const QModelIndex &index, int role) const
     else if (role == Mod)
     {
         if (replayInfo.mod == "dxp2")
-            return tr("Original Soulstorm");
+            return tr("Soulstorm");
+
+        if (replayInfo.mod == "DoWDE")
+            return tr("Definitive Edition");
 
         if (m_modInfo)
         {

@@ -83,6 +83,16 @@ QString GameSettings::getResolvedPositions() const
     }
 }
 
+QString GameSettings::getResolvedNoFlayers() const
+{
+    switch (NoFlyers)
+    {
+        case 0: return "No";
+        case 1: return "Yes";
+        default: return "Unknown";
+    }
+}
+
 
 QString GameSettings::getResolvedCheats() const
 {

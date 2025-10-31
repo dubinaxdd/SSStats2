@@ -207,7 +207,15 @@ Rectangle {
                 Label
                 {
                     Layout.alignment: Qt.AlignTop
-                    text: qsTr("AI difficulty:") + "\n" + qsTr("Starting resources:") + "\n" + qsTr("Lock teams:") + "\n" + qsTr("Enable cheats:") + "\n" + qsTr("Starting location:") + "\n" + qsTr("Game speed:") + "\n" + qsTr("Resource sharing:") + "\n" + qsTr("Resource rate:")
+                    text: qsTr("AI difficulty:")
+                          + "\n" + qsTr("Starting resources:")
+                          + "\n" + qsTr("Lock teams:")
+                          + "\n" + qsTr("Enable cheats:")
+                          + "\n" + qsTr("Starting location:")
+                          + "\n" + qsTr("Game speed:")
+                          + "\n" + qsTr("Resource sharing:")
+                          + "\n" + qsTr("Resource rate:")
+                          + "\n" + qsTr("Disable Flyers:")
                     font.pixelSize: 11
                     color: DowStatsStyle.textColor
                 }

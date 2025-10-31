@@ -152,6 +152,7 @@ void ReplayManager::openPlayback(QString fileName)
     gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedGameSpeed().toLatin1());
     gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedResourceSharing().toLatin1());
     gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedResourceSpeed().toLatin1());
+    gameSettings += "\n" + tr(newRepReader.replay.settings.getResolvedNoFlayers().toLatin1());
 
     setGameSettings(gameSettings);
 

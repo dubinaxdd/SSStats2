@@ -608,6 +608,10 @@
         <translation>Начальные позиции:</translation>
     </message>
     <message>
+        <source>Disable Flyers:</source>
+        <translation>Без Авиации:</translation>
+    </message>
+    <message>
         <source>Game speed:</source>
         <translation>Скорость игры:</translation>
     </message>
