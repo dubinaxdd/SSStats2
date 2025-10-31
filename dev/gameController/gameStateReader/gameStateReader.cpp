@@ -1,4 +1,4 @@
-#define GAME_INFO_READER_TIMER_INTERVAL 1000
+#define GAME_INFO_READER_TIMER_INTERVAL 400
 #define RACES_READ_TIMER_INTERVAL 100
 
 #include <gameStateReader.h>
@@ -331,9 +331,6 @@ void GameStateReader::checkCurrentMode()
                     return;
 
                 currentMode = currentMode.left(nameLength).toLower();
-
-                //dowde
-
 
                 postfixIndex = line.indexOf(", ");
                 m_currentModeVersion = line.right(line.size() - postfixIndex - 2);

@@ -644,6 +644,7 @@ void StatsServerProcessor::receiveCurrentMod(QString modName)
     if (m_currentMod.contains("dowstats_balance_mod"))
         m_currentMod = "dowstats_balance_mod";
 
+    currentPlayerStatsRequestTimerTimeout();
     requestRankDiversion();
     m_rankDiversionTimer->start();
 }
