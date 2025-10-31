@@ -19,6 +19,7 @@ public:
     int GameSpeed;
     int ResShare;
     int ResRate;
+    int NoFlyers;
 
     QString getResolvedAIDiff() const;
     QString getResolvedResourceSpeed() const;

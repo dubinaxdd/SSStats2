@@ -39,14 +39,15 @@ public:
         GameTimer = 69421273
     };
 
-    bool hasTakeAndHold;
-    bool hasDestroyHQ;
-    bool hasControlArea;
-    bool hasEconomicVictory;
-    bool hasSuddenDeath;
-    bool hasAnnihilate;
-    bool hasAssassinate;
-    bool hasGameTimer;
+    bool hasTakeAndHold = false;
+    bool hasDestroyHQ = false;
+    bool hasControlArea = false;
+    bool hasEconomicVictory = false;
+    bool hasSuddenDeath = false;
+    bool hasAnnihilate = false;
+    bool hasAssassinate = false;
+    bool hasGameTimer = false;
+    bool hasNoFlyers = false;
 
     QString Hash;
 
@@ -86,6 +87,7 @@ public:
     uint TotalTicks;
     ulong ActionStart;
     uint ActionCount;
+    uint settingsCount;
 };
 
 }

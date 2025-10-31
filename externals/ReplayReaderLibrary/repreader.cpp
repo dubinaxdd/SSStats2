@@ -101,8 +101,9 @@ bool RepReader::ReadHeader()
 
     BinReader->skipRawData(16);
 
-    // "Размер слотов в игре. Всегда 8"
-    replay.Slots = BinReader->ReadInt32();
+    replay.Slots = 8;
+    //Количество ностроек в игре (в сс 8, в ДЕ 9)
+    replay.settingsCount = BinReader->ReadInt32();
 
     // сложность ИИ
     replay.settings.AIDiff = BinReader->ReadInt32();
@@ -122,14 +123,18 @@ bool RepReader::ReadHeader()
     // скорость игры
     replay.settings.GameSpeed = BinReader->ReadInt32();
     BinReader->skipRawData(4);
-
     // шаринг ресурсов
     replay.settings.ResShare = BinReader->ReadInt32();
-    /*qDebug() <<*/ BinReader->skipRawData(4);
-
+    BinReader->skipRawData(4);
     // скорость прироста ресурсов
     replay.settings.ResRate = BinReader->ReadInt32();
-    /*qDebug() <<*/ BinReader->skipRawData(4);
+    BinReader->skipRawData(4);
+    //Разрешить самолеты
+    if (replay.settingsCount > 8)
+    {
+        replay.settings.NoFlyers = BinReader->ReadInt32();
+        BinReader->skipRawData(4);
+    }
 
     BinReader->skipRawData(1);
     replay.BeginNAME = (int)BinReader->pos();
