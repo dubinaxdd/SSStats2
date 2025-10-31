@@ -20,6 +20,7 @@ public slots:
     void onQuitParty();
     void receiveCurrentMod(QString currentMode);
     void receiveCurrentModVersion(QString version);
+    void receiveCurrentGameVersion(QString version);
     void receiveCurrentWinConditions(QVector<WinCondition> winConditions);
     void receiveGameResults(QJsonObject gameResults, SendingReplayInfo lastGameResult);
     void setGameId(QString gameId);
@@ -56,6 +57,7 @@ private:
     QList<PlayerInfoFromDowServer> m_playersInfoFromDowServer;
     QString m_currentMode;
     QString m_currentModVerion;
+    QString m_currentGameVersion;
     QString m_testStatsPath;
     QString m_lastGameId;
     bool m_gameWillBePlayedInOtherSession = true;

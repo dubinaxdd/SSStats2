@@ -292,6 +292,7 @@ void GameStateReader::checkGameInitialize()
         parseGmaeSettings();
         readTestStatsTemp();
         emit gameInitialized();
+        checkCurrentGameVersion();
         checkCurrentMode();
         m_dataChecksummReaded = false;
     }  
@@ -331,6 +332,8 @@ void GameStateReader::checkCurrentMode()
 
                 currentMode = currentMode.left(nameLength).toLower();
 
+                //dowde
+
 
                 postfixIndex = line.indexOf(", ");
                 m_currentModeVersion = line.right(line.size() - postfixIndex - 2);
@@ -345,6 +348,39 @@ void GameStateReader::checkCurrentMode()
                 emit sendCurrentMod(currentMode);
                 emit sendCurrentModVersion(m_currentModeVersion);
 
+                break;
+            }
+
+            counter--;
+        }
+    }
+}
+
+void GameStateReader::checkCurrentGameVersion()
+{
+    QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
+
+    if(file.open(QIODevice::ReadOnly))
+    {
+        QTextStream textStream(&file);
+        QStringList fileLines = textStream.readAll().split("\r");
+
+        int counter = fileLines.size();
+
+        while (counter!=0)
+        {
+            QString line = fileLines.at(counter-1);
+
+            ///Дергаем текущий мод
+            if(line.contains("GAME -- Warhammer,"))
+            {
+                int prefixIndex = line.indexOf("GAME -- Warhammer,");
+                int endIndex = line.indexOf(", Build");
+
+                QString gameVersion = line.mid(prefixIndex + 19 , endIndex - (prefixIndex + 19));
+                qInfo(logInfo()) << "Game version:" << gameVersion;
+
+                emit sendCurrentGameVersion(gameVersion);
                 break;
             }
 

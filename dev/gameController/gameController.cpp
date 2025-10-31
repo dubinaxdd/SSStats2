@@ -64,6 +64,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_lobbyEventReader, &LobbyEventReader::receiveCurrentMissionState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_replayDataCollector, &ReplayDataCollector::receiveCurrentMissionState,   Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentGameVersion,   m_replayDataCollector, &ReplayDataCollector::receiveCurrentGameVersion, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentModVersion,   m_dowServerProcessor, &DowServerProcessor::setCurrentModVersion, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentModVersion,          m_replayDataCollector, &ReplayDataCollector::receiveCurrentModVersion, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMod,          m_replayDataCollector, &ReplayDataCollector::receiveCurrentMod, Qt::QueuedConnection);

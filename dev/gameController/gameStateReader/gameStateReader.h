@@ -38,6 +38,7 @@ signals:
     void sendPlayersTestStats(QVector<PlayerStats> testStats);
     void sendCurrentMod(QString currentMod);
     void sendCurrentModVersion(QString modVersion);
+    void sendCurrentGameVersion(QString gameVersion);
     void localPlayerDroppedToObserver();
     void sendCurrentWinConditions(QVector<WinCondition>);
     void sendRankedState(bool gameRankedMode);
@@ -46,6 +47,7 @@ signals:
 
 private:
     void checkCurrentMode();
+    void checkCurrentGameVersion();
     void readTestStatsTemp();
     void parseGmaeSettings();
     void readCheckSumm(QString line);

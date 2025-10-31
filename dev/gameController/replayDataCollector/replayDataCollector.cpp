@@ -61,7 +61,7 @@ void ReplayDataCollector::readReplayData()
     m_lastReplayInfo.replayPath = getDowstatsTempReplayPath();
     m_lastReplayInfo.gameId = m_lastGameId;
     m_lastReplayInfo.mod = m_currentMode;
-    m_lastReplayInfo.modVersion = m_currentModVerion;
+    m_lastReplayInfo.modVersion = "Game version: " + m_currentGameVersion + "; Mod version: " + m_currentModVerion;
     m_lastReplayInfo.isRnked = m_rankedState;
 
 
@@ -578,6 +578,11 @@ void ReplayDataCollector::receiveCurrentMod(QString currentMode)
 void ReplayDataCollector::receiveCurrentModVersion(QString version)
 {
     m_currentModVerion = version;
+}
+
+void ReplayDataCollector::receiveCurrentGameVersion(QString version)
+{
+    m_currentGameVersion = version;
 }
 
 void ReplayDataCollector::receiveCurrentWinConditions(QVector<WinCondition> winConditions)
