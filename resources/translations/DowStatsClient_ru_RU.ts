@@ -437,7 +437,7 @@
 <context>
     <name>DowServerProcessor</name>
     <message>
-        <source>The game results are not finded.</source>
+        <source>Game results are not found.</source>
         <translation>Результаты игры не найдены</translation>
     </message>
     <message>

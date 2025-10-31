@@ -561,7 +561,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
     {
         m_repeatGameResultRequestTimer.stop();
         m_repeatRequestGameResultsCount = 0;
-        emit sendNotification(tr("The game results are not finded."), true);
+        emit sendNotification(tr("Game results are not found."), true);
          QFile::remove(lastGameResult.replayPath);
     }
     else
