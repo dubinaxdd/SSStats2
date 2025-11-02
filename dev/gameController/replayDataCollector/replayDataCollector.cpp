@@ -59,7 +59,10 @@ void ReplayDataCollector::readReplayData()
     m_lastReplayInfo = SendingReplayInfo();
     m_lastReplayInfo.apm = m_lastAverrageApm;
     m_lastReplayInfo.replayPath = getDowstatsTempReplayPath();
-    m_lastReplayInfo.gameId = m_lastGameId;
+
+    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        m_lastReplayInfo.gameId = m_lastGameId;
+
     m_lastReplayInfo.mod = m_currentMode;
     m_lastReplayInfo.modVersion = "Game version: " + m_currentGameVersion + "; Mod version: " + m_currentModVerion;
     m_lastReplayInfo.isRnked = m_rankedState;
@@ -882,7 +885,10 @@ void ReplayDataCollector::determinateRankedState()
 
 QString ReplayDataCollector::getDowstatsTempReplayPath()
 {
-    return QCoreApplication::applicationDirPath() + "\\dowstatstemp.rec";
+    if(m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        return QCoreApplication::applicationDirPath() + "\\dowstatstemp.rec";
+    else
+        return m_currentGame->gamePath + "\\Playback\\temp.rec";
 }
 
 void ReplayDataCollector::setRankedState(bool newRankedState)
@@ -908,5 +914,7 @@ void ReplayDataCollector::setGameId(QString gameId)
 void ReplayDataCollector::setCurrentGame(GamePath *newCurrentGame)
 {
     m_currentGame = newCurrentGame;
-    QFile::remove(getDowstatsTempReplayPath());
+
+    if(m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        QFile::remove(getDowstatsTempReplayPath());
 }
