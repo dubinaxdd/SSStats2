@@ -71,7 +71,10 @@ void ReplayDataCollector::readReplayData()
     if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         readDefinitiveReplayData();
     else
+    {
+        m_lastReplayInfo.isAutomatch = m_automatchState;
         readSoulstormReplayData(m_lastReplayInfo);
+    }
 }
 
 Race ReplayDataCollector::getRaceByNumber(int number)
@@ -899,6 +902,11 @@ void ReplayDataCollector::setRankedState(bool newRankedState)
 void ReplayDataCollector::receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState)
 {
     m_plyersRankedState = plyersRankedState;
+}
+
+void ReplayDataCollector::onAutomatchStateChanged(bool automatchState)
+{
+    m_automatchState = automatchState;
 }
 
 void ReplayDataCollector::receiveGameResults(QJsonObject gameResults, SendingReplayInfo lastGameResult)

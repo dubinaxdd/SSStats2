@@ -26,6 +26,7 @@ public slots:
     void setGameId(QString gameId);
     void setRankedState(bool newRankedState);
     void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
+    void onAutomatchStateChanged(bool automatchState);
 
 signals:
     void sendReplayToServer(SendingReplayInfo replayInfo);
@@ -69,6 +70,7 @@ private:
     SendingReplayInfo m_lastReplayInfo;
 
     QVector<PlyersRankedState> m_plyersRankedState;
+    bool m_automatchState = false;
 };
 
 #endif // REPLAYDATACOLLECTOR_H
