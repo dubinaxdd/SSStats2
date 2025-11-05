@@ -178,6 +178,9 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData, bo
 
 void DowServerProcessor::requestPersonalStats(QList<PlayerInfoFromDowServer> playersInfo)
 {
+    if (m_currentMod != "dowde")
+        return;
+
     QString idListString = m_profileID;
 
     for (auto& item : playersInfo)
@@ -379,6 +382,14 @@ void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
                     emit sendCurrentPlayerId(m_profileID);
                     qInfo(logInfo()) << "statsGroupID=" << m_statGroupId;
 
+                    PlayerInfoFromDowServer currentPlayerInfo;
+                    currentPlayerInfo.isCurrentPlayer = true;
+                    currentPlayerInfo.playerID = m_profileID;
+                    currentPlayerInfo.steamId = m_steamID;
+
+
+                    requestPersonalStats({currentPlayerInfo});
+
                     if (m_needUpdateLatter)
                     {
                         requestPartysData();
@@ -540,8 +551,8 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
         emit sendGameResults(m_gameResult, lastGameResult);
     }
 
-    if (m_currentMod == "dowde")
-        requestPersonalStats(playersInfo);
+
+    requestPersonalStats(playersInfo);
 }
 
 void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult)

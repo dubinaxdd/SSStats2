@@ -416,7 +416,7 @@ Rectangle {
                     Label {
                         id: rating_1x1Label
                         visible: root.relicStatsAvailable && root.rating_1x1 > 0
-                        text: "Rating 1x1: " + root.rating_1x1 + " (" + root.race_1x1 + ")"
+                        text: qsTr("Rating 1x1: ") + root.rating_1x1 + " (" + root.race_1x1 + ")"
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
@@ -426,7 +426,7 @@ Rectangle {
                     Label {
                         id: rating_2x2Label
                         visible: root.relicStatsAvailable && root.rating_2x2 > 0
-                        text: "Rating 2x2: " + root.rating_2x2 + " (" + root.race_2x2 + ")"
+                        text: qsTr("Rating 2x2: ") + root.rating_2x2 + " (" + root.race_2x2 + ")"
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true
@@ -436,7 +436,7 @@ Rectangle {
                     Label {
                         id: rating_3x3Label
                         visible: root.relicStatsAvailable && root.rating_3x3 > 0
-                        text: "Rating 3x3: " + root.rating_3x3 + " (" + root.race_3x3 + ")"
+                        text: qsTr("Rating 3x3: ") + root.rating_3x3 + " (" + root.race_3x3 + ")"
                         font.pixelSize: 11 * sizeModifer
                         Layout.fillHeight: true
                         Layout.fillWidth: true

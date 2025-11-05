@@ -533,6 +533,18 @@
         <source>cheater</source>
         <translation>читер</translation>
     </message>
+    <message>
+        <source>Rating 1x1: </source>
+        <translation>Рейтинг 1x1: </translation>
+    </message>
+    <message>
+        <source>Rating 2x2: </source>
+        <translation>Рейтинг 2x2: </translation>
+    </message>
+    <message>
+        <source>Rating 3x3: </source>
+        <translation>Рейтинг 3x3: </translation>
+    </message>
 </context>
 <context>
     <name>PopupDialog</name>
