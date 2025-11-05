@@ -72,6 +72,12 @@ bool StatisticPanelItem::relicStatsAvailable() const
     return m_relicStatsAvailable;
 }
 
+void StatisticPanelItem::setRelicStatsAvailable(bool newRelicStatsAvailable)
+{
+    m_relicStatsAvailable = newRelicStatsAvailable;
+    emit playersStatsChanged();
+}
+
 ServerPlayerStats StatisticPanelItem::playersStats()
 {
     return m_playersStats;

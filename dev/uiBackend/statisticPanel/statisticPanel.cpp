@@ -14,6 +14,11 @@ StatisticPanel::StatisticPanel(Core *core, ImageProvider *imageProvider, QObject
 
     m_curentPlayerStatsItem = new StatisticPanelItem(this);
     emit playersItemsInitialized();
+
+    QObject::connect(m_corePtr->gameController()->gameStateReader(), &GameStateReader::sendCurrentMod, this, [=](QString currentMod){
+        if (currentMod != "dowde")
+            m_curentPlayerStatsItem->setRelicStatsAvailable(false);
+    }, Qt::QueuedConnection);
 }
 
 QVariant StatisticPanel::data(const QModelIndex &index, int role) const

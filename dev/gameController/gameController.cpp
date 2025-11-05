@@ -99,9 +99,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::automatchModeChanged, m_replayDataCollector, &ReplayDataCollector::onAutomatchStateChanged, Qt::QueuedConnection);
-
-
-
+    QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMod, m_dowServerProcessor, &DowServerProcessor::receiveCurrentMod, Qt::QueuedConnection);
 
     m_lobbyEventReader->checkPatyState();
 

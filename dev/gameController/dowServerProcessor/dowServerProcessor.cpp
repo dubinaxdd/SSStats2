@@ -247,6 +247,11 @@ void DowServerProcessor::requestGameResult(SendingReplayInfo lastGameResult)
     });
 }
 
+void DowServerProcessor::receiveCurrentMod(QString modName)
+{
+    m_currentMod = modName;
+}
+
 void DowServerProcessor::onPlayerDisconnected()
 {
     m_requestDataAftrePlayerDisconectTimer->start();
@@ -535,7 +540,8 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
         emit sendGameResults(m_gameResult, lastGameResult);
     }
 
-    requestPersonalStats(playersInfo);
+    if (m_currentMod == "dowde")
+        requestPersonalStats(playersInfo);
 }
 
 void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult)

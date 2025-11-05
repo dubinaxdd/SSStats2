@@ -46,6 +46,8 @@ public slots:
     void onAutomatchPlayersListChanged(QStringList playersList);
     void requestGameResult(SendingReplayInfo lastGameResult);
 
+    void receiveCurrentMod(QString modName);
+
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
@@ -79,6 +81,8 @@ private:
     QString m_statGroupId = "";
     QString m_modName = "winter+assault";
     QString m_modVersion = "1.0";
+
+    QString m_currentMod = "";
 
     bool m_needUpdateLatter = false;
     bool m_neeedRequestAdvertisements = false;

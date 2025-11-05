@@ -96,6 +96,8 @@ public:
 
     bool relicStatsAvailable() const;
 
+    void setRelicStatsAvailable(bool newRelicStatsAvailable);
+
 private:
     ServerPlayerStats m_playersStats;
     RelicStats m_relicStats;
