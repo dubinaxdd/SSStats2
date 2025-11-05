@@ -145,17 +145,17 @@ int StatisticPanelItem::getRrating_3x3() const
 
 QString StatisticPanelItem::getRace_1x1() const
 {
-    return getRaceFromNumber(m_relicStats.race_1x1);
+    return getRaceFromNumber(m_relicStats.race_1x1 + 1);
 }
 
 QString StatisticPanelItem::getRace_2x2() const
 {
-    return getRaceFromNumber(m_relicStats.race_2x2);
+    return getRaceFromNumber(m_relicStats.race_2x2 + 1);
 }
 
 QString StatisticPanelItem::getRace_3x3() const
 {
-    return getRaceFromNumber(m_relicStats.race_3x3);
+    return getRaceFromNumber(m_relicStats.race_3x3 + 1);
 }
 
 void StatisticPanelItem::setPlayerSteamId(QString steamId)

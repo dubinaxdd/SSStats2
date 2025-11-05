@@ -203,15 +203,15 @@ Race DowServerProcessor::getRaceById(int gaceId)
 {
     switch(gaceId)
     {
-        case 0: return Race::ChaosMarines;
-        case 1: return Race::DarkEldar;
-        case 2: return Race::Eldar;
-        case 3: return Race::ImperialGuard;
-        case 4: return Race::Necrons;
-        case 5: return Race::Orks;
-        case 6: return Race::SistersOfBattle;
-        case 7: return Race::SpaceMarines;
-        case 8: return Race::TauEmpire;
+        case 1: return Race::ChaosMarines;
+        case 2: return Race::DarkEldar;
+        case 3: return Race::Eldar;
+        case 4: return Race::ImperialGuard;
+        case 5: return Race::Necrons;
+        case 6: return Race::Orks;
+        case 7: return Race::SistersOfBattle;
+        case 8: return Race::SpaceMarines;
+        case 9: return Race::TauEmpire;
         default: return Race::SpaceMarines;
     }
 }
@@ -665,7 +665,7 @@ void DowServerProcessor::recievePersonalStats(QNetworkReply *reply)
             int leaderboardId = leaderboardStatsItem.toObject().value("leaderboard_id").toInt();
             int rating = leaderboardStatsItem.toObject().value("rating").toInt();
 
-            if (0 <= leaderboardId && leaderboardId <= 8)
+            if (1 <= leaderboardId && leaderboardId <= 9)
             {
                 if (rating > plyerStats.rating_1x1)
                 {
@@ -673,7 +673,7 @@ void DowServerProcessor::recievePersonalStats(QNetworkReply *reply)
                     plyerStats.race_1x1 = getRaceById(leaderboardId);
                 }
             }
-            else if (9 <= leaderboardId && leaderboardId <= 17)
+            else if (10 <= leaderboardId && leaderboardId <= 18)
             {
                 if (rating > plyerStats.rating_2x2)
                 {
@@ -681,7 +681,7 @@ void DowServerProcessor::recievePersonalStats(QNetworkReply *reply)
                     plyerStats.race_2x2 = getRaceById(leaderboardId - 9);
                 }
             }
-            else if (18 <= leaderboardId && leaderboardId <= 26)
+            else if (19 <= leaderboardId && leaderboardId <= 27)
             {
                 if (rating > plyerStats.rating_3x3)
                 {
