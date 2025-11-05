@@ -514,8 +514,8 @@
         <translation>Кастомный MMR: </translation>
     </message>
     <message>
-        <source>Games played: </source>
-        <translation>Игр сыграно: </translation>
+        <source>Games (Winrate): </source>
+        <translation>Игры (Победы): </translation>
     </message>
     <message>
         <source>Race: </source>

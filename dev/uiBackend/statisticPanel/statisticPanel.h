@@ -38,7 +38,19 @@ public:
         IsRanked,
         BanType,
         PlayerRank,
-        PlayerVisible
+        PlayerVisible,
+
+        RelicStatsAvailable,
+        RelicCountry,
+        RelicGamesCount,
+        RelicWinCount,
+        Rating_1x1,
+        Rating_2x2,
+        Rating_3x3,
+        Race_1x1,
+        Race_2x2,
+        Race_3x3
+
     };
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
@@ -61,6 +73,7 @@ public slots:
     void receiveServerPlayerStats(ServerPlayerStats serverPlayerStats);
     void receivePlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfo);
     void receivePlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
+    void receiveRelicStats(QVector<RelicStats> relicStatsArray);
 
     void onQuitParty();
 

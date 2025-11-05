@@ -28,12 +28,24 @@ class StatisticPanelItem : public QObject
     Q_PROPERTY(bool isRanked READ getIsRanked WRITE setIsRanked NOTIFY isRankedChanged)
     Q_PROPERTY(bool isOnline READ getIsOnline WRITE setIsOnline NOTIFY isOnlineChanged)
 
+    Q_PROPERTY(bool relicStatsAvailable READ relicStatsAvailable NOTIFY playersStatsChanged)
+    Q_PROPERTY(QString  relicCountry   READ getRelicCountry NOTIFY playersStatsChanged)
+    Q_PROPERTY(int  relicGamesCount   READ getRelicGamesCount NOTIFY playersStatsChanged)
+    Q_PROPERTY(int  relicWinCount   READ getRelicWinCount NOTIFY playersStatsChanged)
+    Q_PROPERTY(int  rating_1x1   READ getRating_1x1 NOTIFY playersStatsChanged)
+    Q_PROPERTY(int  rating_2x2   READ getRating_2x2 NOTIFY playersStatsChanged)
+    Q_PROPERTY(int  rating_3x3   READ getRrating_3x3 NOTIFY playersStatsChanged)
+    Q_PROPERTY(QString  race_1x1   READ getRace_1x1 NOTIFY playersStatsChanged)
+    Q_PROPERTY(QString  race_2x2   READ getRace_2x2 NOTIFY playersStatsChanged)
+    Q_PROPERTY(QString  race_3x3   READ getRace_3x3 NOTIFY playersStatsChanged)
+
 public:
     explicit StatisticPanelItem(QObject *parent = nullptr);
     void setPlayersStats(ServerPlayerStats newPlayersStats);
     void setVisible(bool newVisible);
     void setPlayerSteamId(QString steamId);
     void setPlayerName(QString name);
+    void setRelicStats(RelicStats relicStats);
 
     ServerPlayerStats playersStats();
 
@@ -61,6 +73,16 @@ public:
     int getCalibrateGamesLeft() const;
     BanType::BanTypeEnum banType() const;
 
+    QString getRelicCountry() const;
+    int getRelicGamesCount() const;
+    int getRelicWinCount() const;
+    int getRating_1x1() const;
+    int getRating_2x2() const;
+    int getRrating_3x3() const;
+    QString getRace_1x1() const;
+    QString getRace_2x2() const;
+    QString getRace_3x3() const;
+
     QString getRaceFromNumber(int raceNumber) const;
 
     const QString &avatarId() const;
@@ -72,8 +94,12 @@ public:
     bool getIsOnline() const;
     void setIsOnline(bool newIsOnline);
 
+    bool relicStatsAvailable() const;
+
 private:
     ServerPlayerStats m_playersStats;
+    RelicStats m_relicStats;
+    bool m_relicStatsAvailable = false;
     QString m_avatarId = "";
     bool m_visible = false;
     bool isRanked = true;

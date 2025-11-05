@@ -35,11 +35,23 @@ Rectangle {
 
     property var textColor: root.hoveredState ? DowStatsStyle.textColor : (playerIsBanned ? "#26282a" : DowStatsStyle.textColor)
 
-    Layout.maximumWidth: 280 * sizeModifer
-    Layout.maximumHeight: 130 * sizeModifer
-    Layout.minimumWidth: 280 * sizeModifer
-    Layout.minimumHeight: 130 * sizeModifer
-    height: 130 * sizeModifer
+    property bool relicStatsAvailable: false
+    property string relicCountry: ""
+    property int relicGamesCount: 0
+    property int relicWinCount: 0
+    property int rating_1x1: 0
+    property int rating_2x2: 0
+    property int rating_3x3: 0
+    property string race_1x1: ""
+    property string race_2x2: ""
+    property string race_3x3: ""
+
+    height: contentColumnLayout.height
+    width: 280 * sizeModifer
+
+    Layout.preferredWidth: 280 * sizeModifer
+    Layout.preferredHeight: contentColumnLayout.height
+
     Layout.alignment: Qt.AlignRight | Qt.AlignTop
     Layout.fillHeight: false
     Layout.fillWidth: true
@@ -87,282 +99,380 @@ Rectangle {
         return;
     }
 
-    RowLayout {
-        id: rowLayout
-        anchors.fill: parent
+    ColumnLayout
+    {
+        id: contentColumnLayout
+        //anchors.fill: parent
         spacing: 5 * sizeModifer
 
-        ColumnLayout {
-            id: columnLayout
+        anchors.left: parent.left
+        anchors.right: parent.right
 
-            Layout.topMargin: 10 * sizeModifer
-            Layout.bottomMargin: 10 * sizeModifer
-            spacing: 5 * sizeModifer
+        RowLayout {
+            id: rowLayout
+            Layout.fillWidth: true
+            spacing: 0
 
-            Rectangle{
-                Layout.fillHeight: true
-                visible: root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan
-            }
+            ColumnLayout {
+                id: avatarColumnLayout
 
-            Rectangle {
-                id: rectangle
-
-                color: "#00000000"
-                radius: 10 * sizeModifer
-                Layout.topMargin: 0
-
-                Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
-                Layout.maximumWidth: 80 * sizeModifer
-                Layout.preferredHeight: 60 * sizeModifer
-                Layout.preferredWidth: 80 * sizeModifer
-                Layout.minimumHeight: 60 * sizeModifer
-                Layout.minimumWidth: 80 * sizeModifer
+                Layout.topMargin: 10 * sizeModifer
+                Layout.bottomMargin: 10 * sizeModifer
+                spacing: 5 * sizeModifer
 
                 Rectangle {
-                    id: avatarRectangle
+                    id: rectangle
 
-                    width: 60 * sizeModifer
-                    height:60 * sizeModifer
+                    color: "#00000000"
                     radius: 10 * sizeModifer
+                    Layout.topMargin: 0
 
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                    Layout.maximumWidth: 80 * sizeModifer
+                    Layout.preferredHeight: 60 * sizeModifer
+                    Layout.preferredWidth: 80 * sizeModifer
+                    Layout.minimumHeight: 60 * sizeModifer
+                    Layout.minimumWidth: 80 * sizeModifer
 
-                    Image {
-                        id: avatarImage
-                        cache: false
+                    Rectangle {
+                        id: avatarRectangle
+
                         width: 60 * sizeModifer
-                        height: 60 * sizeModifer
+                        height:60 * sizeModifer
+                        radius: 10 * sizeModifer
+
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
-                        source: root.avatarSource
-                        visible:false
-                        fillMode: Image.PreserveAspectFit
-                    }
 
-                     Rectangle {
-                         id: maskRectangle
-
-                         anchors.fill: parent
-                         radius: 10 * sizeModifer
-                         visible: false
-
-                     }
-
-                     OpacityMask {
-                         id: opacityMask
-                         anchors.fill: avatarImage
-                         source: avatarImage
-                         maskSource: maskRectangle
-                     }
-                }
-            }
-
-            Label {
-                id: statusLabel
-                visible: root.banType === BanType.Cheater
-                text: qsTr("[CHEATER]")
-                font.pixelSize: 15 * sizeModifer
-                Layout.alignment: Qt.AlignHCenter
-                color: root.textColor
-            }
-
-            Label {
-                id: statusLabel2
-                visible: root.banType === BanType.Banned || root.banType === BanType.SoftwareUseBan
-                text: qsTr("[BANNED]")
-                font.pixelSize: 15 * sizeModifer
-                Layout.alignment: Qt.AlignHCenter
-                color: root.textColor
-            }
-
-            Rectangle{
-                Layout.fillHeight: true
-            }
-
-            RowLayout
-            {
-                Layout.leftMargin: 10 * sizeModifer
-                visible: !(root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan)
-
-                Rectangle{
-                    radius:5 * sizeModifer
-
-                    Layout.preferredHeight: 10 * sizeModifer
-                    Layout.preferredWidth: 10 * sizeModifer
-
-                    color:  root.isOnline ? "#00ff99" : "#ffa9a9"
-                }
-
-                Label{
-                    text: root.isOnline ? qsTr("Online") : qsTr("Offline")
-                    font.pixelSize: 11 * sizeModifer
-                    color: root.textColor
-                }
-            }
-
-
-            RowLayout
-            {
-                Layout.leftMargin: 10 * sizeModifer
-
-                visible: !(root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan)
-
-                Rectangle{
-                    radius:5 * sizeModifer
-
-                    Layout.preferredHeight: 10 * sizeModifer
-                    Layout.preferredWidth: 10 * sizeModifer
-
-                    color:  root.isRanked ? "#00ff99" : "#ffa9a9"
-                }
-
-                Label{
-                    text: root.isRanked ? qsTr("Ranked") : qsTr("Unranked")
-                    font.pixelSize: 11 * sizeModifer
-                    color: root.textColor
-                }
-            }
-        }
-
-        ColumnLayout {
-            id: columnLayout4
-            spacing: 3 * sizeModifer
-            Layout.margins: 5 * sizeModifer
-
-            Layout.leftMargin: 0
-            Layout.bottomMargin: 10 * sizeModifer
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-
-
-            Label {
-                id: label1
-                text: root.playerName
-                Layout.maximumWidth: 180 * sizeModifer
-                color: root.textColor
-
-                font.pixelSize: 20 * sizeModifer
-
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
-
-            RowLayout
-            {
-
-                ColumnLayout
-                {
-
-                    spacing: 0
-
-
-                    Label {
-                        id: label
-                        text: qsTr("Solo MMR: ") + root.playerMmr1v1
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        font.pixelSize: 11 * sizeModifer
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: label2
-                        text: qsTr("Team MMR: ") + root.playerMmr
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: customGameslabel
-                        visible: root.customGamesMmr != 0
-                        text: qsTr("Custom games MMR: ") + root.customGamesMmr
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: label4
-                        text: qsTr("Games played: ") + root.playerGamesCount
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: label3
-                        text: qsTr("Race: ") + root.playerRace
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        font.pixelSize: 11 * sizeModifer
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: label5
-                        text: qsTr("Wins rate: ") + root.playerWinRate + "%"
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: label6
-                        text: "APM: " + root.playerApm
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }
-                }
-
-                ColumnLayout
-                {
-                    spacing:0
-                    Layout.rightMargin: 5 * sizeModifer
-
-                    Rectangle
-                    {
-                        Layout.maximumWidth: 50 * sizeModifer
-                        Layout.preferredHeight: 50 * sizeModifer
-                        Layout.preferredWidth: 50 * sizeModifer
-                        Layout.minimumHeight: 50 * sizeModifer
-                        Layout.minimumWidth: 50 * sizeModifer
-                        Layout.margins: 0
-                        color: "#00000000"
-
-                        Image
-                        {
-                            id: rankImage
-
+                        Image {
+                            id: avatarImage
                             cache: false
-                            width: 50 * sizeModifer
-                            height: 50 * sizeModifer
+                            width: 60 * sizeModifer
+                            height: 60 * sizeModifer
                             anchors.verticalCenter: parent.verticalCenter
                             anchors.horizontalCenter: parent.horizontalCenter
+                            source: root.avatarSource
+                            visible:false
                             fillMode: Image.PreserveAspectFit
+                        }
 
-                            source: "qrc:/images/resources/images/Rank2.svg"
-                            sourceSize.width: 60 * sizeModifer
-                            sourceSize.height: 60 * sizeModifer
+                         Rectangle {
+                             id: maskRectangle
+
+                             anchors.fill: parent
+                             radius: 10 * sizeModifer
+                             visible: false
+
+                         }
+
+                         OpacityMask {
+                             id: opacityMask
+                             anchors.fill: avatarImage
+                             source: avatarImage
+                             maskSource: maskRectangle
+                         }
+                    }
+                }
+
+                Label {
+                    id: statusLabel
+                    visible: root.banType === BanType.Cheater
+                    text: qsTr("[CHEATER]")
+                    font.pixelSize: 15 * sizeModifer
+                    Layout.alignment: Qt.AlignHCenter
+                    color: root.textColor
+                }
+
+                Label {
+                    id: statusLabel2
+                    visible: root.banType === BanType.Banned || root.banType === BanType.SoftwareUseBan
+                    text: qsTr("[BANNED]")
+                    font.pixelSize: 15 * sizeModifer
+                    Layout.alignment: Qt.AlignHCenter
+                    color: root.textColor
+                }
+
+                Item{
+                    visible: !root.relicStatsAvailable || root.banType === BanType.Banned || root.banType === BanType.SoftwareUseBan || root.banType === BanType.Cheater
+                    Layout.fillHeight: true
+                }
+
+                RowLayout
+                {
+                    Layout.leftMargin: 10 * sizeModifer
+                    visible: !(root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan)
+
+                    Rectangle{
+                        radius:5 * sizeModifer
+
+                        Layout.preferredHeight: 10 * sizeModifer
+                        Layout.preferredWidth: 10 * sizeModifer
+
+                        color:  root.isOnline ? "#00ff99" : "#ffa9a9"
+                    }
+
+                    Label{
+                        text: root.isOnline ? qsTr("Online") : qsTr("Offline")
+                        font.pixelSize: 11 * sizeModifer
+                        color: root.textColor
+                    }
+                }
+
+                RowLayout
+                {
+                    Layout.leftMargin: 10 * sizeModifer
+
+                    visible: !(root.banType === BanType.Banned || root.banType === BanType.Cheater || root.banType === BanType.SoftwareUseBan)
+
+                    Rectangle{
+                        radius:5 * sizeModifer
+
+                        Layout.preferredHeight: 10 * sizeModifer
+                        Layout.preferredWidth: 10 * sizeModifer
+
+                        color:  root.isRanked ? "#00ff99" : "#ffa9a9"
+                    }
+
+                    Label{
+                        text: root.isRanked ? qsTr("Ranked") : qsTr("Unranked")
+                        font.pixelSize: 11 * sizeModifer
+                        color: root.textColor
+                    }
+                }
+
+                Item{
+                    visible: root.relicStatsAvailable
+                    Layout.fillHeight: true
+                }
+            }
+
+            ColumnLayout {
+                id: statisticColumnLayout
+                spacing: 3 * sizeModifer
+                Layout.leftMargin: 0
+                Layout.rightMargin: 5 * sizeModifer
+                Layout.topMargin: 5 * sizeModifer
+                Layout.bottomMargin: 10 * sizeModifer
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+
+                Label {
+                    id: label1
+                    text: root.playerName
+                    Layout.maximumWidth: 180 * sizeModifer
+                    color: root.textColor
+
+                    font.pixelSize: 20 * sizeModifer
+
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                }
+
+                RowLayout
+                {
+                    Layout.fillWidth: true
+
+                    ColumnLayout
+                    {
+                        spacing: 0
+                        Layout.fillWidth: true
+
+                        Label {
+                            id: label
+                            text: qsTr("Solo MMR: ") + root.playerMmr1v1
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            font.pixelSize: 11 * sizeModifer
+                            color: root.textColor
+                        }
+
+                        Label {
+                            id: label2
+                            text: qsTr("Team MMR: ") + root.playerMmr
+                            font.pixelSize: 11 * sizeModifer
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            color: root.textColor
+                        }
+
+                        Label {
+                            id: customGameslabel
+                            visible: root.customGamesMmr != 0
+                            text: qsTr("Custom games MMR: ") + root.customGamesMmr
+                            font.pixelSize: 11 * sizeModifer
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            color: root.textColor
+                        }
+
+                        Label {
+                            id: label4
+                            text: qsTr("Games (Winrate): ") + root.playerGamesCount + " (" + root.playerWinRate + "%)"
+                            font.pixelSize: 11 * sizeModifer
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            color: root.textColor
+                        }
+
+                        Label {
+                            id: label3
+                            visible: root.playerRace !== ""
+                            text: qsTr("Race: ") + root.playerRace
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            font.pixelSize: 11 * sizeModifer
+                            color: root.textColor
+                        }
+
+                        /*Label {
+                            id: label5
+                            text: qsTr("Wins rate: ") + root.playerWinRate + "%"
+                            font.pixelSize: 11 * sizeModifer
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            color: root.textColor
+                        }*/
+
+                        Label {
+                            id: label6
+                            visible: !root.relicStatsAvailable
+                            text: "APM: " + root.playerApm
+                            font.pixelSize: 11 * sizeModifer
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            color: root.textColor
                         }
                     }
 
-                    Label {
-                        visible: root.banType === BanType.FormerCheater
-                        text: qsTr("Former") + "\n" + qsTr("cheater")
-                        font.pixelSize: 10 * sizeModifer
-                        Layout.alignment: Qt.AlignHCenter
-                        color: root.textColor
-                        horizontalAlignment: Text.AlignHCenter
-                        verticalAlignment: Text.AlignVCenter
+                    ColumnLayout
+                    {
+                        Layout.preferredWidth: 50 * sizeModifer
+                        spacing:0
+                        Layout.rightMargin: 5 * sizeModifer
+
+                        Rectangle
+                        {
+                            Layout.maximumWidth: 50 * sizeModifer
+                            Layout.preferredHeight: 50 * sizeModifer
+                            Layout.preferredWidth: 50 * sizeModifer
+                            Layout.minimumHeight: 50 * sizeModifer
+                            Layout.minimumWidth: 50 * sizeModifer
+                            Layout.margins: 0
+                            color: "#00000000"
+
+                            Image
+                            {
+                                id: rankImage
+
+                                cache: false
+                                width: 50 * sizeModifer
+                                height: 50 * sizeModifer
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.horizontalCenter: parent.horizontalCenter
+                                fillMode: Image.PreserveAspectFit
+
+                                source: "qrc:/images/resources/images/Rank2.svg"
+                                sourceSize.width: 60 * sizeModifer
+                                sourceSize.height: 60 * sizeModifer
+                            }
+                        }
+
+                        Label {
+                            visible: root.banType === BanType.FormerCheater
+                            text: qsTr("Former") + "\n" + qsTr("cheater")
+                            font.pixelSize: 10 * sizeModifer
+                            Layout.alignment: Qt.AlignHCenter
+                            color: root.textColor
+                            horizontalAlignment: Text.AlignHCenter
+                            verticalAlignment: Text.AlignVCenter
+                        }
                     }
+                }
+
+                Item{
+                    Layout.fillHeight: true
+                    visible: !root.relicStatsAvailable
+                }
+
+                ColumnLayout
+                {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    visible: root.relicStatsAvailable
+                    spacing: 1 * sizeModifer
+
+                    Label {
+                        id: relicLadderLabel
+                        visible: root.relicStatsAvailable
+                        text: "Relic Ladder"
+                        font.pixelSize: 13 * sizeModifer
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        Layout.topMargin: 5 * sizeModifer
+                        color: root.textColor
+                    }
+
+                    Label {
+                        id: rating_1x1Label
+                        visible: root.relicStatsAvailable && root.rating_1x1 > 0
+                        text: "Rating 1x1: " + root.rating_1x1 + " (" + root.race_1x1 + ")"
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        color: root.textColor
+                    }
+
+                    Label {
+                        id: rating_2x2Label
+                        visible: root.relicStatsAvailable && root.rating_2x2 > 0
+                        text: "Rating 2x2: " + root.rating_2x2 + " (" + root.race_2x2 + ")"
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        color: root.textColor
+                    }
+
+                    Label {
+                        id: rating_3x3Label
+                        visible: root.relicStatsAvailable && root.rating_3x3 > 0
+                        text: "Rating 3x3: " + root.rating_3x3 + " (" + root.race_3x3 + ")"
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        color: root.textColor
+                    }
+
+                    Label {
+                        id: relicGamesCountLabel
+                        visible: root.relicStatsAvailable
+                        text: qsTr("Games (Winrate): ") + root.relicGamesCount + " (" + (root.relicGamesCount >0 ? Math.trunc((root.relicWinCount/root.relicGamesCount) * 100) : 0)+ "%)"
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        color: root.textColor
+                    }
+
+                    /*Label {
+                        id: relicWinCountLabel
+                        visible: root.relicStatsAvailable
+                        text: "Win count: " + root.relicWinCount
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        color: root.textColor
+                    }*/
+
+                   /* Label {
+                        id: relicCountryLabel
+                        visible: root.relicStatsAvailable
+                        text: "Country: " + root.relicCountry
+                        font.pixelSize: 11 * sizeModifer
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        color: root.textColor
+                    }*/
+
                 }
             }
         }

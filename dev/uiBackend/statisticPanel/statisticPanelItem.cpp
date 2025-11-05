@@ -1,3 +1,4 @@
+#include <qdebug.h>
 #include <statisticPanelItem.h>
 StatisticPanelItem::StatisticPanelItem(QObject *parent) : QObject(parent)
 {
@@ -66,6 +67,10 @@ void StatisticPanelItem::setIsOnline(bool newIsOnline)
     emit isOnlineChanged();
 }
 
+bool StatisticPanelItem::relicStatsAvailable() const
+{
+    return m_relicStatsAvailable;
+}
 
 ServerPlayerStats StatisticPanelItem::playersStats()
 {
@@ -108,6 +113,51 @@ BanType::BanTypeEnum StatisticPanelItem::banType() const
     return m_playersStats.banType;
 }
 
+QString StatisticPanelItem::getRelicCountry() const
+{
+    return m_relicStats.country;
+}
+
+int StatisticPanelItem::getRelicGamesCount() const
+{
+    return m_relicStats.gamesCount;
+}
+
+int StatisticPanelItem::getRelicWinCount() const
+{
+    return m_relicStats.winCount;
+}
+
+int StatisticPanelItem::getRating_1x1() const
+{
+    return m_relicStats.rating_1x1;
+}
+
+int StatisticPanelItem::getRating_2x2() const
+{
+    return m_relicStats.rating_2x2;
+}
+
+int StatisticPanelItem::getRrating_3x3() const
+{
+    return m_relicStats.rating_3x3;
+}
+
+QString StatisticPanelItem::getRace_1x1() const
+{
+    return getRaceFromNumber(m_relicStats.race_1x1);
+}
+
+QString StatisticPanelItem::getRace_2x2() const
+{
+    return getRaceFromNumber(m_relicStats.race_2x2);
+}
+
+QString StatisticPanelItem::getRace_3x3() const
+{
+    return getRaceFromNumber(m_relicStats.race_3x3);
+}
+
 void StatisticPanelItem::setPlayerSteamId(QString steamId)
 {
     m_playersStats.steamId = steamId;
@@ -117,6 +167,13 @@ void StatisticPanelItem::setPlayerName(QString name)
 {
     m_playersStats.name = name;
     playersStatsChanged();
+}
+
+void StatisticPanelItem::setRelicStats(RelicStats relicStats)
+{
+    m_relicStats = relicStats;
+    m_relicStatsAvailable = true;
+    emit playersStatsChanged();
 }
 
 QString StatisticPanelItem::getPlayerName() const

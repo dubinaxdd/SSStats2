@@ -176,6 +176,46 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData, bo
     });
 }
 
+void DowServerProcessor::requestPersonalStats(QList<PlayerInfoFromDowServer> playersInfo)
+{
+    QString idListString = m_profileID;
+
+    for (auto& item : playersInfo)
+    {
+        if(idListString.isEmpty())
+            idListString.append(item.playerID);
+        else
+            idListString.append("," + item.playerID);
+    }
+
+    QString urlString = "https://dow-api.reliclink.com/community/leaderboard/getpersonalstat?profile_ids=[" + idListString + "]&title=dow1-de";
+
+    QNetworkRequest newRequest;
+    newRequest.setUrl(urlString);
+    QNetworkReply *reply = m_networkManager->get(newRequest);
+
+    QObject::connect(reply, &QNetworkReply::finished, this, [=](){
+        recievePersonalStats(reply);
+    });
+}
+
+Race DowServerProcessor::getRaceById(int gaceId)
+{
+    switch(gaceId)
+    {
+        case 0: return Race::ChaosMarines;
+        case 1: return Race::DarkEldar;
+        case 2: return Race::Eldar;
+        case 3: return Race::ImperialGuard;
+        case 4: return Race::Necrons;
+        case 5: return Race::Orks;
+        case 6: return Race::SistersOfBattle;
+        case 7: return Race::SpaceMarines;
+        case 8: return Race::TauEmpire;
+        default: return Race::SpaceMarines;
+    }
+}
+
 void DowServerProcessor::requestGameResult(SendingReplayInfo lastGameResult)
 {
     if (m_profileID.isEmpty())
@@ -494,6 +534,8 @@ void DowServerProcessor::receivePlayersSids(QNetworkReply *reply, QVector<Player
         lastGameResult.playersInfoFromDowServer = playersInfo;
         emit sendGameResults(m_gameResult, lastGameResult);
     }
+
+    requestPersonalStats(playersInfo);
 }
 
 void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult)
@@ -575,6 +617,84 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
         qInfo(logInfo()) << "Try to find geme results";
         m_repeatRequestGameResultsCount++;
     }
+}
+
+void DowServerProcessor::recievePersonalStats(QNetworkReply *reply)
+{
+    if (checkReplyErrors("DowServerProcessor::recievePersonalStats", reply))
+        return;
+
+    QByteArray replyByteArray = reply->readAll();
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
+
+    if (!jsonDoc.isObject())
+        return;
+
+    QJsonObject jsonObject = jsonDoc.object();
+
+    if(!jsonObject.value("statGroups").isArray())
+        return;
+
+    if(!jsonObject.value("leaderboardStats").isArray())
+        return;
+
+    QJsonArray statsGroups = jsonObject.value("statGroups").toArray();
+    QJsonArray leaderboardStats = jsonObject.value("leaderboardStats").toArray();
+
+    QVector<RelicStats> relicStatsArray;
+
+    for (const auto& statsGroupsItem : statsGroups)
+    {
+        uint id = statsGroupsItem.toObject().value("id").toInt();
+
+        RelicStats plyerStats;
+
+        plyerStats.steamId =statsGroupsItem.toObject().value("members").toArray().at(0).toObject().value("name").toString().replace("/steam/", "");
+        plyerStats.country = statsGroupsItem.toObject().value("members").toArray().at(0).toObject().value("country").toString();
+
+        for (const auto& leaderboardStatsItem : leaderboardStats)
+        {
+            if (id != leaderboardStatsItem.toObject().value("statgroup_id").toInt())
+                continue;
+
+            plyerStats.gamesCount += leaderboardStatsItem.toObject().value("wins").toInt();
+            plyerStats.gamesCount += leaderboardStatsItem.toObject().value("losses").toInt();
+            plyerStats.winCount += leaderboardStatsItem.toObject().value("wins").toInt();
+
+            int leaderboardId = leaderboardStatsItem.toObject().value("leaderboard_id").toInt();
+            int rating = leaderboardStatsItem.toObject().value("rating").toInt();
+
+            if (0 <= leaderboardId && leaderboardId <= 8)
+            {
+                if (rating > plyerStats.rating_1x1)
+                {
+                    plyerStats.rating_1x1 = rating;
+                    plyerStats.race_1x1 = getRaceById(leaderboardId);
+                }
+            }
+            else if (9 <= leaderboardId && leaderboardId <= 17)
+            {
+                if (rating > plyerStats.rating_2x2)
+                {
+                    plyerStats.rating_2x2 = rating;
+                    plyerStats.race_2x2 = getRaceById(leaderboardId - 9);
+                }
+            }
+            else if (18 <= leaderboardId && leaderboardId <= 26)
+            {
+                if (rating > plyerStats.rating_3x3)
+                {
+                    plyerStats.rating_3x3 = rating;
+                    plyerStats.race_3x3 = getRaceById(leaderboardId - 18);
+                }
+            }
+        }
+
+        relicStatsArray.append(plyerStats);
+    }
+
+    emit sendRelicStats(relicStatsArray);
 }
 
 void DowServerProcessor::playerDiscoonectTimerTimeout()

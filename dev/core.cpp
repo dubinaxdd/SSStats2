@@ -84,6 +84,7 @@ void Core::registerTypes()
     qRegisterMetaType<RankDiversion>("RankDiversion");
     qRegisterMetaType<UniqueOnlineStatistic>("UniqueOnlineStatistic");
     qRegisterMetaType<DowServerRequestParametres>("DowServerRequestParametres");
+    qRegisterMetaType<QVector<RelicStats>>("QVector<RelicStats>");
 }
 
 void Core::addConnections()
@@ -122,6 +123,8 @@ void Core::addConnections()
 
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_gameController->replayDataCollector(), &ReplayDataCollector::receivePlyersRankedState , Qt::QueuedConnection);
+    QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendRelicStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveRelicStats, Qt::QueuedConnection);
+
 
 
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);

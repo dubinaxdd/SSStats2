@@ -33,6 +33,8 @@ private:
     void requestProfileID(QString steamID);
     void requestFindAdvertisements();
     void requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults = false, SendingReplayInfo lastGameResult = SendingReplayInfo());
+    void requestPersonalStats(QList<PlayerInfoFromDowServer> playersInfo);
+    Race getRaceById(int gaceId);
 
 public slots:
     void setRequestParametres(DowServerRequestParametres parametres) override;
@@ -51,6 +53,7 @@ private slots:
     void receiveFindAdvertisements(QNetworkReply *reply);
     void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults, SendingReplayInfo lastGameResult = SendingReplayInfo());
     void receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult);
+    void recievePersonalStats(QNetworkReply *reply);
 
     void playerDiscoonectTimerTimeout();
 
@@ -62,6 +65,7 @@ signals:
     void sendCurrentPlayerId(QString id);
     void sendGameResults(QJsonObject gameResult,  SendingReplayInfo lastGameResult);
     void sendNotification(QString warningString, bool isWarning);
+    void sendRelicStats(QVector<RelicStats> relicStatsArray);
 
 private:
     QVector<QueryType> m_requestsQueue;

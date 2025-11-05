@@ -239,6 +239,20 @@ struct PlayerInfoFromDowServer
     bool isObserver = false;
 };
 
+struct RelicStats
+{
+    QString steamId = "";
+    QString country = "";
+    int gamesCount = 0;
+    int winCount = 0;
+    int rating_1x1 = 0;
+    int rating_2x2 = 0;
+    int rating_3x3 = 0;
+    Race race_1x1 = SpaceMarines;
+    Race race_2x2 = SpaceMarines;
+    Race race_3x3 = SpaceMarines;
+};
+
 struct RankDiversion
 {
     int rank7Min = 0;

@@ -43,6 +43,16 @@ QVariant StatisticPanel::data(const QModelIndex &index, int role) const
         case IsOnline: return item->getIsOnline();
         case IsRanked: return item->getIsRanked();
 
+        case RelicStatsAvailable: return item->relicStatsAvailable();
+        case RelicCountry: return item->getRelicCountry();
+        case RelicGamesCount: return item->getRelicGamesCount();
+        case RelicWinCount: return item->getRelicWinCount();
+        case Rating_1x1: return item->getRating_1x1();
+        case Rating_2x2: return item->getRating_2x2();
+        case Rating_3x3: return item->getRrating_3x3();
+        case Race_1x1: return item->getRace_1x1();
+        case Race_2x2: return item->getRace_2x2();
+        case Race_3x3: return item->getRace_3x3();
     }
 
     return QVariant();
@@ -75,6 +85,17 @@ QHash<int, QByteArray> StatisticPanel::roleNames() const
     roles[BanType] = "banType";
     roles[IsOnline] = "isOnline";
     roles[IsRanked] = "isRanked";
+
+    roles[RelicStatsAvailable] = "relicStatsAvailable";
+    roles[RelicCountry] = "relicCountry";
+    roles[RelicGamesCount] = "relicGamesCount";
+    roles[RelicWinCount] = "relicWinCount";
+    roles[Rating_1x1] = "rating_1x1";
+    roles[Rating_2x2] = "rating_2x2";
+    roles[Rating_3x3] = "rating_3x3";
+    roles[Race_1x1] = "race_1x1";
+    roles[Race_2x2] = "race_2x2";
+    roles[Race_3x3] = "race_3x3";
 
     return roles;
 }
@@ -223,6 +244,27 @@ void StatisticPanel::receivePlyersRankedState(QVector<PlyersRankedState> plyersR
 
     emit dataChanged(first, last);
 
+}
+
+void StatisticPanel::receiveRelicStats(QVector<RelicStats> relicStatsArray)
+{
+    for(auto& relicStatsItem : relicStatsArray)
+    {
+        if(m_curentPlayerStatsItem->getSteamId() == relicStatsItem.steamId)
+        {
+            m_curentPlayerStatsItem->setRelicStats(relicStatsItem);
+            continue;
+        }
+
+        for(auto& playerStatsItem : m_playersStatsItems)
+        {
+            if (playerStatsItem->getSteamId() == relicStatsItem.steamId)
+            {
+                playerStatsItem->setRelicStats(relicStatsItem);
+                break;
+            }
+        }
+    }
 }
 
 void StatisticPanel::onQuitParty()

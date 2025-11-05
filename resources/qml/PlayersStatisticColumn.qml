@@ -44,21 +44,31 @@ ColumnLayout {
         isOnline: root.model.curentPlayerStatsItem.isOnline
         steamId: root.model.curentPlayerStatsItem.steamId
 
+        relicStatsAvailable: root.model.curentPlayerStatsItem.relicStatsAvailable
+        relicCountry: root.model.curentPlayerStatsItem.relicCountry
+        relicGamesCount: root.model.curentPlayerStatsItem.relicGamesCount
+        relicWinCount: root.model.curentPlayerStatsItem.relicWinCount
+        rating_1x1: root.model.curentPlayerStatsItem.rating_1x1
+        rating_2x2: root.model.curentPlayerStatsItem.rating_2x2
+        rating_3x3: root.model.curentPlayerStatsItem.rating_3x3
+        race_1x1: root.model.curentPlayerStatsItem.race_1x1
+        race_2x2: root.model.curentPlayerStatsItem.race_2x2
+        race_3x3: root.model.curentPlayerStatsItem.race_3x3
+
         avatarSource: "image://imageprovider/currentPlayerAvatarMedium"
         sizeModifer: root.sizeModifer
         hoverEnabled: root.hoverEnabled
-
     }
 
     ListView
     {
         id: playersListView
 
-        model: root.model//_uiBackend.statisticPanel
+        model: root.model
 
-        Layout.preferredHeight: ((130 + 5) * count  - 5) * root.sizeModifer
-        Layout.maximumHeight: ((130 + 5) * count - 5) * root.sizeModifer
-        Layout.minimumHeight: ((130 + 5) * count - 5) * root.sizeModifer
+        Layout.preferredHeight: contentHeight
+        Layout.maximumHeight: contentHeight
+        Layout.minimumHeight: contentHeight
 
         spacing: 5 * root.sizeModifer
 
@@ -81,12 +91,20 @@ ColumnLayout {
             isOnline: model.isOnline
             steamId: model.steamId
 
+            relicStatsAvailable: model.relicStatsAvailable
+            relicCountry: model.relicCountry
+            relicGamesCount: model.relicGamesCount
+            relicWinCount: model.relicWinCount
+            rating_1x1: model.rating_1x1
+            rating_2x2: model.rating_2x2
+            rating_3x3: model.rating_3x3
+            race_1x1: model.race_1x1
+            race_2x2: model.race_2x2
+            race_3x3: model.race_3x3
+
             avatarSource: "image://imageprovider/" + model.avatarId
             sizeModifer: root.sizeModifer
             hoverEnabled: root.hoverEnabled
-
-            height: 130 * root.sizeModifer
-            width: 280 * root.sizeModifer
         }
     }
 }
