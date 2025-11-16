@@ -167,18 +167,6 @@ void SoulstormMemoryController::receiveCurrentMissionState(GameMissionState miss
 
 void SoulstormMemoryController::disableFogDE(bool disableFog)
 {
-    //Получаем ID процесса игры
-    QString gameName = "Warhammer 40,000: Dawn of War";
-
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-    LPCWSTR lps = (LPCWSTR)gameName.utf16();
-    HWND m_gameHwnd = NULL;
-
-    m_gameHwnd = FindWindowW(NULL, lps);
-
-    if(!m_gameHwnd)
-        qInfo(logInfo()) << "Process Not Openned";
-
     DWORD PID;
     GetWindowThreadProcessId(m_gameHwnd, &PID);
 
@@ -195,7 +183,7 @@ void SoulstormMemoryController::disableFogDE(bool disableFog)
         return;
     }
 
-    uintptr_t baseAddress = GetModuleBaseAddress( hProcess/*PID*/, targetModuleName);
+    uintptr_t baseAddress = GetModuleBaseAddress( hProcess, targetModuleName);
 
     if (baseAddress != 0) {
         qInfo(logInfo()) << "Base address of SimEngine.dll" << QString::fromStdString(targetModuleName) << "in game process: 0x" << hex << baseAddress;
@@ -309,8 +297,6 @@ void SoulstormMemoryController::disableFogDE(bool disableFog)
 
 void SoulstormMemoryController::disableFogSS()
 {
-    //qInfo(logInfo()) << "Fog state: " <<  state;
-
     if(m_gameHwnd == nullptr)
         return; // Процесс DoW не обнаружен
 
