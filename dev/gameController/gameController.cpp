@@ -38,6 +38,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     m_gameStateReader->setCurrentGame(&m_currentGame);
     m_replayDataCollector->setCurrentGame(&m_currentGame);
     m_dowServerProcessor->setGameType(m_currentGame.gameType);
+    m_soulstormMemoryController->setCurrentGame(&m_currentGame);
 
     if(m_steamPath.isEmpty() || !QDir(m_steamPath).exists())
         qWarning(logWarning()) << "Steam is not installed!" << m_steamPath;
@@ -64,6 +65,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_apmMeter, &APMMeter::receiveMissionCurrentState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_lobbyEventReader, &LobbyEventReader::receiveCurrentMissionState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_replayDataCollector, &ReplayDataCollector::receiveCurrentMissionState,   Qt::QueuedConnection);
+    QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentMissionState,  m_soulstormMemoryController, &SoulstormMemoryController::receiveCurrentMissionState,   Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentGameVersion,   m_replayDataCollector, &ReplayDataCollector::receiveCurrentGameVersion, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentModVersion,   m_dowServerProcessor, &DowServerProcessor::setCurrentModVersion, Qt::QueuedConnection);
     QObject::connect(m_gameStateReader, &GameStateReader::sendCurrentModVersion,          m_replayDataCollector, &ReplayDataCollector::receiveCurrentModVersion, Qt::QueuedConnection);

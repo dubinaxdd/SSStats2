@@ -76,7 +76,7 @@ Rectangle {
             id: noFogSwitch
             text: qsTr("No FOG")
             onCheckedChanged: _uiBackend.noFogState = checked;
-            enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
+            //enabled: root.model.currentGameType  !==  GameType.DefinitiveEdition
         }
 
         StyledSwitch{

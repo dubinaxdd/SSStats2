@@ -90,7 +90,7 @@ Rectangle {
             sizeModifer: _uiBackend.sizeModifer
             hoveredState: noFogMouseArea.hovered
 
-            enabled: _uiBackend.gamePage.currentGameType  !==  GameType.DefinitiveEdition
+            //enabled: _uiBackend.gamePage.currentGameType  !==  GameType.DefinitiveEdition
 
             GlobalMouseArea{
                 id: noFogMouseArea
