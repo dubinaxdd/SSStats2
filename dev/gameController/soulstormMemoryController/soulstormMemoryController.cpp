@@ -268,6 +268,9 @@ void SoulstormMemoryController::disableFogDE(bool disableFog)
     uintptr_t skyRadius2_Address = terrainAddress + 0xC68;
     qInfo(logInfo()) << "skyRadius2_Address" << hex << skyRadius2_Address;
 
+    uintptr_t skyRadius3_Address = terrainAddress + 0xC7C;
+    qInfo(logInfo()) << "skyRadius3_Address" << hex << skyRadius3_Address;
+
     if (disableFog)
     {
         BYTE fogMinValue[4] = {0x00, 0x00, 0xCE, 0x43};
@@ -275,12 +278,14 @@ void SoulstormMemoryController::disableFogDE(bool disableFog)
         BYTE skyDistanceValue[4] = {0x00, 0x00, 0x80, 0x44};
         BYTE skyRadius1_Value[4] = {0x00, 0x00, 0x7A, 0x44};
         BYTE skyRadius2_Value[4] = {0x00, 0x00, 0x7A, 0x44};
+        BYTE skyRadius3_Value[4] = {0x00, 0x00, 0x7A, 0x44};
 
         WriteProcessMemory(hProcess, (PVOID)fogMinAddress, fogMinValue, 4, nullptr); //default 50 [00 00 48 42], new 412  [00 00 CE 43]
         WriteProcessMemory(hProcess, (PVOID)fogMaxAddress, fogMaxValue, 4, nullptr); //default 150 [00 00 16 43], new 512  [00 00 00 44]
         WriteProcessMemory(hProcess, (PVOID)skyDistanceAddress, skyDistanceValue, 4, nullptr); //default 160 [00 00 20 43], new 1024  [00 00 80 44]
         WriteProcessMemory(hProcess, (PVOID)skyRadius1_Address, skyRadius1_Value, 4, nullptr); //default 246.9650116 [0B F7 76 43], new 1000 [00 00 7A 44]
         WriteProcessMemory(hProcess, (PVOID)skyRadius2_Address, skyRadius2_Value, 4, nullptr); //default 246.9650116 [0B F7 76 43], new 1000 [00 00 7A 44]
+        WriteProcessMemory(hProcess, (PVOID)skyRadius3_Address, skyRadius3_Value, 4, nullptr); //default 247.9805298 [04 FB 77 43], new 1000 [00 00 7A 44]
     }
     else
     {
@@ -289,12 +294,14 @@ void SoulstormMemoryController::disableFogDE(bool disableFog)
         BYTE skyDistanceValue[4] = {0x00, 0x00, 0x20, 0x43};
         BYTE skyRadius1_Value[4] = {0x0B, 0xF7, 0x76, 0x43};
         BYTE skyRadius2_Value[4] = {0x0B, 0xF7, 0x76, 0x43};
+        BYTE skyRadius3_Value[4] = {0x04, 0xFB, 0x77, 0x43};
 
         WriteProcessMemory(hProcess, (PVOID)fogMinAddress, fogMinValue, 4, nullptr); //default 50 [00 00 48 42], new 412  [00 00 CE 43]
         WriteProcessMemory(hProcess, (PVOID)fogMaxAddress, fogMaxValue, 4, nullptr); //default 150 [00 00 16 43], new 512  [00 00 00 44]
         WriteProcessMemory(hProcess, (PVOID)skyDistanceAddress, skyDistanceValue, 4, nullptr); //default 160 [00 00 20 43], new 1024  [00 00 80 44]
         WriteProcessMemory(hProcess, (PVOID)skyRadius1_Address, skyRadius1_Value, 4, nullptr); //default 246.9650116 [0B F7 76 43], new 1000 [00 00 7A 44]
         WriteProcessMemory(hProcess, (PVOID)skyRadius2_Address, skyRadius2_Value, 4, nullptr); //default 246.9650116 [0B F7 76 43], new 1000 [00 00 7A 44]
+        WriteProcessMemory(hProcess, (PVOID)skyRadius3_Address, skyRadius3_Value, 4, nullptr); //default 247.9805298 [04 FB 77 43], new 1000 [00 00 7A 44]
     }
 
     CloseHandle(hProcess);
