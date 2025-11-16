@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 cmake_policy(SET CMP0048 NEW)
 
-project(DowStatsClient VERSION 3.1 LANGUAGES CXX)
+project(DowStatsClient VERSION 3.2 LANGUAGES CXX)
 
 set(TARGET_NAME DowStatsClient)
 
