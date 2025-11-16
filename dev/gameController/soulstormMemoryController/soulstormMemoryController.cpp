@@ -2,7 +2,10 @@
 #include <TlHelp32.h>
 #include <windows.h>
 #include <psapi.h>
+//#include "dbghelp.h"
 #include <QtEndian>
+
+#pragma comment(lib, "dbghelp.lib")
 
 PVOID FogAddr = (PVOID)0x008282F0;
 PVOID MapSkyDistanceAddr = (PVOID)0x0082A33A;
@@ -21,36 +24,82 @@ BYTE temp6_2[6] = {0};
 
 BYTE temp4[6] = {0};
 
-/*uintptr_t GetModuleBaseAddress(DWORD processID, const std::string& moduleName) {
-    uintptr_t moduleBaseAddress = 0;
-    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processID);
+//Функция написана нейросетью, получает список функций с адресам в выбранной dll библиотеки выбранного процесса
+bool ListRemoteDllExports(HANDLE hProcess, HMODULE remoteHModule, QMap<QString, DWORD_PTR> *functionsAddresses) {
 
-    if (hSnapshot != INVALID_HANDLE_VALUE) {
-        MODULEENTRY32 moduleEntry;
-        moduleEntry.dwSize = sizeof(MODULEENTRY32);
+    BYTE buffer[1024]; // Buffer to read headers into locally
 
-        if (Module32First(hSnapshot, &moduleEntry)) {
-            do {
-                // Convert moduleEntry.szModule to std::string for comparison
-                std::string currentModuleName(moduleEntry.szModule);
-                if (currentModuleName == moduleName) {
-                    moduleBaseAddress = reinterpret_cast<uintptr_t>(moduleEntry.modBaseAddr);
-                    break;
-                }
-            } while (Module32Next(hSnapshot, &moduleEntry));
-        }
-        CloseHandle(hSnapshot);
-    }
-    return moduleBaseAddress;
-}*/
-
-uintptr_t GetModuleBaseAddress(DWORD processId, const std::string& moduleName) {
-    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, processId);
-    if (hProcess == NULL) {
-        qDebug() << "Failed to open process. Error: " << GetLastError();
-        return 0;
+    // --- Read the DOS Header ---
+    IMAGE_DOS_HEADER dosHeader;
+    if (!ReadProcessMemory(hProcess, remoteHModule, &dosHeader, sizeof(dosHeader), NULL) ||
+        dosHeader.e_magic != IMAGE_DOS_SIGNATURE) {
+        qDebug() << "Failed to read remote DOS header or invalid signature.";
+        return false;
     }
 
+    // --- Read the NT Headers (assuming 64-bit for modern systems) ---
+    // You must read the offset from the DOS header to find where NT headers start.
+    PIMAGE_NT_HEADERS64 pNtHeaders64 = reinterpret_cast<PIMAGE_NT_HEADERS64>(buffer);
+    DWORD ntHeadersOffset = dosHeader.e_lfanew;
+
+    if (!ReadProcessMemory(hProcess,
+                           reinterpret_cast<BYTE*>(remoteHModule) + ntHeadersOffset,
+                           pNtHeaders64,
+                           sizeof(IMAGE_NT_HEADERS64),
+                           NULL) ||
+        pNtHeaders64->Signature != IMAGE_NT_SIGNATURE) {
+        qDebug() << "Failed to read remote NT headers or invalid signature.";
+        return false;
+    }
+
+    // --- Read the Export Directory Table ---
+    DWORD exportDirRVA = pNtHeaders64->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress;
+    if (exportDirRVA == 0) {
+        qDebug() << "Remote DLL has no named exports.";
+        return true;
+    }
+
+    IMAGE_EXPORT_DIRECTORY exportDir;
+    if (!ReadProcessMemory(hProcess,
+                           reinterpret_cast<BYTE*>(remoteHModule) + exportDirRVA,
+                           &exportDir,
+                           sizeof(exportDir),
+                           NULL)) {
+        qDebug() << "Failed to read remote Export Directory.";
+        return false;
+    }
+
+    qDebug() << "Total exported names found: " << exportDir.NumberOfNames;
+
+    // --- Read the arrays of names, ordinals, and function RVAs into local buffers ---
+    std::vector<DWORD> nameRVAs(exportDir.NumberOfNames);
+    std::vector<WORD> ordinals(exportDir.NumberOfNames);
+    std::vector<DWORD> functionRVAs(exportDir.NumberOfFunctions);
+
+    ReadProcessMemory(hProcess, reinterpret_cast<BYTE*>(remoteHModule) + exportDir.AddressOfNames, nameRVAs.data(), nameRVAs.size() * sizeof(DWORD), NULL);
+    ReadProcessMemory(hProcess, reinterpret_cast<BYTE*>(remoteHModule) + exportDir.AddressOfNameOrdinals, ordinals.data(), ordinals.size() * sizeof(WORD), NULL);
+    ReadProcessMemory(hProcess, reinterpret_cast<BYTE*>(remoteHModule) + exportDir.AddressOfFunctions, functionRVAs.data(), functionRVAs.size() * sizeof(DWORD), NULL);
+
+    // --- Enumerate and print names and addresses ---
+    for (DWORD i = 0; i < exportDir.NumberOfNames; ++i) {
+        char funcName[MAX_PATH];
+        // Read the actual function name string
+        ReadProcessMemory(hProcess, reinterpret_cast<BYTE*>(remoteHModule) + nameRVAs[i], funcName, sizeof(funcName), NULL);
+
+        WORD ordinalIndex = ordinals[i];
+        // The address in the *remote* process
+        DWORD_PTR remoteAddress = reinterpret_cast<DWORD_PTR>(remoteHModule) + functionRVAs[ordinalIndex];
+
+        functionsAddresses->insert(funcName, remoteAddress);
+
+        //qDebug() << " Name: " << funcName << " | Remote Address: 0x" << hex << remoteAddress;
+    }
+
+    return true;
+}
+
+
+uintptr_t GetModuleBaseAddress(HANDLE hProcess, const std::string& moduleName) {
     HMODULE hMods[1024];
     DWORD cbNeeded;
     if (EnumProcessModules(hProcess, hMods, sizeof(hMods), &cbNeeded)) {
@@ -61,7 +110,6 @@ uintptr_t GetModuleBaseAddress(DWORD processId, const std::string& moduleName) {
                 if (currentModuleName.find(moduleName) != std::string::npos) {
                     MODULEINFO mi;
                     if (GetModuleInformation(hProcess, hMods[i], &mi, sizeof(mi))) {
-                        CloseHandle(hProcess);
                         return reinterpret_cast<uintptr_t>(mi.lpBaseOfDll);
                     }
                 }
@@ -71,10 +119,8 @@ uintptr_t GetModuleBaseAddress(DWORD processId, const std::string& moduleName) {
         qDebug() << "Failed to enumerate modules. Error: " << GetLastError();
     }
 
-    CloseHandle(hProcess);
     return 0; // Module not found
 }
-
 
 SoulstormMemoryController::SoulstormMemoryController(SettingsController* settingsController, QObject *parent)
     : QObject(parent)
@@ -100,28 +146,55 @@ SoulstormMemoryController::SoulstormMemoryController(SettingsController* setting
     //Получаем базовый адрес сим енжина
     std::string targetModuleName = "SimEngine.dll";
 
-    uintptr_t baseAddress = GetModuleBaseAddress( PID, targetModuleName);
+    // Получение дескриптора процесса игры
+    HANDLE hProcess= OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, 0, PID);
+
+    if(hProcess==nullptr)
+    {
+        qDebug() << "Process handle not finded";
+        CloseHandle(hProcess);
+        return;
+    }
+
+    uintptr_t baseAddress = GetModuleBaseAddress( hProcess/*PID*/, targetModuleName);
 
     if (baseAddress != 0) {
-        qDebug() << "Base address of " << QString::fromStdString(targetModuleName) << " in current process: 0x" << hex << baseAddress;
+        qDebug() << "Base address of SimEngine.dll" << QString::fromStdString(targetModuleName) << "in game process: 0x" << hex << baseAddress;
     } else {
         qDebug() << "Module " << QString::fromStdString(targetModuleName) << " not found or error occurred.";
     }
 
+    //Получаем список функций симэнжина
+    QMap<QString, DWORD_PTR> functionsAddresses;
+    ListRemoteDllExports(hProcess, (HMODULE)baseAddress, &functionsAddresses);
 
-    // Получение дескриптора процесса игры
-    HANDLE hProcess= OpenProcess(PROCESS_VM_OPERATION | PROCESS_VM_READ | PROCESS_VM_WRITE, 0, PID);
+    //Ищем функцию s_instance@TurningBehaviorTemplateManager
+    uintptr_t needFunctionAddress;
 
-    if(hProcess==nullptr)
-        qDebug() << "Process handle not finded";
+    for(auto& key : functionsAddresses.keys())
+    {
+        if (key.contains("s_instance@TurningBehaviorTemplateManager"))
+        {
+            needFunctionAddress = functionsAddresses.value(key);
+            break;
+        }
+    }
 
+    qDebug() << "TurningBehaviorTemplateManager function adress:" << hex << needFunctionAddress;
 
     //Получаем адрес области памяти в которую пишет сименжин
-    uintptr_t indent = 0x138398; //отступ от начала сименжина
     QByteArray simEngineMemoryAddressByteArray(8, 0);
 
-    ReadProcessMemory(hProcess, (PVOID)(baseAddress + indent), simEngineMemoryAddressByteArray.data(), 8, nullptr);
-    qDebug() << "SimEngineMemoryAddressByteArray: " << hex << (PVOID)(baseAddress + indent) << simEngineMemoryAddressByteArray.toHex().data();
+    //uintptr_t indent = 0x138398; //отступ от начала сименжина
+    //ReadProcessMemory(hProcess, (PVOID)(baseAddress + indent), simEngineMemoryAddressByteArray.data(), 8, nullptr);
+    //qDebug() << "SimEngineMemoryAddressByteArray: " << hex << (PVOID)(baseAddress + indent) << simEngineMemoryAddressByteArray.toHex().data();
+
+    uintptr_t func_indent = 0x98; //отступ от начала сименжина
+
+        qDebug() << hex << (PVOID)(needFunctionAddress + func_indent);
+
+    ReadProcessMemory(hProcess, (PVOID)(needFunctionAddress + func_indent), simEngineMemoryAddressByteArray.data(), 8, nullptr);
+    qDebug() << "SimEngineMemoryAddressByteArray: " << hex << (PVOID)(needFunctionAddress + func_indent) << simEngineMemoryAddressByteArray.toHex().data();
 
     quint64 simEngineMemoryAddress = qFromLittleEndian<quint64>((uchar*)simEngineMemoryAddressByteArray.data());
     qDebug() << "SimEngineMemoryAddress" << hex << simEngineMemoryAddress;
@@ -132,7 +205,7 @@ SoulstormMemoryController::SoulstormMemoryController(SettingsController* setting
     QByteArray terrainAddressByteArray(8, 0);
 
     ReadProcessMemory(hProcess, (PVOID)(simEngineMemoryAddress + terrainIndent), terrainAddressByteArray.data(), 8, nullptr);
-    qDebug() << "TerrainAddressByteArray: " << hex << (PVOID)(baseAddress + indent) << terrainAddressByteArray.toHex().data();
+    qDebug() << "TerrainAddressByteArray: " << hex << (PVOID)(simEngineMemoryAddress + terrainIndent) << terrainAddressByteArray.toHex().data();
 
     quint64 terrainAddress = qFromLittleEndian<quint64>((uchar*)terrainAddressByteArray.data());
     qDebug() << "terrainAddressByteArray" << hex << terrainAddress;
@@ -155,19 +228,21 @@ SoulstormMemoryController::SoulstormMemoryController(SettingsController* setting
     qDebug() << "skyRadius2_Address" << hex << skyRadius2_Address;
 
     BYTE fogMinValue[4] = {0x00, 0x00, 0xCE, 0x43};
-    WriteProcessMemory(hProcess, (PVOID)fogMinAddress, fogMinValue, 4, nullptr); //default 50, new 412  [00 00 CE 43]
+    WriteProcessMemory(hProcess, (PVOID)fogMinAddress, fogMinValue, 4, nullptr); //default 50 [00 00 48 42], new 412  [00 00 CE 43]
 
     BYTE fogMaxValue[4] = {0x00, 0x00, 0x00, 0x44};
-    WriteProcessMemory(hProcess, (PVOID)fogMaxAddress, fogMaxValue, 4, nullptr); //default 50, new 512  [00 00 00 44]
+    WriteProcessMemory(hProcess, (PVOID)fogMaxAddress, fogMaxValue, 4, nullptr); //default 150 [00 00 16 43], new 512  [00 00 00 44]
 
     BYTE skyDistanceValue[4] = {0x00, 0x00, 0x80, 0x44};
-    WriteProcessMemory(hProcess, (PVOID)skyDistanceAddress, skyDistanceValue, 4, nullptr); //default 160, new 1024  [00 00 80 44]
+    WriteProcessMemory(hProcess, (PVOID)skyDistanceAddress, skyDistanceValue, 4, nullptr); //default 160 [00 00 20 43], new 1024  [00 00 80 44]
 
     BYTE skyRadius1_Value[4] = {0x00, 0x00, 0x7A, 0x44};
-    WriteProcessMemory(hProcess, (PVOID)skyRadius1_Address, skyRadius1_Value, 4, nullptr); //default 246.9650116, new 1000 [00 00 7A 44]
+    WriteProcessMemory(hProcess, (PVOID)skyRadius1_Address, skyRadius1_Value, 4, nullptr); //default 246.9650116 [0B F7 76 43], new 1000 [00 00 7A 44]
 
     BYTE skyRadius2_Value[4] = {0x00, 0x00, 0x7A, 0x44};
-    WriteProcessMemory(hProcess, (PVOID)skyRadius2_Address, skyRadius2_Value, 4, nullptr); //default 246.9650116, new 1000 [00 00 7A 44]
+    WriteProcessMemory(hProcess, (PVOID)skyRadius2_Address, skyRadius2_Value, 4, nullptr); //default 246.9650116 [0B F7 76 43], new 1000 [00 00 7A 44]
+
+    CloseHandle(hProcess);
 }
 
 void SoulstormMemoryController::onGameLaunchStateChanged(bool state)
