@@ -66,7 +66,7 @@ bool RepReader::ReadHeader()
     BinReader->skipRawData(1);
     /*qDebug() <<*/ BinReader->ReadStringUTF8(8); // FOLDWMAN
     BinReader->skipRawData(4);
-    replay.BeginFOLDWMAN = BinReader->pos();
+    replay.BeginFOLDWMAN = BinReader->pos(); //Не двигает курсор
     replay.LengthFOLDWMAN = BinReader->ReadInt32();
     BinReader->skipRawData(32);
     replay.PlayerCount = BinReader->ReadInt32();
@@ -183,8 +183,17 @@ bool RepReader::isStandart(int game_type)
 Player *RepReader::ReadPlayer()
 {
     Player *player = new Player();
-    auto readerString = BinReader->ReadStringUTF8(8);
-//    qDebug() << BinReader->pos();
+
+
+    char byte = BinReader->ReadChar();
+
+    QString readerString;
+
+    if (byte == 'F')
+        readerString = 'F' + BinReader->ReadStringUTF8(7);
+    else
+        readerString = BinReader->ReadStringUTF8(8);
+
     if (readerString == "FOLDGPLY")
     {
         BinReader->skipRawData(4);
