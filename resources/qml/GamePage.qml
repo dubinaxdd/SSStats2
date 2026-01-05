@@ -126,64 +126,33 @@ Rectangle {
             Layout.fillHeight: true
         }
 
-        /*Rectangle{
-            id: lounchGameButtonRectangle
-            Layout.preferredWidth:  15 + lounchGameLabel.width + 15 + iconImage.width + 5
-            Layout.preferredHeight: 35
-            Layout.rightMargin: 15
-            radius:5
+        RowLayout
+        {
+            IconButton{
+                width: 250
+                height: 35
+                sourceUrl: "qrc:/icons/resources/images/game.svg"
+                text: qsTr("Open Game folder")
+                onClicked: _uiBackend.openGameFolder()
 
-            gradient: Gradient {
-                GradientStop {
-                    position: 0
-                    color: "#337ab7"
-                }
 
-                GradientStop {
-                    position: 1
-                    color: "#245580"
-                }
             }
 
-            RowLayout
-            {
-                anchors.fill: parent
-                spacing: 15
-
-                Label{
-                    id: lounchGameLabel
-                    text: qsTr("Play")
-                    Layout.leftMargin: 15
-                    color: lounchGameMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
-                    font.pixelSize: 16
-                }
-
-                Rectangle
-                {
-                    width: 30
-                    height: 30
-                    color: "#00000000"
-
-                    Layout.rightMargin: 15
-
-                    Image{
-                        id: iconImage
-                        anchors.fill: parent
-                        source: "qrc:/images/resources/icons/ssIcon.png"
-                    }
-                }
+            IconButton{
+                width: 250
+                height: 35
+                sourceUrl: "qrc:/images/resources/images/gear.svg"
+                text: qsTr("Open Settings folder")
+                onClicked: _uiBackend.openSettingsFolder()
             }
 
-            MouseArea{
-                id: lounchGameMouseArea
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                hoverEnabled: true
-
-                onClicked: {
-                    _uiBackend.launchGame()
-                }
+            IconButton{
+                width: 250
+                height: 35
+                sourceUrl: "qrc:/icons/resources/images/playback.svg"
+                text: qsTr("Open Playback folder")
+                onClicked: _uiBackend.openPlaybackFolder()
             }
-        }*/
+        }
     }
 }

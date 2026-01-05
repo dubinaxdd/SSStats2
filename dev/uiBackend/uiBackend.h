@@ -129,6 +129,10 @@ public:
 
     Q_INVOKABLE void launchGame();
 
+    Q_INVOKABLE void openGameFolder();
+    Q_INVOKABLE void openSettingsFolder();
+    Q_INVOKABLE void openPlaybackFolder();
+
     bool notificationVisible() const;
     void setNotificationVisible(bool newNotificationVisible);
 

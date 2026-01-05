@@ -160,6 +160,18 @@
         <source>Auto ad sender</source>
         <translation>Автоматическая отправка рекламы в лобби</translation>
     </message>
+    <message>
+        <source>Open Game folder</source>
+        <translation>Открыть папку игры</translation>
+    </message>
+    <message>
+        <source>Open Settings folder</source>
+        <translation>Открыть папку настроек</translation>
+    </message>
+    <message>
+        <source>Open Playback folder</source>
+        <translation>Открыть папку реплеев</translation>
+    </message>
 </context>
 <context>
     <name>DiscordMessage</name>

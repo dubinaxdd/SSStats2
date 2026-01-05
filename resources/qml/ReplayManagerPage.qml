@@ -586,69 +586,16 @@ Rectangle {
                 }
             }
 
-            Rectangle{
-                id: openPlaybackFolderButtonRectangle
-
+            IconButton
+            {
                 width: 300
                 height: 35
-                radius:5
 
-                gradient: Gradient {
-                    GradientStop {
-                        position: 0
-                        color: "#337ab7"
-                    }
+                sourceUrl: "qrc:/icons/resources/images/playback.svg"
+                text: qsTr("Open playback folder")
 
-                    GradientStop {
-                        position: 1
-                        color: "#245580"
-                    }
-                }
-
-                RowLayout
-                {
-                    anchors.fill: parent
-                    spacing: 15
-
-
-                    Rectangle
-                    {
-                        width: 30
-                        height: 30
-                        color: "#00000000"
-
-                       Layout.leftMargin: 15
-
-                        Image{
-                            id: iconImage
-                            anchors.fill: parent
-                            source: "qrc:/images/resources/images/folder_white.svg"
-
-                            sourceSize.width: 30
-                            sourceSize.height: 30
-                        }
-                    }
-
-                    Label{
-                        id: openPlaybackFolderLabel
-                        text: qsTr("Open playback folder")
-                        Layout.rightMargin: 15
-
-                        color: openPlaybackFolderMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
-                        font.pixelSize: 16
-                    }
-
-                }
-
-                MouseArea{
-                    id: openPlaybackFolderMouseArea
-                    anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
-                    hoverEnabled: true
-
-                    onClicked: {
-                        _uiBackend.replayManager.openPlaybackFolder();
-                    }
+                onClicked: {
+                    _uiBackend.replayManager.openPlaybackFolder();
                 }
             }
         }

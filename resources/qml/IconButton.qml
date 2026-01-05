@@ -1,13 +1,15 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.12
 import QtGraphicalEffects 1.15
+import QtQuick.Layouts 1.15
 
 Rectangle
 {
-    id: buttonRectangle
+    id: root
 
     property string sourceUrl: "";
     property string toolTipText: "";
+    property string text;
 
     property bool containsMouse: false;
     property real sizeModifer: 1.0;
@@ -16,9 +18,7 @@ Rectangle
 
     width: 40
     height: 40
-    radius: 10 * buttonRectangle.sizeModifer
-
-    //color: buttonMouseArea.containsMouse ? "#A9A9A9" : "#E0E0E0"
+    radius: 5 * root.sizeModifer
 
     gradient: Gradient {
         GradientStop {
@@ -32,41 +32,55 @@ Rectangle
         }
     }
 
-    Image {
-
-        id: image
-        anchors.fill: parent
-        anchors.margins: 5 * buttonRectangle.sizeModifer
-        source: sourceUrl
-        sourceSize.width: width//* buttonRectangle.sizeModifer
-        sourceSize.height: height //* buttonRectangle.sizeModifer
-    }
-
-    ColorOverlay{
-        anchors.fill: image
-        source:image
-        color: buttonMouseArea.containsMouse || buttonRectangle.containsMouse ? "#DCDCDC" : "#FFFFFF"
-        //transform:rotation
-        antialiasing: true
-    }
-
-    MouseArea
+    RowLayout
     {
-        id: buttonMouseArea
-
         anchors.fill: parent
+        spacing: 15
+
+
+        Rectangle
+        {
+            width: root.height * 0.7
+            height: root.height * 0.7
+            color: "#00000000"
+
+            Layout.leftMargin: root.height * 0.15
+
+            Image {
+                id: image
+                anchors.fill: parent
+                source: root.sourceUrl
+                sourceSize.width: parent.height
+                sourceSize.height: parent.height
+            }
+
+            ColorOverlay{
+                anchors.fill: image
+                source:image
+                color: buttonMouseArea.containsMouse || buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                antialiasing: true
+            }
+        }
+
+        Label{
+            id: textLabel
+            text: root.text
+            Layout.rightMargin: 15
+
+            visible: root.text != ""
+
+            color: buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+            font.pixelSize: 16
+        }
+    }
+
+    MouseArea{
+        id: buttonMouseArea
+        anchors.fill: parent
+        cursorShape: Qt.PointingHandCursor
         hoverEnabled: true
 
-        ToolTip.visible: containsMouse
-        ToolTip.delay: 600
-        ToolTip.text: toolTipText
-
-        cursorShape: Qt.PointingHandCursor
-
-        onClicked:
-        {
-            buttonRectangle.clicked();
-        }
+        onClicked: root.clicked()
     }
 }
 

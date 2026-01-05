@@ -3,6 +3,7 @@
 #include <version.h>
 #include <QFile>
 #include <QDir>
+#include <QDesktopServices>
 
 UiBackend::UiBackend(Core* core, QObject *parent)
     : QObject(parent)
@@ -592,6 +593,21 @@ void UiBackend::launchGame()
         setBalanceModInstallProcessedDialogVisible(true);
     else
         m_corePtr->gameController()->launchGame();
+}
+
+void UiBackend::openGameFolder()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentGame->gamePath));
+}
+
+void UiBackend::openSettingsFolder()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentGame->gameSettingsPath));
+}
+
+void UiBackend::openPlaybackFolder()
+{
+    QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentGame->gameSettingsPath + QDir::separator() + "Playback"));
 }
 
 void UiBackend::setSizeModifer(double size)
