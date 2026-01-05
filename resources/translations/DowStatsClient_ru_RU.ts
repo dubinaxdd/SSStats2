@@ -872,6 +872,32 @@
         <translation>Добро пожаловать в DoW Stats Client</translation>
     </message>
     <message>
+        <source>The client is designed to collect statistics and replays for Dawn of War - Soulstorm and Dawn of War - Definitive Edition.</source>
+        <translation>Клиент предназначен для сбора статистики и реплеев Dawn of War - Soulstorm и Dawn of War - Definitive Edition.</translation>
+    </message>
+    <message>
+        <source>Leaderboards and replays can be found on dowstats.ru or dowstats.com.</source>
+        <translation>Таблицы лидеров и реплеи можно найти на dowstats.ru или dowstats.com.</translation>
+    </message>
+    <message>
+        <source>   • Custom MMR game rules:</source>
+        <translation>   • Правила для Кастомного MMR:</translation>
+    </message>
+    <message>
+        <source>1v1 game, Automatch, Annihilate, Control Area, Take and Hold, Game Timer (optional).</source>
+        <translation>Игра 1 на 1, Автоматч, Уничтожение, Полный контроль, Царь горы, Таймер (опционально).</translation>
+    </message>
+    <message>
+        <source>Automatch, Annihilate, Control Area, Take and Hold, Game Timer (optional).</source>
+        <translation>Автоматч, Уничтожение, Полный контроль, Царь горы, Таймер (опционально).</translation>
+    </message>
+    <message>
+        <source>   • Disable Flyers:</source>
+        <translation>   • Без авиации:</translation>
+    </message>
+
+
+    <message>
         <source>Standard game settings for sending statistics:</source>
         <translation>Стандартные настройки игры для учета статистики:</translation>
     </message>

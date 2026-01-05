@@ -538,6 +538,9 @@ Window {
 
                         visible: _uiBackend.gameLaunchState && !_uiBackend.automatchState && _uiBackend.expandStatisticButtonVisible
 
+                        width: 30
+                        height: 30
+
                         Layout.preferredHeight: 30
                         Layout.preferredWidth: 30
 

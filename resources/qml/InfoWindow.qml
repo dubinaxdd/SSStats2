@@ -92,174 +92,18 @@ Rectangle {
                 }
 
                 Label{
+                    text: qsTr("The client is designed to collect statistics and replays for Dawn of War - Soulstorm and Dawn of War - Definitive Edition.")
+                    font.pixelSize: 14 * infoRectangle.sizeModifer
+                }
+
+                Label{
+                    text: qsTr("Leaderboards and replays can be found on dowstats.ru or dowstats.com.")
+                    font.pixelSize: 14 * infoRectangle.sizeModifer
+                }
+
+                Label{
                     text: ""
                     font.pixelSize: 14 * infoRectangle.sizeModifer
-                }
-
-                Label{
-                    text: qsTr("Standard game settings for sending statistics:")
-                    font.pixelSize: 18 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                ColumnLayout
-                {
-                    spacing: 3  * infoRectangle.sizeModifer
-
-                    GridLayout
-                    {
-                        columns: 2
-                        rowSpacing: 3  * infoRectangle.sizeModifer
-
-                        Label{
-                            text: qsTr("   • Solo MMR game rules:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("1v1 game, Annihilate, Control Area, Take and Hold, Game Timer (optional).")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Team MMR game rules:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional).")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Ai difficulty:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("Optional, if there is AI in the game, statistics are not sent.")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Starting resources:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("Standard")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-
-                        Label{
-                            text: qsTr("   • Lock teams:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("Yes")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Enable cheats:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("No")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Starting location:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("Optional")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Game speed:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("Normal")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Resource sharing:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("No")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("   • Resource Rate:")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-
-                        Label{
-                            text: qsTr("Standard")
-                            font.pixelSize: 14 * infoRectangle.sizeModifer
-                            color: DowStatsStyle.textColor
-                        }
-                    }
-
-                    Label{
-                        text: qsTr("   • Game duration is more than 45 seconds")
-                        font.pixelSize: 14 * infoRectangle.sizeModifer
-                        color: DowStatsStyle.textColor
-                    }
-                }
-
-                Rectangle{
-                    color:"#00000000"
-                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
-                }
-
-                Label{
-                    text: qsTr("Ranked mode:")
-                    font.pixelSize: 18 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: qsTr("   A game is considered ranked when at least one of the players is playing in ranked mode.")
-                    font.pixelSize: 14 * infoRectangle.sizeModifer
-                    color: DowStatsStyle.textColor
-                }
-
-                Rectangle{
-                    color:"#00000000"
-                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
                 }
 
                 Label{
@@ -451,6 +295,273 @@ Rectangle {
                     color: DowStatsStyle.textColor
                 }
 
+                Label{
+                    text: qsTr("   A game is considered ranked when at least one of the players is playing in ranked mode.")
+                    font.pixelSize: 14 * infoRectangle.sizeModifer
+                    Layout.alignment: Qt.AlignHCenter
+                    color: DowStatsStyle.textColor
+                }
+
+                Rectangle{
+                    color:"#00000000"
+                    Layout.preferredHeight: 30 * infoRectangle.sizeModifer
+                }
+
+
+                Label{
+                    text: qsTr("Standard game settings for sending statistics:")
+                    font.pixelSize: 18 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
+                }
+
+                ColumnLayout
+                {
+                    spacing: 3  * infoRectangle.sizeModifer
+
+                    GridLayout
+                    {
+                        columns: 2
+                        rowSpacing: 3  * infoRectangle.sizeModifer
+
+
+                        Label{
+                            text: qsTr("Definitive Edition:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Solo MMR game rules:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("1v1 game, Automatch, Annihilate, Control Area, Take and Hold, Game Timer (optional).")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Team MMR game rules:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Automatch, Annihilate, Control Area, Take and Hold, Game Timer (optional).")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+
+                        Label{
+                            text: qsTr("   • Custom MMR game rules:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional).")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+
+                        Label{
+                            text: qsTr("Soulstorm and supported mods:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Solo MMR game rules:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("1v1 game, Annihilate, Control Area, Take and Hold, Game Timer (optional).")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Team MMR game rules:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Annihilate, Control Area (optional), Take and Hold (optional), Game Timer (optional).")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("General:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Ai difficulty:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Optional, if there is AI in the game, statistics are not sent.")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Starting resources:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Standard")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+
+                        Label{
+                            text: qsTr("   • Lock teams:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Yes")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Enable cheats:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("No")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Starting location:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Optional")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Game speed:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Normal")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Resource sharing:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("No")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Resource Rate:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("Standard")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("   • Disable Flyers:")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+
+                        Label{
+                            text: qsTr("No")
+                            font.pixelSize: 14 * infoRectangle.sizeModifer
+                            color: DowStatsStyle.textColor
+                        }
+                    }
+
+                    Label{
+                        text: qsTr("   • Game duration is more than 45 seconds")
+                        font.pixelSize: 14 * infoRectangle.sizeModifer
+                        color: DowStatsStyle.textColor
+                    }
+                }
 
                 Rectangle{
                     color:"#00000000"

@@ -183,6 +183,9 @@ Window {
                             toolTipText: qsTr("Update")
                             containsMouse: updateButtonMouseArea.hovered
 
+                            width: 30 * _uiBackend.sizeModifer
+                            height: 30 * _uiBackend.sizeModifer
+
                             Layout.preferredHeight: 30 * _uiBackend.sizeModifer
                             Layout.preferredWidth: 30 * _uiBackend.sizeModifer
                             sizeModifer: _uiBackend.sizeModifer
