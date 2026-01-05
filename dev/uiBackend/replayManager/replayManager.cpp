@@ -73,7 +73,10 @@ void ReplayManager::openPlayback(QString fileName)
     m_currentMod = newRepReader.replay.MOD;
 
     if (m_currentMod == "dxp2")
-        m_currentMod = tr("Original Soulstorm");
+        m_currentMod = "Soulstorm";
+
+    if (m_currentMod == "DoWDE")
+        m_currentMod = "Definitive Edition";
 
     for (int i = 0; i < m_modInfo.count(); i++)
     {

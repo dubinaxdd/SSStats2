@@ -134,8 +134,6 @@ Rectangle {
                 sourceUrl: "qrc:/icons/resources/images/game.svg"
                 text: qsTr("Open Game folder")
                 onClicked: _uiBackend.openGameFolder()
-
-
             }
 
             IconButton{
