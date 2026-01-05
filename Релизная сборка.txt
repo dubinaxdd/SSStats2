@@ -1,26 +1,29 @@
 C++
 Qt 5.15.2
 CMake 3.14
-MingGW 8.1.0 32-bit / MSVC19 X86
+MSVC19 X64
 OpenSSL
 WinSDK (for manifest)
 
 Если собираем командной строкой:
 CMake optoins example:
 -DCMAKE_PREFIX_PATH:= "C:\Qt\5.15.2\mingw81_32\lib\cmake;"
--DOPENSSL_ROOT_DIR:=C:/Qt/Tools/OpenSSL/Win_x86
--DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/
--DQUAZIP_USE_QT_ZLIB:BOOL=ON
+-DOPENSSL_ROOT_DIR:=C:/OpenSSL-Win64
+-DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x64/
+-DQUAZIP_USE_QT_ZLIB:BOOL=ON //ЭТО не обязательно
 
 Если используем QtCreator
 -DOPENSSL_ROOT_DIR:=C:/Qt/Tools/OpenSSL/Win_x86
 -DWINSDK_MT_DIR:=C:/Windows Kits/10/bin/10.0.22000.0/x86/
--DQUAZIP_USE_QT_ZLIB:BOOL=ON
+-DQUAZIP_USE_QT_ZLIB:BOOL=ON //ЭТО не обязательно
 
 Сборка прокекта производится в папку bin по указанной директории сборки в настройках проекта.
 
 OpenSSL брать от сюда
 https://slproweb.com/products/Win32OpenSSL.html
+
+!!! там больше нет нужной версии. поэтому откуда брать - хз, надо гуглить, я не помню
+
 Путь до папки указываем настройках проекта используя -DOPENSSL_ROOT_DIR. В релизную сборку либы задиплоятся автоматически
 
 Для сборки инсталлера скачиваем Actual Installer http://www.actualinstaller.ru/

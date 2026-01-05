@@ -190,6 +190,8 @@ void GameController::onCurrentGameChanged()
     mutex.unlock();
 
     checkWindowState();
+
+    qInfo(logInfo()) << "Worked with Game from: " << m_currentGame.gamePath;
 }
 
 void GameController::minimizeSsWithWin7Support()
@@ -366,9 +368,6 @@ void GameController::ssShutdown()
     m_lobbyEventReader->setSessionIdRequested(false);
     m_lobbyEventReader->setSessionIdReceived(false);
 
-    /*m_gameHwnd = NULL;
-    m_defaultGameWindowLong = NULL;
-    m_gameProcess->deleteLater();*/
 }
 
 void GameController::loadGamePathFromRegistry()
@@ -548,8 +547,26 @@ void GameController::findSoulstormPath()
         path = steam.value("SteamPath", "").toString() + "\\steamapps\\common\\Dawn of War Soulstorm";
 
         if (!checkGamePath(path, "Soulstorm.exe"))
-            return;
+            path = "";
     }
+
+
+    QFileInfoList drives = QDir::drives();
+    for(auto& drive : drives)
+    {
+        if (path.isEmpty())
+        {
+            path = drive.path().replace("/", "\\") + "SteamLibrary\\steamapps\\common\\Dawn of War Soulstorm";
+
+            if (!checkGamePath(path, "Soulstorm.exe"))
+                path = "";
+            else
+                break;
+        }
+    }
+
+    if (path.isEmpty())
+        return;
 
     if(!path.isEmpty())
     {
@@ -581,8 +598,25 @@ void GameController::findDefinitiveEdition()
         path = steamPath + "\\steamapps\\common\\Dawn of War Definitive Edition";
 
         if (!checkGamePath(path, "W40k.exe"))
-            return;
+            path = "";
     }
+
+    QFileInfoList drives = QDir::drives();
+    for(auto& drive : drives)
+    {
+        if (path.isEmpty())
+        {
+            path = drive.path().replace("/", "\\") + "SteamLibrary\\steamapps\\common\\Dawn of War Definitive Edition";
+
+            if (!checkGamePath(path, "W40k.exe"))
+                path = "";
+            else
+                break;
+        }
+    }
+
+    if (path.isEmpty())
+        return;
 
     QString gameSettingsPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation).replace('/',"\\").replace("\\Roaming\\DowStatsClient", "") + "\\Roaming\\Relic Entertainment\\Dawn of War";
 
