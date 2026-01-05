@@ -13,6 +13,7 @@ class ModsPage : public QObject
 
     Q_PROPERTY(ModItem* russianFontsMod MEMBER m_russianFontsMod CONSTANT)
     Q_PROPERTY(ModItem* cameraMod MEMBER m_cameraMod CONSTANT)
+    Q_PROPERTY(ModItem* cameraModDE MEMBER m_cameraModDE CONSTANT)
     Q_PROPERTY(ModItem* gridHotkeysMod MEMBER m_gridHotkeysMod CONSTANT)
     Q_PROPERTY(ModItem* transparentCameraTrapezoidMod MEMBER m_transparentCameraTrapezoidMod CONSTANT)
 
@@ -43,6 +44,7 @@ private:
 
     ModItem* m_russianFontsMod;
     ModItem* m_cameraMod;
+    ModItem* m_cameraModDE;
     ModItem* m_gridHotkeysMod;
     ModItem* m_transparentCameraTrapezoidMod;
 

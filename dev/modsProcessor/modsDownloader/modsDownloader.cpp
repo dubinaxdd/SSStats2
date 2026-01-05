@@ -16,7 +16,8 @@ void ModsDownloader::downloadMod(InstMod mod)
 {
     switch (mod){
         case InstMod::RussianFonts  : requestRussianFonts(); break;
-        case InstMod::CameraMod     : requestCameraMod(); break;
+        case InstMod::CameraMod     : requestCameraMod(InstMod::CameraMod); break;
+        case InstMod::CameraModDE   : requestCameraMod(InstMod::CameraModDE); break;
         case InstMod::GridHotkeys   : requestGridHotkeys(); break;
         case InstMod::TransparentCameraTrapezoid   : requestTransparentCameraTrapezoid(); break;
     }
@@ -77,36 +78,45 @@ void ModsDownloader::saveRussianFonts(QByteArray russianFontsByteArray)
     }
 }
 
-void ModsDownloader::requestCameraMod()
+void ModsDownloader::requestCameraMod(InstMod modType)
 {
     QNetworkRequest newRequest;
 
-    QString urlString = "https://dowstats.ru/ssstats/Downloads/CameraMod.zip";
+    QString name = "";
+
+    if(modType == InstMod::CameraMod)
+        name = "CameraMod";
+    else if(modType == InstMod::CameraModDE)
+        name = "CameraModDE";
+    else
+        return;
+
+    QString urlString = "https://dowstats.ru/ssstats/Downloads/" + name + ".zip";
 
     newRequest.setUrl(QUrl(urlString));
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveCameraMod(reply);
+        receiveCameraMod(reply, modType);
     });
 
     QObject::connect(reply, &QNetworkReply::downloadProgress, this, [=](qint64 bytesReceived, qint64 bytesTotal){
 
         if(bytesTotal != 0)
         {
-            emit downladProgress(InstMod::CameraMod, bytesReceived * 100 / bytesTotal);
+            emit downladProgress(modType, bytesReceived * 100 / bytesTotal);
             qInfo(logInfo()) << "Camera mod download progress:" << bytesReceived << "/" << bytesTotal;
         }
     });
 }
 
-void ModsDownloader::receiveCameraMod(QNetworkReply *reply)
+void ModsDownloader::receiveCameraMod(QNetworkReply *reply, InstMod modType)
 {
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "Connection error:" << reply->errorString();
         reply->deleteLater();
-        emit downloadError(InstMod::CameraMod);
+        emit downloadError(modType);
         return;
     }
 
@@ -118,7 +128,7 @@ void ModsDownloader::receiveCameraMod(QNetworkReply *reply)
 
     qInfo(logInfo()) <<  "Camera mod downloaded to " << QDir::currentPath() + QDir::separator() + "CameraMod.zip";
 
-    emit modDownloaded(InstMod::CameraMod, QDir::currentPath() + QDir::separator() + "CameraMod.zip");
+    emit modDownloaded(modType, QDir::currentPath() + QDir::separator() + "CameraMod.zip");
 }
 
 void ModsDownloader::saveCameraMod(QByteArray cameraModByteArray)

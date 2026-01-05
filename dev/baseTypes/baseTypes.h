@@ -98,6 +98,7 @@ enum InstMod
 {
     RussianFonts,
     CameraMod,
+    CameraModDE,
     GridHotkeys,
     TransparentCameraTrapezoid
 };

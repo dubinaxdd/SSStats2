@@ -6,6 +6,7 @@ ModsPage::ModsPage(ModsProcessor* modsProcessor, SettingsController *settingsCon
     , m_settingsController(settingsController)
     , m_russianFontsMod(new ModItem(this))
     , m_cameraMod(new ModItem(this))
+    , m_cameraModDE(new ModItem(this))
     , m_gridHotkeysMod(new ModItem(this))
     , m_transparentCameraTrapezoidMod(new ModItem(this))
 {
@@ -13,6 +14,7 @@ ModsPage::ModsPage(ModsProcessor* modsProcessor, SettingsController *settingsCon
 
     QObject::connect(m_russianFontsMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::RussianFonts);});
     QObject::connect(m_cameraMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::CameraMod);});
+    QObject::connect(m_cameraModDE, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::CameraModDE);});
     QObject::connect(m_gridHotkeysMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::GridHotkeys);});
     QObject::connect(m_transparentCameraTrapezoidMod, &ModItem::startInstall, this, [&]{m_modsProcessorPtr->modInstallRequest(InstMod::TransparentCameraTrapezoid);});
 
@@ -24,6 +26,11 @@ ModsPage::ModsPage(ModsProcessor* modsProcessor, SettingsController *settingsCon
     QObject::connect(m_cameraMod, &ModItem::startUninstall, this, [&]{
         m_modsProcessorPtr->uninstallRequest(InstMod::CameraMod);
         m_settingsController->getSettings()->cameraModInstalled = false;
+        m_settingsController->saveSettings();
+    });
+    QObject::connect(m_cameraModDE, &ModItem::startUninstall, this, [&]{
+        m_modsProcessorPtr->uninstallRequest(InstMod::CameraModDE);
+        m_settingsController->getSettings()->cameraModDEInstalled = false;
         m_settingsController->saveSettings();
     });
     QObject::connect(m_gridHotkeysMod, &ModItem::startUninstall, this, [&]{
@@ -50,6 +57,7 @@ void ModsPage::onSettingsLoaded()
 
     m_russianFontsMod->setInstalledStatus(m_settingsController->getSettings()->russianFontsInstalled);
     m_cameraMod->setInstalledStatus(m_settingsController->getSettings()->cameraModInstalled);
+    m_cameraModDE->setInstalledStatus(m_settingsController->getSettings()->cameraModDEInstalled);
     m_gridHotkeysMod->setInstalledStatus(m_settingsController->getSettings()->gridHotkeysInstalled);
 
     qInfo(logInfo()) << "ModsPage::onSettingsLoaded()" << "load finished";
@@ -61,6 +69,7 @@ void ModsPage::receiveDownloadProgress(InstMod mod, int progress)
     switch (mod) {
         case InstMod::RussianFonts :    m_russianFontsMod->setDownloadProgress(progress);   break;
         case InstMod::CameraMod :       m_cameraMod->setDownloadProgress(progress);         break;
+        case InstMod::CameraModDE :     m_cameraModDE->setDownloadProgress(progress);       break;
         case InstMod::GridHotkeys :     m_gridHotkeysMod->setDownloadProgress(progress);    break;
         case InstMod::TransparentCameraTrapezoid :     m_transparentCameraTrapezoidMod->setDownloadProgress(progress);    break;
     }
@@ -79,6 +88,12 @@ void ModsPage::receiveInstallCompleeted(InstMod mod)
         case InstMod::CameraMod : {
             m_cameraMod->setInstallCompleeted();
             m_settingsController->getSettings()->cameraModInstalled = true;
+            break;
+        }
+
+        case InstMod::CameraModDE : {
+            m_cameraModDE->setInstallCompleeted();
+            m_settingsController->getSettings()->cameraModDEInstalled = true;
             break;
         }
 
@@ -102,6 +117,7 @@ void ModsPage::receiveDownloadError(InstMod mod)
     switch (mod) {
         case InstMod::RussianFonts :                m_russianFontsMod->setDownloadError();  break;
         case InstMod::CameraMod :                   m_cameraMod->setDownloadError();        break;
+        case InstMod::CameraModDE :                   m_cameraModDE->setDownloadError();        break;
         case InstMod::GridHotkeys :                 m_gridHotkeysMod->setDownloadError();   break;
         case InstMod::TransparentCameraTrapezoid :  m_transparentCameraTrapezoidMod->setDownloadError();   break;
     }

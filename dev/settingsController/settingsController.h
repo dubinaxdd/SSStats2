@@ -16,6 +16,7 @@ struct Settings
     QString lastReadedEventsMessageID = "";
     bool russianFontsInstalled = false;
     bool cameraModInstalled = false;
+    bool cameraModDEInstalled = false;
     bool gridHotkeysInstalled = false;
     bool overlayVisible = true;
     bool win7SupportMode = false;

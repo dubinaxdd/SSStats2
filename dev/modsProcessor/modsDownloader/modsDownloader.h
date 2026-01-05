@@ -25,8 +25,8 @@ private:
     void receiveRussinFonts(QNetworkReply* reply);
     void saveRussianFonts(QByteArray russianFontsByteArray);
 
-    void requestCameraMod();
-    void receiveCameraMod(QNetworkReply* reply);
+    void requestCameraMod(InstMod modType);
+    void receiveCameraMod(QNetworkReply* reply, InstMod modType);
     void saveCameraMod(QByteArray cameraModByteArray);
 
     void requestGridHotkeys();

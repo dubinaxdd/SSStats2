@@ -8,25 +8,6 @@ ModsInstaller::ModsInstaller(GamePath* gamePath, QObject *parent)
     : QObject(parent)
     ,m_currentGame(gamePath)
 {
-
-
-    //QuaZip zip("zipFile.zip");
-   // zip.open(QuaZip::mdUnzip);
-
-
-    //QuaZipFile file(&zip);
-
-   // JlCompress::extractDir("C:/test/test.zip", "C:/test/");
-/*
-    for(bool f=zip.goToFirstFile(); f; f=zip.goToNextFile()) {
-        file.open(QIODevice::ReadOnly);
-        //same functionality as QIODevice::readData() -- data is a char*, maxSize is qint64
-        file.read(data,maxSize);
-        //do something with the data
-        file.close();
-    }*/
-
-    /*  zip.close();*/
 }
 
 void ModsInstaller::installMod(InstMod mod, QString path)
@@ -34,6 +15,7 @@ void ModsInstaller::installMod(InstMod mod, QString path)
     switch(mod){
         case InstMod::RussianFonts : installRussianFonts(path); break;
         case InstMod::CameraMod : installCameraMod(path); break;
+        case InstMod::CameraModDE : installCameraMod(path); break;
         case InstMod::GridHotkeys : installGridHotkeys(path); break;
         case InstMod::TransparentCameraTrapezoid : installTransparentCameraTrapezoid(path); break;
     }
@@ -46,6 +28,7 @@ void ModsInstaller::uninstallMod(InstMod mod)
     switch (mod){
         case InstMod::RussianFonts : uninstallRussianFonts(); break;
         case InstMod::CameraMod : uninstallCameraMod(); break;
+        case InstMod::CameraModDE : uninstallCameraMod(); break;
         case InstMod::GridHotkeys : uninstallGridHotkeys(); break;
         case InstMod::TransparentCameraTrapezoid : uninstallTransparentCameraTrapezoid(); break;
     }
@@ -84,9 +67,6 @@ void ModsInstaller::uninstallRussianFonts()
 
 void ModsInstaller::installCameraMod(QString path)
 {
-    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
-        return;
-
     JlCompress::extractDir(path, m_currentGame->gamePath + QDir::separator());
     qInfo(logInfo()) <<  "Camera mod installed from " << path << "to" << m_currentGame->gamePath;
 
@@ -96,9 +76,6 @@ void ModsInstaller::installCameraMod(QString path)
 
 void ModsInstaller::uninstallCameraMod()
 {
-    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
-        return;
-
     QFile tempfile1(m_currentGame->gamePath + "\\Engine\\Data\\camera_ed.lua");
     tempfile1.remove();
 

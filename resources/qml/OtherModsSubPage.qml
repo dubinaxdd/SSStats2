@@ -88,7 +88,14 @@ Rectangle
         {
             model: root.model.cameraMod
             text: qsTr("Advanced camera mod:")
-            visible: _uiBackend.gamePage.currentGameType !==  GameType.DefinitiveEdition
+            visible: _uiBackend.gamePage.currentGameType ===  GameType.SoulstormSteam
+        }
+
+        ModItem
+        {
+            model: root.model.cameraModDE
+            text: qsTr("Advanced camera mod:")
+            visible: _uiBackend.gamePage.currentGameType ===  GameType.DefinitiveEdition
         }
 
         ModItem
