@@ -94,11 +94,13 @@ Rectangle {
                 Label{
                     text: qsTr("The client is designed to collect statistics and replays for Dawn of War - Soulstorm and Dawn of War - Definitive Edition.")
                     font.pixelSize: 14 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
                 }
 
                 Label{
                     text: qsTr("Leaderboards and replays can be found on dowstats.ru or dowstats.com.")
                     font.pixelSize: 14 * infoRectangle.sizeModifer
+                    color: DowStatsStyle.textColor
                 }
 
                 Label{
