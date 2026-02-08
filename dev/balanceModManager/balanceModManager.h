@@ -11,6 +11,7 @@
 #include <QThread>
 #include <BalanceModInstaller.h>
 #include <settingsController.h>
+#include <defines.h>
 
 class BalanceModManager : public QObject
 {
@@ -85,9 +86,9 @@ private:
     SettingsController* m_settingsController;
 
 #ifdef BALANCE_MOD_TEST
-    QString m_balanceModServerAddres = "http://crosspick.ru/dow_stats_client/test/";
+    QString m_balanceModServerAddres = QString(BALANCE_MOD_WEB_SERVICE) + "/dow_stats_client/test/";
 #else
-    QString m_balanceModServerAddres = "http://crosspick.ru/dow_stats_client/dow_stats_balance_mod/";
+    QString m_balanceModServerAddres = QString(BALANCE_MOD_WEB_SERVICE) + "/dow_stats_client/dow_stats_balance_mod/";
 #endif
 
     QList <ModInfo> m_modInfoList;

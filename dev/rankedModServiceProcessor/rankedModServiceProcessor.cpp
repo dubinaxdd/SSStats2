@@ -52,7 +52,7 @@ void RankedModServiceProcessor::sendRankedMode(bool rankedMode)
     else
         ranked = "false";
 
-    QString urlString = "http://crosspick.ru:8081/setRankedMode?sid=" + m_currentPlayerSteamId + "&rankedMode=" +ranked ;
+    QString urlString = QString(RANKED_WEB_SERVICE) + "/setRankedMode?sid=" + m_currentPlayerSteamId + "&rankedMode=" +ranked ;
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
     newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
@@ -101,7 +101,7 @@ void RankedModServiceProcessor::rankedStateTimerTimeout()
         plyersRankedState.append(newPlyersRankedState);
     }
 
-    QString urlString = "http://crosspick.ru:8081/getRankedMode?sid=" + sidsListString;
+    QString urlString = QString(RANKED_WEB_SERVICE) + "/getRankedMode?sid=" + sidsListString;
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
     newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
@@ -277,7 +277,7 @@ void RankedModServiceProcessor::sendPingRequest()
     //if (m_currentPlayerSteamId.isEmpty())
     //    return;
 
-    QString urlString = "http://crosspick.ru:8081/pingRequest?sid=" + m_currentPlayerSteamId + "&gameMod=" + m_currentMod;
+    QString urlString = QString(RANKED_WEB_SERVICE) + "/pingRequest?sid=" + m_currentPlayerSteamId + "&gameMod=" + m_currentMod;
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
     newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
@@ -291,7 +291,7 @@ void RankedModServiceProcessor::sendPingRequest()
 
 void RankedModServiceProcessor::requestUniquePlayersOnlineStatistic()
 {
-    QString urlString = "http://crosspick.ru:8081/uniq";
+    QString urlString = QString(RANKED_WEB_SERVICE) + "/uniq";
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(urlString));
     newRequest.setRawHeader("Token", QString::fromStdString(RANKED_SERVICE_TOKEN).toLatin1());
