@@ -88,6 +88,7 @@ private slots:
     void onSettingsLoaded() override;
     void readMessage(QString messgae) override;
     void sendPing() override;
+    void onConnected() override;
 
 signals:
     void sendNews(QList<DiscordMessage> news);

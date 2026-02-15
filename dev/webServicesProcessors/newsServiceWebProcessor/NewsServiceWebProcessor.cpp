@@ -469,3 +469,9 @@ void DiscordWebProcessor::sendPing()
     m_webSocket.sendTextMessage(message.toJson().replace('\n',""));
     m_pingResponseTimer.start();
 }
+
+void DiscordWebProcessor::onConnected()
+{
+    AbstractWebServiceProcessor::onConnected();
+    requestLastMessageId();
+}
