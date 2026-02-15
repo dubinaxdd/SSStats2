@@ -36,7 +36,6 @@ public slots:
     void setCurrentMod(QString modName);
 
 private slots:
-    void pingTimerTimeout();
     void requestRankedState();
     void requestModsOnlineCount();
     void receiveRankedState(QJsonObject data);

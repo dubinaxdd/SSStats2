@@ -8,6 +8,7 @@
 RankedModServiceProcessor::RankedModServiceProcessor(SettingsController *settingsController, QObject *parent)
     : AbstractWebServiceProcessor(settingsController, parent)
 {
+        connect(&m_pingTimer, &QTimer::timeout, this, &RankedModServiceProcessor::requestRankedState, Qt::QueuedConnection);
     connect(&m_uniquePlayersOnlineStatistic, &QTimer::timeout, this, &RankedModServiceProcessor::requestUniquePlayersOnlineStatistic);
     connect(&m_uniquePlayersOnlineStatistic, &QTimer::timeout, this, &RankedModServiceProcessor::requestModsOnlineCount);
 
@@ -42,12 +43,6 @@ void RankedModServiceProcessor::setRankedMode(bool rankedMode)
     sendPing();
 }
 
-void RankedModServiceProcessor::pingTimerTimeout()
-{
-    sendPing();
-    requestRankedState();
-}
-
 void RankedModServiceProcessor::requestRankedState()
 {
     QJsonArray players;
@@ -67,7 +62,7 @@ void RankedModServiceProcessor::requestRankedState()
     dataObject.insert("players", players);
 
     QJsonObject messageObject;
-    messageObject.insert("op", PingRequest);
+    messageObject.insert("op", PlyersStateRequest);
     messageObject.insert("data", dataObject);
 
     QJsonDocument message;
@@ -98,6 +93,11 @@ void RankedModServiceProcessor::receiveRankedState(QJsonObject data)
         newPlyersRankedState.steamId = item.steamId;
         plyersRankedState.append(std::move(newPlyersRankedState));
     }
+
+    PlyersRankedState newPlyersRankedState;
+    newPlyersRankedState.steamId = m_currentPlayerSteamId;
+    newPlyersRankedState.name = m_currentPlayerName;
+    plyersRankedState.append(std::move(newPlyersRankedState));
 
     QJsonArray jsonArray = data.value("players_state").toArray();
     QVector<PlyersRankedState> newPlyersRankedStateArray;
