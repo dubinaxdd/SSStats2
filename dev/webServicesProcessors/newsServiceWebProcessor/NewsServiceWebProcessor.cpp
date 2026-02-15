@@ -7,26 +7,15 @@
 #include <defines.h>
 
 DiscordWebProcessor::DiscordWebProcessor(SettingsController* settingsController, QObject *parent)
-    : QObject(parent)
-    , m_settingsController(settingsController)
-    , m_requestTimer(new QTimer(this))
+    : AbstractWebServiceProcessor(settingsController, parent)
     , m_networkManager(new QNetworkAccessManager(this))
 {
-    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &DiscordWebProcessor::onSettingsLoaded, Qt::QueuedConnection);
-
-    connect(&m_webSocket, &QWebSocket::connected, this, &DiscordWebProcessor::onConnected, Qt::QueuedConnection);
-    connect(&m_webSocket, &QWebSocket::disconnected, this,  &DiscordWebProcessor::onDisconnected, Qt::QueuedConnection);
-    connect(&m_webSocket, &QWebSocket::textMessageReceived, this, &DiscordWebProcessor::readMessage, Qt::QueuedConnection);
-
-    connect(&m_reconnectTimer, &QTimer::timeout, this, &DiscordWebProcessor::reconnect, Qt::QueuedConnection);
-    connect(&m_pingTimer, &QTimer::timeout, this, &DiscordWebProcessor::sendPing, Qt::QueuedConnection);
-    connect(&m_pingResponceTimer, &QTimer::timeout, this, [&]{m_webSocket.close();});
-
+    m_serviceName = "Discord Web Service";
+    m_url = QString::fromStdString(DISCORD_WEB_SERVICE);
     m_reconnectTimer.setInterval(5000);
     m_pingTimer.setInterval(20000);
-    m_pingResponceTimer.setInterval(10000);
-    m_pingResponceTimer.setSingleShot(true);
-
+    m_pingResponseTimer.setInterval(10000);
+    m_pingResponseTimer.setSingleShot(true);
 }
 
 void DiscordWebProcessor::requestNews()
@@ -304,7 +293,7 @@ void DiscordWebProcessor::receiveUpdateEventMessage(QJsonObject messageObject)
 
 void DiscordWebProcessor::receivePingResponce()
 {
-    m_pingResponceTimer.stop();
+    m_pingResponseTimer.stop();
 }
 
 void DiscordWebProcessor::setLastReadedNewsMessageID(QString id)
@@ -414,7 +403,7 @@ void DiscordWebProcessor::onSettingsLoaded()
 
     qInfo(logInfo()) << "DiscordWebProcessor::onSettingsLoaded()" << "load finished";
 
-    m_webSocket.open(QUrl(DISCORD_WEB_SERVICE));
+    m_webSocket.open(QUrl(m_url));
     m_reconnectTimer.start();
 }
 
@@ -469,29 +458,6 @@ void DiscordWebProcessor::readMessage(QString message)
     }
 }
 
-void DiscordWebProcessor::reconnect()
-{
-    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Try reconnect";
-    m_webSocket.open(QUrl(DISCORD_WEB_SERVICE));
-}
-
-void DiscordWebProcessor::onConnected()
-{
-    m_pingTimer.start();
-    m_reconnectTimer.stop();
-    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Connected";
-    m_webSocketConnected = true;
-    requestLastMessageId();
-}
-
-void DiscordWebProcessor::onDisconnected()
-{
-    m_pingTimer.stop();
-    m_reconnectTimer.start();
-    m_webSocketConnected = false;
-    qInfo(logInfo()) << "DiscordWebProcessor::reconnect() Disconnected";
-}
-
 void DiscordWebProcessor::sendPing()
 {
     QJsonObject messageObject;
@@ -501,5 +467,5 @@ void DiscordWebProcessor::sendPing()
     message.setObject(messageObject);
 
     m_webSocket.sendTextMessage(message.toJson().replace('\n',""));
-    m_pingResponceTimer.start();
+    m_pingResponseTimer.start();
 }

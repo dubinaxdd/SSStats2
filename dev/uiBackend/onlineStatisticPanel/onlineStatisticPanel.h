@@ -39,12 +39,12 @@ signals:
     void uniquePlayersOnlineStatisticChanged();
 
 public slots:
-    void receiveModsOnlineCountMap(QMap<QString, int> modsOnlineCountMap);
+    void receiveModsOnlineCountMap(QList<ModOnlineCount> modOnlineCountList);
     void receiveUniquePlayersOnlineStatistic(UniqueOnlineStatistic uniqueOnlineStatistic);
 
 private:
     RankedModServiceProcessor* m_rankedModServiceProcessorPtr;
-    QMap<QString, int> m_modsOnlineCountMap;
+    QList<ModOnlineCount> m_modsOnlineCountMap;
     UniqueOnlineStatistic m_uniqueOnlineStatistic;
 
 };

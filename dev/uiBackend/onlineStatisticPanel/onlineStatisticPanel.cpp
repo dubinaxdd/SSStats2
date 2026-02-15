@@ -6,7 +6,7 @@ OnlineStatisticPanel::OnlineStatisticPanel(RankedModServiceProcessor* rankedModS
     , m_rankedModServiceProcessorPtr(rankedModServiceProcessor)
 {
     QObject::connect(m_rankedModServiceProcessorPtr, &RankedModServiceProcessor::sendUniquePlayersOnlineStatistic, this, &OnlineStatisticPanel::receiveUniquePlayersOnlineStatistic, Qt::QueuedConnection);
-    QObject::connect(m_rankedModServiceProcessorPtr, &RankedModServiceProcessor::sendModsOnlineCountMap,           this, &OnlineStatisticPanel::receiveModsOnlineCountMap,           Qt::QueuedConnection);
+    QObject::connect(m_rankedModServiceProcessorPtr, &RankedModServiceProcessor::sendModsOnlineCount,           this, &OnlineStatisticPanel::receiveModsOnlineCountMap,           Qt::QueuedConnection);
 }
 
 QVariant OnlineStatisticPanel::data(const QModelIndex &index, int role) const
@@ -15,9 +15,9 @@ QVariant OnlineStatisticPanel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     if (role == ModName)
-        return m_modsOnlineCountMap.keys().at(index.row());
+        return m_modsOnlineCountMap.at(index.row()).modUiName;
     else if (role == OnlineCount)
-        return m_modsOnlineCountMap.values().at(index.row());
+        return m_modsOnlineCountMap.at(index.row()).onlineCount;
 
     return QVariant();
 }
@@ -57,13 +57,8 @@ QHash<int, QByteArray> OnlineStatisticPanel::roleNames() const
     return roles;
 }
 
-void OnlineStatisticPanel::receiveModsOnlineCountMap(QMap<QString, int> modsOnlineCountMap)
+void OnlineStatisticPanel::receiveModsOnlineCountMap(QList<ModOnlineCount> modOnlineCountList)
 {
-    //TODO: Костыль который надо будет убрать как перепишется мик5росервис онлайна
-    modsOnlineCountMap["Other mods"] += modsOnlineCountMap["TournamentPatch"] += modsOnlineCountMap["Tribun mod"];
-    modsOnlineCountMap.remove("TournamentPatch");
-    modsOnlineCountMap.remove("Tribun mod");
-
     if (m_modsOnlineCountMap.count() > 0)
     {
         beginRemoveRows(QModelIndex(), 0, m_modsOnlineCountMap.count() - 1);
@@ -71,10 +66,10 @@ void OnlineStatisticPanel::receiveModsOnlineCountMap(QMap<QString, int> modsOnli
         endRemoveRows();
     }
 
-    if (modsOnlineCountMap.count() > 0)
+    if (modOnlineCountList.count() > 0)
     {
-        beginInsertRows(QModelIndex(), 0, modsOnlineCountMap.count() - 1);
-        m_modsOnlineCountMap = modsOnlineCountMap;
+        beginInsertRows(QModelIndex(), 0, modOnlineCountList.count() - 1);
+        m_modsOnlineCountMap = modOnlineCountList;
         endInsertRows();
     }
 }

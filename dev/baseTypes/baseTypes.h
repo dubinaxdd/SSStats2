@@ -21,6 +21,12 @@ private:
     GameType(){}
 };
 
+struct ModOnlineCount
+{
+    QString modUiName = "";
+    int onlineCount = 0;
+    int order = 0;
+};
 
 struct GamePath{
     GameType::GameTypeEnum gameType = GameType::GameTypeEnum::SoulstormDowOnline;

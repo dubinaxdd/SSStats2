@@ -452,7 +452,7 @@ void UiBackend::setRankedModeState(bool newRankedModeState)
     if (m_rankedModeState == newRankedModeState)
         return;
     m_rankedModeState = newRankedModeState;
-    m_corePtr->rankedModServiceProcessor()->sendRankedMode(m_rankedModeState);
+    m_corePtr->rankedModServiceProcessor()->setRankedMode(m_rankedModeState);
     emit rankedModeStateChanged();
 }
 

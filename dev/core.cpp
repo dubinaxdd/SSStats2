@@ -85,6 +85,7 @@ void Core::registerTypes()
     qRegisterMetaType<UniqueOnlineStatistic>("UniqueOnlineStatistic");
     qRegisterMetaType<DowServerRequestParametres>("DowServerRequestParametres");
     qRegisterMetaType<QVector<RelicStats>>("QVector<RelicStats>");
+    qRegisterMetaType<QVector<RelicStats>>("QList<ModOnlineCount>");
 }
 
 void Core::addConnections()
@@ -101,7 +102,7 @@ void Core::addConnections()
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,  Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::sendCurrentMissionState, m_soundProcessor,           &SoundProcessor::receiveCurrentMissionState, Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::gameInitialized,         m_statsServerProcessor,  [&](){m_statsServerProcessor->parseCurrentPlayerSteamId();}, Qt::QueuedConnection);
-    QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::sendCurrentMod,  m_rankedModServiceProcessor, &RankedModServiceProcessor::receiveCurrentMod,   Qt::QueuedConnection);
+    QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::sendCurrentMod,  m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentMod,   Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::sendCurrentMod,  m_statsServerProcessor, &StatsServerProcessor::receiveCurrentMod,   Qt::QueuedConnection);
     QObject::connect(m_gameController->lobbyEventReader(),    &LobbyEventReader::quitFromParty,      m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
     QObject::connect(m_gameController->lobbyEventReader(),    &LobbyEventReader::hostParty,          m_soundProcessor,  &SoundProcessor::activeIsFirstConnection,  Qt::QueuedConnection);
@@ -110,12 +111,12 @@ void Core::addConnections()
     QObject::connect(m_gameController->lobbyEventReader(),    &LobbyEventReader::playerKicked,       m_soundProcessor,  &SoundProcessor::playPlayerLeftSound,  Qt::QueuedConnection);
     QObject::connect(m_gameController->replayDataCollector(), &ReplayDataCollector::sendReplayToServer,       m_statsServerProcessor, &StatsServerProcessor::sendReplayToServer,   Qt::QueuedConnection);
     QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer, m_statsServerProcessor, &StatsServerProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
-    QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer, m_rankedModServiceProcessor, &RankedModServiceProcessor::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
+    QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendPlayersInfoFromDowServer, m_rankedModServiceProcessor, &RankedModServiceProcessor::setPlayresInfoFromDowServer, Qt::QueuedConnection);
 
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendServerPlayerStats,     m_gameController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_gameController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended,             m_gameController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
-    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamIdSlot, Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamId, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_gameController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);

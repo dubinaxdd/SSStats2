@@ -39,6 +39,11 @@ if (${TEST_DISCORD_MICROSERVICE})
     message(STATUS "Build with local test discord microservice")
 endif()
 
+option(TEST_ONLINE_MICROSERVICE "Build with local test online microservice" OFF)
+if (${TEST_ONLINE_MICROSERVICE})
+    add_definitions(-DTEST_ONLINE_MICROSERVICE)
+    message(STATUS "Build with local test online microservice")
+endif()
 
 option(DISAPLE_HOOK_FOR_DEBUG "Disable hook for debug without lags" OFF)
 if (${DISAPLE_HOOK_FOR_DEBUG})
@@ -176,6 +181,7 @@ file(GLOB  modsProcessor_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/modsProcessor ${CMA
 file(GLOB  replayManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/replayManager/*)
 file(GLOB  modsPage_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/modsPage ${CMAKE_CURRENT_SOURCE_DIR}/dev/uiBackend/modsPage/*)
 file(GLOB  balanceModManager_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/balanceModManager ${CMAKE_CURRENT_SOURCE_DIR}/dev/balanceModManager/*)
+file(GLOB  webServicesProcessors_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dev/webServicesProcessors ${CMAKE_CURRENT_SOURCE_DIR}/dev/webServicesProcessors/*)
 
 set(SOURCE_DIRECTORIES
     ${dev_DIR}
@@ -186,6 +192,7 @@ set(SOURCE_DIRECTORIES
     ${replayManager_DIR}
     ${modsPage_DIR}
     ${balanceModManager_DIR}
+    ${webServicesProcessors_DIR}
 )
 
 #message(STATUS "SOURCE_DIRECTORIES: " ${SOURCE_DIRECTORIES})

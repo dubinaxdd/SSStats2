@@ -1,7 +1,7 @@
 #ifndef NEWSSERVICEWEBPROCESSOR_H
 #define NEWSSERVICEWEBPROCESSOR_H
 
-#include <QObject>
+#include <AbstractWebServiceProcessor.h>
 #include <QNetworkAccessManager>
 #include <logger.h>
 #include <baseTypes.h>
@@ -9,7 +9,7 @@
 #include <QWebSocket>
 #include <settingsController.h>
 
-class DiscordWebProcessor : public QObject
+class DiscordWebProcessor : public AbstractWebServiceProcessor
 {
     Q_OBJECT
 public:
@@ -85,14 +85,9 @@ private slots:
     void receiveUserAvatar(QNetworkReply* reply, QString avatarId);
     void receiveAttachmentImage(QNetworkReply* reply, QString attachmentId);
     void receiveYoutubeImage(QNetworkReply* reply, QString youtubeId);
-    void onSettingsLoaded();
-
-    void readMessage(QString messgae);
-    void reconnect();
-    void onConnected();
-    void onDisconnected();
-
-    void sendPing();
+    void onSettingsLoaded() override;
+    void readMessage(QString messgae) override;
+    void sendPing() override;
 
 signals:
     void sendNews(QList<DiscordMessage> news);
@@ -109,17 +104,6 @@ signals:
     void sendYoutubeImage(QString url, QImage attachmentImage);
 
 private:
-
-    QWebSocket m_webSocket;
-    QTimer m_reconnectTimer;
-    bool m_webSocketConnected = false;
-    QTimer m_pingTimer;
-    QTimer m_pingResponceTimer;
-
-    SettingsController* m_settingsController;
-
-    QTimer* m_requestTimer;
-
     QNetworkAccessManager *m_networkManager;
     QList<QString> m_avatarIdList;
 
@@ -129,13 +113,11 @@ private:
     QString m_lastReadedNewsMessageID = "";
     QString m_lastReadedEventMessageID = "";
 
-
     bool m_isNewNewsMessage = true;
     bool m_isNewEventsMessage = true;
 
     bool m_newsMessagesEnd = false;
     bool m_eventsMessagesEnd = false;
-
 };
 
 #endif // NEWSSERVICEWEBPROCESSOR_H
