@@ -861,8 +861,8 @@
         <translation>Уникальные игроки за все время</translation>
     </message>
     <message>
-        <source>(calculated starting from August 2023)</source>
-        <translation>(рассчитывается с Августа 2023)</translation>
+        <source>(calculated starting from February 2026)</source>
+        <translation>(рассчитывается с Февраля 2026)</translation>
     </message>
 </context>
 <context>

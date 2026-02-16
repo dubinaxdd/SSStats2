@@ -48,7 +48,7 @@ Rectangle {
 
         Label{
             id: label
-            text: qsTr("(calculated starting from August 2023)")
+            text: qsTr("(calculated starting from February 2026)")
             font.pixelSize: 9
             color: DowStatsStyle.textColor
             Layout.alignment: Qt.AlignHCenter
