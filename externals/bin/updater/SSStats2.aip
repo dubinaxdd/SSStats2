@@ -2,8 +2,8 @@
 AIVersion=8.4
 AIEdition=0
 GUID={ECA8EBE2-9934-464D-A32D-170D2C7C546D}
-AppName=Dow Stats Client
-AppVersion=2.3.653
+AppName=DoW Stats Client
+AppVersion=3.2.929
 AppDescription=
 CompanyName=dowstats
 WebSite=dowstats.ru
@@ -25,7 +25,7 @@ CloseAppFile=DowStatsClient.exe
 CloseAppText=DowStatsClient
 VisualCpp=1
 VisualCppVersion=5
-LinkVisualCpp=https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads
+LinkVisualCpp=https://aka.ms/vs/17/release/vc_redist.x64.exe
 PackageType=0
 SetupFolder=C:\build\DowStatsClientInstaller
 SetupFileName=DowStatsClientInstaller
@@ -146,4 +146,8 @@ FontName=Verdana
 0=<ProgramGroup>*?Uninstall <AppName>*?<InstallDir>\Uninstall.exe*?*?*?<InstallDir>*?*?0*?Normal
 1=<ProgramGroup>*?<AppName>*?<InstallDir>\DowStatsClient.exe*?*?*?<InstallDir>*?*?0*?Normal
 2=<Desktop>*?<AppName>*?<InstallDir>\DowStatsClient.exe*?*?*?<InstallDir>*?*?0*?Normal
+
+[FileOptions]
+0=settings?D
+1=statsLog.txt?D
 

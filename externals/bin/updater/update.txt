@@ -1,4 +1,3 @@
 [Update]
-Version=2.3.621
-URL=http://dowstats.ru/install/DowStatsClientInstaller.exe
-
+Version=3.2.929
+URL=http://89.108.83.108/dow_stats_client/install/DowStatsClientInstaller.exe
