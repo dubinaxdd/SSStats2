@@ -11,7 +11,7 @@ Rectangle
     property string toolTipText: "";
     property string text;
 
-    property bool containsMouse: false;
+    property bool containsMouse: buttonMouseArea.containsMouse//false;
     property real sizeModifer: 1.0;
 
     signal clicked()
@@ -19,6 +19,8 @@ Rectangle
     width: 40
     height: 40
     radius: 5 * root.sizeModifer
+
+
 
     gradient: Gradient {
         GradientStop {
@@ -35,13 +37,16 @@ Rectangle
     RowLayout
     {
         anchors.fill: parent
-        spacing: 15
+        spacing: 15 * root.sizeModifer
 
 
         Rectangle
         {
-            width: root.height * 0.7
-            height: root.height * 0.7
+            id: imageRectangle
+            Layout.preferredWidth: root.height * 0.7
+            Layout.preferredHeight: root.height * 0.7
+            Layout.fillWidth: false
+            Layout.fillHeight: false
             color: "#00000000"
 
             Layout.leftMargin: root.height * 0.15
@@ -50,14 +55,17 @@ Rectangle
                 id: image
                 anchors.fill: parent
                 source: root.sourceUrl
-                sourceSize.width: parent.height
-                sourceSize.height: parent.height
+                sourceSize.width: width
+                sourceSize.height: height
+                fillMode: Image.PreserveAspectFit
+                visible: false
             }
 
             ColorOverlay{
                 anchors.fill: image
                 source:image
-                color: buttonMouseArea.containsMouse || buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                //color: buttonMouseArea.containsMouse || buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+                color: root.containsMouse || root.containsMouse ? "#DCDCDC" : "#FFFFFF"
                 antialiasing: true
             }
         }
@@ -69,7 +77,8 @@ Rectangle
 
             visible: root.text != ""
 
-            color: buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+            //color: buttonMouseArea.containsMouse ? "#DCDCDC" : "#FFFFFF"
+            color: root.containsMouse ? "#DCDCDC" : "#FFFFFF"
             font.pixelSize: 16
         }
     }

@@ -180,25 +180,20 @@ Window {
                         IconButton{
                             id: updateButton
                             sourceUrl: "qrc:/images/resources/images/update.svg"
-                            toolTipText: qsTr("Update")
                             containsMouse: updateButtonMouseArea.hovered
 
-                            width: 30 * _uiBackend.sizeModifer
-                            height: 30 * _uiBackend.sizeModifer
-
+                            //width: 30 * _uiBackend.sizeModifer
+                            //height: 30 * _uiBackend.sizeModifer
                             Layout.preferredHeight: 30 * _uiBackend.sizeModifer
                             Layout.preferredWidth: 30 * _uiBackend.sizeModifer
+
                             sizeModifer: _uiBackend.sizeModifer
                             visible: !_uiBackend.automatchState && _uiBackend.expandStatisticButtonVisible
 
                             GlobalMouseArea{
-
                                 id: updateButtonMouseArea
                                 anchors.fill: parent
-
-                                onClicked: {
-                                    _uiBackend.statisticPanel.updateStatistic();
-                                }
+                                onClicked: _uiBackend.statisticPanel.updateStatistic();
                             }
                         }
                     }
