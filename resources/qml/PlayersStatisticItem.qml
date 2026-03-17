@@ -260,13 +260,11 @@ Rectangle {
                 Label {
                     id: label1
                     text: root.playerName
+                    elide: Text.ElideRight
                     Layout.maximumWidth: 180 * sizeModifer
                     color: root.textColor
-
                     font.pixelSize: 20 * sizeModifer
-
                     Layout.fillWidth: true
-                    Layout.fillHeight: true
                 }
 
                 RowLayout
@@ -281,7 +279,6 @@ Rectangle {
                         Label {
                             id: label
                             text: qsTr("Solo MMR: ") + root.playerMmr1v1
-                            Layout.fillHeight: true
                             Layout.fillWidth: true
                             font.pixelSize: 11 * sizeModifer
                             color: root.textColor
@@ -292,7 +289,6 @@ Rectangle {
                             text: qsTr("Team MMR: ") + root.playerMmr
                             font.pixelSize: 11 * sizeModifer
                             Layout.fillWidth: true
-                            Layout.fillHeight: true
                             color: root.textColor
                         }
 
@@ -302,7 +298,6 @@ Rectangle {
                             text: qsTr("Custom games MMR: ") + root.customGamesMmr
                             font.pixelSize: 11 * sizeModifer
                             Layout.fillWidth: true
-                            Layout.fillHeight: true
                             color: root.textColor
                         }
 
@@ -310,7 +305,6 @@ Rectangle {
                             id: label4
                             text: qsTr("Games (Winrate): ") + root.playerGamesCount + " (" + root.playerWinRate + "%)"
                             font.pixelSize: 11 * sizeModifer
-                            Layout.fillHeight: true
                             Layout.fillWidth: true
                             color: root.textColor
                         }
@@ -319,30 +313,24 @@ Rectangle {
                             id: label3
                             visible: root.playerRace !== ""
                             text: qsTr("Race: ") + root.playerRace
-                            Layout.fillHeight: true
                             Layout.fillWidth: true
                             font.pixelSize: 11 * sizeModifer
                             color: root.textColor
                         }
-
-                        /*Label {
-                            id: label5
-                            text: qsTr("Wins rate: ") + root.playerWinRate + "%"
-                            font.pixelSize: 11 * sizeModifer
-                            Layout.fillHeight: true
-                            Layout.fillWidth: true
-                            color: root.textColor
-                        }*/
 
                         Label {
                             id: label6
                             visible: !root.relicStatsAvailable
                             text: "APM: " + root.playerApm
                             font.pixelSize: 11 * sizeModifer
-                            Layout.fillHeight: true
                             Layout.fillWidth: true
                             color: root.textColor
                         }
+
+                        Item{
+                            Layout.fillHeight: true
+                        }
+
                     }
 
                     ColumnLayout
@@ -452,27 +440,6 @@ Rectangle {
                         Layout.fillWidth: true
                         color: root.textColor
                     }
-
-                    /*Label {
-                        id: relicWinCountLabel
-                        visible: root.relicStatsAvailable
-                        text: "Win count: " + root.relicWinCount
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }*/
-
-                   /* Label {
-                        id: relicCountryLabel
-                        visible: root.relicStatsAvailable
-                        text: "Country: " + root.relicCountry
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }*/
-
                 }
             }
         }

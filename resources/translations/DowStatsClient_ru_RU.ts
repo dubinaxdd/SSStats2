@@ -507,11 +507,11 @@
     </message>
     <message>
         <source>Ranked</source>
-        <translation>Рейтинг</translation>
+        <translation>Ranked</translation>
     </message>
     <message>
         <source>Unranked</source>
-        <translation>Не рейтинг</translation>
+        <translation>Unranked</translation>
     </message>
     <message>
         <source>Solo MMR: </source>
