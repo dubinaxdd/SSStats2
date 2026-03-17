@@ -463,6 +463,12 @@ void StatsServerProcessor::receiveClientLastVersion(QNetworkReply *reply)
 
 void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 {
+    if (replayInfo.mod.contains("hopper_balance"))
+    {
+        emit sendNotification("Unauthorized mod. Game not submitted.", false);
+        return;
+    }
+
     if (replayInfo.playersInfo.count() < 2 || replayInfo.playersInfo.count() > 8 || m_softwareBanActivated)
         return;
 
