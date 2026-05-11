@@ -117,6 +117,8 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
     {
         QString newText = messages.at(i).content;
 
+        newText.replace("<","");
+        newText.replace(">","");
         newText.append('\0');
 
         for (int j = 0; j < newText.count() - 8; j++)
@@ -128,7 +130,9 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
                     if(  k == newText.count() - 1 ||
                          newText.at(k) == ' ' ||
                          newText.at(k) == '\n' ||
-                         newText.at(k) == '\0')
+                         newText.at(k) == '\0' ||
+                         newText.at(k) == ')'||
+                         newText.at(k) == ']')
                     {
                         QString url = "";
 
