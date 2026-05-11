@@ -17,12 +17,14 @@ public:
 
     void setGameHwnd(HWND newGameHwnd);
 
+
 public slots:
     void onNoFogStateChanged(bool state);
     void onGameLaunchStateChanged(bool state);
     void onSettingsLoaded();
     void setCurrentGame(GamePath *newCurrentGame);
     void receiveCurrentMissionState(GameMissionState missionCurrentState);
+    void setAutomatchState(bool newAutomatchState);
 
 signals:
 
@@ -39,6 +41,7 @@ private:
     bool currentNoFog = false;
     bool force = false; // применить изменения принудительно
     SettingsController* m_settingsController;
+    bool m_automatchState = false;
 };
 
 #endif // SOULSTORMMEMORYCONTROLLER_H

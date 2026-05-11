@@ -167,6 +167,9 @@ void SoulstormMemoryController::receiveCurrentMissionState(GameMissionState miss
 
 void SoulstormMemoryController::disableFogDE(bool disableFog)
 {
+    if (m_automatchState)
+        return;
+
     DWORD PID;
     GetWindowThreadProcessId(m_gameHwnd, &PID);
 
@@ -346,6 +349,11 @@ void SoulstormMemoryController::disableFogSS()
     //currentNoFog = targetNoFog;
     //}
     CloseHandle(hProcess);
+}
+
+void SoulstormMemoryController::setAutomatchState(bool newAutomatchState)
+{
+    m_automatchState = newAutomatchState;
 }
 
 void SoulstormMemoryController::setGameHwnd(HWND newGameHwnd)
