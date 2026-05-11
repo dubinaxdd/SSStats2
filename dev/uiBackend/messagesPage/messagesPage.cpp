@@ -131,8 +131,7 @@ QList<DiscordMessage> MessagesPage::formatingMessagesText(QList<DiscordMessage> 
                          newText.at(k) == ' ' ||
                          newText.at(k) == '\n' ||
                          newText.at(k) == '\0' ||
-                         newText.at(k) == ')'||
-                         newText.at(k) == ']')
+                         newText.at(k) == ')')
                     {
                         QString url = "";
 
