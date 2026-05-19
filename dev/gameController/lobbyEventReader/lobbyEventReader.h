@@ -31,6 +31,7 @@ signals:
     void requestSessionId();
 
     void playersListChanged(QStringList automatchPlayersList);
+    void requestPlayersByName(QStringList playersNames);
     void automatchModeChanged(bool automachMode);
 
     void findIgnoredPlayersId(QStringList automatchNamesList);

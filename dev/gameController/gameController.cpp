@@ -82,6 +82,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
 
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playerKicked,       m_dowServerProcessor, &DowServerProcessor::onPlayerDisconnected, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::playersListChanged,       m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
+    QObject::connect(m_lobbyEventReader, &LobbyEventReader::requestPlayersByName,       m_dowServerProcessor, &DowServerProcessor::requestPersonalStatsByNames, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventReader, &LobbyEventReader::findIgnoredPlayersId, m_gameMemoryReader, &GameMemoryReader::findIgnoredPlayersId, Qt::QueuedConnection);
 
     QObject::connect(m_dowServerProcessor, &DowServerProcessor::sendPlayersInfoFromDowServer, m_replayDataCollector, &ReplayDataCollector::receivePlayresInfoFromDowServer, Qt::QueuedConnection);

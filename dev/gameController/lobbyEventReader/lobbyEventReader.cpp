@@ -6,7 +6,7 @@
 #define READ_EVETS_TIMER_INTERVAL 200
 
 LobbyEventReader::LobbyEventReader(QObject *parent) : QObject(parent)
-  , m_lobbyEventsReadTimer(new QTimer(this))
+    , m_lobbyEventsReadTimer(new QTimer(this))
 {
     m_ignotingPlayersListRequestTimer.setInterval(3000);
     m_ignotingPlayersListRequestTimer.setSingleShot(true);
@@ -14,7 +14,6 @@ LobbyEventReader::LobbyEventReader(QObject *parent) : QObject(parent)
     m_lobbyEventsReadTimer->setInterval(READ_EVETS_TIMER_INTERVAL);
     QObject::connect(m_lobbyEventsReadTimer, &QTimer::timeout, this, &LobbyEventReader::readLobbyEvents, Qt::QueuedConnection);
     QObject::connect(m_lobbyEventsReadTimer, &QTimer::timeout, this, &LobbyEventReader::readAutomatchEvents, Qt::QueuedConnection);
-
     QObject::connect(&m_ignotingPlayersListRequestTimer, &QTimer::timeout, this, &LobbyEventReader::requestIgnoredPlayers, Qt::QueuedConnection);
 }
 
@@ -40,10 +39,18 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
 
     if (gameCurrentState == GameMissionState::gameLoadStarted)
     {
-        emit playersListChanged(m_matchPlayersList);
-
         if (m_automatchProcessed && m_matchNamesList.count() > m_matchPlayersList.count())
-            m_ignotingPlayersListRequestTimer.start();
+        {
+            if (m_currentGame->gameType == GameType::DefinitiveEdition)
+            {
+                qInfo(logInfo()) << "Request players stats by nicknames for nonhosted automatch" << m_matchNamesList;
+                emit requestPlayersByName(m_matchNamesList);
+            }
+            else
+                m_ignotingPlayersListRequestTimer.start();
+        }
+        else
+            emit playersListChanged(m_matchPlayersList);
     }
 }
 

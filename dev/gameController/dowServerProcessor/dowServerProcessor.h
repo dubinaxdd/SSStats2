@@ -34,6 +34,7 @@ private:
     void requestFindAdvertisements();
     void requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults = false, SendingReplayInfo lastGameResult = SendingReplayInfo());
     void requestPersonalStats(QList<PlayerInfoFromDowServer> playersInfo);
+
     Race getRaceById(int gaceId);
 
 public slots:
@@ -45,9 +46,8 @@ public slots:
     void onPlayerDisconnected();
     void onAutomatchPlayersListChanged(QStringList playersList);
     void requestGameResult(SendingReplayInfo lastGameResult);
-
     void receiveCurrentMod(QString modName);
-
+    void requestPersonalStatsByNames(QStringList playersNames);
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
@@ -56,6 +56,7 @@ private slots:
     void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults, SendingReplayInfo lastGameResult = SendingReplayInfo());
     void receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult);
     void recievePersonalStats(QNetworkReply *reply);
+    void recievePersonalStatsByNames(QNetworkReply *reply);
 
     void playerDiscoonectTimerTimeout();
 
