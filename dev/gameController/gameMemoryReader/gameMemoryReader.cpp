@@ -6,7 +6,6 @@
 #include <logger.h>
 #include <ppl.h>
 
-
 using namespace std;
 
 GameMemoryReader::GameMemoryReader(QObject *parent)
@@ -144,76 +143,102 @@ void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
 
 QString GameMemoryReader::findSteamSoulstormSessionId()
 {
-    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+    // 1. Поиск окна игры (современный и лаконичный способ для Qt)
+    QString ss = QString::fromUtf8("Dawn of War: Soulstorm");
+    HWND gameHwnd = FindWindowW(NULL, (LPCWSTR)ss.utf16());
 
-    QString ss = codec->toUnicode("Dawn of War: Soulstorm");
-    LPCWSTR lps = (LPCWSTR)ss.utf16();
-
-    m_gameHwnd = FindWindowW(NULL, lps);
-
-    if(!m_gameHwnd)
+    if (!gameHwnd)
         return QString();
 
     DWORD PID;
-    GetWindowThreadProcessId(m_gameHwnd, &PID);
+    GetWindowThreadProcessId(gameHwnd, &PID);
 
-    // Получение дескриптора процесса
+    // 2. Открытие процесса
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, PID);
-    if(hProcess==nullptr)
+    if (!hProcess)
         return QString();
 
-    QByteArray buffer(100000, 0);
+    // Автоматическое закрытие дескриптора при выходе из функции
+    struct HandleGuard { HANDLE h; ~HandleGuard() { if (h) CloseHandle(h); } } guard{ hProcess };
 
-    unsigned long ptr1Count = 0x00000000;
-    while (ptr1Count < 0x7FFE0000)
+    // Подготовка сигнатуры для поиска (предполагаем, что sessionHeader определен в классе)
+    // Если sessionHeader — это массив/вектор, берем его границы
+    const char* sigStart = reinterpret_cast<const char*>(sessionHeader);
+    const char* sigEnd = sigStart + sizeof(sessionHeader);
+
+    std::vector<char> buffer;
+    MEMORY_BASIC_INFORMATION mbi;
+
+    // Границы поиска для 32-битного процесса Soulstorm
+    DWORD64 currentAddress = 0x00000000;
+    DWORD64 endAddress = 0x7FFE0000;
+
+    // 3. Быстрый проход по регионам памяти
+    while (currentAddress < endAddress)
     {
-        if(m_abort)
+        if (m_abort)
             return QString();
 
-
-        SIZE_T bytesRead = 0;
-
-        // Если функция вернула не ноль, то продолжим цикл
-        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), 100000 , &bytesRead))
+        if (VirtualQueryEx(hProcess, (LPCVOID)currentAddress, &mbi, sizeof(mbi)) == 0)
         {
-            if(GetLastError()!=299)
-            {
-                qDebug() << "Could not read process memory" << ptr1Count << GetLastError();
-                continue;
-            }
+            currentAddress += 4096;
+            continue;
         }
 
-        if(m_abort)
-            return QString();
+        DWORD64 regionEnd = (DWORD64)mbi.BaseAddress + mbi.RegionSize;
+        if (regionEnd > endAddress)
+            regionEnd = endAddress;
 
-        for (int i = 100; i < static_cast<int>(bytesRead) - 44; i++)
+        // Проверяем только выделенную память с правами на чтение
+        bool isReadable = (mbi.State == MEM_COMMIT) &&
+                          ((mbi.Protect & PAGE_READONLY) ||
+                           (mbi.Protect & PAGE_READWRITE) ||
+                           (mbi.Protect & PAGE_EXECUTE_READ) ||
+                           (mbi.Protect & PAGE_EXECUTE_READWRITE));
+
+        if (isReadable && currentAddress < regionEnd)
         {
-            bool match = false;
-            for (int j = 0; j < static_cast<int>(sizeof(sessionHeader)); j++)
+            DWORD64 bytesToRead = regionEnd - currentAddress;
+
+            if (buffer.size() < bytesToRead)
+                buffer.resize(bytesToRead);
+
+            SIZE_T bytesRead = 0;
+            if (ReadProcessMemory(hProcess, (LPCVOID)currentAddress, buffer.data(), bytesToRead, &bytesRead) && bytesRead > 0)
             {
-                if (buffer.at(i + j) != sessionHeader[j])
+                auto bufferStart = buffer.begin();
+                auto bufferEnd = buffer.begin() + bytesRead;
+
+                // 4. Векторизованный поиск сигнатуры вместо вложенных циклов
+                auto it = std::search(bufferStart, bufferEnd, sigStart, sigEnd);
+
+                while (it != bufferEnd)
                 {
-                    match = false;
-                    break;
+                    int offset = std::distance(bufferStart, it);
+
+                    // Проверяем, достаточно ли данных осталось в буфере для извлечения ID (44 байта)
+                    if (offset + 44 <= static_cast<int>(bytesRead))
+                    {
+                        // Извлекаем нужную подстроку напрямую из памяти без лишних аллокаций
+                        QByteArray rawId(buffer.data() + offset, 44);
+                        QString sessionIdStr = QString::fromUtf8(rawId).right(34);
+
+                        if (sessionIdStr.right(4) == "&ack")
+                        {
+                            return sessionIdStr.left(30);
+                        }
+                    }
+
+                    // Если нашли заголовок, но проверка не прошла, ищем следующий в этом же регионе
+                    if (it + 1 < bufferEnd)
+                        it = std::search(it + 1, bufferEnd, sigStart, sigEnd);
+                    else
+                        break;
                 }
-                else
-                    match = true;
             }
-
-            if (!match)
-                continue;
-
-            QString sessionIdStr = QString::fromUtf8((char*)buffer.mid(i, 44).data()).right(34);
-
-            if (sessionIdStr.right(4) != "&ack")
-                continue;
-
-            sessionIdStr = sessionIdStr.left(30);
-
-            return sessionIdStr;
         }
 
-        ptr1Count += 100000;
+        currentAddress = regionEnd;
     }
 
     return QString();
@@ -221,38 +246,81 @@ QString GameMemoryReader::findSteamSoulstormSessionId()
 
 QString GameMemoryReader::findDefinitiveEditionSessionId(DWORD64 startAdress, DWORD64 endAdress, HANDLE hProcess)
 {
-    int bufferSize = 2000000;
-    QByteArray buffer(bufferSize, 0);
-    DWORD64 ptr1Count = startAdress;
-    DWORD64 ptr2Count = endAdress;
+    // Сигнатуры для поиска
+    const std::string head1 = "sessionID=";
+    const std::string head2 = "\"sessionToken\":\"";
 
-    QByteArray sesionIdHead = "sessionID=";
+    // Временный буфер для чтения регионов памяти
+    std::vector<char> buffer;
 
-    while (ptr1Count < ptr2Count)
+    MEMORY_BASIC_INFORMATION mbi;
+    DWORD64 currentAddress = startAdress;
+
+    // Перебираем страницы памяти с помощью VirtualQueryEx
+    while (currentAddress < endAdress)
     {
-        if(m_dataFinded || m_abort)
+        if (m_dataFinded || m_abort)
             return QString();
 
-        DWORD64  bytesRead = 0;
-
-        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize , &bytesRead))
+        // Запрашиваем информацию о текущем регионе памяти
+        if (VirtualQueryEx(hProcess, (LPCVOID)currentAddress, &mbi, sizeof(mbi)) == 0)
         {
-                ptr1Count += bufferSize;
-                continue;
+            // Если не удалось получить инфо, перешагиваем стандартную страницу 4KB
+            currentAddress += 4096;
+            continue;
         }
 
-        //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
-        bufferSize = 100000;
+        DWORD64 regionEnd = (DWORD64)mbi.BaseAddress + mbi.RegionSize;
 
-        if (buffer.contains( sesionIdHead ))
+        // Ограничиваем поиск конечным адресом, заданным пользователем
+        if (regionEnd > endAdress)
+            regionEnd = endAdress;
+
+        // Проверяем, что регион выделен (State == MEM_COMMIT)
+        // и доступен для чтения (не PAGE_NOACCESS, не PAGE_GUARD)
+        bool isReadable = (mbi.State == MEM_COMMIT) &&
+                          ((mbi.Protect & PAGE_READONLY) ||
+                           (mbi.Protect & PAGE_READWRITE) ||
+                           (mbi.Protect & PAGE_EXECUTE_READ) ||
+                           (mbi.Protect & PAGE_EXECUTE_READWRITE));
+
+        if (isReadable && currentAddress < regionEnd)
         {
-            QString sessionIdStr = findParameter(&buffer, sesionIdHead, 30);
+            DWORD64 bytesToRead = regionEnd - currentAddress;
 
-            if (!sessionIdStr.isEmpty())
-                return sessionIdStr;
+            // Выделяем память под размер региона, если он изменился
+            if (buffer.size() < bytesToRead)
+                buffer.resize(bytesToRead);
+
+            SIZE_T bytesRead = 0;
+            // Читаем весь регион за один системный вызов
+            if (ReadProcessMemory(hProcess, (LPCVOID)currentAddress, buffer.data(), bytesToRead, &bytesRead) && bytesRead > 0)
+            {
+                // Используем std::search (он оптимизирован на уровне компилятора)
+                auto it = std::search(buffer.begin(), buffer.begin() + bytesRead, head1.begin(), head1.end());
+                if (it != buffer.begin() + bytesRead)
+                {
+                    // Нашли первую сигнатуру. Преобразуем локальный срез в QByteArray
+                    int offset = std::distance(buffer.begin(), it);
+                    QByteArray subBuffer(buffer.data() + offset, min((int)(bytesRead - offset), 100));
+                    QString sessionIdStr = findParameter(&subBuffer, QByteArray::fromStdString(head1), 30);
+                    if (!sessionIdStr.isEmpty()) return sessionIdStr;
+                }
+
+                it = std::search(buffer.begin(), buffer.begin() + bytesRead, head2.begin(), head2.end());
+                if (it != buffer.begin() + bytesRead)
+                {
+                    // Нашли вторую сигнатуру
+                    int offset = std::distance(buffer.begin(), it);
+                    QByteArray subBuffer(buffer.data() + offset, min((int)(bytesRead - offset), 100));
+                    QString sessionIdStr = findParameter(&subBuffer, QByteArray::fromStdString(head2), 30);
+                    if (!sessionIdStr.isEmpty()) return sessionIdStr;
+                }
+            }
         }
 
-        ptr1Count += bufferSize;
+        // Переходим к следующему региону памяти Windows
+        currentAddress = regionEnd;
     }
 
     return QString();
