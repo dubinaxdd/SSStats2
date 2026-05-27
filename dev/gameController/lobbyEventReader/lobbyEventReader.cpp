@@ -41,12 +41,12 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
     {
         if (m_automatchProcessed && m_matchNamesList.count() > m_matchPlayersList.count())
         {
-            if (m_currentGame->gameType == GameType::DefinitiveEdition)
+           /* if (m_currentGame->gameType == GameType::DefinitiveEdition)
             {
                 qInfo(logInfo()) << "Request players stats by nicknames for nonhosted automatch" << m_matchNamesList;
                 emit requestPlayersByName(m_matchNamesList);
             }
-            else
+            else*/
                 m_ignotingPlayersListRequestTimer.start();
         }
         else
@@ -255,8 +255,12 @@ void LobbyEventReader::readAutomatchEvents()
                 m_automatchProcessed = false;
                 m_matchPlayersList.clear();
                 m_matchNamesList.clear();
+
                 emit automatchModeChanged(m_automatchProcessed);
-                qInfo(logInfo()) << "Automatch search stoped";
+                qInfo(logInfo()) << "Automatch search stoped or misssion ending";
+                m_sessionIdReceived = false;
+                tryRequestSessionId();
+
                 break;
             }
 

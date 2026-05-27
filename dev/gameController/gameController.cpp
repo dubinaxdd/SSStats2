@@ -93,6 +93,7 @@ GameController::GameController(SettingsController *settingsController, QObject *
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_dowServerProcessor, &DowServerProcessor::setSessionId, Qt::QueuedConnection);
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_advertisingProcessor, &AdvertisingProcessor::setSessionId, Qt::QueuedConnection);
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionId, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(true); m_lobbyEventReader->setSessionIdRequested(false);});
+    QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendSessionIdError, m_lobbyEventReader, [&]{m_lobbyEventReader->setSessionIdReceived(false); m_lobbyEventReader->setSessionIdRequested(false);});
     QObject::connect(m_gameMemoryReader, &GameMemoryReader::sendPlayersIdList, m_dowServerProcessor, &DowServerProcessor::onAutomatchPlayersListChanged, Qt::QueuedConnection);
 
     QObject::connect(m_gameStateReader, &GameStateReader::matchIdParsed, m_replayDataCollector, &ReplayDataCollector::setGameId, Qt::QueuedConnection);
