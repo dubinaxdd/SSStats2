@@ -70,7 +70,10 @@ void GameMemoryReader::findSessionId()
             emit sendSessionId(sessionId);
         }
         else
+        {
             qWarning(logWarning()) << "SessionId not finded!!!";
+            emit sendSessionIdError();
+        }
     }
     else
         return;
@@ -367,98 +370,151 @@ QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray 
 
 QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess)
 {
-    int bufferSize = 1000000;
-    QByteArray buffer(bufferSize + 2000, 0);
-    DWORD64 ptr1Count = startAdress;
-    DWORD64 ptr2Count = endAdress;
+    if (playerIdList.isEmpty())
+        return QStringList();
 
+    // 1. Предварительное кеширование данных (выполняется один раз)
     QByteArray searchedID = playerIdList.first().toLocal8Bit();
-    QString maskString = "0123456789";
+    const char* sigStart = searchedID.constData();
+    int sigSize = searchedID.size();
 
-    QByteArray matchStartMessageHeader = "MatchStartMessage\",";
+    // Переводим все искомые ID в сырые векторы байт
+    std::vector<std::vector<char> > targetIds;
+    targetIds.reserve(playerIdList.size());
+    for (int i = 0; i < playerIdList.size(); ++i) {
+        QByteArray ba = playerIdList.at(i).toLocal8Bit();
+        targetIds.push_back(std::vector<char>(ba.begin(), ba.end()));
+    }
 
-    while (ptr1Count < ptr2Count)
+    std::vector<char> buffer;
+    MEMORY_BASIC_INFORMATION mbi;
+    DWORD64 currentAddress = startAdress;
+
+    while (currentAddress < endAdress)
     {
-        if(m_ignoredPlayersIdFinded || m_abort)
+        if (m_ignoredPlayersIdFinded || m_abort)
             return QStringList();
 
-        DWORD64  bytesRead = 0;
-
-        if(!ReadProcessMemory(hProcess, (LPCVOID)ptr1Count, buffer.data(), bufferSize + 2000 , &bytesRead))
+        if (VirtualQueryEx(hProcess, (LPCVOID)currentAddress, &mbi, sizeof(mbi)) == 0)
         {
-            ptr1Count += bufferSize;
+            currentAddress += 4096;
             continue;
         }
 
-        //Как только входим в читабельную зону памяти уменьшаем размер буфера, для того что бы больше данных можно было прочесть
-        bufferSize = 200000;
+        DWORD64 regionEnd = (DWORD64)mbi.BaseAddress + mbi.RegionSize;
+        if (regionEnd > endAdress)
+            regionEnd = endAdress;
 
-        for (int i = 401; i < bytesRead - 401; i++)
+        bool isReadable = (mbi.State == MEM_COMMIT) &&
+                          ((mbi.Protect & PAGE_READONLY) ||
+                           (mbi.Protect & PAGE_READWRITE) ||
+                           (mbi.Protect & PAGE_EXECUTE_READ) ||
+                           (mbi.Protect & PAGE_EXECUTE_READWRITE));
+
+        if (isReadable && currentAddress < regionEnd)
         {
-            if(m_ignoredPlayersIdFinded || m_abort)
-                return QStringList();
+            DWORD64 bytesToRead = regionEnd - currentAddress;
+            if (buffer.size() < bytesToRead)
+                buffer.resize(bytesToRead);
 
-            bool match = true;
-
-            for (int j = 0; j < searchedID.size(); j++)
+            SIZE_T bytesRead = 0;
+            if (ReadProcessMemory(hProcess, (LPCVOID)currentAddress, buffer.data(), bytesToRead, &bytesRead) && bytesRead > 0)
             {
-                if (buffer.at(i + j) != searchedID[j])
+                const char* bufStart = buffer.data();
+                const char* bufEnd = bufStart + bytesRead;
+                const char* currentPtr = bufStart;
+
+                // 2. Поиск основного ID стандартным, но быстрым std::search
+                while ((currentPtr = std::search(currentPtr, bufEnd, sigStart, sigStart + sigSize)) != bufEnd)
                 {
-                    match = false;
-                    break;
-                }
-            }
+                    if (m_ignoredPlayersIdFinded || m_abort)
+                        return QStringList();
 
-            if (!match)
-                continue;
+                    int offset = currentPtr - bufStart;
+                    int windowStart = offset - 400;
+                    int windowEnd = offset + 400;
 
-            auto temp2 = buffer.mid(i - 400, 800);
-
-            bool allIdFinded = true;
-
-            for(auto& needName2 : playerIdList)
-            {
-                if (!temp2.contains(needName2.toLocal8Bit()))
-                {
-                    allIdFinded = false;
-                    i+=200;
-                    break;
-                }
-            }
-
-            if(allIdFinded)
-            {
-                if (playerIdList.count() > 2 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + ",") || temp2.contains("," + searchedID + "]") ) ||
-                    playerIdList.count() == 1 && (temp2.contains("\"global\"")|| temp2.contains("[" + searchedID + ",") || temp2.contains("," + searchedID + "]") )
-                    )
-                {
-                    qDebug() << "Second matched" << temp2;
-
-                    QStringList idList;
-                    QString currentId;
-
-                    for (auto& symbol : temp2)
+                    // Проверяем, укладывается ли окно [-400, 400] в прочитанный буфер
+                    if (windowStart >= 0 && windowEnd <= static_cast<int>(bytesRead))
                     {
-                        if (maskString.contains(symbol))
-                        {
-                            currentId.append(symbol);
-                        }
-                        else
-                        {
-                            if(currentId.size() == 8 && !idList.contains(currentId))
-                                idList.append(currentId);
+                        const char* wData = bufStart + windowStart;
+                        const char* wEnd = bufStart + windowEnd;
 
-                            currentId.clear();
+                        // 3. Быстрая проверка всех остальных ID без Qt-оберток
+                        bool allIdFinded = true;
+                        for (size_t t = 0; t < targetIds.size(); ++t)
+                        {
+                            if (std::search(wData, wEnd, targetIds[t].begin(), targetIds[t].end()) == wEnd)
+                            {
+                                allIdFinded = false;
+                                break;
+                            }
+                        }
+
+                        if (allIdFinded)
+                        {
+                            int idCount = playerIdList.count();
+
+                            // 4. Оптимизированный поиск паттернов («сырые» вызовы std::search)
+                            auto matchPattern = [wData, wEnd](const char* pat, size_t len) -> bool {
+                                return std::search(wData, wEnd, pat, pat + len) != wEnd;
+                            };
+
+                            bool hasGlobal = matchPattern("\"global\"", 8);
+
+                            // Собираем паттерны со скобками и запятыми динамически на стеке (без выделения памяти в куче)
+                            std::vector<char> p1, p2, p3;
+                            p1.reserve(sigSize + 2); p2.reserve(sigSize + 2); p3.reserve(sigSize + 2);
+
+                            p1.push_back('['); p1.insert(p1.end(), sigStart, sigStart + sigSize); p1.push_back(',');
+                            p2.push_back(','); p2.insert(p2.end(), sigStart, sigStart + sigSize); p2.push_back(',');
+                            p3.push_back(','); p3.insert(p3.end(), sigStart, sigStart + sigSize); p3.push_back(']');
+
+                            bool hasP1 = std::search(wData, wEnd, p1.begin(), p1.end()) != wEnd;
+                            bool hasP2 = std::search(wData, wEnd, p2.begin(), p2.end()) != wEnd;
+                            bool hasP3 = std::search(wData, wEnd, p3.begin(), p3.end()) != wEnd;
+
+                            if ((idCount > 2 && (hasGlobal || hasP1 || hasP2 || hasP3)) ||
+                                (idCount == 1 && (hasGlobal || hasP1 || hasP3)))
+                            {
+                                QStringList idList;
+                                QString currentId;
+                                currentId.reserve(8);
+
+                                // 5. Извлечение ID по маске цифр
+                                for (const char* p = wData; p < wEnd; ++p)
+                                {
+                                    char symbol = *p;
+                                    if (symbol >= '0' && symbol <= '9')
+                                    {
+                                        currentId.append(symbol);
+                                    }
+                                    else
+                                    {
+                                        if (currentId.size() == 8)
+                                        {
+                                            // Быстрый поиск дубликатов в QStringList
+                                            if (std::find(idList.begin(), idList.end(), currentId) == idList.end())
+                                            {
+                                                idList.append(currentId);
+                                            }
+                                        }
+                                        currentId.clear();
+                                    }
+                                }
+
+                                if (idList.count() == idCount + 1)
+                                    return idList;
+                            }
                         }
                     }
 
-                    if(idList.count() == playerIdList.count() + 1)
-                        return idList;
+                    // Сдвигаем указатель вперед для продолжения поиска
+                    currentPtr += sigSize;
                 }
             }
         }
-
-        ptr1Count += bufferSize;
+        currentAddress = regionEnd;
     }
 
     return QStringList();
