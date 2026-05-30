@@ -633,7 +633,7 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
         return;
     }
 
-    if (m_repeatRequestGameResultsCount >= 12)
+    if (m_repeatRequestGameResultsCount >= 24)
     {
         m_repeatGameResultRequestTimer.stop();
         m_repeatRequestGameResultsCount = 0;
