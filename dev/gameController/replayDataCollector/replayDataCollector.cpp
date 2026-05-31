@@ -15,10 +15,8 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
     m_findGameResultsTimer.setInterval(5000);
 
     connect(&m_findGameResultsTimer, &QTimer::timeout, this, [&]{
-
         if(!m_lastReplayInfo.gameId.isEmpty())
         {
-
             QFile sourceFile(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
             QFile destFile(m_lastReplayInfo.replayPath);
 

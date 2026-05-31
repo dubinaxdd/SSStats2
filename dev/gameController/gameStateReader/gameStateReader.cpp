@@ -265,6 +265,21 @@ void GameStateReader::setCurrentProfile(const QString &newCurrentProfile)
 
 void GameStateReader::ssWindowClosed()
 {
+    if (m_currentGame->gameType == GameType::DefinitiveEdition && m_missionCurrentState == GameMissionState::gameStarted)
+    {
+        QFile file(m_currentGame->gameSettingsPath + "\\warnings.log");
+        if(file.open(QIODevice::ReadOnly))
+        {
+            QTextStream textStream(&file);
+            QStringList* fileLines = new QStringList();
+
+            *fileLines = textStream.readAll().split("\r");
+
+            int counter = fileLines->size();
+            missionStoped(fileLines, counter);
+        }
+    }
+
     stopedGame();
 
     if (m_ssCurrentState == GameState::gameShutdowned)
@@ -672,21 +687,30 @@ void GameStateReader::missionStoped(QStringList* fileLines, int counter)
 
         if (m_missionCurrentState == GameMissionState::gameStoped)
         {
-            m_lastMatchId = "";
+            //m_lastMatchId = "";
+            QString matchID = "";
             QString pattern = "ReportSimStats - storing simulation results for match";
 
             //Ищем в следующей строке ID матча
             int i = 2;
 
-            while (i < 70)
+            while (i < counter)
             {
                 if (fileLines->at(counter - i).contains(pattern))
                 {
                     QString line = fileLines->at(counter - i);
                     int startIndex = line.indexOf(pattern) + pattern.size() + 3;
-                    m_lastMatchId = line.right(line.size() - startIndex);
-                    qInfo(logInfo()) << "Match ID: " << m_lastMatchId;
-                    emit matchIdParsed(m_lastMatchId);
+                    matchID = line.right(line.size() - startIndex);
+
+                    if (matchID != m_lastMatchId)
+                    {
+                        m_lastMatchId = matchID;
+                        qInfo(logInfo()) << "Match ID: " << m_lastMatchId;
+                        emit matchIdParsed(m_lastMatchId);
+                    }
+                    else
+                        qInfo(logInfo()) << "Finded same Match ID: " << m_lastMatchId;
+
                     break;
                 }
                 else
