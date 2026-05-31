@@ -34,6 +34,8 @@ GameController::GameController(SettingsController *settingsController, QObject *
     if(!m_gamePathArray.isEmpty())
         m_currentGame = m_gamePathArray.first();
 
+    qInfo(logInfo()) << (m_currentGame.gameType == GameType::DefinitiveEdition ? "Game type: DE," : "Game type: SS,") << m_currentGame.uiGameName;
+
     m_lobbyEventReader->setCurrentGame(&m_currentGame);
     m_gameStateReader->setCurrentGame(&m_currentGame);
     m_replayDataCollector->setCurrentGame(&m_currentGame);

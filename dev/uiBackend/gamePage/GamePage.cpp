@@ -57,6 +57,7 @@ void GamePage::setGamePathArray(QVector<GamePath> *newGamePathArray)
 void GamePage::updateCurrentGame(int itemIndex)
 {
     *m_currentGame = p_gamePathArray->at(itemIndex);
+    qInfo(logInfo()) << (m_currentGame->gameType == GameType::DefinitiveEdition ? "Game type: DE," : "Game type: SS,") << m_currentGame->uiGameName;
     emit currentGameChanged();
 
     p_settingsController->getSettings()->lastGamePath = m_currentGame->gamePath;
