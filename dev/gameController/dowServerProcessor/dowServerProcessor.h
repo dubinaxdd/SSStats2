@@ -35,7 +35,10 @@ private:
     void requestPlayersSids(QVector<PlayerData> profilesData, bool needSedGameResults = false, SendingReplayInfo lastGameResult = SendingReplayInfo());
     void requestPersonalStats(QList<PlayerInfoFromDowServer> playersInfo);
 
-    Race getRaceById(int gaceId);
+    Race getRaceById(int gaceId) const;
+
+    QList<PlayerInfoFromDowServer> parsePlayersInfoDE(QJsonDocument *jsonDoc) const;
+    QVector<RelicStats> parseRelicStatsDE(QJsonDocument *jsonDoc) const;
 
 public slots:
     void setRequestParametres(DowServerRequestParametres parametres) override;
@@ -53,7 +56,8 @@ private slots:
     void receiveChannellData(QNetworkReply *reply, int id);
     void receiveProfileID(QNetworkReply *reply, QString steamID);
     void receiveFindAdvertisements(QNetworkReply *reply);
-    void receivePlayersSids(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults, SendingReplayInfo lastGameResult = SendingReplayInfo());
+    void receivePlayersSidsSS(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults, SendingReplayInfo lastGameResult = SendingReplayInfo());
+    void receivePlayersSidsDE(QNetworkReply *reply, QVector<PlayerData> profilesData, bool needSendGameResults, SendingReplayInfo lastGameResult = SendingReplayInfo());
     void receiveGameResults(QNetworkReply *reply, SendingReplayInfo lastGameResult);
     void recievePersonalStats(QNetworkReply *reply);
     void recievePersonalStatsByNames(QNetworkReply *reply);
