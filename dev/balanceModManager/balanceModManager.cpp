@@ -16,7 +16,7 @@ BalanceModManager::BalanceModManager(SettingsController* settingsController, QOb
     , m_networkManager(new QNetworkAccessManager(this))
     , m_modsInfoRequestTimer(new QTimer(this))
 {
-    m_modsInfoRequestTimer->setInterval(5000);
+    m_modsInfoRequestTimer->setInterval(60000);
     connect(m_modsInfoRequestTimer, &QTimer::timeout, this, &BalanceModManager::modsInfoTimerTimeout, Qt::QueuedConnection);
 
     m_checkDownloadingQueryTimer->setInterval(1000);
