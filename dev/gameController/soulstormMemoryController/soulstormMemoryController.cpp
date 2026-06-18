@@ -244,22 +244,22 @@ void SoulstormMemoryController::disableFogDE(bool disableFog)
 
 
     //Получаем адреса память в которых будем менять
-    uintptr_t fogMinAddress = terrainAddress + 0xC44;
+    uintptr_t fogMinAddress = terrainAddress + 0xC64;
     qInfo(logInfo()) << "fogMinAdress" << hex << fogMinAddress;
 
-    uintptr_t fogMaxAddress = terrainAddress + 0xC48;
+    uintptr_t fogMaxAddress = terrainAddress + 0xC68;
     qInfo(logInfo()) << "fogMaxAddress" << hex << fogMaxAddress;
 
-    uintptr_t skyDistanceAddress = terrainAddress + 0xC60;
+    uintptr_t skyDistanceAddress = terrainAddress + 0xC80;
     qInfo(logInfo()) << "skyDistanceAddress" << hex << skyDistanceAddress;
 
-    uintptr_t skyRadius1_Address = terrainAddress + 0xC90;
+    uintptr_t skyRadius1_Address = terrainAddress + 0xCB0;
     qInfo(logInfo()) << "skyRadius1_Address" << hex << skyRadius1_Address;
 
-    uintptr_t skyRadius2_Address = terrainAddress + 0xC68;
+    uintptr_t skyRadius2_Address = terrainAddress + 0xC88;
     qInfo(logInfo()) << "skyRadius2_Address" << hex << skyRadius2_Address;
 
-    uintptr_t skyRadius3_Address = terrainAddress + 0xC7C;
+    uintptr_t skyRadius3_Address = terrainAddress + 0xC9C;
     qInfo(logInfo()) << "skyRadius3_Address" << hex << skyRadius3_Address;
 
     if (disableFog)
