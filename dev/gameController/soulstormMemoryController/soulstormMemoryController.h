@@ -42,6 +42,7 @@ private:
     bool force = false; // применить изменения принудительно
     SettingsController* m_settingsController;
     bool m_automatchState = false;
+    GameMissionState m_missionCurrentState = unknown;
 };
 
 #endif // SOULSTORMMEMORYCONTROLLER_H

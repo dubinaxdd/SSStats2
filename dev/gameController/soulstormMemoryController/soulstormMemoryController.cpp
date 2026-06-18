@@ -154,10 +154,11 @@ void SoulstormMemoryController::setCurrentGame(GamePath *newCurrentGame)
 
 void SoulstormMemoryController::receiveCurrentMissionState(GameMissionState missionCurrentState)
 {
+    m_missionCurrentState = missionCurrentState;
+
     if (missionCurrentState == GameMissionState::gameStarted ||
         missionCurrentState == GameMissionState::playbackStarted ||
-        missionCurrentState == GameMissionState::savedGameStarted ||
-        missionCurrentState == GameMissionState::unknownGameStarted
+        missionCurrentState == GameMissionState::savedGameStarted
     )
     {
         if (m_currentGame->gameType == GameType::DefinitiveEdition)
@@ -368,6 +369,12 @@ void SoulstormMemoryController::onNoFogStateChanged(bool state)
     if (m_currentGame->gameType == GameType::SoulstormSteam)
         disableFogSS();
     else if (m_currentGame->gameType == GameType::DefinitiveEdition)
-        disableFogDE(m_targetNoFog);
+    {
+        if (m_missionCurrentState != GameMissionState::unknownGameStarted &&
+            m_missionCurrentState != GameMissionState::unknownGameOver &&
+            m_missionCurrentState != GameMissionState::unknownGameStoped
+            )
+            disableFogDE(m_targetNoFog);
+    }
 }
 
