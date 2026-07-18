@@ -41,7 +41,7 @@ private:
     bool currentNoFog = false;
     bool force = false; // применить изменения принудительно
     SettingsController* m_settingsController;
-    bool m_automatchState = false;
+    bool m_automatchState = true;
     GameMissionState m_missionCurrentState = unknown;
 };
 
