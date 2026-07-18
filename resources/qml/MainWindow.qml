@@ -67,8 +67,8 @@ Window {
         visible: _uiBackend.ssNotInstalledDialogVisible
         yesButtonVisible: false
         noButtonVisible: false
-        text: qsTr("Dawn of War - Soulstorm is not installed, or installed incorrectly!") + "\n" +
-              qsTr("You can install Dawn of War - Soulstorm from Steam store.") + "\n" +
+        text: qsTr("Dawn of War - Soulstorm / Definitive Edition is not installed, or installed incorrectly!") + "\n" +
+              qsTr("You can install Dawn of War - Soulstorm / Definitive Edition from Steam store.") + "\n" +
               qsTr("Dow Stats Client only works with the Steam version of the game.") + "\n" +
               qsTr("Restart Dow Stats Client after installing the game.") + "\n" +
               qsTr("The first launch of the game must be done through Steam.")

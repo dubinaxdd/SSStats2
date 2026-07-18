@@ -56,12 +56,12 @@
         <translation>Настройки профиля для устанавливаемого мода уже существуют. Перезаписать хоткеи и раскраски армии используя Шаблонный Профиль?</translation>
     </message>
     <message>
-        <source>Dawn of War - Soulstorm is not installed, or installed incorrectly!</source>
-        <translation>Dawn of War - Soulstorm не установлен, или установлен неправильно!</translation>
+        <source>Dawn of War - Soulstorm / Definitive Edition is not installed, or installed incorrectly!</source>
+        <translation>Dawn of War - Soulstorm / Definitive Edition не установлен, или установлен неправильно!</translation>
     </message>
     <message>
-        <source>You can install Dawn of War - Soulstorm from Steam store.</source>
-        <translation>Вы можете установить Dawn of War - Soulstorm использая магазин Steam.</translation>
+        <source>You can install Dawn of War - Soulstorm / Definitive Edition from Steam store.</source>
+        <translation>Вы можете установить Dawn of War - Soulstorm / Definitive Edition используая магазин Steam.</translation>
     </message>
     <message>
         <source>Dow Stats Client only works with the Steam version of the game.</source>
