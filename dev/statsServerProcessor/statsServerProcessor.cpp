@@ -76,7 +76,7 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
     qInfo(logInfo()) << "StatsServerProcessor::receivePlayresInfoFromDowServer" << "players info received";
 }
 
-void StatsServerProcessor::parseCurrentPlayerSteamId()
+/*void StatsServerProcessor::parseCurrentPlayerSteamId()
 {
     QFile file(m_steamPath+"\\config\\loginusers.vdf");
 
@@ -147,6 +147,82 @@ void StatsServerProcessor::parseCurrentPlayerSteamId()
                 return;
             }
         }
+    }
+}*/
+
+//Нейросеть нагенерила более стабильную функцию для парсинга стимовских профилей
+void StatsServerProcessor::parseCurrentPlayerSteamId() {
+    QFile file(m_steamPath + "/config/loginusers.vdf");
+    qInfo(logInfo()) << "loginusers path:" << file.fileName();
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QString content = file.readAll();
+    file.close();
+
+    // 1. Регулярка для поиска каждого отдельного блока пользователя.
+    // Находит "7656119..." { всё что внутри до закрывающей фигурной скобки }
+    QRegularExpression blockRegex(R"(\"(\d{17})\"\s*\{([^}]*)\})");
+
+    // Регулярки для поиска параметров внутри конкретного блока
+    QRegularExpression autoLoginRegex(R"(\"AutoLogin\"\s*\"(\d)\")");
+    QRegularExpression mostRecentRegex(R"(\"(?:MostRecent|mostrecent)\"\s*\"(\d)\")");
+    QRegularExpression timestampRegex(R"(\"Timestamp\"\s*\"(\d+)\")");
+
+    QString currentSteamId;
+    qlonglong maxTimestamp = 0;
+
+    auto it = blockRegex.globalMatch(content);
+    while (it.hasNext()) {
+        auto match = it.next();
+        QString steamId = match.captured(1); // Получаем SteamID (например, 76561198041477216)
+        QString blockContent = match.captured(2); // Всё, что внутри фигурных скобок этого юзера
+
+        // Ищем признаки активности внутри блока
+        auto mostRecentMatch = mostRecentRegex.match(blockContent);
+        auto autoLoginMatch = autoLoginRegex.match(blockContent);
+        auto timestampMatch = timestampRegex.match(blockContent);
+
+        // Условие 1: Нашли MostRecent равный 1
+        if (mostRecentMatch.hasMatch() && mostRecentMatch.captured(1) == "1") {
+            currentSteamId = steamId;
+            break; // Это точно текущий игрок, выходим из цикла
+        }
+
+        // Условие 2: Нашли AutoLogin равный 1 (как у dubina_xdd в вашем примере)
+        if (autoLoginMatch.hasMatch() && autoLoginMatch.captured(1) == "1") {
+            currentSteamId = steamId;
+            // Не выходим из цикла сразу, вдруг дальше у кого-то есть явный MostRecent
+        }
+
+        // Условие 3: Запасной вариант по Timestamp (самый свежий вход)
+        if (currentSteamId.isEmpty() && timestampMatch.hasMatch()) {
+            qlonglong timestamp = timestampMatch.captured(1).toLongLong();
+            if (timestamp > maxTimestamp) {
+                maxTimestamp = timestamp;
+                currentSteamId = steamId;
+            }
+        }
+    }
+
+    // Если нашли активного пользователя
+    if (!currentSteamId.isEmpty()) {
+        qInfo(logInfo()) << "Found current SteamID:" << currentSteamId;
+
+        QSharedPointer<QList<ServerPlayerStats>> playersInfo(new QList<ServerPlayerStats>());
+        ServerPlayerStats currentPlayerInfo;
+        currentPlayerInfo.steamId = currentSteamId;
+        currentPlayerInfo.isCurrentPlayer = true;
+
+        playersInfo->append(currentPlayerInfo);
+        m_currentPlayerStats = playersInfo;
+
+        emit sendCurrentPlayerSteamID(currentPlayerInfo.steamId);
+        getPlayerStatsFromServer(playersInfo);
+    } else {
+        qWarning(logInfo()) << "Could not find any active SteamID in loginusers.vdf";
     }
 }
 
