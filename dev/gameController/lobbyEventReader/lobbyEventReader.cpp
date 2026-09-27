@@ -34,7 +34,13 @@ void LobbyEventReader::receiveCurrentMissionState(GameMissionState gameCurrentSt
         case GameMissionState::playbackStoped :
         case GameMissionState::savedGameStoped :
         case GameMissionState::unknownGameStoped : activateReading(true); break;
-        default: activateReading(false);
+
+        case GameMissionState::gameStarted :
+        case GameMissionState::playbackStarted :
+        case GameMissionState::savedGameStarted :
+        case GameMissionState::unknownGameStarted : activateReading(false); break;
+
+        default: break;
     }
 
     if (gameCurrentState == GameMissionState::gameLoadStarted)
@@ -249,18 +255,43 @@ void LobbyEventReader::readAutomatchEvents()
                 break;
             }
 
-            if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission")/* || ("GAME -- Ending mission (Connection Lost)")*/)
+            if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission"))
             {
-                m_preLastMatchLogTime = m_lastAutomatchLogTime;
-                m_automatchProcessed = false;
-                m_matchPlayersList.clear();
-                m_matchNamesList.clear();
+                    m_preLastMatchLogTime = m_lastAutomatchLogTime;
+                    m_automatchProcessed = false;
+                    m_matchPlayersList.clear();
+                    m_matchNamesList.clear();
 
-                emit automatchModeChanged(m_automatchProcessed);
-                qInfo(logInfo()) << "Automatch search stoped or misssion ending";
-                m_sessionIdReceived = false;
-                tryRequestSessionId();
+                    emit automatchModeChanged(m_automatchProcessed);
+                    qInfo(logInfo()) << "Automatch search stoped or misssion ending";
+                    m_sessionIdReceived = false;
+                    tryRequestSessionId();
+            }
 
+            if (line.contains("GAME -- Beginning skirmish mission")
+                || line.contains("GAME -- Beginning multi-player mission")
+                || line.contains("APP -- Game Playback"))
+            {
+                int j = 1;
+                bool finded = false;
+
+                while (j != 10)
+                {
+                    if (counter-j >= 0 && fileLines.at(counter-j).contains("AutoMatch: Starting game"))
+                    {
+                        finded = true;
+                        break;
+                    }
+                    j++;
+                }
+
+                if (!finded)
+                {
+                    m_preLastMatchLogTime = m_lastAutomatchLogTime;
+                    m_automatchProcessed = false;
+                    emit automatchModeChanged(m_automatchProcessed);
+                    qInfo(logInfo()) << "Enable NO FOG";
+                }
                 break;
             }
 
