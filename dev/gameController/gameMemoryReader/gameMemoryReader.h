@@ -33,7 +33,9 @@ private:
 
     QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
-    QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
+
+    QStringList findIgnoredPlayersIdInMemory(const QStringList& playerIdList);
+    //QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
     HANDLE getProcessHandle(QString gameName);
 
 private:
@@ -42,9 +44,6 @@ private:
     HWND m_gameHwnd = NULL;
     QMutex m_mutex;
     std::atomic<bool> m_abort;
-
     GameType::GameTypeEnum m_gameType;
-    std::atomic<bool> m_ignoredPlayersIdFinded;
-    bool m_firstIgnoredPlayersSearch = true;
 };
 #endif // GAMEMEMORYREADER_H

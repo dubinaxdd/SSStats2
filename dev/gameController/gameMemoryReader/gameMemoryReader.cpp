@@ -12,7 +12,6 @@ using namespace std;
 GameMemoryReader::GameMemoryReader(QObject *parent)
     : QObject(parent)
 {
-    m_ignoredPlayersIdFinded = false;
     m_abort = false;
 }
 
@@ -61,62 +60,21 @@ void GameMemoryReader::abort()
 
 void GameMemoryReader::findIgnoredPlayersId(QStringList playersIdList)
 {
-    m_ignoredPlayersIdFinded = false;
-    QStringList findedPlayersIdList;
-
-    QVector<DWORD64> numbers;
-
-    DWORD64 step;
-    QString gameName;
-
-    if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
-    {
-        step = 0x1000000000;
-        gameName = "Warhammer 40,000: Dawn of War";
-
-        for (DWORD64 i = 0x30000000000; i > 0x00001000000; i -= step)
-            numbers.append(i);
-    }
-    else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
-    {
-        step = 0x10000000;
-        gameName = "Dawn of War: Soulstorm";
-
-        for (DWORD64 i = 0x00000000; i < 0x80000000; i += step)
-            numbers.append(i);
-    }
-
-    HANDLE hProcess = getProcessHandle(gameName);
-
-    if(hProcess == nullptr)
+    if (playersIdList.isEmpty())
         return;
 
-    concurrency::parallel_for_each(numbers.begin(), numbers.end(), [&](DWORD64 n) {
-        findedPlayersIdList = findIgnoredPlayersIdInMemorySection(n, n + step, playersIdList, hProcess);
+    QStringList findedPlayersIdList = findIgnoredPlayersIdInMemory(playersIdList);
 
-        if(m_abort == true)
-            return;
-
-        if (!findedPlayersIdList.isEmpty() && !m_ignoredPlayersIdFinded)
-        {
-            qInfo(logInfo()) << "Finded full list of players ID" << findedPlayersIdList;
-            m_ignoredPlayersIdFinded = true;
-            emit sendPlayersIdList(findedPlayersIdList);
-        }
-    });
-
-    if (!m_ignoredPlayersIdFinded)
+    if (!findedPlayersIdList.isEmpty())
     {
-        qWarning(logWarning()) << "GameMemoryReader::findIgnoredPlaersId: players id not finded";
-        if (m_firstIgnoredPlayersSearch)
-        {
-            m_firstIgnoredPlayersSearch = false;
-            findIgnoredPlayersId(playersIdList);
-            qInfo(logInfo()) << "GameMemoryReader::findIgnoredPlaersId - start second find ignored players";
-        }
+        emit sendPlayersIdList(findedPlayersIdList);
+        return;
     }
 
-    m_firstIgnoredPlayersSearch = true;
+    if (m_abort)
+        return;
+
+    qWarning(logWarning())<< "GameMemoryReader::findIgnoredPlayersId:" << "players ID not found";
 }
 
 QString GameMemoryReader::findSteamSoulstormSessionId()
@@ -304,8 +262,7 @@ QString GameMemoryReader::findDefinitiveEditionSessionId()
         DWORD64 address = currentAddress;
 
         // Храним конец предыдущего блока.
-        // Это позволяет найти сигнатуру, которая
-        // находится на границе двух блоков.
+        // Это позволяет найти сигнатуру, которая находится на границе двух блоков.
         QByteArray tail;
 
         while (address < scanEnd)
@@ -436,153 +393,265 @@ QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray 
     return parameterStr;
 }
 
-QStringList GameMemoryReader::findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess)
+QStringList GameMemoryReader::findIgnoredPlayersIdInMemory(const QStringList& playerIdList)
 {
     if (playerIdList.isEmpty())
         return QStringList();
 
-    // 1. Предварительное кеширование данных (выполняется один раз)
-    QByteArray searchedID = playerIdList.first().toLocal8Bit();
-    const char* sigStart = searchedID.constData();
-    int sigSize = searchedID.size();
+    QString gameName;
 
-    // Переводим все искомые ID в сырые векторы байт
-    std::vector<std::vector<char> > targetIds;
-    targetIds.reserve(playerIdList.size());
-    for (int i = 0; i < playerIdList.size(); ++i) {
-        QByteArray ba = playerIdList.at(i).toLocal8Bit();
-        targetIds.push_back(std::vector<char>(ba.begin(), ba.end()));
+    if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        gameName = "Warhammer 40,000: Dawn of War";
+    else if (m_gameType == GameType::GameTypeEnum::SoulstormSteam)
+        gameName = "Dawn of War: Soulstorm";
+    else
+        return QStringList();
+
+    HANDLE hProcess = getProcessHandle(gameName);
+
+    if (hProcess == nullptr)
+    {
+        qWarning(logWarning()) << "Cannot open process:" << gameName;
+        return QStringList();
     }
 
-    std::vector<char> buffer;
-    MEMORY_BASIC_INFORMATION mbi;
-    DWORD64 currentAddress = startAdress;
+    // Подготавливаем искомые ID
+    const QByteArray searchedID = playerIdList.first().toLocal8Bit();
+    const char* sigStart = searchedID.constData();
+    const size_t sigSize = static_cast<size_t>(searchedID.size());
 
-    while (currentAddress < endAdress)
+    if (sigSize == 0)
+        return QStringList();
+
+    std::vector<std::vector<char>> targetIds;
+
+    targetIds.reserve(static_cast<size_t>(playerIdList.size()));
+
+    for (const QString& playerId : playerIdList)
     {
-        if (m_ignoredPlayersIdFinded || m_abort)
+        QByteArray ba = playerId.toLocal8Bit();
+        targetIds.emplace_back(ba.begin(), ba.end());
+    }
+
+    const int idCount = playerIdList.size();
+
+    // Определяем диапазон адресов
+    SYSTEM_INFO systemInfo{};
+    GetNativeSystemInfo(&systemInfo);
+
+    DWORD64 currentAddress = reinterpret_cast<DWORD64>(systemInfo.lpMinimumApplicationAddress);
+    const DWORD64 maxAddress = reinterpret_cast<DWORD64>(systemInfo.lpMaximumApplicationAddress);
+
+    // Буфер чтения
+    constexpr SIZE_T CHUNK_SIZE = 1024 * 1024;
+    constexpr SIZE_T OVERLAP = 512;
+
+    QByteArray buffer;
+    buffer.reserve(CHUNK_SIZE);
+
+    MEMORY_BASIC_INFORMATION mbi{};
+
+    // Проходим реальные регионы памяти процесса
+    while (currentAddress < maxAddress)
+    {
+        if (m_abort)
             return QStringList();
 
-        if (VirtualQueryEx(hProcess, (LPCVOID)currentAddress, &mbi, sizeof(mbi)) == 0)
+        if (VirtualQueryEx(hProcess, reinterpret_cast<LPCVOID>(currentAddress), &mbi, sizeof(mbi)) == 0)
         {
-            currentAddress += 4096;
+            currentAddress += 0x1000;
             continue;
         }
 
-        DWORD64 regionEnd = (DWORD64)mbi.BaseAddress + mbi.RegionSize;
-        if (regionEnd > endAdress)
-            regionEnd = endAdress;
+        const DWORD64 regionBase = reinterpret_cast<DWORD64>(mbi.BaseAddress);
 
-        bool isReadable = (mbi.State == MEM_COMMIT) &&
-                          ((mbi.Protect & PAGE_READONLY) ||
-                           (mbi.Protect & PAGE_READWRITE) ||
-                           (mbi.Protect & PAGE_EXECUTE_READ) ||
-                           (mbi.Protect & PAGE_EXECUTE_READWRITE));
+        const DWORD64 regionEnd = regionBase + mbi.RegionSize;
 
-        if (isReadable && currentAddress < regionEnd)
+        // Защита от зацикливания.
+        if (regionEnd <= currentAddress)
+            break;
+
+        const DWORD64 scanEnd = min(regionEnd, maxAddress);
+
+
+        // Проверяем доступность региона
+        const DWORD protection = mbi.Protect & 0xFF;
+
+        const bool isReadable =
+            mbi.State == MEM_COMMIT &&
+            !(mbi.Protect & PAGE_GUARD) &&
+            protection != PAGE_NOACCESS &&
+            (
+                protection == PAGE_READONLY ||
+                protection == PAGE_READWRITE ||
+                protection == PAGE_WRITECOPY ||
+                protection == PAGE_EXECUTE_READ ||
+                protection == PAGE_EXECUTE_READWRITE ||
+                protection == PAGE_EXECUTE_WRITECOPY
+                );
+
+        if (!isReadable)
         {
-            DWORD64 bytesToRead = regionEnd - currentAddress;
-            if (buffer.size() < bytesToRead)
-                buffer.resize(bytesToRead);
+            currentAddress = scanEnd;
+            continue;
+        }
+
+
+        // Читаем регион кусками
+        DWORD64 address = currentAddress;
+        QByteArray tail;
+
+        while (address < scanEnd)
+        {
+            if (m_abort)
+                return QStringList();
+
+            const SIZE_T bytesToRead = static_cast<SIZE_T>(std::min<DWORD64>(CHUNK_SIZE, scanEnd - address));
+            buffer.resize(static_cast<qsizetype>(bytesToRead));
 
             SIZE_T bytesRead = 0;
-            if (ReadProcessMemory(hProcess, (LPCVOID)currentAddress, buffer.data(), bytesToRead, &bytesRead) && bytesRead > 0)
+
+            ReadProcessMemory(hProcess, reinterpret_cast<LPCVOID>(address), buffer.data(), bytesToRead, &bytesRead);
+
+            if (bytesRead == 0)
             {
-                const char* bufStart = buffer.data();
-                const char* bufEnd = bufStart + bytesRead;
-                const char* currentPtr = bufStart;
+                address += 0x1000;
+                tail.clear();
+                continue;
+            }
 
-                // 2. Поиск основного ID стандартным, но быстрым std::search
-                while ((currentPtr = std::search(currentPtr, bufEnd, sigStart, sigStart + sigSize)) != bufEnd)
+            buffer.resize(static_cast<qsizetype>(bytesRead));
+
+
+            // Объединяем хвост прошлого блока с текущим блоком.
+            QByteArray data;
+
+            if (!tail.isEmpty())
+                data = tail + buffer;
+            else
+                data = buffer;
+
+            const char* bufStart = data.constData();
+            const char* bufEnd = bufStart + data.size();
+            const char* currentPtr = bufStart;
+
+
+            // Ищем первый Player ID
+            while ((currentPtr = std::search( currentPtr, bufEnd,sigStart, sigStart + sigSize)) != bufEnd)
+            {
+                if (m_abort)
+                    return QStringList();
+
+                const qsizetype offset = currentPtr - bufStart;
+                const qsizetype windowStart = std::max<qsizetype>(0, offset - 400);
+                const qsizetype windowEnd =std::min<qsizetype>(data.size(), offset + 400);
+                const char* wData = bufStart + windowStart;
+                const char* wEnd = bufStart + windowEnd;
+
+
+                // Проверяем наличие всех ID
+                bool allIdFound = true;
+
+                for (size_t t = 0; t < targetIds.size(); ++t)
                 {
-                    if (m_ignoredPlayersIdFinded || m_abort)
-                        return QStringList();
-
-                    int offset = currentPtr - bufStart;
-                    int windowStart = offset - 400;
-                    int windowEnd = offset + 400;
-
-                    // Проверяем, укладывается ли окно [-400, 400] в прочитанный буфер
-                    if (windowStart >= 0 && windowEnd <= static_cast<int>(bytesRead))
+                    if (std::search(wData, wEnd, targetIds[t].begin(), targetIds[t].end()) == wEnd)
                     {
-                        const char* wData = bufStart + windowStart;
-                        const char* wEnd = bufStart + windowEnd;
+                        allIdFound = false;
+                        break;
+                    }
+                }
 
-                        // 3. Быстрая проверка всех остальных ID без Qt-оберток
-                        bool allIdFinded = true;
-                        for (size_t t = 0; t < targetIds.size(); ++t)
+                if (allIdFound)
+                {
+
+                    // Дополнительные признаки структуры данных
+                    auto matchPattern = [wData, wEnd](const char* pattern,size_t length) -> bool
+                    {
+                        return std::search(wData, wEnd, pattern, pattern + length) != wEnd;
+                    };
+
+                    const bool hasGlobal = matchPattern("\"global\"", 8);
+
+
+                    // Формируем паттерны:
+                    std::vector<char> p1;
+                    std::vector<char> p2;
+                    std::vector<char> p3;
+
+                    p1.reserve(sigSize + 2);
+                    p2.reserve(sigSize + 2);
+                    p3.reserve(sigSize + 2);
+
+                    p1.push_back('[');
+                    p1.insert(p1.end(), sigStart, sigStart + sigSize);
+                    p1.push_back(',');
+
+                    p2.push_back(',');
+                    p2.insert(p2.end(), sigStart, sigStart + sigSize);
+                    p2.push_back(',');
+
+                    p3.push_back(',');
+                    p3.insert(p3.end(), sigStart, sigStart + sigSize);
+                    p3.push_back(']');
+
+                    const bool hasP1 = std::search(wData,wEnd,p1.begin(), p1.end()) != wEnd;
+                    const bool hasP2 = std::search(wData, wEnd,p2.begin(),p2.end()) != wEnd;
+                    const bool hasP3 = std::search(wData, wEnd,p3.begin(),p3.end()) != wEnd;
+
+                    const bool validStructure = (idCount > 2 && (hasGlobal || hasP1 || hasP2 || hasP3)) || (idCount == 1 && (hasGlobal || hasP1 || hasP3));
+
+                    if (validStructure)
+                    {
+                        // Извлекаем 8-значные ID
+                        QStringList idList;
+
+                        QString currentId;
+                        currentId.reserve(8);
+
+                        for (const char* p = wData; p < wEnd; ++p)
                         {
-                            if (std::search(wData, wEnd, targetIds[t].begin(), targetIds[t].end()) == wEnd)
+                            const char symbol = *p;
+
+                            if (symbol >= '0' && symbol <= '9')
+                                currentId.append(symbol);
+                            else
                             {
-                                allIdFinded = false;
-                                break;
-                            }
-                        }
-
-                        if (allIdFinded)
-                        {
-                            int idCount = playerIdList.count();
-
-                            // 4. Оптимизированный поиск паттернов («сырые» вызовы std::search)
-                            auto matchPattern = [wData, wEnd](const char* pat, size_t len) -> bool {
-                                return std::search(wData, wEnd, pat, pat + len) != wEnd;
-                            };
-
-                            bool hasGlobal = matchPattern("\"global\"", 8);
-
-                            // Собираем паттерны со скобками и запятыми динамически на стеке (без выделения памяти в куче)
-                            std::vector<char> p1, p2, p3;
-                            p1.reserve(sigSize + 2); p2.reserve(sigSize + 2); p3.reserve(sigSize + 2);
-
-                            p1.push_back('['); p1.insert(p1.end(), sigStart, sigStart + sigSize); p1.push_back(',');
-                            p2.push_back(','); p2.insert(p2.end(), sigStart, sigStart + sigSize); p2.push_back(',');
-                            p3.push_back(','); p3.insert(p3.end(), sigStart, sigStart + sigSize); p3.push_back(']');
-
-                            bool hasP1 = std::search(wData, wEnd, p1.begin(), p1.end()) != wEnd;
-                            bool hasP2 = std::search(wData, wEnd, p2.begin(), p2.end()) != wEnd;
-                            bool hasP3 = std::search(wData, wEnd, p3.begin(), p3.end()) != wEnd;
-
-                            if ((idCount > 2 && (hasGlobal || hasP1 || hasP2 || hasP3)) ||
-                                (idCount == 1 && (hasGlobal || hasP1 || hasP3)))
-                            {
-                                QStringList idList;
-                                QString currentId;
-                                currentId.reserve(8);
-
-                                // 5. Извлечение ID по маске цифр
-                                for (const char* p = wData; p < wEnd; ++p)
+                                if (currentId.size() == 8)
                                 {
-                                    char symbol = *p;
-                                    if (symbol >= '0' && symbol <= '9')
-                                    {
-                                        currentId.append(symbol);
-                                    }
-                                    else
-                                    {
-                                        if (currentId.size() == 8)
-                                        {
-                                            // Быстрый поиск дубликатов в QStringList
-                                            if (std::find(idList.begin(), idList.end(), currentId) == idList.end())
-                                            {
-                                                idList.append(currentId);
-                                            }
-                                        }
-                                        currentId.clear();
-                                    }
+                                    if (!idList.contains(currentId))
+                                        idList.append(currentId);
                                 }
 
-                                if (idList.count() == idCount + 1)
-                                    return idList;
+                                currentId.clear();
                             }
                         }
-                    }
 
-                    // Сдвигаем указатель вперед для продолжения поиска
-                    currentPtr += sigSize;
+                        // Не забываем проверить число в самом конце окна.
+                        if (currentId.size() == 8)
+                        {
+                            if (!idList.contains(currentId))
+                                idList.append(currentId);
+                        }
+
+                        if (idList.size() == idCount + 1)
+                            return idList;
+                    }
                 }
+
+                // Продолжаем поиск следующего вхождения.
+                currentPtr += sigSize;
             }
+
+            // -------------------------------------------------
+            // Сохраняем хвост блока.
+            // -------------------------------------------------
+
+            const qsizetype tailSize = std::min<qsizetype>(data.size(), static_cast<qsizetype>(OVERLAP));
+            tail = data.right(tailSize);
+            address += bytesRead;
         }
-        currentAddress = regionEnd;
+
+        currentAddress = scanEnd;
     }
 
     return QStringList();
