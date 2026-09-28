@@ -377,69 +377,78 @@ Rectangle {
                         }
                     }
                 }
+            }
+        }
 
-                Item{
+        Rectangle{
+            Layout.topMargin: -10 * sizeModifer
+            Layout.leftMargin: 10 * sizeModifer
+            Layout.rightMargin: 10 * sizeModifer
+            Layout.bottomMargin: 10 * sizeModifer
+            Layout.fillWidth: true
+            Layout.preferredHeight: relicStatistic.height + (10 * sizeModifer)
+            visible: root.relicStatsAvailable
+            color: DowStatsStyle.alternateBackgroundColor
+            radius: 10 * sizeModifer
+
+            ColumnLayout
+            {
+                id: relicStatistic
+                spacing: 1 * sizeModifer
+                anchors.top: parent.top
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.margins: 5 * sizeModifer
+
+                Label {
+                    id: relicLadderLabel
+                    visible: root.relicStatsAvailable
+                    text: "Relic Ladder"
+                    font.pixelSize: 13 * sizeModifer
                     Layout.fillHeight: true
-                    visible: !root.relicStatsAvailable
+                    Layout.fillWidth: true
+                    //Layout.topMargin: 5 * sizeModifer
+                    color: root.textColor
                 }
 
-                ColumnLayout
-                {
-                    Layout.fillWidth: true
+                Label {
+                    id: rating_1x1Label
+                    visible: root.relicStatsAvailable && root.rating_1x1 > 0
+                    text: qsTr("Rating 1x1: ") + root.rating_1x1 + " (" + root.race_1x1 + ")"
+                    font.pixelSize: 11 * sizeModifer
                     Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: root.textColor
+                }
+
+                Label {
+                    id: rating_2x2Label
+                    visible: root.relicStatsAvailable && root.rating_2x2 > 0
+                    text: qsTr("Rating 2x2: ") + root.rating_2x2 + " (" + root.race_2x2 + ")"
+                    font.pixelSize: 11 * sizeModifer
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: root.textColor
+                }
+
+                Label {
+                    id: rating_3x3Label
+                    visible: root.relicStatsAvailable && root.rating_3x3 > 0
+                    text: qsTr("Rating 3x3: ") + root.rating_3x3 + " (" + root.race_3x3 + ")"
+                    font.pixelSize: 11 * sizeModifer
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: root.textColor
+                }
+
+                Label {
+                    id: relicGamesCountLabel
                     visible: root.relicStatsAvailable
-                    spacing: 1 * sizeModifer
-
-                    Label {
-                        id: relicLadderLabel
-                        visible: root.relicStatsAvailable
-                        text: "Relic Ladder"
-                        font.pixelSize: 13 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        Layout.topMargin: 5 * sizeModifer
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: rating_1x1Label
-                        visible: root.relicStatsAvailable && root.rating_1x1 > 0
-                        text: qsTr("Rating 1x1: ") + root.rating_1x1 + " (" + root.race_1x1 + ")"
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: rating_2x2Label
-                        visible: root.relicStatsAvailable && root.rating_2x2 > 0
-                        text: qsTr("Rating 2x2: ") + root.rating_2x2 + " (" + root.race_2x2 + ")"
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: rating_3x3Label
-                        visible: root.relicStatsAvailable && root.rating_3x3 > 0
-                        text: qsTr("Rating 3x3: ") + root.rating_3x3 + " (" + root.race_3x3 + ")"
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }
-
-                    Label {
-                        id: relicGamesCountLabel
-                        visible: root.relicStatsAvailable
-                        text: qsTr("Games (Winrate): ") + root.relicGamesCount + " (" + (root.relicGamesCount >0 ? Math.trunc((root.relicWinCount/root.relicGamesCount) * 100) : 0)+ "%)"
-                        font.pixelSize: 11 * sizeModifer
-                        Layout.fillHeight: true
-                        Layout.fillWidth: true
-                        color: root.textColor
-                    }
+                    text: qsTr("Games (Winrate): ") + root.relicGamesCount + " (" + (root.relicGamesCount >0 ? Math.trunc((root.relicWinCount/root.relicGamesCount) * 100) : 0)+ "%)"
+                    font.pixelSize: 11 * sizeModifer
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: root.textColor
                 }
             }
         }
