@@ -39,7 +39,7 @@ public slots:
 private slots:
     void receivePlayerStatsFromServer(QNetworkReply *reply, QSharedPointer<QList<ServerPlayerStats> > playersInfo);
     void receivePlayerMediumAvatar(QNetworkReply* reply, QSharedPointer<ServerPlayerStats> playerInfo);
-    void currentPlayerStatsRequestTimerTimeout();
+    void requestCurrentPlayerStats();
     void receiveRankDiversion(QNetworkReply* reply);
     void onRankDiversionTimerTimeout();
     void requestClientLastVersion();
