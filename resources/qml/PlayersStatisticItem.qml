@@ -386,7 +386,7 @@ Rectangle {
             Layout.rightMargin: 10 * sizeModifer
             Layout.bottomMargin: 10 * sizeModifer
             Layout.fillWidth: true
-            Layout.preferredHeight: relicStatistic.height + (10 * sizeModifer)
+            Layout.preferredHeight: relicStatistic.height + (20 * sizeModifer)
             visible: root.relicStatsAvailable
             color: DowStatsStyle.alternateBackgroundColor
             radius: 10 * sizeModifer
@@ -398,7 +398,7 @@ Rectangle {
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                anchors.margins: 5 * sizeModifer
+                anchors.margins: 10 * sizeModifer
 
                 Label {
                     id: relicLadderLabel
