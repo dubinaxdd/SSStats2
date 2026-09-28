@@ -305,31 +305,44 @@ QString GameMemoryReader::findDefinitiveEditionSessionId()
 
             auto findSessionIdBySignature = [&](const QByteArray& signature) -> QString
             {
+                constexpr qsizetype TOKEN_LENGTH = 30;
                 qsizetype searchPosition = 0;
 
                 while (true)
                 {
-                    const qsizetype position = data.indexOf( signature, searchPosition);
+                    const qsizetype position = data.indexOf(signature, searchPosition);
 
                     if (position < 0)
-                        break;
+                        return QString();
 
-                    // Ограничиваем область поиска параметра.
-                    const qsizetype available = data.size() - position;
+                    const qsizetype valueStart = position + signature.size();
 
-                    const qsizetype size = std::min<qsizetype>(available, 100);
+                    // Проверяем, что все 30 байт доступны.
+                    if (valueStart + TOKEN_LENGTH <= data.size())
+                    {
+                        bool valid = true;
 
-                    QByteArray subBuffer = data.mid(position, size);
+                        for (qsizetype i = 0; i < TOKEN_LENGTH; ++i)
+                        {
+                            const char c = data.at(valueStart + i);
 
-                    QString value = findParameter(&subBuffer, signature, 30);
+                            const bool isDigit = c >= '0' && c <= '9';
+                            const bool isLower = c >= 'a' && c <= 'z';
+                            const bool isUpper = c >= 'A' && c <= 'Z';
 
-                    if (!value.isEmpty())
-                        return value;
+                            if (!isDigit && !isLower && !isUpper)
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+
+                        if (valid)
+                            return QString::fromLatin1(data.constData() + valueStart, TOKEN_LENGTH);
+                    }
 
                     searchPosition = position + 1;
                 }
-
-                return {};
             };
 
             QString sessionId = findSessionIdBySignature(head1);
@@ -352,26 +365,6 @@ QString GameMemoryReader::findDefinitiveEditionSessionId()
     }
 
     return QString();
-}
-
-QString GameMemoryReader::findParameter(QByteArray *buffer, QByteArray head, int length)
-{
-    int index = buffer->indexOf(head);
-
-    QString parameterStr = QString::fromUtf8((char*)buffer->mid(index, head.length() + length).data() + 1);
-
-    if(parameterStr.at(0) == "-")
-    {
-        length++;
-        parameterStr = parameterStr.right(length);
-    }
-    else
-        parameterStr = parameterStr.left(length + head.length()).right(length);
-
-    if (parameterStr.count() != length)
-        return "";
-
-    return parameterStr;
 }
 
 QString GameMemoryReader::findChecksummParameter(QByteArray *buffer, QByteArray head)

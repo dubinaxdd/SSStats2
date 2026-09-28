@@ -30,12 +30,9 @@ public slots:
 private:
     QString findSteamSoulstormSessionId();
     QString findDefinitiveEditionSessionId();
-
-    QString findParameter(QByteArray *buffer, QByteArray head, int length);
     QString findChecksummParameter(QByteArray *buffer, QByteArray head);
 
     QStringList findIgnoredPlayersIdInMemory(const QStringList& playerIdList);
-    //QStringList findIgnoredPlayersIdInMemorySection(DWORD64 startAdress, DWORD64 endAdress, QStringList playerIdList, HANDLE hProcess);
     HANDLE getProcessHandle(QString gameName);
 
 private:
