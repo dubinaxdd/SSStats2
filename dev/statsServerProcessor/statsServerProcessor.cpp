@@ -30,11 +30,12 @@ StatsServerProcessor::StatsServerProcessor(SettingsController *settingsControlle
 
 
     m_currentPlayerStatsRequestTimer = new QTimer(this);
+    m_currentPlayerStatsRequestTimer->setSingleShot(true);
     m_currentPlayerStatsRequestTimer->setInterval(CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL);
 
     m_rankDiversionTimer->setInterval(60000);
 
-    connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::currentPlayerStatsRequestTimerTimeout, Qt::QueuedConnection);
+    connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::requestCurrentPlayerStats, Qt::QueuedConnection);
     connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::requestClientLastVersion, Qt::QueuedConnection);
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &StatsServerProcessor::onSettingsLoaded, Qt::QueuedConnection);
@@ -75,80 +76,6 @@ void StatsServerProcessor::receivePlayresInfoFromDowServer(QList<PlayerInfoFromD
 
     qInfo(logInfo()) << "StatsServerProcessor::receivePlayresInfoFromDowServer" << "players info received";
 }
-
-/*void StatsServerProcessor::parseCurrentPlayerSteamId()
-{
-    QFile file(m_steamPath+"\\config\\loginusers.vdf");
-
-    qInfo(logInfo()) << "loginusers path: " <<  m_steamPath + "\\config\\loginusers.vdf";
-
-    if(file.open(QIODevice::ReadOnly))
-    {
-        QTextStream textStream(&file);
-        QStringList fileLines = textStream.readAll().split("\n");
-
-        file.close();
-
-        QStringList steamIDs;
-        QStringList accountNames;
-        QStringList personaNames;
-        QStringList timestamps;
-        QStringList mostRecents;
-
-        for(int i = 0; i < fileLines.size(); i++ )
-        {
-            if (fileLines[i].contains("AccountName")){
-                QString accountName = fileLines[i].right(fileLines[i].length() - 18);
-                accountName = accountName.left(accountName.length() - 1);
-                accountNames.append(accountName);
-
-                QString steamID = fileLines[i-2].right(fileLines[i-2].length() - 2);
-                steamID = steamID.left(steamID.length() - 1);
-                steamIDs.append(steamID);
-            }
-
-            if (fileLines[i].contains("PersonaName")){
-                QString personaName = fileLines[i].right(fileLines[i].length() - 18);
-                personaName = personaName.left(personaName.length() - 1);
-                personaNames.append(personaName);
-            }
-
-            if (fileLines[i].contains("Timestamp")){
-                QString timestamp = fileLines[i].right(fileLines[i].length() - 16);
-                timestamp = timestamp.left(timestamp.length() - 1);
-                timestamps.append(timestamp);
-            }
-
-            if (fileLines[i].contains("MostRecent") || fileLines[i].contains("mostrecent")){
-                QString mostRecent = fileLines[i].right(fileLines[i].length() - 17);
-                mostRecent = mostRecent.left(mostRecent.length() - 1);
-                mostRecents.append(mostRecent);
-            }
-        }
-
-        for(int i = 0; i < steamIDs.count(); i++)
-        {
-            if(mostRecents.at(i) == "1")
-            {
-                QSharedPointer <QList<ServerPlayerStats>> playersInfo(new QList<ServerPlayerStats>);
-
-                ServerPlayerStats currentPlayerInfo;
-
-                currentPlayerInfo.steamId = steamIDs.at(i);
-                currentPlayerInfo.isCurrentPlayer = true;
-                playersInfo.data()->append(currentPlayerInfo);
-
-                m_currentPlayerStats = playersInfo;
-
-                emit sendCurrentPlayerSteamID(currentPlayerInfo.steamId);
-
-                getPlayerStatsFromServer(playersInfo);
-
-                return;
-            }
-        }
-    }
-}*/
 
 //Нейросеть нагенерила более стабильную функцию для парсинга стимовских профилей
 void StatsServerProcessor::parseCurrentPlayerSteamId() {
@@ -381,7 +308,7 @@ void StatsServerProcessor::receivePlayerMediumAvatar(QNetworkReply *reply, QShar
         emit sendServerPlayerStats(*playerInfo.data());
 }
 
-void StatsServerProcessor::currentPlayerStatsRequestTimerTimeout()
+void StatsServerProcessor::requestCurrentPlayerStats()
 {
     if (!m_currentPlayerStats.data()->isEmpty() && !m_currentPlayerStats.data()->at(0).steamId.isEmpty())
         getPlayerStatsFromServer(m_currentPlayerStats);
@@ -397,7 +324,6 @@ void StatsServerProcessor::onSettingsLoaded()
         m_currentMod = "dowstats_balance_mod";
 
     parseCurrentPlayerSteamId();
-    m_currentPlayerStatsRequestTimer->start();
 
     requestRankDiversion();
     m_rankDiversionTimer->start();
@@ -716,6 +642,7 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
+        m_currentPlayerStatsRequestTimer->start();
     });
 }
 
@@ -726,7 +653,7 @@ void StatsServerProcessor::receiveCurrentMod(QString modName)
     if (m_currentMod.contains("dowstats_balance_mod"))
         m_currentMod = "dowstats_balance_mod";
 
-    currentPlayerStatsRequestTimerTimeout();
+    requestCurrentPlayerStats();
     requestRankDiversion();
     m_rankDiversionTimer->start();
 }
