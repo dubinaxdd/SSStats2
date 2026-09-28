@@ -20,11 +20,11 @@ public:
     void receiveMapList(QNetworkReply *reply);
     void updateMapList();
 
-    void requestMapInfo(MapItem *mapItem);
-    void receiveMapInfo(QNetworkReply *reply, MapItem *mapItem);
+    void requestMapInfo(QString mapId, QString mapContentHash);
+    void receiveMapInfo(QNetworkReply *reply, QString mapId);
 
-    void requestFile(QString fileName, QString fileHash, MapItem *mapItem);
-    void receiveFile(QNetworkReply *reply, QString fileName, MapItem *mapItem);
+    void requestFile(QString fileName, QString fileHash, QString mapId);
+    void receiveFile(QNetworkReply *reply, QString fileName, QString mapId);
 
     void requestMapImage(QString id);
     void receiveMapImage(QNetworkReply *reply, QString id);
@@ -58,6 +58,8 @@ private:
     QString consolidateTags(QList<QString> tags);
 
     void updateBlockInfoUpdate();
+
+    MapItem* getMapItemById(QString mapId);
 
 private:
     GamePath* m_currentGame;

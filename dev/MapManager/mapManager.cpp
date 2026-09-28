@@ -23,20 +23,21 @@ MapManager::MapManager(SettingsController *settingsController, GamePath *current
     , m_fileHashReader( new FileHashReader())
     , m_fileHashReaderThread(new QThread(this))
 {
-     QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManager::onSettingsLoaded, Qt::QueuedConnection);
+    QObject::connect(m_settingsController, &SettingsController::settingsLoaded, this, &MapManager::onSettingsLoaded, Qt::QueuedConnection);
 
-     QObject::connect(this, &MapManager::requsetLocalMapFilesList, m_fileHashReader, &FileHashReader::getLocalMapFilesList, Qt::QueuedConnection);
-     QObject::connect(m_fileHashReader, &FileHashReader::sendLocalMapFilesList, this, &MapManager::receiveLocalMapFilesList,  Qt::QueuedConnection);
+    QObject::connect(this, &MapManager::requsetLocalMapFilesList, m_fileHashReader, &FileHashReader::getLocalMapFilesList, Qt::QueuedConnection);
+    QObject::connect(m_fileHashReader, &FileHashReader::sendLocalMapFilesList, this, &MapManager::receiveLocalMapFilesList,  Qt::QueuedConnection);
 
-     m_fileHashReader->moveToThread(m_fileHashReaderThread);
-     m_fileHashReaderThread->start();
+    m_fileHashReader->moveToThread(m_fileHashReaderThread);
+    m_fileHashReaderThread->start();
 }
 
 MapManager::~MapManager()
 {
     m_fileHashReaderThread->quit();
     m_fileHashReaderThread->wait();
-    m_fileHashReader->deleteLater();
+
+    delete m_fileHashReader;
 }
 
 void MapManager::requestMapList()
@@ -59,12 +60,23 @@ void MapManager::requestMapList()
 
 void MapManager::receiveMapList(QNetworkReply *reply)
 {
+    if(!reply)
+    {
+        m_blockInfoUpdate = false;
+        return;
+    }
+
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "MapManager::receiveMapList Connection error:" << reply->errorString();
+
         reply->deleteLater();
+
+        m_blockInfoUpdate = false;
         m_checkUpdatesProcessed = false;
+
         emit mapsInfoLoaded();
+
         return;
     }
 
@@ -75,12 +87,12 @@ void MapManager::receiveMapList(QNetworkReply *reply)
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
     if(!jsonDoc.isArray())
+    {
+        m_blockInfoUpdate = false;
         return;
+    }
 
     QJsonArray replyJsonArray = jsonDoc.array();
-
-    //TODO: Возможен баг так как другие методы могут обращаться по указателям к уже не существующим элементам массива
-    //m_blockInfoUpdate должен помочь
 
     m_mapItemArray.clear();
     m_requestetMapInfoCount = 0;
@@ -115,10 +127,24 @@ void MapManager::receiveMapList(QNetworkReply *reply)
         m_mapItemArray.append(std::move(newMapItem));
     }
 
+    if(m_mapItemArray.isEmpty())
+    {
+        m_blockInfoUpdate = false;
+        m_checkUpdatesProcessed = false;
+        m_mapListLoaded = true;
+
+        emit mapsInfoLoaded();
+
+        return;
+    }
+
     for(int i = 0; i < m_mapItemArray.count(); i++)
-    {   
-        requestMapInfo( &m_mapItemArray[i] );
-        requestMapImage(m_mapItemArray[i].id);
+    {
+        requestMapInfo(
+            m_mapItemArray.at(i).id,
+            m_mapItemArray.at(i).modContentHash);
+
+        requestMapImage(m_mapItemArray.at(i).id);
     }
 
     m_checkUpdatesProcessed = false;
@@ -129,22 +155,24 @@ void MapManager::updateMapList()
 {
     m_requestetMapInfoCount = 0;
 
-    for(auto& item : m_mapItemArray)
+    for(int i = 0; i < m_mapItemArray.count(); i++)
     {
-        checkLocalFilesState(&item);
+        MapItem *mapItem = &m_mapItemArray[i];
 
-        if ((item.needInstall || item.needUpdate) )
+        checkLocalFilesState(mapItem);
+
+        if ((mapItem->needInstall || mapItem->needUpdate) )
         {
             if (m_settingsController->getSettings()->autoinstallAllMaps
                 || (m_settingsController->getSettings()->autoinstallDefaultMaps
-                    && consolidateTags(item.tags).contains("default-map"))
+                    && consolidateTags(mapItem->tags).contains("default-map"))
                 )
-                item.downloadProcessed = true;
+                mapItem->downloadProcessed = true;
         }
 
         m_requestetMapInfoCount++;
 
-        emit sendMapItem(&item);
+        emit sendMapItem(mapItem);
 
         if(m_requestetMapInfoCount == m_mapItemArray.count())
         {
@@ -171,28 +199,35 @@ void MapManager::updateMapList()
     emit mapsInfoLoaded();
 }
 
-void MapManager::requestMapInfo(MapItem *mapItem)
+void MapManager::requestMapInfo(QString mapId, QString mapContentHash)
 {
-    QString url = getUrl(mapItem->modContentHash);
+    if(mapId.isEmpty() || mapContentHash.isEmpty())
+        return;
+
+    QString url = getUrl(mapContentHash);
 
     QNetworkRequest newRequest = QNetworkRequest(QUrl(url));
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveMapInfo(reply, mapItem);
+        receiveMapInfo(reply, mapId);
     });
 }
 
-void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
+void MapManager::receiveMapInfo(QNetworkReply *reply, QString mapId)
 {
+    if(!reply)
+        return;
+
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "MapManager::receiveMapInfo Connection error:" << reply->errorString();
+
         reply->deleteLater();
 
         m_requestetMapInfoCount++;
 
-        if(m_requestetMapInfoCount == m_mapItemArray.count())
+        if(m_requestetMapInfoCount >= m_mapItemArray.count())
         {
             m_blockInfoUpdate = false;
             emit mapsInfoLoaded();
@@ -202,17 +237,59 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
     }
 
     QByteArray replyByteArray = reply->readAll();
+
     reply->deleteLater();
 
     QByteArray uncompressedByteArray;
 
     if (!uncompressGz(replyByteArray, uncompressedByteArray))
+    {
+        qWarning(logWarning()) << "MapManager::receiveMapInfo Can't uncompress map info:" << mapId;
+
+        m_requestetMapInfoCount++;
+
+        if(m_requestetMapInfoCount >= m_mapItemArray.count())
+        {
+            m_blockInfoUpdate = false;
+            emit mapsInfoLoaded();
+        }
+
         return;
+    }
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(uncompressedByteArray);
 
     if(!jsonDoc.isObject())
+    {
+        qWarning(logWarning()) << "MapManager::receiveMapInfo Invalid JSON:" << mapId;
+
+        m_requestetMapInfoCount++;
+
+        if(m_requestetMapInfoCount >= m_mapItemArray.count())
+        {
+            m_blockInfoUpdate = false;
+            emit mapsInfoLoaded();
+        }
+
         return;
+    }
+
+    MapItem *mapItem = getMapItemById(mapId);
+
+    if(!mapItem)
+    {
+        qWarning(logWarning()) << "MapManager::receiveMapInfo Map item not found:" << mapId;
+
+        m_requestetMapInfoCount++;
+
+        if(m_requestetMapInfoCount >= m_mapItemArray.count())
+        {
+            m_blockInfoUpdate = false;
+            emit mapsInfoLoaded();
+        }
+
+        return;
+    }
 
     QJsonObject jsonObj = jsonDoc.object();
     QJsonObject filesInfoObject = jsonObj.value("files").toObject();
@@ -243,7 +320,7 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
         if (m_settingsController->getSettings()->autoinstallAllMaps
             || (m_settingsController->getSettings()->autoinstallDefaultMaps
                 && consolidateTags(mapItem->tags).contains("default-map"))
-                )
+            )
             mapItem->downloadProcessed = true;
     }
 
@@ -251,7 +328,7 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
 
     emit sendMapItem(mapItem);
 
-    if(m_requestetMapInfoCount == m_mapItemArray.count())
+    if(m_requestetMapInfoCount >= m_mapItemArray.count())
     {
         m_blockInfoUpdate = false;
         emit mapsInfoLoaded();
@@ -270,8 +347,11 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, MapItem *mapItem)
     }
 }
 
-void MapManager::requestFile(QString fileName, QString fileHash, MapItem *mapItem)
+void MapManager::requestFile(QString fileName, QString fileHash, QString mapId)
 {
+    if(fileName.isEmpty() || fileHash.isEmpty() || mapId.isEmpty())
+        return;
+
     m_blockInfoUpdate = true;
 
     QString url = getUrl(fileHash);
@@ -280,12 +360,24 @@ void MapManager::requestFile(QString fileName, QString fileHash, MapItem *mapIte
     QNetworkReply *reply = m_networkManager->get(newRequest);
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
-        receiveFile(reply, fileName, mapItem);
+        receiveFile(reply, fileName, mapId);
     });
 }
 
-void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *mapItem)
+void MapManager::receiveFile(QNetworkReply *reply, QString fileName, QString mapId)
 {
+    if(!reply)
+        return;
+
+    MapItem *mapItem = getMapItemById(mapId);
+
+    if(!mapItem)
+    {
+        qWarning(logWarning()) << "MapManager::receiveFile Map item not found:" << mapId;
+        reply->deleteLater();
+        return;
+    }
+
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "MapManager::receiveFile Connection error:" << reply->errorString();
@@ -294,6 +386,7 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
         mapItem->needInstall = mapItem->downloadedFiles < 0;
         mapItem->needUpdate = mapItem->downloadedFiles != mapItem->filesList.count();
         mapItem->downloadProcessed = false;
+
         emit sendMapItem(mapItem);
 
         updateBlockInfoUpdate();
@@ -305,12 +398,31 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
     }
 
     QByteArray replyByteArray = reply->readAll();
+
     reply->deleteLater();
 
     QByteArray uncompressedByteArray;
 
     if (!uncompressGz(replyByteArray, uncompressedByteArray))
+    {
+        qWarning(logWarning()) << "MapManager::receiveFile Can't uncompress file:" << fileName;
+
+        mapItem->needInstall = true;
+        mapItem->needUpdate = true;
+        mapItem->downloadProcessed = false;
+
+        emit sendMapItem(mapItem);
+
+        updateBlockInfoUpdate();
+
         return;
+    }
+
+    if(!m_currentGame)
+    {
+        qWarning(logWarning()) << "MapManager::receiveFile Current game is null";
+        return;
+    }
 
     QFile newFile;
 
@@ -323,7 +435,7 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
         if(!dir.exists())
             dir.mkpath(path);
 
-        newFile.setFileName( path + QDir::separator() + fileName );
+        newFile.setFileName(path + QDir::separator() + fileName);
     }
     else
     {
@@ -334,21 +446,36 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
         if(!dir.exists())
             dir.mkpath(path);
 
-        newFile.setFileName( m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName );
+        newFile.setFileName(m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp" + QDir::separator() + fileName);
     }
 
-    if( newFile.open( QIODevice::WriteOnly ) ) {
-        newFile.write(uncompressedByteArray);
-        newFile.close();
+    if(!newFile.open(QIODevice::WriteOnly))
+    {
+        qWarning(logWarning()) << "MapManager::receiveFile Can't open file:"
+                               << newFile.fileName();
+
+        mapItem->needInstall = true;
+        mapItem->needUpdate = true;
+        mapItem->downloadProcessed = false;
+
+        emit sendMapItem(mapItem);
+
+        updateBlockInfoUpdate();
+
+        return;
     }
+
+    newFile.write(uncompressedByteArray);
+    newFile.close();
 
     mapItem->downloadedFiles++;
 
-    if(mapItem->downloadedFiles == mapItem->filesList.count())
+    if(mapItem->downloadedFiles >= mapItem->filesList.count())
     {
         mapItem->needInstall = false;
         mapItem->needUpdate = false;
         mapItem->downloadProcessed = false;
+
         emit sendMapItem(mapItem);
 
         updateBlockInfoUpdate();
@@ -357,7 +484,12 @@ void MapManager::receiveFile(QNetworkReply *reply, QString fileName, MapItem *ma
             downloadNextMap();
     }
     else
-        requestFile(mapItem->filesList.at(mapItem->downloadedFiles).fileName, mapItem->filesList.at(mapItem->downloadedFiles).hash, mapItem);
+    {
+        requestFile(
+            mapItem->filesList.at(mapItem->downloadedFiles).fileName,
+            mapItem->filesList.at(mapItem->downloadedFiles).hash,
+            mapItem->id);
+    }
 }
 
 void MapManager::requestMapImage(QString id)
@@ -370,11 +502,13 @@ void MapManager::requestMapImage(QString id)
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveMapImage(reply, id);
     });
-
 }
 
 void MapManager::receiveMapImage(QNetworkReply *reply, QString id)
 {
+    if(!reply)
+        return;
+
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "MapManager::receiveMapImage Connection error:" << reply->errorString();
@@ -396,44 +530,87 @@ void MapManager::receiveMapImage(QNetworkReply *reply, QString id)
 
 void MapManager::downloadNextMap()
 {
-    if (m_downloadedMapsCount == m_mapItemArray.count())
+    if(m_downloadedMapsCount < 0)
+        m_downloadedMapsCount = 0;
+
+    if(m_downloadedMapsCount >= m_mapItemArray.count())
     {
         m_allMapsDownloadingProcessed = false;
-        emit sendDownloadingProgress(m_downloadedMapsCount, m_mapItemArray.count(), false);
+
+        emit sendDownloadingProgress(
+            m_downloadedMapsCount,
+            m_mapItemArray.count(),
+            false);
+
         return;
     }
 
-    if( !(m_mapItemArray[m_downloadedMapsCount].needInstall || m_mapItemArray[m_downloadedMapsCount].needUpdate) )
+    MapItem *mapItem = &m_mapItemArray[m_downloadedMapsCount];
+
+    if(!(mapItem->needInstall || mapItem->needUpdate))
     {
         m_downloadedMapsCount++;
         downloadNextMap();
+
         return;
     }
 
     if(m_downloadOnlyDefaultMaps)
     {
-        if( !consolidateTags(m_mapItemArray[m_downloadedMapsCount].tags).contains("default-map"))
+        if(!consolidateTags(mapItem->tags).contains("default-map"))
         {
             m_downloadedMapsCount++;
             downloadNextMap();
+
             return;
         }
     }
 
-    emit sendDownloadingProgress(m_downloadedMapsCount, m_mapItemArray.count(), true);
-    installMap(&(m_mapItemArray[m_downloadedMapsCount]));
+    emit sendDownloadingProgress(
+        m_downloadedMapsCount,
+        m_mapItemArray.count(),
+        true);
+
+    installMap(mapItem);
+
     m_downloadedMapsCount++;
 }
 
 void MapManager::installMap(MapItem *mapItem)
 {
+    if(!mapItem)
+        return;
+
+    if(mapItem->filesList.isEmpty())
+    {
+        qWarning(logWarning()) << "MapManager::installMap Files list is empty:"
+                               << mapItem->id;
+
+        mapItem->needInstall = true;
+        mapItem->needUpdate = true;
+        mapItem->downloadProcessed = false;
+
+        emit sendMapItem(mapItem);
+
+        return;
+    }
+
     mapItem->downloadedFiles = 0;
 
-    requestFile(mapItem->filesList.at(0).fileName, mapItem->filesList.at(0).hash, mapItem);
+    requestFile(
+        mapItem->filesList.at(0).fileName,
+        mapItem->filesList.at(0).hash,
+        mapItem->id);
 }
 
 void MapManager::receiveRemoveMap(MapItem *mapItem)
 {
+    if(!mapItem)
+        return;
+
+    if(!m_currentGame)
+        return;
+
     for (int i = 0; i < mapItem->filesList.count(); i++)
     {
         QString path;
@@ -446,18 +623,21 @@ void MapManager::receiveRemoveMap(MapItem *mapItem)
         QFile tempfile(path);
         tempfile.remove();
 
-        qInfo(logInfo()) <<  "Map file uninstalled from " << path;
+        qInfo(logInfo()) << "Map file uninstalled from " << path;
 
         mapItem->needInstall = true;
         mapItem->needUpdate = true;
 
-        emit sendMapItem( mapItem );
+        emit sendMapItem(mapItem);
     }
 }
 
 void MapManager::receiveInstallMap(MapItem *mapItem)
 {
-    if (m_allMapsDownloadingProcessed)
+    if(m_allMapsDownloadingProcessed)
+        return;
+
+    if(!mapItem)
         return;
 
     installMap(mapItem);
@@ -465,7 +645,7 @@ void MapManager::receiveInstallMap(MapItem *mapItem)
 
 void MapManager::receiveInstallAllMaps()
 {
-    if (m_allMapsDownloadingProcessed)
+    if(m_allMapsDownloadingProcessed)
         return;
 
     m_downloadedMapsCount = 0;
@@ -478,25 +658,33 @@ void MapManager::receiveInstallAllMaps()
 
 void MapManager::receiveInstallDefaultMaps()
 {
-    if (m_allMapsDownloadingProcessed)
+    if(m_allMapsDownloadingProcessed)
         return;
 
     m_downloadedMapsCount = 0;
     m_allMapsDownloadingProcessed = true;
 
     m_downloadOnlyDefaultMaps = true;
+
     downloadNextMap();
 }
 
 void MapManager::receiveLoadMapsInfo()
 {
-    if (m_checkUpdatesProcessed)
+    if(m_checkUpdatesProcessed)
         return;
 
     m_checkUpdatesProcessed = true;
 
+    if(!m_currentGame)
+    {
+        qWarning(logWarning()) << "MapManager::receiveLoadMapsInfo Current game is null";
+        return;
+    }
+
     QString path;
-    if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+
+    if(m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         path = m_currentGame->gamePath + "\\DXP3\\Data\\Scenarios\\mp";
     else
         path = m_currentGame->gamePath + "\\DXP2\\Data\\Scenarios\\mp";
@@ -507,7 +695,9 @@ void MapManager::receiveLoadMapsInfo()
 void MapManager::onSettingsLoaded()
 {
     qInfo(logInfo()) << "MapManager::onSettingsLoaded()" << "load started";
+
     receiveLoadMapsInfo();
+
     qInfo(logInfo()) << "MapManager::onSettingsLoaded()" << "load finished";
 }
 
@@ -515,7 +705,7 @@ void MapManager::receiveLocalMapFilesList(QList<MapFileHash> localMapFilesList)
 {
     m_localMapFilesHashes = localMapFilesList;
 
-    if (!m_mapListLoaded)
+    if(!m_mapListLoaded)
         requestMapList();
     else
         updateMapList();
@@ -523,7 +713,6 @@ void MapManager::receiveLocalMapFilesList(QList<MapFileHash> localMapFilesList)
 
 QString MapManager::getUrl(QString mapHash)
 {
-
     QByteArray bytes = QByteArray::fromBase64((mapHash.toUtf8()));
     QByteArray hex = bytes.toHex();
 
@@ -534,35 +723,47 @@ QString MapManager::getUrl(QString mapHash)
     return url;
 }
 
-
 void MapManager::checkLocalFilesState(MapItem *mapItem)
 {
+    if(!mapItem)
+        return;
+
     bool needInstall = true;
     bool needUpdate = false;
     int foundedFiles = 0;
+
+    mapItem->downloadedFiles = 0;
+
+    if(mapItem->filesList.isEmpty())
+    {
+        mapItem->needInstall = true;
+        mapItem->needUpdate = false;
+
+        return;
+    }
 
     for(int i = 0; i < mapItem->filesList.count(); i++)
     {
         for(int j = 0; j < m_localMapFilesHashes.count(); j++)
         {
-            if (mapItem->filesList.at(i).fileName == m_localMapFilesHashes.at(j).fileName)
+            if(mapItem->filesList.at(i).fileName == m_localMapFilesHashes.at(j).fileName)
             {
                 needInstall = false;
                 foundedFiles++;
 
-                if (mapItem->filesList.at(i).hash != m_localMapFilesHashes.at(j).hash)
-                {
+                if(mapItem->filesList.at(i).hash != m_localMapFilesHashes.at(j).hash)
                     needUpdate = true;
-                    mapItem->downloadedFiles++;
-                }
 
-                continue;
+                break;
             }
         }
     }
 
-    if (foundedFiles < mapItem->filesList.count())
+    if(foundedFiles < mapItem->filesList.count())
+    {
+        needInstall = true;
         needUpdate = true;
+    }
 
     mapItem->needUpdate = needUpdate;
     mapItem->needInstall = needInstall;
@@ -577,7 +778,7 @@ QString MapManager::consolidateTags(QList<QString> tags)
         tagsString += tags.at(i);
 
         if (i != tags.count()-1)
-             tagsString += ", ";
+            tagsString += ", ";
     }
 
     return tagsString;
@@ -591,90 +792,81 @@ void MapManager::updateBlockInfoUpdate()
     {
         if (m_mapItemArray.at(i).downloadProcessed)
         {
-             downloadProcessed = true;
-             break;
+            downloadProcessed = true;
+            break;
         }
     }
 
     m_blockInfoUpdate = downloadProcessed;
 }
 
+MapItem* MapManager::getMapItemById(QString mapId)
+{
+    if(mapId.isEmpty())
+        return nullptr;
+
+    for(int i = 0; i < m_mapItemArray.count(); i++)
+    {
+        if(m_mapItemArray.at(i).id == mapId)
+            return &m_mapItemArray[i];
+    }
+
+    return nullptr;
+}
+
 bool MapManager::uncompressGz(QByteArray input, QByteArray &output)
 {
-
-    //TODO: Source https://stackoverflow.com/questions/2690328/qt-quncompress-gzip-data
-
-    // Prepare output
     output.clear();
 
-    // Is there something to do?
     if(input.length() > 0)
     {
-        // Prepare inflater status
         z_stream strm;
+
         strm.zalloc = Z_NULL;
         strm.zfree = Z_NULL;
         strm.opaque = Z_NULL;
         strm.avail_in = 0;
         strm.next_in = Z_NULL;
 
-        // Initialize inflater
         int ret = inflateInit2(&strm, GZIP_WINDOWS_BIT);
 
-        if (ret != Z_OK)
+        if(ret != Z_OK)
             return(false);
 
-        // Extract pointer to input data
         char *input_data = input.data();
         int input_data_left = input.length();
 
-        // Decompress data until available
         do {
-            // Determine current chunk size
             int chunk_size = qMin(GZIP_CHUNK_SIZE, input_data_left);
 
-            // Check for termination
             if(chunk_size <= 0)
                 break;
 
-            // Set inflater references
             strm.next_in = (unsigned char*)input_data;
             strm.avail_in = chunk_size;
 
-            // Update interval variables
             input_data += chunk_size;
             input_data_left -= chunk_size;
 
-            // Inflate chunk and cumulate output
             do {
-
-                // Declare vars
                 char out[GZIP_CHUNK_SIZE];
 
-                // Set inflater references
                 strm.next_out = (unsigned char*)out;
                 strm.avail_out = GZIP_CHUNK_SIZE;
 
-                // Try to inflate chunk
                 ret = inflate(&strm, Z_NO_FLUSH);
 
                 switch (ret) {
                 case Z_NEED_DICT:
-                    //ret = Z_DATA_ERROR;
                 case Z_DATA_ERROR:
                 case Z_MEM_ERROR:
                 case Z_STREAM_ERROR:
-                    // Clean-up
                     inflateEnd(&strm);
-
-                    // Return
                     return(false);
                 }
 
-                // Determine decompressed size
-                int have = (GZIP_CHUNK_SIZE - strm.avail_out);
+                int have = GZIP_CHUNK_SIZE - strm.avail_out;
 
-                // Cumulate result
                 if(have > 0)
                     output.append((char*)out, have);
 
@@ -682,13 +874,10 @@ bool MapManager::uncompressGz(QByteArray input, QByteArray &output)
 
         } while (ret != Z_STREAM_END);
 
-        // Clean-up
         inflateEnd(&strm);
 
-        // Return
-        return (ret == Z_STREAM_END);
+        return(ret == Z_STREAM_END);
     }
     else
         return(true);
-
 }
