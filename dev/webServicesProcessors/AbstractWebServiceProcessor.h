@@ -18,7 +18,7 @@ protected slots:
     virtual void onSettingsLoaded() = 0;
     virtual void readMessage(QString messgae) = 0;
     virtual void onConnected();
-    void onDisconnected();
+    virtual void onDisconnected();
     virtual void sendPing() = 0;
 
     void reconnect();

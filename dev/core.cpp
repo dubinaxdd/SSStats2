@@ -119,11 +119,11 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamId, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
-    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_gameController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
+    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlayersRankedState, m_gameController->gameStateReader(), &GameStateReader::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_uiBackend->gamePage(), &GamePage::currentGameChanged, m_mapManager, &MapManager::receiveLoadMapsInfo, Qt::QueuedConnection);
 
 
-    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlyersRankedState, m_gameController->replayDataCollector(), &ReplayDataCollector::receivePlyersRankedState , Qt::QueuedConnection);
+    QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlayersRankedState, m_gameController->replayDataCollector(), &ReplayDataCollector::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendRelicStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveRelicStats, Qt::QueuedConnection);
 
 

@@ -10,7 +10,7 @@ StatisticPanel::StatisticPanel(Core *core, ImageProvider *imageProvider, QObject
     QObject::connect(m_corePtr->statsServerProcessor(),                      &StatsServerProcessor::sendServerPlayerStats,       this, &StatisticPanel::receiveServerPlayerStats,        Qt::QueuedConnection);
     QObject::connect(m_corePtr->gameController()->lobbyEventReader(),   &LobbyEventReader::quitFromParty,                  this, &StatisticPanel::onQuitParty,                     Qt::QueuedConnection);
     QObject::connect(m_corePtr->gameController()->dowServerProcessor(), &DowServerProcessor::sendPlayersInfoFromDowServer, this, &StatisticPanel::receivePlayresInfoFromDowServer, Qt::QueuedConnection);
-    QObject::connect(m_corePtr->rankedModServiceProcessor(),                 &RankedModServiceProcessor::sendPlyersRankedState, this, &StatisticPanel::receivePlyersRankedState ,       Qt::QueuedConnection);
+    QObject::connect(m_corePtr->rankedModServiceProcessor(),                 &RankedModServiceProcessor::sendPlayersRankedState, this, &StatisticPanel::receivePlyersRankedState ,       Qt::QueuedConnection);
 
     m_curentPlayerStatsItem = new StatisticPanelItem(this);
     emit playersItemsInitialized();

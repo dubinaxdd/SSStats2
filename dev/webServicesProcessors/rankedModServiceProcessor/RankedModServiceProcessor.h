@@ -24,7 +24,7 @@ public:
     };
 
 signals:
-    void sendPlyersRankedState(QVector<PlyersRankedState> plyersRankedState);
+    void sendPlayersRankedState(QVector<PlyersRankedState> plyersRankedState);
     void sendOnlineCount(int onlineCount);
     void sendModsOnlineCount(QList<ModOnlineCount> modOnlineCountList);
     void sendUniquePlayersOnlineStatistic(UniqueOnlineStatistic uniqueOnlineStatistic);
@@ -46,6 +46,7 @@ private slots:
     void onSettingsLoaded() override;
     void readMessage(QString message) override;
     void onConnected() override;
+    void onDisconnected() override;
 
 private:
     void sendPing() override;

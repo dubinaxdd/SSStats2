@@ -8,7 +8,7 @@
 RankedModServiceProcessor::RankedModServiceProcessor(SettingsController *settingsController, QObject *parent)
     : AbstractWebServiceProcessor(settingsController, parent)
 {
-        connect(&m_pingTimer, &QTimer::timeout, this, &RankedModServiceProcessor::requestRankedState, Qt::QueuedConnection);
+    connect(&m_pingTimer, &QTimer::timeout, this, &RankedModServiceProcessor::requestRankedState, Qt::QueuedConnection);
     connect(&m_uniquePlayersOnlineStatistic, &QTimer::timeout, this, &RankedModServiceProcessor::requestUniquePlayersOnlineStatistic);
     connect(&m_uniquePlayersOnlineStatistic, &QTimer::timeout, this, &RankedModServiceProcessor::requestModsOnlineCount);
 
@@ -100,28 +100,20 @@ void RankedModServiceProcessor::receiveRankedState(QJsonObject data)
     plyersRankedState.append(std::move(newPlyersRankedState));
 
     QJsonArray jsonArray = data.value("players_state").toArray();
-    QVector<PlyersRankedState> newPlyersRankedStateArray;
 
     for(int i = 0; i < jsonArray.count(); i++)
     {
-
         for (int j = 0; j < plyersRankedState.count(); j++)
         {
             if (plyersRankedState.at(j).steamId == jsonArray.at(i)["steam_id"].toString())
             {
-                PlyersRankedState newPlyersRankedState;
-
-                newPlyersRankedState.name = plyersRankedState.at(j).name;
-                newPlyersRankedState.steamId = plyersRankedState.at(j).steamId;
-                newPlyersRankedState.isRanked = jsonArray.at(i)["is_ranked"].toBool();
-                newPlyersRankedState.isOnline = jsonArray.at(i)["is_online"].toBool();
-
-                newPlyersRankedStateArray.append(newPlyersRankedState);
+                plyersRankedState[j].isRanked = jsonArray.at(i)["is_ranked"].toBool();
+                plyersRankedState[j].isOnline = jsonArray.at(i)["is_online"].toBool();
             }
         }
     }
 
-    emit sendPlyersRankedState(newPlyersRankedStateArray);
+    emit sendPlayersRankedState(plyersRankedState);
 }
 
 void RankedModServiceProcessor::receivePingRecponse(QJsonObject data)
@@ -232,6 +224,33 @@ void RankedModServiceProcessor::onConnected()
     sendPing();
     requestUniquePlayersOnlineStatistic();
     requestModsOnlineCount();
+}
+
+void RankedModServiceProcessor::onDisconnected()
+{
+    AbstractWebServiceProcessor::onDisconnected();
+    QVector<PlyersRankedState> plyersRankedState;
+
+    for(auto& item : m_playersInfoInfoFromDowServer)
+    {
+        PlyersRankedState newPlyersRankedState;
+        newPlyersRankedState.name = item.name;
+        newPlyersRankedState.steamId = item.steamId;
+
+        newPlyersRankedState.isRanked = true;
+        newPlyersRankedState.isOnline = false;
+
+        plyersRankedState.append(std::move(newPlyersRankedState));
+    }
+
+    PlyersRankedState newPlyersRankedState;
+    newPlyersRankedState.steamId = m_currentPlayerSteamId;
+    newPlyersRankedState.name = m_currentPlayerName;
+    newPlyersRankedState.isRanked = true;
+    newPlyersRankedState.isOnline = false;
+    plyersRankedState.append(std::move(newPlyersRankedState));
+
+    emit sendPlayersRankedState(plyersRankedState);
 }
 
 void RankedModServiceProcessor::sendPing()
