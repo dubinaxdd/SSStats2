@@ -257,15 +257,16 @@ void LobbyEventReader::readAutomatchEvents()
 
             if (line.contains("Lobby - LIE_StopAutoMatch received") || line.contains("GAME -- Ending mission"))
             {
-                    m_preLastMatchLogTime = m_lastAutomatchLogTime;
-                    m_automatchProcessed = false;
-                    m_matchPlayersList.clear();
-                    m_matchNamesList.clear();
+                m_preLastMatchLogTime = m_lastAutomatchLogTime;
+                m_automatchProcessed = false;
+                m_matchPlayersList.clear();
+                m_matchNamesList.clear();
 
-                    emit automatchModeChanged(m_automatchProcessed);
-                    qInfo(logInfo()) << "Automatch search stoped or misssion ending";
-                    m_sessionIdReceived = false;
-                    tryRequestSessionId();
+                emit automatchModeChanged(m_automatchProcessed);
+                qInfo(logInfo()) << "Automatch search stoped or misssion ending";
+                m_sessionIdReceived = false;
+                tryRequestSessionId();
+                break;
             }
 
             if (line.contains("GAME -- Beginning skirmish mission")
