@@ -57,6 +57,7 @@ private:
     GamePath* m_currentGame;
     SettingsController* m_settingsController;
     QTimer *m_currentPlayerStatsRequestTimer;
+    QTimer *m_clientVersionRequestTimer;
     QTimer *m_rankDiversionTimer;
     QString m_steamPath;
     QString m_clientVersion;

@@ -33,10 +33,13 @@ StatsServerProcessor::StatsServerProcessor(SettingsController *settingsControlle
     m_currentPlayerStatsRequestTimer->setSingleShot(true);
     m_currentPlayerStatsRequestTimer->setInterval(CURRENT_PLAYER_STATS_REQUEST_TIMER_INTERVAL);
 
+    m_clientVersionRequestTimer = new QTimer(this);
+    m_clientVersionRequestTimer->setInterval(60000);
+
     m_rankDiversionTimer->setInterval(60000);
 
     connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::requestCurrentPlayerStats, Qt::QueuedConnection);
-    connect(m_currentPlayerStatsRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::requestClientLastVersion, Qt::QueuedConnection);
+    connect(m_clientVersionRequestTimer, &QTimer::timeout, this, &StatsServerProcessor::requestClientLastVersion, Qt::QueuedConnection);
 
     connect(m_settingsController, &SettingsController::settingsLoaded, this, &StatsServerProcessor::onSettingsLoaded, Qt::QueuedConnection);
     connect(m_rankDiversionTimer, &QTimer::timeout, this, &StatsServerProcessor::onRankDiversionTimerTimeout, Qt::QueuedConnection);
@@ -327,6 +330,7 @@ void StatsServerProcessor::onSettingsLoaded()
 
     requestRankDiversion();
     m_rankDiversionTimer->start();
+    m_clientVersionRequestTimer->start();
 
     qInfo(logInfo()) << "StatsServerProcessor::onSettingsLoaded()" << "load finished";
 }
