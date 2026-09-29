@@ -200,8 +200,14 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     {
         qWarning(logWarning()) << "StatsServerProcessor::receivePlayerStatsFromServer:" << "Connection error:" << reply->errorString();
         reply->deleteLater();
+
+        if (!m_currentPlayerStatsReceived)
+            m_currentPlayerStatsRequestTimer->start();
+
         return;
     }
+
+    m_currentPlayerStatsReceived = true;
 
     QByteArray replyByteArray = reply->readAll();
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);

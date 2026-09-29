@@ -71,6 +71,7 @@ private:
     QString m_currentMod = "";
 
     bool m_softwareBanActivated = false;
+    bool m_currentPlayerStatsReceived = false;
 };
 
 #endif // STATSSERVERPROCESSOR_H
