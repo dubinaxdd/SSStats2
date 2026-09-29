@@ -86,6 +86,7 @@ class UiBackend : public QObject
 
     Q_PROPERTY(bool automatchState READ automatchState WRITE setAutomatchState NOTIFY automatchStateChanged FINAL)
     Q_PROPERTY(bool expandStatisticButtonVisible READ expandStatisticButtonVisible WRITE setExpandStatisticButtonVisible NOTIFY expandStatisticButtonVisibleChanged FINAL)
+    Q_PROPERTY(bool gameLoadScreenStatisticVisible READ gameLoadScreenStatisticVisible WRITE setGameLoadScreenStatisticVisible NOTIFY gameLoadScreenStatisticVisibleChanged FINAL)
 
 
 public:
@@ -194,6 +195,9 @@ public:
     bool expandStatisticButtonVisible() const;
     void setExpandStatisticButtonVisible(bool newExpandStatisticButtonVisible);
 
+    bool gameLoadScreenStatisticVisible() const;
+    void setGameLoadScreenStatisticVisible(bool newGameLoadScreenStatisticVisible);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
     void sendExpand(bool);
@@ -234,6 +238,8 @@ signals:
     void automatchStateChanged();
 
     void expandStatisticButtonVisibleChanged();
+
+    void gameLoadScreenStatisticVisibleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -343,7 +349,7 @@ private:
     bool m_softwareBanActivated = false;
 
     bool m_expandStatisticButtonVisible = true;
-
+    bool m_gameLoadScreenStatisticVisible = false;
 };
 
 #endif // UIBACKEND_H

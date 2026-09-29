@@ -9,6 +9,7 @@ ColumnLayout {
     property bool hoverEnabled
     property var model: _uiBackend.statisticPanel
     property int plyersCount: playersListView.count + 1
+    property string columnPosition: ""
 
     //Костыль для перезагрузки картинки, рил так на формух делают
     Connections {
@@ -25,7 +26,7 @@ ColumnLayout {
     PlayersStatisticItem
     {
         id:curentPlayer
-        visible: root.model.curentPlayerStatsItem.itemVisible && root.model.curentPlayerStatsItem.playerName !== ""
+        visible: root.model.curentPlayerStatsItem.itemVisible && root.model.curentPlayerStatsItem.playerName !== "" && columnPosition !== "left"
 
         playerName: root.model.curentPlayerStatsItem.playerName
         playerMmr: root.model.curentPlayerStatsItem.playerMmr
@@ -73,7 +74,7 @@ ColumnLayout {
         spacing: 5 * root.sizeModifer
 
         delegate: PlayersStatisticItem{
-
+            visible: (columnPosition == "right" && index <= 2 ) || (columnPosition == "left" && index > 2 ) || (columnPosition !== "left" && columnPosition != "right" )
             playerName: model.playerName
             playerMmr: model.playerMmr
             playerMmr1v1: model.playerMmr1v1

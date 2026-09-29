@@ -110,6 +110,13 @@ Window {
             anchors.fill: parent
         }
 
+        GameLoadScreen
+        {
+            id: gameLoadScreen
+            visible: _uiBackend.gameLoadScreenStatisticVisible
+            anchors.fill: parent
+        }
+
         ColumnLayout {
             id: columnLayout
             anchors.fill: parent

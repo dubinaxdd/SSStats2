@@ -46,7 +46,7 @@ Rectangle {
     property string race_2x2: ""
     property string race_3x3: ""
 
-    height: contentColumnLayout.height
+    height: visible ? contentColumnLayout.height : 0
     width: 280 * sizeModifer
 
     Layout.preferredWidth: 280 * sizeModifer
