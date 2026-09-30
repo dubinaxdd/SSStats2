@@ -50,12 +50,6 @@ Core::Core(QQmlContext *context, QObject* parent)
     m_settingsController->initializeSettings();
 
     m_uiBackend->setGamePathArray(m_gameController->gamePathArray());
-
-    /*if (!m_dxHookOverlay.initialize(400, 300)) {
-        qWarning() << "Overlay initialization failed";
-        return;
-    }*/
-
 }
 
 void Core::registerTypes()
