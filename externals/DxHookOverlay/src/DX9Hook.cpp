@@ -5,13 +5,8 @@
 
 #include <cstdint>
 #include <cstring>
-#include <cstdio>
-
 #pragma comment(lib, "d3d9.lib")
-
 #include <cstddef>
-
-
 
 namespace
 {
@@ -66,73 +61,6 @@ uint64_t g_lastFrame = 0;
 
 static_assert(offsetof(SharedImage, pixels) == 28, "SharedImage layout mismatch");
 static_assert(sizeof(SharedImage) == 66355232, "SharedImage size mismatch");
-
-/*bool UpdateTextureFromSharedMemory(
-    IDirect3DDevice9* device)
-{
-    if (!device || !g_sharedMemory)
-        return false;
-
-    if (!g_texture)
-        return false;
-
-    constexpr UINT WIDTH = 3840;
-    constexpr UINT HEIGHT = 2160;
-
-    constexpr SIZE_T PIXELS_OFFSET = 28;
-
-    constexpr SIZE_T IMAGE_SIZE =
-        static_cast<SIZE_T>(WIDTH) *
-        static_cast<SIZE_T>(HEIGHT) *
-        4;
-
-    uint8_t* view =
-        reinterpret_cast<uint8_t*>(
-            MapViewOfFile(
-                g_sharedMemory,
-                FILE_MAP_READ,
-                0,
-                0,
-                PIXELS_OFFSET + IMAGE_SIZE
-                )
-            );
-
-    if (!view)
-        return false;
-
-    bool success = false;
-
-    D3DLOCKED_RECT locked = {};
-
-    HRESULT hr = g_texture->LockRect(0, &locked, nullptr, 0);
-
-    if (SUCCEEDED(hr))
-    {
-        for (UINT y = 0; y < HEIGHT; ++y)
-        {
-            std::memcpy(
-                reinterpret_cast<uint8_t*>(locked.pBits) +
-                    static_cast<SIZE_T>(y) *
-                        locked.Pitch,
-
-                view +
-                    PIXELS_OFFSET +
-                    static_cast<SIZE_T>(y) *
-                        WIDTH *
-                        4,
-
-                WIDTH * 4
-                );
-        }
-
-        g_texture->UnlockRect(0);
-        success = true;
-    }
-
-    UnmapViewOfFile(view);
-
-    return success;
-}*/
 
 bool UpdateTextureFromSharedMemory(IDirect3DDevice9* device)
 {
@@ -417,78 +345,6 @@ bool CreateImageTexture(IDirect3DDevice9* device, uint32_t width, uint32_t heigh
 
     g_textureWidth = width;
     g_textureHeight = height;
-
-    return true;
-}
-
-
-
-bool UpdateImageTexture()
-{
-    if (!g_sharedImage)
-        return false;
-
-    if (!g_texture)
-        return false;
-
-    const uint32_t width = g_sharedImage->width;
-    const uint32_t height = g_sharedImage->height;
-    const uint32_t pitch = g_sharedImage->pitch;
-
-    if (width == 0 || height == 0)
-        return false;
-
-    if (width > MAX_IMAGE_WIDTH || height > MAX_IMAGE_HEIGHT)
-        return false;
-
-    const uint32_t requiredPitch = width * BYTES_PER_PIXEL;
-
-    if (pitch < requiredPitch)
-        return false;
-
-
-    // Текущий опубликованный буфер.
-    const LONG activeBuffer = InterlockedCompareExchange(&g_sharedImage->activeBuffer, 0, 0);
-
-    if (activeBuffer != 0 && activeBuffer != 1)
-        return false;
-
-    const uint64_t frame = g_sharedImage->frame;
-
-
-    // Этот кадр уже загружали.
-    if (frame == g_lastFrame)
-        return true;
-
-
-    const uint8_t* source = g_sharedImage->pixels[activeBuffer];
-
-    D3DLOCKED_RECT lockedRect{};
-
-    HRESULT hr = g_texture->LockRect(0, &lockedRect, nullptr, 0);
-
-    if (FAILED(hr))
-        return false;
-
-    uint8_t* destination = reinterpret_cast<uint8_t*>(lockedRect.pBits);
-
-    for (uint32_t y = 0; y < height; ++y)
-    {
-        const uint8_t* srcRow = source + static_cast<size_t>(y) * pitch;
-        uint8_t* dstRow = destination + static_cast<size_t>(y) * lockedRect.Pitch;
-        std::memcpy(dstRow, srcRow, requiredPitch);
-    }
-
-    g_texture->UnlockRect(0);
-
-
-    // Проверяем, не переключил ли Qt буфер, пока мы копировали.
-    const LONG activeBufferAfter = InterlockedCompareExchange(&g_sharedImage->activeBuffer, 0, 0);
-
-    if (activeBufferAfter != activeBuffer)
-        return true;
-
-    g_lastFrame = frame;
 
     return true;
 }
