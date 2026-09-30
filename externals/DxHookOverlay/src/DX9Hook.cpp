@@ -67,7 +67,7 @@ uint64_t g_lastFrame = 0;
 static_assert(offsetof(SharedImage, pixels) == 28, "SharedImage layout mismatch");
 static_assert(sizeof(SharedImage) == 66355232, "SharedImage size mismatch");
 
-bool UpdateTextureFromSharedMemory(
+/*bool UpdateTextureFromSharedMemory(
     IDirect3DDevice9* device)
 {
     if (!device || !g_sharedMemory)
@@ -132,6 +132,75 @@ bool UpdateTextureFromSharedMemory(
     UnmapViewOfFile(view);
 
     return success;
+}*/
+
+bool UpdateTextureFromSharedMemory(IDirect3DDevice9* device)
+{
+    if (!device || !g_sharedMemory || !g_texture)
+        return false;
+
+    constexpr SIZE_T PIXELS_OFFSET = 28;
+
+    const UINT width = g_textureWidth;
+    const UINT height = g_textureHeight;
+
+    if (width == 0 || height == 0)
+        return false;
+
+    const SIZE_T imageSize =
+        static_cast<SIZE_T>(width) *
+        static_cast<SIZE_T>(height) *
+        4;
+
+    uint8_t* view =
+        reinterpret_cast<uint8_t*>(
+            MapViewOfFile(
+                g_sharedMemory,
+                FILE_MAP_READ,
+                0,
+                0,
+                PIXELS_OFFSET + imageSize
+                )
+            );
+
+    if (!view)
+        return false;
+
+    D3DLOCKED_RECT locked = {};
+
+    HRESULT hr =
+        g_texture->LockRect(
+            0,
+            &locked,
+            nullptr,
+            0
+            );
+
+    if (FAILED(hr))
+    {
+        UnmapViewOfFile(view);
+        return false;
+    }
+
+    for (UINT y = 0; y < height; ++y)
+    {
+        std::memcpy(
+            reinterpret_cast<uint8_t*>(locked.pBits) +
+                static_cast<SIZE_T>(y) * locked.Pitch,
+
+            view +
+                PIXELS_OFFSET +
+                static_cast<SIZE_T>(y) * width * 4,
+
+            static_cast<SIZE_T>(width) * 4
+            );
+    }
+
+    g_texture->UnlockRect(0);
+
+    UnmapViewOfFile(view);
+
+    return true;
 }
 
 
@@ -538,80 +607,33 @@ HRESULT WINAPI HookedPresent(
 {
     if (device)
     {
+        static uint64_t lastFrame = 0;
+
         if (OpenSharedImage())
         {
-            static bool shownShared = false;
+            const uint32_t width = g_sharedImage->width;
+            const uint32_t height = g_sharedImage->height;
+            const uint64_t frame = g_sharedImage->frame;
 
-            if (!shownShared)
+            if (width != 0 && height != 0 && frame != 0)
             {
-                shownShared = true;
-
-                char buffer[256];
-
-                std::snprintf(
-                    buffer,
-                    sizeof(buffer),
-                    "Shared memory opened!\n\n"
-                    "Width: %u\n"
-                    "Height: %u\n"
-                    "Pitch: %u\n"
-                    "Format: %u\n"
-                    "Frame: %llu",
-                    g_sharedImage->width,
-                    g_sharedImage->height,
-                    g_sharedImage->pitch,
-                    g_sharedImage->format,
-                    static_cast<unsigned long long>(
-                        g_sharedImage->frame
-                        )
-                    );
-
-                MessageBoxA(
-                    nullptr,
-                    buffer,
-                    "DX9 SHARED MEMORY",
-                    MB_OK
-                    );
-            }
-
-            // Только создаём texture.
-            // Пока НЕ загружаем в неё изображение
-            // и НЕ рисуем её.
-
-            if (CreateImageTexture(
-                    device,
-                    g_sharedImage->width,
-                    g_sharedImage->height))
-            {
-                //UpdateImageTexture();
-            }
-        }
-
-
-        static bool textureTested = false;
-
-        if (device)
-        {
-            if (OpenSharedImage())
-            {
-                if (!textureTested)
-                {
-                    textureTested = true;
-
-                    UpdateTextureFromSharedMemory(device);
-                }
+                if (!g_texture)
+                    CreateImageTexture(device, width, height );
 
                 if (g_texture)
                 {
-                    DrawOverlayTexture(
-                        device,
-                        g_texture
-                        );
+                    if (frame != lastFrame)
+                    {
+                        if (UpdateTextureFromSharedMemory(device))
+                            lastFrame = frame;
+                    }
+
+                    DrawOverlayTexture(device, g_texture);
                 }
             }
-
-            DrawRedSquare(device);
         }
+
+        DrawRedSquare(device);
     }
 
     return OriginalPresent(
@@ -622,6 +644,7 @@ HRESULT WINAPI HookedPresent(
         dirtyRegion
         );
 }
+
 
 IDirect3DDevice9* CreateDummyDevice(
     IDirect3D9** outD3D)
