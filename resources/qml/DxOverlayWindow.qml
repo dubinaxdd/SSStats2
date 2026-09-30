@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.12
 import GlobalMouseProvider 1.0
 import DowStatsStyle 1.0
 
+
 Item {
     id: window
     width: 640
@@ -19,10 +20,6 @@ Item {
     property real mouseAreaHeight
 
     Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
-
-    /*onVisibilityChanged: {
-        patyStatistic.resetScrollView();
-    }*/
 
     Connections{
         target: _uiBackend
@@ -65,7 +62,7 @@ Item {
         id: windowRectangle
         color: "#00000000"
         anchors.fill: parent
-        visible: _uiBackend.showClient
+        //visible: _uiBackend.showClient
 
         Rectangle {
             id: backgroundRectangle

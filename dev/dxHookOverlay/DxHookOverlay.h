@@ -13,8 +13,8 @@
 #include <QOffscreenSurface>
 #include <QOpenGLFramebufferObject>
 #include <QOpenGLFunctions>
-
 #include <QImage>
+#include <gameController.h>
 
 class UiBackend;
 
@@ -23,7 +23,7 @@ class DxHookOverlay : public QObject
     Q_OBJECT
 
 public:
-    explicit DxHookOverlay(UiBackend* uiBackend, QObject* parent = nullptr);
+    explicit DxHookOverlay(GameController* gameController, UiBackend* uiBackend, QObject* parent = nullptr);
     ~DxHookOverlay();
 
     bool initialize(int width, int height);
@@ -64,4 +64,7 @@ private:
 
     int m_width = 1920;
     int m_height = 1080;
+
+    QTimer* m_renderTimer = nullptr;
+    GameController* p_gameController;
 };

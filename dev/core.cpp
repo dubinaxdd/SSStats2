@@ -24,7 +24,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_mapManager(new MapManager(m_settingsController, m_gameController->currentGame(), this))
     , m_balanceModManager(new BalanceModManager(m_settingsController, this))
     , m_uiBackend(new UiBackend(this, context))
-    , m_dxHookOverlay(m_uiBackend, this)
+    , m_dxHookOverlay(m_gameController, m_uiBackend, this)
 {
     registerTypes();
 
@@ -51,10 +51,10 @@ Core::Core(QQmlContext *context, QObject* parent)
 
     m_uiBackend->setGamePathArray(m_gameController->gamePathArray());
 
-    if (!m_dxHookOverlay.initialize(1920, 1080)) {
+    /*if (!m_dxHookOverlay.initialize(400, 300)) {
         qWarning() << "Overlay initialization failed";
         return;
-    }
+    }*/
 
 }
 
