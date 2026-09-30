@@ -24,6 +24,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_mapManager(new MapManager(m_settingsController, m_gameController->currentGame(), this))
     , m_balanceModManager(new BalanceModManager(m_settingsController, this))
     , m_uiBackend(new UiBackend(this, context))
+    , m_dxHookOverlay(m_uiBackend, this)
 {
     registerTypes();
 
@@ -49,6 +50,11 @@ Core::Core(QQmlContext *context, QObject* parent)
     m_settingsController->initializeSettings();
 
     m_uiBackend->setGamePathArray(m_gameController->gamePathArray());
+
+    if (!m_dxHookOverlay.initialize(1920, 1080)) {
+        qWarning() << "Overlay initialization failed";
+        return;
+    }
 
 }
 
@@ -97,6 +103,7 @@ void Core::addConnections()
     QObject::connect(m_gameController,                    &GameController::gameMaximized,          m_soundProcessor,             &SoundProcessor::setGameMaximized,     Qt::DirectConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_overlayWindowController,    &OverlayWindowController::gameLaunched,       Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_balanceModManager,          &BalanceModManager::onGameLaunchStateChanged, Qt::QueuedConnection);
+    QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, &m_dxHookOverlay,          &DxHookOverlay::runOverlay, Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::inputBlockStateChanged, HookManager::instance(),    &HookManager::onInputBlockStateChanged,     Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::gameInitialized,         m_overlayWindowController,  &OverlayWindowController::gameInitialized, Qt::DirectConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,  Qt::QueuedConnection);

@@ -54,6 +54,7 @@ endif()
 
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
+add_subdirectory(externals/DxHookOverlay)
 
 set(DowStatsClient_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
 set(DowStatsClient_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)

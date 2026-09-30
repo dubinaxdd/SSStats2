@@ -16,6 +16,7 @@
 #include <rankedModServiceProcessor.h>
 #include <mapManager.h>
 #include <balanceModManager.h>
+#include <DxHookOverlay.h>
 
 class UiBackend;
 class OverlayWindowController;
@@ -68,6 +69,7 @@ private:
     MapManager* m_mapManager;
     BalanceModManager* m_balanceModManager;
     UiBackend* m_uiBackend;
+    DxHookOverlay m_dxHookOverlay;
 };
 
 //Q_DECLARE_METATYPE(Core);
