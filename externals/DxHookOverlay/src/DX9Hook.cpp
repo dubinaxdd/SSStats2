@@ -518,101 +518,6 @@ bool UpdateTextureFromSharedMemory()
 // Drawing
 // ========================================================
 
-/*void DrawOverlayTexture(
-    IDirect3DDevice9* device
-    )
-{
-    if (!device || !g_texture)
-    {
-        return;
-    }
-
-    struct Vertex
-    {
-        float x;
-        float y;
-        float z;
-        float rhw;
-
-        float u;
-        float v;
-    };
-
-    constexpr DWORD FVF =
-        D3DFVF_XYZRHW | D3DFVF_TEX1;
-
-    D3DVIEWPORT9 viewport{};
-
-    if (FAILED(
-            device->GetViewport(&viewport)))
-    {
-        return;
-    }
-
-    const float width =
-        static_cast<float>(viewport.Width);
-
-    const float height =
-        static_cast<float>(viewport.Height);
-
-    Vertex vertices[4]{};
-
-    vertices[0] = {
-        0.0f,
-        0.0f,
-        0.0f,
-        1.0f,
-        0.0f,
-        0.0f
-    };
-
-    vertices[1] = {
-        width,
-        0.0f,
-        0.0f,
-        1.0f,
-        1.0f,
-        0.0f
-    };
-
-    vertices[2] = {
-        width,
-        height,
-        0.0f,
-        1.0f,
-        1.0f,
-        1.0f
-    };
-
-    vertices[3] = {
-        0.0f,
-        height,
-        0.0f,
-        1.0f,
-        0.0f,
-        1.0f
-    };
-
-    device->SetFVF(FVF);
-
-    device->SetTexture(
-        0,
-        g_texture
-        );
-
-    device->DrawPrimitiveUP(
-        D3DPT_TRIANGLEFAN,
-        2,
-        vertices,
-        sizeof(Vertex)
-        );
-
-    device->SetTexture(
-        0,
-        nullptr
-        );
-}*/
-
 void DrawOverlayTexture(IDirect3DDevice9* device, IDirect3DTexture9* texture)
 {
     if (!device || !texture)
@@ -629,53 +534,58 @@ void DrawOverlayTexture(IDirect3DDevice9* device, IDirect3DTexture9* texture)
     };
 
     D3DVIEWPORT9 viewport = {};
-
     if (FAILED(device->GetViewport(&viewport)))
         return;
 
     const float width = static_cast<float>(viewport.Width);
     const float height = static_cast<float>(viewport.Height);
 
+    // Смещение -0.5f для точного пиксельного соответствия в DX9
     Vertex vertices[] =
         {
-            { -0.5f,     -0.5f,      0.0f, 1.0f, 0.0f, 0.0f },
-            { width - 0.5f, -0.5f,   0.0f, 1.0f, 1.0f, 0.0f },
-            { -0.5f, height - 0.5f,  0.0f, 1.0f, 0.0f, 1.0f },
-            { width - 0.5f, height - 0.5f,
-             0.0f, 1.0f, 1.0f, 1.0f }
+            { -0.5f,        -0.5f,         0.0f, 1.0f, 0.0f, 0.0f },
+            { width - 0.5f, -0.5f,         0.0f, 1.0f, 1.0f, 0.0f },
+            { -0.5f,        height - 0.5f, 0.0f, 1.0f, 0.0f, 1.0f },
+            { width - 0.5f, height - 0.5f, 0.0f, 1.0f, 1.0f, 1.0f }
         };
 
-    IDirect3DStateBlock9* stateBlock = nullptr;
+    // Принудительно отключаем программируемый конвейер игры (шейдеры)
+    device->SetVertexShader(nullptr);
+    device->SetPixelShader(nullptr);
 
-    if (SUCCEEDED(device->CreateStateBlock(D3DSBT_ALL, &stateBlock)))
-        stateBlock->Capture();
-
-
+    // Настройка текстуры и формата вершин
     device->SetTexture(0, texture);
     device->SetFVF(D3DFVF_XYZRHW | D3DFVF_TEX1);
+
+    // Изолируем 2D-отрисовку от 3D-мира игры
     device->SetRenderState(D3DRS_LIGHTING, FALSE);
-    device->SetRenderState( D3DRS_ZENABLE,FALSE);
+    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    device->SetRenderState(D3DRS_ZENABLE, FALSE);
+    device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+    device->SetRenderState(D3DRS_FOGENABLE, FALSE); // Отключаем игровой туман
+
+    // Настройка прозрачности (Alpha Blending)
     device->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
-    device->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
-    device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
-    device->SetTextureStageState( 0, D3DTSS_COLOROP, D3DTOP_MODULATE );
-    device->SetTextureStageState( 0, D3DTSS_COLORARG1, D3DTA_TEXTURE );
-    device->SetTextureStageState( 0, D3DTSS_COLORARG2, D3DTA_DIFFUSE );
-    device->SetTextureStageState( 0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1 );
-    device->SetTextureStageState( 0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE );
-    device->SetSamplerState( 0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
-    device->SetSamplerState( 0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
-    device->SetSamplerState( 0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP );
-    device->SetSamplerState( 0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP );
-    device->DrawPrimitiveUP( D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(Vertex) );
+    device->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+    device->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
+
+    // Блокируем влияние цвета задника: берем строго цвет из текстуры
+    device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG1);
+    device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+
+    device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_SELECTARG1);
+    device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
+
+    // Фильтрация
+    device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+    device->SetSamplerState(0, D3DSAMP_ADDRESSU, D3DTADDRESS_CLAMP);
+    device->SetSamplerState(0, D3DSAMP_ADDRESSV, D3DTADDRESS_CLAMP);
+
+    // Отрисовка
+    device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(Vertex));
 
     device->SetTexture(0, nullptr);
-
-    if (stateBlock)
-    {
-        stateBlock->Apply();
-        stateBlock->Release();
-    }
 }
 
 void DrawRedSquare(
@@ -760,8 +670,7 @@ HRESULT WINAPI HookedPresent(
     const RGNDATA* dirtyRegion
     )
 {
-    // Очень важно: счётчик увеличивается
-    // сразу при входе в hook.
+    // Очень важно: счётчик увеличивается сразу при входе в hook.
     g_activePresentCalls.fetch_add(
         1,
         std::memory_order_acq_rel
@@ -769,42 +678,62 @@ HRESULT WINAPI HookedPresent(
 
     HRESULT result = D3D_OK;
 
-    // После начала shutdown новый overlay
-    // больше не выполняем.
+    // После начала shutdown новый overlay больше не выполняем.
     if (!g_shutdownRequested.load(
             std::memory_order_acquire))
     {
         if (device)
         {
+            // 1. Создаем стейтблок и захватываем состояние ДО открытия нашей сцены
+            IDirect3DStateBlock9* stateBlock = nullptr;
+            if (SUCCEEDED(device->CreateStateBlock(D3DSBT_ALL, &stateBlock)))
+            {
+                stateBlock->Capture();
+            }
+
+            // 2. Открываем сцену (Present всегда идет ПОСЛЕ игрового EndScene)
+            bool sceneOpenedByUs = false;
+            if (SUCCEEDED(device->BeginScene()))
+            {
+                sceneOpenedByUs = true;
+            }
+
+            // 3. Выполняем логику работы с памятью и рендера
             if (OpenSharedImage())
             {
-                const uint32_t width =
-                    g_sharedImage->width;
-
-                const uint32_t height =
-                    g_sharedImage->height;
+                const uint32_t width = g_sharedImage->width;
+                const uint32_t height = g_sharedImage->height;
 
                 if (width > 0 &&
                     height > 0 &&
                     width <= 3840 &&
                     height <= 2160)
                 {
-                    if (CreateImageTexture(
-                            device,
-                            width,
-                            height))
+                    if (CreateImageTexture(device, width, height))
                     {
                         UpdateTextureFromSharedMemory();
-
-                        DrawOverlayTexture(
-                            device,
-                            g_texture
-                            );
+                        DrawOverlayTexture(device, g_texture);
                     }
                 }
             }
 
+            // На всякий случай гасим шейдеры и перед квадратом, если функция DrawRedSquare их не сбрасывает
+            device->SetVertexShader(nullptr);
+            device->SetPixelShader(nullptr);
             DrawRedSquare(device);
+
+            // 4. Закрываем сцену
+            if (sceneOpenedByUs)
+            {
+                device->EndScene();
+            }
+
+            // 5. Возвращаем игре её стейты и шейдеры в исходное состояние
+            if (stateBlock)
+            {
+                stateBlock->Apply();
+                stateBlock->Release();
+            }
         }
     }
 
@@ -826,6 +755,8 @@ HRESULT WINAPI HookedPresent(
 
     return result;
 }
+
+
 
 // ========================================================
 // Restore original Present
