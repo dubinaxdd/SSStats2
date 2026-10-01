@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <QQmlEngine>
+#include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQmlComponent>
 
@@ -23,7 +24,7 @@ class DxHookOverlay : public QObject
     Q_OBJECT
 
 public:
-    explicit DxHookOverlay(GameController* gameController, UiBackend* uiBackend, QObject* parent = nullptr);
+    explicit DxHookOverlay(GameController* gameController, UiBackend* uiBackend, QQmlApplicationEngine* engine, QObject* parent = nullptr);
     ~DxHookOverlay();
 
     bool initialize(int width, int height);
@@ -49,7 +50,7 @@ private:
 private:
     UiBackend* m_uiBackend = nullptr;
 
-    QQmlEngine m_engine;
+    QQmlEngine* m_engine;
     QQuickRenderControl m_renderControl;
 
     QQuickWindow* m_window = nullptr;

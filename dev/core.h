@@ -4,6 +4,7 @@
 #include <QObject>
 #include <keyboardProcessor.h>
 #include <QQmlContext>
+#include <QQmlApplicationEngine>
 #include <settingsController.h>
 #include <uiBackend.h>
 #include <gameController.h>
@@ -25,7 +26,7 @@ class Core : public QObject
 {
     Q_OBJECT
 public:
-    Core(QQmlContext *context, QObject* parent = nullptr);
+    Core(QQmlApplicationEngine* engine, QQmlContext *context, QObject* parent = nullptr);
 
     bool event(QEvent *event) override;
     void exit();
@@ -41,6 +42,7 @@ public:
     StatsServerProcessor *statsServerProcessor() const;
     GameController *gameController() const;
     RankedModServiceProcessor *rankedModServiceProcessor() const;
+    DxHookOverlay *dxHookOverlay() const;
 
 signals:
     void sendExit();
@@ -69,7 +71,7 @@ private:
     MapManager* m_mapManager;
     BalanceModManager* m_balanceModManager;
     UiBackend* m_uiBackend;
-    DxHookOverlay m_dxHookOverlay;
+    DxHookOverlay* m_dxHookOverlay;
 };
 
 //Q_DECLARE_METATYPE(Core);

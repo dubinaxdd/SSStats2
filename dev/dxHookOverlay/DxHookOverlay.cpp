@@ -209,13 +209,11 @@ bool SendQImageToSharedMemory(const QImage& image)
 }
 
 
-DxHookOverlay::DxHookOverlay(GameController *gameController,
-                             UiBackend* uiBackend,
-                             QObject* parent
-                             )
+DxHookOverlay::DxHookOverlay(GameController *gameController, UiBackend* uiBackend, QQmlApplicationEngine* engine, QObject* parent)
     : QObject(parent)
     , p_gameController(gameController)
     , m_uiBackend(uiBackend)
+    , m_engine(engine)
 {
 }
 
@@ -317,7 +315,7 @@ void DxHookOverlay::registerQmlContext()
         return;
     }
 
-    m_engine.rootContext()->setContextProperty( QStringLiteral("_uiBackend"),m_uiBackend);
+    m_engine->rootContext()->setContextProperty( QStringLiteral("_uiBackend"),m_uiBackend);
 }
 
 
@@ -330,7 +328,7 @@ bool DxHookOverlay::initializeQml()
         return false;
     }
 
-    m_engine.addImageProvider(QStringLiteral("imageprovider"), m_uiBackend->imageProvider());
+    //m_engine.addImageProvider(QStringLiteral("imageprovider"), m_uiBackend->imageProvider());
 
     m_window = new QQuickWindow(&m_renderControl);
     m_window->setWidth(m_width);
@@ -339,7 +337,7 @@ bool DxHookOverlay::initializeQml()
 
     m_renderControl.initialize(m_context);
 
-    QQmlComponent component(&m_engine,QUrl(QStringLiteral("qrc:/resources/qml/DxOverlayWindow.qml")));
+    QQmlComponent component(m_engine, QUrl(QStringLiteral("qrc:/resources/qml/DxOverlayWindow.qml")));
 
     if (component.status() == QQmlComponent::Error) {
         qWarning() << "DxHookOverlay: QML errors:";
