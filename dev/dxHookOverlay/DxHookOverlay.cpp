@@ -9,7 +9,7 @@
 #include "uiBackend.h"
 #include <QDir>
 #include <cstring>
-
+#include <psapi.h>
 
 namespace
 {
@@ -208,6 +208,45 @@ bool SendQImageToSharedMemory(const QImage& image)
     return true;
 }
 
+bool RequestDLLUnload(DWORD processId)
+{
+    HANDLE hEvent = nullptr;
+
+    // Даём DLL немного времени создать event.
+    for (int i = 0; i < 100; ++i)
+    {
+        hEvent = OpenEventW(
+            EVENT_MODIFY_STATE,
+            FALSE,
+            L"Local\\DX9OverlayShutdown"
+            );
+
+        if (hEvent)
+        {
+            break;
+        }
+
+        Sleep(20);
+    }
+
+    if (!hEvent)
+    {
+        return false;
+    }
+
+    const BOOL result =
+        SetEvent(hEvent);
+
+    CloseHandle(hEvent);
+
+    if (!result)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 
 DxHookOverlay::DxHookOverlay(GameController *gameController, UiBackend* uiBackend, QQmlApplicationEngine* engine, QObject* parent)
     : QObject(parent)
@@ -219,6 +258,19 @@ DxHookOverlay::DxHookOverlay(GameController *gameController, UiBackend* uiBacken
 
 DxHookOverlay::~DxHookOverlay()
 {
+    std::wstring processName = L"W40k.exe";
+    DWORD pid = GetProcessIdByName(processName);
+
+    /*if (pid != 0) {
+        QString appDir = QCoreApplication::applicationDirPath();
+        QString qDllPath = QDir::toNativeSeparators(appDir + "/DxHookOverlay.dll");
+        std::wstring dllPath = qDllPath.toStdWString();
+
+        UninjectDLL(pid, dllPath);
+    }*/
+
+    RequestDLLUnload(pid);
+
     if (m_context) {
         m_context->makeCurrent(m_surface);
 
@@ -630,6 +682,71 @@ bool DxHookOverlay::InjectDLL(DWORD processId, const std::wstring& dllPath) {
     CloseHandle(hProcess);
     return true;
 }
+
+
+/*bool DxHookOverlay::UninjectDLL(DWORD processId, const std::wstring& dllPath) {
+    if (processId == 0) return false;
+
+    // 1. Открываем процесс игры
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId);
+    if (!hProcess) {
+        qWarning() << "DxHookOverlay: Не удалось открыть процесс для выгрузки. Ошибка:" << GetLastError();
+        return false;
+    }
+
+    // 2. Получаем список модулей целевого процесса, чтобы найти хэндл нашей DLL
+    HMODULE hMods[1024];
+    DWORD cbNeeded;
+    HMODULE hDllModule = nullptr;
+
+    // EnumProcessModules доступен из <psapi.h>
+    if (EnumProcessModules(hProcess, hMods, sizeof(hMods), &cbNeeded)) {
+        for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
+            wchar_t szModName[MAX_PATH];
+            if (GetModuleFileNameExW(hProcess, hMods[i], szModName, sizeof(szModName) / sizeof(wchar_t))) {
+                // Сравниваем пути (приводим к одному регистру, если нужно)
+                if (_wcsicmp(szModName, dllPath.c_str()) == 0) {
+                    hDllModule = hMods[i];
+                    break;
+                }
+            }
+        }
+    }
+
+    if (!hDllModule) {
+        qWarning() << "DxHookOverlay: DLL не найдена в процессе игры (возможно, уже выгружена).";
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    // 3. Получаем адрес функции FreeLibrary из kernel32.dll
+   // LPTHREAD_START_ROUTINE pFreeLibrary = (LPTHREAD_START_ROUTINE)GetProcAddress(
+   //     GetModuleHandleW(L"kernel32.dll"), "FreeLibrary");
+
+    if (!pFreeLibrary) {
+        qWarning() << "DxHookOverlay: Не удалось найти FreeLibrary.";
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    // 4. Создаем удаленный поток, передавая хэндл модуля в качестве параметра
+    HANDLE hThread = CreateRemoteThread(hProcess, nullptr, 0, pFreeLibrary, hDllModule, 0, nullptr);
+    if (!hThread) {
+        qWarning() << "DxHookOverlay: Не удалось создать удаленный поток для FreeLibrary.";
+        CloseHandle(hProcess);
+        return false;
+    }
+
+    // Ожидаем завершения потока выгрузки
+    WaitForSingleObject(hThread, INFINITE);
+    CloseHandle(hThread);
+    CloseHandle(hProcess);
+
+    qDebug() << "Оверлей успешно выгружен из игры!";
+    return true;
+}*/
+
+
 
 DWORD DxHookOverlay::GetProcessIdByName(const std::wstring& processName) {
     DWORD pid = 0;

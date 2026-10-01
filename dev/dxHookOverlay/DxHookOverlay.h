@@ -45,6 +45,7 @@ private:
     void registerQmlContext();
 
     bool InjectDLL(DWORD processId, const std::wstring& dllPath);
+    bool UninjectDLL(DWORD processId, const std::wstring& dllPath);
     DWORD GetProcessIdByName(const std::wstring& processName);
 
 private:

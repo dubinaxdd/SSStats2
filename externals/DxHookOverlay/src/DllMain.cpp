@@ -5,8 +5,14 @@ namespace
 {
 DWORD WINAPI InitializeThread(LPVOID)
 {
-    InstallDX9Hook();
-    return 0;
+    const bool hookInstalled =
+        InstallDX9Hook();
+
+    // Shutdown thread должен быть запущен
+    // даже если установка hook не удалась.
+    StartDX9HookShutdownThread();
+
+    return hookInstalled ? 0 : 1;
 }
 }
 
@@ -19,6 +25,8 @@ BOOL APIENTRY DllMain(
     if (reason == DLL_PROCESS_ATTACH)
     {
         DisableThreadLibraryCalls(hModule);
+
+        SetDX9HookModule(hModule);
 
         HANDLE thread = CreateThread(
             nullptr,

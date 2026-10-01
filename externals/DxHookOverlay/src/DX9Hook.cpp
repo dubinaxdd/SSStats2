@@ -3,41 +3,39 @@
 #include <Windows.h>
 #include <d3d9.h>
 
+#include <atomic>
 #include <cstdint>
 #include <cstring>
+#include <mutex>
+#include <thread>
+
 #pragma comment(lib, "d3d9.lib")
-#include <cstddef>
+
+// ============================================================
+// Configuration
+// ============================================================
 
 namespace
 {
-
-// ============================================================
-// НЕ ТРОГАЕМ РАБОЧУЮ ЧАСТЬ HOOK
-// ============================================================
-
 constexpr SIZE_T STOLEN_BYTES = 18;
-constexpr SIZE_T ABSOLUTE_JUMP_SIZE = 14;
+
+constexpr wchar_t SHARED_IMAGE_NAME[] =
+    L"Local\\DX9OverlayImage";
+
+constexpr wchar_t SHUTDOWN_EVENT_NAME[] =
+    L"Local\\DX9OverlayShutdown";
+
+// ========================================================
+// Types
+// ========================================================
 
 using PresentFn = HRESULT(WINAPI*)(
-    IDirect3DDevice9* device,
-    const RECT* sourceRect,
-    const RECT* destRect,
-    HWND destWindowOverride,
-    const RGNDATA* dirtyRegion
+    IDirect3DDevice9*,
+    const RECT*,
+    const RECT*,
+    HWND,
+    const RGNDATA*
     );
-
-PresentFn OriginalPresent = nullptr;
-
-void* PresentAddress = nullptr;
-void* Trampoline = nullptr;
-
-constexpr wchar_t SHARED_MEMORY_NAME[] = L"Local\\DX9OverlayImage";
-
-constexpr uint32_t MAX_IMAGE_WIDTH = 3840;
-constexpr uint32_t MAX_IMAGE_HEIGHT = 2160;
-constexpr uint32_t BYTES_PER_PIXEL = 4;
-
-constexpr uint32_t MAX_IMAGE_SIZE = MAX_IMAGE_WIDTH * MAX_IMAGE_HEIGHT * BYTES_PER_PIXEL;
 
 struct SharedImage
 {
@@ -45,196 +43,309 @@ struct SharedImage
     uint32_t height;
     uint32_t pitch;
     uint32_t format;
+
     uint64_t frame;
-    volatile LONG activeBuffer;
-    uint8_t pixels[2][MAX_IMAGE_SIZE];
+
+    LONG activeBuffer;
+
+    unsigned char pixels[3840 * 2160 * 4 * 2];
 };
 
-HANDLE g_sharedMemory = nullptr;
-SharedImage* g_sharedImage = nullptr;
-uint8_t* g_sharedPixels = nullptr;
+// ========================================================
+// Globals
+// ========================================================
+
+HMODULE g_module = nullptr;
+
+PresentFn OriginalPresent = nullptr;
+
+void* PresentAddress = nullptr;
+void* Trampoline = nullptr;
 
 IDirect3DTexture9* g_texture = nullptr;
-uint32_t g_textureWidth = 0;
-uint32_t g_textureHeight = 0;
-uint64_t g_lastFrame = 0;
 
-static_assert(offsetof(SharedImage, pixels) == 28, "SharedImage layout mismatch");
-static_assert(sizeof(SharedImage) == 66355232, "SharedImage size mismatch");
+HANDLE g_mapping = nullptr;
+SharedImage* g_sharedImage = nullptr;
 
-bool UpdateTextureFromSharedMemory(IDirect3DDevice9* device)
+std::mutex g_sharedImageMutex;
+std::mutex g_textureMutex;
+
+std::atomic<bool> g_shutdownRequested{ false };
+std::atomic<bool> g_hookInstalled{ false };
+
+// Количество Present, которые сейчас выполняются.
+std::atomic<LONG> g_activePresentCalls{ 0 };
+
+// Initialization thread выставляет true после InstallDX9Hook().
+std::atomic<bool> g_initializationFinished{ false };
+
+HANDLE g_shutdownEvent = nullptr;
+HANDLE g_shutdownThread = nullptr;
+
+// Оригинальные байты Present.
+uint8_t g_originalBytes[STOLEN_BYTES]{};
+
+// ========================================================
+// Forward declarations
+// ========================================================
+
+void ShutdownDX9HookInternal();
+
+DWORD WINAPI ShutdownThread(LPVOID);
+
+// ========================================================
+// Helpers
+// ========================================================
+
+void SetMemoryProtection(
+    void* address,
+    SIZE_T size,
+    DWORD newProtection,
+    DWORD& oldProtection
+    )
 {
-    if (!device || !g_sharedMemory || !g_texture)
-        return false;
+    VirtualProtect(
+        address,
+        size,
+        newProtection,
+        &oldProtection
+        );
+}
 
-    constexpr SIZE_T PIXELS_OFFSET = 28;
-
-    const UINT width = g_textureWidth;
-    const UINT height = g_textureHeight;
-
-    if (width == 0 || height == 0)
-        return false;
-
-    const SIZE_T imageSize =
-        static_cast<SIZE_T>(width) *
-        static_cast<SIZE_T>(height) *
-        4;
-
-    uint8_t* view =
-        reinterpret_cast<uint8_t*>(
-            MapViewOfFile(
-                g_sharedMemory,
-                FILE_MAP_READ,
-                0,
-                0,
-                PIXELS_OFFSET + imageSize
-                )
-            );
-
-    if (!view)
-        return false;
-
-    D3DLOCKED_RECT locked = {};
-
-    HRESULT hr =
-        g_texture->LockRect(
-            0,
-            &locked,
-            nullptr,
-            0
-            );
-
-    if (FAILED(hr))
+bool WriteAbsoluteJump(
+    void* source,
+    void* destination
+    )
+{
+    if (!source || !destination)
     {
-        UnmapViewOfFile(view);
         return false;
     }
 
-    for (UINT y = 0; y < height; ++y)
+    DWORD oldProtection = 0;
+
+    if (!VirtualProtect(
+            source,
+            14,
+            PAGE_EXECUTE_READWRITE,
+            &oldProtection))
     {
-        std::memcpy(
-            reinterpret_cast<uint8_t*>(locked.pBits) +
-                static_cast<SIZE_T>(y) * locked.Pitch,
-
-            view +
-                PIXELS_OFFSET +
-                static_cast<SIZE_T>(y) * width * 4,
-
-            static_cast<SIZE_T>(width) * 4
-            );
+        return false;
     }
 
-    g_texture->UnlockRect(0);
+    uint8_t patch[14]{};
 
-    UnmapViewOfFile(view);
+    // mov rax, imm64
+    patch[0] = 0x48;
+    patch[1] = 0xB8;
+
+    std::uint64_t address =
+        reinterpret_cast<std::uint64_t>(destination);
+
+    std::memcpy(
+        &patch[2],
+        &address,
+        sizeof(address)
+        );
+
+    // jmp rax
+    patch[10] = 0xFF;
+    patch[11] = 0xE0;
+
+    // padding
+    patch[12] = 0x90;
+    patch[13] = 0x90;
+
+    std::memcpy(
+        source,
+        patch,
+        sizeof(patch)
+        );
+
+    FlushInstructionCache(
+        GetCurrentProcess(),
+        source,
+        sizeof(patch)
+        );
+
+    DWORD dummy = 0;
+
+    VirtualProtect(
+        source,
+        14,
+        oldProtection,
+        &dummy
+        );
 
     return true;
 }
 
+// ========================================================
+// Resolve possible JMP
+// ========================================================
 
 void* ResolveJump(void* address)
 {
     if (!address)
-        return nullptr;
-
-    auto* p = reinterpret_cast<uint8_t*>(address);
-
-    if (p[0] == 0xE9)
     {
-        int32_t relative = *reinterpret_cast<int32_t*>(p + 1);
-        return p + 5 + relative;
+        return nullptr;
     }
 
-    if (p[0] == 0xFF && p[1] == 0x25)
+    auto* bytes =
+        reinterpret_cast<uint8_t*>(address);
+
+    // E9 rel32
+    if (bytes[0] == 0xE9)
     {
-        int32_t relative = *reinterpret_cast<int32_t*>(p + 2);
-        auto** target = reinterpret_cast<void**>(p + 6 + relative);
-        return *target;
+        int32_t relative = 0;
+
+        std::memcpy(
+            &relative,
+            bytes + 1,
+            sizeof(relative)
+            );
+
+        return
+            reinterpret_cast<uint8_t*>(address)
+            + 5
+            + relative;
+    }
+
+    // FF 25 [rip+rel32]
+    if (bytes[0] == 0xFF &&
+        bytes[1] == 0x25)
+    {
+        int32_t relative = 0;
+
+        std::memcpy(
+            &relative,
+            bytes + 2,
+            sizeof(relative)
+            );
+
+        auto** absoluteAddress =
+            reinterpret_cast<void**>(
+                reinterpret_cast<uint8_t*>(address)
+                + 6
+                + relative
+                );
+
+        return *absoluteAddress;
     }
 
     return address;
 }
 
+// ========================================================
+// Trampoline
+// ========================================================
 
-bool WriteAbsoluteJump(
-    void* source,
-    void* destination)
+void* CreateTrampoline(
+    void* target,
+    SIZE_T stolenBytes
+    )
 {
-    if (!source || !destination)
-        return false;
-
-    auto* p =
-        reinterpret_cast<uint8_t*>(source);
-
-    DWORD oldProtect = 0;
-
-    if (!VirtualProtect(source, ABSOLUTE_JUMP_SIZE, PAGE_EXECUTE_READWRITE, &oldProtect))
-        return false;
-
-    p[0] = 0x48;
-    p[1] = 0xB8;
-
-    *reinterpret_cast<uint64_t*>(p + 2) = reinterpret_cast<uint64_t>(destination);
-
-    p[10] = 0xFF;
-    p[11] = 0xE0;
-
-    p[12] = 0x90;
-    p[13] = 0x90;
-
-    FlushInstructionCache(GetCurrentProcess(), source, ABSOLUTE_JUMP_SIZE);
-
-    DWORD temp = 0;
-    VirtualProtect( source, ABSOLUTE_JUMP_SIZE, oldProtect,&temp);
-    return true;
-}
-
-
-void* CreateTrampoline(void* target)
-{
-    if (!target)
+    if (!target || stolenBytes < 14)
+    {
         return nullptr;
+    }
 
-    constexpr SIZE_T trampolineSize = STOLEN_BYTES + ABSOLUTE_JUMP_SIZE;
+    constexpr SIZE_T TRAMPOLINE_SIZE = 64;
 
     auto* trampoline =
         reinterpret_cast<uint8_t*>(
             VirtualAlloc(
                 nullptr,
-                trampolineSize,
+                TRAMPOLINE_SIZE,
                 MEM_COMMIT | MEM_RESERVE,
                 PAGE_EXECUTE_READWRITE
                 )
             );
 
     if (!trampoline)
-        return nullptr;
-
-    std::memcpy(trampoline, target, STOLEN_BYTES);
-
-    if (!WriteAbsoluteJump(trampoline + STOLEN_BYTES, reinterpret_cast<uint8_t*>(target) + STOLEN_BYTES))
     {
-        VirtualFree(trampoline, 0, MEM_RELEASE);
         return nullptr;
     }
 
-    FlushInstructionCache(GetCurrentProcess(), trampoline, trampolineSize);
+    std::memcpy(
+        trampoline,
+        target,
+        stolenBytes
+        );
+
+    auto* jumpBack =
+        trampoline + stolenBytes;
+
+    uint8_t patch[14]{};
+
+    // mov rax, target + stolenBytes
+    patch[0] = 0x48;
+    patch[1] = 0xB8;
+
+    std::uint64_t returnAddress =
+        reinterpret_cast<std::uint64_t>(
+            reinterpret_cast<uint8_t*>(target)
+            + stolenBytes
+            );
+
+    std::memcpy(
+        &patch[2],
+        &returnAddress,
+        sizeof(returnAddress)
+        );
+
+    // jmp rax
+    patch[10] = 0xFF;
+    patch[11] = 0xE0;
+
+    patch[12] = 0x90;
+    patch[13] = 0x90;
+
+    std::memcpy(
+        jumpBack,
+        patch,
+        sizeof(patch)
+        );
+
+    FlushInstructionCache(
+        GetCurrentProcess(),
+        trampoline,
+        TRAMPOLINE_SIZE
+        );
+
     return trampoline;
 }
 
+// ========================================================
+// Shared memory
+// ========================================================
+
 bool OpenSharedImage()
 {
+    std::lock_guard<std::mutex> lock(
+        g_sharedImageMutex
+        );
+
     if (g_sharedImage)
+    {
         return true;
+    }
 
-    g_sharedMemory = OpenFileMappingW(FILE_MAP_READ, FALSE, SHARED_MEMORY_NAME );
+    g_mapping = OpenFileMappingW(
+        FILE_MAP_READ,
+        FALSE,
+        SHARED_IMAGE_NAME
+        );
 
-    if (!g_sharedMemory)
+    if (!g_mapping)
+    {
         return false;
+    }
 
-    g_sharedImage = reinterpret_cast<SharedImage*>(
+    g_sharedImage =
+        reinterpret_cast<SharedImage*>(
             MapViewOfFile(
-                g_sharedMemory,
+                g_mapping,
                 FILE_MAP_READ,
                 0,
                 0,
@@ -244,150 +355,263 @@ bool OpenSharedImage()
 
     if (!g_sharedImage)
     {
-        CloseHandle(g_sharedMemory);
-        g_sharedMemory = nullptr;
+        CloseHandle(g_mapping);
+        g_mapping = nullptr;
+
         return false;
     }
 
-    // Только после успешного MapViewOfFile.
-    MEMORY_BASIC_INFORMATION mbi = {};
-
-    SIZE_T queried = VirtualQuery(g_sharedImage, &mbi, sizeof(mbi));
     return true;
 }
 
-
 void CloseSharedImage()
 {
+    std::lock_guard<std::mutex> lock(
+        g_sharedImageMutex
+        );
+
     if (g_sharedImage)
     {
         UnmapViewOfFile(g_sharedImage);
         g_sharedImage = nullptr;
     }
 
-    if (g_sharedMemory)
+    if (g_mapping)
     {
-        CloseHandle(g_sharedMemory);
-        g_sharedMemory = nullptr;
+        CloseHandle(g_mapping);
+        g_mapping = nullptr;
     }
 }
 
-
-bool IsValidImageSize(uint32_t width, uint32_t height)
-{
-    if (width == 0 || height == 0)
-        return false;
-
-    if (width > MAX_IMAGE_WIDTH || height > MAX_IMAGE_HEIGHT)
-        return false;
-
-    return true;
-}
+// ========================================================
+// Texture
+// ========================================================
 
 void ReleaseTexture()
 {
+    std::lock_guard<std::mutex> lock(
+        g_textureMutex
+        );
+
     if (g_texture)
     {
         g_texture->Release();
         g_texture = nullptr;
     }
-
-    g_textureWidth = 0;
-    g_textureHeight = 0;
-    g_lastFrame = 0;
 }
 
-
-bool CreateImageTexture(IDirect3DDevice9* device, uint32_t width, uint32_t height)
+bool CreateImageTexture(
+    IDirect3DDevice9* device,
+    uint32_t width,
+    uint32_t height
+    )
 {
-    if (!device)
-        return false;
-
-    if (width == 0 || height == 0)
-        return false;
-
-    if (width > MAX_IMAGE_WIDTH || height > MAX_IMAGE_HEIGHT)
-        return false;
-
-    if (g_texture &&
-        g_textureWidth == width &&
-        g_textureHeight == height)
+    if (!device ||
+        width == 0 ||
+        height == 0)
     {
-        return true;
+        return false;
     }
+
+    std::lock_guard<std::mutex> lock(
+        g_textureMutex
+        );
 
     if (g_texture)
     {
+        D3DSURFACE_DESC desc{};
+
+        if (SUCCEEDED(
+                g_texture->GetLevelDesc(
+                    0,
+                    &desc
+                    )))
+        {
+            if (desc.Width == width &&
+                desc.Height == height)
+            {
+                return true;
+            }
+        }
+
         g_texture->Release();
         g_texture = nullptr;
     }
-
-    g_textureWidth = 0;
-    g_textureHeight = 0;
 
     HRESULT hr =
         device->CreateTexture(
             width,
             height,
             1,
-            0,
+            D3DUSAGE_DYNAMIC,
             D3DFMT_A8R8G8B8,
-            D3DPOOL_MANAGED,
+            D3DPOOL_DEFAULT,
             &g_texture,
             nullptr
             );
 
-    if (FAILED(hr))
+    return SUCCEEDED(hr);
+}
+
+bool UpdateTextureFromSharedMemory()
+{
+    if (!g_sharedImage ||
+        !g_texture)
     {
-        g_texture = nullptr;
         return false;
     }
 
-    g_textureWidth = width;
-    g_textureHeight = height;
+    D3DLOCKED_RECT locked{};
+
+    if (FAILED(
+            g_texture->LockRect(
+                0,
+                &locked,
+                nullptr,
+                D3DLOCK_DISCARD
+                )))
+    {
+        return false;
+    }
+
+    const uint32_t width =
+        g_sharedImage->width;
+
+    const uint32_t height =
+        g_sharedImage->height;
+
+    const uint32_t pitch =
+        g_sharedImage->pitch;
+
+    if (width == 0 ||
+        height == 0 ||
+        width > 3840 ||
+        height > 2160)
+    {
+        g_texture->UnlockRect(0);
+        return false;
+    }
+
+    const uint8_t* source =
+        g_sharedImage->pixels;
+
+    auto* destination =
+        reinterpret_cast<uint8_t*>(
+            locked.pBits
+            );
+
+    for (uint32_t y = 0; y < height; ++y)
+    {
+        std::memcpy(
+            destination + y * locked.Pitch,
+            source + y * pitch,
+            width * 4
+            );
+    }
+
+    g_texture->UnlockRect(0);
 
     return true;
 }
 
-// СТАРЫЙ КРАСНЫЙ КВАДРАТ
-// ОСТАВЛЯЕМ ДЛЯ АВАРИЙНОЙ ПРОВЕРКИ
-void DrawRedSquare(IDirect3DDevice9* device)
+// ========================================================
+// Drawing
+// ========================================================
+
+/*void DrawOverlayTexture(
+    IDirect3DDevice9* device
+    )
 {
+    if (!device || !g_texture)
+    {
+        return;
+    }
+
     struct Vertex
     {
         float x;
         float y;
         float z;
         float rhw;
-        DWORD color;
+
+        float u;
+        float v;
     };
 
-    Vertex vertices[] =
-        {
-            { 20.0f,  20.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(255, 0, 0) },
-            {120.0f,  20.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(255, 0, 0) },
-            { 20.0f, 120.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(255, 0, 0) },
-            {120.0f, 120.0f, 0.0f, 1.0f, D3DCOLOR_XRGB(255, 0, 0) }
-        };
+    constexpr DWORD FVF =
+        D3DFVF_XYZRHW | D3DFVF_TEX1;
 
-    IDirect3DStateBlock9* stateBlock = nullptr;
+    D3DVIEWPORT9 viewport{};
 
-    if (SUCCEEDED(device->CreateStateBlock(D3DSBT_ALL, &stateBlock)))
-        stateBlock->Capture();
-
-    device->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
-    device->SetRenderState(D3DRS_LIGHTING, FALSE);
-    device->SetRenderState(D3DRS_ZENABLE, FALSE);
-    device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-
-    device->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP, 2, vertices, sizeof(Vertex));
-
-    if (stateBlock)
+    if (FAILED(
+            device->GetViewport(&viewport)))
     {
-        stateBlock->Apply();
-        stateBlock->Release();
+        return;
     }
-}
+
+    const float width =
+        static_cast<float>(viewport.Width);
+
+    const float height =
+        static_cast<float>(viewport.Height);
+
+    Vertex vertices[4]{};
+
+    vertices[0] = {
+        0.0f,
+        0.0f,
+        0.0f,
+        1.0f,
+        0.0f,
+        0.0f
+    };
+
+    vertices[1] = {
+        width,
+        0.0f,
+        0.0f,
+        1.0f,
+        1.0f,
+        0.0f
+    };
+
+    vertices[2] = {
+        width,
+        height,
+        0.0f,
+        1.0f,
+        1.0f,
+        1.0f
+    };
+
+    vertices[3] = {
+        0.0f,
+        height,
+        0.0f,
+        1.0f,
+        0.0f,
+        1.0f
+    };
+
+    device->SetFVF(FVF);
+
+    device->SetTexture(
+        0,
+        g_texture
+        );
+
+    device->DrawPrimitiveUP(
+        D3DPT_TRIANGLEFAN,
+        2,
+        vertices,
+        sizeof(Vertex)
+        );
+
+    device->SetTexture(
+        0,
+        nullptr
+        );
+}*/
 
 void DrawOverlayTexture(IDirect3DDevice9* device, IDirect3DTexture9* texture)
 {
@@ -454,87 +678,242 @@ void DrawOverlayTexture(IDirect3DDevice9* device, IDirect3DTexture9* texture)
     }
 }
 
+void DrawRedSquare(
+    IDirect3DDevice9* device
+    )
+{
+    if (!device)
+    {
+        return;
+    }
+
+    struct Vertex
+    {
+        float x;
+        float y;
+        float z;
+        float rhw;
+        DWORD color;
+    };
+
+    constexpr DWORD FVF =
+        D3DFVF_XYZRHW | D3DFVF_DIFFUSE;
+
+    Vertex vertices[4]{};
+
+    vertices[0] = {
+        20.0f,
+        20.0f,
+        0.0f,
+        1.0f,
+        0xFFFF0000
+    };
+
+    vertices[1] = {
+        120.0f,
+        20.0f,
+        0.0f,
+        1.0f,
+        0xFFFF0000
+    };
+
+    vertices[2] = {
+        120.0f,
+        120.0f,
+        0.0f,
+        1.0f,
+        0xFFFF0000
+    };
+
+    vertices[3] = {
+        20.0f,
+        120.0f,
+        0.0f,
+        1.0f,
+        0xFFFF0000
+    };
+
+    device->SetTexture(
+        0,
+        nullptr
+        );
+
+    device->SetFVF(FVF);
+
+    device->DrawPrimitiveUP(
+        D3DPT_TRIANGLEFAN,
+        2,
+        vertices,
+        sizeof(Vertex)
+        );
+}
+
+// ========================================================
+// Hooked Present
+// ========================================================
+
 HRESULT WINAPI HookedPresent(
     IDirect3DDevice9* device,
     const RECT* sourceRect,
     const RECT* destRect,
     HWND destWindowOverride,
-    const RGNDATA* dirtyRegion)
+    const RGNDATA* dirtyRegion
+    )
 {
-    if (device)
+    // Очень важно: счётчик увеличивается
+    // сразу при входе в hook.
+    g_activePresentCalls.fetch_add(
+        1,
+        std::memory_order_acq_rel
+        );
+
+    HRESULT result = D3D_OK;
+
+    // После начала shutdown новый overlay
+    // больше не выполняем.
+    if (!g_shutdownRequested.load(
+            std::memory_order_acquire))
     {
-        static uint64_t lastFrame = 0;
-
-        if (OpenSharedImage())
+        if (device)
         {
-            const uint32_t width = g_sharedImage->width;
-            const uint32_t height = g_sharedImage->height;
-            const uint64_t frame = g_sharedImage->frame;
-
-            if (width != 0 && height != 0 && frame != 0)
+            if (OpenSharedImage())
             {
-                if (!g_texture)
-                    CreateImageTexture(device, width, height );
+                const uint32_t width =
+                    g_sharedImage->width;
 
-                if (g_texture)
+                const uint32_t height =
+                    g_sharedImage->height;
+
+                if (width > 0 &&
+                    height > 0 &&
+                    width <= 3840 &&
+                    height <= 2160)
                 {
-                    if (frame != lastFrame)
+                    if (CreateImageTexture(
+                            device,
+                            width,
+                            height))
                     {
-                        if (UpdateTextureFromSharedMemory(device))
-                            lastFrame = frame;
-                    }
+                        UpdateTextureFromSharedMemory();
 
-                    DrawOverlayTexture(device, g_texture);
+                        DrawOverlayTexture(
+                            device,
+                            g_texture
+                            );
+                    }
                 }
             }
-        }
 
-        DrawRedSquare(device);
+            DrawRedSquare(device);
+        }
     }
 
-    return OriginalPresent(
-        device,
-        sourceRect,
-        destRect,
-        destWindowOverride,
-        dirtyRegion
+    if (OriginalPresent)
+    {
+        result = OriginalPresent(
+            device,
+            sourceRect,
+            destRect,
+            destWindowOverride,
+            dirtyRegion
+            );
+    }
+
+    g_activePresentCalls.fetch_sub(
+        1,
+        std::memory_order_acq_rel
         );
+
+    return result;
 }
 
+// ========================================================
+// Restore original Present
+// ========================================================
+
+bool RestoreOriginalPresent()
+{
+    if (!PresentAddress)
+    {
+        return true;
+    }
+
+    DWORD oldProtection = 0;
+
+    if (!VirtualProtect(
+            PresentAddress,
+            STOLEN_BYTES,
+            PAGE_EXECUTE_READWRITE,
+            &oldProtection))
+    {
+        return false;
+    }
+
+    std::memcpy(
+        PresentAddress,
+        g_originalBytes,
+        STOLEN_BYTES
+        );
+
+    FlushInstructionCache(
+        GetCurrentProcess(),
+        PresentAddress,
+        STOLEN_BYTES
+        );
+
+    DWORD dummy = 0;
+
+    VirtualProtect(
+        PresentAddress,
+        STOLEN_BYTES,
+        oldProtection,
+        &dummy
+        );
+
+    return true;
+}
+
+// ========================================================
+// Dummy D3D9 device
+// ========================================================
 
 IDirect3DDevice9* CreateDummyDevice(
-    IDirect3D9** outD3D)
+    IDirect3D9** outD3D
+    )
 {
     if (!outD3D)
+    {
         return nullptr;
+    }
 
     *outD3D = nullptr;
 
-    IDirect3D9* d3d = Direct3DCreate9(D3D_SDK_VERSION);
+    IDirect3D9* d3d =
+        Direct3DCreate9(D3D_SDK_VERSION);
 
     if (!d3d)
-        return nullptr;
-
-    HWND hwnd = GetForegroundWindow();
-
-    if (!hwnd)
     {
-        d3d->Release();
         return nullptr;
     }
 
-    D3DPRESENT_PARAMETERS pp = {};
+    HWND window =
+        GetDesktopWindow();
+
+    D3DPRESENT_PARAMETERS pp{};
 
     pp.Windowed = TRUE;
-    pp.SwapEffect = D3DSWAPEFFECT_DISCARD;
-    pp.hDeviceWindow = hwnd;
+    pp.SwapEffect =
+        D3DSWAPEFFECT_DISCARD;
+
+    pp.hDeviceWindow = window;
 
     IDirect3DDevice9* device = nullptr;
 
-    HRESULT hr = d3d->CreateDevice(
+    HRESULT hr =
+        d3d->CreateDevice(
             D3DADAPTER_DEFAULT,
             D3DDEVTYPE_HAL,
-            hwnd,
+            window,
             D3DCREATE_SOFTWARE_VERTEXPROCESSING,
             &pp,
             &device
@@ -551,41 +930,96 @@ IDirect3DDevice9* CreateDummyDevice(
     return device;
 }
 
+// ========================================================
+// Install hook
+// ========================================================
+
 bool InstallHook()
 {
     IDirect3D9* d3d = nullptr;
 
-    IDirect3DDevice9* dummyDevice = CreateDummyDevice(&d3d);
+    IDirect3DDevice9* dummyDevice =
+        CreateDummyDevice(&d3d);
 
-    void** vtable =  *reinterpret_cast<void***>(dummyDevice);
-    void* presentThunk = vtable[17];
-    void* resolvedPresent = ResolveJump(presentThunk);
+    if (!dummyDevice)
+    {
+        return false;
+    }
 
-    PresentAddress = resolvedPresent;
+    void** vtable =
+        *reinterpret_cast<void***>(
+            dummyDevice
+            );
 
-    Trampoline = CreateTrampoline(resolvedPresent);
+    // IDirect3DDevice9::Present = index 17
+    void* present =
+        vtable[17];
+
+    PresentAddress =
+        ResolveJump(present);
+
+    if (!PresentAddress)
+    {
+        dummyDevice->Release();
+        d3d->Release();
+
+        return false;
+    }
+
+    // Сохраняем оригинальные байты ДО патча.
+    std::memcpy(
+        g_originalBytes,
+        PresentAddress,
+        STOLEN_BYTES
+        );
+
+    Trampoline =
+        CreateTrampoline(
+            PresentAddress,
+            STOLEN_BYTES
+            );
 
     if (!Trampoline)
     {
         dummyDevice->Release();
         d3d->Release();
+
+        PresentAddress = nullptr;
+
         return false;
     }
 
-    OriginalPresent = reinterpret_cast<PresentFn>(Trampoline);
+    OriginalPresent =
+        reinterpret_cast<PresentFn>(
+            Trampoline
+            );
 
-    if (!WriteAbsoluteJump(resolvedPresent, reinterpret_cast<void*>(&HookedPresent)))
+    if (!WriteAbsoluteJump(
+            PresentAddress,
+            reinterpret_cast<void*>(
+                &HookedPresent
+                )))
     {
-        VirtualFree(Trampoline, 0, MEM_RELEASE);
+        VirtualFree(
+            Trampoline,
+            0,
+            MEM_RELEASE
+            );
 
         Trampoline = nullptr;
         OriginalPresent = nullptr;
+        PresentAddress = nullptr;
 
         dummyDevice->Release();
         d3d->Release();
 
         return false;
     }
+
+    g_hookInstalled.store(
+        true,
+        std::memory_order_release
+        );
 
     dummyDevice->Release();
     d3d->Release();
@@ -593,9 +1027,207 @@ bool InstallHook()
     return true;
 }
 
-} // namespace
+// ========================================================
+// Shutdown
+// ========================================================
+
+void ShutdownDX9HookInternal()
+{
+    g_shutdownRequested.store(
+        true,
+        std::memory_order_release
+        );
+
+    // ----------------------------------------------------
+    // 1. Restore original Present.
+    // ----------------------------------------------------
+
+    if (g_hookInstalled.load(
+            std::memory_order_acquire))
+    {
+        RestoreOriginalPresent();
+
+        g_hookInstalled.store(
+            false,
+            std::memory_order_release
+            );
+    }
+
+    // ----------------------------------------------------
+    // 2. Ждём, пока уже выполняющиеся HookedPresent
+    //    полностью закончатся.
+    // ----------------------------------------------------
+
+    for (;;)
+    {
+        LONG active =
+            g_activePresentCalls.load(
+                std::memory_order_acquire
+                );
+
+        if (active == 0)
+        {
+            break;
+        }
+
+        Sleep(1);
+    }
+
+    // ----------------------------------------------------
+    // 3. После этого HookedPresent больше не использует
+    //    texture/shared memory/trampoline.
+    // ----------------------------------------------------
+
+    ReleaseTexture();
+
+    CloseSharedImage();
+
+    // ----------------------------------------------------
+    // 4. Освобождаем trampoline.
+    // ----------------------------------------------------
+
+    if (Trampoline)
+    {
+        VirtualFree(
+            Trampoline,
+            0,
+            MEM_RELEASE
+            );
+
+        Trampoline = nullptr;
+    }
+
+    OriginalPresent = nullptr;
+    PresentAddress = nullptr;
+}
+
+// ========================================================
+// Shutdown thread
+// ========================================================
+
+DWORD WINAPI ShutdownThread(
+    LPVOID
+    )
+{
+    HANDLE event = g_shutdownEvent;
+
+    if (!event)
+    {
+        return 0;
+    }
+
+    // Ждём команды от внешнего injector/uninjector.
+    WaitForSingleObject(
+        event,
+        INFINITE
+        );
+
+    // Если shutdown пришёл во время InstallDX9Hook(),
+    // ждём окончания initialization thread.
+    while (!g_initializationFinished.load(
+        std::memory_order_acquire))
+    {
+        Sleep(1);
+    }
+
+    ShutdownDX9HookInternal();
+
+    // Закрываем event ДО выгрузки DLL.
+    if (g_shutdownEvent)
+    {
+        CloseHandle(g_shutdownEvent);
+        g_shutdownEvent = nullptr;
+    }
+
+    HMODULE module = g_module;
+
+    // Здесь НЕЛЬЗЯ делать обычный return после FreeLibrary.
+    //
+    // FreeLibraryAndExitThread() атомарно уменьшает
+    // refcount DLL и завершает этот thread.
+    //
+    // Поэтому после этой функции управление обратно
+    // в код DLL не возвращается.
+    if (module)
+    {
+        FreeLibraryAndExitThread(
+            module,
+            0
+            );
+    }
+
+    return 0;
+}
+
+} // anonymous namespace
+
+
+// ============================================================
+// Public API
+// ============================================================
+
+void SetDX9HookModule(
+    HMODULE module
+    )
+{
+    g_module = module;
+}
+
 
 bool InstallDX9Hook()
 {
     return InstallHook();
+}
+
+
+bool StartDX9HookShutdownThread()
+{
+    if (g_shutdownEvent)
+    {
+        return true;
+    }
+
+    g_shutdownEvent =
+        CreateEventW(
+            nullptr,
+            TRUE,
+            FALSE,
+            SHUTDOWN_EVENT_NAME
+            );
+
+    if (!g_shutdownEvent)
+    {
+        return false;
+    }
+
+    g_shutdownThread =
+        CreateThread(
+            nullptr,
+            0,
+            ShutdownThread,
+            nullptr,
+            0,
+            nullptr
+            );
+
+    if (!g_shutdownThread)
+    {
+        CloseHandle(g_shutdownEvent);
+        g_shutdownEvent = nullptr;
+
+        return false;
+    }
+
+    // Handle shutdown thread нам больше не нужен.
+    //
+    // Сам thread продолжает работать.
+    CloseHandle(g_shutdownThread);
+    g_shutdownThread = nullptr;
+
+    g_initializationFinished.store(
+        true,
+        std::memory_order_release
+        );
+
+    return true;
 }
