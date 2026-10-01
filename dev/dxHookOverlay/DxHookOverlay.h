@@ -47,6 +47,8 @@ private:
     bool InjectDLL(DWORD processId, const std::wstring& dllPath);
     bool UninjectDLL(DWORD processId, const std::wstring& dllPath);
     DWORD GetProcessIdByName(const std::wstring& processName);
+    //bool RequestDLLUnload(DWORD processId);
+    void cleanupOverlay();
 
 private:
     UiBackend* m_uiBackend = nullptr;

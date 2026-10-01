@@ -43,6 +43,20 @@ bool IsValidImageSize(uint32_t width, uint32_t height)
 }
 }
 
+void CleanupSharedImage()
+{
+    if (g_sharedImage)
+    {
+        UnmapViewOfFile(g_sharedImage);
+        g_sharedImage = nullptr;
+    }
+    if (g_sharedMemory)
+    {
+        CloseHandle(g_sharedMemory);
+        g_sharedMemory = nullptr;
+    }
+}
+
 bool CreateSharedImage(uint32_t width, uint32_t height)
 {
     if (!IsValidImageSize(width, height))
@@ -247,6 +261,58 @@ bool RequestDLLUnload(DWORD processId)
     return true;
 }
 
+void DxHookOverlay::cleanupOverlay()
+{
+    // Останавливаем и удаляем таймер, чтобы старый рендер не работал параллельно
+    if (m_renderTimer) {
+        m_renderTimer->stop();
+        delete m_renderTimer;
+        m_renderTimer = nullptr;
+    }
+
+    // Сигнализируем о разгрузке DLL из старого процесса игры, если он еще жив
+    std::wstring processName = L"W40k.exe";
+    DWORD pid = GetProcessIdByName(processName);
+    if (pid != 0) {
+        RequestDLLUnload(pid);
+    }
+
+    // Освобождаем OpenGL ресурсы в правильном контексте потока
+    if (m_context && m_surface) {
+        if (m_context->makeCurrent(m_surface)) {
+            if (m_fbo) {
+                delete m_fbo;
+                m_fbo = nullptr;
+            }
+            m_renderControl.invalidate();
+            m_context->doneCurrent();
+        }
+    }
+
+    // Удаляем QML окно
+    if (m_window) {
+        delete m_window;
+        m_window = nullptr;
+    }
+
+    // m_root зануляем, так как он автоматически удалился при удалении m_window
+    m_root = nullptr;
+
+    if (m_surface) {
+        delete m_surface;
+        m_surface = nullptr;
+    }
+
+    if (m_context) {
+        delete m_context;
+        m_context = nullptr;
+    }
+
+    // Сбрасываем Shared Memory, чтобы при следующем старте она создалась с нуля
+    CleanupSharedImage();
+}
+
+
 
 DxHookOverlay::DxHookOverlay(GameController *gameController, UiBackend* uiBackend, QQmlApplicationEngine* engine, QObject* parent)
     : QObject(parent)
@@ -260,14 +326,6 @@ DxHookOverlay::~DxHookOverlay()
 {
     std::wstring processName = L"W40k.exe";
     DWORD pid = GetProcessIdByName(processName);
-
-    /*if (pid != 0) {
-        QString appDir = QCoreApplication::applicationDirPath();
-        QString qDllPath = QDir::toNativeSeparators(appDir + "/DxHookOverlay.dll");
-        std::wstring dllPath = qDllPath.toStdWString();
-
-        UninjectDLL(pid, dllPath);
-    }*/
 
     RequestDLLUnload(pid);
 
@@ -590,6 +648,9 @@ void DxHookOverlay::runOverlay(bool gameLaunched)
         return;
     }
 
+    // Очищаем предыдущую сессию (FBO, контексты, таймеры, память) перед созданием новой
+    cleanupOverlay();
+
     if (!initialize(gameWidth, gameHeight))
     {
         qWarning()<< "DxHookOverlay: initialize failed";
@@ -626,6 +687,7 @@ void DxHookOverlay::runOverlay(bool gameLaunched)
         qWarning() << "Ошибка внедрения.";
     }
 }
+
 
 
 bool DxHookOverlay::InjectDLL(DWORD processId, const std::wstring& dllPath) {
@@ -682,71 +744,6 @@ bool DxHookOverlay::InjectDLL(DWORD processId, const std::wstring& dllPath) {
     CloseHandle(hProcess);
     return true;
 }
-
-
-/*bool DxHookOverlay::UninjectDLL(DWORD processId, const std::wstring& dllPath) {
-    if (processId == 0) return false;
-
-    // 1. Открываем процесс игры
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processId);
-    if (!hProcess) {
-        qWarning() << "DxHookOverlay: Не удалось открыть процесс для выгрузки. Ошибка:" << GetLastError();
-        return false;
-    }
-
-    // 2. Получаем список модулей целевого процесса, чтобы найти хэндл нашей DLL
-    HMODULE hMods[1024];
-    DWORD cbNeeded;
-    HMODULE hDllModule = nullptr;
-
-    // EnumProcessModules доступен из <psapi.h>
-    if (EnumProcessModules(hProcess, hMods, sizeof(hMods), &cbNeeded)) {
-        for (unsigned int i = 0; i < (cbNeeded / sizeof(HMODULE)); i++) {
-            wchar_t szModName[MAX_PATH];
-            if (GetModuleFileNameExW(hProcess, hMods[i], szModName, sizeof(szModName) / sizeof(wchar_t))) {
-                // Сравниваем пути (приводим к одному регистру, если нужно)
-                if (_wcsicmp(szModName, dllPath.c_str()) == 0) {
-                    hDllModule = hMods[i];
-                    break;
-                }
-            }
-        }
-    }
-
-    if (!hDllModule) {
-        qWarning() << "DxHookOverlay: DLL не найдена в процессе игры (возможно, уже выгружена).";
-        CloseHandle(hProcess);
-        return false;
-    }
-
-    // 3. Получаем адрес функции FreeLibrary из kernel32.dll
-   // LPTHREAD_START_ROUTINE pFreeLibrary = (LPTHREAD_START_ROUTINE)GetProcAddress(
-   //     GetModuleHandleW(L"kernel32.dll"), "FreeLibrary");
-
-    if (!pFreeLibrary) {
-        qWarning() << "DxHookOverlay: Не удалось найти FreeLibrary.";
-        CloseHandle(hProcess);
-        return false;
-    }
-
-    // 4. Создаем удаленный поток, передавая хэндл модуля в качестве параметра
-    HANDLE hThread = CreateRemoteThread(hProcess, nullptr, 0, pFreeLibrary, hDllModule, 0, nullptr);
-    if (!hThread) {
-        qWarning() << "DxHookOverlay: Не удалось создать удаленный поток для FreeLibrary.";
-        CloseHandle(hProcess);
-        return false;
-    }
-
-    // Ожидаем завершения потока выгрузки
-    WaitForSingleObject(hThread, INFINITE);
-    CloseHandle(hThread);
-    CloseHandle(hProcess);
-
-    qDebug() << "Оверлей успешно выгружен из игры!";
-    return true;
-}*/
-
-
 
 DWORD DxHookOverlay::GetProcessIdByName(const std::wstring& processName) {
     DWORD pid = 0;
