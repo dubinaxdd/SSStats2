@@ -638,6 +638,14 @@ void UiBackend::openPlaybackFolder()
     QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentGame->gameSettingsPath + QDir::separator() + "Playback"));
 }
 
+double UiBackend::getSizeModifer()
+{
+    if (m_legacyOverlayVisible)
+        return m_sizeModifer;
+    else
+        return m_sizeModifer * m_devicePixelRatio;
+}
+
 void UiBackend::setSizeModifer(double size)
 {
     m_sizeModifer = size;

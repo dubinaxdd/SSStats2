@@ -44,7 +44,7 @@ class UiBackend : public QObject
     Q_PROPERTY(QString ssStatsVersion MEMBER m_ssStatsVersion CONSTANT )
 
     Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
-    Q_PROPERTY(double sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
+    Q_PROPERTY(double sizeModifer READ getSizeModifer NOTIFY sizeModiferChanged)
 
     Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel CONSTANT)
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel CONSTANT)
@@ -200,6 +200,8 @@ public:
 
     bool legacyOverlayVisible() const;
     void setLegacyOverlayVisible(bool newLegacyOverlayVisible);
+
+    double getSizeModifer();
 
 signals:
     void sendSwitchNoFogHoverState(bool);
