@@ -9,7 +9,7 @@ Window {
     id: window
     width: 640
     height: 480
-    visible: _uiBackend.settingsPageModel.overlayVisible
+    visible: _uiBackend.settingsPageModel.overlayVisible && _uiBackend.legacyOverlayVisible
     title: "DowStatsClientOverlay"
     color: "#00000000"
     visibility: Window.Maximized
@@ -19,14 +19,20 @@ Window {
     property real mouseAreaWidth
     property real mouseAreaHeight
 
-    Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
+    Component.onCompleted: {
+        if (window.visible)
+            GlobalMouseProvider.rootElement = windowRectangle
+
+    }
+
+    onVisibleChanged: GlobalMouseProvider.rootElement = windowRectangle
 
     onVisibilityChanged: {
         patyStatistic.resetScrollView();
     }
 
     Connections{
-        target: _uiBackend
+        target: window.visible ? _uiBackend : null
 
         function onSendMouseWheel(delta){
             GlobalMouseProvider.sendMouseWheel(delta);
@@ -62,11 +68,11 @@ Window {
                // window.setWidth(mouseAreaWidth);
                // window.setHeight(mouseAreaHeight);
                // window.showMaximized();
-                window.flags =  Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |Qt.Popup | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground /*| Qt.WA_MSWindowsUseDirect3D*/ | Qt.WA_ShowWithoutActivating
+                window.flags =  Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |Qt.Popup | Qt.Window | Qt.WindowTransparentForInput | Qt.WA_TranslucentBackground | Qt.WA_ShowWithoutActivating
             }
             else
             {
-                window.flags =  Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground /*| Qt.WA_MSWindowsUseDirect3D*/ | Qt.WA_ShowWithoutActivating | Qt.WA_WState_Hidden
+                window.flags =  Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput | Qt.WA_TranslucentBackground | Qt.WA_ShowWithoutActivating | Qt.WA_WState_Hidden
                 window.setWidth(0);
                 window.setHeight(0);
             }
@@ -74,7 +80,7 @@ Window {
 
         function onWindowedModeSeted()
         {
-            window.flags =  /*Qt.WindowStaysOnTopHint |*/ Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput /*| Qt.WindowFullScreen*/ | Qt.WA_TranslucentBackground /*| Qt.WA_MSWindowsUseDirect3D*/ | Qt.WA_ShowWithoutActivating
+            window.flags =  Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput | Qt.WA_TranslucentBackground | Qt.WA_ShowWithoutActivating
         }
     }
 

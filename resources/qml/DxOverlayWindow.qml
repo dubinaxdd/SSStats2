@@ -9,20 +9,24 @@ Item {
     id: window
     width: 640
     height: 480
-    //visible: _uiBackend.settingsPageModel.overlayVisible
-    //title: "DowStatsClientOverlay"
-    //color: "#00000000"
-    //visibility: Window.Maximized
 
     property real xMousePos
     property real yMousePos
     property real mouseAreaWidth
     property real mouseAreaHeight
+    visible: _uiBackend.settingsPageModel.overlayVisible && !_uiBackend.legacyOverlayVisible
 
-    Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
+    Component.onCompleted: {
+        if (window.visible)
+            GlobalMouseProvider.rootElement = windowRectangle
+    }
+
+    onVisibleChanged: GlobalMouseProvider.rootElement = windowRectangle
+
+    //Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
 
     Connections{
-        target: _uiBackend
+        target: window.visible ? _uiBackend : null
 
         function onSendMouseWheel(delta){
             GlobalMouseProvider.sendMouseWheel(delta);
@@ -44,8 +48,10 @@ Item {
                 yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
             }
 
-            xMousePos /= _uiBackend.devicePixelRatio
-            yMousePos /= _uiBackend.devicePixelRatio
+            //xMousePos /= _uiBackend.devicePixelRatio
+            //yMousePos /= _uiBackend.devicePixelRatio
+            //mouseAreaWidth *= _uiBackend.devicePixelRatio
+            //mouseAreaHeight *= _uiBackend.devicePixelRatio
 
             GlobalMouseProvider.mouseX = xMousePos;
             GlobalMouseProvider.mouseY = yMousePos;
@@ -62,7 +68,7 @@ Item {
         id: windowRectangle
         color: "#00000000"
         anchors.fill: parent
-        //visible: _uiBackend.showClient
+        visible: _uiBackend.showClient
 
         Rectangle {
             id: backgroundRectangle

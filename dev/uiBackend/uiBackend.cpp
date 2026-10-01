@@ -172,6 +172,19 @@ void UiBackend::gameOver()
     startingMission(GameMissionState::gameOver);
 }
 
+bool UiBackend::legacyOverlayVisible() const
+{
+    return m_legacyOverlayVisible;
+}
+
+void UiBackend::setLegacyOverlayVisible(bool newLegacyOverlayVisivble)
+{
+    if (m_legacyOverlayVisible == newLegacyOverlayVisivble)
+        return;
+    m_legacyOverlayVisible = newLegacyOverlayVisivble;
+    emit legacyOverlayVisibleChanged();
+}
+
 bool UiBackend::gameLoadScreenStatisticVisible() const
 {
     return m_gameLoadScreenStatisticVisible;
