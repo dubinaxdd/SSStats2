@@ -718,9 +718,9 @@ HRESULT WINAPI HookedPresent(
             }
 
             // На всякий случай гасим шейдеры и перед квадратом, если функция DrawRedSquare их не сбрасывает
-            device->SetVertexShader(nullptr);
-            device->SetPixelShader(nullptr);
-            DrawRedSquare(device);
+            //device->SetVertexShader(nullptr);
+            //device->SetPixelShader(nullptr);
+            //DrawRedSquare(device);
 
             // 4. Закрываем сцену
             if (sceneOpenedByUs)
