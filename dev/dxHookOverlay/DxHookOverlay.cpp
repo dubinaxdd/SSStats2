@@ -36,17 +36,13 @@ struct SharedImage
     uint32_t height;
     uint32_t pitch;
     uint32_t format;
-
     uint64_t frame;
-
     volatile LONG bufferState[2];
-
     uint8_t pixels[2][MAX_IMAGE_SIZE];
 };
 
 HANDLE g_sharedMemory = nullptr;
 SharedImage* g_sharedImage = nullptr;
-
 
 bool IsValidImageSize(uint32_t width, uint32_t height)
 {
@@ -161,49 +157,33 @@ bool SendQImageToSharedMemory(const QImage& image)
     if (image.isNull())
         return false;
 
-    const uint32_t width =
-        static_cast<uint32_t>(image.width());
+    const uint32_t width = static_cast<uint32_t>(image.width());
+    const uint32_t height = static_cast<uint32_t>(image.height());
 
-    const uint32_t height =
-        static_cast<uint32_t>(image.height());
-
-    if (width == 0 ||
-        height == 0 ||
-        width > MAX_IMAGE_WIDTH ||
-        height > MAX_IMAGE_HEIGHT)
-    {
+    if (width == 0 || height == 0 || width > MAX_IMAGE_WIDTH || height > MAX_IMAGE_HEIGHT)
         return false;
-    }
 
     // Приводим изображение к RGBA8888.
-    const QImage converted =
-        image.convertToFormat(QImage::Format_RGBA8888);
+    const QImage converted = image.convertToFormat(QImage::Format_RGBA8888);
 
     if (converted.isNull())
         return false;
 
-    const uint8_t* src =
-        converted.constBits();
+    const uint8_t* src = converted.constBits();
 
-    const uint32_t srcPitch =
-        static_cast<uint32_t>(converted.bytesPerLine());
+    const uint32_t srcPitch = static_cast<uint32_t>(converted.bytesPerLine());
 
     // Ищем свободный buffer и атомарно
     // захватываем его:
     //
     // FREE -> WRITING
     //
-    // Если оба buffer заняты, просто
-    // пропускаем текущий кадр.
+    // Если оба buffer заняты, просто пропускаем текущий кадр.
     LONG writeBuffer = -1;
 
     for (LONG i = 0; i < 2; ++i)
     {
-        const LONG previousState =
-            InterlockedCompareExchange(
-                &g_sharedImage->bufferState[i],
-                BUFFER_WRITING,
-                BUFFER_FREE);
+        const LONG previousState = InterlockedCompareExchange(&g_sharedImage->bufferState[i], BUFFER_WRITING, BUFFER_FREE);
 
         if (previousState == BUFFER_FREE)
         {
@@ -213,42 +193,26 @@ bool SendQImageToSharedMemory(const QImage& image)
     }
 
     if (writeBuffer == -1)
-    {
-        // Оба buffer заняты.
-        // Не ждём и не блокируем игру.
         return false;
-    }
 
-    uint8_t* dst =
-        g_sharedImage->pixels[writeBuffer];
-
-    const uint32_t dstPitch =
-        g_sharedImage->pitch;
+    uint8_t* dst = g_sharedImage->pixels[writeBuffer];
+    const uint32_t dstPitch = g_sharedImage->pitch;
 
     // RGBA -> BGRA
     for (uint32_t y = 0; y < height; ++y)
     {
-        const uint8_t* srcRow =
-            src + static_cast<SIZE_T>(y) * srcPitch;
+        const uint8_t* srcRow = src + static_cast<SIZE_T>(y) * srcPitch;
 
-        uint8_t* dstRow =
-            dst + static_cast<SIZE_T>(y) * dstPitch;
+        uint8_t* dstRow = dst + static_cast<SIZE_T>(y) * dstPitch;
 
         for (uint32_t x = 0; x < width; ++x)
         {
             const uint32_t offset = x * 4;
 
-            const uint8_t r =
-                srcRow[offset + 0];
-
-            const uint8_t g =
-                srcRow[offset + 1];
-
-            const uint8_t b =
-                srcRow[offset + 2];
-
-            const uint8_t a =
-                srcRow[offset + 3];
+            const uint8_t r = srcRow[offset + 0];
+            const uint8_t g = srcRow[offset + 1];
+            const uint8_t b = srcRow[offset + 2];
+            const uint8_t a = srcRow[offset + 3];
 
             dstRow[offset + 0] = b;
             dstRow[offset + 1] = g;
@@ -265,10 +229,7 @@ bool SendQImageToSharedMemory(const QImage& image)
     //
     // Только после этого DLL имеет право
     // начать его читать.
-    InterlockedExchange(
-        &g_sharedImage->bufferState[writeBuffer],
-        BUFFER_READY);
-
+    InterlockedExchange(&g_sharedImage->bufferState[writeBuffer], BUFFER_READY);
     return true;
 }
 
@@ -280,24 +241,16 @@ bool RequestDLLUnload(DWORD processId)
     // Даём DLL немного времени создать event.
     for (int i = 0; i < 100; ++i)
     {
-        hEvent = OpenEventW(
-            EVENT_MODIFY_STATE,
-            FALSE,
-            L"Local\\DX9OverlayShutdown"
-            );
+        hEvent = OpenEventW(EVENT_MODIFY_STATE, FALSE, L"Local\\DX9OverlayShutdown");
 
         if (hEvent)
-        {
             break;
-        }
 
         Sleep(20);
     }
 
     if (!hEvent)
-    {
         return false;
-    }
 
     const BOOL result =
         SetEvent(hEvent);
@@ -305,9 +258,7 @@ bool RequestDLLUnload(DWORD processId)
     CloseHandle(hEvent);
 
     if (!result)
-    {
         return false;
-    }
 
     return true;
 }
@@ -363,8 +314,6 @@ void DxHookOverlay::cleanupOverlay()
     CleanupSharedImage();
 }
 
-
-
 DxHookOverlay::DxHookOverlay(GameController *gameController, UiBackend* uiBackend, QQmlApplicationEngine* engine, QObject* parent)
     : QObject(parent)
     , p_gameController(gameController)
@@ -400,36 +349,6 @@ DxHookOverlay::~DxHookOverlay()
     delete m_context;
     m_context = nullptr;
 }
-
-
-/*bool DxHookOverlay::initialize(int width, int height)
-{
-    m_width = width;
-    m_height = height;
-
-    if (!initializeOpenGL())
-        return false;
-
-    if (!initializeQml())
-        return false;
-
-    if (!initializeFramebuffer())
-        return false;
-
-    m_renderTimer = new QTimer(this);
-
-    connect(m_renderTimer, &QTimer::timeout, this, [this]()
-        {
-            render();
-        }
-    );
-
-    m_renderTimer->start(16); // примерно 60 FPS
-    //m_renderTimer->start(1000);
-
-    return true;
-}*/
-
 
 bool DxHookOverlay::initialize(int width, int height)
 {
@@ -569,7 +488,6 @@ bool DxHookOverlay::initializeQml()
     }
 
     m_root->setParentItem(m_window->contentItem());
-
     m_root->setWidth(m_width);
     m_root->setHeight(m_height);
 
@@ -629,14 +547,8 @@ bool DxHookOverlay::initializeFramebuffer()
 
 bool DxHookOverlay::render()
 {
-    if (!m_context ||
-        !m_surface ||
-        !m_window ||
-        !m_root ||
-        !m_fbo)
-    {
+    if (!m_context || !m_surface || !m_window || !m_root || !m_fbo)
         return false;
-    }
 
     if (!m_renderRequested)
         return true;
@@ -654,61 +566,33 @@ bool DxHookOverlay::render()
     m_fbo->bind();
 
     gl->glViewport(0, 0, m_width, m_height);
-
     gl->glDisable(GL_SCISSOR_TEST);
-
-    gl->glClearColor(
-        0.0f,
-        0.0f,
-        0.0f,
-        0.0f);
-
-    gl->glClear(
-        GL_COLOR_BUFFER_BIT |
-        GL_DEPTH_BUFFER_BIT |
-        GL_STENCIL_BUFFER_BIT);
+    gl->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
     m_renderControl.polishItems();
-
     m_renderControl.sync();
-
     m_renderControl.render();
 
     // QQuickRenderControl может изменить framebuffer.
     // Поэтому возвращаем наш FBO перед glReadPixels().
     m_fbo->bind();
 
-    QImage result(
-        m_width,
-        m_height,
-        QImage::Format_RGBA8888);
+    QImage result(m_width, m_height, QImage::Format_RGBA8888);
 
-    gl->glReadPixels(
-        0,
-        0,
-        m_width,
-        m_height,
-        GL_RGBA,
-        GL_UNSIGNED_BYTE,
-        result.bits());
+    gl->glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, result.bits());
 
     const GLenum glError = gl->glGetError();
 
     if (glError != GL_NO_ERROR)
     {
-        qWarning()
-        << "DxHookOverlay: glReadPixels error:"
-        << Qt::hex
-        << glError;
-
+        qWarning() << "DxHookOverlay: glReadPixels error:" << Qt::hex << glError;
         m_fbo->release();
         m_context->doneCurrent();
-
         return false;
     }
 
     m_image = result.mirrored(false, true);
-
     m_fbo->release();
 
     if (!SendQImageToSharedMemory(m_image))
@@ -795,13 +679,9 @@ void DxHookOverlay::runOverlay(bool gameLaunched)
     }
 
     if (InjectDLL(pid, dllPath))
-    {
         qDebug() << "Оверлей успешно внедрен!";
-    }
     else
-    {
         qWarning() << "Ошибка внедрения.";
-    }
 }
 
 
