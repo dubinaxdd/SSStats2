@@ -293,6 +293,13 @@ void DxHookOverlay::cleanupOverlay()
 
     // Удаляем QML окно
     if (m_window) {
+
+        if (m_root)
+        {
+            delete m_root;
+            m_root = nullptr;
+        }
+
         delete m_window;
         m_window = nullptr;
     }
