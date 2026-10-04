@@ -674,14 +674,15 @@ void DxHookOverlay::runOverlay(bool gameLaunched)
 
     if (pid == 0)
     {
-        qWarning() << "DxHookOverlay: game process not found";
+        qWarning(logWarning()) << "DxHookOverlay: game process not found";
         return;
     }
 
     if (InjectDLL(pid, dllPath))
-        qDebug() << "Оверлей успешно внедрен!";
+        qInfo(logInfo()) <<
+            "Overlay successfully injected.";
     else
-        qWarning() << "Ошибка внедрения.";
+        qWarning(logWarning()) << "Overlay ijection error.";
 }
 
 
