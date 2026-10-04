@@ -17,6 +17,15 @@
 
 namespace
 {
+
+enum BufferState : LONG
+{
+    BUFFER_FREE    = 0,
+    BUFFER_WRITING = 1,
+    BUFFER_READY   = 2,
+    BUFFER_READING = 3
+};
+
 constexpr SIZE_T STOLEN_BYTES = 18;
 
 constexpr wchar_t SHARED_IMAGE_NAME[] =
@@ -24,6 +33,15 @@ constexpr wchar_t SHARED_IMAGE_NAME[] =
 
 constexpr wchar_t SHUTDOWN_EVENT_NAME[] =
     L"Local\\DX9OverlayShutdown";
+
+
+constexpr uint32_t MAX_IMAGE_WIDTH = 3840;
+constexpr uint32_t MAX_IMAGE_HEIGHT = 2160;
+
+constexpr SIZE_T IMAGE_BUFFER_SIZE =
+    static_cast<SIZE_T>(MAX_IMAGE_WIDTH) *
+    static_cast<SIZE_T>(MAX_IMAGE_HEIGHT) *
+    4;
 
 // ========================================================
 // Types
@@ -46,11 +64,10 @@ struct SharedImage
 
     uint64_t frame;
 
-    LONG activeBuffer;
+    volatile LONG bufferState[2];
 
-    unsigned char pixels[3840 * 2160 * 4 * 2];
+    uint8_t pixels[2][IMAGE_BUFFER_SIZE];
 };
-
 // ========================================================
 // Globals
 // ========================================================
@@ -241,83 +258,6 @@ void* ResolveJump(void* address)
 // Trampoline
 // ========================================================
 
-/*void* CreateTrampoline(
-    void* target,
-    SIZE_T stolenBytes
-    )
-{
-    if (!target || stolenBytes < 14)
-    {
-        return nullptr;
-    }
-
-    constexpr SIZE_T TRAMPOLINE_SIZE = 64;
-
-    auto* trampoline =
-        reinterpret_cast<uint8_t*>(
-            VirtualAlloc(
-                nullptr,
-                TRAMPOLINE_SIZE,
-                MEM_COMMIT | MEM_RESERVE,
-                PAGE_EXECUTE_READWRITE
-                )
-            );
-
-    if (!trampoline)
-    {
-        return nullptr;
-    }
-
-    std::memcpy(
-        trampoline,
-        target,
-        stolenBytes
-        );
-
-    auto* jumpBack =
-        trampoline + stolenBytes;
-
-    uint8_t patch[14]{};
-
-    // mov rax, target + stolenBytes
-    patch[0] = 0x48;
-    patch[1] = 0xB8;
-
-    std::uint64_t returnAddress =
-        reinterpret_cast<std::uint64_t>(
-            reinterpret_cast<uint8_t*>(target)
-            + stolenBytes
-            );
-
-    std::memcpy(
-        &patch[2],
-        &returnAddress,
-        sizeof(returnAddress)
-        );
-
-    // jmp rax
-    patch[10] = 0xFF;
-    patch[11] = 0xE0;
-
-    patch[12] = 0x90;
-    patch[13] = 0x90;
-
-    std::memcpy(
-        jumpBack,
-        patch,
-        sizeof(patch)
-        );
-
-    FlushInstructionCache(
-        GetCurrentProcess(),
-        trampoline,
-        TRAMPOLINE_SIZE
-        );
-
-    return trampoline;
-}*/
-
-
 void* CreateTrampoline(void* target, SIZE_T stolenBytes)
 {
     if (!target || stolenBytes < 14)
@@ -411,47 +351,36 @@ void* CreateTrampoline(void* target, SIZE_T stolenBytes)
 
 bool OpenSharedImage()
 {
-    std::lock_guard<std::mutex> lock(
-        g_sharedImageMutex
-        );
-
     if (g_sharedImage)
-    {
         return true;
-    }
 
     g_mapping = OpenFileMappingW(
-        FILE_MAP_READ,
+        FILE_MAP_READ | FILE_MAP_WRITE,
         FALSE,
-        SHARED_IMAGE_NAME
-        );
+        SHARED_IMAGE_NAME);
 
     if (!g_mapping)
-    {
         return false;
-    }
 
     g_sharedImage =
         reinterpret_cast<SharedImage*>(
             MapViewOfFile(
                 g_mapping,
-                FILE_MAP_READ,
+                FILE_MAP_READ | FILE_MAP_WRITE,
                 0,
                 0,
-                sizeof(SharedImage)
-                )
-            );
+                sizeof(SharedImage)));
 
     if (!g_sharedImage)
     {
         CloseHandle(g_mapping);
         g_mapping = nullptr;
-
         return false;
     }
 
     return true;
 }
+
 
 void CloseSharedImage()
 {
@@ -544,24 +473,8 @@ bool CreateImageTexture(
 
 bool UpdateTextureFromSharedMemory()
 {
-    if (!g_sharedImage ||
-        !g_texture)
-    {
+    if (!g_sharedImage || !g_texture)
         return false;
-    }
-
-    D3DLOCKED_RECT locked{};
-
-    if (FAILED(
-            g_texture->LockRect(
-                0,
-                &locked,
-                nullptr,
-                D3DLOCK_DISCARD
-                )))
-    {
-        return false;
-    }
 
     const uint32_t width =
         g_sharedImage->width;
@@ -574,34 +487,91 @@ bool UpdateTextureFromSharedMemory()
 
     if (width == 0 ||
         height == 0 ||
-        width > 3840 ||
-        height > 2160)
+        width > MAX_IMAGE_WIDTH ||
+        height > MAX_IMAGE_HEIGHT ||
+        pitch < width * 4)
     {
-        g_texture->UnlockRect(0);
+        return false;
+    }
+
+    // Ищем готовый buffer.
+    //
+    // READY -> READING
+    //
+    // Если другой поток/процесс уже забрал его,
+    // CompareExchange вернёт не BUFFER_READY
+    // и мы попробуем следующий.
+    LONG readBuffer = -1;
+
+    for (LONG i = 0; i < 2; ++i)
+    {
+        const LONG previousState =
+            InterlockedCompareExchange(
+                &g_sharedImage->bufferState[i],
+                BUFFER_READING,
+                BUFFER_READY);
+
+        if (previousState == BUFFER_READY)
+        {
+            readBuffer = i;
+            break;
+        }
+    }
+
+    // Нет готового нового кадра.
+    if (readBuffer == -1)
+        return false;
+
+    D3DLOCKED_RECT locked{};
+
+    if (FAILED(g_texture->LockRect(
+            0,
+            &locked,
+            nullptr,
+            D3DLOCK_DISCARD)))
+    {
+        // Не смогли скопировать.
+        // Обязательно освобождаем buffer.
+        InterlockedExchange(
+            &g_sharedImage->bufferState[readBuffer],
+            BUFFER_FREE);
+
         return false;
     }
 
     const uint8_t* source =
-        g_sharedImage->pixels;
+        g_sharedImage->pixels[readBuffer];
 
     auto* destination =
-        reinterpret_cast<uint8_t*>(
-            locked.pBits
-            );
+        reinterpret_cast<uint8_t*>(locked.pBits);
 
     for (uint32_t y = 0; y < height; ++y)
     {
         std::memcpy(
-            destination + y * locked.Pitch,
-            source + y * pitch,
-            width * 4
-            );
+            destination +
+                static_cast<SIZE_T>(y) * locked.Pitch,
+
+            source +
+                static_cast<SIZE_T>(y) * pitch,
+
+            static_cast<SIZE_T>(width) * 4);
     }
 
     g_texture->UnlockRect(0);
 
+    // Мы полностью закончили читать buffer.
+    //
+    // READING -> FREE
+    //
+    // Теперь Producer снова может использовать
+    // этот buffer.
+    InterlockedExchange(
+        &g_sharedImage->bufferState[readBuffer],
+        BUFFER_FREE);
+
     return true;
 }
+
 
 // ========================================================
 // Drawing
@@ -1161,13 +1131,6 @@ DWORD WINAPI ShutdownThread(
 
     HMODULE module = g_module;
 
-    // Здесь НЕЛЬЗЯ делать обычный return после FreeLibrary.
-    //
-    // FreeLibraryAndExitThread() атомарно уменьшает
-    // refcount DLL и завершает этот thread.
-    //
-    // Поэтому после этой функции управление обратно
-    // в код DLL не возвращается.
     if (module)
     {
         FreeLibraryAndExitThread(
@@ -1238,9 +1201,6 @@ bool StartDX9HookShutdownThread()
         return false;
     }
 
-    // Handle shutdown thread нам больше не нужен.
-    //
-    // Сам thread продолжает работать.
     CloseHandle(g_shutdownThread);
     g_shutdownThread = nullptr;
 

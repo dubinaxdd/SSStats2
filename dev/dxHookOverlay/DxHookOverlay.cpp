@@ -13,6 +13,15 @@
 
 namespace
 {
+
+enum BufferState : LONG
+{
+    BUFFER_FREE    = 0,
+    BUFFER_WRITING = 1,
+    BUFFER_READY   = 2,
+    BUFFER_READING = 3
+};
+
 constexpr wchar_t SHARED_MEMORY_NAME[] = L"Local\\DX9OverlayImage";
 
 // Максимальный поддерживаемый размер.
@@ -27,11 +36,13 @@ struct SharedImage
     uint32_t height;
     uint32_t pitch;
     uint32_t format;
+
     uint64_t frame;
-    volatile LONG activeBuffer;
+
+    volatile LONG bufferState[2];
+
     uint8_t pixels[2][MAX_IMAGE_SIZE];
 };
-
 
 HANDLE g_sharedMemory = nullptr;
 SharedImage* g_sharedImage = nullptr;
@@ -57,7 +68,7 @@ void CleanupSharedImage()
     }
 }
 
-bool CreateSharedImage(uint32_t width, uint32_t height)
+/*bool CreateSharedImage(uint32_t width, uint32_t height)
 {
     if (!IsValidImageSize(width, height))
     {
@@ -129,6 +140,7 @@ bool CreateSharedImage(uint32_t width, uint32_t height)
         g_sharedImage->format = 1;
         g_sharedImage->frame = 0;
         g_sharedImage->activeBuffer = 0;
+        //g_sharedImage->readBuffer = -1;
 
         std::memset(g_sharedImage->pixels, 0, sizeof(g_sharedImage->pixels));
     }
@@ -150,64 +162,189 @@ bool CreateSharedImage(uint32_t width, uint32_t height)
     }
 
     return true;
+}*/
+
+bool CreateSharedImage(uint32_t width, uint32_t height)
+{
+    if (width == 0 ||
+        height == 0 ||
+        width > MAX_IMAGE_WIDTH ||
+        height > MAX_IMAGE_HEIGHT)
+    {
+        return false;
+    }
+
+    // Создаём или открываем shared memory.
+    g_sharedMemory = CreateFileMappingW(
+        INVALID_HANDLE_VALUE,
+        nullptr,
+        PAGE_READWRITE,
+        0,
+        static_cast<DWORD>(sizeof(SharedImage)),
+        SHARED_MEMORY_NAME);
+
+    if (!g_sharedMemory)
+        return false;
+
+    const DWORD mappingError = GetLastError();
+
+    g_sharedImage =
+        reinterpret_cast<SharedImage*>(
+            MapViewOfFile(
+                g_sharedMemory,
+                FILE_MAP_ALL_ACCESS,
+                0,
+                0,
+                sizeof(SharedImage)));
+
+    if (!g_sharedImage)
+    {
+        CloseHandle(g_sharedMemory);
+        g_sharedMemory = nullptr;
+        return false;
+    }
+
+    // Если mapping уже существовал, проверяем его размеры.
+    if (mappingError == ERROR_ALREADY_EXISTS)
+    {
+        if (g_sharedImage->width != width ||
+            g_sharedImage->height != height ||
+            g_sharedImage->pitch != width * BYTES_PER_PIXEL ||
+            g_sharedImage->format != 1)
+        {
+            UnmapViewOfFile(g_sharedImage);
+            g_sharedImage = nullptr;
+
+            CloseHandle(g_sharedMemory);
+            g_sharedMemory = nullptr;
+
+            return false;
+        }
+
+        return true;
+    }
+
+    // Инициализация нового shared memory.
+    g_sharedImage->width = width;
+    g_sharedImage->height = height;
+    g_sharedImage->pitch = width * BYTES_PER_PIXEL;
+    g_sharedImage->format = 1; // BGRA8
+    g_sharedImage->frame = 0;
+
+    // Оба буфера изначально свободны.
+    InterlockedExchange(
+        &g_sharedImage->bufferState[0],
+        BUFFER_FREE);
+
+    InterlockedExchange(
+        &g_sharedImage->bufferState[1],
+        BUFFER_FREE);
+
+    // Очищаем оба буфера.
+    std::memset(
+        g_sharedImage->pixels,
+        0,
+        sizeof(g_sharedImage->pixels));
+
+    return true;
 }
 
 bool SendQImageToSharedMemory(const QImage& image)
 {
-    if (image.isNull())
-    {
-        qWarning() << "SendQImageToSharedMemory: image is null";
-        return false;
-    }
-
-    const uint32_t width = static_cast<uint32_t>(image.width());
-    const uint32_t height = static_cast<uint32_t>(image.height());
-
-    if (!IsValidImageSize(width, height))
-    {
-        qWarning() << "SendQImageToSharedMemory: invalid size:" << width << "x" << height;
-        return false;
-    }
-
     if (!g_sharedImage)
-    {
-        if (!CreateSharedImage(width, height))
-            return false;
-    }
+        return false;
 
-    if (g_sharedImage->width != width || g_sharedImage->height != height)
-    {
-        qWarning()
-        << "SendQImageToSharedMemory: size mismatch:"
-        << "image =" << width << "x" << height
-        << "shared =" << g_sharedImage->width
-        << "x" << g_sharedImage->height;
+    if (image.isNull())
+        return false;
 
+    const uint32_t width =
+        static_cast<uint32_t>(image.width());
+
+    const uint32_t height =
+        static_cast<uint32_t>(image.height());
+
+    if (width == 0 ||
+        height == 0 ||
+        width > MAX_IMAGE_WIDTH ||
+        height > MAX_IMAGE_HEIGHT)
+    {
         return false;
     }
 
-    QImage converted = image.convertToFormat(QImage::Format_RGBA8888);
-    const uint8_t* src = converted.constBits();
-    const uint32_t srcPitch = static_cast<uint32_t>(converted.bytesPerLine());
+    // Приводим изображение к RGBA8888.
+    const QImage converted =
+        image.convertToFormat(QImage::Format_RGBA8888);
 
-    const LONG active = InterlockedCompareExchange(&g_sharedImage->activeBuffer, 0, 0);
-    const LONG writeBuffer = (active == 0) ? 1 : 0;
+    if (converted.isNull())
+        return false;
 
-    uint8_t* dst = g_sharedImage->pixels[writeBuffer];
-    const uint32_t dstPitch = g_sharedImage->pitch;
+    const uint8_t* src =
+        converted.constBits();
 
+    const uint32_t srcPitch =
+        static_cast<uint32_t>(converted.bytesPerLine());
+
+    // Ищем свободный buffer и атомарно
+    // захватываем его:
+    //
+    // FREE -> WRITING
+    //
+    // Если оба buffer заняты, просто
+    // пропускаем текущий кадр.
+    LONG writeBuffer = -1;
+
+    for (LONG i = 0; i < 2; ++i)
+    {
+        const LONG previousState =
+            InterlockedCompareExchange(
+                &g_sharedImage->bufferState[i],
+                BUFFER_WRITING,
+                BUFFER_FREE);
+
+        if (previousState == BUFFER_FREE)
+        {
+            writeBuffer = i;
+            break;
+        }
+    }
+
+    if (writeBuffer == -1)
+    {
+        // Оба buffer заняты.
+        // Не ждём и не блокируем игру.
+        return false;
+    }
+
+    uint8_t* dst =
+        g_sharedImage->pixels[writeBuffer];
+
+    const uint32_t dstPitch =
+        g_sharedImage->pitch;
+
+    // RGBA -> BGRA
     for (uint32_t y = 0; y < height; ++y)
     {
-        const uint8_t* srcRow = src + y * srcPitch;
-        uint8_t* dstRow = dst + y * dstPitch;
+        const uint8_t* srcRow =
+            src + static_cast<SIZE_T>(y) * srcPitch;
+
+        uint8_t* dstRow =
+            dst + static_cast<SIZE_T>(y) * dstPitch;
 
         for (uint32_t x = 0; x < width; ++x)
         {
             const uint32_t offset = x * 4;
-            const uint8_t r = srcRow[offset + 0];
-            const uint8_t g = srcRow[offset + 1];
-            const uint8_t b = srcRow[offset + 2];
-            const uint8_t a = srcRow[offset + 3];
+
+            const uint8_t r =
+                srcRow[offset + 0];
+
+            const uint8_t g =
+                srcRow[offset + 1];
+
+            const uint8_t b =
+                srcRow[offset + 2];
+
+            const uint8_t a =
+                srcRow[offset + 3];
 
             dstRow[offset + 0] = b;
             dstRow[offset + 1] = g;
@@ -217,10 +354,20 @@ bool SendQImageToSharedMemory(const QImage& image)
     }
 
     ++g_sharedImage->frame;
-    InterlockedExchange(&g_sharedImage->activeBuffer, writeBuffer);
+
+    // Кадр полностью записан.
+    //
+    // WRITING -> READY
+    //
+    // Только после этого DLL имеет право
+    // начать его читать.
+    InterlockedExchange(
+        &g_sharedImage->bufferState[writeBuffer],
+        BUFFER_READY);
 
     return true;
 }
+
 
 bool RequestDLLUnload(DWORD processId)
 {
@@ -597,7 +744,8 @@ bool DxHookOverlay::render()
 
     if (!SendQImageToSharedMemory(m_image))
     {
-        qWarning()<< "DxHookOverlay: failed to send frame";
+        //TODO: На самом деле нам пофигу, если либе внутри игры не удалось получить самый свежий кадр.
+        //qWarning()<< "DxHookOverlay: failed to send frame";
         m_context->doneCurrent();
         return false;
     }
