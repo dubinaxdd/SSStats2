@@ -36,11 +36,15 @@ constexpr uint32_t MAX_IMAGE_HEIGHT = 2160;
 
 constexpr SIZE_T IMAGE_BUFFER_SIZE = static_cast<SIZE_T>(MAX_IMAGE_WIDTH) * static_cast<SIZE_T>(MAX_IMAGE_HEIGHT) * 4;
 
+
+
+
 // ========================================================
 // Types
 // ========================================================
 
 using PresentFn = HRESULT(WINAPI*)(IDirect3DDevice9*, const RECT*, const RECT*, HWND, const RGNDATA*);
+using ResetFn = HRESULT(WINAPI*)(IDirect3DDevice9*, D3DPRESENT_PARAMETERS*);
 
 struct SharedImage
 {
@@ -62,6 +66,11 @@ PresentFn OriginalPresent = nullptr;
 
 void* PresentAddress = nullptr;
 void* Trampoline = nullptr;
+
+ResetFn OriginalReset = nullptr;
+
+void* ResetAddress = nullptr;
+void* ResetTrampoline = nullptr;
 
 IDirect3DTexture9* g_texture = nullptr;
 
@@ -85,6 +94,9 @@ HANDLE g_shutdownThread = nullptr;
 
 // Оригинальные байты Present.
 uint8_t g_originalBytes[STOLEN_BYTES]{};
+
+// Оригинальные байты Reset.
+uint8_t g_resetOriginalBytes[STOLEN_BYTES]{};
 
 // ========================================================
 // Forward declarations
@@ -502,6 +514,30 @@ void DrawRedSquare(IDirect3DDevice9* device)
     device->DrawPrimitiveUP(D3DPT_TRIANGLEFAN, 2, vertices,sizeof(Vertex));
 }
 
+HRESULT WINAPI HookedReset(
+    IDirect3DDevice9* device,
+    D3DPRESENT_PARAMETERS* presentationParameters)
+{
+    // ----------------------------------------------------
+    // Перед Reset обязательно освобождаем все ресурсы
+    // из D3DPOOL_DEFAULT.
+    // ----------------------------------------------------
+
+    ReleaseTexture();
+
+    HRESULT result = D3DERR_INVALIDCALL;
+
+    if (OriginalReset)
+    {
+        result = OriginalReset(
+            device,
+            presentationParameters);
+    }
+
+    return result;
+}
+
+
 // ========================================================
 // Hooked Present
 // ========================================================
@@ -575,7 +611,26 @@ HRESULT WINAPI HookedPresent(
     return result;
 }
 
+bool RestoreOriginalReset()
+{
+    if (!ResetAddress)
+        return true;
 
+    DWORD oldProtection = 0;
+
+    if (!VirtualProtect(ResetAddress, STOLEN_BYTES, PAGE_EXECUTE_READWRITE, &oldProtection))
+        return false;
+
+    std::memcpy(ResetAddress, g_resetOriginalBytes, STOLEN_BYTES);
+
+    FlushInstructionCache(GetCurrentProcess(), ResetAddress, STOLEN_BYTES);
+
+    DWORD dummy = 0;
+
+    VirtualProtect(ResetAddress, STOLEN_BYTES, oldProtection, &dummy);
+
+    return true;
+}
 
 // ========================================================
 // Restore original Present
@@ -653,7 +708,6 @@ IDirect3DDevice9* CreateDummyDevice(IDirect3D9** outD3D)
 // ========================================================
 // Install hook
 // ========================================================
-
 bool InstallHook()
 {
     IDirect3D9* d3d = nullptr;
@@ -663,42 +717,119 @@ bool InstallHook()
     if (!dummyDevice)
         return false;
 
-    void** vtable =  *reinterpret_cast<void***>(dummyDevice);
+    void** vtable = *reinterpret_cast<void***>(dummyDevice);
 
+    // IDirect3DDevice9::Reset = index 16
     // IDirect3DDevice9::Present = index 17
+    void* reset = vtable[16];
     void* present = vtable[17];
 
+    ResetAddress = ResolveJump(reset);
     PresentAddress = ResolveJump(present);
 
-    if (!PresentAddress)
+    if (!ResetAddress || !PresentAddress)
     {
         dummyDevice->Release();
         d3d->Release();
+
+        ResetAddress = nullptr;
+        PresentAddress = nullptr;
 
         return false;
     }
 
     // Сохраняем оригинальные байты ДО патча.
-    std::memcpy(g_originalBytes, PresentAddress, STOLEN_BYTES);
+    std::memcpy(
+        g_resetOriginalBytes,
+        ResetAddress,
+        STOLEN_BYTES);
 
-    Trampoline = CreateTrampoline(PresentAddress, STOLEN_BYTES);
+    std::memcpy(
+        g_originalBytes,
+        PresentAddress,
+        STOLEN_BYTES);
+
+    // ----------------------------------------------------
+    // Reset trampoline
+    // ----------------------------------------------------
+
+    ResetTrampoline =
+        CreateTrampoline(
+            ResetAddress,
+            STOLEN_BYTES);
+
+    if (!ResetTrampoline)
+    {
+        dummyDevice->Release();
+        d3d->Release();
+
+        ResetAddress = nullptr;
+        PresentAddress = nullptr;
+
+        return false;
+    }
+
+    OriginalReset =
+        reinterpret_cast<ResetFn>(
+            ResetTrampoline);
+
+    // ----------------------------------------------------
+    // Present trampoline
+    // ----------------------------------------------------
+
+    Trampoline =
+        CreateTrampoline(
+            PresentAddress,
+            STOLEN_BYTES);
 
     if (!Trampoline)
     {
+        VirtualFree(
+            ResetTrampoline,
+            0,
+            MEM_RELEASE);
+
+        ResetTrampoline = nullptr;
+        OriginalReset = nullptr;
+
         dummyDevice->Release();
         d3d->Release();
+
+        ResetAddress = nullptr;
         PresentAddress = nullptr;
+
         return false;
     }
 
-    OriginalPresent = reinterpret_cast<PresentFn>(Trampoline);
+    OriginalPresent =
+        reinterpret_cast<PresentFn>(
+            Trampoline);
 
-    if (!WriteAbsoluteJump(PresentAddress, reinterpret_cast<void*>(&HookedPresent)))
+    // ----------------------------------------------------
+    // Hook Reset
+    // ----------------------------------------------------
+
+    if (!WriteAbsoluteJump(
+            ResetAddress,
+            reinterpret_cast<void*>(&HookedReset)))
     {
-        VirtualFree(Trampoline, 0, MEM_RELEASE);
+        VirtualFree(
+            ResetTrampoline,
+            0,
+            MEM_RELEASE);
 
+        VirtualFree(
+            Trampoline,
+            0,
+            MEM_RELEASE);
+
+        ResetTrampoline = nullptr;
         Trampoline = nullptr;
+
+        OriginalReset = nullptr;
         OriginalPresent = nullptr;
+
+        ResetAddress = nullptr;
         PresentAddress = nullptr;
 
         dummyDevice->Release();
@@ -707,7 +838,45 @@ bool InstallHook()
         return false;
     }
 
-    g_hookInstalled.store(true, std::memory_order_release);
+    // ----------------------------------------------------
+    // Hook Present
+    // ----------------------------------------------------
+
+    if (!WriteAbsoluteJump(
+            PresentAddress,
+            reinterpret_cast<void*>(&HookedPresent)))
+    {
+        // Восстанавливаем Reset, поскольку он уже пропатчен.
+        RestoreOriginalReset();
+
+        VirtualFree(
+            ResetTrampoline,
+            0,
+            MEM_RELEASE);
+
+        VirtualFree(
+            Trampoline,
+            0,
+            MEM_RELEASE);
+
+        ResetTrampoline = nullptr;
+        Trampoline = nullptr;
+
+        OriginalReset = nullptr;
+        OriginalPresent = nullptr;
+
+        ResetAddress = nullptr;
+        PresentAddress = nullptr;
+
+        dummyDevice->Release();
+        d3d->Release();
+
+        return false;
+    }
+
+    g_hookInstalled.store(
+        true,
+        std::memory_order_release);
 
     dummyDevice->Release();
     d3d->Release();
@@ -715,22 +884,29 @@ bool InstallHook()
     return true;
 }
 
+
 // ========================================================
 // Shutdown
 // ========================================================
 
 void ShutdownDX9HookInternal()
 {
-    g_shutdownRequested.store(true, std::memory_order_release);
+    g_shutdownRequested.store(
+        true,
+        std::memory_order_release);
 
     // ----------------------------------------------------
-    // 1. Restore original Present.
+    // 1. Restore original Reset and Present.
     // ----------------------------------------------------
 
     if (g_hookInstalled.load(std::memory_order_acquire))
     {
+        RestoreOriginalReset();
         RestoreOriginalPresent();
-        g_hookInstalled.store(false, std::memory_order_release);
+
+        g_hookInstalled.store(
+            false,
+            std::memory_order_release);
     }
 
     // ----------------------------------------------------
@@ -740,7 +916,9 @@ void ShutdownDX9HookInternal()
 
     for (;;)
     {
-        LONG active = g_activePresentCalls.load(std::memory_order_acquire);
+        LONG active =
+            g_activePresentCalls.load(
+                std::memory_order_acquire);
 
         if (active == 0)
             break;
@@ -763,13 +941,31 @@ void ShutdownDX9HookInternal()
 
     if (Trampoline)
     {
-        VirtualFree(Trampoline, 0, MEM_RELEASE);
+        VirtualFree(
+            Trampoline,
+            0,
+            MEM_RELEASE);
+
         Trampoline = nullptr;
+    }
+
+    if (ResetTrampoline)
+    {
+        VirtualFree(
+            ResetTrampoline,
+            0,
+            MEM_RELEASE);
+
+        ResetTrampoline = nullptr;
     }
 
     OriginalPresent = nullptr;
     PresentAddress = nullptr;
+
+    OriginalReset = nullptr;
+    ResetAddress = nullptr;
 }
+
 
 // ========================================================
 // Shutdown thread
