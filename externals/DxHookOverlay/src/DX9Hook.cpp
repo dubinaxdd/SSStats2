@@ -236,11 +236,12 @@ void* ResolveJump(void* address)
     return address;
 }
 
+
 // ========================================================
 // Trampoline
 // ========================================================
 
-void* CreateTrampoline(
+/*void* CreateTrampoline(
     void* target,
     SIZE_T stolenBytes
     )
@@ -314,7 +315,95 @@ void* CreateTrampoline(
         );
 
     return trampoline;
+}*/
+
+
+void* CreateTrampoline(void* target, SIZE_T stolenBytes)
+{
+    if (!target || stolenBytes < 14)
+        return nullptr;
+
+    uint8_t* src = reinterpret_cast<uint8_t*>(target);
+
+    void* trampoline =
+        VirtualAlloc(
+            nullptr,
+            64,
+            MEM_COMMIT | MEM_RESERVE,
+            PAGE_EXECUTE_READWRITE);
+
+    if (!trampoline)
+        return nullptr;
+
+    uint64_t destination = 0;
+    bool isThunk = false;
+
+    // E9 rel32
+    if (src[0] == 0xE9)
+    {
+        int32_t rel = 0;
+        std::memcpy(&rel, src + 1, sizeof(rel));
+
+        destination =
+            reinterpret_cast<uint64_t>(src + 5) +
+            static_cast<int64_t>(rel);
+
+        isThunk = true;
+    }
+
+    // FF 25 [RIP+rel32]
+    else if (src[0] == 0xFF && src[1] == 0x25)
+    {
+        int32_t rel = 0;
+        std::memcpy(&rel, src + 2, sizeof(rel));
+
+        uint8_t* pointerLocation =
+            src + 6 + static_cast<int64_t>(rel);
+
+        std::memcpy(
+            &destination,
+            pointerLocation,
+            sizeof(destination));
+
+        isThunk = true;
+    }
+
+    if (isThunk)
+    {
+        auto* out =
+            reinterpret_cast<uint8_t*>(trampoline);
+
+        // mov rax, destination
+        out[0] = 0x48;
+        out[1] = 0xB8;
+
+        std::memcpy(
+            out + 2,
+            &destination,
+            sizeof(destination));
+
+        // jmp rax
+        out[10] = 0xFF;
+        out[11] = 0xE0;
+
+        // NOP
+        out[12] = 0x90;
+        out[13] = 0x90;
+
+        FlushInstructionCache(
+            GetCurrentProcess(),
+            trampoline,
+            14);
+
+        return trampoline;
+    }
+
+    // Пока НЕ используем memcpy для произвольного тела функции.
+    VirtualFree(trampoline, 0, MEM_RELEASE);
+
+    return nullptr;
 }
+
 
 // ========================================================
 // Shared memory
@@ -886,8 +975,7 @@ bool InstallHook()
     void* present =
         vtable[17];
 
-    PresentAddress =
-        ResolveJump(present);
+    PresentAddress = ResolveJump(present);
 
     if (!PresentAddress)
     {
@@ -950,6 +1038,7 @@ bool InstallHook()
     g_hookInstalled.store(
         true,
         std::memory_order_release
+
         );
 
     dummyDevice->Release();
