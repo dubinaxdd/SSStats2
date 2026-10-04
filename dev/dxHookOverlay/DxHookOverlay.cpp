@@ -68,102 +68,6 @@ void CleanupSharedImage()
     }
 }
 
-/*bool CreateSharedImage(uint32_t width, uint32_t height)
-{
-    if (!IsValidImageSize(width, height))
-    {
-        qWarning() << "Invalid shared image size:"<< width << "x" << height;
-        return false;
-    }
-
-    if (g_sharedImage)
-    {
-        if (g_sharedImage->width != width || g_sharedImage->height != height)
-        {
-            qWarning()
-            << "Shared memory size mismatch:"
-            << "existing ="
-            << g_sharedImage->width
-            << "x"
-            << g_sharedImage->height
-            << "requested ="
-            << width
-            << "x"
-            << height;
-
-            return false;
-        }
-
-        return true;
-    }
-
-
-    g_sharedMemory = CreateFileMappingW(INVALID_HANDLE_VALUE, nullptr, PAGE_READWRITE, 0, static_cast<DWORD>(sizeof(SharedImage)), SHARED_MEMORY_NAME);
-
-    if (!g_sharedMemory)
-    {
-        qWarning()<< "CreateFileMappingW failed:" << GetLastError();
-        return false;
-    }
-
-    const DWORD mappingError = GetLastError();
-    const bool alreadyExists = (mappingError == ERROR_ALREADY_EXISTS);
-
-    g_sharedImage =reinterpret_cast<SharedImage*>(
-            MapViewOfFile(
-                g_sharedMemory,
-                FILE_MAP_ALL_ACCESS,
-                0,
-                0,
-                sizeof(SharedImage)
-                )
-            );
-
-    if (!g_sharedImage)
-    {
-        qWarning()<< "MapViewOfFile failed:" << GetLastError();
-
-        CloseHandle(g_sharedMemory);
-        g_sharedMemory = nullptr;
-        return false;
-    }
-
-    if (!alreadyExists)
-    {
-        g_sharedImage->width = width;
-        g_sharedImage->height = height;
-
-        g_sharedImage->pitch =
-            width * BYTES_PER_PIXEL;
-
-        // 1 = BGRA8
-        g_sharedImage->format = 1;
-        g_sharedImage->frame = 0;
-        g_sharedImage->activeBuffer = 0;
-        //g_sharedImage->readBuffer = -1;
-
-        std::memset(g_sharedImage->pixels, 0, sizeof(g_sharedImage->pixels));
-    }
-    else
-    {
-        if (g_sharedImage->width != width || g_sharedImage->height != height)
-        {
-            qWarning()
-            << "Existing shared memory has wrong size";
-
-            UnmapViewOfFile(g_sharedImage);
-            g_sharedImage = nullptr;
-
-            CloseHandle(g_sharedMemory);
-            g_sharedMemory = nullptr;
-
-            return false;
-        }
-    }
-
-    return true;
-}*/
-
 bool CreateSharedImage(uint32_t width, uint32_t height)
 {
     if (width == 0 ||
@@ -498,7 +402,7 @@ DxHookOverlay::~DxHookOverlay()
 }
 
 
-bool DxHookOverlay::initialize(int width, int height)
+/*bool DxHookOverlay::initialize(int width, int height)
 {
     m_width = width;
     m_height = height;
@@ -521,6 +425,46 @@ bool DxHookOverlay::initialize(int width, int height)
     );
 
     m_renderTimer->start(16); // примерно 60 FPS
+    //m_renderTimer->start(1000);
+
+    return true;
+}*/
+
+
+bool DxHookOverlay::initialize(int width, int height)
+{
+    m_width = width;
+    m_height = height;
+
+    if (!initializeOpenGL())
+        return false;
+
+    if (!initializeQml())
+        return false;
+
+    if (!initializeFramebuffer())
+        return false;
+
+    m_renderRequested = true;
+
+    connect( &m_renderControl, &QQuickRenderControl::renderRequested,this, [this]()
+    {
+        m_renderRequested = true;
+    });
+
+    connect(&m_renderControl, &QQuickRenderControl::sceneChanged, this, [this]()
+    {
+        m_renderRequested = true;
+    });
+
+    m_renderTimer = new QTimer(this);
+
+    connect(m_renderTimer, &QTimer::timeout, this, [this]()
+    {
+        render();
+    });
+
+    m_renderTimer->start(100); // максимум ~10 проверок/сек
 
     return true;
 }
@@ -584,8 +528,6 @@ bool DxHookOverlay::initializeQml()
         qWarning() << "DxHookOverlay: uiBackend is null";
         return false;
     }
-
-    //m_engine.addImageProvider(QStringLiteral("imageprovider"), m_uiBackend->imageProvider());
 
     m_window = new QQuickWindow(&m_renderControl);
     m_window->setWidth(m_width);
@@ -696,6 +638,11 @@ bool DxHookOverlay::render()
         return false;
     }
 
+    if (!m_renderRequested)
+        return true;
+
+    m_renderRequested = false;
+
     if (!m_context->makeCurrent(m_surface))
     {
         qWarning() << "DxHookOverlay: failed to make context current";
@@ -706,51 +653,72 @@ bool DxHookOverlay::render()
 
     m_fbo->bind();
 
-    GLint framebufferBefore = 0;
-
-    gl->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &framebufferBefore);
     gl->glViewport(0, 0, m_width, m_height);
-    gl->glDisable(GL_SCISSOR_TEST);
-    gl->glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    gl->glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
+    gl->glDisable(GL_SCISSOR_TEST);
+
+    gl->glClearColor(
+        0.0f,
+        0.0f,
+        0.0f,
+        0.0f);
+
+    gl->glClear(
+        GL_COLOR_BUFFER_BIT |
+        GL_DEPTH_BUFFER_BIT |
+        GL_STENCIL_BUFFER_BIT);
 
     m_renderControl.polishItems();
+
     m_renderControl.sync();
+
     m_renderControl.render();
+
+    // QQuickRenderControl может изменить framebuffer.
+    // Поэтому возвращаем наш FBO перед glReadPixels().
     m_fbo->bind();
 
-    GLint framebufferAfterRebind = 0;
+    QImage result(
+        m_width,
+        m_height,
+        QImage::Format_RGBA8888);
 
-    gl->glGetIntegerv(GL_FRAMEBUFFER_BINDING, &framebufferAfterRebind);
-    gl->glFinish();
-
-    QImage result(m_width, m_height, QImage::Format_RGBA8888);
-
-    gl->glReadPixels(0, 0, m_width, m_height, GL_RGBA, GL_UNSIGNED_BYTE, result.bits());
+    gl->glReadPixels(
+        0,
+        0,
+        m_width,
+        m_height,
+        GL_RGBA,
+        GL_UNSIGNED_BYTE,
+        result.bits());
 
     const GLenum glError = gl->glGetError();
 
     if (glError != GL_NO_ERROR)
     {
-        qWarning() << "DxHookOverlay: glReadPixels error:" << Qt::hex << glError;
+        qWarning()
+        << "DxHookOverlay: glReadPixels error:"
+        << Qt::hex
+        << glError;
+
         m_fbo->release();
         m_context->doneCurrent();
+
         return false;
     }
 
     m_image = result.mirrored(false, true);
+
     m_fbo->release();
 
     if (!SendQImageToSharedMemory(m_image))
     {
-        //TODO: На самом деле нам пофигу, если либе внутри игры не удалось получить самый свежий кадр.
-        //qWarning()<< "DxHookOverlay: failed to send frame";
         m_context->doneCurrent();
         return false;
     }
 
     m_context->doneCurrent();
+
     return true;
 }
 

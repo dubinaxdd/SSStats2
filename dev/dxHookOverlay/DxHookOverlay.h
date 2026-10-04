@@ -71,4 +71,5 @@ private:
 
     QTimer* m_renderTimer = nullptr;
     GameController* p_gameController;
+    bool m_renderRequested = true;
 };
