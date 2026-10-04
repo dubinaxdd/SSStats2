@@ -8,7 +8,7 @@ import DowStatsStyle 1.0
 Item{
     Component.onCompleted: {
         mainWindow.show();
-        overlayWindow.show();
+       // overlayWindow.show();
     }
 
     MainWindow{
@@ -21,10 +21,10 @@ Item{
         }
     }
 
-    OverlayWindow
+    /*OverlayWindow
     {
         id: overlayWindow
-    }
+    }*/
 
     SystemTrayIcon {
         id: trayIcon
