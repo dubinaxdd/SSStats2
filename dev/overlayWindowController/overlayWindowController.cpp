@@ -26,8 +26,6 @@ void OverlayWindowController::grubStatsWindow()
     m_defaultWindowLong = GetWindowLongPtr(m_dowStatsHwnd, GWL_EXSTYLE);
     //m_defaultWindowLong = GetWindowLongPtr(m_dowStatsHwnd, GWL_STYLE);
 
-
-
     SetWindowPos(m_dowStatsHwnd, HWND_BOTTOM, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong );
 
     if (m_uiBackendPtr)
@@ -78,17 +76,6 @@ void OverlayWindowController::topmostTimerTimout()
                     m_uiBackendPtr->setGameWindowed(p_gameController->gameWindowed());
                 }
             }
-            else if(p_gameController->currentGame()->gameType == GameType::DefinitiveEdition)
-            {
-                /*RECT ssRect;
-                if (GetWindowRect(p_gameController->gameHwnd(), &ssRect))
-                {
-                    int titleBarHeight = getGameTitleBarHeight();
-
-                    m_gameRect = ssRect;
-                    SetWindowPos(m_dowStatsHwnd, HWND_TOP, m_gameRect.left, m_gameRect.top + titleBarHeight, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top - titleBarHeight, m_defaultWindowLong );
-                }*/
-            }
             else
             {
                 RECT ssRect;
@@ -99,11 +86,13 @@ void OverlayWindowController::topmostTimerTimout()
                         {
                             m_gameRect = ssRect;
                             SetWindowPos(m_dowStatsHwnd, HWND_TOPMOST, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong);
+                            m_uiBackendPtr->setSsWindowPosition(m_gameRect.left, m_gameRect.top);
                         }
                     }
                 }
 
-                BringWindowToTop(m_dowStatsHwnd);
+                if(p_gameController->currentGame()->gameType != GameType::DefinitiveEdition)
+                    BringWindowToTop(m_dowStatsHwnd);
             }
         }
     }

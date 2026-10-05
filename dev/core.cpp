@@ -97,7 +97,7 @@ void Core::addConnections()
     QObject::connect(m_gameController,                    &GameController::gameMaximized,          m_soundProcessor,             &SoundProcessor::setGameMaximized,     Qt::DirectConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_overlayWindowController,    &OverlayWindowController::gameLaunched,       Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_balanceModManager,          &BalanceModManager::onGameLaunchStateChanged, Qt::QueuedConnection);
-    QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_dxHookOverlay,          &DxHookOverlay::runOverlay, Qt::QueuedConnection);
+    //QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_dxHookOverlay,          &DxHookOverlay::runOverlay, Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::inputBlockStateChanged, HookManager::instance(),    &HookManager::onInputBlockStateChanged,     Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::gameInitialized,         m_overlayWindowController,  &OverlayWindowController::gameInitialized, Qt::DirectConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,  Qt::QueuedConnection);
@@ -126,6 +126,12 @@ void Core::addConnections()
 
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlayersRankedState, m_gameController->replayDataCollector(), &ReplayDataCollector::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendRelicStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveRelicStats, Qt::QueuedConnection);
+
+
+    QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, this, [this](bool gameLounched){
+        if (!m_uiBackend->settingsPageModel()->legacyOverlayForDE() && m_gameController->currentGame() && m_gameController->currentGame()->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+            m_dxHookOverlay->runOverlay(gameLounched);
+    }, Qt::QueuedConnection);
 
     QObject::connect(m_gameController, &GameController::gameWindowSizeChanged, this, [this]{m_dxHookOverlay->runOverlay(true);}  , Qt::QueuedConnection);
 
