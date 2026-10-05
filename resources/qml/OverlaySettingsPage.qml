@@ -17,6 +17,25 @@ Rectangle {
     transformOrigin: Item.BottomRight
     Layout.alignment: Qt.AlignRight | Qt.AlignBottom
 
+    Component.onCompleted:{
+
+            var devicePixelRatio = 1;
+
+            if (!_uiBackend.settingsPageModel.lelegacyOverlayForDE && _uiBackend.gamePage.currentGameType  ===  GameType.DefinitiveEdition)
+                devicePixelRatio = _uiBackend.devicePixelRatio;
+
+            switch (_uiBackend.sizeModifer / _uiBackend.devicePixelRatio)
+            {
+                case 0.5: scaleRadioButton0.checked = true; break;
+                case 0.75: scaleRadioButton1.checked = true; break;
+                case 1.0: scaleRadioButton2.checked = true; break;
+                case 1.25: scaleRadioButton3.checked = true; break;
+                case 1.5: scaleRadioButton4.checked = true; break;
+                case 1.75: scaleRadioButton5.checked = true; break;
+                case 2.0: scaleRadioButton6.checked = true; break;
+            }
+    }
+
     Connections
     {
         target: _uiBackend
@@ -49,7 +68,6 @@ Rectangle {
 
     Connections{
         target: _uiBackend
-
 
         function onSizeModiferLoadedFromSettings(scale)
         {
