@@ -127,6 +127,7 @@ void Core::addConnections()
     QObject::connect(m_rankedModServiceProcessor,   &RankedModServiceProcessor::sendPlayersRankedState, m_gameController->replayDataCollector(), &ReplayDataCollector::receivePlyersRankedState , Qt::QueuedConnection);
     QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendRelicStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveRelicStats, Qt::QueuedConnection);
 
+    QObject::connect(m_gameController, &GameController::gameWindowSizeChanged, this, [this]{m_dxHookOverlay->runOverlay(true);}  , Qt::QueuedConnection);
 
 
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);

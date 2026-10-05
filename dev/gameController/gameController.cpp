@@ -261,6 +261,15 @@ void GameController::checkWindowState()
 
     if (m_gameHwnd && m_gameInitialized)              ///<Если игра запущена и инициализирована
     {
+        RECT gameRect;
+        GetWindowRect(m_gameHwnd, &gameRect);
+
+        if (m_ssLounchState && gameRect.bottom - gameRect.top != m_gameRect.bottom - m_gameRect.top
+            && gameRect.right - gameRect.left != m_gameRect.right - m_gameRect.left)
+            emit gameWindowSizeChanged();
+
+        m_gameRect = gameRect;
+
         if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
         {
             m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
