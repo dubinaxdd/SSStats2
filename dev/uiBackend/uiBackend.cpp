@@ -127,6 +127,8 @@ void UiBackend::onGameLaunchStateChanged(bool state)
     setGameLaunchState(state);
     setExpand(false);
     showClient();
+
+    emit sizeModiferChanged(getSizeModifer());
 }
 
 void UiBackend::loadStarted()

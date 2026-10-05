@@ -24,7 +24,7 @@ Rectangle {
             if (!_uiBackend.settingsPageModel.lelegacyOverlayForDE && _uiBackend.gamePage.currentGameType  ===  GameType.DefinitiveEdition)
                 devicePixelRatio = _uiBackend.devicePixelRatio;
 
-            switch (_uiBackend.sizeModifer / _uiBackend.devicePixelRatio)
+            switch (_uiBackend.sizeModifer / devicePixelRatio)
             {
                 case 0.5: scaleRadioButton0.checked = true; break;
                 case 0.75: scaleRadioButton1.checked = true; break;
