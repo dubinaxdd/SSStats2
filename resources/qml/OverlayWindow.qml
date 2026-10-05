@@ -23,18 +23,20 @@ Window {
     Component.onCompleted: {
         if (window.visible)
             GlobalMouseProvider.rootElement = windowRectangle
-
     }
 
-    onVisibleChanged: GlobalMouseProvider.rootElement = windowRectangle
+    onVisibleChanged: {
+        if (window.visible)
+            GlobalMouseProvider.rootElement = windowRectangle
+    }
 
     onVisibilityChanged: {
         patyStatistic.resetScrollView();
     }
 
     Connections{
-        target: window.visible ? _uiBackend : null
-        //enavled: window.visible
+        target: _uiBackend
+        enabled: window.visible
 
         function onSendMouseWheel(delta){
             GlobalMouseProvider.sendMouseWheel(delta);

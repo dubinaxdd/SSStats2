@@ -21,13 +21,16 @@ Item {
             GlobalMouseProvider.rootElement = windowRectangle
     }
 
-    onVisibleChanged: GlobalMouseProvider.rootElement = windowRectangle
+    onVisibleChanged: {
+        if (window.visible)
+            GlobalMouseProvider.rootElement = windowRectangle
+    }
 
     //Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
 
     Connections{
-        target: window.visible ? _uiBackend : null
-        enabled: _uiBackend.ssMaximized
+        target: _uiBackend
+        enabled: _uiBackend.ssMaximized && window.visible
 
         function onSendMouseWheel(delta){
             GlobalMouseProvider.sendMouseWheel(delta);
