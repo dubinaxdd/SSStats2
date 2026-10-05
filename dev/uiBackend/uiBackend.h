@@ -269,7 +269,7 @@ private:
     void gameOver();
 
 private:
-    GamePath* m_currentGame;
+    GamePath* m_currentGame = nullptr;
     QVector<GamePath> *p_gamePathArray;
     Core* m_corePtr;
     ImageProvider* m_imageProvider;

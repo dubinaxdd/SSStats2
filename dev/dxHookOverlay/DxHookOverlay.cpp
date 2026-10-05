@@ -390,7 +390,7 @@ bool DxHookOverlay::initialize(int width, int height)
         render();
     });
 
-    m_renderTimer->start(100); // максимум ~10 проверок/сек
+    m_renderTimer->start(20); // максимум ~50 проверок/сек
 
     return true;
 }

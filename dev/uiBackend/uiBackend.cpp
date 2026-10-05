@@ -664,7 +664,11 @@ void UiBackend::onSettingsLoaded()
 
 void UiBackend::showClient()
 {
-    m_showClient = m_gameLaunchState && m_ssMaximized;
+    if (m_currentGame->gameType && m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition && !m_settingsPageModel->legacyOverlayForDE())
+        m_showClient = m_gameLaunchState;
+    else
+        m_showClient = m_gameLaunchState && m_ssMaximized;
+
     emit sendShowClient(m_showClient);
 }
 
