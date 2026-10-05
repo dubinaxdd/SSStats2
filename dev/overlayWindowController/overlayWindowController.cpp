@@ -66,12 +66,17 @@ void OverlayWindowController::topmostTimerTimout()
                    int titleBarHeight = getGameTitleBarHeight();
 
                     m_gameRect = ssRect;
-                    SetWindowPos(m_dowStatsHwnd, HWND_TOP, m_gameRect.left, m_gameRect.top + titleBarHeight, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top - titleBarHeight, m_defaultWindowLong );
+
+                   if(p_gameController->currentGame()->gameType != GameType::DefinitiveEdition || m_uiBackendPtr->settingsPageModel()->legacyOverlayForDE())
+                        SetWindowPos(m_dowStatsHwnd, HWND_TOP, m_gameRect.left, m_gameRect.top + titleBarHeight, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top - titleBarHeight, m_defaultWindowLong );
 
                     m_uiBackendPtr->setSsWindowPosition(m_gameRect.left, m_gameRect.top + titleBarHeight);
 
-                    LONG ssLong = GetWindowLongPtr(p_gameController->gameHwnd(), 0);
-                    SetWindowPos(p_gameController->gameHwnd(), m_dowStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    if(p_gameController->currentGame()->gameType != GameType::DefinitiveEdition || m_uiBackendPtr->settingsPageModel()->legacyOverlayForDE())
+                    {
+                        LONG ssLong = GetWindowLongPtr(p_gameController->gameHwnd(), 0);
+                        SetWindowPos(p_gameController->gameHwnd(), m_dowStatsHwnd, ssRect.left, ssRect.top, ssRect.right - ssRect.left, ssRect.bottom - ssRect.top, ssLong );
+                    }
 
                     m_uiBackendPtr->setGameWindowed(p_gameController->gameWindowed());
                 }
@@ -85,7 +90,10 @@ void OverlayWindowController::topmostTimerTimout()
                         if (m_gameRect.bottom != ssRect.bottom || m_gameRect.top != ssRect.top || m_gameRect.right != ssRect.right || m_gameRect.left)
                         {
                             m_gameRect = ssRect;
-                            SetWindowPos(m_dowStatsHwnd, HWND_TOPMOST, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong);
+
+                            if(p_gameController->currentGame()->gameType != GameType::DefinitiveEdition || m_uiBackendPtr->settingsPageModel()->legacyOverlayForDE())
+                                SetWindowPos(m_dowStatsHwnd, HWND_TOPMOST, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong);
+
                             m_uiBackendPtr->setSsWindowPosition(m_gameRect.left, m_gameRect.top);
                         }
                     }
@@ -144,11 +152,14 @@ void OverlayWindowController::ssMaximized(bool maximized)
             RECT ssRect;
             if (GetWindowRect(p_gameController->gameHwnd(), &ssRect))
             {
-                m_gameRect = ssRect;
-                SetWindowPos(m_dowStatsHwnd, HWND_TOPMOST, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong);
-                //SetWindowPos(m_dowStatsHwnd, HWND_TOP, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong);
+                if(p_gameController->currentGame()->gameType != GameType::DefinitiveEdition || m_uiBackendPtr->settingsPageModel()->legacyOverlayForDE())
+                {
+                    m_gameRect = ssRect;
+                    SetWindowPos(m_dowStatsHwnd, HWND_TOPMOST, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong);
+                    //SetWindowPos(m_dowStatsHwnd, HWND_TOP, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, m_defaultWindowLong);
 
-                m_uiBackendPtr->setWindowTopmost(true);
+                    m_uiBackendPtr->setWindowTopmost(true);
+                }
             }
             m_topmostTimer->start();
             m_uiBackendPtr->setGameWindowed(p_gameController->gameWindowed());
@@ -161,12 +172,15 @@ void OverlayWindowController::ssMaximized(bool maximized)
                 if(m_gameRect.bottom != ssRect.bottom || m_gameRect.top != ssRect.top || m_gameRect.right != ssRect.right || m_gameRect.left != ssRect.left)
                 {
                     int titleBarHeight = getGameTitleBarHeight();
-
                     m_gameRect = ssRect;
-                    SetWindowPos(m_dowStatsHwnd, p_gameController->gameHwnd(), m_gameRect.left, m_gameRect.top + titleBarHeight, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top - titleBarHeight, m_defaultWindowLong );
 
-                    LONG ssLong = GetWindowLongPtr(p_gameController->gameHwnd(), 0);
-                    SetWindowPos(p_gameController->gameHwnd(), m_dowStatsHwnd, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, ssLong );
+                    if(p_gameController->currentGame()->gameType != GameType::DefinitiveEdition || m_uiBackendPtr->settingsPageModel()->legacyOverlayForDE())
+                    {
+                        SetWindowPos(m_dowStatsHwnd, p_gameController->gameHwnd(), m_gameRect.left, m_gameRect.top + titleBarHeight, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top - titleBarHeight, m_defaultWindowLong );
+
+                        LONG ssLong = GetWindowLongPtr(p_gameController->gameHwnd(), 0);
+                        SetWindowPos(p_gameController->gameHwnd(), m_dowStatsHwnd, m_gameRect.left, m_gameRect.top, m_gameRect.right - m_gameRect.left, m_gameRect.bottom - m_gameRect.top, ssLong );
+                    }
 
                     m_uiBackendPtr->setSsWindowPosition(m_gameRect.left, m_gameRect.top + titleBarHeight);
                 }
@@ -178,9 +192,12 @@ void OverlayWindowController::ssMaximized(bool maximized)
     }
     else
     {
-        m_topmostTimer->stop();
-        SetWindowPos(m_dowStatsHwnd, HWND_BOTTOM, 0,0,0,0, m_defaultWindowLong );
-        m_uiBackendPtr->setWindowTopmost(false);
+        if(p_gameController->currentGame()->gameType != GameType::DefinitiveEdition || m_uiBackendPtr->settingsPageModel()->legacyOverlayForDE())
+        {
+            m_topmostTimer->stop();
+            SetWindowPos(m_dowStatsHwnd, HWND_BOTTOM, 0,0,0,0, m_defaultWindowLong );
+            m_uiBackendPtr->setWindowTopmost(false);
+        }
     }
 
     m_uiBackendPtr->setGameWindowed(p_gameController->gameWindowed());
