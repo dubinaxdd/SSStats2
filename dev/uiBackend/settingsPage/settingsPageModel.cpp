@@ -62,6 +62,9 @@ void SettingsPageModel::onSettingsLoaded()
     m_language = parseLanguage(m_settingsController->getSettings()->language);
     emit languageChanged(m_language);
 
+    m_legacyOverlayForDE = m_settingsController->getSettings()->legacyOverlayForDE;
+    emit legacyOverlayForDEChanged();
+
     updateAutorunState(m_autorun);
 
     qInfo(logInfo()) << "SettingsPageModel::onSettingsLoaded()" << "load finished";
@@ -148,6 +151,23 @@ void SettingsPageModel::updateAutorunState(bool isAutorun)
 
      bootUpSettings.sync();
 }
+
+bool SettingsPageModel::legacyOverlayForDE() const
+{
+    return m_legacyOverlayForDE;
+}
+
+void SettingsPageModel::setLegacyOverlayForDE(bool newLegacyOverlayForDE)
+{
+    if (m_legacyOverlayForDE == newLegacyOverlayForDE)
+        return;
+    m_legacyOverlayForDE = newLegacyOverlayForDE;
+    emit legacyOverlayForDEChanged();
+
+    m_settingsController->getSettings()->legacyOverlayForDE = m_legacyOverlayForDE;
+    m_settingsController->saveSettings();
+}
+
 
 const Language::LanguageEnum &SettingsPageModel::language() const
 {

@@ -87,6 +87,9 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_balanceModPage, &BalanceModPage::onCurrentGameChanged, Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->gameController()->lobbyEventReader(), &LobbyEventReader::automatchModeChanged, this, &UiBackend::setAutomatchState, Qt::QueuedConnection);
+
+    QObject:connect(m_settingsPageModel, &SettingsPageModel::legacyOverlayForDEChanged, this, [this]{emit sizeModiferChanged(getSizeModifer());}, Qt::QueuedConnection);
+
 }
 
 void UiBackend::expandKeyPressed()
@@ -170,19 +173,6 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(GameMissionState::gameOver);
-}
-
-bool UiBackend::legacyOverlayVisible() const
-{
-    return m_legacyOverlayVisible;
-}
-
-void UiBackend::setLegacyOverlayVisible(bool newLegacyOverlayVisivble)
-{
-    if (m_legacyOverlayVisible == newLegacyOverlayVisivble)
-        return;
-    m_legacyOverlayVisible = newLegacyOverlayVisivble;
-    emit legacyOverlayVisibleChanged();
 }
 
 bool UiBackend::gameLoadScreenStatisticVisible() const
@@ -640,7 +630,7 @@ void UiBackend::openPlaybackFolder()
 
 double UiBackend::getSizeModifer()
 {
-    if (m_legacyOverlayVisible)
+    if (m_settingsPageModel->legacyOverlayForDE() || m_currentGame->gameType != GameType::GameTypeEnum::DefinitiveEdition)
         return m_sizeModifer;
     else
         return m_sizeModifer * m_devicePixelRatio;

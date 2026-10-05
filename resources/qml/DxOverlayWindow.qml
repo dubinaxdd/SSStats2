@@ -3,7 +3,7 @@ import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
 import GlobalMouseProvider 1.0
 import DowStatsStyle 1.0
-
+import GameType 1.0
 
 Item {
     id: window
@@ -14,7 +14,7 @@ Item {
     property real yMousePos
     property real mouseAreaWidth
     property real mouseAreaHeight
-    visible: _uiBackend.settingsPageModel.overlayVisible && !_uiBackend.legacyOverlayVisible
+    visible: _uiBackend.settingsPageModel.overlayVisible && !_uiBackend.settingsPageModel.legacyOverlayForDE && _uiBackend.gamePage.currentGameType  ===  GameType.DefinitiveEdition
 
     Component.onCompleted: {
         if (window.visible)

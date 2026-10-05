@@ -87,7 +87,6 @@ class UiBackend : public QObject
     Q_PROPERTY(bool automatchState READ automatchState WRITE setAutomatchState NOTIFY automatchStateChanged FINAL)
     Q_PROPERTY(bool expandStatisticButtonVisible READ expandStatisticButtonVisible WRITE setExpandStatisticButtonVisible NOTIFY expandStatisticButtonVisibleChanged FINAL)
     Q_PROPERTY(bool gameLoadScreenStatisticVisible READ gameLoadScreenStatisticVisible WRITE setGameLoadScreenStatisticVisible NOTIFY gameLoadScreenStatisticVisibleChanged FINAL)
-    Q_PROPERTY(bool legacyOverlayVisible READ legacyOverlayVisible WRITE setLegacyOverlayVisible NOTIFY legacyOverlayVisibleChanged FINAL)
 
 public:
     explicit UiBackend(Core* core, QObject *parent = nullptr);
@@ -198,9 +197,6 @@ public:
     bool gameLoadScreenStatisticVisible() const;
     void setGameLoadScreenStatisticVisible(bool newGameLoadScreenStatisticVisible);
 
-    bool legacyOverlayVisible() const;
-    void setLegacyOverlayVisible(bool newLegacyOverlayVisible);
-
     double getSizeModifer();
 
 signals:
@@ -245,8 +241,6 @@ signals:
     void expandStatisticButtonVisibleChanged();
 
     void gameLoadScreenStatisticVisibleChanged();
-
-    void legacyOverlayVisibleChanged();
 
 public slots:
     void expandKeyPressed();
@@ -357,7 +351,6 @@ private:
 
     bool m_expandStatisticButtonVisible = true;
     bool m_gameLoadScreenStatisticVisible = false;
-    bool m_legacyOverlayVisible = false;
 };
 
 #endif // UIBACKEND_H

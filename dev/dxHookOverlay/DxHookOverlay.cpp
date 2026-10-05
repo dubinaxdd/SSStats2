@@ -615,6 +615,9 @@ bool DxHookOverlay::render()
 
 void DxHookOverlay::runOverlay(bool gameLaunched)
 {
+    if (m_uiBackend->settingsPageModel()->legacyOverlayForDE())
+        return;
+
     if (!gameLaunched)
         return;
 

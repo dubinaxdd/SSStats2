@@ -24,6 +24,7 @@ class SettingsPageModel : public QObject
     Q_PROPERTY(bool enableAdvertising READ enableAdvertising WRITE setEnableAdvertising NOTIFY enableAdvertisingChanged)
     Q_PROPERTY(int launchMode READ launchMode WRITE setLaunchMode NOTIFY launchModeChanged)
     Q_PROPERTY(Language::LanguageEnum language READ language WRITE setLanguage NOTIFY languageChanged)
+    Q_PROPERTY(bool legacyOverlayForDE READ legacyOverlayForDE WRITE setLegacyOverlayForDE NOTIFY legacyOverlayForDEChanged FINAL)
 
 public:
     explicit SettingsPageModel(SoundProcessor* soundProcessor, SettingsController* settingsController, QObject *parent = nullptr);
@@ -46,6 +47,8 @@ signals:
     void launchModeChanged();
     void enableAdvertisingChanged();
     void languageChanged(Language::LanguageEnum language);
+
+    void legacyOverlayForDEChanged();
 
 private slots:
     void onSettingsLoaded();
@@ -92,6 +95,9 @@ public:
     const Language::LanguageEnum &language() const;
     void setLanguage(const Language::LanguageEnum &newLanguage);
 
+    bool legacyOverlayForDE() const;
+    void setLegacyOverlayForDE(bool newLegacyOverlayForDE);
+
 private:
     void updateAutorunState(bool isAutorun);
 
@@ -110,7 +116,7 @@ private:
     bool m_enableGameStartEventSound = true;
     bool m_autorun = true;
     bool m_enableAdvertising = false;
-
+    bool m_legacyOverlayForDE = false;
     int m_volume = 100;
 
     Language::LanguageEnum m_language = Language::LanguageEnum::System;

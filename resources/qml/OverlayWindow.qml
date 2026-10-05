@@ -4,12 +4,13 @@ import QtQuick.Layouts 1.12
 import QtQuick.Window 2.15
 import GlobalMouseProvider 1.0
 import DowStatsStyle 1.0
+import GameType 1.0
 
 Window {
     id: window
     width: 640
     height: 480
-    visible: _uiBackend.settingsPageModel.overlayVisible && _uiBackend.legacyOverlayVisible
+    visible: _uiBackend.settingsPageModel.overlayVisible && (_uiBackend.settingsPageModel.legacyOverlayForDE || _uiBackend.gamePage.currentGameType  !==  GameType.DefinitiveEdition)
     title: "DowStatsClientOverlay"
     color: "#00000000"
     visibility: Window.Maximized
@@ -33,6 +34,7 @@ Window {
 
     Connections{
         target: window.visible ? _uiBackend : null
+        //enavled: window.visible
 
         function onSendMouseWheel(delta){
             GlobalMouseProvider.sendMouseWheel(delta);

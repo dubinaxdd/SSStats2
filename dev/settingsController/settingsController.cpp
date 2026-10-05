@@ -47,6 +47,7 @@ void SettingsController::initializeSettings()
     m_settings->autorun = dow_stats_settings->value("client/autorun", true).toBool();
     m_settings->enableAdvertising = dow_stats_settings->value("client/enable_advertising", false).toBool();
     m_settings->language = dow_stats_settings->value("client/language", "system").toString();
+    m_settings->legacyOverlayForDE = dow_stats_settings->value("client/legacy_overlay_for_de", false).toBool();
 
     //[mods]
     m_settings->russianFontsInstalled = dow_stats_settings->value("mods/russian_fonts_installed", false).toBool();
@@ -101,6 +102,7 @@ void SettingsController::saveSettings()
     dow_stats_settings->setValue("client/autorun", m_settings->autorun);
     dow_stats_settings->setValue("client/enable_advertising", m_settings->enableAdvertising);
     dow_stats_settings->setValue("client/language", m_settings->language);
+    dow_stats_settings->setValue("client/legacy_overlay_for_de", m_settings->legacyOverlayForDE);
 
     //[mods]
     dow_stats_settings->setValue("mods/russian_fonts_installed", m_settings->russianFontsInstalled);
