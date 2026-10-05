@@ -6,6 +6,26 @@ import Qt.labs.platform 1.1
 import DowStatsStyle 1.0
 
 Item{
+
+    Connections{
+        target: _uiBackend
+
+
+        function onRunLegacyOverlay()
+        {
+            console.log("ASDASDASDASDASD 111111")
+            overlayWindow.show();
+        }
+
+        function onCloseLegacyOverlay()
+        {
+            console.log("ASDASDASDASDASD 222222")
+            overlayWindow.close();
+        }
+    }
+
+
+
     Component.onCompleted: {
         mainWindow.show();
         overlayWindow.show();

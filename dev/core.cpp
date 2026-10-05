@@ -130,10 +130,19 @@ void Core::addConnections()
 
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, this, [this](bool gameLounched){
         if (!m_uiBackend->settingsPageModel()->legacyOverlayForDE() && m_gameController->currentGame() && m_gameController->currentGame()->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+        {
             m_dxHookOverlay->runOverlay(gameLounched);
+            emit m_uiBackend->closeLegacyOverlay();
+        }
+        else
+            emit m_uiBackend->runLegacyOverlay();
+
     }, Qt::QueuedConnection);
 
-    QObject::connect(m_gameController, &GameController::gameWindowSizeChanged, this, [this]{m_dxHookOverlay->runOverlay(true);}  , Qt::QueuedConnection);
+    QObject::connect(m_gameController, &GameController::gameWindowSizeChanged, this, [this]{
+        if (!m_uiBackend->settingsPageModel()->legacyOverlayForDE() && m_gameController->currentGame() && m_gameController->currentGame()->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+            m_dxHookOverlay->runOverlay(true);
+    }  , Qt::QueuedConnection);
 
 
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
