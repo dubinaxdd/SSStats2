@@ -87,6 +87,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool automatchState READ automatchState WRITE setAutomatchState NOTIFY automatchStateChanged FINAL)
     Q_PROPERTY(bool expandStatisticButtonVisible READ expandStatisticButtonVisible WRITE setExpandStatisticButtonVisible NOTIFY expandStatisticButtonVisibleChanged FINAL)
     Q_PROPERTY(bool gameLoadScreenStatisticVisible READ gameLoadScreenStatisticVisible WRITE setGameLoadScreenStatisticVisible NOTIFY gameLoadScreenStatisticVisibleChanged FINAL)
+    Q_PROPERTY(bool ssMaximized READ ssMaximized WRITE setSsMaximized NOTIFY ssMaximizedChanged FINAL)
 
 public:
     explicit UiBackend(Core* core, QObject *parent = nullptr);
@@ -199,6 +200,9 @@ public:
 
     double getSizeModifer();
 
+    bool ssMaximized() const;
+    void setSsMaximized(bool newSsMaximized);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
     void sendExpand(bool);
@@ -241,6 +245,8 @@ signals:
     void expandStatisticButtonVisibleChanged();
 
     void gameLoadScreenStatisticVisibleChanged();
+
+    void ssMaximizedChanged();
 
 public slots:
     void expandKeyPressed();

@@ -116,7 +116,8 @@ void UiBackend::expandPatyStatisticButtonClick()
 
 void UiBackend::receiveSsMaximized(bool maximized)
 {
-    m_ssMaximized = maximized;
+    //m_ssMaximized = maximized;
+    setSsMaximized(maximized);
     setExpand(false);
     showClient();
 }
@@ -173,6 +174,19 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(GameMissionState::gameOver);
+}
+
+bool UiBackend::ssMaximized() const
+{
+    return m_ssMaximized;
+}
+
+void UiBackend::setSsMaximized(bool newSsMaximized)
+{
+    if (m_ssMaximized == newSsMaximized)
+        return;
+    m_ssMaximized = newSsMaximized;
+    emit ssMaximizedChanged();
 }
 
 bool UiBackend::gameLoadScreenStatisticVisible() const

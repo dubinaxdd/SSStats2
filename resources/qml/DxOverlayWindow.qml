@@ -27,6 +27,7 @@ Item {
 
     Connections{
         target: window.visible ? _uiBackend : null
+        enabled: _uiBackend.ssMaximized
 
         function onSendMouseWheel(delta){
             GlobalMouseProvider.sendMouseWheel(delta);
