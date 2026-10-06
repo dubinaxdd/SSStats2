@@ -99,7 +99,7 @@ Window {
         id: windowRectangle
         color: "#00000000"
         anchors.fill: parent
-        visible: _uiBackend.showClient
+        visible: _uiBackend.showClient && window.visible
 
         Rectangle {
             id: backgroundRectangle

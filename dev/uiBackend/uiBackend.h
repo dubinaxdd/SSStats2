@@ -248,9 +248,6 @@ signals:
 
     void ssMaximizedChanged();
 
-    void runLegacyOverlay();
-    void closeLegacyOverlay();
-
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();

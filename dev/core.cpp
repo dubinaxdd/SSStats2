@@ -130,12 +130,8 @@ void Core::addConnections()
 
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, this, [this](bool gameLounched){
         if (!m_uiBackend->settingsPageModel()->legacyOverlayForDE() && m_gameController->currentGame() && m_gameController->currentGame()->gameType == GameType::GameTypeEnum::DefinitiveEdition)
-        {
             m_dxHookOverlay->runOverlay(gameLounched);
-            emit m_uiBackend->closeLegacyOverlay();
-        }
-        else
-            emit m_uiBackend->runLegacyOverlay();
+
 
     }, Qt::QueuedConnection);
 
