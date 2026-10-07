@@ -783,6 +783,10 @@
         <translation>Отображать оверлей в режиме совместимости с Windows 7</translation>
     </message>
     <message>
+        <source>Legacy overlay rendering for DE</source>
+        <translation>Старый метод отображения оверлея для DE</translation>
+    </message>
+    <message>
         <source>Launch Game in window</source>
         <translation>Запускать игру в окне</translation>
     </message>

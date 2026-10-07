@@ -70,6 +70,7 @@ signals:
     void gameMaximized(bool maximized);
     void inputBlockStateChanged(bool);
     void sendAuthKey(QString authKey);
+    void gameWindowSizeChanged();
 
 private:
     void loadGamePathFromRegistry();
@@ -127,6 +128,7 @@ private:
     int m_gameWindowWidth = 0;
     int m_gameWindowHeight = 0;
 
+    RECT m_gameRect;
 };
 
 #endif // GAMECONTROLLER_H

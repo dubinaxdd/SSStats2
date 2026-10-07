@@ -44,5 +44,6 @@
         <file>resources/qml/LinkButton.qml</file>
         <file>resources/qml/PlayersStatisticColumn.qml</file>
         <file>resources/qml/GameLoadScreen.qml</file>
+        <file>resources/qml/DxOverlayWindow.qml</file>
     </qresource>
 </RCC>

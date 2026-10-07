@@ -87,6 +87,9 @@ UiBackend::UiBackend(Core* core, QObject *parent)
     QObject::connect(m_gamePage, &GamePage::currentGameChanged, m_balanceModPage, &BalanceModPage::onCurrentGameChanged, Qt::QueuedConnection);
 
     QObject::connect(m_corePtr->gameController()->lobbyEventReader(), &LobbyEventReader::automatchModeChanged, this, &UiBackend::setAutomatchState, Qt::QueuedConnection);
+
+    QObject:connect(m_settingsPageModel, &SettingsPageModel::legacyOverlayForDEChanged, this, [this]{emit sizeModiferChanged(getSizeModifer());}, Qt::QueuedConnection);
+
 }
 
 void UiBackend::expandKeyPressed()
@@ -113,7 +116,8 @@ void UiBackend::expandPatyStatisticButtonClick()
 
 void UiBackend::receiveSsMaximized(bool maximized)
 {
-    m_ssMaximized = maximized;
+    //m_ssMaximized = maximized;
+    setSsMaximized(maximized);
     setExpand(false);
     showClient();
 }
@@ -123,6 +127,8 @@ void UiBackend::onGameLaunchStateChanged(bool state)
     setGameLaunchState(state);
     setExpand(false);
     showClient();
+
+    emit sizeModiferChanged(getSizeModifer());
 }
 
 void UiBackend::loadStarted()
@@ -170,6 +176,19 @@ void UiBackend::startingMission(GameMissionState gameCurrentState)
 void UiBackend::gameOver()
 {
     startingMission(GameMissionState::gameOver);
+}
+
+bool UiBackend::ssMaximized() const
+{
+    return m_ssMaximized;
+}
+
+void UiBackend::setSsMaximized(bool newSsMaximized)
+{
+    if (m_ssMaximized == newSsMaximized)
+        return;
+    m_ssMaximized = newSsMaximized;
+    emit ssMaximizedChanged();
 }
 
 bool UiBackend::gameLoadScreenStatisticVisible() const
@@ -625,6 +644,14 @@ void UiBackend::openPlaybackFolder()
     QDesktopServices::openUrl(QUrl::fromLocalFile(m_currentGame->gameSettingsPath + QDir::separator() + "Playback"));
 }
 
+double UiBackend::getSizeModifer()
+{
+    if (m_settingsPageModel->legacyOverlayForDE() || m_currentGame->gameType != GameType::GameTypeEnum::DefinitiveEdition)
+        return m_sizeModifer;
+    else
+        return m_sizeModifer * m_devicePixelRatio;
+}
+
 void UiBackend::setSizeModifer(double size)
 {
     m_sizeModifer = size;
@@ -653,7 +680,11 @@ void UiBackend::onSettingsLoaded()
 
 void UiBackend::showClient()
 {
-    m_showClient = m_gameLaunchState && m_ssMaximized;
+    if (m_currentGame->gameType && m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition && !m_settingsPageModel->legacyOverlayForDE())
+        m_showClient = m_gameLaunchState;
+    else
+        m_showClient = m_gameLaunchState && m_ssMaximized;
+
     emit sendShowClient(m_showClient);
 }
 

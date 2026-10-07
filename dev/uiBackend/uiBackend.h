@@ -44,7 +44,7 @@ class UiBackend : public QObject
     Q_PROPERTY(QString ssStatsVersion MEMBER m_ssStatsVersion CONSTANT )
 
     Q_PROPERTY(bool noFogState READ getFogState WRITE setNoFogState NOTIFY noFogStateChanged)
-    Q_PROPERTY(double sizeModifer MEMBER m_sizeModifer NOTIFY sizeModiferChanged)
+    Q_PROPERTY(double sizeModifer READ getSizeModifer NOTIFY sizeModiferChanged)
 
     Q_PROPERTY(GamePanel* gamePanel MEMBER m_gamePanel CONSTANT)
     Q_PROPERTY(StatisticPanel* statisticPanel MEMBER m_statisticPanel CONSTANT)
@@ -87,7 +87,7 @@ class UiBackend : public QObject
     Q_PROPERTY(bool automatchState READ automatchState WRITE setAutomatchState NOTIFY automatchStateChanged FINAL)
     Q_PROPERTY(bool expandStatisticButtonVisible READ expandStatisticButtonVisible WRITE setExpandStatisticButtonVisible NOTIFY expandStatisticButtonVisibleChanged FINAL)
     Q_PROPERTY(bool gameLoadScreenStatisticVisible READ gameLoadScreenStatisticVisible WRITE setGameLoadScreenStatisticVisible NOTIFY gameLoadScreenStatisticVisibleChanged FINAL)
-
+    Q_PROPERTY(bool ssMaximized READ ssMaximized WRITE setSsMaximized NOTIFY ssMaximizedChanged FINAL)
 
 public:
     explicit UiBackend(Core* core, QObject *parent = nullptr);
@@ -198,6 +198,11 @@ public:
     bool gameLoadScreenStatisticVisible() const;
     void setGameLoadScreenStatisticVisible(bool newGameLoadScreenStatisticVisible);
 
+    double getSizeModifer();
+
+    bool ssMaximized() const;
+    void setSsMaximized(bool newSsMaximized);
+
 signals:
     void sendSwitchNoFogHoverState(bool);
     void sendExpand(bool);
@@ -241,6 +246,8 @@ signals:
 
     void gameLoadScreenStatisticVisibleChanged();
 
+    void ssMaximizedChanged();
+
 public slots:
     void expandKeyPressed();
     void expandPatyStatisticButtonClick();
@@ -268,7 +275,7 @@ private:
     void gameOver();
 
 private:
-    GamePath* m_currentGame;
+    GamePath* m_currentGame = nullptr;
     QVector<GamePath> *p_gamePathArray;
     Core* m_corePtr;
     ImageProvider* m_imageProvider;

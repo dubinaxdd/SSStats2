@@ -44,6 +44,7 @@ struct Settings
     QString updateCheckAddress = "";
     QString language = "system";
     QString lastGamePath = "";
+    bool legacyOverlayForDE = false;
 };
 
 class SettingsController : public QObject

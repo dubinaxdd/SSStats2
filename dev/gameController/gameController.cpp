@@ -261,6 +261,15 @@ void GameController::checkWindowState()
 
     if (m_gameHwnd && m_gameInitialized)              ///<Если игра запущена и инициализирована
     {
+        RECT gameRect;
+        GetWindowRect(m_gameHwnd, &gameRect);
+
+        if (m_ssLounchState && gameRect.bottom - gameRect.top != m_gameRect.bottom - m_gameRect.top
+            && gameRect.right - gameRect.left != m_gameRect.right - m_gameRect.left)
+            emit gameWindowSizeChanged();
+
+        m_gameRect = gameRect;
+
         if(!m_ssLounchState)                                   ///<Если перед этим игра не была запущена
         {
             m_ssLounchState = true;                                ///<Устанавливаем запущенное состояние
@@ -755,7 +764,24 @@ HWND GameController::gameHwnd() const
 
 bool GameController::gameWindowed() const
 {
-    return m_gameWindowed && !m_useWindows7SupportMode;
+    //return m_gameWindowed
+
+    if (!IsWindow(gameHwnd())) return false;
+
+    // Получаем обычные стили окна
+    LONG_PTR style = GetWindowLongPtr(gameHwnd(), GWL_STYLE);
+
+    // Проверяем наличие изменяемой рамки (Thick Frame / Sizebox)
+    bool hasResizableFrame = (style & WS_THICKFRAME);
+
+    // Проверяем наличие обычной или диалоговой рамки
+    bool hasNormalFrame = (style & WS_BORDER) || (style & WS_DLGFRAME);
+
+    // Дополнительно можно проверить расширенные стили (например, вдавленная рамка 3D)
+    LONG_PTR exStyle = GetWindowLongPtr(gameHwnd(), GWL_EXSTYLE);
+    bool hasClientEdge = (exStyle & WS_EX_CLIENTEDGE) || (exStyle & WS_EX_WINDOWEDGE);
+
+    return (hasResizableFrame || hasNormalFrame || hasClientEdge) && !m_useWindows7SupportMode;
 }
 
 GameStateReader *GameController::gameStateReader() const

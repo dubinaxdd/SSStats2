@@ -120,8 +120,7 @@ int main(int argc, char *argv[])
 
     int retCode;
     try {
-        Core core(context, &app);
-
+        Core core(&engine, context,  &app);
         engine.addImageProvider("ImageProvider",core.uiBackend()->imageProvider());
 
         app.setWindowIcon(QIcon(":/icons/resources/icons/DowStatsClient.ico"));

@@ -1,24 +1,20 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.12
 import QtQuick.Layouts 1.12
-import QtQuick.Window 2.15
 import GlobalMouseProvider 1.0
 import DowStatsStyle 1.0
 import GameType 1.0
 
-Window {
+Item {
     id: window
     width: 640
     height: 480
-    visible: _uiBackend.settingsPageModel.overlayVisible && (_uiBackend.settingsPageModel.legacyOverlayForDE || _uiBackend.gamePage.currentGameType  !==  GameType.DefinitiveEdition)
-    title: "DowStatsClientOverlay"
-    color: "#00000000"
-    visibility: Window.Maximized
 
     property real xMousePos
     property real yMousePos
     property real mouseAreaWidth
     property real mouseAreaHeight
+    visible: _uiBackend.settingsPageModel.overlayVisible && !_uiBackend.settingsPageModel.legacyOverlayForDE && _uiBackend.gamePage.currentGameType  ===  GameType.DefinitiveEdition
 
     Component.onCompleted: {
         if (window.visible)
@@ -30,13 +26,11 @@ Window {
             GlobalMouseProvider.rootElement = windowRectangle
     }
 
-    onVisibilityChanged: {
-        patyStatistic.resetScrollView();
-    }
+    //Component.onCompleted: GlobalMouseProvider.rootElement = windowRectangle
 
     Connections{
         target: _uiBackend
-        enabled: window.visible
+        enabled: _uiBackend.ssMaximized && window.visible
 
         function onSendMouseWheel(delta){
             GlobalMouseProvider.sendMouseWheel(delta);
@@ -58,36 +52,15 @@ Window {
                 yMousePos = yMousePos - _uiBackend.ssWindowPositionY;
             }
 
-            xMousePos /= _uiBackend.devicePixelRatio
-            yMousePos /= _uiBackend.devicePixelRatio
+            //xMousePos /= _uiBackend.devicePixelRatio
+            //yMousePos /= _uiBackend.devicePixelRatio
+            //mouseAreaWidth *= _uiBackend.devicePixelRatio
+            //mouseAreaHeight *= _uiBackend.devicePixelRatio
 
             GlobalMouseProvider.mouseX = xMousePos;
             GlobalMouseProvider.mouseY = yMousePos;
         }
-
-        function onWindowTopmostChanged(){
-            if (_uiBackend.topmost)
-            {
-                //window.showMaximized();
-               // window.setWidth(mouseAreaWidth);
-               // window.setHeight(mouseAreaHeight);
-               // window.showMaximized();
-                window.flags =  Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint | Qt.Tool |Qt.Popup | Qt.Window | Qt.WindowTransparentForInput | Qt.WA_TranslucentBackground | Qt.WA_ShowWithoutActivating
-            }
-            else
-            {
-                window.flags =  Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput | Qt.WA_TranslucentBackground | Qt.WA_ShowWithoutActivating | Qt.WA_WState_Hidden
-                window.setWidth(0);
-                window.setHeight(0);
-            }
-        }
-
-        function onWindowedModeSeted()
-        {
-            window.flags =  Qt.FramelessWindowHint | Qt.Tool | Qt.Window | Qt.WindowTransparentForInput | Qt.WA_TranslucentBackground | Qt.WA_ShowWithoutActivating
-        }
     }
-
 
     OverlayNotification{
         id: notification
@@ -99,7 +72,7 @@ Window {
         id: windowRectangle
         color: "#00000000"
         anchors.fill: parent
-        visible: _uiBackend.showClient && window.visible
+        visible: _uiBackend.showClient
 
         Rectangle {
             id: backgroundRectangle

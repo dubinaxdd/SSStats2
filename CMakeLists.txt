@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.19)
 cmake_policy(SET CMP0048 NEW)
 
-project(DowStatsClient VERSION 3.2 LANGUAGES CXX)
+project(DowStatsClient VERSION 3.3 LANGUAGES CXX)
 
 set(TARGET_NAME DowStatsClient)
 
@@ -54,6 +54,7 @@ endif()
 
 add_subdirectory(externals/ReplayReaderLibrary)
 add_subdirectory(externals/quazip)
+add_subdirectory(externals/DxHookOverlay)
 
 set(DowStatsClient_INSTALATION_DIR  ${PROJECT_BINARY_DIR}/bin)
 set(DowStatsClient_LIBRARY_DIR  ${PROJECT_BINARY_DIR}/lib)

@@ -9,7 +9,7 @@
 #include <version.h>
 #include <theme.h>
 
-Core::Core(QQmlContext *context, QObject* parent)
+Core::Core(QQmlApplicationEngine* engine, QQmlContext *context,  QObject* parent)
     : QObject(parent)
     , m_logger(new Logger(this))
     , m_settingsController(new SettingsController(this))
@@ -24,6 +24,7 @@ Core::Core(QQmlContext *context, QObject* parent)
     , m_mapManager(new MapManager(m_settingsController, m_gameController->currentGame(), this))
     , m_balanceModManager(new BalanceModManager(m_settingsController, this))
     , m_uiBackend(new UiBackend(this, context))
+    , m_dxHookOverlay(new DxHookOverlay(m_gameController, m_uiBackend, engine, this))
 {
     registerTypes();
 
@@ -49,7 +50,6 @@ Core::Core(QQmlContext *context, QObject* parent)
     m_settingsController->initializeSettings();
 
     m_uiBackend->setGamePathArray(m_gameController->gamePathArray());
-
 }
 
 void Core::registerTypes()
@@ -97,6 +97,7 @@ void Core::addConnections()
     QObject::connect(m_gameController,                    &GameController::gameMaximized,          m_soundProcessor,             &SoundProcessor::setGameMaximized,     Qt::DirectConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_overlayWindowController,    &OverlayWindowController::gameLaunched,       Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_balanceModManager,          &BalanceModManager::onGameLaunchStateChanged, Qt::QueuedConnection);
+    //QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, m_dxHookOverlay,          &DxHookOverlay::runOverlay, Qt::QueuedConnection);
     QObject::connect(m_gameController,                    &GameController::inputBlockStateChanged, HookManager::instance(),    &HookManager::onInputBlockStateChanged,     Qt::QueuedConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::gameInitialized,         m_overlayWindowController,  &OverlayWindowController::gameInitialized, Qt::DirectConnection);
     QObject::connect(m_gameController->gameStateReader(),     &GameStateReader::ssShutdown,              m_overlayWindowController,  &OverlayWindowController::onSsShutdowned,  Qt::QueuedConnection);
@@ -127,10 +128,27 @@ void Core::addConnections()
     QObject::connect(m_gameController->dowServerProcessor(),  &DowServerProcessor::sendRelicStats, m_uiBackend->statisticPanel(), &StatisticPanel::receiveRelicStats, Qt::QueuedConnection);
 
 
+    QObject::connect(m_gameController,                    &GameController::gameLaunchStateChanged, this, [this](bool gameLounched){
+        if (!m_uiBackend->settingsPageModel()->legacyOverlayForDE() && m_gameController->currentGame() && m_gameController->currentGame()->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+            m_dxHookOverlay->runOverlay(gameLounched);
+
+
+    }, Qt::QueuedConnection);
+
+    QObject::connect(m_gameController, &GameController::gameWindowSizeChanged, this, [this]{
+        if (!m_uiBackend->settingsPageModel()->legacyOverlayForDE() && m_gameController->currentGame() && m_gameController->currentGame()->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+            m_dxHookOverlay->runOverlay(true);
+    }  , Qt::QueuedConnection);
+
 
     //QObject::connect(m_soulstormController, &SoulstormController::sendAuthKey, m_statsServerProcessor, &StatsServerProcessor::receiveAuthKey, Qt::QueuedConnection);
     //TODO: нужно для отладки спамилки рекламы
     //QObject::connect(m_uiBackend->statisticPanel(), &StatisticPanel::manualStatsRequest, m_soulstormController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+}
+
+DxHookOverlay *Core::dxHookOverlay() const
+{
+    return m_dxHookOverlay;
 }
 
 GameController *Core::gameController() const
