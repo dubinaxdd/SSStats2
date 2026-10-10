@@ -29,8 +29,8 @@ Rectangle {
 
         LinkButton
         {
-            text: "dowstats.ru"
-            link: "https://dowstats.ru/"
+            text: "dowstats.com"
+            link: "https://dowstats.com/"
         }
 
 
@@ -78,7 +78,7 @@ Rectangle {
         LinkButton
         {
             text: "Relic Ladder"
-            link: "https://dowstats.com/relic-ladder"
+            link: "https://dowstats.com/relic-ladder.php"
         }
 
         LinkButton
@@ -90,7 +90,7 @@ Rectangle {
         LinkButton
         {
             text: qsTr("Help")
-            link: "https://dowstats.ru/support.php"
+            link: "https://dowstats.com/support.php"
         }
 
         Rectangle{
