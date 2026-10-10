@@ -56,7 +56,7 @@ void SettingsController::initializeSettings()
     m_settings->cameraModInstalled = dow_stats_settings->value("mods/camera_mod_installed", false).toBool();
     m_settings->cameraModDEInstalled = dow_stats_settings->value("mods/camera_mod_de_installed", false).toBool();
     m_settings->gridHotkeysInstalled = dow_stats_settings->value("mods/grid_hotkeys_installed", false).toBool();
-    m_settings->autoinstallDefaultMaps = dow_stats_settings->value("mods/autoinstall_default_maps", true).toBool();
+    m_settings->autoinstallDefaultMaps = dow_stats_settings->value("mods/autoinstall_default_maps", false).toBool();
     m_settings->autoinstallAllMaps = dow_stats_settings->value("mods/autoinstall_all_maps", false).toBool();
 
     //[balance_mod]

@@ -27,14 +27,14 @@ struct Settings
     bool enableGameLoadEventSound = false;
     bool enableGameStartEventSound = false;
     int  volume = 50;
-    bool autoinstallDefaultMaps = true;
+    bool autoinstallDefaultMaps = false;
     bool autoinstallAllMaps = false;
     QString currentMod = "dxp2";
     QString currentModVersion = "1.0";
     int currentTheme = 0;
     QString lastActualBalanceMod = "";
     QString templateProfilePath = "";
-    bool autoUpdateBalanceMod = true;
+    bool autoUpdateBalanceMod = false;
     bool autorun = true;
     bool enableAdvertising = false;
     LaunchMod launchMode = LaunchMod::LastSelectedMod;
