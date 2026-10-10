@@ -184,13 +184,13 @@ Rectangle {
                         onCheckedChanged: model.legacyOverlayForDE = checked;
                         enabled: !_uiBackend.gameLaunchState
                     }*/
-
+/*
                     StyledSwitch{
                         text: qsTr("Show overlay with Windows 7 support mode")
                         checked: model.win7SupportMode
                         onCheckedChanged: model.win7SupportMode = checked;
                     }
-
+*/
                     StyledSwitch{
                         id: showGamePannelSwitch
                         text: qsTr("APM panel visible in game")

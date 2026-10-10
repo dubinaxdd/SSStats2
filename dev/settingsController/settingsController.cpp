@@ -37,7 +37,8 @@ void SettingsController::initializeSettings()
     m_settings->lastReadedNewsMessageID = dow_stats_settings->value("client/last_readed_news_message_id", "").toString();
     m_settings->lastReadedEventsMessageID = dow_stats_settings->value("client/last_readed_events_message_id", "").toString();
     m_settings->overlayVisible = dow_stats_settings->value("client/overlay_visible", true).toBool();
-    m_settings->win7SupportMode = dow_stats_settings->value("client/win7_support_mode", false).toBool();
+    //TODO: Оставляем на всякий случай
+    //m_settings->win7SupportMode = dow_stats_settings->value("client/win7_support_mode", false).toBool();
     m_settings->volume = dow_stats_settings->value("client/volume", 50).toInt();
     m_settings->enableEventsSoundWhenGameMaximized = dow_stats_settings->value("client/enable_events_sound_when_game_maximized", true).toBool();
     m_settings->enableEventsSoundWhenGameMinimized = dow_stats_settings->value("client/enable_events_sound_when_game_minimized", true).toBool();
@@ -93,7 +94,8 @@ void SettingsController::saveSettings()
     dow_stats_settings->setValue("client/last_readed_news_message_id", m_settings->lastReadedNewsMessageID);
     dow_stats_settings->setValue("client/last_readed_events_message_id", m_settings->lastReadedEventsMessageID);
     dow_stats_settings->setValue("client/overlay_visible", m_settings->overlayVisible);
-    dow_stats_settings->setValue("client/win7_support_mode", m_settings->win7SupportMode);
+    //TODO: Оставляем на всякий случай
+    //dow_stats_settings->setValue("client/win7_support_mode", m_settings->win7SupportMode);
     dow_stats_settings->setValue("client/enable_events_sound_when_game_maximized", m_settings->enableEventsSoundWhenGameMaximized);
     dow_stats_settings->setValue("client/enable_events_sound_when_game_minimized", m_settings->enableEventsSoundWhenGameMinimized);
     dow_stats_settings->setValue("client/enable_game_load_event_sound", m_settings->enableGameLoadEventSound);
