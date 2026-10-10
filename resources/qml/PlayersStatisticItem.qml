@@ -388,19 +388,24 @@ Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: relicStatistic.height + (20 * sizeModifer)
             visible: root.relicStatsAvailable
-            //color: DowStatsStyle.alternateBackgroundColor
+
             radius: 10 * sizeModifer
 
             color: {
-                if (root.playerIsBanned)
-                {
-                    if (root.banType === BanType.FormerCheater)
-                        return "#FAF884"
-                    else
-                        return "#ffa9a9"
-                }
-                else
+                if (root.hoverEnabled && root.hoveredState)
                     return DowStatsStyle.alternateBackgroundColor
+                else
+                {
+                    if (root.playerIsBanned)
+                    {
+                        if (root.banType === BanType.FormerCheater)
+                            return "#FAF884"
+                        else
+                            return "#ffa9a9"
+                    }
+                    else
+                        return DowStatsStyle.alternateBackgroundColor
+                }
             }
 
             ColumnLayout
