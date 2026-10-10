@@ -176,13 +176,14 @@ Rectangle {
 
                 ColumnLayout
                 {
-                    StyledSwitch{
+                    //TODO: Оставляем на всякий случай
+                    /*StyledSwitch{
                         id: legacyOverlayForDE
                         text: qsTr("Legacy overlay rendering for DE")
                         checked: model.legacyOverlayForDE
                         onCheckedChanged: model.legacyOverlayForDE = checked;
                         enabled: !_uiBackend.gameLaunchState
-                    }
+                    }*/
 
                     StyledSwitch{
                         text: qsTr("Show overlay with Windows 7 support mode")
