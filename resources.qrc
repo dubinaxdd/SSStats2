@@ -65,7 +65,6 @@
         <file>resources/maps/2p_blood_river.jpg</file>
         <file>resources/maps/2p_blood_river_[rem].jpg</file>
         <file>resources/maps/2p_blood_river_remix.jpg</file>
-        <file>resources/maps/2p_bloody_hell.jpg</file>
         <file>resources/maps/2p_bloody_hell_[ed].jpg</file>
         <file>resources/maps/2p_bridge_too_far.jpg</file>
         <file>resources/maps/2p_colosseum.jpg</file>
@@ -245,6 +244,14 @@
         <file>resources/maps/2p_cryptek_arkana_bm.jpg</file>
         <file>resources/maps/6p_principian_badlands_bm.jpg</file>
         <file>resources/maps/6p_trivian_groves_bm.jpg</file>
+        <file>resources/maps/map_names.json</file>
+        <file>resources/maps/2p_fata_morgana_[rem]_official.jpg</file>
+        <file>resources/maps/2p_deadly_fun_archeology_official.jpg</file>
+        <file>resources/maps/2p_sandstorm_official.jpg</file>
+        <file>resources/maps/4p_refinery_official.jpg</file>
+        <file>resources/maps/7p_forsaken_canals_official.jpg</file>
+        <file>resources/maps/2p_bloody hell.jpg</file>
+        <file>resources/maps/4p_tainted_place.jpg</file>
     </qresource>
     <qresource prefix="/componentScins">
         <file>resources/componenScins/switch1.svg</file>
