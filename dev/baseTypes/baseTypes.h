@@ -488,6 +488,7 @@ struct MapItem
     bool downloadProcessed = false;
 
     bool selected = false;
+    QString miniMapId = "";
 };
 
 struct ModInfo{

@@ -39,6 +39,7 @@ public:
             NeedUpdate = Qt::UserRole + 6,
             DownloadingProcessed = Qt::UserRole + 7,
             MapId = Qt::UserRole + 8,
+            MiniMapId = Qt::UserRole + 9,
             Selected = Qt::UserRole
     };
 
@@ -115,6 +116,7 @@ public slots:
     void receiveMapItem(MapItem *mapItem);
     void receiveDownloadingProgress(int downloadedCount, int fullCount, bool downloadedProcessed);
     void receiveMapsInfoLoaded();
+    void onMiniMapUpdate(QString mapImageId);
 
 protected:
    QHash<int, QByteArray> roleNames() const override;
@@ -150,7 +152,6 @@ private:
 
     bool m_autoinstallDefaultMaps = true;
     bool m_autoinstallAllMaps = false;
-
     bool m_loadMapInfoProcessed = true;
 };
 

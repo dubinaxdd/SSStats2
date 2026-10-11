@@ -60,6 +60,7 @@ private:
     void updateBlockInfoUpdate();
 
     MapItem* getMapItemById(QString mapId);
+    void requestAllMapImages();
 
 private:
     GamePath* m_currentGame;

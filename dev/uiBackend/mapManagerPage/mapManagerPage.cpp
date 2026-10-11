@@ -14,6 +14,7 @@ MapManagerPage::MapManagerPage(MapManager* mapManager, SettingsController* setti
     QObject::connect(m_mapManagerPtr, &MapManager::sendDownloadingProgress, this, &MapManagerPage::receiveDownloadingProgress, Qt::QueuedConnection);
     QObject::connect(m_mapManagerPtr, &MapManager::sendMapImage, m_imageProvider, &ImageProvider::receiveMapImage, Qt::QueuedConnection);
     QObject::connect(m_mapManagerPtr, &MapManager::mapsInfoLoaded, this, &MapManagerPage::receiveMapsInfoLoaded, Qt::QueuedConnection);
+    QObject::connect(m_imageProvider, &ImageProvider::updateMiniMapImage, this, &MapManagerPage::onMiniMapUpdate, Qt::QueuedConnection);
 }
 
 QVariant MapManagerPage::data(const QModelIndex &index, int role) const
@@ -53,6 +54,8 @@ QVariant MapManagerPage::data(const QModelIndex &index, int role) const
         return mapItem->selected;
     else if (role == MapId)
         return mapItem->id;
+    else if (role == MiniMapId)
+        return mapItem->miniMapId;
 
     return QVariant();
 }
@@ -122,6 +125,27 @@ void MapManagerPage::receiveMapsInfoLoaded()
     selectMap(0);
 }
 
+void MapManagerPage::onMiniMapUpdate(QString mapImageId)
+{
+    for (int i = 0; i < m_mapItemArray.count(); ++i)
+    {
+        if(m_mapItemArray.at(i)->miniMapId == mapImageId)
+        {
+            QString temp = m_mapItemArray.at(i)->miniMapId;
+
+            m_mapItemArray[i]->miniMapId = "";
+
+            const QModelIndex index = this->index(i, 0);
+            emit dataChanged(index,index,{MiniMapId});
+
+            m_mapItemArray[i]->miniMapId = temp;
+            emit dataChanged(index,index,{MiniMapId});
+
+            break;
+        }
+    }
+}
+
 QHash<int, QByteArray> MapManagerPage::roleNames() const
 {
     QHash<int, QByteArray> roles;
@@ -134,6 +158,7 @@ QHash<int, QByteArray> MapManagerPage::roleNames() const
     roles[DownloadingProcessed] = "downloadingProcessed";
     roles[Selected] = "selected";
     roles[MapId] = "mapId";
+    roles[MiniMapId] = "miniMapId";
 
     return roles;
 }
@@ -272,10 +297,8 @@ void MapManagerPage::selectMap(int index)
         }
     }
 
-    m_imageProvider->setCurrentMiniMap(std::move(minimap));
-
     setCurrentMapNeedInstall(m_mapItemArray[index]->needInstall);
-    setCurrentMiniMapId("mapImage" + m_mapItemArray[index]->id);
+    setCurrentMiniMapId(m_mapItemArray[index]->miniMapId);
     setCurrentMapName(m_mapItemArray[index]->mapName);
     setCurrentMapAuthors(m_mapItemArray[index]->authors);
     setCurrentMapDescription(m_mapItemArray[index]->description);

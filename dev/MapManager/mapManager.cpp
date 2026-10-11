@@ -115,6 +115,7 @@ void MapManager::receiveMapList(QNetworkReply *reply)
         newMapItem.unpackedSize = newObject.value("unpackedSize").toInt();
         newMapItem.packedSize = newObject.value("packedSize").toInt();
         newMapItem.type = newObject.value("type").toInt();
+        newMapItem.miniMapId = "mapImage" + newMapItem.id;
 
         if(!newObject.value("tags").isArray())
             continue;
@@ -140,15 +141,15 @@ void MapManager::receiveMapList(QNetworkReply *reply)
 
     for(int i = 0; i < m_mapItemArray.count(); i++)
     {
-        requestMapInfo(
-            m_mapItemArray.at(i).id,
-            m_mapItemArray.at(i).modContentHash);
-
-        requestMapImage(m_mapItemArray.at(i).id);
+        requestMapInfo(m_mapItemArray.at(i).id, m_mapItemArray.at(i).modContentHash);
+        //requestMapImage(m_mapItemArray.at(i).id);
     }
 
     m_checkUpdatesProcessed = false;
     m_mapListLoaded = true;
+
+    //for(int i = 0; i < m_mapItemArray.count(); i++)
+    //    requestMapImage(m_mapItemArray.at(i).id);
 }
 
 void MapManager::updateMapList()
@@ -328,23 +329,33 @@ void MapManager::receiveMapInfo(QNetworkReply *reply, QString mapId)
 
     emit sendMapItem(mapItem);
 
-    if(m_requestetMapInfoCount >= m_mapItemArray.count())
+    if (m_requestetMapInfoCount >= m_mapItemArray.count())
     {
         m_blockInfoUpdate = false;
         emit mapsInfoLoaded();
 
-        if( m_settingsController->getSettings()->autoinstallAllMaps)
+        // Информация обо всех картах обработана.
+        // Теперь начинаем загружать миникарты.
+        requestAllMapImages();
+
+        if (m_settingsController->getSettings()->autoinstallAllMaps)
         {
             receiveInstallAllMaps();
             return;
         }
 
-        if( m_settingsController->getSettings()->autoinstallDefaultMaps)
+        if (m_settingsController->getSettings()->autoinstallDefaultMaps)
         {
             receiveInstallDefaultMaps();
             return;
         }
     }
+}
+
+void MapManager::requestAllMapImages()
+{
+    for (const MapItem& mapItem : m_mapItemArray)
+        requestMapImage(mapItem.id);
 }
 
 void MapManager::requestFile(QString fileName, QString fileHash, QString mapId)

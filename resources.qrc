@@ -252,6 +252,7 @@
         <file>resources/maps/7p_forsaken_canals_official.jpg</file>
         <file>resources/maps/2p_bloody hell.jpg</file>
         <file>resources/maps/4p_tainted_place.jpg</file>
+        <file>resources/maps/2p_bloody_hell.jpg</file>
     </qresource>
     <qresource prefix="/componentScins">
         <file>resources/componenScins/switch1.svg</file>

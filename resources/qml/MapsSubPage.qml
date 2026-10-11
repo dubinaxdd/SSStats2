@@ -10,163 +10,33 @@ Rectangle {
 
     color: "#00000000"
 
-    ColumnLayout
-    {
+    ColumnLayout {
         anchors.fill: parent
         spacing: 20
 
-        RowLayout
-        {
-            Layout.preferredHeight: miniMapRectangle.height
+        // =================================================
+        // Кнопки управления
+        // =================================================
+
+        RowLayout {
+            id: controlPanel
             Layout.fillWidth: true
-
             spacing: 20
+            Layout.alignment: Qt.AlignTop
 
             ColumnLayout
             {
-                Layout.alignment: Qt.AlignTop
-
-                Rectangle
-                {
-                    id: miniMapRectangle
-
-                    Layout.preferredWidth: 140
-                    Layout.preferredHeight: 140
-
-                    Layout.alignment: Qt.AlignTop
-
-                    color: "#112332"
-                    radius: 10
-                    clip: true
-
-                    //Костыль для перезагрузки картинки, рил так на формух делают
-                    Connections {
-                        target: _uiBackend.mapManagerPage
-
-                        function onCurrentMapNameChanged()
-                        {
-                            if (_uiBackend.mapManagerPage.currentMapNeedInstall)
-                            {
-                                mapImage.source = "";
-                                mapImage.source = "image://imageprovider/" + _uiBackend.mapManagerPage.currentMiniMapId;
-                            }
-                            else
-                            {
-                                mapImage.source = "";
-                                mapImage.source = "image://imageprovider/currentMiniMap";
-                            }
-                        }
-                    }
-
-                    Image{
-                        id: mapImage
-                        anchors.fill: parent
-                        source: "image://imageprovider/currentMiniMap"
-                        cache: false
-                        visible:false
-                        fillMode: Image.PreserveAspectFit
-                    }
-
-                    Rectangle {
-                        id: maskRectangle
-                        anchors.fill: parent
-                        radius: 10
-                        visible: false
-
-                    }
-
-                    Label
-                    {
-                        verticalAlignment: Qt.AlignVCenter
-                        horizontalAlignment: Qt.AlignHCenter
-
-                        anchors.fill: parent
-                        color: "#FFFFFF"
-                        text: qsTr("Checking updates...")
-                        visible: _uiBackend.mapManagerPage.loadMapInfoProcessed
-
-                        font.pixelSize: 11
-                    }
-
-                    OpacityMask {
-                        id: opacityMask
-                        anchors.fill: mapImage
-                        source: mapImage
-                        maskSource: maskRectangle
-                        visible: !_uiBackend.mapManagerPage.loadMapInfoProcessed
-                    }
-
-                }
-
-                Label
-                {
-                    id: downloadingProgress
-                    visible: _uiBackend.mapManagerPage.downloadedProcessed
-                    text: qsTr("Downloading progress: ") + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
-                    font.pixelSize: 11
-                    color: DowStatsStyle.textColor
-                }
-            }
-
-            ColumnLayout
-            {
-                Layout.alignment: Qt.AlignTop
-
-                Label{
-                    text: _uiBackend.mapManagerPage.currentMapName
-                    font.pixelSize: 20
-                    Layout.preferredWidth: 190
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: qsTr("Authors: ") + _uiBackend.mapManagerPage.currentMapAuthors
-                    Layout.preferredWidth: 190
-                    visible: _uiBackend.mapManagerPage.currentMapAuthors !== ""
-                    font.pixelSize: 11
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: _uiBackend.mapManagerPage.currentMapDescription
-                    Layout.preferredWidth: 190
-                    visible: _uiBackend.mapManagerPage.currentMapDescription !== ""
-                    font.pixelSize: 11
-                    color: DowStatsStyle.textColor
-                }
-
-                Label{
-                    text: qsTr("Tags: ") + _uiBackend.mapManagerPage.currentMapTags
-                    Layout.preferredWidth: 190
-                    visible: _uiBackend.mapManagerPage.currentMapTags !== ""
-                    font.pixelSize: 11
-                    color: DowStatsStyle.textColor
-                }
-            }
-
-            Rectangle
-            {
-                Layout.fillWidth: true
-            }
-
-            ColumnLayout
-            {
-                Layout.alignment: Qt.AlignTop
-
-                BlueButton
-                {
+                BlueButton {
                     Layout.preferredWidth: 220
                     text: qsTr("Check updates")
-                    enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
+                    enabled:!(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
 
                     onClicked: {
                         _uiBackend.mapManagerPage.loadMapsInfo();
                     }
                 }
 
-
-                BlueButton
-                {
+                BlueButton {
                     Layout.preferredWidth: 220
                     text: qsTr("Install default maps")
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
@@ -179,8 +49,7 @@ Rectangle {
                     }
                 }
 
-                BlueButton
-                {
+                BlueButton {
                     Layout.preferredWidth: 220
                     text: qsTr("Install all maps")
                     enabled: !(_uiBackend.mapManagerPage.downloadedProcessed || _uiBackend.mapManagerPage.loadMapInfoProcessed)
@@ -192,147 +61,330 @@ Rectangle {
                             _uiBackend.mapManagerPage.installAllMaps();
                     }
                 }
+            }
 
-                StyledSwitch{
+            ColumnLayout
+            {
+                //Layout.preferredHeight: parent.height
+                Layout.alignment: Qt.AlignTop
+
+                StyledSwitch {
                     text: qsTr("Auto-install default maps")
                     checked: _uiBackend.mapManagerPage.autoinstallDefaultMaps
-                    onCheckedChanged: _uiBackend.mapManagerPage.autoinstallDefaultMaps = checked
+
+                    onCheckedChanged: {
+                        _uiBackend.mapManagerPage.autoinstallDefaultMaps = checked;
+                    }
                 }
 
-                StyledSwitch{
+                StyledSwitch {
                     text: qsTr("Auto-install all maps")
                     checked: _uiBackend.mapManagerPage.autoinstallAllMaps
-                    onCheckedChanged: _uiBackend.mapManagerPage.autoinstallAllMaps = checked
+
+                    onCheckedChanged: {
+                        _uiBackend.mapManagerPage.autoinstallAllMaps = checked;
+                    }
                 }
             }
         }
 
-        ListView {
-            id: mapsListView
 
+        // =====================================================
+        // Сетка карт
+        // =====================================================
+
+        GridView {
+            id: mapsGridView
             Layout.fillHeight: true
             Layout.fillWidth: true
-
             clip: true
+            model: _uiBackend.mapManagerPage
+
+            // Размер одной ячейки
+            cellWidth: 210
+            cellHeight: 310
 
             ScrollBar.vertical: ScrollBar {
                 id: scrollBar
-                visible: mapsListView.contentItem.height > mapsListView.height
-                policy: ScrollBar.AlwaysOn
+                policy: ScrollBar.AsNeeded
             }
 
-            model: _uiBackend.mapManagerPage
+            delegate: Rectangle {
 
-            spacing: 5
+                width: 200
+                height: 300
 
-            delegate:  Rectangle {
-
-                width: mapsListView.width - scrollBar.width
-                height: 50
                 radius: 10
-                //color: model.selected ? "#A9A9A9" : delegateMouseArea.containsMouse ? "#c8c8c8" : "#DCDCDC"
-                color: model.selected ? DowStatsStyle.selectionColor : delegateMouseArea.containsMouse ? DowStatsStyle.highlightItemColor : DowStatsStyle.itemColor
 
-                MouseArea{
+                color:
+                    model.selected
+                    ? DowStatsStyle.selectionColor
+                    : delegateMouseArea.containsMouse
+                      ? DowStatsStyle.highlightItemColor
+                      : DowStatsStyle.itemColor
+
+                border.width:
+                    model.needInstall || model.needUpdate
+                    ? 1
+                    : 0
+
+                border.color: "#D33"
+
+                // =================================================
+                // Выбор карты
+                // =================================================
+
+                MouseArea {
                     id: delegateMouseArea
                     anchors.fill: parent
-                    cursorShape: Qt.PointingHandCursor
                     hoverEnabled: true
-                    z:0
+                    cursorShape: Qt.PointingHandCursor
 
                     onClicked: {
-                        _uiBackend.mapManagerPage.selectMap(model.index)
+                        _uiBackend.mapManagerPage.selectMap(model.index);
                     }
                 }
 
-                RowLayout
-                {
+
+                // =================================================
+                // Содержимое карточки
+                // =================================================
+
+                ColumnLayout {
+
                     anchors.fill: parent
                     anchors.margins: 10
-                    spacing: 10
+                    spacing: 7
 
-                    Rectangle{
+                    // =============================================
+                    // Превью карты
+                    // =============================================
 
-                        Layout.preferredWidth: 10
-                        Layout.preferredHeight: 10
-                        anchors.margins: 5
-
-                        color: "#00000000"
+                    Rectangle {
+                        id: previewRectangle
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: width
+                        radius: 7
+                        color: "#112332"
+                        clip: true
 
                         Image {
-                            visible: model.needInstall || model.needUpdate
+                            id: previewImage
                             anchors.fill: parent
-                            source: "qrc:/images/resources/images/redDot.png"
+
+                            source:
+                                model.miniMapId !== undefined
+                                && model.miniMapId !== ""
+                                ? "image://imageprovider/"
+                                  + model.miniMapId
+                                : ""
+
+                            cache: false
+                            asynchronous: true
+                            fillMode: Image.PreserveAspectCrop
+                            visible: status === Image.Ready
+                        }
+
+
+                        // =========================================
+                        // Если картинка ещё не загрузилась
+                        // =========================================
+
+                        Label {
+                            anchors.centerIn: parent
+                            text: qsTr("No preview")
+                            color: "#FFFFFF"
+                            font.pixelSize: 11
+                            visible: previewImage.status !== Image.Ready
+                        }
+
+                        // =========================================
+                        // Индикатор необходимости установки
+                        // =========================================
+
+                        Rectangle {
+                            width: 13
+                            height: 13
+
+                            radius: 7
+
+                            anchors {
+                                top: parent.top
+                                right: parent.right
+
+                                margins: 7
+                            }
+
+                            color: "#E53935"
+
+                            visible: model.needInstall || model.needUpdate
+                        }
+
+
+                        // =========================================
+                        // Затемнение при наведении
+                        // =========================================
+
+                        Rectangle {
+                            anchors.fill: parent
+                            radius: 7
+                            color: "#000000"
+
+                            opacity:
+                                delegateMouseArea.containsMouse
+                                ? 0.15
+                                : 0
+
+                            Behavior on opacity {
+                                NumberAnimation {
+                                    duration: 100
+                                }
+                            }
                         }
                     }
 
-                    Label
-                    {
-                        Layout.preferredWidth: 200
-                        text: model.mapName
-                        font.pixelSize: 11
-                        color: DowStatsStyle.textColor
-                    }
 
-                    Label
-                    {
-                        Layout.preferredWidth: 60
-                        text: model.description
-                        font.pixelSize: 11
-                        color: DowStatsStyle.textColor
-                        //visible: model.description !== ""
-                    }
+                    // =================================================
+                    // Название карты
+                    // =================================================
 
-                    Label
-                    {
-                        Layout.preferredWidth: 100
-                        text: qsTr("Tags: ") + model.tags
-                        visible: model.tags !== ""
-                        font.pixelSize: 11
-                        color: DowStatsStyle.textColor
-                    }
-
-                    Rectangle
-                    {
+                    Label {
                         Layout.fillWidth: true
-                    }
 
-                    Label
-                    {
-                        text: qsTr("Downloading processed...")
-                        visible: model.downloadingProcessed
-                        font.pixelSize: 11
+                        text: model.mapName
+                        font.pixelSize: 14
+                        font.bold: true
                         color: DowStatsStyle.textColor
+                        elide: Text.ElideRight
+                        maximumLineCount: 1
                     }
 
-                    BlueButton{
-                        text: qsTr("Install")
-                        z:2
-                        visible: model.needInstall && !model.downloadingProcessed
-                        onClicked: _uiBackend.mapManagerPage.installMap(model.index)
+
+                    // =================================================
+                    // Описание
+                    // =================================================
+
+                    Label {
+                        Layout.fillWidth: true
+                        text: model.description
+                        font.pixelSize: 10
+                        color: DowStatsStyle.textColor
+                        maximumLineCount: 2
+                        wrapMode: Text.WordWrap
+                        elide: Text.ElideRight
+                        visible: model.description !== ""
                     }
 
-                    BlueButton{
-                        text: qsTr("Update")
-                        z:2
-                        visible: !model.needInstall && model.needUpdate && !model.downloadingProcessed
-                        onClicked:{
-                            if (_uiBackend.gameLaunchState)
-                                _uiBackend.soulstormLaunchedDialogVisible = true
-                            else
-                                _uiBackend.mapManagerPage.installMap(model.index)
+                    // =================================================
+                    // Теги
+                    // =================================================
+
+                    Label {
+                        Layout.fillWidth: true
+                        text: qsTr("Tags: ") + model.tags
+                        font.pixelSize: 10
+                        color: DowStatsStyle.textColor
+                        elide: Text.ElideRight
+                        visible: model.tags !== ""
+                    }
+
+
+                    // Заполнитель
+                    Item {
+                        Layout.fillHeight: true
+                    }
+
+
+                    // =================================================
+                    // Статус загрузки
+                    // =================================================
+
+                    Label {
+                        Layout.fillWidth: true
+                        text: qsTr("Downloading processed...")
+                        font.pixelSize: 10
+                        color: DowStatsStyle.textColor
+                        horizontalAlignment: Text.AlignHCenter
+                        visible: model.downloadingProcessed
+                    }
+
+
+                    // =================================================
+                    // Кнопки
+                    // =================================================
+
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 5
+
+                        // =============================================
+                        // Install
+                        // =============================================
+
+                        BlueButton {
+                            Layout.fillWidth: true
+                            text: qsTr("Install")
+
+                            visible: model.needInstall && !model.downloadingProcessed
+
+                            onClicked: {
+                                _uiBackend.mapManagerPage.installMap(model.index);
+                            }
                         }
-                    }
 
-                    BlueButton{
-                        text: qsTr("Delete")
-                        z:2
-                        visible: !model.needInstall && !model.needUpdate && !model.downloadingProcessed
-                        onClicked: {
-                            if (_uiBackend.gameLaunchState)
-                                _uiBackend.soulstormLaunchedDialogVisible = true
-                            else
-                                _uiBackend.mapManagerPage.removeMap(model.index);
+
+                        // =============================================
+                        // Update
+                        // =============================================
+
+                        BlueButton {
+                            Layout.fillWidth: true
+
+                            text: qsTr("Update")
+
+                            visible:
+                                !model.needInstall
+                                && model.needUpdate
+                                && !model.downloadingProcessed
+
+                            onClicked: {
+                                if (_uiBackend.gameLaunchState) {
+                                    _uiBackend.soulstormLaunchedDialogVisible =
+                                        true;
+                                }
+                                else {
+                                    _uiBackend.mapManagerPage.installMap(
+                                        model.index
+                                    );
+                                }
+                            }
+                        }
+
+
+                        // =============================================
+                        // Delete
+                        // =============================================
+
+                        BlueButton {
+                            Layout.fillWidth: true
+                            text: qsTr("Delete")
+
+                            visible:
+                                !model.needInstall
+                                && !model.needUpdate
+                                && !model.downloadingProcessed
+
+                            onClicked: {
+                                if (_uiBackend.gameLaunchState) {
+                                    _uiBackend.soulstormLaunchedDialogVisible =
+                                        true;
+                                }
+                                else {
+                                    _uiBackend.mapManagerPage.removeMap(
+                                        model.index
+                                    );
+                                }
+                            }
                         }
                     }
                 }
