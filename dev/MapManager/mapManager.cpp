@@ -60,6 +60,7 @@ void MapManager::requestMapList()
 
 void MapManager::receiveMapList(QNetworkReply *reply)
 {
+
     if(!reply)
     {
         m_blockInfoUpdate = false;
@@ -142,14 +143,10 @@ void MapManager::receiveMapList(QNetworkReply *reply)
     for(int i = 0; i < m_mapItemArray.count(); i++)
     {
         requestMapInfo(m_mapItemArray.at(i).id, m_mapItemArray.at(i).modContentHash);
-        //requestMapImage(m_mapItemArray.at(i).id);
     }
 
     m_checkUpdatesProcessed = false;
     m_mapListLoaded = true;
-
-    //for(int i = 0; i < m_mapItemArray.count(); i++)
-    //    requestMapImage(m_mapItemArray.at(i).id);
 }
 
 void MapManager::updateMapList()
@@ -182,12 +179,20 @@ void MapManager::updateMapList()
 
             if( m_settingsController->getSettings()->autoinstallAllMaps)
             {
+                m_checkUpdatesProcessed = false;
+                m_mapListLoaded = true;
+                emit mapsInfoLoaded();
+
                 receiveInstallAllMaps();
                 return;
             }
 
             if( m_settingsController->getSettings()->autoinstallDefaultMaps)
             {
+                m_checkUpdatesProcessed = false;
+                m_mapListLoaded = true;
+                emit mapsInfoLoaded();
+
                 receiveInstallDefaultMaps();
                 return;
             }
@@ -714,6 +719,12 @@ void MapManager::onSettingsLoaded()
 
 void MapManager::receiveLocalMapFilesList(QList<MapFileHash> localMapFilesList)
 {
+    if (localMapFilesList.isEmpty())
+    {
+        m_checkUpdatesProcessed = false;
+        emit mapsInfoLoaded();
+    }
+
     m_localMapFilesHashes = localMapFilesList;
 
     if(!m_mapListLoaded)

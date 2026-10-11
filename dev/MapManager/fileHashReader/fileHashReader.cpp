@@ -49,12 +49,18 @@ void FileHashReader::getLocalMapFilesList(QString gamePath)
     QList<MapFileHash> localMapFilesHashes;
 
     if(gamePath.isEmpty())
+    {
+        emit sendLocalMapFilesList(localMapFilesHashes);
         return;
+    }
 
     QDir dir(gamePath);
 
     if(!dir.exists())
+    {
+        emit sendLocalMapFilesList(localMapFilesHashes);
         return;
+    }
 
     QFileInfoList dirContent = dir.entryInfoList(QDir::Files);
 
