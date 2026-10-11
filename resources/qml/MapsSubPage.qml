@@ -85,6 +85,15 @@ Rectangle {
                         _uiBackend.mapManagerPage.autoinstallAllMaps = checked;
                     }
                 }
+
+                Label
+                   {
+                       id: downloadingProgress
+                       visible: _uiBackend.mapManagerPage.downloadedProcessed
+                       text: qsTr("Downloading progress: ") + _uiBackend.mapManagerPage.downloadedCount + "/" + _uiBackend.mapManagerPage.fullCount
+                       font.pixelSize: 11
+                       color: DowStatsStyle.textColor
+                   }
             }
         }
 
