@@ -128,10 +128,12 @@ Rectangle {
                     }
 
                     Label{
-                        text: _uiBackend.replayManager.currentMap
+                        text: _uiBackend.replayManager.currentMapUiName
                         Layout.alignment: Qt.AlignCenter
                         font.pixelSize: 11
                         color: DowStatsStyle.textColor
+                        elide: Text.ElideRight
+                        Layout.maximumWidth: 140
                     }
 
                 }

@@ -22,6 +22,7 @@ class ReplayManager : public QObject
     Q_PROPERTY(QString currentMod MEMBER m_currentMod NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentModVersion MEMBER m_currentModVersion NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentMap MEMBER m_currentMap NOTIFY updateReplayInfo)
+    Q_PROPERTY(QString currentMapUiName MEMBER m_currentMapUiName NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentDuration MEMBER m_currentDuration NOTIFY updateReplayInfo)
     Q_PROPERTY(QString mapSourceUrl MEMBER m_mapSourceUrl NOTIFY updateReplayInfo)
     Q_PROPERTY(QString currentReplayTime MEMBER m_currentReplayTime NOTIFY updateReplayInfo)
@@ -81,6 +82,9 @@ private:
 
     void resetView();
 
+    void parseUiMapNames();
+    QString getUiMapName(QString techMapName);
+
 private:
     GamePath* m_currentGame;
     QString m_playbackFolder;
@@ -97,6 +101,7 @@ private:
     QString m_currentMod;
     QString m_currentModVersion;
     QString m_currentMap;
+    QString m_currentMapUiName;
     QString m_currentDuration;
     QString m_currentReplayTime;
 
@@ -112,6 +117,8 @@ private:
     QList <ModInfo> m_modInfo;
 
     QUrl m_ssUrlPathPath;
+
+    QMap<QString, QString> m_uiMapNamesMap;
 };
 
 #endif // REPLAYMANAGER_H

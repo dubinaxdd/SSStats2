@@ -6,9 +6,11 @@
 #include <QDesktopServices>
 #include <QByteArray>
 #include <QColor>
-
 #include <QFile>
 #include <logger.h>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 using namespace ReplayReader;
 
@@ -27,6 +29,8 @@ ReplayManager::ReplayManager(ImageProvider* imageProvider, QObject *parent)
 
     m_asyncReplayReader->moveToThread(&m_asyncReplayReaderThread);
     m_asyncReplayReaderThread.start();
+
+    parseUiMapNames();
 }
 
 ReplayManager::~ReplayManager()
@@ -89,6 +93,7 @@ void ReplayManager::openPlayback(QString fileName)
 
     m_currentModVersion = newRepReader.replay.Version;
     m_currentMap = newRepReader.replay.Map;
+    m_currentMapUiName = getUiMapName(newRepReader.replay.Map);
 
     int duration = newRepReader.replay.Duration;
 
@@ -445,6 +450,7 @@ void ReplayManager::resetView()
     m_currentMod = "";
     m_currentModVersion = "";
     m_currentMap = "";
+    m_currentMapUiName = "";
     m_currentDuration = "";
     m_currentPlayerCount = 0;
     m_currentTeamsCount = 0;
@@ -458,6 +464,52 @@ void ReplayManager::resetView()
 
     m_mapSourceUrl = "qrc:/maps/resources/maps/default.jpg";
     emit updateReplayInfo();
+}
+
+void ReplayManager::parseUiMapNames()
+{
+    QFile uiMapNames(":/maps/resources/maps/map_names.json");
+
+    if( !uiMapNames.open(QFile::ReadOnly))
+    {
+        qWarning(logWarning()) << "ReplayManager::parseUiMapNames() - Open map_names.json error";
+        return;
+    }
+
+    QJsonDocument jsonDoc = QJsonDocument::fromJson(uiMapNames.readAll());
+
+    if (!jsonDoc.isArray())
+    {
+        qWarning(logWarning()) << "ReplayManager::parseUiMapNames() - Parse JSON error, is not array";
+        return;
+    }
+
+    const QJsonArray jsonArray = jsonDoc.array();
+
+    for(const QJsonValue &item : jsonArray)
+    {
+        if (!item.isObject())
+        {
+            qWarning(logWarning()) << "ReplayManager::parseUiMapNames() - Parse JSON error, array item is not json object";
+            return;
+        }
+
+        QJsonObject jsonObject = item.toObject();
+
+        jsonObject.value("map_name").toString();
+        jsonObject.value("ingame_name").toString();
+
+        m_uiMapNamesMap.insert(jsonObject.value("map_name").toString().toLower(), jsonObject.value("ingame_name").toString());
+    }
+
+}
+
+QString ReplayManager::getUiMapName(QString techMapName)
+{
+    if(m_uiMapNamesMap.contains(techMapName.toLower()))
+        return m_uiMapNamesMap.value(techMapName.toLower());
+    else
+        return techMapName;
 }
 
 const QString &ReplayManager::gameSettings() const
