@@ -199,12 +199,28 @@ Rectangle {
                 }
             }
 
+            BlueButton{
+                Layout.fillWidth: true
+
+                text: qsTr("Show game settings")
+
+                onClicked:{
+                    gameSettings.visible = !gameSettings.visible;
+
+                    if (!gameSettings.visible)
+                        text = qsTr("Show game settings")
+                    else
+                        text = qsTr("Hide game settings")
+                }
+            }
+
 
             RowLayout
             {
+                id: gameSettings
                 Layout.alignment: Qt.AlignTop
-
                 spacing: 30
+                visible: false
 
                 Label
                 {
@@ -242,7 +258,7 @@ Rectangle {
             ListView {
                 id: playersListView
 
-                Layout.topMargin: 20
+                Layout.topMargin: gameSettings.visible ? 20 : 0
 
                 Layout.fillWidth: true
                 Layout.fillHeight: true

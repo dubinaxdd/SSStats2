@@ -612,6 +612,14 @@
         <translation>Размер карты: </translation>
     </message>
     <message>
+        <source>Show game settings</source>
+        <translation>Показать настройки игры</translation>
+    </message>
+    <message>
+        <source>Hide game settings</source>
+        <translation>Скрыть настройки игры</translation>
+    </message>
+    <message>
         <source>AI difficulty:</source>
         <translation>Сложность ИИ:</translation>
     </message>
