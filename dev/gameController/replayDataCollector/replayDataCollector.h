@@ -41,6 +41,8 @@ private:
     bool checkEqualNamesInStats();
     void readReplayData();
     Race getRaceByNumber(int number);
+    Race getRaceFromTeststats(QString playerName);
+
 
     bool readSoulstormReplayData(SendingReplayInfo replayInfo);
     void readDefinitiveReplayData();

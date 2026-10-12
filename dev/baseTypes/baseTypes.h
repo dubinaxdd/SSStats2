@@ -173,7 +173,8 @@ enum Race
     Necrons = 5,
     TauEmpire = 6,
     SistersOfBattle = 7,
-    DarkEldar = 8
+    DarkEldar = 8,
+    UnknownRace = 9
 };
 
 enum GameTypeForReplaySending
@@ -359,7 +360,7 @@ struct PlayerInfoForReplaySending
     QString playerName;
     QString playerSid = "";
     QString relicId = "";
-    Race playerRace;
+    Race playerRace = Race::UnknownRace;
     bool isWinner;
     int playerType = 0;
     int playerTeam = 0;

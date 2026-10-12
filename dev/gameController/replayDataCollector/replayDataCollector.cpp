@@ -104,6 +104,95 @@ Race ReplayDataCollector::getRaceByNumber(int number)
     }
 }
 
+Race ReplayDataCollector::getRaceFromTeststats(QString playerName)
+{
+    m_testStatsPath = updateTestStatsFilePath();
+
+    qInfo(logInfo()) << "teststats.lua path: " << m_testStatsPath;
+
+    QFile file(m_testStatsPath);
+
+    if(!file.open(QIODevice::ReadOnly))
+        return Race::UnknownRace;
+    if(!file.isReadable())
+        return Race::UnknownRace;
+
+    // в начале файла лежат байты из-за этого корневой ключ может не читаться
+    int k=0;
+    while(file.read(1)!="G")
+        k++;
+    file.seek(k);
+
+    //QByteArray testStats = file.readAll();
+
+    QTextStream textStream(&file);
+    QStringList fileLines = textStream.readAll().split("\r");
+
+    file.close();
+
+    int playersCount = 0;
+
+    QStringList playerNames;
+    QStringList playerRaces;
+
+    for(int i = 0; i < fileLines.size(); i++ )
+    {
+        if (fileLines[i].contains("Players"))
+        {
+            QString temp = fileLines[i].right(fileLines[i].length() - 12);
+            temp = temp.left(temp.length() - 1);
+            playersCount = temp.toInt();
+        }
+
+        if (fileLines[i].contains("PName"))
+        {
+            QString name = fileLines[i].right(fileLines[i].length() - 12);
+            name = name.left(name.length() - 2);
+            playerNames.append(name);
+        }
+
+        if (fileLines[i].contains("PRace"))
+        {
+            QString race = fileLines[i].right(fileLines[i].length() - 12);
+            race = race.left(race.length() - 2);
+            playerRaces.append(race);
+        }
+    }
+
+    bool haveEqualNames = checkEqualNames(&playerNames);
+
+    //Проверка на одинаковые никнеймы
+    if (haveEqualNames)
+        return Race::UnknownRace;
+
+    for(int i = 0; i < playersCount; i++ )
+    {
+        if (playerNames[i] == playerName)
+        {
+            if (playerRaces.at(i) == "guard_race")
+                return Race::ImperialGuard;
+            if (playerRaces.at(i) == "tau_race")
+                return Race::TauEmpire;
+            if (playerRaces.at(i) == "ork_race")
+                return Race::Orks;
+            if (playerRaces.at(i) == "chaos_marine_race")
+                return Race::ChaosMarines;
+            if (playerRaces.at(i) == "necron_race")
+                return Race::Necrons;
+            if (playerRaces.at(i) == "space_marine_race")
+                return Race::SpaceMarines;
+            if (playerRaces.at(i) == "sisters_race")
+                return Race::SistersOfBattle;
+            if (playerRaces.at(i) == "dark_eldar_race")
+                return Race::DarkEldar;
+            if (playerRaces.at(i) == "eldar_race")
+                return Race::Eldar;
+        }
+    }
+
+    return Race::UnknownRace;
+}
+
 bool ReplayDataCollector::readSoulstormReplayData(SendingReplayInfo replayInfo)
 {
     m_testStatsPath = updateTestStatsFilePath();
@@ -658,7 +747,8 @@ void ReplayDataCollector::parseGameResults(QJsonObject gameResults,  SendingRepl
         QJsonObject playerJson = item.toObject();
 
         player.relicId = QString::number(playerJson.value("profile_id").toInt());
-        player.playerRace = getRaceByNumber(playerJson.value("race_id").toInt());
+        //TODO: берем расу из teststats.lua а не из реликовского апи
+        //player.playerRace = getRaceByNumber(playerJson.value("race_id").toInt());
         player.playerType = 0;
         player.playerTeam = playerJson.value("teamid").toInt();
         player.isWinner = playerJson.value("resulttype").toInt() > 0;
@@ -676,6 +766,7 @@ void ReplayDataCollector::parseGameResults(QJsonObject gameResults,  SendingRepl
             if (player.relicId == playerFromDowServer.playerID)
             {
                 player.playerName = playerFromDowServer.name;
+                player.playerRace = getRaceFromTeststats(player.playerName);
                 player.playerSid = playerFromDowServer.steamId;
                 playerFindedInDowPlayersArray = true;
                 break;
