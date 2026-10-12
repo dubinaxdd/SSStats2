@@ -15,7 +15,15 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
     m_findGameResultsTimer.setInterval(5000);
 
     connect(&m_findGameResultsTimer, &QTimer::timeout, this, [&]{
-        if(!m_lastReplayInfo.gameId.isEmpty())
+
+        //TODO: если игра автоматчевая, то юзаем ину из релик API, потому что steam id игрока может быть ненадежным.
+        // Если игра не автоматчевая, то можно юзать тестстатс как в сулсторме
+        if (!m_lastReplayInfo.isAutomatch)
+        {
+            readSoulstormReplayData(m_lastReplayInfo);
+            m_playersInfoFromDowServer.clear();
+        }
+        else if(!m_lastReplayInfo.gameId.isEmpty())
         {
             QFile sourceFile(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
             QFile destFile(m_lastReplayInfo.replayPath);
@@ -32,6 +40,8 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
             m_lastGameId = "";
             qInfo(logInfo()) << "ReplayDataCollector::readDefinitiveReplayData() Request game results";
         }
+
+        m_playersInfoFromDowServer.clear();
     });
 }
 
@@ -65,14 +75,16 @@ void ReplayDataCollector::readReplayData()
     m_lastReplayInfo.modVersion = "Game version: " + m_currentGameVersion + "; Mod version: " + m_currentModVerion;
     m_lastReplayInfo.isRnked = m_rankedState;
 
+    m_lastReplayInfo.isAutomatch = m_automatchState;
 
     if (m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
         readDefinitiveReplayData();
     else
     {
-        m_lastReplayInfo.isAutomatch = m_automatchState;
         readSoulstormReplayData(m_lastReplayInfo);
+        m_playersInfoFromDowServer.clear();
     }
+
 }
 
 Race ReplayDataCollector::getRaceByNumber(int number)
@@ -459,9 +471,6 @@ bool ReplayDataCollector::readSoulstormReplayData(SendingReplayInfo replayInfo)
 
     emit sendReplayToServer(std::move(replayInfo));
 
-    //m_allPlayersInfoFromScanner.clear();
-    //qInfo(logInfo()) << "Players history cleared";
-
     qInfo(logInfo()) << "Readed played game settings";
 
     return true;
@@ -469,6 +478,11 @@ bool ReplayDataCollector::readSoulstormReplayData(SendingReplayInfo replayInfo)
 
 void ReplayDataCollector::readDefinitiveReplayData()
 {
+    if(m_lastReplayInfo.isAutomatch)
+        m_findGameResultsTimer.setInterval(5000);
+    else
+        m_findGameResultsTimer.setInterval(2000);
+
     m_findGameResultsTimer.start();
 }
 
@@ -568,7 +582,8 @@ void ReplayDataCollector::receivePlayresInfoFromDowServer(QList<PlayerInfoFromDo
 
 void ReplayDataCollector::onQuitParty()
 {
-    m_playersInfoFromDowServer.clear();
+    if (m_currentGame->gameType != GameType::GameTypeEnum::DefinitiveEdition)
+        m_playersInfoFromDowServer.clear();
 }
 
 void ReplayDataCollector::receiveCurrentMod(QString currentMode)
