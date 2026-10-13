@@ -27,6 +27,8 @@ void RankedModServiceProcessor::setCurrentPlayerSteamId(QString currentPlayerSte
 {
     m_currentPlayerSteamId = currentPlayerSteamId;
     setRankedMode(true);
+    m_webSocket.close();
+    reconnect();
 }
 
 void RankedModServiceProcessor::setPlayresInfoFromDowServer(QList<PlayerInfoFromDowServer> playersInfoInfoFromDowServer)
