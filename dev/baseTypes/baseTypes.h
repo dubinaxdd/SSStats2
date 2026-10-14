@@ -165,6 +165,7 @@ enum GameMissionState
 
 enum Race
 {
+    UnknownRace = -1,
     SpaceMarines = 0,
     ChaosMarines = 1,
     Orks = 2,
@@ -174,7 +175,6 @@ enum Race
     TauEmpire = 6,
     SistersOfBattle = 7,
     DarkEldar = 8,
-    UnknownRace = 9
 };
 
 enum GameTypeForReplaySending

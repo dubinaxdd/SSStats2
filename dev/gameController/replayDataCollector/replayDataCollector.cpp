@@ -167,7 +167,7 @@ Race ReplayDataCollector::getRaceFromTeststats(QString playerName)
 
     for(int i = 0; i < playersCount; i++ )
     {
-        if (playerNames[i] == playerName)
+        if (playerNames[i].toLocal8Bit() == playerName)
         {
             if (playerRaces.at(i) == "guard_race")
                 return Race::ImperialGuard;
