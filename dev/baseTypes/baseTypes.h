@@ -174,7 +174,7 @@ enum Race
     Necrons = 5,
     TauEmpire = 6,
     SistersOfBattle = 7,
-    DarkEldar = 8,
+    DarkEldar = 8
 };
 
 enum GameTypeForReplaySending
