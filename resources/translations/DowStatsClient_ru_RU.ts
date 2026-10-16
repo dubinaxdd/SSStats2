@@ -530,6 +530,10 @@
         <translation>Игры (Победы): </translation>
     </message>
     <message>
+        <source>Games: </source>
+        <translation>Игры: </translation>
+    </message>
+    <message>
         <source>Race: </source>
         <translation>Раса: </translation>
     </message>

@@ -303,7 +303,7 @@ Rectangle {
 
                         Label {
                             id: label4
-                            text: qsTr("Games (Winrate): ") + root.playerGamesCount + " (" + root.playerWinRate + "%)"
+                            text: qsTr("Games: ") + root.playerGamesCount + " (" + root.playerWinRate + "%)"
                             font.pixelSize: 11 * sizeModifer
                             Layout.fillWidth: true
                             color: root.textColor
