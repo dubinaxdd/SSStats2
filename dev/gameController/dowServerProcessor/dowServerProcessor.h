@@ -51,6 +51,7 @@ public slots:
     void requestGameResult(SendingReplayInfo lastGameResult);
     void receiveCurrentMod(QString modName);
     void requestPersonalStatsByNames(QStringList playersNames);
+    void requestCurrentPlayerStats();
 
 private slots:
     void receiveChannellData(QNetworkReply *reply, int id);

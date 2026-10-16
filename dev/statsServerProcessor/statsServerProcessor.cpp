@@ -191,6 +191,7 @@ void StatsServerProcessor::getPlayerStatsFromServer(QSharedPointer <QList<Server
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receivePlayerStatsFromServer(reply, playersInfo);
+        reply->deleteLater();
     });
 }
 
@@ -199,8 +200,6 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "StatsServerProcessor::receivePlayerStatsFromServer:" << "Connection error:" << reply->errorString();
-        reply->deleteLater();
-
         if (!m_currentPlayerStatsReceived)
             m_currentPlayerStatsRequestTimer->start();
 
@@ -215,7 +214,6 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     if (!jsonDoc.isObject())
     {
         qWarning(logWarning()) << "StatsServerProcessor::receivePlayerStatsFromServer:" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
-        reply->deleteLater();
         return;
     }
 
@@ -228,7 +226,6 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     if(!jsonObject.value("stats").isArray())
     {
         qWarning(logWarning()) << "StatsServerProcessor::receivePlayerStatsFromServer:" << "Bad reply from dowstats:" << QString::fromLatin1(replyByteArray);
-        reply->deleteLater();
         return;
     }
 
@@ -275,7 +272,6 @@ void StatsServerProcessor::receivePlayerStatsFromServer(QNetworkReply *reply, QS
     }
 
     getPlayersMediumAvatar(playersInfo);
-    reply->deleteLater();
 }
 
 void StatsServerProcessor::getPlayersMediumAvatar(QSharedPointer<QList<ServerPlayerStats>> playersInfo)
@@ -288,6 +284,7 @@ void StatsServerProcessor::getPlayersMediumAvatar(QSharedPointer<QList<ServerPla
 
         QObject::connect(reply, &QNetworkReply::finished, this, [=](){
             receivePlayerMediumAvatar(reply, playerInfo);
+            reply->deleteLater();
         });
     }
 }
@@ -298,14 +295,12 @@ void StatsServerProcessor::receivePlayerMediumAvatar(QNetworkReply *reply, QShar
     {
         qWarning(logWarning()) << "StatsServerProcessor::receivePlayerMediumAvatar:" << "Connection error:" << reply->errorString();
         emit sendServerPlayerStats(*playerInfo.data());
-        reply->deleteLater();
+
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
     QImage avatarMedium = QImage::fromData(replyByteArray);
-
-    reply->deleteLater();
 
     if (avatarMedium.isNull())
         return;
@@ -346,12 +341,10 @@ void StatsServerProcessor::receiveRankDiversion(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "StatsServerProcessor::receiveRankDiversion:" << "Connection error:" << reply->errorString();
-        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
 
     RankDiversion newRankDiversion;
 
@@ -439,6 +432,7 @@ void StatsServerProcessor::requestClientLastVersion()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveClientLastVersion(reply);
+                reply->deleteLater();
     });
 }
 
@@ -447,12 +441,10 @@ void StatsServerProcessor::receiveClientLastVersion(QNetworkReply *reply)
     if (reply->error() != QNetworkReply::NoError)
     {
         qWarning(logWarning()) << "StatsServerProcessor::receiveClientLastVersion:" << "Connection error:" << reply->errorString();
-        reply->deleteLater();
         return;
     }
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
 
     QString versionDoc = QString(replyByteArray);
 
@@ -652,7 +644,11 @@ void StatsServerProcessor::sendReplayToServer(SendingReplayInfo replayInfo)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){  
         reply->deleteLater();
-        m_currentPlayerStatsRequestTimer->start();
+
+        /*if(replayInfo.isAutomatch && m_currentGame->gameType == GameType::GameTypeEnum::DefinitiveEdition)
+            requestCurrentPlayerStats();
+        else*/
+            m_currentPlayerStatsRequestTimer->start();
     });
 }
 
@@ -717,6 +713,7 @@ void StatsServerProcessor::requestRankDiversion()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveRankDiversion(reply);
+        reply->deleteLater();
     });
 }
 

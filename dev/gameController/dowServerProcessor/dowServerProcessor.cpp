@@ -74,6 +74,7 @@ void DowServerProcessor::rquestChannellData(int id)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveChannellData(reply, id);
+        reply->deleteLater();
     });
 }
 
@@ -96,6 +97,7 @@ void DowServerProcessor::requestProfileID(QString steamID)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveProfileID(reply, steamID);
+        reply->deleteLater();
     });
 }
 
@@ -137,6 +139,7 @@ void DowServerProcessor::requestFindAdvertisements()
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveFindAdvertisements(reply);
+            reply->deleteLater();
     });
 }
 
@@ -176,12 +179,14 @@ void DowServerProcessor::requestPlayersSids(QVector<PlayerData> profilesData, bo
     {
         QObject::connect(reply, &QNetworkReply::finished, this, [=](){
             receivePlayersSidsSS(reply, profilesData, needSedGameResults, lastGameResult);
+            reply->deleteLater();
         });
     }
     else if (m_gameType == GameType::GameTypeEnum::DefinitiveEdition)
     {
         QObject::connect(reply, &QNetworkReply::finished, this, [=](){
             receivePlayersSidsDE(reply, profilesData, needSedGameResults, lastGameResult);
+            reply->deleteLater();
         });
     }
 }
@@ -209,6 +214,7 @@ void DowServerProcessor::requestPersonalStats(QList<PlayerInfoFromDowServer> pla
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         recievePersonalStats(reply);
+        reply->deleteLater();
     });
 }
 
@@ -226,7 +232,17 @@ void DowServerProcessor::requestPersonalStatsByNames(QStringList playersNames)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         recievePersonalStatsByNames(reply);
+        reply->deleteLater();
     });
+}
+
+void DowServerProcessor::requestCurrentPlayerStats()
+{
+    PlayerInfoFromDowServer currentPlayerInfo;
+    currentPlayerInfo.isCurrentPlayer = true;
+    currentPlayerInfo.playerID = m_profileID;
+    currentPlayerInfo.steamId = m_steamID;
+    requestPersonalStats({currentPlayerInfo});
 }
 
 Race DowServerProcessor::getRaceById(int gaceId) const
@@ -380,6 +396,7 @@ void DowServerProcessor::requestGameResult(SendingReplayInfo lastGameResult)
 
     QObject::connect(reply, &QNetworkReply::finished, this, [=](){
         receiveGameResults(reply, lastGameResult);
+        reply->deleteLater();
     });
 }
 
@@ -476,7 +493,6 @@ void DowServerProcessor::receiveChannellData(QNetworkReply *reply, int id)
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -490,7 +506,6 @@ void DowServerProcessor::receiveProfileID(QNetworkReply *reply, QString steamID)
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -540,7 +555,6 @@ void DowServerProcessor::receiveFindAdvertisements(QNetworkReply *reply)
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -619,7 +633,6 @@ void DowServerProcessor::receivePlayersSidsSS(QNetworkReply *reply, QVector<Play
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
 
     QJsonDocument jsonDoc = QJsonDocument::fromJson(replyByteArray);
 
@@ -725,7 +738,6 @@ void DowServerProcessor::receiveGameResults(QNetworkReply *reply, SendingReplayI
         return;
 
     QByteArray replyByteArray = reply->readAll();
-    reply->deleteLater();
 
     QJsonDocument jsonDocument = QJsonDocument::fromJson(replyByteArray);
 

@@ -117,6 +117,7 @@ void Core::addConnections()
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendServerPlayerStats,     m_gameController->advertisingProcessor(),  &AdvertisingProcessor::receiveServerPlayerStats,      Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_gameController->dowServerProcessor(), &DowServerProcessor::setCurrentPlayerSteamID, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended,             m_gameController->advertisingProcessor(), &AdvertisingProcessor::onReplaySended, Qt::QueuedConnection);
+    QObject::connect(m_statsServerProcessor, &StatsServerProcessor::replaySended,             m_gameController->dowServerProcessor(), &DowServerProcessor::requestCurrentPlayerStats, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_rankedModServiceProcessor, &RankedModServiceProcessor::setCurrentPlayerSteamId, Qt::QueuedConnection);
     QObject::connect(m_statsServerProcessor, &StatsServerProcessor::sendCurrentPlayerSteamID, m_balanceModManager, &BalanceModManager::setCurrentPlayerSteamId, Qt::QueuedConnection);
 
