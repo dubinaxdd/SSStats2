@@ -214,7 +214,7 @@ bool Core::event(QEvent *event)
 
 void Core::onKeyEvent(QKeyEvent event)
 {
-    if(uiBackend()->getShowClient()){
+    if(uiBackend()->getShowClient() && m_gameController->getGameMaximized()){
         if (event.type() == QEvent::KeyPress && m_keyboardProcessor)
         {
             m_keyboardProcessor->keyPressEvent(std::move(event));
@@ -225,7 +225,7 @@ void Core::onKeyEvent(QKeyEvent event)
 
 void Core::onMouseEvent(QMouseEvent event)
 {
-    if(uiBackend()->getShowClient()){
+    if(uiBackend()->getShowClient() && m_gameController->getGameMaximized()){
         if (event.type() == QEvent::MouseButtonPress)
         {
             m_uiBackend->mousePressEvent(event.pos());
@@ -240,7 +240,8 @@ void Core::onMouseEvent(QMouseEvent event)
 
 void Core::onWheelEvent(QWheelEvent event)
 {
-    m_uiBackend->onMouseWheel(event.delta());
+    if(uiBackend()->getShowClient() && m_gameController->getGameMaximized())
+        m_uiBackend->onMouseWheel(event.delta());
 }
 
 void Core::exit()

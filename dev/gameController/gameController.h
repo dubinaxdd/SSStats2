@@ -37,7 +37,7 @@ public:
     LONG defaultGameWindowLong() const;
 
     bool getInputBlocked() const;
-    bool getSsMaximized();
+    bool getGameMaximized();
     bool gameWindowed() const;
     bool getUseWindows7SupportMode() const;
 

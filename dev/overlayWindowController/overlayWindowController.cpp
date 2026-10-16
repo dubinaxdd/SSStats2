@@ -209,7 +209,7 @@ void OverlayWindowController::gameInitialized()
 
     m_topmostTimer->start();
 
-    if(p_gameController->getSsMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
+    if(p_gameController->getGameMaximized() && (GetSystemMetrics(SM_CXSCREEN) != m_widthInGame || GetSystemMetrics(SM_CYSCREEN) != m_heightInGame))
     {
         ssMaximized(true);
     }

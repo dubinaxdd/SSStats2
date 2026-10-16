@@ -789,7 +789,7 @@ GameStateReader *GameController::gameStateReader() const
     return m_gameStateReader;
 }
 
-bool GameController::getSsMaximized()
+bool GameController::getGameMaximized()
 {
     return m_ssMaximized;
 }
