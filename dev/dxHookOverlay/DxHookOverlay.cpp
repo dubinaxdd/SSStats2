@@ -25,8 +25,10 @@ enum BufferState : LONG
 constexpr wchar_t SHARED_MEMORY_NAME[] = L"Local\\DX9OverlayImage";
 
 // Максимальный поддерживаемый размер.
-constexpr uint32_t MAX_IMAGE_WIDTH = 3840;
-constexpr uint32_t MAX_IMAGE_HEIGHT = 2160;
+//constexpr uint32_t MAX_IMAGE_WIDTH = 3840;
+//constexpr uint32_t MAX_IMAGE_HEIGHT = 2160;
+constexpr uint32_t MAX_IMAGE_WIDTH = 10000;
+constexpr uint32_t MAX_IMAGE_HEIGHT = 10000;
 constexpr uint32_t BYTES_PER_PIXEL = 4;
 constexpr uint32_t MAX_IMAGE_SIZE = MAX_IMAGE_WIDTH * MAX_IMAGE_HEIGHT * BYTES_PER_PIXEL;
 

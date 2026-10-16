@@ -31,8 +31,11 @@ constexpr SIZE_T STOLEN_BYTES = 18;
 constexpr wchar_t SHARED_IMAGE_NAME[] = L"Local\\DX9OverlayImage";
 constexpr wchar_t SHUTDOWN_EVENT_NAME[] = L"Local\\DX9OverlayShutdown";
 
-constexpr uint32_t MAX_IMAGE_WIDTH = 3840;
-constexpr uint32_t MAX_IMAGE_HEIGHT = 2160;
+//constexpr uint32_t MAX_IMAGE_WIDTH = 3840;
+//constexpr uint32_t MAX_IMAGE_HEIGHT = 2160;
+
+constexpr uint32_t MAX_IMAGE_WIDTH = 10000;
+constexpr uint32_t MAX_IMAGE_HEIGHT = 10000;
 
 constexpr SIZE_T IMAGE_BUFFER_SIZE = static_cast<SIZE_T>(MAX_IMAGE_WIDTH) * static_cast<SIZE_T>(MAX_IMAGE_HEIGHT) * 4;
 
@@ -576,7 +579,7 @@ HRESULT WINAPI HookedPresent(
                 const uint32_t width = g_sharedImage->width;
                 const uint32_t height = g_sharedImage->height;
 
-                if (width > 0 && height > 0 && width <= 3840 && height <= 2160)
+                if (width > 0 && height > 0 && width <= MAX_IMAGE_WIDTH && height <= MAX_IMAGE_HEIGHT)
                 {
                     if (CreateImageTexture(device, width, height))
                     {
