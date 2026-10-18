@@ -18,12 +18,14 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
 
         //TODO: если игра автоматчевая, то юзаем ину из релик API, потому что steam id игрока может быть ненадежным.
         // Если игра не автоматчевая, то можно юзать тестстатс как в сулсторме
-        if (!m_lastReplayInfo.isAutomatch)
+
+        //TODO: Бала попытка сделать загрузку реплеев как в сулсторме, но метод оказался не надежным, поэтому возвращаю как было
+       /* if (!m_lastReplayInfo.isAutomatch)
         {
             readSoulstormReplayData(m_lastReplayInfo);
             m_playersInfoFromDowServer.clear();
         }
-        else if(!m_lastReplayInfo.gameId.isEmpty())
+        else*/ if(!m_lastReplayInfo.gameId.isEmpty())
         {
             QFile sourceFile(m_currentGame->gameSettingsPath + "/Playback/temp.rec");
             QFile destFile(m_lastReplayInfo.replayPath);
@@ -38,7 +40,7 @@ ReplayDataCollector::ReplayDataCollector(QObject *parent)
 
             emit requestGameResults(m_lastReplayInfo);
             m_lastGameId = "";
-            qInfo(logInfo()) << "ReplayDataCollector::readDefinitiveReplayData() Request game results";
+            qInfo(logInfo()) << "ReplayDataCollector::ReplayDataCollector() Request game results";
         }
 
         m_playersInfoFromDowServer.clear();
@@ -569,10 +571,11 @@ bool ReplayDataCollector::readSoulstormReplayData(SendingReplayInfo replayInfo)
 
 void ReplayDataCollector::readDefinitiveReplayData()
 {
-    if(m_lastReplayInfo.isAutomatch)
+    //TODO: Бала попытка сделать загрузку реплеев как в сулсторме, но метод оказался не надежным, поэтому возвращаю как было
+    //if(m_lastReplayInfo.isAutomatch)
         m_findGameResultsTimer.setInterval(5000);
-    else
-        m_findGameResultsTimer.setInterval(2000);
+   /* else
+        m_findGameResultsTimer.setInterval(2000);*/
 
     m_findGameResultsTimer.start();
 }
